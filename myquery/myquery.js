@@ -186,16 +186,7 @@
         }
         return ret;
     } ())
-    , rootPath = basePath.replace(/((.*?\/){3}).*$/, '$1')
-    , addHandler = function (ele, type, fns) {
-        if (ele.addEventListener)
-            ele.addEventListener(type, fns, false); //事件冒泡
-        else if (ele.attachEvent)
-            ele.attachEvent('on' + type, fns);
-        else {
-            ele['on' + type] = fns;
-        }
-    };
+    , rootPath = basePath.replace(/((.*?\/){3}).*$/, '$1');
 
     var _config = {
         myquery: {
@@ -353,8 +344,7 @@
         }
         , version: version
         , _redundance: {
-            addHandler: addHandler
-            , argToArray: tools.argToArray
+            argToArray: tools.argToArray
         }
     });
 
@@ -1118,7 +1108,17 @@
     (function (/*ready*/) {
         "use strict"; //启用严格模式
         $.module.ready = "1.0.0";
-        var windowReady = 0, //compatible ie ff
+        var 
+        addHandler = function (ele, type, fns) {
+            if (ele.addEventListener)
+                ele.addEventListener(type, fns, false); //事件冒泡
+            else if (ele.attachEvent)
+                ele.attachEvent('on' + type, fns);
+            else {
+                ele['on' + type] = fns;
+            }
+        },
+        windowReady = 0, //compatible ie ff
             $Ready = 0,
             list = [],
             todo = function () {
@@ -1142,6 +1142,7 @@
         if (_config.myquery.package) {
             $.require("json/package", function (Package) {
                 var json = Package[_config.myquery.package];
+
                 if (json) {
                     $.require(json, function () {
                         $Ready = 1;
@@ -1157,6 +1158,10 @@
         else {
             $Ready = 1;
         }
+
+        $._redundance.addHandler = addHandler;
+
+
         addHandler(window, "load", function () {
             windowReady = arguments;
             todo();
