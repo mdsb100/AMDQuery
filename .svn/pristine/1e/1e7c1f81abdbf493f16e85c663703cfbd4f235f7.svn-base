@@ -1,0 +1,101 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>测试</title>
+    <meta charset="utf-8" />
+    <style type="text/css">
+        .css1
+        {
+            border: 1px solid black;
+        }
+        div
+        {
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+    <script src="common/js/MyQuery.js" type="text/javascript"></script>
+    <script src="common/js/Thread.js" type="text/javascript"></script>
+    <script src="common/js/tween.js" type="text/javascript"></script>
+    <script type="text/javascript">
+        window.onload = function () {
+            // var t = new Tween();
+            var A = document.getElementById("A");
+            var B = document.getElementById("B");
+            var C = document.getElementById("C");
+            var t1 = new Thread({
+                fun: function () {
+                    A.innerHTML = this.price += 1;
+                }
+                , fps: 1
+                , time: 50000
+                , price: 0
+            });
+            var t2 = new Thread({
+                fun: function (fp) {
+                    this.value += 1
+                    B.innerHTML = this.value + fp;
+                }
+                , time: 10000
+                , delay: 5000
+                , value: 0
+            }, "test");
+            var t3 = new Thread({ fun: function (time, duration, option) {
+                //this 是obj，arguments是obj后面的参数
+                this.mover.style.top = Tween.getFun.apply(this, arguments) + 'px';
+                this.mover.style.left = Tween.getFun.apply(this, arguments) + 'px';
+            }
+            , time: 10000
+            , fps: 64
+            , mover: C
+            , delay: 5000
+            }, Tween.Back.easeOut, 0, 600);
+            t3.addHandler("start", function () {
+                C.innerHTML = "开始事件";
+            }).addHandler("stop", function () {
+                C.innerHTML = "结束事件";
+            }).addHandler("delay", function (e) {
+                C.innerHTML = "delay事件";
+            });
+            //t1.start();
+            //t2.start();
+            ThreadPool.push(t1, t2);
+            //ThreadPool.clear(1);
+            //ThreadPool.get(1);
+            ThreadPool.start();
+
+            A.onmousedown = function () {
+                t1.sleep(10000);
+            }
+            A.onmouseup = function () {
+                t1.resume();
+            }
+            B.onmousedown = function () {
+                t2.abort();
+                $.showMsg(Thread.count);
+            }
+            B.onmouseup = function () {
+                t2.start();
+                $.showMsg(Thread.count);
+            }
+            C.onclick = function () {
+                t3.start()
+            }
+          
+        }
+    </script>
+</head>
+<body style="width: 100%; height: 100%; overflow: scroll">
+    <div style="width: 100px; height: 100px; background-color: Red; float: left; display: inline-block;
+        position: absolute" id='A' class='abc'>
+    </div>
+    <div style="width: 100px; height: 100px; left: 100px; background-color: blue; float: left;
+        display: inline-block; position: absolute" id='B' class='abc'>
+        delay5秒
+    </div>
+    <div style="width: 100px; height: 100px; left: 200px; background-color: yellow; float: left;
+        display: inline-block; position: absolute" id='C' class='abc'>
+        点击后delay5秒执行tween
+    </div>
+</body>
+</html>

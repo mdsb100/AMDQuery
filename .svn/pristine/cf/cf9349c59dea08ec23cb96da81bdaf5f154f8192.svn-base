@@ -1,0 +1,263 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>自己写的JQuery测试</title>
+    <meta content="utf-8" />
+    <style type="text/css">
+        .css1
+        {
+            border: 1px solid black;
+        }
+        .class1
+        {
+            background-color: Red;
+        }
+        .class2
+        {
+            background-color: Yellow;
+        }
+    </style>
+    <link href="css/reset.css" rel="stylesheet" type="text/css" />
+    <style type="text/css">
+        #offset
+        {
+            display: inline-block;
+        }
+    </style>
+    <!--<script src="common/js/myquery.js" type="text/javascript" config="define:$;reference:require;async:true"></script>-->
+    <script src="myquery/myquery.js" type="text/javascript" config="define:$;reference:require;async:true"></script>
+    <script type="text/javascript">
+        //table的删除和添加行值得注意
+
+        var a = $.parseQueryString();
+
+        $.require(["main/event", "main/attr", "main/class", "main/dom"], function () {
+            $(function (event) {
+
+                $("#offset").hide();
+                $("#offset").show();
+                $("#offset").isVisible();
+                return;
+                $(document.body).keydown(function (e) {
+                    $.showMsg(e.charCode);
+                }).keypress(function (e, str) {
+                    //alert(str);
+                });
+
+                var value = $(".parent").children();
+                var offset = $("#offset").children();
+
+                var ele = $.createEle("div");
+                ele.style.width = "100px";
+                ele.style.display = "inline";
+                //ele.style.visibility = "hidden";
+                $.setOffsetW(ele, 50);
+
+                //alert($(ele).attr("id"));
+                $(ele).attr("id", "p");
+                //alert($(ele).attr("id"));
+
+                var value = $("#offset");
+                $.showMsg(value[0].offsetHeight + ":" + value[0].clientHeight);
+                value.offsetH(30)
+                $.showMsg(value[0].offsetHeight + ":" + value[0].clientHeight);
+
+                var next = $("#B~%+")
+
+                var testFind = $("body #radio");
+                var testSearch1 = $("#F>.test1");
+                var testSearch2 = $("#F .test1");
+                var testSearch3 = $("#F>ul");
+                var testSearch4 = $("#F ul");
+                var testSearch5 = $("#F>div");
+                var testSearch6 = $("#F>#search");
+                var testSearch7 = $("#F #search");
+                var testSearch8 = $("#F>*");
+
+                $.getRealChild($("#F")[0], 1);
+                $.getSelfIndex($("#F")[0]);
+
+                var a = $("input:checked")
+                var b = $("#li1,#li2").ancestors(".parent");
+                var select = $("select")
+                select.val();
+                select.val([0, 2]);
+                var result = select.data("mytest1", 50);
+                result = select.data("mytest1");
+                result = select.data({ mytest1: { type: 1, result: true }, mytest2: 100 });
+                result = select.data();
+                $.removeData(select[0], "mytest1");
+
+                var empty = {};
+                var defaults = { validate: false, limit: 5, name: "foo" };
+                var options = { validate: true, name: "bar" };
+                var settings = $.extend(true, empty, defaults, options);
+
+                $.extend({ pic: function () {
+                    $.showMsg("自己写的JQuery测试extend");
+                }
+                })
+                $.pic();
+
+
+                var radio = $("#radio").val("checked");
+                var checkbox = $("#checkbox").val();
+                var text = $("#text").val();
+                var cla = $("#F .test1");
+                var child = $(":child:eq(1,2)");
+
+                var all = $("#F *");
+                var a = $("#F div").eq(1, 2);
+                var b = $("#A,#B");
+                var c = $("#A,#F ul");
+                var d = $("#F div:eq(1,2),#A");
+                var e = $("div:last");
+                var f = $("div:odd");
+                var g = $("div:even");
+                var h = $("div:lt(3)");
+                var i = $("div:gt(3)");
+                var l = $(":input");
+                var m = $(":button");
+                var n = $(":text");
+
+                var fa = $('#A')
+            .html('abc')
+            .css({ i: 'bcd' })
+            .addClass("css1")
+            .attr({ name: 'aaa' })
+                //.opacity(0.5);
+                var tmp = fa.opacity();
+                var di = $('div').addClass('css1').addHandler('click', function () {
+                    alert(true);
+                })
+            .attr('pic', "p1")
+            .mousewheel(function (detal) {
+                document.title = detal;
+            })
+
+            .append($({ w: 50, h: 50, b: 'blue' }, 'div'));
+                di.append('<span>内容</span>');
+                di.css("b");
+                //di.append('<input type="radio" />');
+                //di.insertText("<span>值啊</span>")
+                var id = di.attr('id');
+                di.eq(2).appendTo(fa);
+
+                var property1 = $("div[id][pic='p1']");
+                var property2 = $("#C *[id^='text1']");
+
+                var tmp = $("#A,#B,#C");
+                var tmpB = tmp.eq(1);
+
+                var son = $({ w: 100, h: 100, b: 'yellow', d: 'inline-table', float: 'left' }, 'div', document.body)
+                        .addClass('css2')
+                        .addHandler('click', function () {
+                            di.antonymVisible();
+                            var j = $("div:hidden");
+                            var k = $("div:visible");
+                        }).data("test1", "500");
+
+                var region = son.position();
+                var first = di.getFirst(), last = di.getLast();
+                var left = di.eq(2).offsetL();
+                var top = di.eq(1).getTop();
+                var ol = $("ol");
+                var child = ol.children();
+                ol.eq(0).removeChild($('li'));
+                son.remove();
+                $('#D').replace(son);
+                var li = $('li').html('replace', true)[0];
+                $('ol').eq(1).replaceChild($({ i: 'ABC' }, 'li'), 2);
+
+                var clone = $('#C').clone();
+                var collection = $($.getEleByTag('div'));
+                var list = [];
+                var table = document.createElement('table');
+
+                var handler = function (e) {
+                    alert(e)
+                }
+            , testHandler = $("#C").addHandler("click", handler).removeHandler('click', handler).insertText("插入一个值");
+
+                $("div").filter(function (ele) {
+                    return ele.id == "A"
+                });
+                $.filter("same", [1, 1, 2, 3, 4, 5, 5, 6, 7, 8, 8]);
+
+                $("#A").is(":visible");
+                $("#A,#B").toggle(function () {
+                    var a = 0;
+                }, function () {
+                    var a = 1;
+                });
+                $("#A,#B").toggleClass("class1", "class2");
+
+                var font = $("#A").curCss("fontSize");
+                var ff = $("#A").curCss("float");
+
+                $("#A:enabled")
+                //            alert(font);
+                //            alert(ff);
+
+            });
+        });
+
+    </script>
+</head>
+<body style="width: 100%; height: 100%; overflow: scroll;">
+    <div id="offset" style="padding: 10px 10px 10px 10px; width: 50px; height: 50px;
+        border-bottom: 1px solid black; margin: 10px 10px 10px 10px; background-color: red;">
+    </div>
+    <ol class="parent">
+        <li>1</li>
+        <li id='li2'>2</li>
+        <li>3</li>
+        123
+    </ol>
+    <ol>
+        <li>4</li>
+        <li id='li1'>5</li>
+        <li>6</li>
+    </ol>
+    <div style="width: 200px; height: 200px; float: left; display: inline-block;" id='A'
+        class='abc'>
+        <input type="button" />
+    </div>
+    <div style="width: 100px; height: 100px; background-color: Red; float: left; display: inline-block;"
+        id='B'>
+        <button>
+        </button>
+    </div>
+    <div style="width: 100px; height: 100px; background-color: Red; float: left; display: inline-block;"
+        id='C'>
+        <select multiple="MUltiple">
+            <option>1</option>
+            <optgroup label="分组">
+                <option selected='SELECTED'>2</option>
+                <option selected="true">3</option>
+            </optgroup>
+        </select>
+        <input type="button" id='text1' />
+    </div>
+    <div style="width: 100px; height: 100px; background-color: Red; float: left; display: inline-block;"
+        id='D'>
+        I`m D
+    </div>
+    <div style="width: 100px; height: 100px; background-color: blue; float: left; display: inline-block;"
+        id="F">
+        <div class="test1">
+            <ul class="test1" id="search">
+            </ul>
+        </div>
+        <div class="test1">
+        </div>
+        <div class="test1">
+        </div>
+    </div>
+    <div style="width: 100px; height: 100px; background-color: Red; float: left; display: inline-block;">
+        <input id="checkbox" type="checkbox" checked="checked" />
+        <input id="radio" type="radio" />
+        <input id="text" type="text" value="我的值啊" />
+    </div>
+</body>
+</html>

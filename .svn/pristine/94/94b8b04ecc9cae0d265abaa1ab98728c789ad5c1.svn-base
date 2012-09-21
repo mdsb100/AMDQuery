@@ -1,0 +1,43 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+    <link href="css/reset.css" rel="stylesheet" type="text/css" />
+    <!-- <script src="http://192.168.1.102:8080/package/myquery/myquery.js" type="text/javascript" myquery="define:$;amd:false"></script>-->
+    <!--<script src="myquery/myquery.js" type="text/javascript" myquery="define:$;amd:0;"
+        amd="detectCR:1;async:1"></script>-->
+    <!--<script src="myquery/oye.js" type="text/javascript"></script>-->
+    <!--<script src="myquery/test/test5.js" type="text/javascript"></script>-->
+    <!--<script src="myquery/oye.js" type="text/javascript"></script>-->
+    <script src="myquery/amdtest.js" type="text/javascript"></script>
+    <script type="text/javascript">
+        require(["test/test3"], function () {
+            console.log("1");
+            require("test/test1", function () {
+                console.log("4");
+            });
+            require("test/test3", function () {
+                console.log("5");
+            });
+        });
+
+        require("test/test3", function () {
+            console.log("2");
+        });
+
+        require("test/test1", function () {
+            console.log("3");
+        });
+
+        //        require("test/test1", function () {
+        //            console.log("4");
+        //        });
+    </script>
+</head>
+<body style="overflow: auto">
+    <div id="a" class="myquery_turnbook_content">
+    </div>
+    <div id="b">
+    </div>
+</body>
+</html>

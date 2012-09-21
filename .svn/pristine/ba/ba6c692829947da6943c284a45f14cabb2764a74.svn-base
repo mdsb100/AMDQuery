@@ -1,0 +1,61 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+    <link href="css/reset.css" rel="stylesheet" type="text/css" />
+    <!-- <script src="http://192.168.1.102:8080/package/myquery/myquery.js" type="text/javascript" myquery="define:$;amd:false"></script>-->
+    <script src="myquery/myquery.js" type="text/javascript" myquery="define:$;amd:0;"
+        amd="detectCR:1;async:1"></script>
+    <!--<script src="myquery/oye.js" type="text/javascript"></script>-->
+    <script type="text/javascript">
+        //        require.config("html5/a", "/package/myquery/html5/test4.js");
+        //      
+        //        require(["html5/a", "html5/b", "html5/c", "html5/d"], function (a, b, c, d) {//, "html5/c", "html5/d"
+        //            c.alert(); d.alert();
+        //        });
+        //        require.config("html5/pp", "/package/myquery/html5/test3.js"); //具名为了require不进列表 所以应该可以改掉
+        //        myQuery.require(["html5/pp", "html5/test1"], function (pp, test1) {
+        //            //pp.alert();
+        //            test1.alert();
+        //        });
+        var test = {
+            complete: function (data) {
+                alert(this.name + data)
+            }
+            , name: "test"
+        }
+
+        myQuery.require(["main/communicate"], function (communicate) {
+            communicate.getJScript({
+                url: "http://jry.baidao.com/api/hq/npdata.do"
+                , JSONP: true
+                , complete: test.complete
+                , context: test
+                , data: { ids: "1,2,3,4" }
+            });
+            $("#b").src({
+                src: "eventtest.html"
+                , complete: function () {
+                    alert(this);
+                }
+
+            });
+            $("#c").src({
+                src: "myquery/test/arrow.png"
+                , complete: function () {
+                    alert(this);
+                }
+
+            });
+
+        });
+    
+    </script>
+</head>
+<body style="overflow: auto">
+    <div id="a" class="myquery_turnbook_content">
+    </div>
+    <iframe id="b"></iframe>
+    <img id="c" />
+</body>
+</html>

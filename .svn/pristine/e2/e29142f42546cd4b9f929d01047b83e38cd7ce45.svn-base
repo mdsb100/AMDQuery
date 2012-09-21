@@ -1,0 +1,22 @@
+﻿/// <reference path="../myquery.js" />
+
+define("test/a", function () {
+    return {
+        alert: function () { alert("a"); }
+    }
+});
+define("test/b", function () {
+    return {
+        alert: function () { alert("b"); }
+    }
+});
+define("test/c", ["test/a", "test/b"], function () {
+    return {
+        alert: function () { alert("c"); }
+    }
+});
+define("test/d", ["test/test3"], function () {
+    return {
+        alert: function () { alert("d"); }
+    }
+});  

@@ -1,0 +1,46 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+    <link href="css/reset.css" rel="stylesheet" type="text/css" />
+    <style>
+        #test
+        {
+            background: #0000FF;
+            width: 100px;
+            height: 100px;
+        }
+    </style>
+    <script src="myquery/myquery.js" type="text/javascript" myquery="define:$;amd:0;"
+        amd="detectCR:1;"></script>
+    <script type="text/javascript">
+        $.require(["main/dom"], function (dom) {
+            $.ready(function () {
+                var test = $("#test");
+                //                alert(test.outerH(true));
+                //                alert(test.innerH(true));
+                //                alert(test.outerW());
+                //                alert(test.innerH());
+                //                test.innerH(100);
+                //                alert(test.innerH());
+                //                alert(test.innerW());
+                //                test.innerW(120);
+                //                alert(test.innerW());
+                alert(test.outerH(true));
+                test.outerH(120, true);
+                alert(test.outerH()); //会带margin
+                //                alert(test.css("background-color"));
+                //                alert(test.css("color"));
+                //                alert(test.style("margin-top"));
+                //                alert(test.css("width"));
+                //
+            });
+        })
+    </script>
+</head>
+<body style="overflow: auto">
+    <div style="margin-top: 20px; margin-bottom: 20px; border: 10px solid black; width: 150px;
+        height: 150px; color: Green; display: none;" id="test">
+    </div>
+</body>
+</html>

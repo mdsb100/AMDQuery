@@ -1,0 +1,160 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+    <style>
+        #go1
+        {
+            opacity: 0.9;
+        }
+    </style>
+    <link href="css/reset.css" rel="stylesheet" type="text/css" />
+    <script src="myquery/myquery.js" type="text/javascript" myquery="define:$;amd:0;"
+        amd="detectCR:1;async:1" model="transitionToAnimation:0"></script>
+    <script type="text/javascript">
+        $.require([
+        "module/tween.extend",
+        "html5/css3",
+        "module/animate",
+        "html5/animate.transform",
+        "main/event",
+        "module/effect",
+        "html5/css3.transition.animate"
+        ]
+        , function () {
+            //$.getTransitionEasing("quar.easeInOut");
+            //var ret = "width 0.4s linear".match(/width[\w\s\d\.\-]*((\,|\,\s)|$)/)
+           
+            var id = 0; window.go1 = $("#go1"); //.initTransform3d() 设置要看的 加了这句在firefox不太好
+            //$.animationPower.setDely(2000)//.sleep(2000).start();
+
+            var button1 = $("#button1").addHandler("click", function () {
+                //$.animationPower.start(); //.sleep(2000);
+                go1
+                .animate({ width: "300px", top: "500px", opacity: 0.5 }, {
+                    duration: 2000
+                    , delay: 2000
+                    , easing: ["linear", 1, 1]
+                    , complete: function () {
+                        ///$.showMsg()
+                        //                        $.animationPower.sleep(2000);
+                        //                        setTimeout(function () {
+                        //                            $.animationPower.resume();
+                        //                        }, 1000)
+                        $.showMsg("1")
+                        //alert("")
+                    }
+                    , specialEasing: {
+                        width: "quad.easeInOut"
+                        , top: "cubic.easeInOut"
+                    }
+                })
+               .animate({ height: "+=100px", opacity: 1 }, { duration: 4000, easing: "linear"
+                   , complete: function () {
+                       $.showMsg("2")
+                       //alert("2")
+                   }
+               });
+            });
+
+            var button2 = $("#button2").addHandler("click", function () {
+                go1
+                .animate({
+                    transform3d: { translateX: "+=100px", translateY: "+=100px", rotateZ: "+=30deg" }
+                }
+                , { duration: 2000, easing: "linear"
+                    , complete: function () {
+                        //$.animationPower.sleep(2000);
+                    }
+                });
+
+            })
+            var button3 = $("#button3").addHandler("click", function () {
+                go1
+                .animate({
+                    transform: [["translate", "250px", "250px"], ["scale", "2", "2"]]
+                }
+                , { duration: 2000, easing: "linear"
+                    , complete: function () {
+                    }
+                });
+
+            });
+
+            var button4 = $("#button4").addHandler("click", function () {
+                $.animationPower.stop();
+            });
+
+            var button5 = $("#button5").addHandler("click", function () {
+                go1.fadeOut();
+            });
+
+            var button6 = $("#button6").addHandler("click", function () {
+                go1.fadeIn();
+            });
+
+            var button7 = $("#button7").addHandler("click", function () {
+                go1.hide("slide");
+            });
+
+            var button8 = $("#button8").addHandler("click", function () {
+                go1.slideIn();
+            });
+
+            var button9 = $("#button9").addHandler("click", function () {
+                go1.animateByTransition({
+                    width: "200px"
+                }, {
+                    complete: function () {
+                        alert("down");
+                    }
+                });
+            });
+
+            var button10 = $("#button10").addHandler("click", function () {
+                go1.css({ w: 100, h: 100, t: 0, l: 0, o: 1 }).css3({ transform: [] });
+            });
+
+            //            var b = go1.styleTable();
+            //            var v = go1.style("MozTransform");
+            //            var c = 0
+        });
+    </script>
+</head>
+<body>
+    <div id="go1" style="width: 100px; height: 100px; background-color: Blue; position: absolute;">
+    </div>
+    <div style="position: absolute; left: 100px;">
+        <button id="button1">
+            css = += delay2000
+        </button>
+        <button id="button2">
+            transform3d +=
+        </button>
+        <button id="button3">
+            transform =
+        </button>
+        <button id="button4">
+            总停止
+        </button>
+        <button id="button5">
+            fadeOut
+        </button>
+        <button id="button6">
+            fadeIn
+        </button>
+        <button id="button7">
+            slideOut
+        </button>
+        <button id="button8">
+            slideIn
+        </button>
+        <button id="button9">
+            animateByCss3Transition
+        </button>
+        <button id="button10">
+            reset
+        </button>
+    </div>
+</body>
+</html>

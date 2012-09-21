@@ -1,0 +1,8 @@
+﻿/// <reference path="../myquery.js" />
+
+define(["test/test2"], function () {
+    //test1.alert();
+    return {
+        alert: function () { alert("test2") }
+    }
+}); 

@@ -1,0 +1,97 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+    <link href="css/reset.css" rel="stylesheet" type="text/css" />
+    <!-- <script src="http://192.168.1.102:8080/package/myquery/myquery.js" type="text/javascript" myquery="define:$;amd:false"></script>-->
+    <script src="myquery/myquery.js" type="text/javascript" myquery="define:$;amd:0;package:main;"
+        amd="detectCR:1;" model="compatibleEvent:1;"></script>
+    <!--<script src="myquery/oye.js" type="text/javascript"></script>-->
+    <script type="text/javascript">
+        $.require([
+            "main/event"
+        //,"module/thread"
+        ], function (bcd) {
+            $.ready(function () {
+                var a = "123";
+                $("body").delegate("div,#a", "click", function (e) {
+                    alert(this.id);
+                });
+
+                var test1 = $("#a");
+                var fn1 = function (str) {
+                    alert(str || "fn1");
+                },
+                fn2 = function (str) {
+                    str.stopPropagation();
+                    alert(str.screenX || "fn2");
+                },
+                fn3 = function (e) {
+                    alert(e.keyCode);
+                },
+                fn4 = function (e) {
+                    alert(e.info);
+                };
+                test1.addHandler("my.test1", fn1);
+                test1.addHandler("my.test1", fn1);
+
+                test1.click(fn2);
+
+                test1.trigger("my.test1", {
+                    screenX: 5
+                });
+
+                test1.removeHandler("my.test1", fn1);
+
+                test1.trigger("my.test1", {
+                    screenX: 5
+                });
+
+                test1.trigger("click", {
+                    screenX: 5
+                });
+                return
+                test1.keydown(fn3);
+                test1.focus(fn4);
+
+                test1.trigger("my.test1", null, "go");
+
+                $.addHandler("test.test", function () {
+                    alert("test10")
+                });
+
+                $.trigger("test.test");
+
+                //test1.removeHandler("my.test1", fn1);
+                //test1.trigger("my.test1", null, "go");
+
+                //                $(document.body).addHandler("click", function () {
+                //                    alert("bubbles");
+                //                });
+
+                test1.trigger("click", {
+                    screenX: 5
+                });
+                test1.trigger("keydown", {
+                    keyCode: 65
+                });
+                test1.trigger("focus", {
+                    info: "abc"
+                });
+
+                test1.addHandler("my.test1", null);
+
+                test1.trigger("my.test1", null, "go");
+
+            });
+
+        });
+    </script>
+</head>
+<body style="overflow: auto">
+    <div id="a" style="width: 100px; height: 100px; background-color: Red;">
+    </div>
+    <div id="b" style="width: 100px; height: 100px; background-color: Green;">
+    </div>
+</body>
+</html>
