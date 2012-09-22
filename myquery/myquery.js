@@ -1085,13 +1085,20 @@
                 }
                 $.module[id] = version;
                 if (typeof fn == "function") {
-                    arg[arg.length - 1] = $.bind(function () {
+                    arg[arg.length - 1] = function () {
                         var arg = tools.argToArray(arguments, 0);
                         arg.splice(0, 0, myQuery);
-                        if (_config.amd.debug) { return this.apply(null, arg); }
-                        else { try { return this.apply(null, arg); } finally { } }
-                    }, fn);
-                    window.define ? window.define.apply(null, arg) : fn(myQuery);
+                        if (_config.amd.debug) { return fn.apply(null, arg); }
+                        else { try { return fn.apply(null, arg); } finally { } }
+                    }
+
+                    //                    $.bind(function () {
+                    //                        var arg = tools.argToArray(arguments, 0);
+                    //                        arg.splice(0, 0, myQuery);
+                    //                        if (_config.amd.debug) { return this.apply(null, arg); }
+                    //                        else { try { return this.apply(null, arg); } finally { } }
+                    //                    }, fn);
+                    window.define ? window.define.apply(null, arg) : fn(arg);
                 }
                 return this;
             }
@@ -1105,7 +1112,7 @@
         });
     })();
 
-    (function (/*ready*/) {
+    myQuery.define("base/ready", [], function (/*ready*/) {
         "use strict"; //启用严格模式
         $.module.ready = "1.0.0";
         var 
@@ -1161,13 +1168,12 @@
 
         $._redundance.addHandler = addHandler;
 
-
         addHandler(window, "load", function () {
             windowReady = arguments;
             todo();
         });
 
-    })();
+    }, "1.0.0");
 
     (function (/*client*/) {
         $.module.client = "1.0.0";
