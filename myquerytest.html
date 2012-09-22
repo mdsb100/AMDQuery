@@ -29,7 +29,7 @@
     <script type="text/javascript">
         //table的删除和添加行值得注意
 
-        var a = $.parseQueryString();
+        //var a = $.parseQueryString();
 
         $.require(["main/event", "main/attr", "main/class", "main/dom"], function () {
             $(function (event) {
@@ -49,7 +49,7 @@
                 $("body").append(h);
 
                 $("body").find("#htmlTest");
-                return
+               
                 $("#offset").hide();
                 $("#offset").show();
                 $("#offset").isVisible();
@@ -71,7 +71,7 @@
 
                 var value = $(".parent").children();
                 var offset = $("#offset").children();
-
+                return
                 var ele = $.createEle("div");
                 ele.style.width = "100px";
                 ele.style.display = "inline";

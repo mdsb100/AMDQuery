@@ -1052,7 +1052,6 @@
                             //如果named=true其实就是映射a.reflect 
                             a.amd && tools.extend(_config.amd, a.amd);
                             a.cache && require.cache(a.cache);
-
                         }
                         break;
                     case 2:
@@ -1082,8 +1081,12 @@
                 if (typeof fn == "string") {
                     version = fn;
                     fn = arg[len - 2];
+                    arg.pop();
                 }
                 $.module[id] = version;
+                if (arg[1] && arg[1].constructor == Array) {
+                    require.named(dependencies);
+                }
                 if (typeof fn == "function") {
                     arg[arg.length - 1] = function () {
                         var arg = tools.argToArray(arguments, 0);
@@ -1098,7 +1101,7 @@
                     //                        if (_config.amd.debug) { return this.apply(null, arg); }
                     //                        else { try { return this.apply(null, arg); } finally { } }
                     //                    }, fn);
-                    window.define ? window.define.apply(null, arg) : fn(arg);
+                    window.define ? window.define.apply(null, arg) : fn();
                 }
                 return this;
             }
@@ -1112,9 +1115,8 @@
         });
     })();
 
-    myQuery.define("base/ready", [], function (/*ready*/) {
+    myQuery.define("base/ready", function ($) {
         "use strict"; //启用严格模式
-        $.module.ready = "1.0.0";
         var 
         addHandler = function (ele, type, fns) {
             if (ele.addEventListener)
@@ -1173,10 +1175,10 @@
             todo();
         });
 
+        return ready;
     }, "1.0.0");
 
-    (function (/*client*/) {
-        $.module.client = "1.0.0";
+    myQuery.define("base/client", function ($) {
         $.client = {
             browser: {
                 opera: false
@@ -1310,13 +1312,12 @@
         if ("\v" == "v") {
             _engine.ie678 = _browser.ie678 = _browser.ie;
         }
+        return $.client;
+    }, "1.0.0");
 
-    })();
-
-    (function (/*support*/) {
+    myQuery.define("base/support", function ($) {
         //consult from jquery-1.7.2
         "use strict"; //启用严格模式
-        $.module.support = "1.0.0";
         var support
             , root = document.documentElement
 	        , script = document.createElement("script")
@@ -1371,16 +1372,14 @@
 
         $.support = support;
 
-    })();
+        return support;
+    }, "1.0.0");
 
-    (function (/*is*/) {
+    myQuery.define("base/is", function ($) {
         "use strict"; //启用严格模式
-        $.module.is = "1.0.0";
-
         var hasOwnProperty = Object.prototype.hasOwnProperty
-        , toString = Object.prototype.toString;
-
-        tools.extend($, {
+        , toString = Object.prototype.toString
+        , is = {
             isEleConllection: function (a) {
                 /// <summary>是否为DOM元素的集合</summary>
                 /// <param name="a" type="any">任意对象</param>
@@ -1538,17 +1537,16 @@
                 /// <returns type="Boolean" />
                 return a instanceof $;
             }
+        };
 
+        tools.extend($, is);
 
+        return is;
+    }, "1.0.0");
 
-        });
-    })();
-
-    (function (/*extend*/) {
+    myQuery.define("base/extend", function ($) {
         "use strict"; //启用严格模式
-        $.module.extend = "1.0.0";
-
-        tools.extend($, {
+        var extend = {
             easyExtend: function (obj1, obj2) {
                 /// <summary>简单地把对象的属性复制到对象一</summary>
                 /// <param name="a" type="Object">对象</param>
@@ -1615,7 +1613,9 @@
                 return target;
 
             }
-        });
+        };
+
+        tools.extend($, extend);
 
         $.fn.extend = function (params) {
             /// <summary>把对象属性复制$.prototype上</summary>
@@ -1627,15 +1627,15 @@
             }
             return $.fn;
         };
-    })();
 
-    (function ( /*tools*/) {
+        return extend;
+    }, "1.0.0");
+
+    myQuery.define("base/tools", function ($) {
         "use strict"; //启用严格模式
-        $.module.tools = "1.0.0";
         var expando = "MyQuery" + tools.now(), uuid = 0, windowData = {}, emptyObject = {}
-        , msgDiv, runTime;
-
-        tools.extend($, {
+        , msgDiv, runTime,
+        _tools = {
             argToArray: tools.argToArray
 
             , between: function (min, max, num) {
@@ -2007,7 +2007,9 @@
                 return name;
             }
 
-        });
+        };
+
+        tools.extend($, _tools);
 
         tools.extend($.fn, {
             data: function (key, value) {
@@ -2039,276 +2041,13 @@
                 });
             }
         });
-    })();
 
-    myQuery.define("base/object", [], function (/*object*/) {
-        //依赖extend
-        "use strict"; //启用严格模式
-
-        var object = {
-            //继承模块 可以自己实现一个 function模式 单继承
-            _defaultPrototype: {
-                init: function () {
-                    return this;
-                }
-                , render: function () {
-                    return this;
-                }
-            }
-            , Class: function (prototype, supper, name) {
-                /// <summary>定义一个类</summary>
-                /// <para>构造函数会执行init和render</para>
-                /// <param name="prototype" type="Object">prototype原型</param>
-                /// <param name="supper" type="Function">父类</param>
-                ///  <param name="name" type="String/undefined">父类</param>
-                /// <returns type="self" />
-                if (!arguments.length) {
-                    return null;
-                }
-                //supper和什么名字 查一下
-
-                var anonymous =
-                name
-                ? (eval(
-                    [
-                        "(function ", name, "(arg, supperArg) {\n",
-                        "    supper.apply(this, supperArg);\n",
-                        "    this.init.apply(this, arg);\n",
-                        "    this.render();\n",
-                        "});\n"
-                    ].join("")
-                ) || eval("(" + name + ")"))
-                : function (arg, supperArg) {
-                    supper.apply(this, supperArg);
-                    this.init.apply(this, arg);
-                    this.render()
-                };
-
-                prototype = $.extend({}, $.object._defaultPrototype, prototype);
-                prototype.constructor = anonymous;
-                anonymous.prototype = prototype;
-
-                $.object.inheritProtypeWidthExtend(anonymous, supper);
-
-                return anonymous;
-            }
-            , inheritProtypeWidthExtend: function (child, parent) {
-                /// <summary>继承prototype 使用普通添加模式 不保有统一个内存地址 也不会调用多次构造函数</summary>
-                /// <para>如果anotherPrototype为false对子类的prototype添加属性也会添加到父类</para>
-                /// <para>如果child不为空也不会使用相同引用</para>
-                /// <param name="child" type="Object">子类</param>
-                /// <param name="parent" type="Object">父类</param>
-                /// <returns type="self" />
-                var con = child.prototype.constructor;
-                $.easyExtend(child.prototype, parent.prototype);
-                child.prototype.constructor = con || parent.prototype.constructor;
-                return this;
-            }
-            , inheritProtypeWidthParasitic: function (child, parent) {
-                /// <summary>继承prototype 使用寄生 会保有同一个内存地址</summary>
-                /// <param name="child" type="Object">子类</param>
-                /// <param name="parent" type="Object">父类</param>
-                /// <returns type="self" />
-                function ctor() { this.constructor = child; }
-                ctor.prototype = parent.prototype;
-                child.prototype = new ctor();
-                var prototype = Object(parent.prototype);
-                child.prototype = prototype;
-                child.prototype.constructor = child;
-                return this;
-            }
-            , inheritProtypeWidthCombination: function (child, parent) {
-                /// <summary>继承prototype 使用经典组合继承 不会保有同一个内存地址</summary>
-                /// <para>如果anotherPrototype为false对子类的prototype添加属性也会添加到父类</para>
-                /// <para>如果child不为空也不会使用相同引用</para>
-                /// <param name="child" type="Object">子类</param>
-                /// <param name="parent" type="Object">父类</param>
-                /// <returns type="self" />
-                child.prototype = new parent();
-                return this;
-            }
-        };
-
-        $.object = object
-        return object;
+        return _tools;
     }, "1.0.0");
 
-    (function (/*parse*/) {
+    myQuery.define("base/array", function ($) {
         "use strict"; //启用严格模式
-        $.module.parse = "1.0.0";
 
-        var 
-        createDocument = function () {
-            if (typeof createDocument.activeXString != "string") {
-                var i = 0, versions = ["Microsoft.XMLDOM", "MSXML2.DOMDocument.6.0", "MSXML2.DOMDocument.5.0", "MSXML2.DOMDocument.4.0", "MSXML2.DOMDocument.3.0", "MSXML2.DOMDocument"],
-                len = versions.length, xmlDom;
-                for (; i < len; i++) {
-                    try {
-                        xmlDom = new ActiveXObject(versions[i]);
-                        createDocument.activeXString = versions[i];
-                        return xmlDom;
-                    } catch (e) {
-
-                    }
-                }
-            }
-            return new ActiveXObject(createDocument.activeXString);
-        }
-
-        $.extend({
-            parseJSON: function (data) {
-                /// <summary>解析JSON</summary>
-                /// <param name="data" type="String">数据</param>
-                /// <returns type="String" />
-                if (typeof data !== "string" || !data) {
-                    return null;
-                }
-                // Make sure the incoming data is actual JSON
-                // Logic borrowed from http://json.org/json2.js
-                if (/^[\],:{}\s]*$/.test(data.replace(/\\(?:["\\\/bfnrt]|u[0-9a-fA-F]{4})/g, "@")
-			    .replace(/"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g, "]")
-			    .replace(/(?:^|:|,)(?:\s*\[)+/g, ""))) {
-
-                    // Try to use the native JSON parser first
-                    return window.JSON && window.JSON.parse ?
-				window.JSON.parse(data) :
-				(new Function("return " + data))();
-
-                } else {
-                    tools.console.error("Invalid JSON: " + data, "EvalError");
-                }
-                return this;
-            }
-            , parseQueryString: function (str) {
-                /// <summary>解析查询字符串</summary>
-                /// <param name="str" type="String/undefined">可以指定一个字符串，缺省是获得当前location</param>
-                /// <returns type="String" />
-                var qs = str || (location.search.length > 0 ? location.search.substring(1) : "")
-                , args = {};
-                if (qs) {
-                    $.each(qs.split("&"), function (item) {
-                        item = item.split("=");
-                        args[decodeURIComponent(item[0])] = decodeURIComponent(item[1]);
-                    });
-                }
-                return args;
-            }
-            , parseXML: (function (xml) {
-                //quote from written by Nicholas C.Zakas
-                var parseXML;
-                if (typeof DOMParser != "undefined") {
-                    parseXML = function (xml) {
-                        /// <summary>解析XML</summary>
-                        /// <param name="xml" type="String">xml字符串</param>
-                        /// <returns type="Document" />
-                        var xmldom = (new DOMParser()).parseFromString(xml, "text/xml")
-                     , errors = xmldom.getElementsByTagName("parsererror");
-                        if (errors.length) {
-                            tools.console.error({ fn: "parseXML", msg: errors[0].textContent }, "SyntaxError");
-                            //throw new Error("XML parsing error:" + errors[0].textContent);
-                        }
-                        return xmldom;
-                    }
-                }
-                else if (document.implementation.hasFeature("LS", "3.0")) {
-                    parseXML = function (xml) {
-                        /// <summary>解析XML</summary>
-                        /// <param name="xml" type="String">xml字符串</param>
-                        /// <returns type="Document" />
-                        var implementation = document.implementation
-                        , parser = implementation.createLSParser(implementation.MODE_SYNCHRONOUS, null)
-                        , input = implementation.createLSInput();
-                        input.stringData = xml;
-                        return parser.parse(input);
-                    }
-                }
-                else if (typeof ActiveXObject != "undefined") {
-                    parseXML = function (xml) {
-                        /// <summary>解析XML</summary>
-                        /// <param name="xml" type="String">xml字符串</param>
-                        /// <returns type="Document" />
-                        var xmldom = createDocument();
-                        xml.async = "false";
-                        xmldom.loadXML(xml)
-                        if (xmldom.parseError != 0) {
-                            tools.console.error({ fn: "parseXML", info: xmldom.parseError.reason }, "SyntaxError");
-                            //throw new Error("XML parsing error:" + xmldom.parseError.reason);
-                        }
-                        return xmldom;
-                    }
-                }
-                else {
-                    tools.console.error("No XML parser available", "Error");
-                    //throw new Error("No XML parser available");
-                }
-                return parseXML;
-            })()
-
-            , serializeQueryString: function (content) {
-                /// <summary>序列化为查询字符串</summary>
-                /// <param name="content" type="String/Object/$/Array[element]">内容可以是Object键值对，也可以是数组形式的element，也可以是myQuery对象</param>
-                /// <returns type="String" />
-                var list = [];
-                if ($.isObj(content)) {
-                    $.each(content, function (value, name) {
-                        value = $.isFun(value) ? value() : value;
-                        !$.isNul(value) && list.push(encodeURIComponent(name) + "=" + encodeURIComponent(value));
-                    });
-                    content = list.join("&");
-                }
-                else if ($.is$(content) || ($.isArr(content) && $.isEle(content[0]))) {
-                    $.each(content, function (item) {
-                        !$.isNul(item.value) && list.push(encodeURIComponent(item.name) + "=" + encodeURIComponent(item.value));
-                    });
-                    content = list.join("&");
-                }
-                else if (!$.isStr(content)) {
-                    content = "";
-                }
-                return content;
-            }
-            , serializeXml: function (xmldom) {
-                /// <summary>序列化Document</summary>
-                /// <param name="xmldom" type="Document">document对象</param>
-                /// <returns type="String" />
-                //quote from written by Nicholas C.Zakas
-                var xml = "";
-                if (typeof XMLSerializer != "undefined") {
-                    xml = (new XMLSerializer()).serializeToString(xmldom);
-                }
-                else if (document.implementation.hasFeature("LS", "3.0")) {
-                    xml = document.implementation.createLSSerializer().writeToString(xmldom);
-                }
-                else if (typeof xmldom.xml != "undefined") {
-                    return xmldom.xml;
-                }
-                else {
-                    tools.console.error({ fn: "serializeXml", info: "Could not serialize XML DOM" }, "SyntaxError");
-                }
-                return xml;
-            }
-            , serializeJSON: function (json) {
-                /// <summary>序列化对象为JSON</summary>
-                /// <param name="json" type="any">任意对象</param>
-                /// <returns type="String" />
-                var result = null;
-                try {
-                    if (window.JSON && window.JSON.stringify) {
-                        result = window.JSON.stringify(json);
-                    }
-                    else {
-                        result = $.eval(json);
-                    }
-
-                } catch (e) { }
-                return result;
-            }
-        });
-    })();
-
-    (function (/*array*/) {
-        "use strict"; //启用严格模式
-        $.module.array = "1.0.0";
         var 
         indexOf = Array.prototype.indexOf || function (item, i) {
             var len = this.length;
@@ -2325,9 +2064,8 @@
             for (; i > -1; i--)
                 if (i in this && this[i] === item) break;
             return i;
-        }
-
-        $.extend({
+        },
+        array = {
             elementCollectionToArray: function (eles, real) {
                 /// <summary>把ElementCollection转换成arr[ele]</summary>
                 /// <param name="eles" type="ElementCollection">元素集合</param>
@@ -2421,10 +2159,14 @@
                 return list.slice(num1 || 0, num2 || len);
 
             }
-        });
-    })();
+        };
 
-    (function (/*query*/) {
+        $.extend(array);
+
+        return array;
+    }, "1.0.0");
+
+    myQuery.define("main/query", function ($) {
         "use strict"; //启用严格模式
         $.module.query = "1.0.0";
 
@@ -2449,8 +2191,7 @@
                 return false
             }
         }
-
-        $.extend({
+        , query = {
             child: function (eles, real) {
                 /// <summary>获得一级子元素</summary>
                 /// <param name="eles" type="Element/ElementCollection/arr">从元素或元素数组或元素集合中获取</param>
@@ -2960,7 +2701,9 @@
                 /// <returns type="Array" />
                 return ele.parentNode ? $.elementCollectionToArray(ele.parentNode.childNodes) : [];
             }
-        });
+        };
+
+        $.extend(query);
 
         $.fn.extend({
             ancestors: function (str, type) {
@@ -3085,7 +2828,9 @@
                 return new $($.search(str, this.eles));
             }
         });
-    })();
+
+        return query;
+    }, "1.0.0");
 
     window.myQuery = $;
 

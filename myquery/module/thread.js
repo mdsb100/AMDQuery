@@ -1,6 +1,6 @@
 ﻿/// <reference path="../myquery.js" />
 
-myQuery.define('module/thread', ["main/customevent"], function ($, CustomEvent, undefined) {
+myQuery.define('module/thread', ["main/customevent", "module/object"], function ($, CustomEvent, object) {
     "use strict"; //启用严格模式
 
     var requestAnimFrame = window.requestAnimationFrame ||
@@ -59,7 +59,7 @@ myQuery.define('module/thread', ["main/customevent"], function ($, CustomEvent, 
         , requestAnimFrame: requestAnimFrame
     });
     var ii = 0;
-    $.object.inheritProtypeWidthExtend(Thread, CustomEvent);
+    object.inheritProtypeWidthExtend(Thread, CustomEvent);
     $.easyExtend(Thread.prototype, {
         constructor: Thread
         , start: function () {

@@ -1,6 +1,6 @@
 ﻿/// <reference path="../myquery.js" />
 
-myQuery.define("module/widget", ["main/event", "main/attr"], function ($, event, attr, undefined) {
+myQuery.define("module/widget", ["main/event", "main/attr", "module/object"], function ($, event, attr, object, undefined) {
     "use strict"; //启用严格模式
     function Widget(obj, target) {
         /// <summary>组件的默认基类</summary>
@@ -16,7 +16,7 @@ myQuery.define("module/widget", ["main/event", "main/attr"], function ($, event,
         this.target = target;
         this._init_(obj)._create_()._refresh_();
     }
-    //$.object.inheritProtypeWidthCombination(Widget, event.event.custom);
+    //object.inheritProtypeWidthCombination(Widget, event.event.custom);
     $.easyExtend(Widget.prototype, {
         checkAttr: function () {
             var key, value, result = {};
@@ -145,7 +145,7 @@ myQuery.define("module/widget", ["main/event", "main/attr"], function ($, event,
             constructor = function (obj, target, base) { base.call(this, obj, target); };
         }
 
-        $.object.inheritProtypeWidthParasitic(constructor, Widget);
+        object.inheritProtypeWidthParasitic(constructor, Widget);
 
         constructor.prototype = $.extend(true, {}, constructor.prototype, prototype);
         constructor.prototype.widgetName = name;

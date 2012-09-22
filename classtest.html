@@ -14,78 +14,94 @@
     <script src="myquery/myquery.js" type="text/javascript" myquery="define:$;amd:0;"
         amd="detectCR:1;"></script>
     <script type="text/javascript">
-        $.require(["base/object"], function (object) {
-            var Supper = function (show, todo) {
-                this.arg1 = show;
-                this.arg2 = todo;
-            }
-            Supper.prototype = {
-                constructor: Supper
-                , show: function () {
-                    document.write("supper.show:" + this.arg1 + "<br>");
+        //变成异步的了
+        $.require(["module/object", "base/ready"], function (object, ready) {
+            ready(function () {
+                var div = document.getElementsByTagName("div")
+                , write = function (s) {
+                    div[0].innerHTML = div.innerHTML += s;
                 }
-                , todo: function () {
-                    document.write("supper.todo:" + this.arg2 + "<br>");
-                }
-            }
 
-
-            var Child = object.Class({
-                init: function (show) {
+                var Supper = function (show, todo) {
                     this.arg1 = show;
-                    return this;
-                },
-                render: function () {
-                    this.show();
-                    this.todo();
-                },
-                show: function () {
-                    document.write("child.show:" + this.arg1 + "<br>");
+                    this.arg2 = todo;
                 }
-            }, Supper, "Child"),
-            child = new Child(["childArg"], ["supperArg", "supperTo"]);
+                Supper.prototype = {
+                    constructor: Supper
+                    , show: function () {
+                        write("supper.show:" + this.arg1 + "<br>");
+                    }
+                    , todo: function () {
+                        write("supper.todo:" + this.arg2 + "<br>");
+                    }
+                }
 
-            document.write("constructor:" + child.constructor.toString() + "<br>");
-            document.write("<br>");
-            document.write("code:" + "<br>");
+                var Child = object.Class({
+                    init: function (show) {
+                        this.arg1 = show;
+                        return this;
+                    },
+                    render: function () {
+                        this.show();
+                        this.todo();
+                    },
+                    show: function () {
+                        write("child.show:" + this.arg1 + "<br>");
+                    }
+                }, Supper, "Child"),
+                child = new Child(["childArg"], ["supperArg", "supperTo"]);
+
+                write("constructor:" + child.constructor.toString() + "<br>");
+                write("<br>");
+                write("code:" + "<br>");
+            });
         });
     </script>
 </head>
 <body style="overflow: auto">
+    <div>
+    </div>
     <pre>
-         $.require(["base/object"], function (object) {
-            var Supper = function (show, todo) {
-                this.arg1 = show;
-                this.arg2 = todo;
-            }
-            Supper.prototype = {
-                constructor: Supper
-                , show: function () {
-                    document.write("supper.show:" + this.arg1);
+         $.require(["module/object", "base/ready"], function (object, ready) {
+            ready(function () {
+                var div = document.getElementsByName("div")
+                , write = function (s) {
+                    div[0].innerHTML = div.innerHTML += s;
                 }
-                , todo: function () {
-                    document.write("supper.todo:" + this.arg2);
-                }
-            }
 
-
-            var Child = object.Class({
-                init: function (show) {
+                var Supper = function (show, todo) {
                     this.arg1 = show;
-                    return this;
-                },
-                render: function () {
-                    this.show();
-                    this.todo();
-                },
-                show: function () {
-                    document.write("child.show:" + this.arg1);
+                    this.arg2 = todo;
                 }
-            }, Supper, "Child"),
-            child = new Child(["childArg"], ["supperArg", "supperTo"]);
+                Supper.prototype = {
+                    constructor: Supper
+                    , show: function () {
+                        write("supper.show:" + this.arg1);
+                    }
+                    , todo: function () {
+                        write("supper.todo:" + this.arg2 );
+                    }
+                }
 
-            document.write("constructor:" + child.constructor.toString());
-            
+                var Child = object.Class({
+                    init: function (show) {
+                        this.arg1 = show;
+                        return this;
+                    },
+                    render: function () {
+                        this.show();
+                        this.todo();
+                    },
+                    show: function () {
+                        write("child.show:" + this.arg1);
+                    }
+                }, Supper, "Child"),
+                child = new Child(["childArg"], ["supperArg", "supperTo"]);
+
+                write("constructor:" + child.constructor.toString());
+                write();
+                write("code:");
+            });
         });
     </pre>
 </body>

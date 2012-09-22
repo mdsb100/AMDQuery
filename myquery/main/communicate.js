@@ -1,7 +1,8 @@
 ﻿/// <reference path="../myquery.js" />
 
-//加个随机数
-myQuery.define("main/communicate", ["main/event"], function ($, undefined) {
+myQuery.define("main/communicate"
+, ["base/is", "base/tools", "base/extend", "main/event", "module/parse"]
+, function ($, is, tools, extend, parse, undefined) {
     "use strict"; //启用严格模式
     var communicate = {
         ajax: function (options) {
@@ -73,7 +74,7 @@ myQuery.define("main/communicate", ["main/event"], function ($, undefined) {
                             clearTimeout(_timeId);
                             $.trigger("ajaxStop", _ajax, o);
                             switch (o.dataType) {
-                                case "json": response = parseJSON("(" + _ajax.responseText + ")"); break
+                                case "json": response = parse.JSON("(" + _ajax.responseText + ")"); break;
                                 case "xml": response = _ajax.responseXML;
                                     if (!response) {
                                         try {
@@ -308,5 +309,6 @@ myQuery.define("main/communicate", ["main/event"], function ($, undefined) {
     };
 
     $.extend(communicate);
+
     return communicate;
 });
