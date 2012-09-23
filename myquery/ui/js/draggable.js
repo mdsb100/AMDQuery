@@ -58,8 +58,8 @@ myQuery.define("ui/js/draggable", ["module/widget", "main/event", "main/dom"]
                                 cP = con.position();
                                 cP.pageLeft -= offsetLeft;
                                 cP.pageTop -= offsetTop;
-                                x = $.between(cP.pageLeft, cP.width + cP.pageLeft - target.offsetW(), x);
-                                y = $.between(cP.pageTop, cP.height + cP.pageTop - target.offsetH(), y);
+                                x = $.between(cP.pageLeft, cP.width + cP.pageLeft - target.width(), x);
+                                y = $.between(cP.pageTop, cP.height + cP.pageTop - target.height(), y);//使用height对不对？
                             }
 
                             target.css({ cursor: opt.cursor });
