@@ -167,7 +167,6 @@
             version = version ? version[0].match(/\d+\.\d+/i) : false;
             return version ? parseFloat(version[0]) : false;
         }
-
     }
     , count = 0
     , reg = RegExp
@@ -185,7 +184,8 @@
         return ret;
     } ())
     , rootPath = basePath.replace(/((.*?\/){3}).*$/, '$1')
-    , msgDiv, runTime;
+    , msgDiv, runTime
+    , ie678 = "v" == "/v";
 
     var _config = {
         myquery: {
@@ -241,18 +241,18 @@
                     b = 'div';
                 var obj = document.createElement(b);
                 this.init([obj]);
-               
+
                 $.interfaces.trigger("constructorDom", this, a, b, c);
 
                 obj = null;
-              
+
             }
             else if (a) {
                 var result;
                 if (result = $.interfaces.trigger("constructorQuery", a, b)) {
                     count++;
                     this.init(result);
-                   
+
                 }
             }
         }
@@ -261,11 +261,20 @@
         }
         else
             return new $(a, b, c);
-    }
-    , $ = myQuery;
+    }, $ = myQuery;
 
     tools.extend($, {
-        color: {
+        client: {
+            browser: {
+                ie678: ie678
+            }
+            , engine: {
+                ie678: "v" == "/v"
+            }
+            , system: {}
+            , language: ""
+        }
+        , color: {
             toRGB: function (c) {
                 var r, g, b;
                 if ($.isStr(c)) {
@@ -332,6 +341,7 @@
             /// <returns type="String" />
             return "MyQuery";
         }
+        , support: {}
         , ui: {}
         , valueOf: function () {
             /// <summary>返回模块信息</summary>
@@ -408,12 +418,6 @@
                 for (var value = obj[0]; i < len && callback.call(context || value, value, i) !== false; value = obj[++i]) { }
             return this;
         }
-        , eval: function (s) {
-            /// <summary>使用Funciont来eval</summary>
-            /// <param name="s" type="String"></param>
-            /// <returns type="any" />
-            return (new Function("return " + s))();
-        }
 
         , getJScriptConfig: tools.getJScriptConfig
         , getPath: tools.getPath
@@ -456,35 +460,6 @@
             return result;
         }
 
-        , globalEval: function (data) {
-            ///	<summary>
-            ///	把一段String用js的方式声明为全局的
-            ///	</summary>
-            /// <param name="data" type="String">数据</param>
-            /// <returns type="XMLHttpRequest" />
-
-            if (data && /\S/.test(data)) {
-                // Inspired by code by Andrea Giammarchi
-                // http://webreflection.blogspot.com/2007/08/global-scope-evaluation-and-dom.html
-                var head = document.getElementsByTagName("head")[0] || document.documentElement,
-				    script = document.createElement("script");
-
-                script.type = "text/javascript";
-
-                if ($.support.scriptEval) {
-                    script.appendChild(document.createTextNode(data));
-                } else {
-                    script.text = data;
-                }
-
-                // Use insertBefore instead of appendChild to circumvent an IE6 bug.
-                // This arises when a base node is used (#2709).
-                head.insertBefore(script, head.firstChild);
-                head.removeChild(script);
-            }
-            return this;
-        }
-
         , now: tools.now
 
         , reg: {
@@ -513,14 +488,6 @@
                 , rnumnonpx: /^-?(?:\d*\.)?\d+(?!px)[^\d\s]+$/i
         }
 
-        , setTimeout: function (fun, delay, context) {
-            /// <summary>绑定作用域的TimeOut一样会返回一个ID以便clear</summary>
-            /// <param name="fun" type="Function">方法</param>
-            /// <param name="delay" type="Number">时间毫秒为单位</param>
-            /// <param name="context" type="Object">作用域缺省为winodw</param>
-            /// <returns type="Number" />
-            return setTimeout($.bind(fun, context), delay)
-        }
         , showMsg: function (str, bool) {
             /// <summary>设置浏览器标题或者显示个div 点击会自动消失</summary>
             /// <param name="str" type="any">任何对象都将被toString显示</param>
@@ -824,8 +791,8 @@
                 ClassModule.resource[url] = id;
 
                 var scripts = document.createElement("script")
-            , head = document.getElementsByTagName('HEAD')[0]
-            , timeId;
+                , head = document.getElementsByTagName('HEAD')[0]
+                , timeId;
 
                 error && (scripts.onerror = function () {
                     clearTimeout(timeId);
@@ -1331,17 +1298,22 @@
                 }
                 return this;
             }
-             , require: function (a) {
-                 //还没想好做些什么 先写出来
-                 var arg = tools.argToArray(arguments);
+             , require: function (dependencies, success, fail) {
+                 // require 自带 ready
+                 var fn = success,
+                 success = function () {
+                     var arg = arguments;
+                     $.ready(function () {
+                         fn.apply(null, arg);
+                     });
+                 }
 
-                 window.require && window.require.apply(null, arguments)
+                 window.require && window.require(dependencies, success, fail);
                  return this;
              }
         });
     })();
 
-    //base?
     myQuery.define("base/ready", function ($) {
         "use strict"; //启用严格模式
         var 
@@ -1403,203 +1375,6 @@
         });
 
         return ready;
-    }, "1.0.0");
-
-    myQuery.define("base/client", function ($) {
-        $.client = {
-            browser: {
-                opera: false
-                , chrome: false
-                , safari: false
-                , kong: false
-                , firefox: false
-                , ie: false
-                , ie678: false
-            }
-            , engine: {
-                opera: false
-                , webkit: false
-                , khtml: false
-                , gecko: false
-                , ie: false
-                , ie678: false
-            }
-            , system: {}
-            , language: ""
-        };
-        var 
-        ua = navigator.userAgent
-        , p = navigator.platform || ""
-        , _browser = $.client.browser
-        , _engine = $.client.engine
-        , _system = $.client.system;
-
-        $.client.language = (navigator.browserLanguage || navigator.language).toLowerCase();
-
-        _system.win = p.indexOf("Win") == 0;
-        if (_system.win) {
-            if (/Win(?:dows)? ([^do]{2})\s?(\d+\.\d+)?/.test(ua)) {
-                if (reg["$1"] == "NT") {
-                    switch (reg["$2"]) {
-                        case "5.0":
-                            _system.win = "2000";
-                            break;
-                        case "5.1":
-                            _system.win = "XP";
-                            break;
-                        case "6.0":
-                            _system.win = "Vista";
-                            break;
-                        default:
-                            _system.win = "NT";
-                            break;
-                    }
-                }
-                else if (reg["$1"]) {
-                    _system.win = "ME";
-                }
-                else {
-                    _system.win = reg["$1"];
-                }
-            }
-        }
-
-        tools.extend(_system, {
-            mac: p.indexOf("Mac") == 0,
-            linux: p.indexOf("Linux") == 0,
-            iphone: ua.indexOf("iPhone") > -1,
-            ipod: ua.indexOf("iPod") > -1,
-            ipad: ua.indexOf("iPad") > -1,
-            pad: ua.indexOf("pad") > -1,
-            nokian: ua.indexOf("NokiaN") > -1,
-            winMobile: _system.win == "CE",
-            androidMobile: /Android/.test(ua),
-            ios: false,
-            wii: ua.indexOf("Wii") > -1,
-            ps: /playstation/i.test(ua)
-        });
-
-        _system.x11 = p == "X11" || (p.indexOf("Linux") == 0);
-        _system.macMobile = _system.iphone || _system.ipad || _system.ipod;
-        _system.mobile = _system.macMobile || _system.androidMobile || /AppleWebKit.*Mobile./.test(ua) || _system.winMobile;
-
-        if (/OS (\d).(\d).(\d) like Mac OS X/.test(ua)) {
-            _system.ios = parseFloat(reg.$1 + "." + reg.$2 + reg.$3);
-        }
-        if (window.opera) {
-            _engine.opera = _browser.opera = parseFloat(window.opera.version());
-        }
-        else if (/AppleWebKit\/(\S+)/.test(ua)) {
-            _engine.webkit = parseFloat(reg["$1"]);
-            if (/Chrome\/(\S+)/.test(ua)) {
-                _browser.chrome = parseFloat(reg["$1"]);
-            }
-            else if (/Version\/(\S+)/.test(ua)) {
-                _browser.safari = parseFloat(reg["$1"]);
-            }
-            else {
-                var _safariVer = 1, wit = _engine.webki;
-                if (_system.mac) {
-                    if (wit < 100) { _safariVer = 1; }
-                    else if (wit == 100) { _safariVer = 1.1; }
-                    else if (wit <= 125) { _safariVer = 1.2; }
-                    else if (wit < 313) { _safariVer = 1.3; }
-                    else if (wit < 420) { _safariVer = 2; }
-                    else if (wit < 529) { _safariVer = 3; }
-                    else if (wit < 533.18) { _safariVer = 4; }
-                    else if (wit < 533.49) { _safariVer = 5; }
-                    else { _safariVer = 5; }
-                }
-                else if (_system.win) {
-                    if (wit == 5) { _safariVer = 5; }
-                    else if (wit < 529) { _safariVer = 3; }
-                    else if (wit < 531.3) { _safariVer = 4; }
-                    else { _safariVer = 5; }
-                }
-                else if (_system.macMobile) {
-                    if (wit < 526) { _safariVer = 3; }
-                    else if (wit < 531.3) { _safariVer = 4; }
-                    else { _safariVer = 5; }
-                }
-            }
-        }
-        else if (/KHTML\/(\S+)/.test(ua) || /Konquersor\/([^;]+)/.test(ua)) {
-            _engine.khtml = browser.kong = paresFloat(reg["$1"]);
-        }
-        else if (/rv:([^\)]+)\) Gecko\/\d{8}/.test(ua)) {
-            _engine.gecko = parseFloat(reg["$1"]);
-            //确定是不是Firefox
-            if (/Firefox\/(\S+)/.test(ua)) {
-                _browser.firefox = parseFloat(reg["$1"]);
-            }
-        }
-        else if (/MSIE([^;]+)/.test(ua)) {
-            _engine.ie = _browser.ie = parseFloat(reg["$1"]);
-        }
-        if ("\v" == "v") {
-            _engine.ie678 = _browser.ie678 = _browser.ie;
-        }
-        return $.client;
-    }, "1.0.0");
-
-    myQuery.define("base/support", function ($) {
-        //consult from jquery-1.7.2
-        "use strict"; //启用严格模式
-        var support
-            , root = document.documentElement
-	        , script = document.createElement("script")
-            , div = document.createElement("div")
-            , id = "_" + tools.now()
-            , all
-            , a
-        div.setAttribute("className", "t");
-
-        div.innerHTML = "   <link/><table></table><a href='/a' style='top:1px;float:left;opacity:.55;'>a</a><input type='checkbox'/>";
-
-        all = div.getElementsByTagName("*");
-        a = div.getElementsByTagName("a")[0];
-        if (!all || !all.length || !a) {
-            return {};
-        }
-
-        support = {
-            cssFloat: !!a.style.cssFloat
-              , opacity: /^0.55/.test(a.style.opacity)
-              , tester: {
-                  a: a
-                  , div: div
-              }
-              , createDocument: !!(document.implementation && document.implementation.createDocument)
-              , canvas: typeof CanvasRenderingContext2D !== 'undefined'
-
-              , getSetAttribute: div.className !== "t"
-
-              , scriptEval: false
-
-
-        }
-        //            div.setAttribute("b", "bb");
-        //            div.c = "cc";
-        //            alert(div.getAttributeNode("b").nodeValue)
-        //            alert(support.getSetAttribute)
-        //            alert(div.getAttribute("b"))
-
-        script.type = "text/javascript";
-        try {
-            script.appendChild(document.createTextNode("window." + id + "=1;"));
-        } catch (e) { }
-
-        root.insertBefore(script, root.firstChild);
-
-        if (window[id]) {
-            support.scriptEval = true;
-            delete window[id];
-        }
-        root.removeChild(script);
-
-        $.support = support;
-
-        return support;
     }, "1.0.0");
 
     myQuery.define("base/is", function ($) {
@@ -1980,14 +1755,13 @@
         return array;
     }, "1.0.0");
 
-
     window.myQuery = $;
 
     if (!window[_config.myquery.define]) {
         window[_config.myquery.define] = window.myQuery;
     }
     else {
-        tools.error(_errorInfoList.myQueryNamed);
+        tools.error(_config.myquery.define + " is defined");
     }
 
     if (_config.myquery.amd == true && $.isFun(window.define) && window.define.amd) {

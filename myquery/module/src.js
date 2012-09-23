@@ -1,6 +1,6 @@
 ﻿/// <reference path="../myquery.js" />
 
-myQuery.define("module/src", [], function ($, undefined) {
+myQuery.define("module/src", ["base/client"], function ($, client, undefined) {
     "use strict"; //启用严格模式
     var 
     hasOwnProperty = Object.prototype.hasOwnProperty
@@ -62,7 +62,7 @@ myQuery.define("module/src", [], function ($, undefined) {
             ele[property] = ele.onload = ele.onreadystatechange = null;
             var o = $.extend({}, $.srcSetting, options), completeReadyStateChanges = 0, timeId;
             ele.onload = ele.onreadystatechange = function () {
-                if (!$.client.browser.ie || ++(completeReadyStateChanges) == 3) {
+                if (!client.browser.ie || ++(completeReadyStateChanges) == 3) {
                     clearTimeout(timeId);
                     o.complete && o.complete.call(o.context || this, this);
                     ele = completeReadyStateChanges = timeId = o = null;

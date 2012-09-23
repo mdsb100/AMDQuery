@@ -1,6 +1,6 @@
 ﻿/// <reference path="../myquery.js" />
 
-myQuery.define("main/event", ["main/customevent", "main/data"], function ($, CustomEvent, data, undefined) {
+myQuery.define("main/event", ["base/client", "main/customevent", "main/data"], function ($, client, CustomEvent, data, undefined) {
     "use strict"; //启用严格模式
 
     var mouse = "contextmenu click dblclick mousedown mouseup mousemove mouseover mouseout mouseenter mouseleave mousewheel DOMMouseScroll".split(" ")/*DOMMouseScroll firefox*/
@@ -18,9 +18,9 @@ myQuery.define("main/event", ["main/customevent", "main/data"], function ($, Cus
                 /// <returns type="String" />
                 var temp;
                 switch (type) {
-                    case 'focus': if ($.client.browser.ie) type += 'in'; break;
-                    case 'blur': if ($.client.browser.ie) type = 'focusout'; break;
-                    case 'mousewheel': if ($.client.browser.firefox) type = 'DOMMouseScroll'; break;
+                    case 'focus': if (client.browser.ie) type += 'in'; break;
+                    case 'blur': if (client.browser.ie) type = 'focusout'; break;
+                    case 'mousewheel': if (client.browser.firefox) type = 'DOMMouseScroll'; break;
                 }
                 if ((temp = $.interfaces.trigger("editEventType", type)))
                     type = temp
@@ -291,10 +291,10 @@ myQuery.define("main/event", ["main/customevent", "main/data"], function ($, Cus
                             delete setting.keyCode;
                             delete setting.which;
 
-                            if ($.client.engine.webkit) {
+                            if (client.engine.webkit) {
                                 setting.charCode = code;
                             }
-                            else if ($.client.engine.ie) {
+                            else if (client.engine.ie) {
                                 setting.charCode = code;
                             }
                             else {
@@ -311,12 +311,12 @@ myQuery.define("main/event", ["main/customevent", "main/data"], function ($, Cus
                             , settings = i = $.extend({}, eventF.imitation._keySettings, paras)
                             , e, i, name;
                             eventF.imitation._editKeyCharCode(settings);
-                            if ($.client.browser.firefox) {
+                            if (client.browser.firefox) {
                                 e = createEvent("KeyEvents");
                                 e.initKeyEvent(type, i.bubbles, i.cancelable, i.view
                                 , i.ctrlKey, i.altKey, i.shiftKey, i.metaKey, i.keyCode, i.charCode);
                             }
-                            else if ($.client.browser.ie678) {
+                            else if (client.browser.ie678) {
                                 e = createEvent();
                                 for (i in settings) {
                                     e[i] = settings[i];
@@ -324,7 +324,7 @@ myQuery.define("main/event", ["main/customevent", "main/data"], function ($, Cus
                             }
                             else {
                                 name = "Events";
-                                $.client.browser.safari && $.client.browser.safari < 3 && (name = "UIEvents");
+                                client.browser.safari && client.browser.safari < 3 && (name = "UIEvents");
                                 e = createEvent(name);
                                 e.initEvent(type, settings.bubbles, settings.cancelable);
                                 delete settings.bubbles;
@@ -362,7 +362,7 @@ myQuery.define("main/event", ["main/customevent", "main/data"], function ($, Cus
                             var eventF = event.event.document, createEvent = eventF.createEvent
                             , settings = i = $.extend({}, eventF.imitation._mouseSettings, paras)
                             , e, i;
-                            if ($.client.browser.safari && $.client.browser.safari < 3) {
+                            if (client.browser.safari && client.browser.safari < 3) {
                                 e = createEvent("UIEvents");
                                 e.initEvent(type, settings.bubbles, settings.cancelable);
                                 delete settings.bubbles;
@@ -371,7 +371,7 @@ myQuery.define("main/event", ["main/customevent", "main/data"], function ($, Cus
                                     e[i] = settings[i];
                                 }
                             }
-                            else if ($.client.browser.ie678) {
+                            else if (client.browser.ie678) {
                                 e = createEvent();
                                 for (i in settings) {
                                     e[i] = settings[i];
@@ -400,7 +400,7 @@ myQuery.define("main/event", ["main/customevent", "main/data"], function ($, Cus
                             , settings = i = $.extend({}, eventF.imitation._htmlSettings, paras)
                             , e, i;
 
-                            if ($.client.browser.ie678) {
+                            if (client.browser.ie678) {
                                 e = createEvent();
                                 for (i in settings) {
                                     e[i] = settings[i];
@@ -929,7 +929,7 @@ myQuery.define("main/event", ["main/customevent", "main/data"], function ($, Cus
             /// <param name="fun" type="Function/Object/undefined">不存在则触发</param>
             /// <returns type="self" />
             return $.isFun(fun) ? this.addHandler("keydown", function (e) {
-                $.client.browser.firefox && e.keyCode || (e.keyCode = e.which);
+                client.browser.firefox && e.keyCode || (e.keyCode = e.which);
                 e.charCode == undefined && (e.charCode = e.keyCode);
                 fun.call(this, e);
             }) : this.trigger("keydown", fun);
@@ -940,7 +940,7 @@ myQuery.define("main/event", ["main/customevent", "main/data"], function ($, Cus
             /// <param name="fun" type="Function/Object/undefined">不存在则触发</param>
             /// <returns type="self" />
             return $.isFun(fun) ? this.addHandler("keypress", function (e) {
-                $.client.browser.firefox && e.keyCode || (e.keyCode = e.which);
+                client.browser.firefox && e.keyCode || (e.keyCode = e.which);
                 e.charCode == undefined && (e.charCode = e.keyCode);
                 fun.call(this, e, String.fromCharCode(e.charCode));
             }) : this.trigger("keypress", fun);

@@ -1,6 +1,6 @@
 ﻿/// <reference path="../myquery.js" />
 
-myQuery.define("main/attr", function ($, undefined) {
+myQuery.define("main/attr", ["base/support"], function ($, support, undefined) {
     "use strict"; //启用严格模式
     //暂不要那么多hooks 
     var fixSpecified = {
@@ -26,7 +26,7 @@ myQuery.define("main/attr", function ($, undefined) {
     , attr = {
         getAttr: function (ele, name) {
             var ret;
-            //                if (!$.support.getSetAttribute) {
+            //                if (!support.getSetAttribute) {
             //                    ret = ele.getAttributeNode(name);
             //                    return ret && (fixSpecified[name] ? ret.nodeValue !== "" : ret.specified) ?
             //				    ret.nodeValue :
@@ -76,7 +76,7 @@ myQuery.define("main/attr", function ($, undefined) {
                         if (!isBool) {
                             $.setAttr(ele, name, "");
                         }
-                        ele.removeAttribute($.support.getSetAttribute ? name : propName);
+                        ele.removeAttribute(support.getSetAttribute ? name : propName);
 
                         if (isBool && propName in ele) {
                             ele[propName] = false;
@@ -91,7 +91,7 @@ myQuery.define("main/attr", function ($, undefined) {
             if (value == null) {
                 return $.removeAttr(ele, name);
             }
-            //                if (!$.support.getSetAttribute) {
+            //                if (!support.getSetAttribute) {
             //                    var ret = ele.getAttributeNode(name);
             //                    if (!ret) {
             //                        ret = document.createAttribute(name);

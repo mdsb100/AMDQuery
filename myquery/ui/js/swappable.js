@@ -2,7 +2,7 @@
 /// <reference path="../html5/css3.js" />
 /// <reference path="../module/math.js" />
 
-myQuery.define("ui/js/swappable", ["main/event", "module/math", "module/widget"], function ($, event, math, widget, undefined) {
+myQuery.define("ui/js/swappable", ["base/client", "main/event", "module/math", "module/widget"], function ($, client, event, math, widget, undefined) {
     "use strict"; //启用严格模式 
     var swappable = $.widget("ui.swappable", {
         container: null
@@ -37,7 +37,7 @@ myQuery.define("ui/js/swappable", ["main/event", "module/math", "module/widget"]
                 }
 
                 switch (e.type) {
-                    case "mousedown": if (!$.client.system.mobile) event.event.document.preventDefault(e);
+                    case "mousedown": if (!client.system.mobile) event.event.document.preventDefault(e);
                     case "touchstart":
                         //event.document.stopPropagation(e);
                         if (!self.isDown) {
@@ -53,7 +53,7 @@ myQuery.define("ui/js/swappable", ["main/event", "module/math", "module/widget"]
                         break;
                     case "mousemove":
                         //event.document.stopPropagation(e);
-                        if (e.which === 0 || ($.client.browser.ie678 && e.button != 1) || self.isDown == false) {
+                        if (e.which === 0 || (client.browser.ie678 && e.button != 1) || self.isDown == false) {
                             self.isDown = false;
                             para.type = "swap.mousemove";
                             target.trigger(para.type, target[0], para);
@@ -90,7 +90,7 @@ myQuery.define("ui/js/swappable", ["main/event", "module/math", "module/widget"]
                             //event.document.preventDefault(e);
                             //event.document.stopPropagation(e);
                             self.isDown = false;
-                            if (!lastEvent && !$.client.browser.ie678) break;
+                            if (!lastEvent && !client.browser.ie678) break;
                             clearTimeout(timeout);
 
                             self.getPara(para, time, opt.directionRange, self.startX, self.startY, $.between(0, target.width(), x), $.between(0, target.height(), y));

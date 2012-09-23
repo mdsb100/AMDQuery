@@ -1,21 +1,23 @@
 ﻿/// <reference path="../myquery.js" />
 
-myQuery.define("html5/css3.transition.animate", ["html5/css3", "module/fx", "html5/animate.transform"], function ($, css3, FX, transform, undefined) {
+myQuery.define("html5/css3.transition.animate", ["base/client", "html5/css3", "module/fx", "html5/animate.transform"]
+, function ($, client, css3, FX, transform, undefined) {
     "use strict"; //启用严格模式
 
     //无法识别em这种
     var ret = 0;
+
     if ($.support.transition) {
         var 
          transitionEndType = (function () {
              var type = "";
-             if ($.client.engine.ie)
+             if (client.engine.ie)
                  type = "MS";
-             else if ($.client.engine.webkit || $.client.system.mobile)
+             else if (client.engine.webkit || client.system.mobile)
                  type = "webkit";
-             else if ($.client.engine.gecko)
+             else if (client.engine.gecko)
                  type = "";
-             else if ($.client.engine.opera)
+             else if (client.engine.opera)
                  type = "o";
              return type + 'TransitionEnd';
          })()
@@ -197,17 +199,17 @@ myQuery.define("html5/css3.transition.animate", ["html5/css3", "module/fx", "htm
             }
         });
 
-        $.support.transition = (function () {
-            var result = false;
-            (
-            $.client.browser.chrome ||
-            $.client.browser.firefox >= 16 ||
-            $.client.browser.ie >= 10 ||
-            $.client.browser.opera >= 10.5 ||
-            $.client.browser.sarfari >= 3.2
-            ) && (result = true);
-            return result;
-        })();
+//        $.support.transition = (function () {
+//            var result = false;
+//            (
+//            client.browser.chrome ||
+//            client.browser.firefox >= 16 ||
+//            client.browser.ie >= 10 ||
+//            client.browser.opera >= 10.5 ||
+//            client.browser.sarfari >= 3.2
+//            ) && (result = true);
+//            return result;
+//        })();
 
         if ($.config.model.transitionToAnimation) {
             if ($.support.transition) {

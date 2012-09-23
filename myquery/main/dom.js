@@ -1,6 +1,6 @@
 ﻿/// <reference path="../myquery.js" />
 
-myQuery.define("main/dom", ["main/data"], function ($, data, undefined) {
+myQuery.define("main/dom", ["base/support", "main/data"], function ($, support, data, undefined) {
     "use strict"; //启用严格模式
     //和jquery做个测试
     var 
@@ -15,7 +15,7 @@ myQuery.define("main/dom", ["main/data"], function ($, data, undefined) {
                 case 'b': name = 'backgroundColor'; break;
                 case 'd': name = 'display'; break;
                 case 'cssFloat':
-                case 'float': name = $.support.cssFloat ? 'cssFloat' : 'styleFloat'; break;
+                case 'float': name = support.cssFloat ? 'cssFloat' : 'styleFloat'; break;
                 case 'h': unit = 'px'; name = 'height'; break;
                 case 'innerHtml':
                 case 'i': name = this.html; break;
@@ -255,7 +255,7 @@ myQuery.define("main/dom", ["main/data"], function ($, data, undefined) {
             /// <returns type="Number" />
 
             var o;
-            if ($.support.opacity) {
+            if (support.opacity) {
                 o = $.styleTable(ele)["opacity"];
                 if (o == "" || o == undefined) {
                     o = 1;
@@ -451,7 +451,7 @@ myQuery.define("main/dom", ["main/data"], function ($, data, undefined) {
             /// <param name="isDelete" type="Boolean">是否彻底删除</param>
             /// <returns type="self" />
             ele.parentNode.removeChild(ele);
-            if ($.client.browser.ie <= 8) {
+            if ($.client.browser.ie678) {
                 ele = null;
             }
             return this;

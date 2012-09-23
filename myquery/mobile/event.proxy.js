@@ -1,8 +1,8 @@
 ﻿/// <reference path="../myquery.js" />
 
-myQuery.define("mobile/event.proxy", ["main.event"], function ($, event, undefined) {
+myQuery.define("mobile/event.proxy", ["base/client", "main.event"], function ($, client, event, undefined) {
     "use strict"; //启用严格模式
-    if ($.client.system.mobile) {
+    if (client.system.mobile) {
         $.interfaces.achieve("editEventType", function (name, type) {
             var str = "";
             switch (type) {
@@ -25,7 +25,7 @@ myQuery.define("mobile/event.proxy", ["main.event"], function ($, event, undefin
                 case "touchend":
                     var end = event.changedTouches[0];
                     if (!event.pageX) {
-                        if ($.client.system.lepad) {
+                        if (client.system.lepad) {
                             delete event.pageX;
                             delete event.pageY;
                         }

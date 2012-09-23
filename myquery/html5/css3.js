@@ -1,16 +1,16 @@
 ﻿/// <reference path="../myquery.js" />
 
-myQuery.define("html5/css3", ["main/dom"], function ($, dom, undefined) {
+myQuery.define("html5/css3", ["base/client", "main/dom"], function ($, client, dom, undefined) {
     "use strict"; //启用严格模式
     var css3Head = (function () {
         var head = "";
-        if ($.client.engine.ie)
+        if (client.engine.ie)
             head = "ms";
-        else if ($.client.engine.webkit || $.client.system.mobile)
+        else if (client.engine.webkit || client.system.mobile)
             head = "webkit";
-        else if ($.client.engine.gecko)
+        else if (client.engine.gecko)
             head = "Moz";
-        else if ($.client.engine.opera)
+        else if (client.engine.opera)
             head = "O";
         return head;
     })()
@@ -404,21 +404,21 @@ myQuery.define("html5/css3", ["main/dom"], function ($, dom, undefined) {
                     str.push(",", value.color);
                 });
             }
-            else if ($.client.browser.chrome > 10 || $.client.browser.safari >= 5.1 || $.client.system.mobile) {
+            else if (client.browser.chrome > 10 || client.browser.safari >= 5.1 || client.system.mobile) {
                 str.push("-webkit-gradient", "(linear,");
                 str.push(option.orientation.webkit);
                 $.each(option.colorStops, function (value, index) {
                     str.push(",", "color-stop", "(", value.stop, ",", value.color, ")");
                 });
             }
-            //            else if ($.client.browser.firefox >= 3.63) {
+            //            else if (client.browser.firefox >= 3.63) {
             //                str.push("-moz-linear-gradient", "(");
             //                str.push(option.orientation.moz);
             //                $.each(option.colorStops, function (value, index) {
             //                    str.push(",", value.color);
             //                });
             //            }
-            else if ($.client.browser.ie == 10) {
+            else if (client.browser.ie == 10) {
                 str.push("-ms-linear-gradient", "(");
                 str.push(option.orientation.ms, ",");
                 $.each(option.colorStops, function (value, index) {
@@ -426,13 +426,13 @@ myQuery.define("html5/css3", ["main/dom"], function ($, dom, undefined) {
                 })
                 str.push(",turquoise");
             }
-            else if ($.client.browser.ie == 9) {
+            else if (client.browser.ie == 9) {
                 str.push("progid:DXImageTransform.Microsoft.gradient", "(");
                 str.push("startColorstr=", "'", option.colorStops[0].color, "'");
                 str.push(",", "endColorstr=", "'", option.colorStops[option.colorStops.length - 1].color, "'");
                 type = "filter";
             }
-            //            else if ($.client.browser.opera >= 11.1) {
+            //            else if (client.browser.opera >= 11.1) {
             //                str.push("-o-linear-gradient", "(");
             //                str.push(option.orientation.o);
             //                $.each(option.colorStops, function (value, index) {
@@ -465,7 +465,7 @@ myQuery.define("html5/css3", ["main/dom"], function ($, dom, undefined) {
                     str.push(",", value.color, " ", value.stop * 100, "%");
                 });
             }
-            else if ($.client.browser.chrome > 10 || $.client.browser.safari >= 5.1 || $.client.system.mobile) {
+            else if (client.browser.chrome > 10 || client.browser.safari >= 5.1 || client.system.mobile) {
                 str.push("-webkit-gradient", "(radial");
                 $.each(option.radial.webkit, function (value, index) {
                     str.push(",", value.x, " ", value.y, ",", value.r);
@@ -474,7 +474,7 @@ myQuery.define("html5/css3", ["main/dom"], function ($, dom, undefined) {
                     str.push(",", "color-stop", "(", value.stop, ",", value.color, ")");
                 });
             }
-            else if ($.client.browser.ie == 10) {
+            else if (client.browser.ie == 10) {
                 str.push("-ms-linear-gradient", "(");
                 str.push(option.radial.ms.x, ",", "circle cover");
                 $.each(option.colorStops, function (value, index) {
@@ -482,7 +482,7 @@ myQuery.define("html5/css3", ["main/dom"], function ($, dom, undefined) {
                 })
                 str.push(",turquoise");
             }
-            else if ($.client.browser.opera >= 11.6) {
+            else if (client.browser.opera >= 11.6) {
                 str.push("-o-radial-gradient", "(");
                 $.each(option.radial.o, function (value, index) {
                     str.push(value.x, " ", value.y, ",");
@@ -730,7 +730,7 @@ myQuery.define("html5/css3", ["main/dom"], function ($, dom, undefined) {
             ele.style[transformCssName] = editTranslate3d(obj).join("");
             return this;
         }
-    }
+    };
     $.easyExtend($.support, css3Support);
     $.extend(css3);
     $.fn.extend({

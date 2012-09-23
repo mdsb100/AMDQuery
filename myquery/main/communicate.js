@@ -202,7 +202,7 @@ myQuery.define("main/communicate"
             //IE和其他浏览器 不一样
 
             _scripts.onload = _scripts.onreadystatechange = function () {
-                if (!this.readyState || this.readyState == "loaded" || this.readyState == 'complete') {// && "\v" == "v"
+                if (!this.readyState || this.readyState == "loaded" || this.readyState == 'complete') {
                     clearTimeout(_timeId);
                     $.trigger("getJSStop", _scripts, o);
                     var js = typeof window[o.checkString] != "undefined" ? window[o.checkString] : undefined;
