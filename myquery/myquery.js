@@ -237,31 +237,22 @@
             if ((typeof a == "object" || a == undefined || a == null) && typeof b == "string") {
                 //if ($.css) {
                 count++;
-                if (b == undefined || b == null)//|| (b.toLowerCase() == 'canvas' && !$.support.canvas)
+                if (b == undefined || b == null)
                     b = 'div';
                 var obj = document.createElement(b);
                 this.init([obj]);
-                //                    if (b.toLowerCase() == 'canvas') {//html5 interfaces
-                //                        this.ctx = obj.getContext('2d');
-                //                        obj.attributes("width", a.w || a.width || 100);
-                //                        obj.attributes("height", a.h || a.height || 100);
-                //                    }
+               
                 $.interfaces.trigger("constructorDom", this, a, b, c);
 
-                //                    a && this.css(a);
-                //                    c && ($.isEle(c) || $.is$(c)) && this.appendTo(c);
                 obj = null;
-                //                }
-                //                else {
-                //                    tools.console.error({ fn: "myQuery.constructor", msg: "if you want create $ with this constructor,you had to require main/dom first" });
-                //                }
+              
             }
             else if (a) {
                 var result;
                 if (result = $.interfaces.trigger("constructorQuery", a, b)) {
                     count++;
                     this.init(result);
-                    //this.init($.getEle(a, b)); //这里和parent有关系 .filter()
+                   
                 }
             }
         }
