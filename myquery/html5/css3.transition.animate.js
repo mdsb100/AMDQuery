@@ -111,6 +111,7 @@ myQuery.define("html5/css3.transition.animate", ["base/client", "html5/css3", "m
             , "ease-in-out": 1
             , "cubic-bezier": 1
         };
+
         $.extend({
             animateByTransition: function (ele, property, option) {
                 var option = $._getAnimateByTransitionOpt(option);
@@ -171,6 +172,7 @@ myQuery.define("html5/css3.transition.animate", ["base/client", "html5/css3", "m
                 return (easingList[easing] && easing) || "linear"
             }
         });
+
         $.fn.extend({
             animateByTransition: function (property, option) {
                 // <summary>给所有元素添加一个动画

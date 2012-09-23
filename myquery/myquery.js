@@ -127,7 +127,6 @@
                         attr[1].match(/false|true|1|0/) && (attr[0] = eval(attr[1]));
                         result[item] = attr[0];
                     }
-
                 }
             }
             return result;
@@ -160,12 +159,6 @@
             /// <summary>返回当前时间的字符串形式</summary>
             /// <returns type="String" />
             return (new Date()).getTime();
-        }
-
-        , userAgent: function (userAgent, reg) {
-            var version = userAgent.match(reg);
-            version = version ? version[0].match(/\d+\.\d+/i) : false;
-            return version ? parseFloat(version[0]) : false;
         }
     }
     , count = 0
@@ -1561,7 +1554,8 @@
                 /// <param name="a" type="Object">对象</param>
                 /// <param name="b" type="Object">对象</param>
                 /// <returns type="self" />
-                tools.extend(obj1, obj2);
+                for (var i in obj2)
+                    obj1[i] = obj2[i];
                 return this;
             }
             , extend: function (a) {
@@ -1662,25 +1656,7 @@
         },
         push = Array.prototype.push,
         array = {
-            elementCollectionToArray: function (eles, real) {
-                /// <summary>把ElementCollection转换成arr[ele]</summary>
-                /// <param name="eles" type="ElementCollection">元素集合</param>
-                /// <param name="real" type="Boolean/undefined">是否获得真元素，默认为真</param>
-                /// <returns type="Array" />
-                var list = [];
-                if ($.isEleConllection(eles)) {
-                    var real = real === undefined ? true : real;
-                    $.each(eles, function (ele) {
-                        if (real === false)
-                            list.push(ele)
-                        else if (ele.nodeType != 3 && ele.nodeType != 8)
-                            list.push(ele)
-                    }, this);
-                }
-                return list;
-            }
-
-            , filterArray: function (arr, fun, context) {
+            filterArray: function (arr, fun, context) {
                 /// <summary>返回数组中于此对象相同的序号</summary>
                 /// <param name="arr" type="Array">数组</param>
                 /// <param name="item" type="any">任意对象</param>
@@ -1769,12 +1745,6 @@
     }
     else {
         tools.error(_config.myquery.define + " is defined");
-    }
-
-    if (_config.myquery.amd == true && $.isFun(window.define) && window.define.amd) {
-        window.define("myQuery", [], function () {
-            return $;
-        });
     }
 
 })(window); 

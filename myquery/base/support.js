@@ -8,7 +8,7 @@ myQuery.define("base/support", function ($) {
         , root = document.documentElement
 	    , script = document.createElement("script")
         , div = document.createElement("div")
-        , id = "_" + (new Date().getTime())
+        , id = "_" + $.now()
         , all
         , a;
     div.setAttribute("className", "t");

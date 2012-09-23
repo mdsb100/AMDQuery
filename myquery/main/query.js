@@ -68,6 +68,24 @@ myQuery.define("main/query", function ($) {
 
             }
 
+            , elementCollectionToArray: function (eles, real) {
+                /// <summary>把ElementCollection转换成arr[ele]</summary>
+                /// <param name="eles" type="ElementCollection">元素集合</param>
+                /// <param name="real" type="Boolean/undefined">是否获得真元素，默认为真</param>
+                /// <returns type="Array" />
+                var list = [];
+                if ($.isEleConllection(eles)) {
+                    var real = real === undefined ? true : real;
+                    $.each(eles, function (ele) {
+                        if (real === false)
+                            list.push(ele)
+                        else if (ele.nodeType != 3 && ele.nodeType != 8)
+                            list.push(ele)
+                    }, this);
+                }
+                return list;
+            }
+
             , filter: function (str, eles) {
                 /// <summary>筛选Element；也可以用来筛选一般数组
                 /// <para>返回ele数组</para>
