@@ -1,8 +1,8 @@
 ﻿/// <reference path="../myquery.js" />
 
 myQuery.define("main/communicate"
-, ["base/is", "base/tools", "base/extend", "main/event", "module/parse"]
-, function ($, is, tools, extend, parse, undefined) {
+, ["base/is", "base/extend", "main/event", "module/parse"]
+, function ($, is, extend, parse, undefined) {
     "use strict"; //启用严格模式
     var communicate = {
         ajax: function (options) {
@@ -276,6 +276,29 @@ myQuery.define("main/communicate"
                 $.getJScript(item);
             });
             return this;
+        }
+        , getURLParam: function (content) {
+            /// <summary>返回url参数</summary>
+            /// <param name="content" type="String/Object/$/Array[element]">内容可以是Object键值对，也可以是数组形式的element，也可以是myQuery对象</param>
+            /// <returns type="String" />
+            var list = [];
+            if ($.isObj(content)) {
+                $.each(content, function (value, name) {
+                    value = $.isFun(value) ? value() : value;
+                    !$.isNul(value) && list.push(encodeURIComponent(name) + "=" + encodeURIComponent(value));
+                });
+                content = list.join("&");
+            }
+            else if ($.is$(content) || ($.isArr(content) && $.isEle(content[0]))) {
+                $.each(content, function (item) {
+                    !$.isNul(item.value) && list.push(encodeURIComponent(item.name) + "=" + encodeURIComponent(item.value));
+                });
+                content = list.join("&");
+            }
+            else if (!$.isStr(content)) {
+                content = "";
+            }
+            return content; //encodeURIComponent(content); //转第二次码
         }
         , getXhrObject: function (xhr) {
             /// <summary>生成一个XMLHttpRequest</summary>

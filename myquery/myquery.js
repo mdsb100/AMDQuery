@@ -170,8 +170,6 @@
 
     }
     , count = 0
-
-    , push = Array.prototype.push
     , reg = RegExp
     , basePath = (function () {
         var ret = tools.getJScriptConfig(["src"]).src.replace(/\/[^\/]+$/, '');
@@ -186,7 +184,8 @@
         }
         return ret;
     } ())
-    , rootPath = basePath.replace(/((.*?\/){3}).*$/, '$1');
+    , rootPath = basePath.replace(/((.*?\/){3}).*$/, '$1')
+    , msgDiv, runTime;
 
     var _config = {
         myquery: {
@@ -220,11 +219,13 @@
         /// <summary>创造一个新$对象
         /// <para>例:$(function(){将会在window.onload时执行})</para>
         /// <para>例:$('div')</para>
+        /// <para>例:$([ele,ele,ele])</para>
+        /// <para>以下依赖main/query</para>
         /// <para>例:$($('#A'))</para>
+        /// <para>以下依赖main/dom</para>
         /// <para>例:$({h:100,w:100},'div')</para>
         /// <para>例:$(null,'div',document.body)</para>
         /// <para>例:$({h:100,w:100},'div',document.body)</para>
-        /// <para>例:$([ele,ele,ele])</para>
         /// <para>对于table的appendChild,removeChild可能不兼容低版本IE浏览器,table必须插入tbody</para>
         /// </summary>
         /// <param name="a" type="Object/String/Element/fun/$">可重载</param>
@@ -233,33 +234,39 @@
         /// <returns type="$" />
         if ($.is$(this)) {
             if (!a && !b) return;
-            if (($.isObj(a) || $.isNul(a)) && $.isStr(b)) {
-                if ($.css) {
-                    count++;
-                    if ($.isNul(b) || (b.toLowerCase() == 'canvas' && !$.support.canvas))
-                        b = 'div';
-                    var obj = document.createElement(b);
-                    this.init([obj]);
-                    if (b.toLowerCase() == 'canvas') {//html5 interfaces
-                        this.ctx = obj.getContext('2d');
-                        obj.attributes("width", a.w || a.width || 100);
-                        obj.attributes("height", a.h || a.height || 100);
-                    }
-                    a && this.css(a);
-                    c && ($.isEle(c) || $.is$(c)) && this.appendTo(c);
-                    obj = null;
-                }
-                else {
-                    tools.console.error({ fn: "myQuery.constructor", msg: "if you want create $ with this constructor,you had to require main/dom first" });
-                }
+            if ((typeof a == "object" || a == undefined || a == null) && typeof b == "string") {
+                //if ($.css) {
+                count++;
+                if (b == undefined || b == null)//|| (b.toLowerCase() == 'canvas' && !$.support.canvas)
+                    b = 'div';
+                var obj = document.createElement(b);
+                this.init([obj]);
+                //                    if (b.toLowerCase() == 'canvas') {//html5 interfaces
+                //                        this.ctx = obj.getContext('2d');
+                //                        obj.attributes("width", a.w || a.width || 100);
+                //                        obj.attributes("height", a.h || a.height || 100);
+                //                    }
+                $.interfaces.trigger("constructorDom", this, a, b, c);
+
+                //                    a && this.css(a);
+                //                    c && ($.isEle(c) || $.is$(c)) && this.appendTo(c);
+                obj = null;
+                //                }
+                //                else {
+                //                    tools.console.error({ fn: "myQuery.constructor", msg: "if you want create $ with this constructor,you had to require main/dom first" });
+                //                }
             }
             else if (a) {
-                count++;
-                this.init($.getEle(a, b)); //这里和parent有关系 .filter()
+                var result;
+                if (result = $.interfaces.trigger("constructorQuery", a, b)) {
+                    count++;
+                    this.init(result);
+                    //this.init($.getEle(a, b)); //这里和parent有关系 .filter()
+                }
             }
         }
-        else if ($.isFun(a)) {
-            $.ready && $.ready(a);
+        else if (typeof a == "function") {
+            $.ready(a);
         }
         else
             return new $(a, b, c);
@@ -311,18 +318,20 @@
                 $.interfaces.handlers[name] = fun;
                 return this;
             }
-                , trigger: function (name) {
-                    /// <summary>对外接口调用 内部的</summary>
-                    /// <param name="name" type="String">接口名</param>
-                    /// <returns type="any" />
-                    var item = $.interfaces.handlers[name];
-                    return item && item.apply(this, arguments);
-                }
-                , handlers: {
-                    editCssType: null
-                    , editEventType: null
-                    , proxy: null
-                }
+            , trigger: function (name) {
+                /// <summary>对外接口调用 内部的</summary>
+                /// <param name="name" type="String">接口名</param>
+                /// <returns type="any" />
+                var item = $.interfaces.handlers[name];
+                return item && item.apply(this, arguments);
+            }
+            , handlers: {
+                editCssType: null
+                , editEventType: null
+                , proxy: null
+                , constructorDom: null
+                , constructorQuery: null
+            }
 
         }
         , math: {}
@@ -345,6 +354,232 @@
         , version: version
         , _redundance: {
             argToArray: tools.argToArray
+        }
+
+        , argToArray: tools.argToArray
+
+        , between: function (min, max, num) {
+            /// <summary>如果num在min和max区间内返回num否则返回min或max</summary>
+            /// <param name="min" type="Number">最小值</param>
+            /// <param name="max" type="Number">最大值</param>
+            /// <param name="num" type="Number">要比较的值</param>
+            /// <returns type="Number" />
+
+            return Math.max(min, Math.min(max, num));
+        }
+        , bind: function (fun, context) {
+            /// <summary>绑定作用域</summary>
+            /// <param name="fun" type="Function">方法</param>
+            /// <param name="context" type="Object">context</param>
+            /// <returns type="Function" />
+            return function () {
+                return fun.apply(context || window, arguments);
+            }
+
+        }
+
+        , camelCase: function (name, head) {
+            /// <summary>把"margin-left驼峰化"</summary>
+            /// <param name="name" type="String">字符串</param>
+            /// <param name="head" type="String">字符串头</param>
+            /// <returns type="String" />
+            name.indexOf("-") > 0 ? name = name.toLowerCase().split("-") : name = [name];
+
+            head && name.splice(0, 0, head);
+
+            for (var i = 1, item; i < name.length; i++) {
+                item = name[i]
+                name[i] = item.substr(0, 1).toUpperCase() + item.slice(1);
+            }
+            return name.join("");
+        }
+        , console: tools.console
+
+        , each: function (obj, callback, context) {
+            /// <summary>对象遍历</summary>
+            /// <param name="obj" type="Object">对象</param>
+            /// <param name="callback" type="Function">执行方法</param>
+            /// <param name="context" type="Object">作用域</param>
+            /// <returns type="self" />
+
+            //consult from jQuery-1.4.1 
+            if (!obj)
+                return this;
+            var i = 0, item,
+                len = obj.length,
+			    isObj = typeof len != "number" || typeof obj == "function"; //$.isNul(len) || $.isFun(obj);
+            if (isObj) {
+                for (item in obj)
+                    if (callback.call(context || obj[item], obj[item], item) === false)
+                        break;
+            }
+            else
+                for (var value = obj[0]; i < len && callback.call(context || value, value, i) !== false; value = obj[++i]) { }
+            return this;
+        }
+        , eval: function (s) {
+            /// <summary>使用Funciont来eval</summary>
+            /// <param name="s" type="String"></param>
+            /// <returns type="any" />
+            return (new Function("return " + s))();
+        }
+
+        , getJScriptConfig: tools.getJScriptConfig
+        , getPath: tools.getPath
+        , getRunTime: function (unit) {
+            /// <summary>检测运行时间</summary>
+            /// <param name="unit" type="Boolean">默认为秒,true为毫秒</param>
+            /// <returns type="self" />
+            var _now = new Date();
+            if (runTime) {
+                var _info = (_now - runTime);
+                _info = !unit ? _info / 1000 + '秒' : _info + "毫秒";
+                !$.client.browser.ie678 ? tools.console.info({ fn: "myQuery.getRunTime", msg: _info }) : $.showMsg(_info);
+                runTime = null;
+            }
+            else
+                runTime = now;
+            return this;
+        }
+        , getValueAndUnit: function (value) {
+            /// <summary>返回一个字符串的数值和单位
+            /// <para>obj.value</para>
+            /// <para>obj.unit</para>
+            /// <para>默认2个值是undefined</para>
+            /// </summary>
+            /// <param name="value" type="String">字符串</param>
+            /// <returns type="Object" />
+            var result = { value: value, unit: "" };
+            if (typeof value == "number") {
+                result.value = value
+            } else if (typeof value == "string") {
+                value = value.match($.reg.valueAndUnit);
+                if (value) {
+                    var num = parseFloat(value[0]);
+                    if (num != undefined) {
+                        result.value = num;
+                        result.unit = value[0].replace(num.toString(), "") || "";
+                    }
+                }
+            }
+            return result;
+        }
+
+        , globalEval: function (data) {
+            ///	<summary>
+            ///	把一段String用js的方式声明为全局的
+            ///	</summary>
+            /// <param name="data" type="String">数据</param>
+            /// <returns type="XMLHttpRequest" />
+
+            if (data && /\S/.test(data)) {
+                // Inspired by code by Andrea Giammarchi
+                // http://webreflection.blogspot.com/2007/08/global-scope-evaluation-and-dom.html
+                var head = document.getElementsByTagName("head")[0] || document.documentElement,
+				    script = document.createElement("script");
+
+                script.type = "text/javascript";
+
+                if ($.support.scriptEval) {
+                    script.appendChild(document.createTextNode(data));
+                } else {
+                    script.text = data;
+                }
+
+                // Use insertBefore instead of appendChild to circumvent an IE6 bug.
+                // This arises when a base node is used (#2709).
+                head.insertBefore(script, head.firstChild);
+                head.removeChild(script);
+            }
+            return this;
+        }
+
+        , now: tools.now
+
+        , reg: {
+            num: /^(-?\\d+)(\\.\\d+)?$/
+                , className: function (className) {
+                    return reg = new RegExp('(\\s|^)' + className + '(\\s|$)')
+                }
+                , id: /^#((?:[\w\u00c0-\uFFFF-]|\\.)+)/
+            ///^#[\w\d]+/
+                , tagName: /^((?:[\w\u00c0-\uFFFF\*-]|\\.)+)/
+            ///^[a-zA-Z]+|\*/
+                , search: /^>/
+                , find: /^\s/
+                , filter: /^:/
+                , int: /(\+|\-)?\d+/g
+                , eq: /^eq\(([\+\-]?\d+),\+?(\d+)?\)/
+                , than: /^(gt|lt)\(([\-\+]?\d+)\)/
+                , css: /^\.((?:[\w\u00c0-\uFFFF-]|\\.)+)/
+            ///^\.[\w\d]+/
+                , valueAndUnit: /[+-]?\d+\.?\d*\w+/g
+                , property: /^\[\s*((?:[\w\u00c0-\uFFFF-]|\\.)+)\s*(?:(\S?=)\s*(['"]*)(.*?)\3|)\s*\]/
+                , numAndEng: /[A-Za-z0-9]+/
+                , pEqual: /[!\^\*\$]?=?/
+
+                , rupper: /([A-Z]|^ms)/g
+                , rnumnonpx: /^-?(?:\d*\.)?\d+(?!px)[^\d\s]+$/i
+        }
+
+        , setTimeout: function (fun, delay, context) {
+            /// <summary>绑定作用域的TimeOut一样会返回一个ID以便clear</summary>
+            /// <param name="fun" type="Function">方法</param>
+            /// <param name="delay" type="Number">时间毫秒为单位</param>
+            /// <param name="context" type="Object">作用域缺省为winodw</param>
+            /// <returns type="Number" />
+            return setTimeout($.bind(fun, context), delay)
+        }
+        , showMsg: function (str, bool) {
+            /// <summary>设置浏览器标题或者显示个div 点击会自动消失</summary>
+            /// <param name="str" type="any">任何对象都将被toString显示</param>
+            /// <param name="bool" type="Boolean">为true的话使用div显示否则在title显示</param>
+            /// <returns type="self" />
+            str = str.toString();
+            if (bool) {
+                if (msgDiv) {
+                    msgDiv.innerHTML = str;
+                    msgDiv.style.display = "block";
+                }
+                else {
+                    msgDiv = document.createElement("div");
+                    var s = msgDiv.style;
+                    s.top = 0;
+                    s.left = 0;
+                    s.zIndex = 1001;
+                    s.position = "absolute";
+                    s.display = "block";
+                    s.innerHTML = str;
+                    s.fontSize = "18px";
+                    msgDiv.onclick = function () {
+                        this.style.display = "none";
+                    };
+                    document.body.appendChild(msgDiv);
+                }
+            }
+            else {
+                document.title = str;
+            }
+            return this;
+
+        }
+
+        , trim: function (str) {
+            /// <summary>去除前后的空格换行符等字符</summary>
+            /// <param name="str" type="String">长度 缺省为整个长度</param>
+            /// <returns type="String" />
+            return str.replace(/(^\s*)|(\s*$)/g, "");
+        }
+
+        , unCamelCase: function (name, head) {
+            /// <summary>反驼峰化</summary>
+            /// <para>marginLeft => margin-left</para>
+            /// <param name="name" type="String">字符串</param>
+            /// <param name="head" type="String">字符串头</param>
+            /// <returns type="String" />
+            name = name.replace($.reg.rupper, "-$1").toLowerCase();
+            head && (name = head + "-" + name);
+            return name;
         }
     });
 
@@ -1469,6 +1704,13 @@
                 /// <returns type="Boolean" />
                 return a === undefined || a === null || a === NaN;
             }
+            , isNode: function (ele, name) {
+                /// <summary>判断是不是这个dom元素</summary>
+                /// <param name="ele" type="Element">dom元素</param>
+                /// <param name="name" type="String">名字</param>
+                /// <returns type="Boolean" />
+                return $.isEle(ele) ? (ele.nodeName && ele.nodeName.toUpperCase() === name.toUpperCase()) : false;
+            }
             , isObj: function (a) {
                 /// <summary>是否为对象</summary>
                 /// <param name="a" type="any">任意对象</param>
@@ -1500,13 +1742,6 @@
                 }
 
                 return key === undefined || hasOwnProperty.call(obj, key);
-            }
-            , isPrototypeProperty: function (obj, name) {
-                /// <summary>是否是原型对象的属性</summary>
-                /// <param name="obj" type="any">任意对象</param>
-                /// <param name="name" type="String">属性名</param>
-                /// <returns type="Boolean" />
-                return !obj.hasOwnProperty(name) && (name in obj);
             }
             , isStr: function (a) {
                 /// <summary>是否为字符产</summary>
@@ -1631,420 +1866,6 @@
         return extend;
     }, "1.0.0");
 
-    myQuery.define("base/tools", function ($) {
-        "use strict"; //启用严格模式
-        var expando = "MyQuery" + tools.now(), uuid = 0, windowData = {}, emptyObject = {}
-        , msgDiv, runTime,
-        _tools = {
-            argToArray: tools.argToArray
-
-            , between: function (min, max, num) {
-                /// <summary>如果num在min和max区间内返回num否则返回min或max</summary>
-                /// <param name="min" type="Number">最小值</param>
-                /// <param name="max" type="Number">最大值</param>
-                /// <param name="num" type="Number">要比较的值</param>
-                /// <returns type="Number" />
-
-                return Math.max(min, Math.min(max, num));
-            }
-            , bind: function (fun, context) {
-                /// <summary>绑定作用域</summary>
-                /// <param name="fun" type="Function">方法</param>
-                /// <param name="context" type="Object">context</param>
-                /// <returns type="Function" />
-                return function () {
-                    return fun.apply(context || window, arguments);
-                }
-
-            }
-
-            , cache: []
-            , camelCase: function (name, head) {
-                /// <summary>把"margin-left驼峰化"</summary>
-                /// <param name="name" type="String">字符串</param>
-                /// <param name="head" type="String">字符串头</param>
-                /// <returns type="String" />
-                name.indexOf("-") > 0 ? name = name.toLowerCase().split("-") : name = [name];
-
-                head && name.splice(0, 0, head);
-
-                for (var i = 1, item; i < name.length; i++) {
-                    item = name[i]
-                    name[i] = item.substr(0, 1).toUpperCase() + item.slice(1);
-                }
-                return name.join("");
-            }
-            , console: tools.console
-
-            , each: function (obj, callback, context) {
-                /// <summary>对象遍历</summary>
-                /// <param name="obj" type="Object">对象</param>
-                /// <param name="callback" type="Function">执行方法</param>
-                /// <param name="context" type="Object">作用域</param>
-                /// <returns type="self" />
-
-                //consult from jQuery-1.4.1 
-                if (!obj)
-                    return this;
-                var i = 0, item,
-                len = obj.length,
-			    isObj = !$.isNum(len) || $.isFun(obj); //$.isNul(len) || $.isFun(obj);
-                if (isObj) {
-                    for (item in obj)
-                        if (callback.call(context || obj[item], obj[item], item) === false)
-                            break;
-                }
-                else
-                    for (var value = obj[0]; i < len && callback.call(context || value, value, i) !== false; value = obj[++i]) { }
-                return this;
-            }
-            , eval: function (s) {
-                /// <summary>使用Funciont来eval</summary>
-                /// <param name="s" type="String"></param>
-                /// <returns type="any" />
-                return (new Function("return " + s))();
-            }
-            , expando: expando
-
-            , data: function (ele, name, data) {
-                /// <summary>获得或设置对象的数据
-                /// <para>如果name是obj可能有风险，他会赋值所有的</para>
-                /// <para>如果data是undefined会取值</para>
-                /// </summary>
-                /// <param name="ele" type="Object">对象</param>
-                /// <param name="name" type="String/Object/null">如果为nul则删除全部</param>
-                /// <param name="data" type="any">数据</param>
-                /// <returns type="thisCache/any/$" />
-
-                //quote from jQuery-1.4.1 
-                if (!ele || (ele.nodeName && $.noData[ele.nodeName.toLowerCase()]))
-                    return this;
-
-                ele = ele == window ?
-		    	windowData :
-		    	ele;
-
-                var id = ele[expando], cache = $.cache, thisCache;
-
-                if (!name && !id)
-                    return this;
-
-                if (!id)
-                    id = ++uuid;
-
-                if (typeof name === "object") {
-                    ele[expando] = id;
-                    thisCache = cache[id] = $.extend(true, {}, name);
-                } else if (cache[id]) {
-                    thisCache = cache[id];
-                } else if (data === undefined) {
-                    thisCache = emptyObject;
-                } else {
-                    thisCache = cache[id] = {};
-                }
-
-                if (data !== undefined) {
-                    ele[expando] = id;
-                    thisCache[name] = data;
-                }
-
-                return $.isStr(name) ? thisCache[name] : thisCache;
-            }
-
-            , getJScriptConfig: tools.getJScriptConfig
-            , getObjectAttrCount: function (obj, bool) {
-                /// <summary>获得对象属性的个数</summary>
-                /// <param name="obj" type="Object">对象</param>
-                /// <param name="bool" type="Boolean">为true则剔除prototype</param>
-                /// <returns type="Number" />
-                var count = 0;
-                for (var i in obj) {
-                    bool == true ? $.isPrototypeProperty(obj, i) || count++ : count++
-                }
-                return count;
-            }
-            , getPath: tools.getPath
-            , getRunTime: function (unit) {
-                /// <summary>检测运行时间</summary>
-                /// <param name="unit" type="Boolean">默认为秒,true为毫秒</param>
-                /// <returns type="self" />
-                var _now = new Date();
-                if (runTime) {
-                    var _info = (_now - runTime);
-                    _info = !unit ? _info / 1000 + '秒' : _info + "毫秒";
-                    !$.client.browser.ie678 ? tools.console.info({ fn: "myQuery.getRunTime", msg: _info }) : $.showMsg(_info);
-                    runTime = null;
-                }
-                else
-                    runTime = now;
-                return this;
-            }
-            , getURLParam: function (content) {
-                /// <summary>返回url参数</summary>
-                /// <param name="content" type="String/Object/$/Array[element]">内容可以是Object键值对，也可以是数组形式的element，也可以是myQuery对象</param>
-                /// <returns type="String" />
-                var list = [];
-                if ($.isObj(content)) {
-                    $.each(content, function (value, name) {
-                        value = $.isFun(value) ? value() : value;
-                        !$.isNul(value) && list.push(encodeURIComponent(name) + "=" + encodeURIComponent(value));
-                    });
-                    content = list.join("&");
-                }
-                else if ($.is$(content) || ($.isArr(content) && $.isEle(content[0]))) {
-                    $.each(content, function (item) {
-                        !$.isNul(item.value) && list.push(encodeURIComponent(item.name) + "=" + encodeURIComponent(item.value));
-                    });
-                    content = list.join("&");
-                }
-                else if (!$.isStr(content)) {
-                    content = "";
-                }
-                return content; //encodeURIComponent(content); //转第二次码
-            }
-            , getValueAndUnit: function (value) {
-                /// <summary>返回一个字符串的数值和单位
-                /// <para>obj.value</para>
-                /// <para>obj.unit</para>
-                /// <para>默认2个值是undefined</para>
-                /// </summary>
-                /// <param name="value" type="String">字符串</param>
-                /// <returns type="Object" />
-                var result = { value: value, unit: "" };
-                if ($.isNum(value)) {
-                    result.value = value
-                } else if ($.isStr(value)) {
-                    value = value.match($.reg.valueAndUnit);
-                    if (value) {
-                        var num = parseFloat(value[0]);
-                        if (num != undefined) {
-                            result.value = num;
-                            result.unit = value[0].replace(num.toString(), "") || "";
-                        }
-                    }
-                }
-                return result;
-            }
-
-            , globalEval: function (data) {
-                ///	<summary>
-                ///	把一段String用js的方式声明为全局的
-                ///	</summary>
-                /// <param name="data" type="String">数据</param>
-                /// <returns type="XMLHttpRequest" />
-
-                if (data && /\S/.test(data)) {
-                    // Inspired by code by Andrea Giammarchi
-                    // http://webreflection.blogspot.com/2007/08/global-scope-evaluation-and-dom.html
-                    var head = document.getElementsByTagName("head")[0] || document.documentElement,
-				    script = document.createElement("script");
-
-                    script.type = "text/javascript";
-
-                    if ($.support.scriptEval) {
-                        script.appendChild(document.createTextNode(data));
-                    } else {
-                        script.text = data;
-                    }
-
-                    // Use insertBefore instead of appendChild to circumvent an IE6 bug.
-                    // This arises when a base node is used (#2709).
-                    head.insertBefore(script, head.firstChild);
-                    head.removeChild(script);
-                }
-                return this;
-            }
-
-            , nodeName: function (ele, name) {
-                /// <summary>判断是不是这个dom元素</summary>
-                /// <param name="ele" type="Element">dom元素</param>
-                /// <param name="name" type="String">名字</param>
-                /// <returns type="Boolean" />
-                return ele.nodeName && ele.nodeName.toUpperCase() === name.toUpperCase();
-            }
-            , noData: {
-                //quote from jQuery-1.4.1 
-                "embed": true,
-                "object": true,
-                "applet": true
-            }
-            , now: tools.now
-
-            , reg: {
-                num: /^(-?\\d+)(\\.\\d+)?$/
-                , className: function (className) {
-                    return reg = new RegExp('(\\s|^)' + className + '(\\s|$)')
-                }
-                , id: /^#((?:[\w\u00c0-\uFFFF-]|\\.)+)/
-                ///^#[\w\d]+/
-                , tagName: /^((?:[\w\u00c0-\uFFFF\*-]|\\.)+)/
-                ///^[a-zA-Z]+|\*/
-                , search: /^>/
-                , find: /^\s/
-                , filter: /^:/
-                , int: /(\+|\-)?\d+/g
-                , eq: /^eq\(([\+\-]?\d+),\+?(\d+)?\)/
-                , than: /^(gt|lt)\(([\-\+]?\d+)\)/
-                , css: /^\.((?:[\w\u00c0-\uFFFF-]|\\.)+)/
-                ///^\.[\w\d]+/
-                , valueAndUnit: /[+-]?\d+\.?\d*\w+/g
-                , property: /^\[\s*((?:[\w\u00c0-\uFFFF-]|\\.)+)\s*(?:(\S?=)\s*(['"]*)(.*?)\3|)\s*\]/
-                , numAndEng: /[A-Za-z0-9]+/
-                , pEqual: /[!\^\*\$]?=?/
-
-                , rupper: /([A-Z]|^ms)/g
-                , rnumnonpx: /^-?(?:\d*\.)?\d+(?!px)[^\d\s]+$/i
-            }
-            , removeData: function (ele, name) {
-                /// <summary>删除对象的数据</summary>
-                /// <param name="ele" type="Object">对象</param>
-                /// <param name="name" type="String/undefined">如果为undefined则删除全部</param>
-                /// <returns type="self" />
-                if (!ele || (ele.nodeName && $.noData[ele.nodeName.toLowerCase()]))
-                    return this;
-
-                ele = ele == window ?
-			windowData :
-			ele;
-
-                var id = ele[expando], cache = $.cache, thisCache = cache[id];
-
-                if (name) {
-                    if (thisCache) {
-                        delete thisCache[name];
-
-                        if ($.isEmptyObj(thisCache))
-                            $.removeData(ele);
-
-                    }
-
-                } else {
-                    try {
-                        delete ele[expando];
-                    } catch (e) {
-                        if (ele.removeAttribute) {
-                            ele.removeAttribute(expando);
-                        }
-                    }
-                    delete cache[id];
-                }
-                return this;
-            }
-
-            , providePropertyFunction: function (obj, list) {
-                /// <summary>提供类的属性get和set方法</summary>
-                /// <param name="obj" type="Object">类</param>
-                /// <param name="list" type="Object/Array">属性名列表</param>
-                /// <returns type="String" />
-                return $.each(list, function (value, key) {
-                    this[$.camelCase(value, "set")] = function (a) {
-                        this[value] = a;
-                        return this;
-                    }
-                    this[$.camelCase(value, "get")] = function () {
-                        return this[value];
-                    }
-                }, obj.prototype);
-            }
-
-            , setTimeout: function (fun, delay, context) {
-                /// <summary>绑定作用域的TimeOut一样会返回一个ID以便clear</summary>
-                /// <param name="fun" type="Function">方法</param>
-                /// <param name="delay" type="Number">时间毫秒为单位</param>
-                /// <param name="context" type="Object">作用域缺省为winodw</param>
-                /// <returns type="Number" />
-                return setTimeout($.bind(fun, context), delay)
-            }
-            , showMsg: function (str, bool) {
-                /// <summary>设置浏览器标题或者显示个div 点击会自动消失</summary>
-                /// <param name="str" type="any">任何对象都将被toString显示</param>
-                /// <param name="bool" type="Boolean">为true的话使用div显示否则在title显示</param>
-                /// <returns type="self" />
-                str = str.toString();
-                if (bool) {
-                    if (msgDiv) {
-                        msgDiv.innerHTML = str;
-                        msgDiv.style.display = "block";
-                    }
-                    else {
-                        msgDiv = document.createElement("div");
-                        var s = msgDiv.style;
-                        s.top = 0;
-                        s.left = 0;
-                        s.zIndex = 1001;
-                        s.position = "absolute";
-                        s.display = "block";
-                        s.innerHTML = str;
-                        s.fontSize = "18px";
-                        msgDiv.onclick = function () {
-                            this.style.display = "none";
-                        };
-                        document.body.appendChild(msgDiv);
-                    }
-                }
-                else {
-                    document.title = str;
-                }
-                return this;
-
-            }
-
-            , trim: function (str) {
-                /// <summary>去除前后的空格换行符等字符</summary>
-                /// <param name="str" type="String">长度 缺省为整个长度</param>
-                /// <returns type="String" />
-                return str.replace(/(^\s*)|(\s*$)/g, "");
-            }
-
-            , unCamelCase: function (name, head) {
-                /// <summary>反驼峰化</summary>
-                /// <para>marginLeft => margin-left</para>
-                /// <param name="name" type="String">字符串</param>
-                /// <param name="head" type="String">字符串头</param>
-                /// <returns type="String" />
-                name = name.replace($.reg.rupper, "-$1").toLowerCase();
-                head && (name = head + "-" + name);
-                return name;
-            }
-
-        };
-
-        tools.extend($, _tools);
-
-        tools.extend($.fn, {
-            data: function (key, value) {
-                /// <summary>获得或设置对象的数据
-                /// <para>如果key是obj可能有风险，他会赋值所有的</para>
-                /// <para>如果value是undefined会取值</para>
-                /// </summary>
-                /// <param name="key" type="String/Object/null">如果为nul则删除全部</param>
-                /// <param name="value" type="any">数据</param>
-                /// <returns type="thisCache/any/$" />
-                if (key === undefined && this.length) {
-                    return $.data(this[0]);
-                }
-                else if ($.isObj(key)) {
-                    return this.each(function (ele) {
-                        $.data(ele, key);
-                    });
-                }
-                return value === undefined ? $.data(this[0], key) : this.each(function (ele) {
-                    $.data(ele, key, value);
-                })
-            }
-            , removeData: function (key) {
-                /// <summary>删除对象的数据</summary>
-                /// <param name="key" type="String/null">如果为nul则删除全部</param>
-                /// <returns type="self" />
-                return this.each(function (ele) {
-                    $.removeData(ele, key);
-                });
-            }
-        });
-
-        return _tools;
-    }, "1.0.0");
-
     myQuery.define("base/array", function ($) {
         "use strict"; //启用严格模式
 
@@ -2065,6 +1886,7 @@
                 if (i in this && this[i] === item) break;
             return i;
         },
+        push = Array.prototype.push,
         array = {
             elementCollectionToArray: function (eles, real) {
                 /// <summary>把ElementCollection转换成arr[ele]</summary>
@@ -2166,671 +1988,6 @@
         return array;
     }, "1.0.0");
 
-    myQuery.define("main/query", function ($) {
-        "use strict"; //启用严格模式
-        $.module.query = "1.0.0";
-
-        var propertyFun = {
-            "default": function (item, value) { return item != undefined; }
-            , "=": function (item, value) { return item == value; }
-            , "!=": function (item, value) { return item != value; }
-            , "^=": function (item, value) {
-                return item != undefined && item.toString().indexOf(value.toString()) == 0;
-            }
-            , "*=": function (item, value) {
-                return item != undefined && item.indexOf(value.toString()) > -1;
-
-            }
-            , "$=": function (item, value) {
-                if (item != undefined) {
-                    item = item.toString(); ;
-                    value = value.toString();
-                    var ret = item.indexOf(value.toString());
-                    return ret > -1 && item.length - value.length == ret
-                }
-                return false
-            }
-        }
-        , query = {
-            child: function (eles, real) {
-                /// <summary>获得一级子元素</summary>
-                /// <param name="eles" type="Element/ElementCollection/arr">从元素或元素数组或元素集合中获取</param>
-                /// <param name="real" type="Boolean/Null">是否获得真元素，默认为真</param>
-                /// <returns type="Array" />
-                var list = [], real = real === undefined ? true : real;
-                if ($.isEle(eles)) eles = [eles];
-                $.each(eles, function (ele) {
-                    list = list.concat($.elementCollectionToArray(ele.childNodes, real));
-                }, this);
-                return list;
-            }
-            , children: function (eles) {
-                /// <summary>获得所有的子元素</summary>
-                /// <param name="eles" type="Element/ElementCollection/arr">从元素或元素数组或元素集合中获取</param>
-                /// <param name="real" type="Boolean/Null">是否获得真元素，默认为真</param>
-                /// <returns type="Array" />
-                if ($.isEle(eles))
-                    eles = [eles];
-                return $.getEleByTag("*", eles); ;
-            }
-            , createElement: function (html) {
-                //                try {
-                //                    return document.createElement(html);
-                //                } catch (e) {
-                var div = document.createElement("div")
-                    , childNodes;
-                div.innerHTML = html;
-                childNodes = div.childNodes
-                div = null;
-                return childNodes;
-
-                //                    html = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">' +
-                //                    '<html xmlns="http://www.w3.org/1999/xhtml">' +
-                //                    html +
-                //                    '</html>';
-                //                    return $.parseXML(html).documentElement.childNodes;
-                //}
-
-            }
-
-            , filter: function (str, eles) {
-                /// <summary>筛选Element；也可以用来筛选一般数组
-                /// <para>返回ele数组</para>
-                /// </summary>
-                /// <param name="str" type="String/Function">字符串query或者筛选方法</param>
-                /// <param name="eles" type="$/Array/Array:[Element]/Element/ElementCollection">筛选范围</param>
-                /// <returns type="Array" />
-                var num, list = [];
-                if (!str || !eles) {
-                    return list;
-                }
-                else if ($.isFun(str)) {
-                    //                    $.each(eles, function (ele, index) {
-                    //                        if (str(ele, index))
-                    //                            list.push(ele)
-                    //                    }, this);
-                    list = $.filterArray(eles, str, this);
-                }
-                else if (/same/.test(str)) {
-                    if (eles.length > 1) {
-                        for (var len = eles.length, list = [eles[0]], result = true, i = 1, j = 0; i < len; i++) {
-                            j = 0;
-                            for (; j < list.length; j++) {
-                                if (eles[i] === list[j]) {
-                                    result = false;
-                                    break;
-                                }
-                            }
-                            result && list.push(eles[i]);
-                            result = true;
-                        }
-                    }
-                    else {
-                        list = eles;
-                    }
-                }
-                //            else if (/different/.test(str)) {
-                //                if (eles.length > 1) {
-                //                    for (var len = eles.length, i = 1, j = 0; i < len; i++) {
-                //                        j = i + 1;
-                //                        for (; j < list.length; j++) {
-                //                            if (eles[i] === eles[j]) {
-                //                                list.push(eles[i]);
-                //                                j = ++i;
-                //                                break;
-                //                            }
-                //                        }
-                //                    }
-                //                }
-                //            }
-                else if ($.reg.eq.test(str)) {
-                    list = $.slice(eles, reg.$1, reg.$2 || 1);
-                }
-                else if (/first/.test(str))
-                    list = eles.slice(0, 1);
-                else if (/last/.test(str))
-                    list = eles.slice(-1);
-                else if ($.reg.than.test(str)) {
-                    num = parseInt(reg.$2);
-                    num = num < 0 ? eles.length + num : num;
-                    list = str.indexOf("gt") > -1 ? eles.slice(num + 1) : eles.slice(0, num - 1)
-                }
-                else if (/even/.test(str))
-                    $.each(eles, function (ele, index) {
-                        index % 2 == 1 && list.push(ele);
-                    }, this);
-                else if (/odd/.test(str))
-                    $.each(eles, function (ele, index) {
-                        index % 2 == 0 && list.push(ele)
-                    }, this);
-                else if (/child/.test(str))
-                    list = $.child(eles, true);
-                else if (/children/.test(str))
-                    list = $.children(eles);
-                else if (/(selected|checked)/.test(str))//checked
-                    $.each(eles, function (ele) {
-                        if ($.nodeName(ele, "input") || $.nodeName(ele, "option")) {
-                            num = ele[reg.$1];
-                            if (num === true || num == reg.$1 || num == "true")
-                                list.push(ele);
-                        }
-                    }
-               , this);
-                else if ((/(enabled|disabled)/.test(str))) //checked
-                    $.each(eles, function (ele) {
-                        if (!$.nodeName(ele, "input")) return;
-                        num = ele["disabled"];
-                        if (num === true || num == reg.$1 || num == "true")
-                            reg.$1 === "disabled" && list.push(ele);
-                        else
-                            reg.$1 === "enabled" && list.push(ele);
-                    }
-               , this);
-                else if (/(hidden|visible)/.test(str)) {
-                    var result1 = reg.$1.indexOf("hidden") > -1, result2;
-                    $.each(eles, function (ele) {
-                        result2 = ele.style['visibility'] == 'hidden' || ele.style['display'] == 'none';
-                        if (result1 && result2)
-                            list.push(ele);
-                        else if (!result1 && !result2)
-                            list.push(ele);
-                    }
-               , this);
-                }
-                else if (/input/.test(str)) {
-                    list = $.query("input,select,button", eles);
-                }
-                else if (/button/.test(str)) {
-                    $.each($.query("input", eles), function (ele) {
-                        ele["type"] == "button" && list.push(ele)
-                    }, this);
-                    list.concat($.query("button", eles));
-                }
-                else if (/(input|button|text|password|radio|checkbox|submit|image|reset|file|tel)/.test(str)) {
-                    $.each($.query("input", eles), function (ele) {
-                        num = ele["type"];
-                        $.isStr(num) && num.toLowerCase() == reg.$1 && list.push(ele);
-                    }, this);
-                }
-
-                return list;
-            }
-            , find: function (str, eles) {
-                /// <summary>筛选命令 所有后代元素
-                /// <para>返回ele数组</para>
-                /// </summary>
-                /// <param name="str" type="String">字符串query</param>
-                /// <param name="eles" type="Array/Element/ElementCollection">查询范围</param>
-                /// <returns type="Array" />
-                var list = [];
-                if (!str || !eles) {
-
-                }
-                else if ($.reg.id.test(str)) {
-                    var result = $.getEleById(reg.$1, eles.ownerDocument || eles[0].ownerDocument || document);
-                    result && (list = [result]);
-                }
-                else if ($.reg.tagName.test(str)) {
-                    list = $.getEleByTag(reg.$1, eles);
-                }
-                else if ($.reg.css.test(str)) {
-                    list = $.getEleByClass(reg.$1, eles);
-                }
-                return list;
-            }
-
-            , getEle: function (ele, context) {
-                /// <summary>通过各种筛选获得包含DOM元素的数组</summary>
-                /// <param name="ele" type="Element/$/document/str">各种筛选</param>
-                /// <returns type="Array" />
-                var list = [], tmp;
-                if ($.isStr(ele)) {
-                    ele = $.trim(ele);
-                    if (/^<.*>$/.test(ele)) {
-                        list = $.elementCollectionToArray($.createElement(ele), false);
-                    } else {
-                        tmp = context || document;
-                        list = $.query(ele, tmp.documentElement || context);
-                    }
-                }
-                else if ($.isEle(ele))
-                    list = [ele];
-                else if ($.isArr(ele)) {
-                    $.each(ele, function (result) {
-                        $.isEle(result) && list.push(result);
-                    }, this);
-                    list = $.filter("same", list);
-                }
-                else if (ele instanceof $)
-                    list = ele.eles;
-                else if ($.isEleConllection(ele)) {
-                    list = $.elementCollectionToArray(ele, true);
-                }
-                else if (ele === document)
-                    list = [ele.documentElement];
-                else if (ele === window)
-                    list = [window]//有风险的
-                else if ($.isDoc(ele)) {
-                    list = [ele.documentElement];
-                }
-
-                return list;
-            }
-            , getEleByClass: function (className, eles) {
-                /// <summary>通过样式名获得DOM元素
-                /// <para>返回为ele的arr集合</para>
-                /// </summary>
-                /// <param name="className" type="String">样式名</param>
-                /// <param name="eles" type="Element/ElementCollection/Array[Element]">从元素中获取</param>
-                /// <returns type="Array" />
-                if ($.isEle(eles))
-                    eles = [eles];
-                var list = [];
-                if (eles[0].getElementsByClassName)
-                    $.each(eles, function (ele) {
-                        list = list.concat($.elementCollectionToArray(ele.getElementsByClassName(className)));
-                    }, this);
-                else
-                    $.each(eles, function (ele) {
-                        list = list.concat($.iterationChild(ele, function (child, arr) {
-                            if ($.isEle(child) && $.getClass(child, className))
-                                return true
-                        }));
-                    }, this);
-                return list;
-            }
-            , getEleById: function (id, doc) {
-                /// <summary>通过ID获得一个DOM元素</summary>
-                /// <param name="id" type="String">id</param>
-                /// <param name="doc" type="Document">document</param>
-                /// <returns type="Element" />
-
-                return $.isStr(id) ? (doc || document).getElementById(id) : null;
-            }
-            , getEleByTag: function (tag, eles) {
-                /// <summary>通过标签名获得DOM元素</summary>
-                /// <param name="tag" type="String">标签名</param>
-                /// <param name="eles" type="Element/ElementCollection/Array[Element]">从元素或元素集合中获取</param>
-                /// <returns type="Array" />
-                if (eles) {
-                    var str = 'getElementsByTagName', list = [], temp;
-                    if ($.isEle(eles))
-                        return $.elementCollectionToArray(eles[str](tag));
-                    if ($.isEleConllection(eles) || $.isArr(eles)) {
-                        $.each(eles, function (ele) {
-                            temp = ele[str](tag)
-                            if (temp.length > 0)
-                                list = list.concat($.elementCollectionToArray(temp));
-                            //list = list.concat(temp);
-                        }, this);
-                        return list;
-                    }
-                }
-                return null;
-            }
-            , getFirstChild: function (ele) {
-                /// <summary>获得当前DOM元素的第一个真DOM元素</summary>
-                /// <param name="ele" type="Element">dom元素</param>
-                /// <returns type="Element" />
-                var x = ele.firstChild;
-                while (x && !$.isEle(x)) {
-                    x = x.nextSibling;
-                }
-                return x;
-            }
-            , getSelfIndex: function (ele) {
-                /// <summary>通过序号获得当前DOM元素某个真子DOM元素 从0开始</summary>
-                /// <param name="ele" type="Element">dom元素</param>
-                /// <returns type="Number" />
-                var i = -1, node = ele.parentNode.firstChild;
-                while (node) {
-                    if ($.isEle(node) && i++ != undefined && node === ele) {
-                        break;
-                    }
-                    node = node.nextSibling;
-                }
-                return i;
-            }
-
-            , next: function (eles) {
-                /// <summary>获得数组中所有元素的下一个同辈元素</summary>
-                /// <param name="eles" type="Array:[ele]/ElementCollection">dom元素</param>
-                /// <returns type="Array" />
-                var temp = null, list = [], fun = arguments[1] == "previousSibling" ? $.previousSibling : $.nextSibling;
-                $.each(eles, function (ele) {
-                    temp = fun(ele);
-                    temp && list.push(temp);
-                });
-                list = $.filter("same", list);
-                return list;
-            }
-            , nextAll: function (eles) {
-                /// <summary>获得数组中所有元素后面的所有同辈元素</summary>
-                /// <param name="eles" type="Array:[ele]/ElementCollection">dom元素</param>
-                /// <returns type="Element/null" />
-                var temp = null, list = [], fun = arguments[1] == "previousSiblings" ? $.previousSiblings : $.nextSiblings;
-                $.each(eles, function (ele) {
-                    list = list.concat(fun(ele));
-                });
-                list = $.filter("same", list);
-                return list;
-            }
-            , nextSibling: function (ele) {
-                /// <summary>获得当前DOM元素的下一个真DOM元素</summary>
-                /// <param name="ele" type="Element">dom元素</param>
-                /// <returns type="Element/null" />
-                var x = ele.nextSibling;
-                while (x && !$.isEle(x)) {
-                    x = x.nextSibling;
-                }
-                return x;
-            }
-            , nextSiblings: function (ele) {
-                /// <summary>获得当前DOM元素的后面的所有真DOM元素</summary>
-                /// <param name="ele" type="Element">dom元素</param>
-                /// <returns type="Element/null" />
-                var x = ele.nextSibling
-             , list = [];
-                while (x) {
-                    $.isEle(x) && list.push(x);
-                    x = x.nextSibling;
-                }
-                return list;
-            }
-
-            , pre: function (eles) {
-                /// <summary>获得数组中所有元素的上一个同辈元素</summary>
-                /// <param name="eles" type="Array:[ele]/ElementCollection">dom元素</param>
-                /// <returns type="Array" />
-                return $.next(eles, "previousSibling");
-            }
-            , preAll: function (eles) {
-                /// <summary>获得数组中所有元素前面的所有同辈元素</summary>
-                /// <param name="eles" type="Array:[ele]/ElementCollection">dom元素</param>
-                /// <returns type="Element/null" />
-                return $.nextAll(eles, "previousSiblings");
-            }
-            , previousSibling: function (ele) {
-                /// <summary>获得当前DOM元素的上一个真DOM元素</summary>
-                /// <param name="ele" type="Element">dom元素</param>
-                /// <returns type="Element/null" />
-                var x = ele.previousSibling;
-                while (x && !$.isEle(x)) {
-                    x = x.previousSibling;
-                }
-                return x;
-            }
-            , previousSiblings: function (ele) {
-                /// <summary>获得当前DOM元素的前面的所有真DOM元素</summary>
-                /// <param name="ele" type="Element">dom元素</param>
-                /// <returns type="Element/null" />
-                var x = ele.previousSibling
-             , list = [];
-                while (x) {
-                    $.isEle(x) && list.push(x);
-                    x = x.previousSibling;
-                }
-                return list;
-            }
-            , property: function (str, eles) {
-                /// <summary>属性筛选器
-                /// <para>arr返回元素数组</para>
-                /// <para>[id]</para>
-                /// <para>[id='test1']</para>
-                /// <para>[id!='test1']</para>
-                /// <para>[id*='test1']</para>
-                /// <para>[id^='test1']</para>
-                /// <para>[id$='test1']</para>
-                /// </summary>
-                /// <param name="str" type="String">筛选字符产</param>
-                /// <param name="eles" type="Element/ElementCollection/Array">筛选范围</param>
-                /// <returns type="Array" />
-                var list = [];
-                if (!str || !eles) {
-                    return list;
-                }
-                var match = str.match($.reg.property)
-                , name = match[1]
-                , type = match[2]
-                , value = match[4]
-                , fun = propertyFun[type || "default"];
-
-                if (type && !value) {
-                    return list;
-                }
-
-                list = $.filter(function (item) {
-                    return fun(item[name], value);
-                }, eles);
-                return list;
-            }
-
-            , query: function (str, eles) {
-                /// <summary>查询命令
-                /// <para>arr返回元素数组</para>
-                /// </summary>
-                /// <param name="str" type="String">字符串query</param>
-                /// <param name="eles" type="Element/ElementCollection/Array[Element]">查询范围</param>
-                /// <returns type="Array" />
-                if (!eles || (eles.length != undefined && eles.length < 1)) return [];
-                if (!str) {
-                    return $.filter("same", eles);
-                }
-                var list;
-                // 严格模式 无法调用 arguments.callee
-                if (/,/.test(str)) {
-                    list = [];
-                    for (var i = 0, querys = str.split(","); i < querys.length; i++) {
-                        querys[i] && (list = list.concat($.query(querys[i], eles)));
-                    }
-                    return $.query("", list);
-                }
-                else if ($.reg.id.test(str)) {
-                    var result = $.getEleById(reg.$1, eles.ownerDocument || eles[0].ownerDocument || document);
-                    result && (list = [result]);
-                }
-                else if ($.reg.tagName.test(str)) {
-                    list = $.getEleByTag(reg.$1, eles);
-                }
-                else if ($.reg.css.test(str)) {
-                    list = $.getEleByClass(reg.$1, eles);
-                }
-                else if ($.reg.search.test(str)) {
-                    list = $.search(reg.rightContext, eles, true);
-                }
-                else if ($.reg.find.test(str)) {
-                    list = $.find(reg.rightContext, eles, true);
-                }
-                else if ($.reg.filter.test(str)) {
-                    list = $.filter(reg.rightContext, eles, true);
-                }
-                else if ($.reg.property.test(str)) {
-                    list = $.property(str, eles);
-                }
-                else if (/^(\+\%)/.test(str)) {
-                    list = $.nextAll(eles);
-                }
-                else if (/^(\~\%)/.test(str)) {
-                    list = $.preAll(eles);
-                }
-                else if (/^\+/.test(str)) {
-                    list = $.next(eles);
-                }
-                else if (/^\~/.test(str)) {
-                    list = $.pre(eles);
-                }
-                //                else if (/^,/.test(str)) {
-                //                    !$.isArr(eles) && (eles = [eles])
-                //                    return eles.concat(this.query(reg.rightContext, (eles[0].ownerDocument && eles[0].ownerDocument.documentElement) || document.documentElement));
-                //                }
-                return $.query(reg.rightContext, list);
-            }
-
-            , search: function (str, eles) {
-                /// <summary>筛选命令 所有后代元素
-                /// <para>返回ele数组</para>
-                /// </summary>
-                /// <param name="str" type="String">字符串query</param>
-                /// <param name="eles" type="Array/Element/ElementCollection">查询范围</param>
-                /// <returns type="Array" />
-                var list = [];
-                if (!str || !eles) {
-                    return list;
-                }
-                var child = $.child(eles);
-                if ($.reg.id.test(str))
-                    list = $.property("[id=" + reg.$1 + "]", child);
-                else if ($.reg.tagName.test(str)) {
-                    var result = reg.$1 == "*" ? true : false;
-                    list = $.filter(function (ele) {
-                        return result || $.nodeName(ele, reg.$1); //ele.tagName.toLowerCase() === reg.$1.toLowerCase();
-                    }, child);
-                }
-                else if ($.reg.css.test(str)) {
-                    var temp = reg.$1;
-                    list = $.filter(function (ele) {
-                        return $.getClass(ele, temp) && true;
-                    }, child);
-                }
-                return list;
-            }
-
-            , siblings: function (ele) {
-                /// <summary>获得同辈元素的数组</summary>
-                /// <param name="ele" type="Element">ele元素</param>
-                /// <returns type="Array" />
-                return ele.parentNode ? $.elementCollectionToArray(ele.parentNode.childNodes) : [];
-            }
-        };
-
-        $.extend(query);
-
-        $.fn.extend({
-            ancestors: function (str, type) {
-                /// <summary>返回所有元素的所有祖先元素</summary>
-                /// <param name="str" type="String">查询字符串</param>
-                /// <param name="type" type="String">parentNode表示所有祖先元素，offsetParent表示有大小的祖先元素</param>
-                /// <returns type="self" />
-                var list = [], cur, type = type == null || !$.isStr(type) || type.match(/parentNode|offsetParent/) ? "parentNode" : type;
-                this.each(function (ele) {
-                    cur = ele[type];
-                    while (cur != null) {
-                        cur != document && list.push(cur);
-                        cur = cur[type];
-                    }
-                });
-                list = $.filter('same', list);
-                return $($.query(str, list));
-            }
-
-            , filter: function (str) {
-                /// <summary>筛选Element
-                /// <para>返回arr第一项为查询语句</para>
-                /// <para>返回arr第二项为元素数组</para>
-                /// </summary>
-                /// <param name="str" type="String/Function">字符串query或者筛选方法</param>
-                /// <returns type="$" />
-
-                return new $($.filter(str, this.eles));
-
-            }
-            , find: function (str) {
-                /// <summary>通过字符串寻找所有后代节点</summary>
-                /// <param name="str" type="String">查询字符串</param>
-                /// <returns type="$" />
-                return new $($.find(str, this.eles));
-            }
-
-            , eq: function (num, len) {
-                /// <summary>返回元素序号的新$</summary>
-                /// <param name="num1" type="Number/null">序号 缺省返回第一个</param>
-                /// <param name="num2" type="Number/null">长度 返回当前序号后几个元素 缺省返回当前序号</param>
-                /// <returns type="self" />
-                return $($.slice(this.eles, num, len));
-            }
-
-
-            , index: function (real) {
-                /// <summary>返回当前对象的第一个元素在同辈元素中的index顺序</summary>
-                /// <param name="real" type="Boolean/Null">是否获得真元素，默认为真</param>
-                /// <returns type="Number" />
-                return $.getSelfIndex(this.eles[0], real);
-            }
-            , is: function (str) {
-                /// <summary>返回筛选后的数组是否存在</summary>
-                /// <param name="str" type="String">查询字符串</param>
-                /// <returns type="Boolean" />
-                return !!str && $.filter(str, this).length > 0;
-            }
-
-            , next: function () {
-                /// <summary>返回所有元素的下一个同辈元素</summary>
-                /// <returns type="self" />
-                return $($.next(this.eles));
-            }
-            , nextAll: function (eles) {
-                /// <summary>返回所有元素后面的所有同辈元素</summary>
-                /// <param name="eles" type="Array:[ele]">dom元素</param>
-                /// <returns type="Element/null" />
-                return $($.nextAll(this.eles));
-            }
-
-            , parent: function (str, type) {
-                /// <summary>返回所有元素的父级元素</summary>
-                /// <param name="str" type="String">查询字符串</param>
-                /// <param name="type" type="String">parentNode表示所有祖先元素，offsetParent表示有大小的祖先元素</param>
-                /// <returns type="self" />
-                var list = [], cur, result = false, type = type == null || !$.isStr(type) || type.match(/parentNode|offsetParent/) ? "parentNode" : type;
-                this.each(function (ele) {
-                    cur = ele[type];
-                    cur && cur != document && list.push(ele.parentNode);
-                });
-                list = $.filter('same', list);
-                return $($.query(str, list));
-            }
-            , pre: function (eles) {
-                /// <summary>返回所有元素的上一个同辈元素</summary>
-                /// <returns type="self" />
-                return $($.pre(this.eles));
-            }
-            , preAll: function (eles) {
-                /// <summary>返回所有元素前面的所有同辈元素</summary>
-                /// <param name="eles" type="Array:[ele]/ElementCollection">dom元素</param>
-                /// <returns type="self" />
-                return $($.preAll(this.eles));
-            }
-            , property: function (str, eles) {
-                /// <summary>属性筛选器
-                /// <para>arr返回元素数组</para>
-                /// <para>[id]</para>
-                /// <para>[id='test1']</para>
-                /// <para>[id!='test1']</para>
-                /// <para>[id*='test1']</para>
-                /// <para>[id^='test1']</para>
-                /// <para>[id$='test1']</para>
-                /// </summary>
-                /// <param name="str" type="String">筛选字符产</param>
-                /// <returns type="self" />
-                return new $($.property(str, this.eles));
-            }
-
-            , query: function (str) {
-                /// <summary>查询命令</summary>
-                /// <param name="str" type="String">查询字符串</param>
-                /// <returns type="$" />
-                return new $($.query(str, this.eles));
-            }
-
-            , search: function (str) {
-                /// <summary>通过字符串寻找子节点</summary>
-                /// <param name="str" type="String">查询字符串</param>
-                /// <returns type="$" />
-                return new $($.search(str, this.eles));
-            }
-        });
-
-        return query;
-    }, "1.0.0");
 
     window.myQuery = $;
 
@@ -2846,6 +2003,5 @@
             return $;
         });
     }
-
 
 })(window); 

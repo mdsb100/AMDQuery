@@ -1,7 +1,7 @@
 ﻿/// <reference path="../myquery.js" />
 /*include JQuery animate*/
 
-myQuery.define("module/animate", ["module/fx", "module/thread", "module/tween"], function ($, FX, Thread, Tween, undefined) {
+myQuery.define("module/animate", ["main/data", "module/fx", "module/thread", "module/tween"], function ($, data, FX, Thread, Tween, undefined) {
     "use strict"; //启用严格模式
     FX.tick = function () {
         if (thread.getStatus() === "run") return;

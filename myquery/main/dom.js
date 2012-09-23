@@ -1,6 +1,6 @@
 ﻿/// <reference path="../myquery.js" />
 
-myQuery.define("main/dom", function ($, undefined) {
+myQuery.define("main/dom", ["main/data"], function ($, data, undefined) {
     "use strict"; //启用严格模式
     //和jquery做个测试
     var 
@@ -1253,6 +1253,11 @@ myQuery.define("main/dom", function ($, undefined) {
                 $.setWidth(ele, width);
             });
         }
+    });
+
+    $.interfaces.achieve("constructorDom", function (type, dollar, cssObj, ele, parentNode) {
+        cssObj && dollar.css(cssObj);
+        parentNode && ($.isEle(parentNode) || $.is$(parentNode)) && dollar.appendTo(parentNode);
     });
 
     return dom;

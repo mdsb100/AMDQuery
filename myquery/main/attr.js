@@ -42,7 +42,7 @@ myQuery.define("main/attr", function ($, undefined) {
             /// </summary>
             /// <returns type="String" />
             var type = ele.type.toUpperCase(), result;
-            if ($.nodeName(ele, "select")) {
+            if ($.isNode(ele, "select")) {
                 result = ele.value;
                 if ($.isNul(result) || ele.multiple == true) {
                     result = [];
@@ -53,7 +53,7 @@ myQuery.define("main/attr", function ($, undefined) {
                 }
                 return result;
             }
-            else if ($.nodeName(ele, "select") && (type == "CHECKBOX" || type == "RADIO"))
+            else if ($.isNode(ele, "select") && (type == "CHECKBOX" || type == "RADIO"))
                 return ele.checked.toString();
             else
                 return ele.value.toString();
@@ -113,7 +113,7 @@ myQuery.define("main/attr", function ($, undefined) {
             /// </summary>
             /// <returns type="self" />
             var type = ele.type.toUpperCase();
-            if ($.nodeName(ele, "select")) {
+            if ($.isNode(ele, "select")) {
                 if ($.isStr(value) || $.isNum(value))
                     value = [value];
                 $(ele).find("option").each(function (ele) {
@@ -125,7 +125,7 @@ myQuery.define("main/attr", function ($, undefined) {
                     }, this);
                 });
             }
-            else if ($.nodeName(ele, "input") && (type == "CHECKBOX" || type == "RADIO")) {//将来可能用$.setAttr()
+            else if ($.isNode(ele, "input") && (type == "CHECKBOX" || type == "RADIO")) {//将来可能用$.setAttr()
                 if (value === "checked" || value === "true" || value === true)
                     ele.checked = true;
                 else
