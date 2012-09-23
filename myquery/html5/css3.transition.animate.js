@@ -140,20 +140,18 @@ myQuery.define("html5/css3.transition.animate", ["base/client", "html5/css3", "m
                 opt = opt || {};
                 var duration = FX.getDuration(opt.duration)
                     , delay = FX.getDelay(opt.delay)
-                    , ret;
-
-                obj = {
-                    delay: delay
-                    , duration: duration
-                    , easing: $.getTransitionEasing(opt.easing)
-                    , complete: function () {
-                        opt.complete && opt.complete();
-                        $(this).dequeue(); // this is ele
-                        opt = obj = duration = null;
-                    }
-                    , specialEasing: opt.specialEasing
-                    , queue: opt.queue === false ? false : true
-                }
+                    , ret = {
+                        delay: delay
+                        , duration: duration
+                        , easing: $.getTransitionEasing(opt.easing)
+                        , complete: function () {
+                            opt.complete && opt.complete();
+                            $(this).dequeue(); // this is ele
+                            opt = obj = duration = null;
+                        }
+                        , specialEasing: opt.specialEasing
+                        , queue: opt.queue === false ? false : true
+                    };
 
                 return ret;
             }
@@ -199,17 +197,17 @@ myQuery.define("html5/css3.transition.animate", ["base/client", "html5/css3", "m
             }
         });
 
-//        $.support.transition = (function () {
-//            var result = false;
-//            (
-//            client.browser.chrome ||
-//            client.browser.firefox >= 16 ||
-//            client.browser.ie >= 10 ||
-//            client.browser.opera >= 10.5 ||
-//            client.browser.sarfari >= 3.2
-//            ) && (result = true);
-//            return result;
-//        })();
+        //        $.support.transition = (function () {
+        //            var result = false;
+        //            (
+        //            client.browser.chrome ||
+        //            client.browser.firefox >= 16 ||
+        //            client.browser.ie >= 10 ||
+        //            client.browser.opera >= 10.5 ||
+        //            client.browser.sarfari >= 3.2
+        //            ) && (result = true);
+        //            return result;
+        //        })();
 
         if ($.config.model.transitionToAnimation) {
             if ($.support.transition) {

@@ -26,13 +26,7 @@ myQuery.define("module/parse", ["base/is"], function ($, is) {
                 /// <returns type="String" />
                 var result = null;
                 try {
-                    if (window.JSON && window.JSON.stringify) {
-                        result = window.JSON.stringify(json);
-                    }
-                    else {
-                        result = $.eval(JSON);
-                    }
-
+                    result = window.JSON && window.JSON.stringify ? window.JSON.stringify(json) : eval("(" + JSON + ")");
                 } catch (e) { }
                 return result;
             }

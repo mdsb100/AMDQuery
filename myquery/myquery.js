@@ -1261,7 +1261,7 @@
             define: function (id, dependencies, factory) {
                 /// <summary>myQuery的define对象定义
                 /// <para>遵循AMD规范重载</para>
-                /// <para>只是myQuery.define默认会载入window和myQuery对象</para>
+                /// <para>只是myQuery.define默认会载入myQuery对象</para>
                 /// </summary>
                 /// <param name="id" type="String">对象名</param>
                 /// <param name="dependencies" type="Array">依赖列表</param>
@@ -1299,7 +1299,14 @@
                 return this;
             }
              , require: function (dependencies, success, fail) {
-                 // require 自带 ready
+                 /// <summary>myQuery的require对象定义
+                 /// <para>遵循AMD规范重载</para>
+                 /// <para>会自动调用ready确定window和指定package准备完毕</para>
+                 /// </summary>
+                 /// <param name="dependencies" type="Array">依赖列表</param>
+                 /// <param name="success" type="Function">回调函数</param>
+                 /// <param name="fail" type="Function">失败的函数</param>
+                 /// <returns type="self" />
                  var fn = success,
                  success = function () {
                      var arg = arguments;
@@ -1369,8 +1376,8 @@
 
         $._redundance.addHandler = addHandler;
 
-        addHandler(window, "load", function () {
-            windowReady = arguments;
+        addHandler(window, "load", function (e) {
+            windowReady = e || 1;
             todo();
         });
 
