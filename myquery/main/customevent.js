@@ -77,12 +77,12 @@ myQuery.define("main/customevent", function ($, undefined) {
         }
         , _nameSpace: function (type, re) {
             var nameList = type.split("."), i = 0, nameSpace, name, result;
-            nameList.length > 2 && tools.error({ fn: "CustomEvent._nameSpace", msg: "nameSpace is too long" });
+            //nameList.length > 2 && tools.error({ fn: "CustomEvent._nameSpace", msg: "nameSpace is too long" });
             nameSpace = nameList[0];
             name = nameList[1];
             if (name) {
-                result = this.handlers[nameSpace] ? $.isArr(result) && tools.error({ fn: "CustomEvent._nameSpace", msg: "nameSpace was Array of event handler" })
-                    : (result = this.handlers[nameSpace] = {});
+                result = this.handlers[nameSpace] ? $.isArr(result) : (result = this.handlers[nameSpace] = {});
+                //&& tools.error({ fn: "CustomEvent._nameSpace", msg: "nameSpace was Array of event handler" })
 
                 result = this.handlers[nameSpace][name];
 
@@ -90,7 +90,10 @@ myQuery.define("main/customevent", function ($, undefined) {
             }
             else {
                 result = this.handlers[nameSpace];
-                (!result || re) && (result = this.handlers[nameSpace] = []);
+                if (!result || re) {
+                    result = this.handlers[nameSpace] = {};
+                }
+                result = result["__" + nameSpace];
             }
             this._map[type] || (this._map[type] = result);
             return result;
