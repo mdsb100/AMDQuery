@@ -2,6 +2,7 @@
 
 myQuery.define("main/customevent", function ($, undefined) {
     "use strict"; //启用严格模式
+    
     var proto = {
         constructor: CustomEvent
         , addHandler: function (type, handler) {
