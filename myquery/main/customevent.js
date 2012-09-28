@@ -2,7 +2,7 @@
 
 myQuery.define("main/customevent", function ($, undefined) {
     "use strict"; //启用严格模式
-    
+
     var proto = {
         constructor: CustomEvent
         , addHandler: function (type, handler) {
@@ -92,6 +92,7 @@ myQuery.define("main/customevent", function ($, undefined) {
                 result = this.handlers[nameSpace];
                 if (!result || re) {
                     result = this.handlers[nameSpace] = {};
+                    result["__" + nameSpace] = [];
                 }
                 result = result["__" + nameSpace];
             }

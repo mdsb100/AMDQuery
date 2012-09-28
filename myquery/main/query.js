@@ -48,25 +48,6 @@ myQuery.define("main/query", function ($) {
                     eles = [eles];
                 return $.getEleByTag("*", eles); ;
             }
-            , createElement: function (html) {
-                //                try {
-                //                    return document.createElement(html);
-                //                } catch (e) {
-                var div = document.createElement("div")
-                    , childNodes;
-                div.innerHTML = html;
-                childNodes = div.childNodes
-                div = null;
-                return childNodes;
-
-                //                    html = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">' +
-                //                    '<html xmlns="http://www.w3.org/1999/xhtml">' +
-                //                    html +
-                //                    '</html>';
-                //                    return $.parseXML(html).documentElement.childNodes;
-                //}
-
-            }
 
             , elementCollectionToArray: function (eles, real) {
                 /// <summary>把ElementCollection转换成arr[ele]</summary>
@@ -240,7 +221,7 @@ myQuery.define("main/query", function ($) {
                 if ($.isStr(ele)) {
                     ele = $.trim(ele);
                     if (/^<.*>$/.test(ele)) {
-                        list = $.elementCollectionToArray($.createElement(ele), false);
+                        list = $.elementCollectionToArray($.createEle(ele), false);
                     } else {
                         tmp = context || document;
                         list = $.query(ele, tmp.documentElement || context);

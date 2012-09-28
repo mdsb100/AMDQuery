@@ -41,7 +41,17 @@
                 //                );
 
                 //                alert(a.getAttribute("id"))
-                var a = $.getEle("<input id='bbb' /><input id='ccc' />");
+                var a = $.getEle("<div><input id='bbb' /><input id='ccc' /></div>");
+
+                var bbb = $.query("input", a[0]);
+
+                var div = $.createEle("div"), divChild = $.createEle("span");
+                divChild.id = "bspan"
+                div.appendChild(divChild);
+                $(div).append("<div><input id='bbb' /><input id='ccc' /></div>");
+
+                var result = $.query("input", div);
+
 
                 //var h = $.parseHTML("<div id='bc' style='height:100px;background:green;'><span id='htmlTest' ></span></div>");
 

@@ -388,6 +388,21 @@
             return name.join("");
         }
         , console: tools.console
+        , createEle: function (tag) {
+            /// <summary>制造一个Dom元素</summary>
+            /// <param name="tag" type="String">标签名</param>
+            /// <returns type="Element" />
+            var ele, div;
+            if (/^<.*>$/.test(tag)) {
+                div = document.createElement("div");
+                div.innerHTML = tag;
+                ele = div.childNodes
+                div = null;
+            } else {
+                ele = document.createElement(tag);
+            }
+            return ele;
+        }
 
         , each: function (obj, callback, context) {
             /// <summary>对象遍历</summary>
@@ -1269,10 +1284,10 @@
                     fn = arg[len - 2];
                     arg.pop();
                 }
-                $.module[id] = version;
-                if (arg[1] && arg[1].constructor == Array) {
-                    require.named(dependencies);
-                }
+                //$.module[id] = version;
+                //                if (arg[1] && arg[1].constructor == Array) {
+                //                    require.named(dependencies);
+                //                }
                 if (typeof fn == "function") {
                     arg[arg.length - 1] = function () {
                         var arg = tools.argToArray(arguments, 0);
@@ -1281,12 +1296,6 @@
                         else { try { return fn.apply(null, arg); } finally { } }
                     }
 
-                    //                    $.bind(function () {
-                    //                        var arg = tools.argToArray(arguments, 0);
-                    //                        arg.splice(0, 0, myQuery);
-                    //                        if (_config.amd.debug) { return this.apply(null, arg); }
-                    //                        else { try { return this.apply(null, arg); } finally { } }
-                    //                    }, fn);
                     window.define ? window.define.apply(null, arg) : fn();
                 }
                 return this;
@@ -1313,7 +1322,7 @@
              }
         });
     })();
-
+    //用promise完成
     myQuery.define("base/ready", function ($) {
         "use strict"; //启用严格模式
         var 
@@ -1348,11 +1357,11 @@
             };
         $.ready = ready;
         if (_config.myquery.package) {
-            $.require("json/package", function (Package) {
+            require("json/package", function (Package) {
                 var json = Package[_config.myquery.package];
 
                 if (json) {
-                    $.require(json, function () {
+                    require(json, function () {
                         $Ready = 1;
                         todo();
                     });

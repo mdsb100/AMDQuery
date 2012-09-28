@@ -164,12 +164,6 @@ myQuery.define("main/dom", ["base/support", "main/data"], function ($, support, 
                 return false;
             }
         }
-        , createEle: function (tag) {
-            /// <summary>制造一个Dom元素</summary>
-            /// <param name="tag" type="String">标签名</param>
-            /// <returns type="Element" />
-            return document.createElement(tag);
-        }
 
         , getHeight: function (ele) {
             /// <summary>获得元素的高度
@@ -801,14 +795,16 @@ myQuery.define("main/dom", ["base/support", "main/data"], function ($, support, 
             if (!c)
                 return this;
             if ($.isStr(c)) {
-                var str, div;
+                var str, childNodes, i = 0, len;
                 str = c.match(/^<\w.+[\/>|<\/\w.>]$/);
                 if (str) {
                     c = str[0];
                     this.each(function (ele) {
-                        div = document.createElement("div");
-                        div.innerHTML = c;
-                        ele[fun](div.childNodes[0]);
+                        childNodes = $.createEle(c);
+                        //div.innerHTML = c;
+                        for (i = 0, len = childNodes.length; i < len; i++) {
+                            ele[fun](childNodes[i]);
+                        }
                         //delete div;
                     });
                 }
