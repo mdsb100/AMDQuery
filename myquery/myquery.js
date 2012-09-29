@@ -672,7 +672,13 @@
         , version: version
     };
 
-    //mmodule.base = "1.0.0";
+    var Promise;
+    (function () {
+        Promise = function () { }
+        Promise.prototype = {
+            constructor:Promise
+        }
+    });
 
     (function (/*require*/) {
         "use strict"; //启用严格模式
@@ -1322,7 +1328,12 @@
              }
         });
     })();
-    //用promise完成
+    
+    myQuery.define("base/Promise",function(
+
+        return Promise;
+    ),"1.0.0");
+
     myQuery.define("base/ready", function ($) {
         "use strict"; //启用严格模式
         var 
