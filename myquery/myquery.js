@@ -672,14 +672,6 @@
         , version: version
     };
 
-    var Promise;
-    (function () {
-        Promise = function () { }
-        Promise.prototype = {
-            constructor: Promise
-        }
-    })();
-
     (function (/*require*/) {
         "use strict"; //启用严格模式
         $.module.require = "1.0.0";
@@ -1329,7 +1321,11 @@
         });
     })();
 
-    myQuery.define("base/Promise", function () {
+     myQuery.define("base/Promise", function () {
+         function Promise() { }
+         Promise.prototype = {
+             constructor: Promise
+         }
         return Promise;
     }, "1.0.0");
 
