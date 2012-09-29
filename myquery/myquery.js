@@ -676,9 +676,9 @@
     (function () {
         Promise = function () { }
         Promise.prototype = {
-            constructor:Promise
+            constructor: Promise
         }
-    });
+    })();
 
     (function (/*require*/) {
         "use strict"; //启用严格模式
@@ -1328,11 +1328,10 @@
              }
         });
     })();
-    
-    myQuery.define("base/Promise",function(
 
+    myQuery.define("base/Promise", function () {
         return Promise;
-    ),"1.0.0");
+    }, "1.0.0");
 
     myQuery.define("base/ready", function ($) {
         "use strict"; //启用严格模式
