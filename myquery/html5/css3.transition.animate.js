@@ -121,18 +121,23 @@ myQuery.define("html5/css3.transition.animate", ["base/client", "html5/css3", "m
                 }
                 else {
                     if (option.queue === false) {
-                        animate(ele, property, option);
+                        animateByTransition(ele, property, option);
                     }
                     else {
-                        var queue = $.queue(ele, "fx", function (ele, dequeue) {
+                        $.queue(ele, "fx", function () {
                             animateByTransition(ele, property, option);
-                            dequeue();
-                            easingList = property = option = null;
+                            $.dequeue(ele, [ele]);
+                            property = option = null;
                         });
+                        //                        var queue = $.queue(ele, "fx", function (ele, dequeue) {
+                        //                            animateByTransition(ele, property, option);
+                        //                            dequeue();
+                        //                            easingList = property = option = null;
+                        //                        });
 
-                        if (queue[0] !== "inprogress") {
-                            $.dequeue(ele, "fx");
-                        }
+                        //                        if (queue[0] !== "inprogress") {
+                        //                            $.dequeue(ele, "fx");
+                        //                        }
                     }
                 }
                 return this;
@@ -148,7 +153,7 @@ myQuery.define("html5/css3.transition.animate", ["base/client", "html5/css3", "m
                         , complete: function () {
                             opt.complete && opt.complete();
                             $(this).dequeue(); // this is ele
-                            opt = obj = duration = null;
+                            opt = duration = null;
                         }
                         , specialEasing: opt.specialEasing
                         , queue: opt.queue === false ? false : true
@@ -159,9 +164,12 @@ myQuery.define("html5/css3.transition.animate", ["base/client", "html5/css3", "m
             , getTransitionEasing: function (easing) {
                 if (easing) {
                     if ($.isArr(easing)) {
-                        if ($.unCamelCase(easing.slice(0, 1)) == "cubic-bezier") {
-                            var fun = easing.slice(0, 1);
-                            return fun + "(" + easing.join(",") + ")";
+                        var name = easing.slice(0, 1)[0];
+                        if ($.unCamelCase(name) == "cubic-bezier") {
+                            return "cubic-bezier(" + easing.join(",") + ")";
+                        }
+                        else {
+                            easing = name;
                         }
                     }
                     easing = $.unCamelCase(easing);

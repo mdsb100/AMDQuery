@@ -10,7 +10,7 @@
     </style>
     <link href="css/reset.css" rel="stylesheet" type="text/css" />
     <script src="myquery/myquery.js" type="text/javascript" myquery="define:$;amd:0;"
-        amd="detectCR:1;async:1" model="transitionToAnimation:0"></script>
+        amd="detectCR:1;async:1" model="transitionToAnimation:1"></script>
     <script type="text/javascript">
         $.require([
         "main/query",
@@ -25,7 +25,7 @@
         , function () {
             //$.getTransitionEasing("quar.easeInOut");
             //var ret = "width 0.4s linear".match(/width[\w\s\d\.\-]*((\,|\,\s)|$)/)
-           
+
             var id = 0; window.go1 = $("#go1"); //.initTransform3d() 设置要看的 加了这句在firefox不太好
             //$.animationPower.setDely(2000)//.sleep(2000).start();
 
@@ -35,7 +35,7 @@
                 .animate({ width: "300px", top: "500px", opacity: 0.5 }, {
                     duration: 2000
                     , delay: 2000
-                    , easing: ["linear", 1, 1]
+                    , easing: "linear"//["cubicBezier", 1, 1]
                     , complete: function () {
                         ///$.showMsg()
                         //                        $.animationPower.sleep(2000);
@@ -112,7 +112,23 @@
                 });
             });
 
-            var button10 = $("#button10").addHandler("click", function () {
+            var button10 = $("#button10").click(function () {
+                $.animate(go1[0], { width: "300px", top: "500px", opacity: 0.5 }, {
+                    duration: 2000
+                    , delay: 0
+                    , easing: "linear"
+                    , complete: function () {
+                        $.showMsg("1")
+                    }
+                }).animate(go1[0], { height: "+=100px", opacity: 1 }, { duration: 4000, easing: "linear"
+                   , complete: function () {
+                       $.showMsg("2")
+                       //alert("2")
+                   }
+                });
+            });
+
+            var button11 = $("#button11").addHandler("click", function () {
                 go1.css({ w: 100, h: 100, t: 0, l: 0, o: 1 }).css3({ transform: [] });
             });
 
@@ -154,6 +170,9 @@
             animateByCss3Transition
         </button>
         <button id="button10">
+            $.animate
+        </button>
+        <button id="button11">
             reset
         </button>
     </div>

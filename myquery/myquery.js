@@ -698,7 +698,7 @@
 
             if (fn) {
                 this.list.splice(0, 0, "inprogress");
-                fn.apply(context, args);
+                fn.apply(context || null, args || []);
             }
             return this;
 

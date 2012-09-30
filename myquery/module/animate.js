@@ -121,6 +121,11 @@ myQuery.define("module/animate", ["base/queue", "main/data", "module/fx", "modul
                     animate(ele, property, option);
                 }
                 else {
+                    $.queue(ele, "fx", function () {
+                        animate(ele, property, option);
+                        $.dequeue(ele, [ele]);
+                        property = option = null;
+                    });
                     //                    var queue = $.queue(ele, "fx", function (ele, dequeue) {
                     //                        animate(ele, property, option);
                     //                        dequeue();
