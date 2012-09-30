@@ -1355,6 +1355,7 @@
             resolve: function (obj) {
                 if (this.state != 'todo') {
                     tools.error({ fn: "Promise.resolve", msg: "already resolved" })
+
                 };
 
                 try {
