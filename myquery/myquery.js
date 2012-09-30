@@ -1321,13 +1321,136 @@
         });
     })();
 
-     myQuery.define("base/Promise", function () {
-         function Promise() { }
-         Promise.prototype = {
-             constructor: Promise
-         }
+    myQuery.define("base/promise", function () {
+        function Promise(todo, fail, progress) {
+            this.state = 'todo';
+            this.result = null;
+            this.thens = [];
+            this.todo = todo || function (obj) {
+                return obj;
+            };
+            this.fail = fail;
+            this.progress = progress;
+
+        }
+        Promise.prototype = {
+            constructor: Promise,
+            call: function (name, result) {
+                switch (name) {
+                    case "fail":
+                    case "progress":
+                        break
+                    case "todo":
+                    default:
+                        name = "todo"
+
+                }
+                //var arg = $.argToArray(arguments, 1);
+
+                return this[name](result);
+            },
+            get: function (propertyName) {
+                return this[propertyName];
+            },
+            resolve: function (obj) {
+                if (this.state != 'todo') {
+                    tools.error({ fn: "Promise.resolve", msg: "already resolved" })
+                };
+
+                try {
+                    this.result = this.fulfilled(obj);
+                    this.state = 'done';
+                } catch (e) {
+                    if (this.fail) {
+                        this.result = this.fail(obj);
+                    }
+                    else {
+                        throw e;
+                    }
+                    this.state = 'fail';
+                }
+
+                for (var i = 0, len = this.thens.length, then; i < len; ++i) {
+                    // 依次调用该任务的后续任务
+                    then = this.thens[i];
+                    this._trigger(then.promise, this.state = 'fail' ? then.nextFail : then.nextToDo);
+                }
+                return this;
+            },
+            _trigger: function (nextPromise, nextFun) {
+                if (!nextFun && this.state == "fail") {
+                    throw "it is fail and there is not fail function";
+                    return nextPromise;
+                }
+                var nextResult = nextFun(this.result); // 调用nextOK
+                if (nextResult instanceof Promise) {
+                    // 异步的情况，返回值是一个Promise，则当其resolve的时候，nextPromise才会被resolve
+                    nextResult.then(function (obj) {
+                        nextPromise.resolve(obj);
+                    });
+                } else {
+                    // 同步的情况，返回值是普通结果，立即将nextPromise给resolve掉
+                    nextPromise.resolve(nextResult);
+                }
+                return nextPromise;
+            },
+            _push: function (nextPromise, nextToDo, nextFail) {
+                this.thens.push({
+                    promise: nextPromise
+                    , nextToDo: nextToDo
+                    , nextFail: nextFail
+                });
+                return nextPromise;
+            },
+            then: function (nextToDo, nextFail) {
+                var promise = new Promise();
+                if (this.state == 'done') {
+                    // 如果当前状态是已完成，则nextOK会被立即调用
+                    return this._trigger(promise, nextToDo);
+                }
+                else if (this.status == "fail") {
+                    return this._trigger(promise, nextFail);
+                }
+                else {
+                    // 否则将会被加入队列中
+                    return this._push(promise, nextToDo, nextFail);
+                }
+            }
+        }
         return Promise;
     }, "1.0.0");
+
+    require("base/promise", function (Promise) {
+        function print(num) {
+            console.log(num);
+            a + num;
+            return num;
+        }
+        function print1(num) {
+            console.log(num);
+            return num;
+        }
+        function addTwo(num) {
+            return num + 2;
+        }
+        function delay(ms) {
+            return function (obj) {
+                var promise = new Promise();
+                setTimeout(function () {
+                    promise.resolve(obj);
+                }, ms);
+                return promise;
+            };
+        }
+
+        var promise = new Promise(print, print1);
+        promise.then(addTwo, addTwo)
+            .then(print, print1)
+        //.then(delay(2000))
+            .then(addTwo, addTwo)
+            .then(print, print1); // 这里的任务将会加入到队列中
+        promise.resolve(3);
+    });
 
     myQuery.define("base/ready", function ($) {
         "use strict"; //启用严格模式
