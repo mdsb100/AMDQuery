@@ -672,6 +672,42 @@
         , version: version
     };
 
+    function Queue() {
+        this.list = [];
+    }
+
+    Queue.prototype = {
+        constructor: Queue,
+        queue: function (fn, context, args) {
+            if (typeof fn == "function") {
+                this.list.push(fn);
+                if (this.list[0] != "inprogress") {
+                    this.dequeue(context, args);
+                }
+            }
+            else if (fn && fn.constructor == Array) {
+                this.list = fn;
+            }
+            return this;
+        },
+        dequeue: function (context, args) {
+            var fn = this.list.shift()
+            if (fn && fn === "inprogress") {
+                fn = this.list.shift();
+            }
+
+            if (fn) {
+                this.list.splice(0, 0, "inprogress");
+                fn.apply(context, args);
+            }
+            return this;
+
+        },
+        clearQueue: function () {
+            return this.queue([]);
+        }
+    };
+
     (function (/*require*/) {
         "use strict"; //启用严格模式
         $.module.require = "1.0.0";
@@ -685,6 +721,8 @@
             tools.console.warn("window.require has defined");
             _require = window.require;
         }
+
+        var requireQueue = new Queue();
 
         function ClassModule(module, dependencies, factory, status, container, fail) {
             if (!module) { return; }
@@ -1034,7 +1072,7 @@
                             }
                             else {
                                 this.setStatus(1);
-                                require._queue(function () {
+                                requireQueue.queue(function () {
                                     if (!ClassModule.anonymousID) { ClassModule.anonymousID = self.id; }
                                     self.load();
                                 });
@@ -1118,7 +1156,7 @@
             //执行请求队列
             if (!ClassModule.namedModules[id] && deep == 2) {
                 ClassModule.anonymousID = null;
-                require._dequeue();
+                requireQueue.dequeue();
             }
 
             return ret;
@@ -1162,29 +1200,7 @@
             return ret.request(success);
         };
         tools.extend(require, {
-            list: []
-            , _queue: function (fn) {
-                if (typeof fn == "function") {
-                    this.list.push(fn);
-                    if (this.list[0] != "inprogress") {
-                        this._dequeue();
-                    }
-                }
-                return this;
-            }
-            , _dequeue: function () {
-                var fn = this.list.shift()
-                if (fn && fn === "inprogress") {
-                    fn = this.list.shift();
-                }
-
-                if (fn) {
-                    this.list.splice(0, 0, "inprogress");
-                    fn();
-                }
-                return this;
-            }
-            , noConflict: function () {
+            noConflict: function () {
                 window.require = _require;
                 return require;
             }
@@ -1320,6 +1336,11 @@
              }
         });
     })();
+
+    myQuery.define("base/queue", function ($) {
+        $.queue = Queue;
+        return Queue
+    });
 
     myQuery.define("base/promise", function () {
         function Promise(todo, fail, progress) {

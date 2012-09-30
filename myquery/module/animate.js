@@ -1,7 +1,7 @@
 ﻿/// <reference path="../myquery.js" />
 /*include JQuery animate*/
 
-myQuery.define("module/animate", ["main/data", "module/fx", "module/thread", "module/tween"], function ($, data, FX, Thread, Tween, undefined) {
+myQuery.define("module/animate", ["base/queue", "main/data", "module/fx", "module/thread", "module/tween"], function ($, Queue, data, FX, Thread, Tween, undefined) {
     "use strict"; //启用严格模式
     FX.tick = function () {
         if (thread.getStatus() === "run") return;
@@ -121,45 +121,47 @@ myQuery.define("module/animate", ["main/data", "module/fx", "module/thread", "mo
                     animate(ele, property, option);
                 }
                 else {
-                    var queue = $.queue(ele, "fx", function (ele, dequeue) {
-                        animate(ele, property, option);
-                        dequeue();
-                        property = option = null;
-                    });
+                    //                    var queue = $.queue(ele, "fx", function (ele, dequeue) {
+                    //                        animate(ele, property, option);
+                    //                        dequeue();
+                    //                        property = option = null;
+                    //                    });
 
-                    if (queue[0] !== "inprogress") {
-                        $.dequeue(ele, "fx");
-                    }
+                    //                    if (queue[0] !== "inprogress") {
+                    //                        $.dequeue(ele, "fx");
+                    //                    }
                 }
             }
             return this;
         }
         , animationPower: thread
 
-        , clearQueue: function (type) {
-            return $.queue(type || "fx", []);
+        , clearQueue: function (ele, type) {
+            return $.queue(ele, type || "fx", []);
         }
 
         , dequeue: function (ele, type) {
             //quote from jQuery-1.4.1 
             type = type || "fx";
+            var q = $.queue(ele, type);
 
-            var queue = $.queue(ele, type), fn = queue.shift();
+            return q.dequeue(ele, [ele]);
+            //            var queue = $.queue(ele, type), fn = queue.shift();
 
-            if (fn === "inprogress") {
-                fn = queue.shift();
-            }
+            //            if (fn === "inprogress") {
+            //                fn = queue.shift();
+            //            }
 
-            if (fn) {
-                if (type === "fx") {
-                    //queue.unshift("inprogress");
-                    queue.splice(0, 0, "inprogress");
-                }
+            //            if (fn) {
+            //                if (type === "fx") {
+            //                    //queue.unshift("inprogress");
+            //                    queue.splice(0, 0, "inprogress");
+            //                }
 
-                fn.call(ele, ele, function () {
-                    $.dequeue(ele, type);
-                });
-            }
+            //                fn.call(ele, ele, function () {
+            //                    $.dequeue(ele, type);
+            //                });
+            //            }
         }
 
         , _getAnimateOpt: function (opt) {
@@ -192,7 +194,7 @@ myQuery.define("module/animate", ["main/data", "module/fx", "module/thread", "mo
 
         }
 
-        , queue: function (ele, type, data) {
+        , queue: function (ele, type, fn) {
             //quote from jQuery-1.4.1 
             if (!ele) {
                 return;
@@ -201,19 +203,23 @@ myQuery.define("module/animate", ["main/data", "module/fx", "module/thread", "mo
             type = (type || "fx") + "queue";
             var q = $.data(ele, type);
 
-            if (!data) {
-                return q || [];
+            //            if (!data) {
+            //                return q || [];
+            //            }
+
+            //            if (!q || $.isArr(data)) {
+            //                q = $.data(ele, type, $.makeArray(data));
+
+            //            }
+            //            else {
+            //                q.push(data);
+            //            }
+            if (!q) {
+                q = $.data(ele, type, new Queue());
             }
 
-            if (!q || $.isArr(data)) {
-                q = $.data(ele, type, $.makeArray(data));
-
-            }
-            else {
-                q.push(data);
-            }
-
-            return q;
+            return q.queue(fn, ele, [ele]);
+            //return q;
         }
 
         //, timers: timers
@@ -279,9 +285,9 @@ myQuery.define("module/animate", ["main/data", "module/fx", "module/thread", "mo
             return this.each(function (ele) {
                 var queue = $.queue(ele, type, data);
 
-                if (type === "fx" && queue[0] !== "inprogress") {
-                    $.dequeue(ele, type);
-                }
+                //                if (type === "fx" && queue[0] !== "inprogress") {
+                //                    $.dequeue(ele, type);
+                //                }
             });
         }
     });
