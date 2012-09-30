@@ -1358,7 +1358,7 @@
                 };
 
                 try {
-                    this.result = this.fulfilled(obj);
+                    this.result = this.todo(obj);
                     this.state = 'done';
                 } catch (e) {
                     if (this.fail) {
@@ -1369,51 +1369,38 @@
                     }
                     this.state = 'fail';
                 }
-
-                for (var i = 0, len = this.thens.length, then; i < len; ++i) {
-                    // 依次调用该任务的后续任务
-                    then = this.thens[i];
-                    this._trigger(then.promise, this.state = 'fail' ? then.nextFail : then.nextToDo);
+                if (this.result instanceof Promise) {
+                    // 异步的情况，返回值是一个Promise，则当其resolve的时候，nextPromise才会被resolve
+                    var self = this;
+                    this.result.then(function (result) {
+                        self._next(result);
+                    });
+                } else {
+                    this._next(this.result);
                 }
                 return this;
             },
-            _trigger: function (nextPromise, nextFun) {
-                if (!nextFun && this.state == "fail") {
-                    throw "it is fail and there is not fail function";
-                    return nextPromise;
+            _next: function (result) {
+                for (var i = 0, len = this.thens.length, promise; i < len; ++i) {
+                    // 依次调用该任务的后续任务
+                    promise = this.thens[i];
+                    promise.resolve(result);
                 }
-                var nextResult = nextFun(this.result); // 调用nextOK
-                if (nextResult instanceof Promise) {
-                    // 异步的情况，返回值是一个Promise，则当其resolve的时候，nextPromise才会被resolve
-                    nextResult.then(function (obj) {
-                        nextPromise.resolve(obj);
-                    });
-                } else {
-                    // 同步的情况，返回值是普通结果，立即将nextPromise给resolve掉
-                    nextPromise.resolve(nextResult);
-                }
+                return this;
+            },
+            _push: function (nextPromise) {
+                this.thens.push(nextPromise);
                 return nextPromise;
             },
-            _push: function (nextPromise, nextToDo, nextFail) {
-                this.thens.push({
-                    promise: nextPromise
-                    , nextToDo: nextToDo
-                    , nextFail: nextFail
-                });
-                return nextPromise;
-            },
-            then: function (nextToDo, nextFail) {
-                var promise = new Promise();
-                if (this.state == 'done') {
+            then: function (nextToDo, nextFail, nextProgress) {
+                var promise = new Promise(nextToDo, nextFail, nextProgress);
+                if (this.state != 'todo') {
                     // 如果当前状态是已完成，则nextOK会被立即调用
-                    return this._trigger(promise, nextToDo);
-                }
-                else if (this.status == "fail") {
-                    return this._trigger(promise, nextFail);
+                    this.resolve();
                 }
                 else {
                     // 否则将会被加入队列中
-                    return this._push(promise, nextToDo, nextFail);
+                    return this._push(promise);
                 }
             }
         }
@@ -1446,7 +1433,7 @@
         var promise = new Promise(print, print1);
         promise.then(addTwo, addTwo)
             .then(print, print1)
-        //.then(delay(2000))
+            .then(delay(2000))
             .then(addTwo, addTwo)
             .then(print, print1); // 这里的任务将会加入到队列中
         promise.resolve(3);
