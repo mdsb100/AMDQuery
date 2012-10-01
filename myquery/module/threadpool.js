@@ -1,12 +1,6 @@
-﻿myQuery.define("module/threadpool", ["module/thread"], function ($, undefined) {
+﻿myQuery.define("module/threadpool", ["module/object", "module/thread"], function ($, object, Thread, undefined) {
     "use strict"; //启用严格模式
-    function ThreadPool() {
-
-        this.init()
-        this.render.apply(this, arguments);
-    };
-
-    ThreadPool.prototype = {
+    var ThreadPool = object.Class("Thread", {
         init: function () {
             this.pool = [];
         }
@@ -85,7 +79,6 @@
             this.pool.splice(index || this.pool.length - 1, 1);
             return this;
         }
-        , constructor: ThreadPool
         , get: function (index) {
             /// <summary>获得某个进程</summary>
             /// <param name="index" type="Number">下标 缺省为获得最后个</param>
@@ -122,8 +115,7 @@
                 thread.stop();
             });
         }
-    };
+    });
 
     return $.threadPool = ThreadPool;
-
 });
