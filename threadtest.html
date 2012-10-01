@@ -1,0 +1,47 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+    <style>
+        #go1
+        {
+            opacity: 0.9;
+        }
+    </style>
+    <link href="css/reset.css" rel="stylesheet" type="text/css" />
+    <script src="myquery/myquery.js" type="text/javascript" myquery="define:$;amd:0;"
+        amd="detectCR:1;async:1" model="transitionToAnimation:0"></script>
+    <script type="text/javascript">
+        $.require([
+            "module/thread",
+            "module/threadpool"
+        ]
+        , function (Thread, ThreadPool) {
+            var count = document.getElementById("count"),
+            info = document.getElementById("info");
+            var 
+            thread1 = new Thread({ duration: 2000, delay: 1000, id: "thread1"
+                , fun: function (step, duration, o) {
+                    //document.body.innerHTML = o.count++;
+                }
+            }, { count: 0 })
+            , thread2 = new Thread({ duration: NaN, delay: 3000, id: "thread2"
+                , fun: function (step, duration, o) {
+                    count.innerHTML = o.count++;
+                }
+            }, { count: 0 });
+            var treadpool = new ThreadPool(thread1, thread2)
+            .on("start", function () {
+                info.innerHTML += this.id + " ready <br>";
+            }).start();
+
+        });
+    </script>
+</head>
+<body>
+    <div id="count">
+    </div>
+    <div id="info">
+    </div>
+</body>
+</html>

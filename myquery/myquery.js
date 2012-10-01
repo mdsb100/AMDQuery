@@ -1298,7 +1298,7 @@
                     fn = arg[len - 2];
                     arg.pop();
                 }
-                //$.module[id] = version;
+                $.module[id] = version;
                 //                if (arg[1] && arg[1].constructor == Array) {
                 //                    require.named(dependencies);
                 //                }

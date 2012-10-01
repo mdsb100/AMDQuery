@@ -1,6 +1,6 @@
 ﻿/// <reference path="../myquery.js" />
 
-myQuery.define('module/thread', ["main/customevent", "module/object"], function ($, CustomEvent, object) {
+myQuery.define('module/thread', ["main/customevent", "base/extend", "module/object"], function ($, CustomEvent, extend, object) {
     "use strict"; //启用严格模式
 
     var requestAnimFrame = window.requestAnimationFrame ||
@@ -16,10 +16,8 @@ myQuery.define('module/thread', ["main/customevent", "module/object"], function 
             window.mozCancelRequestAnimationFrame ||
             window.oCancelRequestAnimationFrame ||
             window.msCancelRequestAnimationFrame ||
-            clearTimeout
-        , isFun = function (a) {
-            return !!(a && typeof a == "function");
-        };
+            clearTimeout;
+
 
     function Thread(obj, paras) {
         /// <summary>创造一个新进程
@@ -36,29 +34,41 @@ myQuery.define('module/thread', ["main/customevent", "module/object"], function 
         /// <param name="obj" type="Object">属性</param>
         /// <param name="paras" type="paras[]">作用域所用参数</param>
         /// <returns type="Thread" />
-        CustomEvent.call(this);
-        this.runFlag = false;
-        this.forever = false;
-        this.sleepFlag = false;
-        this.power = setTimeout;
-        this.clear = clearTimeout;
-        this.status = "stop";
-        this.args = [];
-        this.tick = this.sleepTime = this.pauseTime = 0;
-        this.sleepId = null;
-        this.begin = null;
-        this.timerId = null;
+
         this.init.apply(this, arguments);
+        this.render.apply(this, arguments);
     }
-    myQuery.easyExtend(Thread, {
+
+    $.easyExtend(Thread, {
         cancelRequestAnimFrame: cancelRequestAnimFrame
         , count: 0
 
         , fps: 13
 
         , requestAnimFrame: requestAnimFrame
+
+        , _defaultSetting: {
+            runFlag: false,
+            forever: false,
+            sleepFlag: false,
+            power: setTimeout,
+            clear: clearTimeout,
+            status: "stop",
+            args: [],
+            tick: 0,
+            sleepTime: 0,
+            pauseTime: 0,
+            sleepId: null,
+            begin: null,
+            timerId: null,
+            fun: function () { },
+            interval: null,
+            isAnimFrame: true,
+            duration: NaN,
+            id: ""
+        }
     });
-    var ii = 0;
+
     object.inheritProtypeWidthExtend(Thread, CustomEvent);
     $.easyExtend(Thread.prototype, {
         constructor: Thread
@@ -93,7 +103,6 @@ myQuery.define('module/thread', ["main/customevent", "module/object"], function 
                 if (self.runFlag === false || (self.tick >= self.duration && !self.forever)) {
                     return self.stop();
                 }
-                //console.log(ii++);
                 if (self.sleepFlag) {
                     self.sleep();
                     return;
@@ -156,51 +165,17 @@ myQuery.define('module/thread', ["main/customevent", "module/object"], function 
             /// <param name="obj" type="Object">进程参数</param>
             /// <param name="paras" type="paras:[any]">计算参数</param>
             /// <returns type="self" />
-            var o = arguments[0] || {};
-            if (!o) return this;
-            //this.handlers = {};
-            //this.context = o;
-            //status == "run" && 
             this.stop();
+            CustomEvent.call(this);
+            $.extend(this, Thread._defaultSetting, obj);
+            this.id = this.id || $.now();
+            this.args = $.argToArray(arguments, 1);
 
-            this.setSleepTime(o.sleepTime);
-            this.setDely(o.delay);
-
-            this.fun = o.fun || this.fun || function () { };
-
-            //            if (o.interval == undefined && o.isAnimFrame == true) {
-            //                this.power = requestAnimFrame;
-            //                this.fps = Thread.fps;
-            //            }
-            //            else {
-            //                this.power = setTimeout;
-            //                this.fps = o.interval || (1000 / o.fps) || Thread.fps;
-            //            }
-
-            //            this.fps = Math.round(this.fps);
-            this.setFps(o);
-
-            this.clearHandlers();
-            isFun(o.start) && this.addHandler("start", o.start);
-            isFun(o.stop) && this.addHandler("stop", o.stop);
-            isFun(o.delay) && this.addHandler("delay", o.delay);
-            isFun(o.sleepStar) && this.addHandler("sleepStar", o.sleepStar);
-            isFun(o.sleepStop) && this.addHandler("sleepStop", o.sleepStop);
-
-            if (typeof o.duration == "number" && o.duration > 0) {
-                this.duration = o.duration;
-                this.forever = false;
-            }
-            else {
-                this.duration = this.duration || 0;
-                this.forever = true;
-            }
-            this.args = [].slice.call(arguments, 1);
-            //            for (var i = 1, len = arguments.length; i < len; i++)
-            //                this.args.push(arguments[i]);
-
-            //this.getStatus() == "run" && this.start();
             return this;
+        }
+        , render: function () {
+            return this.setFps()
+            .setDuration(this.duration);
         }
 
         , _executor: function (a, b) {
@@ -236,23 +211,33 @@ myQuery.define('module/thread', ["main/customevent", "module/object"], function 
             /// <summary>设置持续时间</summary>
             /// <param name="time" type="Number">毫秒</param>
             /// <returns type="self" />
-            if (duration)
-                this.duration = duration
+            var status = this.getStatus();
+            this.stop();
+            if (duration == undefined || duration == NaN || (typeof duration == "number" && duration > 0)) {
+                //this.duration = o.duration;
+                this.forever = false;
+            }
+            else {
+                this.duration = NaN;
+                this.forever = true;
+            }
+            status == "run" && this.start();
             return this;
         }
         , getDuration: function () {
             /// <summary>获得持续时间</summary>
+            /// <para>NaN表示无限</para>
             /// <returns type="Number" />
             return this.duration;
         }
-        , setFps: function (o) {
+        , setFps: function () {
             /// <summary>设置帧值</summary>
             /// <param name="o" type="Object">数值</param>
             /// <returns type="Number" />
             var status = this.getStatus();
             this.stop();
 
-            if (o.interval == undefined && o.isAnimFrame == true) {
+            if (this.interval == null && this.isAnimFrame == true) {
                 this.power = requestAnimFrame;
                 this.clear = cancelRequestAnimFrame;
                 this.fps = Thread.fps;
@@ -260,7 +245,7 @@ myQuery.define('module/thread', ["main/customevent", "module/object"], function 
             else {
                 this.power = setTimeout;
                 this.clear = clearTimeout;
-                this.fps = o.interval || (1000 / o.fps) || Thread.fps;
+                this.fps = this.interval || (1000 / this.fps) || Thread.fps;
             }
 
             this.fps = Math.round(this.fps);

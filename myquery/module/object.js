@@ -14,47 +14,88 @@ myQuery.define("module/object", ["base/extend"], function ($, extend) {
                 return this;
             }
         }
-        , Class: function (prototype, supper, name) {
+        , Class: function (prototype, statics, supper, name) {
             /// <summary>定义一个类</summary>
             /// <para>构造函数会执行init和render</para>
             /// <param name="prototype" type="Object">prototype原型</param>
+            /// <param name="static" type="Object">静态方法</param>
             /// <param name="supper" type="Function">父类</param>
             ///  <param name="name" type="String/undefined">父类</param>
             /// <returns type="self" />
-            if (!arguments.length) {
-                return null;
+            var argLen = arguments.length,
+            st = statics,
+            su = supper,
+            na = na;
+
+            switch (argLen) {
+                case 0:
+                    return null;
+                case 1:
+                    break;
+                case 2:
+                    if (typeof st == "function") {
+                        su = statics;
+                        st = null;
+                    }
+                    else if (typeof st == "string") {
+                        na = statics;
+                        st = null
+                    }
+                    break;
+                case 3:
+                    if (typeof su == "string") {
+                        na = supper;
+                        su = null;
+                    }
+                    if (typeof st == "function") {
+                        su = statics;
+                        st = null;
+                    }
+                    break;
+
             }
+            statics = st;
+            supper = su;
+            name = name;
             //supper和什么名字 查一下
-            if ($.isStr(supper)) {
-                name = supper;
-                supper = null;
-            }
+
             var anonymous =
                 name
                 ? (eval(
                     [
                         "(function ", name, "() {\n",
                         "    this.init.apply(this, arguments);\n",
-                        "    this.render();\n",
+                        "    this.render.apply(this,arguments);\n",
                         "});\n"
                     ].join("")
                 ) || eval("(" + name + ")"))
                 : function () {
                     this.init.apply(this, arguments);
-                    this.render();
+                    this.render(this, arguments);
                 };
             $.object.inheritProtypeWidthParasitic(anonymous, supper, name);
             prototype = $.extend({}, $.object._defaultPrototype, prototype);
             prototype.constructor = anonymous;
             $.easyExtend(anonymous.prototype, prototype);
+
+            $.easyExtend(anonymous, statics);
+
+
             anonymous.__tag = "object.Class";
 
-            if (supper && supper.__tag == "object.Class") {
-                anonymous._SupperConstructor = function () {
+            if (supper) {
+                anonymous._SupperConstructor = supper.__tag == "object.Class"
+                ? function () {
                     var arg = $.argToArray(arguments), self = arg.splice(0, 1)[0];
                     supper.prototype.init.apply(self, arg);
                     supper.prototype.render.apply(self);
                 }
+                : function () {
+                    var arg = $.argToArray(arguments), self = arg.splice(0, 1)[0];
+                    supper.call(self, arg);
+                }
+            } else {
+                anonymous._SupperConstructor = function () { };
             }
 
             return anonymous;

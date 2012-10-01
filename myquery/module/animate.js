@@ -92,7 +92,7 @@ myQuery.define("module/animate", ["base/queue", "main/data", "module/fx", "modul
             }
         });
 
-        Thread.prototype.stop.call(this)
+        Thread.prototype.stop.call(this);
     }
 
     $.extend({

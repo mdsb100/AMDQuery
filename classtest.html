@@ -21,6 +21,13 @@
                 , write = function (s) {
                     div[0].innerHTML = div[0].innerHTML += s;
                 }
+                var test1 = object.Class({}, {}, "test1");
+                var test2 = object.Class({}, {}, test1);
+                var test3 = object.Class({}, {});
+                var test4 = object.Class({},"test4");
+                var test5 = object.Class({}, test1, "test3");
+                var test6 = object.Class({});
+                return;
                 var Supper = object.Class({
                     init: function (name, color) {
                         this.name = name;
@@ -71,6 +78,10 @@
                     },
                     showColor: function () {
                         write("child.color.fun:" + this.color + "<br>");
+                    }
+                }, {
+                    todo: function () {
+
                     }
                 }, Sub, "Child");
 
@@ -104,10 +115,12 @@
                         this.showName();
                     },
                     showColor: function () {
-                        write("supper.color.fun:" + this.color + "<br>");
+                        write("supper.color.fun:" + this.color + "
+<br>");
                     },
                     showName: function () {
-                        write("supper.name.fun:" + this.name + "<br>");
+                        write("supper.name.fun:" + this.name + "
+<br>");
                     }
 
                 }, "Supper");
@@ -122,7 +135,8 @@
                         this.showWeight();
                     },
                     showWeight: function () {
-                        write("sub.weight.fun:" + this.weight + "<br>");
+                        write("sub.weight.fun:" + this.weight + "
+<br>");
                     }
                 }, Supper, "Sub")
 
@@ -139,18 +153,23 @@
                         this.showColor();
                     },
                     showAge: function () {
-                        write("child.age.fun:" + this.age + "<br>");
+                        write("child.age.fun:" + this.age + "
+<br>");
                     },
                     showColor: function () {
-                        write("child.color.fun:" + this.color + "<br>");
+                        write("child.color.fun:" + this.color + "
+<br>");
                     }
                 }, Sub, "Child");
 
                 var child = new Child(25, 75, "caojun", "black");
 
-                write("constructor:" + child.constructor.toString() + "<br>");
-                write("<br>");
-                write("code:" + "<br>");
+                write("constructor:" + child.constructor.toString() + "
+<br>");
+                write("
+<br>");
+                write("code:" + "
+<br>");
             });
         });
     </pre>

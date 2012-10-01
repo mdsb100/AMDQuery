@@ -145,7 +145,7 @@ myQuery.define("module/widget", ["main/data", "main/event", "main/attr", "module
             constructor = function (obj, target, base) { base.call(this, obj, target); };
         }
 
-        object.inheritProtypeWidthParasitic(constructor, Widget);
+        object.inheritProtypeWidthParasitic(constructor, Widget, "Widget");
 
         constructor.prototype = $.extend(true, {}, constructor.prototype, prototype);
         constructor.prototype.widgetName = name;
@@ -165,7 +165,7 @@ myQuery.define("module/widget", ["main/data", "main/event", "main/attr", "module
             this.each(function (ele) {
                 var data = $.data(ele, key); //key = nameSpace + "." + name,
                 if (data == undefined)
-                    data = $.data(ele, key, new constructor(a, $(ele), Widget));
+                    data = $.data(ele, key, new constructor(a, $(ele), Widget));//完全调用基类的构造函数
                 else {
                     if ($.isObj(a))
                         data._init_(a)._refresh_();
