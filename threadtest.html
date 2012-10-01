@@ -10,7 +10,7 @@
     </style>
     <link href="css/reset.css" rel="stylesheet" type="text/css" />
     <script src="myquery/myquery.js" type="text/javascript" myquery="define:$;amd:0;"
-        amd="detectCR:1;async:1" model="transitionToAnimation:0"></script>
+        amd="detectCR:1;async:1" model="transitionToAnimation:1"></script>
     <script type="text/javascript">
         $.require([
             "module/thread",
@@ -30,14 +30,14 @@
                     count.innerHTML = o.count++;
                 }
             }, { count: 0 });
-            var treadpool = new ThreadPool(thread1, thread2)
+            var threadpool = new ThreadPool(thread1, thread2)
             .on("start", function () {
                 info.innerHTML += this.id + " ready <br>";
             }).start();
 
             ThreadPool.prototype.constructor;
 
-            treadpool instanceof ThreadPool;
+            threadpool instanceof ThreadPool;
 
         });
     </script>

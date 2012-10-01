@@ -2,6 +2,20 @@
 
 myQuery.define('module/thread', ["main/customevent", "base/extend", "module/object"], function ($, CustomEvent, extend, object) {
     "use strict"; //启用严格模式
+    /// <summary>创造一个新进程
+    /// <para>num obj.delay:延迟多少毫秒</para>
+    /// <para>num obj.duration:持续多少毫米</para>
+    /// <para>num obj.sleep:睡眠多少豪秒</para>
+    /// <para>num obj.interval 如果interval存在 则fps无效 isAnimFram也无效
+    /// <para>num obj.fps:每秒多少帧</para>
+    /// <para>fun obj.fun:要执行的方法</para>
+    /// <para>bol obj.isAnimFram:是否使用新动画函数，使用后将无法初始化fps</para>
+    /// <para>可以调用addHandler方法添加事件</para>
+    /// <para>事件类型:start、stop、delay、sleepStar,sleepStop</para>
+    /// </summary>
+    /// <param name="obj" type="Object">属性</param>
+    /// <param name="paras" type="paras[]">作用域所用参数</param>
+    /// <returns type="Thread" />
 
     var requestAnimFrame = window.requestAnimationFrame ||
               window.webkitRequestAnimationFrame ||
@@ -18,60 +32,26 @@ myQuery.define('module/thread', ["main/customevent", "base/extend", "module/obje
             window.msCancelRequestAnimationFrame ||
             clearTimeout;
 
+    var Thread = object.Class("Thread", {
+        init: function (obj, paras) {
+            /// <summary>初始化参数 初始化参数会停止进程</summary>
+            /// <param name="obj" type="Object">进程参数</param>
+            /// <param name="paras" type="paras:[any]">计算参数</param>
+            /// <returns type="self" />
+            //this.stop();
+            Thread._SupperConstructor(this);
+            $.extend(this, Thread._defaultSetting, obj);
+            this.id = this.id || $.now();
+            this.args = $.argToArray(arguments, 1);
 
-    function Thread(obj, paras) {
-        /// <summary>创造一个新进程
-        /// <para>num obj.delay:延迟多少毫秒</para>
-        /// <para>num obj.duration:持续多少毫米</para>
-        /// <para>num obj.sleep:睡眠多少豪秒</para>
-        /// <para>num obj.interval 如果interval存在 则fps无效 isAnimFram也无效
-        /// <para>num obj.fps:每秒多少帧</para>
-        /// <para>fun obj.fun:要执行的方法</para>
-        /// <para>bol obj.isAnimFram:是否使用新动画函数，使用后将无法初始化fps</para>
-        /// <para>可以调用addHandler方法添加事件</para>
-        /// <para>事件类型:start、stop、delay、sleepStar,sleepStop</para>
-        /// </summary>
-        /// <param name="obj" type="Object">属性</param>
-        /// <param name="paras" type="paras[]">作用域所用参数</param>
-        /// <returns type="Thread" />
-
-        this.init.apply(this, arguments);
-        this.render.apply(this, arguments);
-    }
-
-    $.easyExtend(Thread, {
-        cancelRequestAnimFrame: cancelRequestAnimFrame
-        , count: 0
-
-        , fps: 13
-
-        , requestAnimFrame: requestAnimFrame
-
-        , _defaultSetting: {
-            runFlag: false,
-            forever: false,
-            sleepFlag: false,
-            power: setTimeout,
-            clear: clearTimeout,
-            status: "stop",
-            args: [],
-            tick: 0,
-            sleepTime: 0,
-            pauseTime: 0,
-            sleepId: null,
-            begin: null,
-            timerId: null,
-            fun: function () { },
-            interval: null,
-            isAnimFrame: true,
-            duration: NaN,
-            id: ""
+            return this;
         }
-    });
 
-    object.inheritProtypeWidthExtend(Thread, CustomEvent);
-    $.easyExtend(Thread.prototype, {
-        constructor: Thread
+        , render: function () {
+            return this.setFps()
+            .setDuration(this.duration);
+        }
+
         , start: function () {
             /// <summary>启动</summary>
             /// <returns type="self" />
@@ -158,24 +138,6 @@ myQuery.define('module/thread', ["main/customevent", "base/extend", "module/obje
                 this.trigger("stop", this, { type: "stop" });
             }
             return this;
-        }
-
-        , init: function (obj, paras) {
-            /// <summary>初始化参数 初始化参数会停止进程</summary>
-            /// <param name="obj" type="Object">进程参数</param>
-            /// <param name="paras" type="paras:[any]">计算参数</param>
-            /// <returns type="self" />
-            this.stop();
-            CustomEvent.call(this);
-            $.extend(this, Thread._defaultSetting, obj);
-            this.id = this.id || $.now();
-            this.args = $.argToArray(arguments, 1);
-
-            return this;
-        }
-        , render: function () {
-            return this.setFps()
-            .setDuration(this.duration);
         }
 
         , _executor: function (a, b) {
@@ -325,7 +287,35 @@ myQuery.define('module/thread', ["main/customevent", "base/extend", "module/obje
 
             return this;
         }
-    });
+    }, {
+        cancelRequestAnimFrame: cancelRequestAnimFrame
+        , count: 0
+
+        , fps: 13
+
+        , requestAnimFrame: requestAnimFrame
+
+        , _defaultSetting: {
+            runFlag: false,
+            forever: false,
+            sleepFlag: false,
+            power: setTimeout,
+            clear: clearTimeout,
+            status: "stop",
+            args: [],
+            tick: 0,
+            sleepTime: 0,
+            pauseTime: 0,
+            sleepId: null,
+            begin: null,
+            timerId: null,
+            fun: function () { },
+            interval: null,
+            isAnimFrame: true,
+            duration: NaN,
+            id: ""
+        }
+    }, CustomEvent);
 
     return $.thread = Thread;
 });
