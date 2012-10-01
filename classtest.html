@@ -19,37 +19,62 @@
             ready(function () {
                 var div = document.getElementsByTagName("div")
                 , write = function (s) {
-                    div[0].innerHTML = div.innerHTML += s;
+                    div[0].innerHTML = div[0].innerHTML += s;
                 }
-
-                var Supper = function (show, todo) {
-                    this.arg1 = show;
-                    this.arg2 = todo;
-                }
-                Supper.prototype = {
-                    constructor: Supper
-                    , show: function () {
-                        write("supper.show:" + this.arg1 + "<br>");
-                    }
-                    , todo: function () {
-                        write("supper.todo:" + this.arg2 + "<br>");
-                    }
-                }
-
-                var Child = object.Class({
-                    init: function (show) {
-                        this.arg1 = show;
+                var Supper = object.Class({
+                    init: function (name, color) {
+                        this.name = name;
+                        this.color = color;
                         return this;
                     },
                     render: function () {
-                        this.show();
-                        this.todo();
+                        this.showColor();
+                        this.showName();
                     },
-                    show: function () {
-                        write("child.show:" + this.arg1 + "<br>");
+                    showColor: function () {
+                        write("supper.color.fun:" + this.color + "<br>");
+                    },
+                    showName: function () {
+                        write("supper.name.fun:" + this.name + "<br>");
                     }
-                }, Supper, "Child"),
-                child = new Child(["childArg"], ["supperArg", "supperTo"]);
+
+                }, "Supper");
+
+                var Sub = object.Class({
+                    init: function (weight, name, color) {
+                        Sub._SupperConstructor(this, name, color);
+                        this.weight = weight;
+                        return this;
+                    },
+                    render: function () {
+                        this.showWeight();
+                    },
+                    showWeight: function () {
+                        write("sub.weight.fun:" + this.weight + "<br>");
+                    }
+                }, Supper, "Sub")
+
+                var Child = object.Class({
+                    init: function (age, weight, name, color) {
+                        Child._SupperConstructor(this, weight, name, color);
+                        this.age = age;
+                        return this;
+                    },
+                    render: function () {
+                        this.showName();
+                        this.showAge();
+                        this.showWeight();
+                        this.showColor();
+                    },
+                    showAge: function () {
+                        write("child.age.fun:" + this.age + "<br>");
+                    },
+                    showColor: function () {
+                        write("child.color.fun:" + this.color + "<br>");
+                    }
+                }, Sub, "Child");
+
+                var child = new Child(25, 75, "caojun", "black");
 
                 write("constructor:" + child.constructor.toString() + "<br>");
                 write("<br>");
@@ -64,43 +89,68 @@
     <pre>
          $.require(["module/object", "base/ready"], function (object, ready) {
             ready(function () {
-                var div = document.getElementsByName("div")
+                var div = document.getElementsByTagName("div")
                 , write = function (s) {
-                    div[0].innerHTML = div.innerHTML += s;
+                    div[0].innerHTML = div[0].innerHTML += s;
                 }
-
-                var Supper = function (show, todo) {
-                    this.arg1 = show;
-                    this.arg2 = todo;
-                }
-                Supper.prototype = {
-                    constructor: Supper
-                    , show: function () {
-                        write("supper.show:" + this.arg1);
-                    }
-                    , todo: function () {
-                        write("supper.todo:" + this.arg2 );
-                    }
-                }
-
-                var Child = object.Class({
-                    init: function (show) {
-                        this.arg1 = show;
+                var Supper = object.Class({
+                    init: function (name, color) {
+                        this.name = name;
+                        this.color = color;
                         return this;
                     },
                     render: function () {
-                        this.show();
-                        this.todo();
+                        this.showColor();
+                        this.showName();
                     },
-                    show: function () {
-                        write("child.show:" + this.arg1);
+                    showColor: function () {
+                        write("supper.color.fun:" + this.color + "<br>");
+                    },
+                    showName: function () {
+                        write("supper.name.fun:" + this.name + "<br>");
                     }
-                }, Supper, "Child"),
-                child = new Child(["childArg"], ["supperArg", "supperTo"]);
 
-                write("constructor:" + child.constructor.toString());
-                write();
-                write("code:");
+                }, "Supper");
+
+                var Sub = object.Class({
+                    init: function (weight, name, color) {
+                        Sub._SupperConstructor(this, name, color);
+                        this.weight = weight;
+                        return this;
+                    },
+                    render: function () {
+                        this.showWeight();
+                    },
+                    showWeight: function () {
+                        write("sub.weight.fun:" + this.weight + "<br>");
+                    }
+                }, Supper, "Sub")
+
+                var Child = object.Class({
+                    init: function (age, weight, name, color) {
+                        Child._SupperConstructor(this, weight, name, color);
+                        this.age = age;
+                        return this;
+                    },
+                    render: function () {
+                        this.showName();
+                        this.showAge();
+                        this.showWeight();
+                        this.showColor();
+                    },
+                    showAge: function () {
+                        write("child.age.fun:" + this.age + "<br>");
+                    },
+                    showColor: function () {
+                        write("child.color.fun:" + this.color + "<br>");
+                    }
+                }, Sub, "Child");
+
+                var child = new Child(25, 75, "caojun", "black");
+
+                write("constructor:" + child.constructor.toString() + "<br>");
+                write("<br>");
+                write("code:" + "<br>");
             });
         });
     </pre>

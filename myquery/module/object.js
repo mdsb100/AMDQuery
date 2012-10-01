@@ -25,29 +25,37 @@ myQuery.define("module/object", ["base/extend"], function ($, extend) {
                 return null;
             }
             //supper和什么名字 查一下
-
+            if ($.isStr(supper)) {
+                name = supper;
+                supper = null;
+            }
             var anonymous =
                 name
                 ? (eval(
                     [
-                        "(function ", name, "(arg, supperArg) {\n",
-                        "    supper.apply(this, supperArg);\n",
-                        "    this.init.apply(this, arg);\n",
+                        "(function ", name, "() {\n",
+                        "    this.init.apply(this, arguments);\n",
                         "    this.render();\n",
                         "});\n"
                     ].join("")
                 ) || eval("(" + name + ")"))
-                : function (arg, supperArg) {
-                    supper.apply(this, supperArg);
-                    this.init.apply(this, arg);
-                    this.render()
+                : function () {
+                    this.init.apply(this, arguments);
+                    this.render();
                 };
-
+            $.object.inheritProtypeWidthParasitic(anonymous, supper, name);
             prototype = $.extend({}, $.object._defaultPrototype, prototype);
             prototype.constructor = anonymous;
-            anonymous.prototype = prototype;
+            $.easyExtend(anonymous.prototype, prototype);
+            anonymous.__tag = "object.Class";
 
-            $.object.inheritProtypeWidthExtend(anonymous, supper);
+            if (supper && supper.__tag == "object.Class") {
+                anonymous._SupperConstructor = function () {
+                    var arg = $.argToArray(arguments), self = arg.splice(0, 1)[0];
+                    supper.prototype.init.apply(self, arg);
+                    supper.prototype.render.apply(self);
+                }
+            }
 
             return anonymous;
         }
@@ -76,17 +84,25 @@ myQuery.define("module/object", ["base/extend"], function ($, extend) {
             child.prototype.constructor = con || parent.prototype.constructor;
             return this;
         }
-        , inheritProtypeWidthParasitic: function (child, parent) {
-            /// <summary>继承prototype 使用寄生 会保有同一个内存地址</summary>
+        , inheritProtypeWidthParasitic: function (child, parent, name) {//加个parentName
+            /// <summary>继承prototype 使用寄生 不会保有同一个内存地址</summary>
             /// <param name="child" type="Object">子类</param>
             /// <param name="parent" type="Object">父类</param>
+            /// <param name="name" tuype="String">可以再原型链中看到父类的名字 而不是Parasitic</param>
             /// <returns type="self" />
-            function ctor() { this.constructor = child; }
-            ctor.prototype = parent.prototype;
-            child.prototype = new ctor();
-            var prototype = Object(parent.prototype);
-            child.prototype = prototype;
+            if (!parent) {
+                return this;
+            }
+            var Parasitic =
+            name ?
+            (eval("(function " + name + "() { });") || eval("(" + name + ")"))
+            : function () { };
+            Parasitic.prototype = parent.prototype;
+            child.prototype = new Parasitic();
+            //var prototype = Object(parent.prototype);
+            //child.prototype = prototype;
             child.prototype.constructor = child;
+
             return this;
         }
         , inheritProtypeWidthCombination: function (child, parent) {
@@ -107,7 +123,7 @@ myQuery.define("module/object", ["base/extend"], function ($, extend) {
             return !obj.hasOwnProperty(name) && (name in obj);
         }
 
-        , providePropertyFunction: function (obj, list) {
+        , providePropertyGetSet: function (obj, list) {
             /// <summary>提供类的属性get和set方法</summary>
             /// <param name="obj" type="Object">类</param>
             /// <param name="list" type="Object/Array">属性名列表</param>

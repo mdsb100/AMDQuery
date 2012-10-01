@@ -1,7 +1,7 @@
 ﻿/// <reference path="../myquery.js" />
 // quote from colo.js by Andrew Brehaut, Tim Baumann
 
-myQuery.define('module/color', ['module/csscolors'], function ($, css_colors, undefined) {
+myQuery.define('module/color', ['module/object', 'module/csscolors'], function ($, object, css_colors, undefined) {
     "use strict"; //启用严格模式
 
     var css_integer = '(?:\\+|-)?\\d+'
@@ -101,7 +101,7 @@ myQuery.define('module/color', ['module/csscolors'], function ($, css_colors, un
         this.init(r, g, b);
     }
 
-    $.object.inheritProtypeWidthCombination(RGB, color);
+    object.inheritProtypeWidthCombination(RGB, color);
     $.easyExtend(RGB.prototype, {
         red: 0,
         green: 0,
@@ -252,8 +252,8 @@ myQuery.define('module/color', ['module/csscolors'], function ($, css_colors, un
             return this.clone();
         }
 
-    })
-    .providePropertyFunction(RGB, RGB.prototype._propertys);
+    });
+    object.providePropertyGetSet(RGB, RGB.prototype._propertys);
 
     function HSV(hue, saturation, value) {
         if (!(this instanceof HSV)) {
@@ -262,7 +262,7 @@ myQuery.define('module/color', ['module/csscolors'], function ($, css_colors, un
         this.init(hue, saturation, value);
     }
 
-    $.object.inheritProtypeWidthCombination(HSV, color);
+    object.inheritProtypeWidthCombination(HSV, color);
     $.easyExtend(HSV.prototype, {
         hue: 0,
         saturation: 0,
@@ -493,8 +493,8 @@ myQuery.define('module/color', ['module/csscolors'], function ($, css_colors, un
             return this.clone();
         }
 
-    })
-    .providePropertyFunction(HSV, HSV.prototype._propertys);
+    });
+    object.providePropertyGetSet(HSV, HSV.prototype._propertys);
 
     function HSL(hue, saturation, lightness) {
         if (!(this instanceof HSL)) {
@@ -503,7 +503,7 @@ myQuery.define('module/color', ['module/csscolors'], function ($, css_colors, un
         this.init(hue, saturation, lightness);
     }
 
-    $.object.inheritProtypeWidthCombination(HSL, color);
+    object.inheritProtypeWidthCombination(HSL, color);
     $.easyExtend(HSL.prototype, {
         hue: 0,
         saturation: 0,
@@ -561,8 +561,8 @@ myQuery.define('module/color', ['module/csscolors'], function ($, css_colors, un
             return this.toHSV().toRGB();
         }
 
-    })
-    .providePropertyFunction(HSL, HSL.prototype._propertys);
+    });
+    object.providePropertyGetSet(HSL, HSL.prototype._propertys);
 
     return $.color = color;
 
