@@ -1342,18 +1342,18 @@
         return Queue
     });
 
-    myQuery.define("base/promise", function () {
+    myQuery.define("base/promise", function ($) {
         function Promise(todo, fail, progress) {
-            this.state = 'todo';
-            this.result = null;
-            this.thens = [];
-            this.todo = todo || function (obj) {
-                return obj;
-            };
-            this.fail = fail;
-            this.progress = progress;
-
+            this.init(todo, fail, progress);
         }
+
+        tools.extend(Promise, {
+            _branch: {},
+            _back: [],
+            _tag: {},
+            _count: 0
+        });
+
         Promise.prototype = {
             constructor: Promise,
             call: function (name, result) {
@@ -1373,9 +1373,22 @@
             get: function (propertyName) {
                 return this[propertyName];
             },
+            init: function (todo, fail, progress) {
+                this.state = 'todo';
+                this.result = null;
+                this.thens = [];
+                this.todo = todo || function (obj) {
+                    return obj;
+                };
+                this.fail = fail;
+                this.progress = progress;
+                var _back = Promise._back;
+                _back = _back[_back.length - 1];
+                this.path = _back ? _back.branch : "master";
+            },
             resolve: function (obj) {
                 if (this.state != 'todo') {
-                    tools.error({ fn: "Promise.resolve", msg: "already resolved" })
+                    tools.error({ fn: "Promise.resolve", msg: "already resolveed" })
 
                 };
 
@@ -1402,9 +1415,13 @@
                 }
                 return this;
             },
+            render: function () { },
             _next: function (result) {
-                for (var i = 0, len = this.thens.length, promise; i < len; ++i) {
+                for (var i = 0, len = this.thens.length, promise; i < len; i++) {
                     // 依次调用该任务的后续任务
+                    if (len == 2) {
+                        var a = 0;
+                    }
                     promise = this.thens[i];
                     promise.resolve(result);
                 }
@@ -1412,54 +1429,74 @@
             },
             _push: function (nextPromise) {
                 this.thens.push(nextPromise);
-                return nextPromise;
+                return this;
             },
             then: function (nextToDo, nextFail, nextProgress) {
                 var promise = new Promise(nextToDo, nextFail, nextProgress);
                 if (this.state != 'todo') {
                     // 如果当前状态是已完成，则nextOK会被立即调用
-                    this.resolve();
+                    promise.resolve(this.result);
                 }
                 else {
                     // 否则将会被加入队列中
-                    return this._push(promise);
+                    this._push(promise);
                 }
+                return promise;
+            },
+            branch: function (todo, fail, progress, name) {
+                var 
+                self,
+                arg = arguments,
+                last = arg[arg.length - 1],
+                hasName = typeof last == "string";
+                name = hasName ? last : "branch" + Promise._count++;
+                //self = Promise._branch.pop() || this;
+                Promise._back.push({ branch: name, promise: this });
+                if (self = Promise._branch[name]) {
+                }
+                else {
+                    Promise._branch[name] = self = this;
+                }
+                //var t = todo, f = fail, p = progress;
+                if (hasName) {
+                    switch (arg.length) {
+                        case 2:
+                            fail = null;
+                            break;
+                        case 3:
+                            progress = null;
+                            break;
+
+                    }
+                }
+
+                return self.then(todo, fail, progress);
+            },
+            reBranch: function () {
+                return Promise._back.pop().promise;
+            },
+            tag: function (str) {
+                var self;
+                if (self = Promise._tag[str]) {
+
+                }
+                else {
+                    Promise._tag[str] = self = this;
+                }
+                return self;
+            },
+            master: function () {
+                var master = Promise._branch[0] || this;
+                //Promise._branch
+                return master
+            },
+            checkout: function () {
+                return this.path;
             }
-        }
+        };
+        // when的话 记个id？
         return Promise;
     }, "1.0.0");
-
-    require("base/promise", function (Promise) {
-        function print(num) {
-            console.log(num);
-            a + num;
-            return num;
-        }
-        function print1(num) {
-            console.log(num);
-            return num;
-        }
-        function addTwo(num) {
-            return num + 2;
-        }
-        function delay(ms) {
-            return function (obj) {
-                var promise = new Promise();
-                setTimeout(function () {
-                    promise.resolve(obj);
-                }, ms);
-                return promise;
-            };
-        }
-
-        var promise = new Promise(print, print1);
-        promise.then(addTwo, addTwo)
-            .then(print, print1)
-            .then(delay(2000))
-            .then(addTwo, addTwo)
-            .then(print, print1); // 这里的任务将会加入到队列中
-        promise.resolve(3);
-    });
 
     myQuery.define("base/ready", function ($) {
         "use strict"; //启用严格模式
