@@ -317,5 +317,14 @@ myQuery.define('module/thread', ["main/customevent", "base/extend", "module/obje
         }
     }, CustomEvent);
 
+    object.providePropertyGetSet(Thread, {
+        args: "-pu -r -w",
+        timeId: "-pa -r",
+        sleepId: "-pa -r",
+        interval: "-pu -r",
+        isAnimFrame: "-pu -r",
+        id: "-pu -r"
+    });
+
     return $.thread = Thread;
 });

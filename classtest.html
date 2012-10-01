@@ -85,7 +85,22 @@
                     }
                 }, Sub);
 
+                object.providePropertyGetSet(Child, {
+                    name: "-pu -w -r",
+                    age: "-pu -r",
+                    color: "-pu -w -r",
+                    weight: "-pa -w -r"
+                })
+
                 var child = new Child(25, 75, "caojun", "black");
+
+                child.setName("jarry");
+
+                var age = child.getAge();
+
+                var color = child.getColor();
+
+                var weight = child._getWeight();
 
                 write("constructor:" + child.constructor.toString() + "<br>");
                 write("<br>");

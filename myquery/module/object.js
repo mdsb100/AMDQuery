@@ -150,18 +150,30 @@ myQuery.define("module/object", ["base/extend"], function ($, extend) {
             return !obj.hasOwnProperty(name) && (name in obj);
         }
 
-        , providePropertyGetSet: function (obj, list) {
+        , providePropertyGetSet: function (obj, object) {
             /// <summary>提供类的属性get和set方法</summary>
             /// <param name="obj" type="Object">类</param>
-            /// <param name="list" type="Object/Array">属性名列表</param>
+            /// <param name="object" type="Object">属性名列表</param>
             /// <returns type="String" />
-            return $.each(list, function (value, key) {
-                this[$.camelCase(value, "set")] = function (a) {
-                    this[value] = a;
-                    return this;
+            if (!$.isPlainObj(object)) {
+                return this;
+            }
+            return $.each(object, function (value, key) {
+                value = typeof value == "string" ? value : "-pu -w -r";
+                var prefix = /\-pa[\s]?/.test(value) ? "_" : "",
+                w = /\-w[\s]?/.test(value),
+                r = /\-r[\s]?/.test(value);
+
+                if (w) {
+                    this[prefix + $.camelCase(key, "set")] = function (a) {
+                        this[key] = a;
+                        return this;
+                    }
                 }
-                this[$.camelCase(value, "get")] = function () {
-                    return this[value];
+                if (r) {
+                    this[prefix + $.camelCase(key, "get")] = function () {
+                        return this[key];
+                    }
                 }
             }, obj.prototype);
         }
