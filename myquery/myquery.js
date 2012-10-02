@@ -1343,6 +1343,20 @@
     });
 
     myQuery.define("base/promise", function ($) {
+        "use strict"; //启用严格模式
+        var checkArg = function (todo, fail, progress, path) {
+            var arg = tools.argToArray(arguments), len = arg.length, last = arg[len - 1],
+                hasName = typeof last == "string", result, i = len, begin;
+
+            begin = hasName ? len - 1 : len;
+            for (; i < 4; i++) {
+                arg.splice(begin, 0, null);
+
+            }
+            return arg;
+        },
+        random = 0, count = 0;
+
         function Promise(todo, fail, progress, name) {
             this.init(todo, fail, progress, name);
         }
@@ -1350,19 +1364,7 @@
         tools.extend(Promise, {
             _branch: {},
             _back: [],
-            _tag: {},
-            _count: 0,
-            _checkArg: function (todo, fail, progress, path) {
-                var arg = tools.argToArray(arguments), len = arg.length, last = arg[len - 1],
-                hasName = typeof last == "string", result, i = len, begin;
-                
-                begin = hasName ? len - 1 : len;
-                for (; i < 4; i++) {
-                    arg.splice(begin, 0, null);
-
-                }
-                return arg;
-            }
+            _tag: {}
         });
 
         Promise.prototype = {
@@ -1385,7 +1387,7 @@
                 return this[propertyName];
             },
             init: function (todo, fail, progress, name) {
-                var arg = Promise._checkArg.apply(this, arguments);
+                var arg = checkArg.apply(this, arguments);
 
                 this.state = 'todo';
                 this.result = null;
@@ -1396,9 +1398,37 @@
                 this.fail = arg[1];
                 this.progress = arg[2];
                 this.path = arg[3] || "master";
-
+                this.parent = null;
+                this.id = count++;
                 return this;
             },
+            removeChildren: function () {
+                var ancester = arguments[0] || this, fn = arguments[1], thens = ancester.thens,
+                 i, len = thens.length, result = 0, then;
+                if (thens.length) {
+                    for (i = len - 1; i >= 0; i--) {
+                        then = thens[i];
+                        then.removeChildren();
+                        thens.pop().parent = null;
+                    }
+                }
+                return this;
+            },
+
+            removeTree: function () {
+                return this.removeChildren(this.root());
+            },
+            //            destory: function () {
+            //                delete this.state;
+            //                delete this.result;
+            //                delete this.thens;
+            //                delete this.todo;
+            //                delete this.fail;
+            //                delete this.progress;
+            //                delete this.parent;
+            //                delete this.id;
+            //                return null;
+            //            },
             resolve: function (obj) {
                 if (this.state != 'todo') {
                     tools.error({ fn: "Promise.resolve", msg: "already resolveed" })
@@ -1448,6 +1478,7 @@
             then: function (nextToDo, nextFail, nextProgress) {
                 //then是不能传 path的
                 var promise = new Promise(nextToDo, nextFail, nextProgress, arguments[3] || this.path);
+                promise.parent = this; //相互应用是否有问题
                 if (this.state != 'todo') {
                     // 如果当前状态是已完成，则nextOK会被立即调用
                     promise.resolve(this.result);
@@ -1461,8 +1492,8 @@
             branch: function (todo, fail, progress, name) {
                 var 
                 self,
-                arg = Promise._checkArg.apply(this, arguments),
-                name = arg[3] ? arg[3] : "branch" + Promise._count++;
+                arg = checkArg.apply(this, arguments),
+                name = arg[3] ? arg[3] : "branch" + random++;
 
                 Promise._back.push({ branch: name, promise: this });
                 if (self = Promise._branch[name]) {
@@ -1493,15 +1524,26 @@
                 //Promise._branch
                 return master
             },
+            root: function () {
+                var parent = this;
+                while (parent.parent) {
+                    parent = parent.parent
+                }
+                return parent;
+            },
+            beginResolve: function (obj) {
+                return this.root().resolve(obj);
+            },
             checkout: function () {
                 return this.path;
             }
         };
-        // when的话 记个id？
+
         return Promise;
     }, "1.0.0");
 
     myQuery.define("base/ready", function ($) {
+        //状态已改变下的情况 和 ready似乎差不多
         "use strict"; //启用严格模式
         var 
         addHandler = function (ele, type, fns) {
@@ -1562,6 +1604,8 @@
         });
 
         return ready;
+
+        //var promise = new Promise();
     }, "1.0.0");
 
     myQuery.define("base/is", function ($) {

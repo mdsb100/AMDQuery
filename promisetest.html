@@ -1,5 +1,5 @@
 ﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html xmlns="http://www.w3.org/1999/xhtml" style="width: 100%;">
 <head>
     <title></title>
     <link href="css/reset.css" rel="stylesheet" type="text/css" />
@@ -20,82 +20,255 @@
                     div[0].innerHTML = div[0].innerHTML += s + "<br>";
                 }
 
-            function print(num) {
+            function add1(num) {
                 //write(num);
                 a + num;
                 return num;
             }
-            function print1(num) {
-                write(num + 1);
+            function add(num, space) {
+                space = space || "";
+                write(space + "add: " + num + " + 1 = " + (num + 1));
                 return num + 1;
             }
-            function print2(str) {
-                write("<----->")
 
-                write(str);
-            }
             function delay(ms) {
                 return function (obj) {
+                    write("");
+                    write("delay " + ms + " begin");
                     var promise = new Promise();
                     setTimeout(function () {
+                        write("delay stop");
                         promise.resolve(obj);
                     }, ms);
                     return promise;
                 };
             }
 
-            var promise = new Promise(print, print1);
-            promise
-            .then(function (num) {
-                write(this.checkout());
-                return num;
+            var promise = new Promise(add1, function (num) {
+                write("init:" + this.checkout() + ";num:" + num);
+                write("add1 is fail so: tag will save 'fail'")
+                return add(num);
             })
             .tag("back")
+            .then(function (num) {
+                write("");
+                write("tag back" + ";num:" + num);
+                return num;
+            })
             .then(delay(2000))
+            //promise.resolve(0);
             //.tag()获得是新promise
             .branch(function (num) {
-                print2("init branch base1");
-                write(this.checkout());
+                write("");
+                write("一一branche:" + this.checkout() + ";num:" + num)
                 return num;
             }, "base1")
-                .then(print1)
+                .then(function (num) {
+                    write("    ")
+                    return add(num, "一一");
+                })
             .reBranch()
+            .then(function (num) {
+                write(" ")
+                write("already reBranch");
+                write("branche:" + this.checkout() + ";num:" + num);
+                return num;
+            })
             .branch(function (num) {
-                print2("already back to delay,now is base2");
-                write(this.checkout());
+                write(" ")
+                write("一一branche:" + this.checkout() + ";num:" + num);
                 return num;
             }, "base2")
-                .then(print1)
-                .then(print1)
+            .then(function (num) {
+                return add(num, "一一");
+            })
+            .then(function (num) {
+                return add(num, "一一");
+            })
             .branch(function (num) {
-                print2("branch base1");
-                write(this.checkout());
+                write(" ")
+                write("一一branche:" + this.checkout() + ";num:" + num);
                 return num;
             }, "base1")
-            .then(print1);
+            .then(function (num) {
+                return add(num, "一一");
+            })
+            .then(function (num) {
+                return add(num, "一一");
+            })
+            .then(function (num) {
+                return add(num, "一一");
+            })
+            .beginResolve(0);
 
-            promise.resolve(0);
 
+            //promise.resolve(0);
             setTimeout(function () {
-                promise
-                .tag("back")
+                var back = promise
+                .tag("back");
+                write("");
+                write("");
+                write("tag back");
+                write("setTimeout 5000...Is already done?");
+                write("branch:" + back.checkout());
+                write("status:" + back.state);
+
+                back
                 .then(function (num) {
-                    print2("tag back");
-                    write(this.checkout())
+                    write("");
+                    write("branch:" + this.checkout() + ";num:" + num)
                     return num;
                 })
                 .then(function (num) {
-                    write(num)
-                    return num;
-                });
+                    return add(num, "一一");
+                })
+
             }, 5000)
-            //状态已改变下的情况 和 ready似乎差不多
+
+
+            var promiseDelete = new Promise(add1, add);
+            promiseDelete.then(add)
+            .then(add)
+            .branch(add, "test1")
+                .then(add)
+            .reBranch()
+                .then(add)
+                .then(add)
+            .removeTree();
+            write("");
+            write("promiseDelete.thens.length:" + promiseDelete.thens.length);
         });
                
     </script>
 </head>
-<body style="overflow: auto">
-    <div>
+<body style="overflow: auto; width: 100%;">
+    <div style="float: left; width: 30%;">
     </div>
+    <pre style="float: left; width: 70%;">
+                $.require("base/promise", function (Promise) {
+            var div = document.getElementsByTagName("div")
+                , write = function (s) {
+                    div[0].innerHTML = div[0].innerHTML += s + "&ltbr&gt";
+                }
+
+            function add1(num) {
+                //write(num);
+                a + num;
+                return num;
+            }
+            function add(num, space) {
+                space = space || "";
+                write(space + "add: " + num + " + 1 = " + (num + 1));
+                return num + 1;
+            }
+
+            function delay(ms) {
+                return function (obj) {
+                    write("");
+                    write("delay " + ms + " begin");
+                    var promise = new Promise();
+                    setTimeout(function () {
+                        write("delay stop");
+                        promise.resolve(obj);
+                    }, ms);
+                    return promise;
+                };
+            }
+
+            var promise = new Promise(add1, function (num) {
+                write("init:" + this.checkout() + ";num:" + num);
+                write("add1 is fail so: tag will save 'fail'")
+                return add(num);
+            })
+            .tag("back")
+            .then(function (num) {
+                write("");
+                write("tag back" + ";num:" + num);
+                return num;
+            })
+            .then(delay(2000))
+            //promise.resolve(0);
+            //.tag()获得是新promise
+            .branch(function (num) {
+                write("");
+                write("一一branche:" + this.checkout() + ";num:" + num)
+                return num;
+            }, "base1")
+                .then(function (num) {
+                    write("    ")
+                    return add(num, "一一");
+                })
+            .reBranch()
+            .then(function (num) {
+                write(" ")
+                write("already reBranch");
+                write("branche:" + this.checkout() + ";num:" + num);
+                return num;
+            })
+            .branch(function (num) {
+                write(" ")
+                write("一一branche:" + this.checkout() + ";num:" + num);
+                return num;
+            }, "base2")
+            .then(function (num) {
+                return add(num, "一一");
+            })
+            .then(function (num) {
+                return add(num, "一一");
+            })
+            .branch(function (num) {
+                write(" ")
+                write("一一branche:" + this.checkout() + ";num:" + num);
+                return num;
+            }, "base1")
+            .then(function (num) {
+                return add(num, "一一");
+            })
+            .then(function (num) {
+                return add(num, "一一");
+            })
+            .then(function (num) {
+                return add(num, "一一");
+            })
+            .beginResolve(0);
+
+
+            //promise.resolve(0);
+            setTimeout(function () {
+                var back = promise
+                .tag("back");
+                write("");
+                write("");
+                write("tag back");
+                write("setTimeout 5000...Is already done?");
+                write("branch:" + back.checkout());
+                write("status:" + back.state);
+
+                back
+                .then(function (num) {
+                    write("");
+                    write("branch:" + this.checkout() + ";num:" + num)
+                    return num;
+                })
+                .then(function (num) {
+                    return add(num, "一一");
+                })
+
+            }, 5000)
+
+
+            var promiseDelete = new Promise(add1, add);
+            promiseDelete.then(add)
+            .then(add)
+            .branch(add, "test1")
+                .then(add)
+            .reBranch()
+                .then(add)
+                .then(add)
+            .removeTree();
+            write("");
+            write("promiseDelete.thens.length:" + promiseDelete.thens.length);
+        });
+    </pre>
 </body>
 </html>
