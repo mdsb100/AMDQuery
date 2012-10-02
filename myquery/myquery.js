@@ -1343,15 +1343,26 @@
     });
 
     myQuery.define("base/promise", function ($) {
-        function Promise(todo, fail, progress) {
-            this.init(todo, fail, progress);
+        function Promise(todo, fail, progress, name) {
+            this.init(todo, fail, progress, name);
         }
 
         tools.extend(Promise, {
             _branch: {},
             _back: [],
             _tag: {},
-            _count: 0
+            _count: 0,
+            _checkArg: function (todo, fail, progress, path) {
+                var arg = tools.argToArray(arguments), len = arg.length, last = arg[len - 1],
+                hasName = typeof last == "string", result, i = len, begin;
+                
+                begin = hasName ? len - 1 : len;
+                for (; i < 4; i++) {
+                    arg.splice(begin, 0, null);
+
+                }
+                return arg;
+            }
         });
 
         Promise.prototype = {
@@ -1373,18 +1384,20 @@
             get: function (propertyName) {
                 return this[propertyName];
             },
-            init: function (todo, fail, progress) {
+            init: function (todo, fail, progress, name) {
+                var arg = Promise._checkArg.apply(this, arguments);
+
                 this.state = 'todo';
                 this.result = null;
                 this.thens = [];
-                this.todo = todo || function (obj) {
+                this.todo = arg[0] || function (obj) {
                     return obj;
                 };
-                this.fail = fail;
-                this.progress = progress;
-                var _back = Promise._back;
-                _back = _back[_back.length - 1];
-                this.path = _back ? _back.branch : "master";
+                this.fail = arg[1];
+                this.progress = arg[2];
+                this.path = arg[3] || "master";
+
+                return this;
             },
             resolve: function (obj) {
                 if (this.state != 'todo') {
@@ -1431,8 +1444,10 @@
                 this.thens.push(nextPromise);
                 return this;
             },
+
             then: function (nextToDo, nextFail, nextProgress) {
-                var promise = new Promise(nextToDo, nextFail, nextProgress);
+                //then是不能传 path的
+                var promise = new Promise(nextToDo, nextFail, nextProgress, arguments[3] || this.path);
                 if (this.state != 'todo') {
                     // 如果当前状态是已完成，则nextOK会被立即调用
                     promise.resolve(this.result);
@@ -1446,11 +1461,9 @@
             branch: function (todo, fail, progress, name) {
                 var 
                 self,
-                arg = arguments,
-                last = arg[arg.length - 1],
-                hasName = typeof last == "string";
-                name = hasName ? last : "branch" + Promise._count++;
-                //self = Promise._branch.pop() || this;
+                arg = Promise._checkArg.apply(this, arguments),
+                name = arg[3] ? arg[3] : "branch" + Promise._count++;
+
                 Promise._back.push({ branch: name, promise: this });
                 if (self = Promise._branch[name]) {
                 }
@@ -1458,19 +1471,9 @@
                     Promise._branch[name] = self = this;
                 }
                 //var t = todo, f = fail, p = progress;
-                if (hasName) {
-                    switch (arg.length) {
-                        case 2:
-                            fail = null;
-                            break;
-                        case 3:
-                            progress = null;
-                            break;
 
-                    }
-                }
 
-                return self.then(todo, fail, progress);
+                return self.then(arg[0], arg[1], arg[2], name);
             },
             reBranch: function () {
                 return Promise._back.pop().promise;

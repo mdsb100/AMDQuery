@@ -46,11 +46,13 @@
 
             var promise = new Promise(print, print1);
             promise
-            .then(function (result) {
+            .then(function (num) {
                 write(this.checkout());
-                return result;
+                return num;
             })
+            .tag("back")
             .then(delay(2000))
+            //.tag()获得是新promise
             .branch(function (num) {
                 print2("init branch base1");
                 write(this.checkout());
@@ -73,6 +75,20 @@
             .then(print1);
 
             promise.resolve(0);
+
+            setTimeout(function () {
+                promise
+                .tag("back")
+                .then(function (num) {
+                    print2("tag back");
+                    write(this.checkout())
+                    return num;
+                })
+                .then(function (num) {
+                    write(num)
+                    return num;
+                });
+            }, 5000)
             //状态已改变下的情况 和 ready似乎差不多
         });
                
