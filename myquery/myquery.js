@@ -183,12 +183,11 @@
     var _config = {
         myquery: {
             define: "$"
-          , amd: false
           , package: ""
         },
         amd: {
-            async: false
-            , detectCR: false
+            async: false//异步
+            , detectCR: false//检查循环依赖
             , "debug": true
             , timeout: 30000
         },
@@ -1338,9 +1337,9 @@
     })();
 
     myQuery.define("base/queue", function ($) {
-        $.queue = Queue;
+        $.Queue = Queue;
         return Queue
-    });
+    }, "1.0.0");
 
     myQuery.define("base/promise", function ($) {
         "use strict"; //启用严格模式
@@ -1379,8 +1378,6 @@
                         name = "todo"
 
                 }
-                //var arg = $.argToArray(arguments, 1);
-
                 return this[name](result);
             },
             get: function (propertyName) {
@@ -1418,23 +1415,12 @@
             removeTree: function () {
                 return this.removeChildren(this.root());
             },
-            //            destory: function () {
-            //                delete this.state;
-            //                delete this.result;
-            //                delete this.thens;
-            //                delete this.todo;
-            //                delete this.fail;
-            //                delete this.progress;
-            //                delete this.parent;
-            //                delete this.id;
-            //                return null;
-            //            },
             resolve: function (obj) {
                 if (this.state != 'todo') {
                     tools.error({ fn: "Promise.resolve", msg: "already resolveed" })
 
                 };
-
+                //arguments 应当 apply
                 try {
                     this.result = this.todo(obj);
                     this.state = 'done';
@@ -1449,9 +1435,13 @@
                 }
                 if (this.result instanceof Promise) {
                     // 异步的情况，返回值是一个Promise，则当其resolve的时候，nextPromise才会被resolve
-                    var self = this;
+                    //所以状态改回todo
+                    var self = this, state = this.state;
+                    this.state = "todo";
                     this.result.then(function (result) {
+                        self.state = state;
                         self._next(result);
+                        self = null;
                     });
                 } else {
                     this._next(this.result);
@@ -1462,9 +1452,6 @@
             _next: function (result) {
                 for (var i = 0, len = this.thens.length, promise; i < len; i++) {
                     // 依次调用该任务的后续任务
-                    if (len == 2) {
-                        var a = 0;
-                    }
                     promise = this.thens[i];
                     promise.resolve(result);
                 }
@@ -1474,7 +1461,10 @@
                 this.thens.push(nextPromise);
                 return this;
             },
-
+            and: function (todo, fail, progress) {
+                this.then(todo, fail, progress);
+                return this;
+            },
             then: function (nextToDo, nextFail, nextProgress) {
                 //then是不能传 path的
                 var promise = new Promise(nextToDo, nextFail, nextProgress, arguments[3] || this.path);
@@ -1531,8 +1521,9 @@
                 }
                 return parent;
             },
-            beginResolve: function (obj) {
-                return this.root().resolve(obj);
+            rootResolve: function (obj) {
+                this.root().resolve(obj);
+                return this;
             },
             checkout: function () {
                 return this.path;
@@ -1542,11 +1533,10 @@
         return Promise;
     }, "1.0.0");
 
-    myQuery.define("base/ready", function ($) {
+    myQuery.define("base/ready", ["base/promise"], function ($, Promise) {
         //状态已改变下的情况 和 ready似乎差不多
         "use strict"; //启用严格模式
-        var 
-        addHandler = function (ele, type, fns) {
+        var addHandler = function (ele, type, fns) {
             if (ele.addEventListener)
                 ele.addEventListener(type, fns, false); //事件冒泡
             else if (ele.attachEvent)
@@ -1555,57 +1545,40 @@
                 ele['on' + type] = fns;
             }
         },
-        windowReady = 0, //compatible ie ff
-            $Ready = 0,
-            list = [],
-            todo = function () {
-                if (!$Ready || !windowReady) { return; }
-                var fun;
-                while (list.length) {
-                    fun = list.splice(0, 1);
-                    fun[0] && fun[0](window, windowReady);
-                }
-            },
-            ready = function (fun) {
-                if (typeof fun != "function") {
-                    return;
-                }
-                list.push(fun);
-
-                !windowReady ? addHandler(window, "load", todo) : todo();
-
-            };
-        $.ready = ready;
-        if (_config.myquery.package) {
-            require("json/package", function (Package) {
-                var json = Package[_config.myquery.package];
-
-                if (json) {
-                    require(json, function () {
-                        $Ready = 1;
-                        todo();
-                    });
-                }
-                else {
-                    $Ready = 1;
-                    todo();
-                }
-            });
-        }
-        else {
-            $Ready = 1;
-        }
-
+        ready = function (fn) {
+            promise.and(fn);
+        },
+        promise;
         $._redundance.addHandler = addHandler;
 
-        addHandler(window, "load", function (e) {
-            windowReady = e || 1;
-            todo();
-        });
+        promise = new Promise(function () { //window.ready first to fix ie
+            var promise = new Promise();
+            addHandler(window, "load", function (e) {
+                promise.resolve(e);
+            });
+            return promise;
+        })
+        .then(function () {
+            if (_config.myquery.package) {
+                var promise = new Promise();
+                require("json/package", function (_package) {
+                    promise.resolve(_package[_config.myquery.package]);
+                });
+                return promise;
+            }
+        })
+        .then(function (_package) {
+            if (_package) {
+                var promise = new Promise();
+                require(_package, function () {
+                    promise.resolve();
+                });
+                return promise;
+            }
+        })
+        .rootResolve();
 
-        return ready;
-
-        //var promise = new Promise();
+        return $.ready = ready;
     }, "1.0.0");
 
     myQuery.define("base/is", function ($) {

@@ -114,5 +114,5 @@ myQuery.define("main/customevent", function ($, undefined) {
     proto.unOn = proto.removeHandler;
     proto.clearOns = proto.clearHandlers;
 
-    return CustomEvent;
+    return $.CustomEvent = CustomEvent;
 });

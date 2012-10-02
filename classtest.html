@@ -11,12 +11,14 @@
             height: 100px;
         }
     </style>
-    <script src="myquery/myquery.js" type="text/javascript" myquery="define:$;amd:0;"
-        amd="detectCR:1;"></script>
+    <script src="myquery/myquery.js" type="text/javascript" myquery="define:$;" amd="detectCR:1;"></script>
     <script type="text/javascript">
         //变成异步的了
-        $.require(["module/object", "base/ready"], function (object, ready) {
+        //alert(document.getElementById("pre"));
+        require(["module/object", "base/ready"], function (object, ready) {
+            //alert(document.getElementById("pre"));
             ready(function () {
+                //alert(document.getElementById("pre"));
                 var div = document.getElementsByTagName("div")
                 , write = function (s) {
                     div[0].innerHTML = div[0].innerHTML += s;
@@ -112,7 +114,7 @@
 <body style="overflow: auto">
     <div>
     </div>
-    <pre>
+    <pre id="pre">
          $.require(["module/object", "base/ready"], function (object, ready) {
             ready(function () {
                 var div = document.getElementsByTagName("div")

@@ -11,7 +11,7 @@
             height: 100px;
         }
     </style>
-    <script src="myquery/myquery.js" type="text/javascript" myquery="define:$;amd:0;"
+    <script src="myquery/myquery.js" type="text/javascript" myquery="define:$;"
         amd="detectCR:1;"></script>
     <script type="text/javascript">
         $.require("base/promise", function (Promise) {
@@ -99,7 +99,7 @@
             .then(function (num) {
                 return add(num, "一一");
             })
-            .beginResolve(0);
+            .rootResolve(0);
 
 
             //promise.resolve(0);
@@ -145,7 +145,7 @@
     <div style="float: left; width: 30%;">
     </div>
     <pre style="float: left; width: 70%;">
-                $.require("base/promise", function (Promise) {
+        $.require("base/promise", function (Promise) {
             var div = document.getElementsByTagName("div")
                 , write = function (s) {
                     div[0].innerHTML = div[0].innerHTML += s + "&ltbr&gt";
@@ -230,7 +230,7 @@
             .then(function (num) {
                 return add(num, "一一");
             })
-            .beginResolve(0);
+            .rootResolve(0);
 
 
             //promise.resolve(0);
@@ -263,11 +263,12 @@
             .branch(add, "test1")
                 .then(add)
             .reBranch()
-                .then(add)
-                .then(add)
+            .then(add)
+            .then(add)
             .removeTree();
             write("");
             write("promiseDelete.thens.length:" + promiseDelete.thens.length);
+            write("");
         });
     </pre>
 </body>

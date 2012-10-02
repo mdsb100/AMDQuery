@@ -1,5 +1,10 @@
-﻿myQuery.define("module/threadpool", ["module/object", "module/thread"], function ($, object, Thread, undefined) {
+﻿/// <reference path="../myquery.js" />'
+/// <reference path="object.js" />
+/// <reference path="thread.js" />
+
+myQuery.define("module/threadpool", ["module/object", "module/thread"], function ($, object, Thread, undefined) {
     "use strict"; //启用严格模式
+    
     var ThreadPool = object.Class("Thread", {
         init: function () {
             this.pool = [];
