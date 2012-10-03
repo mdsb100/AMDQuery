@@ -1368,6 +1368,18 @@
 
         Promise.prototype = {
             constructor: Promise,
+            _next: function (result) {
+                for (var i = 0, len = this.thens.length, promise; i < len; i++) {
+                    // 依次调用该任务的后续任务
+                    promise = this.thens[i];
+                    promise.resolve(result);
+                }
+                return this;
+            },
+            _push: function (nextPromise) {
+                this.thens.push(nextPromise);
+                return this;
+            },
             call: function (name, result) {
                 switch (name) {
                     case "fail":
@@ -1382,6 +1394,20 @@
             },
             get: function (propertyName) {
                 return this[propertyName];
+            },
+            then: function (nextToDo, nextFail, nextProgress) {
+                //then是不能传 path的
+                var promise = new Promise(nextToDo, nextFail, nextProgress, arguments[3] || this.path);
+                promise.parent = this; //相互应用是否有问题
+                if (this.state != 'todo') {
+                    // 如果当前状态是已完成，则nextOK会被立即调用
+                    promise.resolve(this.result);
+                }
+                else {
+                    // 否则将会被加入队列中
+                    this._push(promise);
+                }
+                return promise;
             },
             init: function (todo, fail, progress, name) {
                 var arg = checkArg.apply(this, arguments);
@@ -1399,6 +1425,8 @@
                 this.id = count++;
                 return this;
             },
+            render: function () { },
+
             removeChildren: function () {
                 var ancester = arguments[0] || this, fn = arguments[1], thens = ancester.thens,
                  i, len = thens.length, result = 0, then;
@@ -1411,7 +1439,6 @@
                 }
                 return this;
             },
-
             removeTree: function () {
                 return this.removeChildren(this.root());
             },
@@ -1448,37 +1475,12 @@
                 }
                 return this;
             },
-            render: function () { },
-            _next: function (result) {
-                for (var i = 0, len = this.thens.length, promise; i < len; i++) {
-                    // 依次调用该任务的后续任务
-                    promise = this.thens[i];
-                    promise.resolve(result);
-                }
-                return this;
-            },
-            _push: function (nextPromise) {
-                this.thens.push(nextPromise);
-                return this;
-            },
+            
             and: function (todo, fail, progress) {
                 this.then(todo, fail, progress);
                 return this;
             },
-            then: function (nextToDo, nextFail, nextProgress) {
-                //then是不能传 path的
-                var promise = new Promise(nextToDo, nextFail, nextProgress, arguments[3] || this.path);
-                promise.parent = this; //相互应用是否有问题
-                if (this.state != 'todo') {
-                    // 如果当前状态是已完成，则nextOK会被立即调用
-                    promise.resolve(this.result);
-                }
-                else {
-                    // 否则将会被加入队列中
-                    this._push(promise);
-                }
-                return promise;
-            },
+            
             branch: function (todo, fail, progress, name) {
                 var 
                 self,
@@ -1514,6 +1516,7 @@
                 //Promise._branch
                 return master
             },
+
             root: function () {
                 var parent = this;
                 while (parent.parent) {
