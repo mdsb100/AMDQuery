@@ -1,4 +1,5 @@
 ﻿/// <reference path="../myquery.js" />
+/// <reference path="object.js" />
 
 myQuery.define('module/thread', ["main/customevent", "base/extend", "module/object"], function ($, CustomEvent, extend, object) {
     "use strict"; //启用严格模式

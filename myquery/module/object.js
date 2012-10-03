@@ -4,7 +4,8 @@ myQuery.define("module/object", ["base/extend"], function ($, extend) {
     //依赖extend
     "use strict"; //启用严格模式
 
-    var object = {
+    var 
+    object = {
         //继承模块 可以自己实现一个 function模式 单继承
         _defaultPrototype: {
             init: function () {
@@ -22,7 +23,7 @@ myQuery.define("module/object", ["base/extend"], function ($, extend) {
             /// <param name="static" type="Object">静态方法</param>
             /// <param name="supper" type="Function">父类</param>
             /// <returns type="self" />
-            var argLen = arguments.length;
+            var anonymous, argLen = arguments.length;
             switch (argLen) {
                 case 0:
                 case 1:
@@ -33,10 +34,8 @@ myQuery.define("module/object", ["base/extend"], function ($, extend) {
                         statics = null;
                     }
                     break;
-
             }
 
-            var anonymous;
             switch (typeof name) {
                 case "function":
                     anonymous = name;
@@ -66,7 +65,6 @@ myQuery.define("module/object", ["base/extend"], function ($, extend) {
 
             $.easyExtend(anonymous, statics);
 
-
             anonymous.__tag = "object.Class";
 
             if (supper) {
@@ -85,6 +83,104 @@ myQuery.define("module/object", ["base/extend"], function ($, extend) {
             }
 
             return anonymous;
+        }
+        , Collection: function (model, prototype, statics) {
+            var 
+            _expendo = 0,
+            _prototype = $.extend({
+                init: function () {
+                    this.models = [];
+                    this._map = {};
+                    return this;
+                },
+                render: function () {
+                    return this.add.apply(this, arguments);
+                },
+                //getByCid: function () { },
+                add: function (model) {
+                    /// <summary>添加对象</summary>
+                    /// <param name="model" type="model<arguments>">对象</param>
+                    /// <returns type="self" />
+                    var arg = $.argToArray(arguments),
+                    len = arg.length,
+                    i = 0,
+                    model;
+                    for (; i < len; i++) {
+                        model = arg[i]
+                        if (!this._map[model.id]) {
+                            this.models.push(model);
+                            this._map[model.id || (model.constructor.name + _expendo++)] = model;
+                        }
+                    }
+                    return this;
+                },
+                pop: function () {
+                    /// <summary>移除最后个对象</summary>
+                    /// <returns type="Model" />
+                    return this.remove(this.models[this.models.length - 1]);
+                },
+                remove: function (id) {
+                    /// <summary>移除某个对象</summary>
+                    /// <param name="id" type="Object/Number/String">对象的索引</param>
+                    /// <returns type="Model" />
+                    var model = null, i;
+                    switch (typeof id) {
+                        case "number":
+                            model = this.models[id];
+                            break;
+                        case "string":
+                            model = this._map[id];
+                            break;
+                        case "object":
+                            model = id;
+                            break;
+                    }
+                    if (model) {
+                        this.models.splice($.inArray(this.models, model), 1);
+                        for (i in this._map) {
+                            if (this._map[i] == model) {
+                                delete this._map[i];
+                            }
+                        }
+                    }
+                    return model;
+                },
+                get: function (id) {
+                    /// <summary>获得某个model</summary>
+                    /// <param name="id" type="Number/Object">方法</param>
+                    /// <returns type="self" />
+                    switch (typeof id) {
+                        case "number":
+                            model = this.models[id];
+                            break;
+                        case "string":
+                            model = this._map[id];
+                            break;
+                    }
+                    return model;
+                },
+                clear: function () {
+                    /// <summary>重置所含对象</summary>
+                    /// <returns type="self" />
+                    return this.init();
+                },
+
+                each: function (fn, context) {
+                    /// <summary>遍历整个model</summary>
+                    /// <param name="fn" type="Function">方法</param>
+                    /// <param name="context" type="Object">上下文</param>
+                    /// <returns type="self" />
+                    for (var i = 0, model = this.models, item; item = model[i++]; )
+                        fn.call(context || item, item, i);
+                    return this;
+                }
+            }, prototype),
+            _statics = $.extend({
+
+            }, statics),
+            name = typeof model == "string" ? model : model.name + "Collection";
+
+            return object.Class(name, _prototype, _statics);
         }
 
         , getObjectAttrCount: function (obj, bool) {
@@ -158,6 +254,7 @@ myQuery.define("module/object", ["base/extend"], function ($, extend) {
             if (!$.isPlainObj(object)) {
                 return this;
             }
+            //这里加个验证
             return $.each(object, function (value, key) {
                 value = typeof value == "string" ? value : "-pu -w -r";
                 var prefix = /\-pa[\s]?/.test(value) ? "_" : "",

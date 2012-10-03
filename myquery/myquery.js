@@ -1912,7 +1912,6 @@
 
     myQuery.define("base/array", function ($) {
         "use strict"; //启用严格模式
-
         var 
         indexOf = Array.prototype.indexOf || function (item, i) {
             var len = this.length;

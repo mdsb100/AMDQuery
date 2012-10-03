@@ -4,24 +4,8 @@
 
 myQuery.define("module/threadpool", ["module/object", "module/thread"], function ($, object, Thread, undefined) {
     "use strict"; //启用严格模式
-    
-    var ThreadPool = object.Class("Thread", {
-        init: function () {
-            this.pool = [];
-        }
-        , render: function () {
-            this.push.apply(this, arguments);
-        }
-        , each: function (fn, context) {
-            /// <summary>遍历整个进程池</summary>
-            /// <param name="fn" type="Function">方法</param>
-            /// <param name="context" type="Object">上下文</param>
-            /// <returns type="self" />
-            for (var i = 0, pool = this.pool, item; item = pool[i++]; )
-                fn.call(context || item, item, i);
-            return this;
-        }
-        , addHandler: function (type, fn) {
+    var ThreadPool = object.Collection("ThreadPool", {
+        addHandler: function (type, fn) {
             /// <summary>为所有进程添加事件</summary>
             /// <param name="type" type="String">类型</param>
             /// <param name="fn" type="Function">方法</param>
@@ -67,30 +51,6 @@ myQuery.define("module/threadpool", ["module/object", "module/thread"], function
             /// <returns type="self" />
             return this.clearHandlers();
         }
-        , push: function (Thread) {
-            /// <summary>往进程池添加进程</summary>
-            /// <param name="obj" type="Object">进程参数</param>
-            /// <param name="Thread" type="paras:[Thread]">计算参数</param>
-            /// <returns type="self" />
-            //            for (var i = 0, len = arguments.length; i < len; i++)
-            //                this.pool.push(arguments[i]);
-            this.pool = this.pool.concat([].slice.call(arguments));
-            return this;
-        }
-        , clear: function (index) {
-            /// <summary>清除某个进程</summary>
-            /// <param name="index" type="Number">下标 缺省为清空最后个</param>
-            /// <returns type="self" />
-            this.pool.splice(index || this.pool.length - 1, 1);
-            return this;
-        }
-        , get: function (index) {
-            /// <summary>获得某个进程</summary>
-            /// <param name="index" type="Number">下标 缺省为获得最后个</param>
-            /// <returns type="self" />
-            this.pool[index || this.pool.length - 1];
-            return this;
-        }
         , start: function () {
             /// <summary>全部启动</summary>
             /// <returns type="self" />
@@ -121,6 +81,5 @@ myQuery.define("module/threadpool", ["module/object", "module/thread"], function
             });
         }
     });
-
-    return $.threadPool = ThreadPool;
+    return ThreadPool;
 });
