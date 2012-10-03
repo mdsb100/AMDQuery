@@ -1343,20 +1343,28 @@
 
     myQuery.define("base/promise", function ($) {
         "use strict"; //启用严格模式
-        var checkArg = function (todo, fail, progress, path) {
+        var checkArg = function (todo, fail, progress, name) {
             var arg = tools.argToArray(arguments), len = arg.length, last = arg[len - 1],
                 hasName = typeof last == "string", result, i = len, begin;
 
             begin = hasName ? len - 1 : len;
             for (; i < 4; i++) {
                 arg.splice(begin, 0, null);
-
             }
             return arg;
         },
         random = 0, count = 0;
 
         function Promise(todo, fail, progress, name) {
+            /// <summary>Promise模块</summary>
+            /// <param name="todo" type="Function">成功</param>
+            /// <param name="fail" type="Function">失败</param>
+            /// <param name="progress" type="Function">进度</param>
+            /// <param name="name" type="String">方法</param>
+            /// <para>new Promise(function(){},..,..,"origin")</para>
+            /// <para>new Promise(function(){},"origin")</para>
+            /// <para>new Promise()</para>
+            /// <returns type="self" />
             this.init(todo, fail, progress, name);
         }
 
@@ -1369,6 +1377,8 @@
         Promise.prototype = {
             constructor: Promise,
             _next: function (result) {
+                /// <summary>inner</summary>
+                /// <returns type="self" />
                 for (var i = 0, len = this.thens.length, promise; i < len; i++) {
                     // 依次调用该任务的后续任务
                     promise = this.thens[i];
@@ -1377,10 +1387,16 @@
                 return this;
             },
             _push: function (nextPromise) {
+                /// <summary>inner</summary>
+                /// <returns type="self" />
                 this.thens.push(nextPromise);
                 return this;
             },
             call: function (name, result) {
+                /// <summary>调用某个方法</summary>
+                /// <param name="name" type="Function">成功</param>
+                /// <param name="result" type="any/arguments">参数，如果参数是argument则会使用apply</param>
+                /// <returns type="any" />
                 switch (name) {
                     case "fail":
                     case "progress":
@@ -1388,15 +1404,24 @@
                     case "todo":
                     default:
                         name = "todo"
-
                 }
-                return this[name](result);
+
+                return result && arguments.constructor == result.constructor ? this[name].apply(this, result) : this[name](result);
             },
             get: function (propertyName) {
+                /// <summary>获得某个属性</summary>
+                /// <param name="propertyName" type="String">属性名称</param>
+                /// <returns type="any" />
                 return this[propertyName];
             },
             then: function (nextToDo, nextFail, nextProgress) {
-                //then是不能传 path的
+                /// <summary>然后执行</summary>
+                /// <param name="nextToDo" type="Function">成功</param>
+                /// <param name="nextFail" type="Function">失败</param>
+                /// <param name="nextProgress" type="Function">进度</param>
+                /// <para>then是不能传 path的</para>
+                /// <returns type="Promise" />
+
                 var promise = new Promise(nextToDo, nextFail, nextProgress, arguments[3] || this.path);
                 promise.parent = this; //相互应用是否有问题
                 if (this.state != 'todo') {
@@ -1410,6 +1435,12 @@
                 return promise;
             },
             init: function (todo, fail, progress, name) {
+                /// <summary>初始化函数 和构造函数同一用法</summary>
+                /// <param name="todo" type="Function">成功</param>
+                /// <param name="fail" type="Function">失败</param>
+                /// <param name="progress" type="Function">进度</param>
+                /// <param name="name" type="String">方法</param>
+                /// <returns type="self" />
                 var arg = checkArg.apply(this, arguments);
 
                 this.state = 'todo';
@@ -1428,6 +1459,8 @@
             render: function () { },
 
             removeChildren: function () {
+                /// <summary>删除节点下的promise</summary>
+                /// <returns type="self" />
                 var ancester = arguments[0] || this, fn = arguments[1], thens = ancester.thens,
                  i, len = thens.length, result = 0, then;
                 if (thens.length) {
@@ -1440,20 +1473,25 @@
                 return this;
             },
             removeTree: function () {
+                /// <summary>删除根下的所有节点</summary>
+                /// <returns type="self" />
                 return this.removeChildren(this.root());
             },
             resolve: function (obj) {
+                /// <summary>执行</summary>
+                /// <param name="obj" type="any/arguments">参数，如果参数是argument则会使用apply</param>
+                /// <returns type="self" />
                 if (this.state != 'todo') {
                     tools.error({ fn: "Promise.resolve", msg: "already resolveed" })
 
                 };
                 //arguments 应当 apply
                 try {
-                    this.result = this.todo(obj);
+                    this.result = this.call("todo", obj);
                     this.state = 'done';
                 } catch (e) {
                     if (this.fail) {
-                        this.result = this.fail(obj);
+                        this.result = this.call("fail", obj);
                     }
                     else {
                         throw e;
@@ -1475,13 +1513,24 @@
                 }
                 return this;
             },
-            
+
             and: function (todo, fail, progress) {
+                /// <summary>并且执行</summary>
+                /// <param name="todo" type="Function">成功</param>
+                /// <param name="fail" type="Function">失败</param>
+                /// <param name="progress" type="Function">进度</param>
+                /// <returns type="self" />
                 this.then(todo, fail, progress);
                 return this;
             },
-            
+
             branch: function (todo, fail, progress, name) {
+                /// <summary>打上分支</summary>
+                /// <param name="nextToDo" type="Function">成功</param>
+                /// <param name="nextFail" type="Function">失败</param>
+                /// <param name="nextProgress" type="Function">进度</param>
+                /// <param name="name" type="String">方法</param>
+                /// <returns type="Promise" />
                 var 
                 self,
                 arg = checkArg.apply(this, arguments),
@@ -1493,15 +1542,17 @@
                 else {
                     Promise._branch[name] = self = this;
                 }
-                //var t = todo, f = fail, p = progress;
-
 
                 return self.then(arg[0], arg[1], arg[2], name);
             },
             reBranch: function () {
+                /// <summary>回到上一个分支</summary>
+                /// <returns type="Promise" />
                 return Promise._back.pop().promise;
             },
             tag: function (str) {
+                /// <summary>打上一标签便于管理</summary>
+                /// <returns type="self/Promise" />
                 var self;
                 if (self = Promise._tag[str]) {
 
@@ -1512,12 +1563,16 @@
                 return self;
             },
             master: function () {
-                var master = Promise._branch[0] || this;
-                //Promise._branch
+                /// <summary>返回master路径</summary>
+                /// <returns type="Promise" />
+                var master = Promise._branch[0].promise || this;
+
                 return master
             },
 
             root: function () {
+                /// <summary>返回根</summary>
+                /// <returns type="Promise" />
                 var parent = this;
                 while (parent.parent) {
                     parent = parent.parent
@@ -1525,11 +1580,23 @@
                 return parent;
             },
             rootResolve: function (obj) {
+                /// <summary>从根开始执行</summary>
+                /// <returns type="Promise" />
                 this.root().resolve(obj);
                 return this;
             },
-            checkout: function () {
-                return this.path;
+            checkout: function (name) {
+                /// <summary>检查路径</summary>
+                /// <returns type="Promise" />
+                //                if (name) {
+                //                    if (name == this.root().path) {
+                //                        return 
+                //                    }
+                //                    Promise._branch[name]
+
+                //                } else {
+                this.path;
+                //}
             }
         };
 
@@ -1537,7 +1604,6 @@
     }, "1.0.0");
 
     myQuery.define("base/ready", ["base/promise"], function ($, Promise) {
-        //状态已改变下的情况 和 ready似乎差不多
         "use strict"; //启用严格模式
         var addHandler = function (ele, type, fns) {
             if (ele.addEventListener)
@@ -1596,6 +1662,9 @@
                 if ($.isType(a, '[object NodeList]') || $.isType(a, '[object HTMLCollection]') || ($.client.browser.ie678 && $.isNum(a.length) && !$.isArr(a.length) && ($.isObj(a.item) || $.isStr(a.item))))
                     return true;
                 return false;
+            }
+            , isArguments: function (a) {
+                return !!a && arguments.constructor == a.constructor;
             }
             , isArr: function (a) {
                 /// <summary>是否为数组</summary>
