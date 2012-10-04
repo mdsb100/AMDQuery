@@ -45,12 +45,14 @@ myQuery.define('module/thread', ["main/customevent", "base/extend", "module/obje
             this.id = this.id || $.now();
             this.args = $.argToArray(arguments, 1);
 
-            return this;
-        }
-
-        , render: function () {
             return this.setFps()
             .setDuration(this.duration);
+        }
+        , create: function () {
+            return this;
+        }
+        , render: function () {
+            return this;
         }
 
         , start: function () {

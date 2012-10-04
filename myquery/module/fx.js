@@ -1,21 +1,11 @@
 ﻿/// <reference path="../myquery.js" />
 /*include JQuery animate*/
 
-myQuery.define("module/fx", ["main/dom"], function ($, dom, undefined) {
+myQuery.define("module/fx", ["main/dom", "module/object"], function ($, dom, object, undefined) {
     "use strict"; //启用严格模式
     var rfxnum = /^([+-]=)?([\d+-.]+)(.*)$/;
 
-    function FX(ele, options, value, name) {
-        //consult from jQuery-1.4.1 
-        this.init(ele, options, value, name);
-        options.isStart && this.start();
-    }
-
-    FX.tick = function () { };
-
-    FX.stop = function () { };
-
-    FX.prototype = {
+    var FX = object.Class("FX", {
         start: function () {
 
             FX.timers.push(this);
@@ -35,6 +25,7 @@ myQuery.define("module/fx", ["main/dom"], function ($, dom, undefined) {
             this.end = ret.end;
             this.unit = ret.unit;
             this.percent = 0;
+            options.isStart && this.start();
         }
         , cur: function () {
             return FX.cur(this.ele, this.name);
@@ -102,9 +93,7 @@ myQuery.define("module/fx", ["main/dom"], function ($, dom, undefined) {
                     this.ele.style[this.name] = this.nowPos + this.unit;
             }
         }
-    }
-
-    $.easyExtend(FX, {
+    }, {
         speeds: function (type) {
             switch (type) {
                 case "slow": type = 600;
@@ -155,12 +144,12 @@ myQuery.define("module/fx", ["main/dom"], function ($, dom, undefined) {
             return d;
         }
         , getStartEnd: function (val, ele, name) {
-            var parts = rfxnum.exec(val)
-			, start = this.cur(ele, name), end = val, unit = "";
+            var parts = rfxnum.exec(val),
+            start = this.cur(ele, name), end = val, unit = "";
 
             if (parts) {
                 var end = parseFloat(parts[2])
-				, unit = parts[3]; //|| "px"
+                unit = parts[3]; //|| "px"
                 //this.unit = unit;
 
                 if (unit !== "" && unit !== "px" && unit !== "deg") {
@@ -180,12 +169,12 @@ myQuery.define("module/fx", ["main/dom"], function ($, dom, undefined) {
             ele.style[name] = start + unit;
             return start;
         }
+        , stop: function () { }
 
         , timers: []
 
         , tick: function () { }
     });
 
-    $.fx = FX;
-    return FX;
+    return $.fx = FX;
 });

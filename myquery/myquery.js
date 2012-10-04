@@ -1456,8 +1456,8 @@
                 this.id = count++;
                 return this;
             },
-            render: function () { },
-
+            //render: function () { },
+            //create: function () { },
             removeChildren: function () {
                 /// <summary>删除节点下的promise</summary>
                 /// <returns type="self" />
@@ -1486,18 +1486,20 @@
 
                 };
                 //arguments 应当 apply
-                try {
+                if (this.fail) {
+                    try {
+                        this.result = this.call("todo", obj);
+                        this.state = 'done';
+                    } catch (e) {
+                        this.result = this.call("fail", obj);
+                        this.state = 'fail';
+                    }
+                }
+                else {
                     this.result = this.call("todo", obj);
                     this.state = 'done';
-                } catch (e) {
-                    if (this.fail) {
-                        this.result = this.call("fail", obj);
-                    }
-                    else {
-                        throw e;
-                    }
-                    this.state = 'fail';
                 }
+
                 if (this.result instanceof Promise) {
                     // 异步的情况，返回值是一个Promise，则当其resolve的时候，nextPromise才会被resolve
                     //所以状态改回todo

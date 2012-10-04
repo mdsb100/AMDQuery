@@ -11,6 +11,9 @@ myQuery.define("module/object", ["base/extend"], function ($, extend) {
             init: function () {
                 return this;
             }
+            , create: function () {
+                return this;
+            }
             , render: function () {
                 return this;
             }
@@ -46,7 +49,7 @@ myQuery.define("module/object", ["base/extend"], function ($, extend) {
                     [
                         "(function ", name, "() {\n",
                         "    this.init.apply(this, arguments);\n",
-                        "    this.render.apply(this,arguments);\n",
+                    //"    this.create.apply(this,arguments);\n",
                         "});\n"
                     ].join(""))
                     || eval("(" + name + ")"))//fix ie678
@@ -54,7 +57,7 @@ myQuery.define("module/object", ["base/extend"], function ($, extend) {
                 default:
                     anonymous = function () {
                         this.init.apply(this, arguments);
-                        this.render.apply(this, arguments);
+                        //this.create.apply(this, arguments);
                     }
             }
 
@@ -72,7 +75,7 @@ myQuery.define("module/object", ["base/extend"], function ($, extend) {
                 ? function () {
                     var arg = $.argToArray(arguments), self = arg.splice(0, 1)[0];
                     supper.prototype.init.apply(self, arg);
-                    supper.prototype.render.apply(self);
+                    //supper.prototype.render.apply(self);
                 }
                 : function () {
                     var arg = $.argToArray(arguments), self = arg.splice(0, 1)[0];
@@ -91,9 +94,6 @@ myQuery.define("module/object", ["base/extend"], function ($, extend) {
                 init: function () {
                     this.models = [];
                     this._map = {};
-                    return this;
-                },
-                render: function () {
                     return this.add.apply(this, arguments);
                 },
                 //getByCid: function () { },
@@ -175,9 +175,7 @@ myQuery.define("module/object", ["base/extend"], function ($, extend) {
                     return this;
                 }
             }, prototype),
-            _statics = $.extend({
-
-            }, statics),
+            _statics = $.extend({}, statics),
             name = typeof model == "string" ? model : model.name + "Collection";
 
             return object.Class(name, _prototype, _statics);
@@ -274,7 +272,6 @@ myQuery.define("module/object", ["base/extend"], function ($, extend) {
                 }
             }, obj.prototype);
         }
-
     };
 
     $.object = object;
