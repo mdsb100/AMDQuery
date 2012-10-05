@@ -5,6 +5,8 @@ myQuery.define("module/object", ["base/extend"], function ($, extend) {
     "use strict"; //启用严格模式
 
     var 
+    defaultPurview = "-pu -w -r",
+    defaultValidate = function () { return 1; },
     object = {
         //继承模块 可以自己实现一个 function模式 单继承
         _defaultPrototype: {
@@ -87,7 +89,7 @@ myQuery.define("module/object", ["base/extend"], function ($, extend) {
 
             return anonymous;
         }
-        , Collection: function (model, prototype, statics) {
+        , Collection: function (model, prototype, statics, supper) {
             var 
             _expendo = 0,
             _prototype = $.extend({
@@ -178,7 +180,7 @@ myQuery.define("module/object", ["base/extend"], function ($, extend) {
             _statics = $.extend({}, statics),
             name = typeof model == "string" ? model : model.name + "Collection";
 
-            return object.Class(name, _prototype, _statics);
+            return object.Class(name, _prototype, _statics, supper);
         }
 
         , getObjectAttrCount: function (obj, bool) {
@@ -254,18 +256,35 @@ myQuery.define("module/object", ["base/extend"], function ($, extend) {
             }
             //这里加个验证
             return $.each(object, function (value, key) {
-                value = typeof value == "string" ? value : "-pu -w -r";
-                var prefix = /\-pa[\s]?/.test(value) ? "_" : "",
-                w = /\-w[\s]?/.test(value),
-                r = /\-r[\s]?/.test(value);
+                var purview = defaultPurview, validate = defaultValidate;
+                switch (typeof value) {
+                    case "string":
+                        purview = value;
+                        break;
+                    case "object":
+                        if (typeof value.purview == "string") {
+                            purview = value.purview;
+                        }
+                        if (typeof value.validate == "function") {
+                            validate = value.validate;
+                        }
+                        break;
+                    case "function":
+                        validate = value;
+                        break;
 
-                if (w) {
+                }
+                var prefix = /\-pa[\s]?/.test(purview) ? "_" : "";
+
+                if (/\-w[\s]?/.test(purview)) {
                     this[prefix + $.camelCase(key, "set")] = function (a) {
-                        this[key] = a;
+                        if (validate(a)) {
+                            this[key] = a;
+                        }
                         return this;
                     }
                 }
-                if (r) {
+                if (/\-r[\s]?/.test(purview)) {
                     this[prefix + $.camelCase(key, "get")] = function () {
                         return this[key];
                     }
