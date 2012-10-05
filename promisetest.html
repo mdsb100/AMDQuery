@@ -11,8 +11,7 @@
             height: 100px;
         }
     </style>
-    <script src="myquery/myquery.js" type="text/javascript" myquery="define:$;"
-        amd="detectCR:1;"></script>
+    <script src="myquery/myquery.js" type="text/javascript" myquery="define:$;" amd="detectCR:1;"></script>
     <script type="text/javascript">
         $.require("base/promise", function (Promise) {
             var div = document.getElementsByTagName("div")
@@ -35,10 +34,12 @@
                 return function (obj) {
                     write("");
                     write("delay " + ms + " begin");
-                    var promise = new Promise();
+                    var promise = new Promise(), self = this;
                     setTimeout(function () {
-                        write("delay stop");
-                        promise.resolve(obj);
+                        write("delay " + ms + " stop");
+                        write("do together");
+                        //promise.resolve(obj);
+                        promise.together(self, obj);
                     }, ms);
                     return promise;
                 };
@@ -55,17 +56,19 @@
                 write("tag back" + ";num:" + num);
                 return num;
             })
-            .then(delay(2000))
+            .and(delay(1000))
+            .and(delay(2000))
+            .then(delay(3000))
             //promise.resolve(0);
             //.tag()获得是新promise
             .branch(function (num) {
                 write("");
-                write("一一branche:" + this.checkout() + ";num:" + num)
+                write("--branche:" + this.checkout() + ";num:" + num)
                 return num;
             }, "base1")
                 .then(function (num) {
                     write("    ")
-                    return add(num, "一一");
+                    return add(num, "--");
                 })
             .reBranch()
             .then(function (num) {
@@ -76,40 +79,39 @@
             })
             .branch(function (num) {
                 write(" ")
-                write("一一branche:" + this.checkout() + ";num:" + num);
+                write("--branche:" + this.checkout() + ";num:" + num);
                 return num;
             }, "base2")
             .then(function (num) {
-                return add(num, "一一");
+                return add(num, "--");
             })
             .then(function (num) {
-                return add(num, "一一");
+                return add(num, "--");
             })
             .branch(function (num) {
-                write(" ")
-                write("一一branche:" + this.checkout() + ";num:" + num);
+                write(" ");
+                write("because branche base1 is exists,so branch is turn back")
+                write("--branche:" + this.checkout() + ";num:" + num);
                 return num;
             }, "base1")
             .then(function (num) {
-                return add(num, "一一");
+                return add(num, "--");
             })
             .then(function (num) {
-                return add(num, "一一");
+                return add(num, "--");
             })
             .then(function (num) {
-                return add(num, "一一");
+                return add(num, "--");
             })
             .rootResolve(0);
 
-
-            //promise.resolve(0);
             setTimeout(function () {
                 var back = promise
                 .tag("back");
                 write("");
                 write("");
                 write("tag back");
-                write("setTimeout 5000...Is already done?");
+                write("setTimeout 6000...Is already done?");
                 write("branch:" + back.checkout());
                 write("status:" + back.state);
 
@@ -120,11 +122,10 @@
                     return num;
                 })
                 .then(function (num) {
-                    return add(num, "一一");
+                    return add(num, "--");
                 })
 
-            }, 5000)
-
+            }, 6000);
 
             var promiseDelete = new Promise(add1, add);
             promiseDelete.then(add)
@@ -137,15 +138,16 @@
             .removeTree();
             write("");
             write("promiseDelete.thens.length:" + promiseDelete.thens.length);
+            write("");
         });
                
     </script>
 </head>
 <body style="overflow: auto; width: 100%;">
-    <div style="float: left; width: 30%;">
+    <div style="float: left; width: 29%;">
     </div>
-    <pre style="float: left; width: 70%;">
-        $.require("base/promise", function (Promise) {
+    <pre style="float: left; width: 69%;display:block;">
+         $.require("base/promise", function (Promise) {
             var div = document.getElementsByTagName("div")
                 , write = function (s) {
                     div[0].innerHTML = div[0].innerHTML += s + "&ltbr&gt";
@@ -166,10 +168,12 @@
                 return function (obj) {
                     write("");
                     write("delay " + ms + " begin");
-                    var promise = new Promise();
+                    var promise = new Promise(), self = this;
                     setTimeout(function () {
-                        write("delay stop");
-                        promise.resolve(obj);
+                        write("delay " + ms + " stop");
+                        write("do together");
+                        //promise.resolve(obj);
+                        promise.together(self, obj);
                     }, ms);
                     return promise;
                 };
@@ -186,17 +190,19 @@
                 write("tag back" + ";num:" + num);
                 return num;
             })
-            .then(delay(2000))
+            .and(delay(1000))
+            .and(delay(2000))
+            .then(delay(3000))
             //promise.resolve(0);
             //.tag()获得是新promise
             .branch(function (num) {
                 write("");
-                write("一一branche:" + this.checkout() + ";num:" + num)
+                write("--branche:" + this.checkout() + ";num:" + num)
                 return num;
             }, "base1")
                 .then(function (num) {
                     write("    ")
-                    return add(num, "一一");
+                    return add(num, "--");
                 })
             .reBranch()
             .then(function (num) {
@@ -207,40 +213,39 @@
             })
             .branch(function (num) {
                 write(" ")
-                write("一一branche:" + this.checkout() + ";num:" + num);
+                write("--branche:" + this.checkout() + ";num:" + num);
                 return num;
             }, "base2")
             .then(function (num) {
-                return add(num, "一一");
+                return add(num, "--");
             })
             .then(function (num) {
-                return add(num, "一一");
+                return add(num, "--");
             })
             .branch(function (num) {
-                write(" ")
-                write("一一branche:" + this.checkout() + ";num:" + num);
+                write(" ");
+                write("because branche base1 is exists,so branch is turn back")
+                write("--branche:" + this.checkout() + ";num:" + num);
                 return num;
             }, "base1")
             .then(function (num) {
-                return add(num, "一一");
+                return add(num, "--");
             })
             .then(function (num) {
-                return add(num, "一一");
+                return add(num, "--");
             })
             .then(function (num) {
-                return add(num, "一一");
+                return add(num, "--");
             })
             .rootResolve(0);
 
-
-            //promise.resolve(0);
             setTimeout(function () {
                 var back = promise
                 .tag("back");
                 write("");
                 write("");
                 write("tag back");
-                write("setTimeout 5000...Is already done?");
+                write("setTimeout 6000...Is already done?");
                 write("branch:" + back.checkout());
                 write("status:" + back.state);
 
@@ -251,11 +256,10 @@
                     return num;
                 })
                 .then(function (num) {
-                    return add(num, "一一");
+                    return add(num, "--");
                 })
 
-            }, 5000)
-
+            }, 6000);
 
             var promiseDelete = new Promise(add1, add);
             promiseDelete.then(add)
@@ -263,8 +267,8 @@
             .branch(add, "test1")
                 .then(add)
             .reBranch()
-            .then(add)
-            .then(add)
+                .then(add)
+                .then(add)
             .removeTree();
             write("");
             write("promiseDelete.thens.length:" + promiseDelete.thens.length);

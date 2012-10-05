@@ -1453,13 +1453,28 @@
                 this.progress = arg[2];
                 this.path = arg[3] || "master";
                 this.parent = null;
+                this.friend = 0;
+                this.asyncCount = 0;
                 this.id = count++;
                 return this;
             },
-            //render: function () { },
-            //create: function () { },
-            removeChildren: function () {
+            destructor: function () {
+                delete this.state;
+                delete this.result;
+                delete this.thens;
+                delete this.todo;
+                delete this.fail;
+                delete this.progress;
+                delete this.path;
+                delete this.parent;
+                delete this.friend;
+                delete this.id;
+                return this;
+            },
+
+            removeChildren: function (unDestructor) {
                 /// <summary>删除节点下的promise</summary>
+                /// <param name="unDestructor" type="Boolean">是否析构</param>
                 /// <returns type="self" />
                 var ancester = arguments[0] || this, fn = arguments[1], thens = ancester.thens,
                  i, len = thens.length, result = 0, then;
@@ -1467,7 +1482,9 @@
                     for (i = len - 1; i >= 0; i--) {
                         then = thens[i];
                         then.removeChildren();
-                        thens.pop().parent = null;
+                        then = thens.pop();
+                        //then.parent = null;
+                        unDestructor === false && then.destructor();
                     }
                 }
                 return this;
@@ -1522,7 +1539,26 @@
                 /// <param name="fail" type="Function">失败</param>
                 /// <param name="progress" type="Function">进度</param>
                 /// <returns type="self" />
-                this.then(todo, fail, progress);
+                var self = this.parent || this, promise = self.then(todo, fail, progress);
+                promise.friend = 1;
+                self.asyncCount += 1;
+                return promise;
+            },
+            together: function (promise, obj) {
+                var i = 0, parent = promise.parent || this.parent, thens = parent.thens, len = thens.length, then;
+                parent.asyncCount = Math.max(--parent.asyncCount, 0);
+                for (i = 0; i < len; i++) {
+                    then = thens[i];
+                    if (then.friend) {
+                        if (parent.asyncCount > 0) {
+                            return this;
+                        }
+                    }
+                }
+                for (i = 0; i < len; i++) {
+                    then = thens[i];
+                    then.result instanceof Promise && then.result.resolve(obj);
+                }
                 return this;
             },
 
@@ -1587,7 +1623,7 @@
                 this.root().resolve(obj);
                 return this;
             },
-            checkout: function (name) {
+            checkout: function () {
                 /// <summary>检查路径</summary>
                 /// <returns type="Promise" />
                 //                if (name) {
@@ -1597,7 +1633,7 @@
                 //                    Promise._branch[name]
 
                 //                } else {
-                this.path;
+                return this.path;
                 //}
             }
         };
