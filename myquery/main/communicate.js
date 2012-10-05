@@ -183,17 +183,18 @@ myQuery.define("main/communicate"
             _data = $.getURLParam(o.data);
 
 
-            if (o.JSONP == true) {
+            if (o.JSONP) {
                 random = "myQuery" + $.now();
                 window[random] = function () {
                     $.isFun(o.complete) && o.complete.apply(o.context || window, arguments);
                 }
-                o.JSONP = random;
+                //o.JSONP = random;
+                _data += "&" + (o.JSONP) + "=" + random;
                 //_data += "&complete=" + random;
             }
-            if ($.isStr(o.JSONP)) {
-                _data += "&" + (o.JSONPKey) + "=" + o.JSONP;
-            }
+            //            if ($.isStr(o.JSONP)) {
+            //                _data += "&" + (o.JSONPKey) + "=" + o.JSONP;
+            //            }
 
             o.isRandom == true && (_data += "&random=" + $.now());
 
@@ -206,6 +207,7 @@ myQuery.define("main/communicate"
                     clearTimeout(_timeId);
                     $.trigger("getJSStop", _scripts, o);
                     var js = typeof window[o.checkString] != "undefined" ? window[o.checkString] : undefined;
+                    !o.JSONP && tools.isFun(o.complete) && o.complete.call(o.context || this, js);
                     //$.isFun(o.complete) && o.complete.call(o.context || this, js);
                     this.nodeName.toLowerCase() == "script" && o.isDelete == true && _head.removeChild(this);
                     this.onerror = this.onload = o = _head = null;
