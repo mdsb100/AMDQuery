@@ -1483,7 +1483,7 @@
                 /// <returns type="self" />
                 if (this.state != 'todo') {
                     tools.error({ fn: "Promise.resolve", msg: "already resolveed" })
-
+                    return this;
                 };
                 //arguments 应当 apply
                 if (this.fail) {
