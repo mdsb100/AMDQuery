@@ -70,10 +70,11 @@ myQuery.define("module/object", ["base/extend"], function ($, extend) {
 
             $.easyExtend(anonymous, statics);
 
-            anonymous.__tag = "object.Class";
+            //anonymous.__tag = "object.Class";
+            //supper.__tag == "object.Class" ||
 
             if (supper) {
-                anonymous._SupperConstructor = supper.__tag == "object.Class"
+                anonymous._SupperConstructor =  supper.prototype.init 
                 ? function () {
                     var arg = $.argToArray(arguments), self = arg.splice(0, 1)[0];
                     supper.prototype.init.apply(self, arg);
