@@ -5,6 +5,11 @@ myQuery.define("main/customevent", function ($, undefined) {
 
     var proto = {
         constructor: CustomEvent
+        , init: function () {
+            this.handlers = {};
+            this._handlerMap = {};
+            return this;
+        }
         , addHandler: function (type, handler) {
             /// <summary>添加自定义事件</summary>
             /// <param name="type" type="String">方法类型</param>
@@ -96,7 +101,7 @@ myQuery.define("main/customevent", function ($, undefined) {
                 }
                 result = result["__" + nameSpace];
             }
-            this._map[type] || (this._map[type] = result);
+            this._handlerMap[type] || (this._handlerMap[type] = result);
             return result;
         }
     };
@@ -105,8 +110,7 @@ myQuery.define("main/customevent", function ($, undefined) {
         /// <summary>自定义事件基类</summary>
         /// <returns type="CustomEvent" />
         //quote from written by Nicholas C.Zakas
-        this.handlers = {};
-        this._map = {};
+        this.init.apply(this, arguments);
     }
     CustomEvent.prototype = proto;
 
