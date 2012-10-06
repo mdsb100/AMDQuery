@@ -28,8 +28,8 @@ myQuery.define("module/object", ["base/extend"], function ($, extend) {
             /// <param name="static" type="Object">静态方法</param>
             /// <param name="supper" type="Function">父类</param>
             /// <returns type="self" />
-            var anonymous, argLen = arguments.length;
-            switch (argLen) {
+            var anonymous;
+            switch (arguments.length) {
                 case 0:
                 case 1:
                     return null;
@@ -90,13 +90,26 @@ myQuery.define("module/object", ["base/extend"], function ($, extend) {
             return anonymous;
         }
         , Collection: function (model, prototype, statics, supper) {
+            switch (arguments.length) {
+                case 0:
+                case 1:
+                    return null;
+                case 3:
+                    if (typeof statics == "function") {
+                        supper = statics;
+                        statics = null;
+                    }
+                    break;
+            }
+
             var 
             _expendo = 0,
-            _prototype = $.extend({
+            _prototype = $.extend({}, prototype, {
                 init: function () {
                     this.models = [];
-                    this._map = {};
-                    return this.add.apply(this, arguments);
+                    this.__map = {};
+                    prototype.init ? prototype.init.apply(this, arguments) : this.add.apply(this, arguments);
+                    return this;
                 },
                 //getByCid: function () { },
                 add: function (model) {
@@ -109,9 +122,9 @@ myQuery.define("module/object", ["base/extend"], function ($, extend) {
                     model;
                     for (; i < len; i++) {
                         model = arg[i]
-                        if (!this._map[model.id]) {
+                        if (!this.__map[model.id]) {
                             this.models.push(model);
-                            this._map[model.id || (model.constructor.name + _expendo++)] = model;
+                            this.__map[model.id || (model.constructor.name + _expendo++)] = model;
                         }
                     }
                     return this;
@@ -131,7 +144,7 @@ myQuery.define("module/object", ["base/extend"], function ($, extend) {
                             model = this.models[id];
                             break;
                         case "string":
-                            model = this._map[id];
+                            model = this.__map[id];
                             break;
                         case "object":
                             model = id;
@@ -139,9 +152,9 @@ myQuery.define("module/object", ["base/extend"], function ($, extend) {
                     }
                     if (model) {
                         this.models.splice($.inArray(this.models, model), 1);
-                        for (i in this._map) {
-                            if (this._map[i] == model) {
-                                delete this._map[i];
+                        for (i in this.__map) {
+                            if (this.__map[i] == model) {
+                                delete this.__map[i];
                             }
                         }
                     }
@@ -156,7 +169,7 @@ myQuery.define("module/object", ["base/extend"], function ($, extend) {
                             model = this.models[id];
                             break;
                         case "string":
-                            model = this._map[id];
+                            model = this.__map[id];
                             break;
                     }
                     return model;
@@ -176,7 +189,7 @@ myQuery.define("module/object", ["base/extend"], function ($, extend) {
                         fn.call(context || item, item, i);
                     return this;
                 }
-            }, prototype),
+            }),
             _statics = $.extend({}, statics),
             name = typeof model == "string" ? model : model.name + "Collection";
 
