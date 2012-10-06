@@ -97,7 +97,7 @@ myQuery.define("ui/js/scrollableview", ["module/widget", "ui/js/swappable", "mod
         , public: {
 
         }
-        , refresh: function () {
+        , render: function () {
             var opt = this.options;
 
             if (opt.disabled === false) {
