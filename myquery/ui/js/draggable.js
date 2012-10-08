@@ -112,7 +112,7 @@ myQuery.define("ui/js/draggable", ["module/widget", "main/event", "main/dom"]
         , public: {
 
         }
-        , refresh: function () {
+        , render: function () {
             var opt = this.options;
 
             if (opt.disabled === false) {

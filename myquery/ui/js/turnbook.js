@@ -368,7 +368,7 @@ myQuery.define("ui/js/turnbook", ["ui/js/swappable", "main/class", "html5/css3"]
             , isInRight: 1
         }
 
-        , refresh: function () {
+        , render: function () {
             var opt = this.options;
 
             this.message.css(opt.messageClass);

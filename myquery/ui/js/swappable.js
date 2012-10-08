@@ -171,7 +171,7 @@ myQuery.define("ui/js/swappable", ["base/client", "main/event", "module/math", "
             , getPath: 1
             , getPathLast: 1
         }
-        , refresh: function () {
+        , render: function () {
             this.target.css({ cursor: this.options.cursor });
             return this;
         }

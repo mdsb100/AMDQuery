@@ -14,7 +14,7 @@ myQuery.define("module/widget", ["main/data", "main/event", "main/attr", "module
         //event.custom.call(this);
         target._initHandler();
         this.target = target;
-        this._init_(obj)._create_()._refresh_();
+        this._init_(obj, target)._create_()._render_();
     }
     //object.inheritProtypeWidthCombination(Widget, event.event.custom);
     $.easyExtend(Widget.prototype, {
@@ -81,7 +81,7 @@ myQuery.define("module/widget", ["main/data", "main/event", "main/attr", "module
             else if ($.isStr(key))
                 this.setOption(key, value);
             //return this;
-            //this._refresh_();
+            //this._render_();
         }
         , options: {
             disabled: false
@@ -92,10 +92,11 @@ myQuery.define("module/widget", ["main/data", "main/event", "main/attr", "module
             , widget: 1
             , toString: 1
         }
-        , refresh: null
-        , _refresh_: function () {
+        , render: null
+        , _bindEvent: function () { }
+        , _render_: function () {//不应该由这个来绑定事件
             this.options.disabled === false ? this.disable() : this.enable();
-            $.isFun(this.refresh) && this.refresh();
+            $.isFun(this.render) && this.render();
             return this;
         }
         , setOption: function (key, value) {
@@ -126,7 +127,7 @@ myQuery.define("module/widget", ["main/data", "main/event", "main/attr", "module
         /// <para>}</para>
         /// <para>方法会被传入3个参数。obj为初始化参数、target为$的对象、base为Widget基类</para>
         /// <para>prototype应当实现的属性:container:容器 options:参数 target:目标$ public:对外公开的方法 widgetEventPrefix:自定义事件前缀</para>
-        /// <para>prototype应当实现的方法:返回类型 方法名 this create, this init, this refresh,Object event</para>
+        /// <para>prototype应当实现的方法:返回类型 方法名 this create, this init, this render,Object event</para>
         /// <para>对外公开的方法返回值不能为this</para>
         /// </summary>
         /// <param name="name" type="String">格式为"ui.scorePicker"ui为命名空间，scorePicer为方法名，若有相同会覆盖</param>
@@ -165,16 +166,16 @@ myQuery.define("module/widget", ["main/data", "main/event", "main/attr", "module
             this.each(function (ele) {
                 var data = $.data(ele, key); //key = nameSpace + "." + name,
                 if (data == undefined)
-                    data = $.data(ele, key, new constructor(a, $(ele), Widget));//完全调用基类的构造函数
+                    data = $.data(ele, key, new constructor(a, $(ele), Widget)); //完全调用基类的构造函数 不应当在构造函数 create render
                 else {
                     if ($.isObj(a))
-                        data._init_(a)._refresh_();
+                        data._init_(a)._render_();
                     else if ($.isStr(a)) {
                         //if (b === undefined) {
                         if (a === "option") {
                             result = data.option(b, c);
                             if (result === undefined) {
-                                data._refresh_();
+                                data._render_();
                                 result = this;
                             }
                         }
