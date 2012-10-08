@@ -10,7 +10,7 @@ myQuery.define("html5/animate.transform", ["module/object", "module/fx", "html5/
     , transformCss = "-" + css3.css3Head + "-transform";
     //给动画类添加一个自定义方法
     if ($.support.transform3d) {
-        var Transfrom3dForFX = object.Class(function Transfrom3dForFX(ele, options, value, name, type) {
+        var Transfrom3dForFX = object.Class(function Transfrom3dForFX(ele, options, value, name, isComplete, type) {
             if (this instanceof Transfrom3dForFX) {
                 this.type = type;
                 this._originCss = transformCss;
@@ -20,8 +20,9 @@ myQuery.define("html5/animate.transform", ["module/object", "module/fx", "html5/
             else {
                 var ret = [];
                 $.each(value, function (val, key) {
-                    ret.push(new Transfrom3dForFX(ele, options, val, name, key));
+                    ret.push(new Transfrom3dForFX(ele, options, val, name, 0, key));
                 });
+                ret[ret.length - 1].isComplete = 1;
                 return ret;
             }
         },
@@ -30,7 +31,6 @@ myQuery.define("html5/animate.transform", ["module/object", "module/fx", "html5/
                 var r = parseFloat($.getTransform3d(this.ele)[this.type]);
                 return r || 0;
             }
-            , constructor: Transfrom3dForFX
             , update: function (transform, value) {
                 transform = transform || $.getTransform3d(this.ele);
                 value = value != undefined ? value : this.nowPos;
@@ -58,21 +58,22 @@ myQuery.define("html5/animate.transform", ["module/object", "module/fx", "html5/
         });
     }
     if ($.support.transform) {
-        var TransfromForFX = object.Class(function TransfromForFX(ele, options, value, name, type, index) {
+        var TransfromForFX = object.Class(function TransfromForFX(ele, options, value, name, isComplete, type, index) {
             if (this instanceof TransfromForFX) {
                 this.type = type;
                 this.index = index;
                 this._originCss = transformCss;
                 name = name.indexOf("set") < 0 ? $.camelCase(name, "set") : name;
-                TransfromForFX._SupperConstructor(this, ele, options, value, name);
+                TransfromForFX._SupperConstructor(this, ele, options, value, name, isComplete);
             }
             else {
                 var ret = [];
                 $.each(value, function (list) {
                     for (var i = 1, len = list.length; i < len; i++) {
-                        ret.push(new TransfromForFX(ele, options, list[i], name, list, i));
+                        ret.push(new TransfromForFX(ele, options, list[i], name, 0, list, i));
                     }
                 });
+                ret[ret.length - 1].isComplete = 1;
                 return ret;
             }
         }, {
@@ -82,7 +83,6 @@ myQuery.define("html5/animate.transform", ["module/object", "module/fx", "html5/
                 if (this.type[0] == "scale") r = getScale(r);
                 return r || 0;
             }
-            , constructor: TransfromForFX
             , update: function (transform, value) {
                 transform = transform || $.getTransform(this.ele, this.type[0])[0] || [];
                 value = value != undefined ? value : this.nowPos;

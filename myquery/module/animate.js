@@ -179,8 +179,10 @@ myQuery.define("module/animate", ["base/queue", "main/data", "module/fx", "modul
                 , duration: duration
                 , easing: $.getAnimationEasing(opt.easing)
                 , specialEasing: opt.specialEasing
-                , complete: function () {
+                , complete: function (fx) {
+
                     opt.complete && opt.complete();
+
                     $(this).dequeue(); // this is ele
                 }
                 , queue: opt.queue === false ? false : true

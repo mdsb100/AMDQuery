@@ -13,13 +13,14 @@ myQuery.define("module/fx", ["main/dom", "module/object"], function ($, dom, obj
 
             FX.tick();
         }
-        , init: function (ele, options, value, name) {
+        , init: function (ele, options, value, name, isComplete) {
             this.ele = ele;
             this.options = options;
             this.easing = options.easing;
             this.delay = options.delay || 0;
             this.duration = options.duration;
             this.name = name;
+            this.isComplete = isComplete == undefined ? 1 : isComplete;
             var ret = this.getStartEnd(value);
             this.from = ret.start;
             this.end = ret.end;
@@ -68,7 +69,7 @@ myQuery.define("module/fx", ["main/dom", "module/object"], function ($, dom, obj
                         }
                     }
                     this.update();
-                    opt.complete.call(this.ele);
+                    this.isComplete && opt.complete.call(this.ele, this);
                 }
                 this.stop();
             }

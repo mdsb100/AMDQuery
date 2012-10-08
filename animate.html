@@ -10,7 +10,7 @@
     </style>
     <link href="css/reset.css" rel="stylesheet" type="text/css" />
     <script src="myquery/myquery.js" type="text/javascript" myquery="define:$;" amd="detectCR:1;async:1"
-        model="transitionToAnimation:1"></script>
+        model="transitionToAnimation:0"></script>
     <script type="text/javascript">
         $.require([
         "main/query",
@@ -20,7 +20,8 @@
         "html5/animate.transform",
         "main/event",
         "module/effect",
-        "html5/css3.transition.animate"
+        "html5/css3.transition.animate",
+        "module/animatecolor"
         ]
         , function () {
             //$.getTransitionEasing("quar.easeInOut");
@@ -32,7 +33,7 @@
             var button1 = $("#button1").addHandler("click", function () {
                 //$.animationPower.start(); //.sleep(2000);
                 go1
-                .animate({ width: "300px", top: "500px", opacity: 0.5 }, {
+                .animate({ width: "300px", top: "300px", opacity: 0.5 }, {
                     duration: 2000
                     , delay: 2000
                     , easing: "linear"//["cubicBezier", 1, 1]
@@ -50,9 +51,15 @@
                         , top: "cubic.easeInOut"
                     }
                 })
-               .animate({ height: "+=100px", opacity: 1 }, { duration: 4000, easing: "linear"
+               .animate({ height: "+=100px", opacity: 1 }, { duration: 2000, easing: "linear"
                    , complete: function () {
                        $.showMsg("2")
+                       //alert("2")
+                   }
+               })
+               .animate({ width: "+=100px", opacity: 1 }, { duration: 2000, easing: "linear"
+                   , complete: function () {
+                       $.showMsg("3")
                        //alert("2")
                    }
                });
@@ -130,10 +137,19 @@
 
             var button11 = $("#button11").click(function () {
                 //颜色
+                go1
+                .animate({ backgroundColor: "orange" }, { duration: 2000, easing: "linear" })
+                //setTimeout(function () {
+                .animate({ backgroundColor: "greenyellow" }, { duration: 2000, easing: "linear" })
+                //}, 3000);
+
+                //setTimeout(function () {
+                .animate({ backgroundColor: "skyblue" }, { duration: 2000, easing: "linear" })
+                //}, 5000);
             });
 
             var button12 = $("#button12").addHandler("click", function () {
-                go1.css({ w: 100, h: 100, t: 0, l: 0, o: 1 }).css3({ transform: [] });
+                go1.css({ w: 100, h: 100, t: 0, l: 0, o: 1, backgroundColor: "white" }).css3({ transform: [] });
             });
 
             //            var b = go1.styleTable();
@@ -143,7 +159,8 @@
     </script>
 </head>
 <body>
-    <div id="go1" style="width: 100px; height: 100px; background-color: Blue; position: absolute;">
+    <div id="go1" style="width: 100px; height: 100px; background-color: White; position: absolute;
+        border: 1px solid black">
     </div>
     <div style="position: absolute; left: 100px;">
         <button id="button1">

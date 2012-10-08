@@ -150,7 +150,7 @@ myQuery.define("html5/css3.transition.animate", ["base/client", "html5/css3", "m
                         delay: delay
                         , duration: duration
                         , easing: $.getTransitionEasing(opt.easing)
-                        , complete: function () {
+                        , complete: function (fx) {
                             opt.complete && opt.complete();
                             $(this).dequeue(); // this is ele
                             opt = duration = null;
