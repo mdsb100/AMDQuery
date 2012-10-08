@@ -26,6 +26,8 @@ myQuery.define("module/fx", ["main/dom", "module/object"], function ($, dom, obj
             this.unit = ret.unit;
             this.percent = 0;
             options.isStart && this.start();
+
+            return this;
         }
         , cur: function () {
             return FX.cur(this.ele, this.name);

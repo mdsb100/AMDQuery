@@ -2,20 +2,20 @@
 /// <reference path="../../myquery/html5/css3.js" />
 /// <reference path="../../myquery/module/animate.js" />
 
-myQuery.define("html5/animate.transform", ["html5/css3", "module/animate"], function ($, css3, animate, undefined) {
+myQuery.define("html5/animate.transform", ["module/object", "module/fx", "html5/css3", "module/animate"], function ($, object, FX, css3, animate, undefined) {
     "use strict"; //启用严格模式
     var getScale = function (r) {
         return r = r ? Math.max(r, 0) : 1;
     }
-    , transformCss = "-" + css3.css3Head + "-transform" ;
+    , transformCss = "-" + css3.css3Head + "-transform";
     //给动画类添加一个自定义方法
     if ($.support.transform3d) {
-        var Transfrom3dForFX = function (ele, options, value, name, type) {
+        var Transfrom3dForFX = object.Class(function Transfrom3dForFX(ele, options, value, name, type) {
             if (this instanceof Transfrom3dForFX) {
                 this.type = type;
                 this._originCss = transformCss;
                 name = name.indexOf("set") < 0 ? $.camelCase(name, "set") : name;
-                $.fx.call(this, ele, options, value, name);
+                Transfrom3dForFX._SupperConstructor(this, ele, options, value, name);
             }
             else {
                 var ret = [];
@@ -24,9 +24,8 @@ myQuery.define("html5/animate.transform", ["html5/css3", "module/animate"], func
                 });
                 return ret;
             }
-        }
-        $.object.inheritProtypeWidthExtend(Transfrom3dForFX, $.fx);
-        $.easyExtend(Transfrom3dForFX.prototype, {
+        },
+        {
             cur: function () {
                 var r = parseFloat($.getTransform3d(this.ele)[this.type]);
                 return r || 0;
@@ -49,22 +48,23 @@ myQuery.define("html5/animate.transform", ["html5/css3", "module/animate"], func
 
                 return start;
             }
-        });
+        }, FX);
+
         $.easyExtend($.fx.custom, {
-            setRotate3d: Transfrom3dForFX
-            , setScale: Transfrom3dForFX
-            , transform3d: Transfrom3dForFX
-            , setTranslate3d: Transfrom3dForFX
+            setRotate3d: Transfrom3dForFX,
+            setScale: Transfrom3dForFX,
+            transform3d: Transfrom3dForFX,
+            setTranslate3d: Transfrom3dForFX
         });
     }
     if ($.support.transform) {
-        var TransfromForFX = function (ele, options, value, name, type, index) {
+        var TransfromForFX = object.Class(function TransfromForFX(ele, options, value, name, type, index) {
             if (this instanceof TransfromForFX) {
                 this.type = type;
                 this.index = index;
                 this._originCss = transformCss;
                 name = name.indexOf("set") < 0 ? $.camelCase(name, "set") : name;
-                $.fx.call(this, ele, options, value, name);
+                TransfromForFX._SupperConstructor(this, ele, options, value, name);
             }
             else {
                 var ret = [];
@@ -75,9 +75,7 @@ myQuery.define("html5/animate.transform", ["html5/css3", "module/animate"], func
                 });
                 return ret;
             }
-        }
-        $.object.inheritProtypeWidthExtend(TransfromForFX, $.fx);
-        $.easyExtend(TransfromForFX.prototype, {
+        }, {
             cur: function () {
                 var r = $.getTransform(this.ele, this.type[0])[0] || []
                 r = parseFloat(r[this.index]);
@@ -111,7 +109,8 @@ myQuery.define("html5/animate.transform", ["html5/css3", "module/animate"], func
                 return start;
             }
 
-        });
+        }, FX);
+
         $.easyExtend($.fx.custom, {
             transform: TransfromForFX
         });

@@ -9,8 +9,8 @@
         }
     </style>
     <link href="css/reset.css" rel="stylesheet" type="text/css" />
-    <script src="myquery/myquery.js" type="text/javascript" myquery="define:$;"
-        amd="detectCR:1;async:1" model="transitionToAnimation:1"></script>
+    <script src="myquery/myquery.js" type="text/javascript" myquery="define:$;" amd="detectCR:1;async:1"
+        model="transitionToAnimation:1"></script>
     <script type="text/javascript">
         $.require([
         "main/query",
@@ -128,7 +128,11 @@
                 });
             });
 
-            var button11 = $("#button11").addHandler("click", function () {
+            var button11 = $("#button11").click(function () {
+                //颜色
+            });
+
+            var button12 = $("#button12").addHandler("click", function () {
                 go1.css({ w: 100, h: 100, t: 0, l: 0, o: 1 }).css3({ transform: [] });
             });
 
@@ -173,6 +177,9 @@
             $.animate
         </button>
         <button id="button11">
+            color
+        </button>
+        <button id="button12">
             reset
         </button>
     </div>
