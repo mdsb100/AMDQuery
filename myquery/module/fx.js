@@ -13,14 +13,14 @@ myQuery.define("module/fx", ["main/dom", "module/object"], function ($, dom, obj
 
             FX.tick();
         }
-        , init: function (ele, options, value, name, isComplete) {
+        , init: function (ele, options, value, name) {
             this.ele = ele;
             this.options = options;
             this.easing = options.easing;
             this.delay = options.delay || 0;
             this.duration = options.duration;
             this.name = name;
-            this.isComplete = isComplete == undefined ? 1 : isComplete;
+            //this.isComplete = isComplete == undefined ? 1 : isComplete;
             var ret = this.getStartEnd(value);
             this.from = ret.start;
             this.end = ret.end;
@@ -56,8 +56,8 @@ myQuery.define("module/fx", ["main/dom", "module/object"], function ($, dom, obj
             if (goToEnd === true || t > this.startTime + this.delay + this.duration) {
                 //this.tick = opt.duration;
                 this.nowPos = this.end;
-                opt.curCount -= 1;
-                if (opt.curCount <= 0) {
+                //opt.curCount -= 1;
+                if (--opt.curCount <= 0) {
                     if (this.options.display != null) {
                         // Reset the overflow
                         this.ele.style.overflow = opt.overflow;
@@ -69,7 +69,7 @@ myQuery.define("module/fx", ["main/dom", "module/object"], function ($, dom, obj
                         }
                     }
                     this.update();
-                    this.isComplete && opt.complete.call(this.ele, this);
+                    opt.complete.call(this.ele, this);
                 }
                 this.stop();
             }

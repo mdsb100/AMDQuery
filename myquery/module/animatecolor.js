@@ -3,22 +3,22 @@
 
 myQuery.define("module/animatecolor", ["module/object", "module/color", "main/dom", "module/fx", "module/animate"], function ($, object, color, css, FX, animate) {
     "use strict"; //启用严格模式
-    var AnimateColor = object.Class(function AnimateColor(ele, options, value, name, isComplete, type) {
+    var AnimateColor = object.Class(function AnimateColor(ele, options, value, name, type) {
         if (this instanceof AnimateColor) {
             this.type = type;
             //this.color = color(css.style(ele, name));
             // this.originColor = color(css.style(ele, name));
             //this.color.clone();
             //this._originCss = transformCss;
-            AnimateColor._SupperConstructor(this, ele, options, value, name, isComplete, type);
+            AnimateColor._SupperConstructor(this, ele, options, value, name, type);
         }
         else {
             var _color = color(value);
-
+            options.curCount = 3;
             return [
-                new AnimateColor(ele, options, _color.red, name, 0, "red"),
-                new AnimateColor(ele, options, _color.green, name, 0, "green"),
-                new AnimateColor(ele, options, _color.blue, name, 1, "blue")
+                new AnimateColor(ele, options, _color.red, name, "red"),
+                new AnimateColor(ele, options, _color.green, name, "green"),
+                new AnimateColor(ele, options, _color.blue, name, "blue")
             ];
         }
     }, {
