@@ -48,19 +48,19 @@ myQuery.define("module/widget", ["main/data", "main/event", "main/attr", "module
             }
         }
         , disable: function () {
-            $.each(this.event(), function (control, name) {
-                $.each(control, function (value, key) {
-                    this[name].removeHandler(key, value);
-                }, this);
-            }, this);
+            //            $.each(this.event, function (control, name) {
+            //                $.each(control, function (value, key) {
+            //                    this[name].removeHandler(key, value);
+            //                }, this);
+            //            }, this);
         }
         , enable: function () {
-            $.each(this.event(), function (control, name) {
-                $.each(control, function (value, key) {
-                    this[name].removeHandler(key, value);
-                    this[name].addHandler(key, value);
-                }, this);
-            }, this);
+            //            $.each(this.event, function (control, name) {
+            //                $.each(control, function (value, key) {
+            //                    this[name].removeHandler(key, value);
+            //                    this[name].addHandler(key, value);
+            //                }, this);
+            //            }, this);
         }
         , event: function () { }
         , init: null

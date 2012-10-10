@@ -26,12 +26,9 @@ myQuery.define("ui/js/draggable", ["module/widget", "main/event", "main/dom"]
             if (this.options.overflow == true) {
                 this.positionParent.css("overflow", "hidden");
             }
-            return this;
-        }
-        , customEventName: ["start", "move", "stop"]
-        , event: function () {
-            var self = this, target = self.target, opt = self.options, dragging = null
-            return function (e) {
+
+            var self = this, target = self.target, opt = self.options, dragging = null;
+            this.event = function (e) {
                 var offsetLeft = target.getLeft(), offsetTop = target.getTop()
                 , x = e.pageX || e.clientX, y = e.pageY || e.clientY
                 , para = { type: 'drag.start', container: opt.container, clientX: x, clientY: y, offsetX: e.offsetX || e.layerX || x - offsetLeft, offsetY: e.offsetY || e.layerY || y - offsetTop, event: e, target: this };
@@ -59,7 +56,7 @@ myQuery.define("ui/js/draggable", ["module/widget", "main/event", "main/dom"]
                                 cP.pageLeft -= offsetLeft;
                                 cP.pageTop -= offsetTop;
                                 x = $.between(cP.pageLeft, cP.width + cP.pageLeft - target.width(), x);
-                                y = $.between(cP.pageTop, cP.height + cP.pageTop - target.height(), y);//使用height对不对？
+                                y = $.between(cP.pageTop, cP.height + cP.pageTop - target.height(), y); //使用height对不对？
                             }
 
                             target.css({ cursor: opt.cursor });
@@ -80,22 +77,27 @@ myQuery.define("ui/js/draggable", ["module/widget", "main/event", "main/dom"]
                         dragging = null;
                         break;
                 }
-            }
+            };
+
+            return this;
         }
+        , customEventName: ["start", "move", "stop"]
+        , event: function () { }
         , enable: function () {
-            var fun = this.event();
+            var fun = this.event;
             this.disable();
             this.options.container.addHandler('mousemove', fun).addHandler('mouseup', fun);
             this.target.addHandler('mousedown', fun);
         }
         , disable: function () {
-            var fun = this.event();
+            var fun = this.event;
             this.options.container.removeHandler('mousemove', fun).removeHandler('mousemove', fun);
             this.target.removeHandler('mousedown', fun);
         }
         , init: function (obj) {
             this.option(obj);
             this.options.container = $(obj.container || document.body);
+            
             return this;
         }
         , options: {

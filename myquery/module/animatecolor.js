@@ -1,7 +1,7 @@
 ﻿/// <reference path="../myquery.js" />
 /*include JQuery animate*/
 
-myQuery.define("module/animatecolor", ["module/object", "module/color", "main/dom", "module/fx", "module/animate"], function ($, object, color, css, FX, animate) {
+myQuery.define("module/animatecolor", ["module/object", "module/color", "main/dom", "module/fx"], function ($, object, color, dom, FX) {
     "use strict"; //启用严格模式
     var AnimateColor = object.Class(function AnimateColor(ele, options, value, name, type) {
         if (this instanceof AnimateColor) {
@@ -29,7 +29,7 @@ myQuery.define("module/animatecolor", ["module/object", "module/color", "main/do
             return { start: start, end: end, unit: "" };
         }
         , cur: function () {
-            return color(css.style(this.ele, this.name));
+            return color(dom.style(this.ele, this.name));
         }
         , update: function () {
             var _color = this.cur();

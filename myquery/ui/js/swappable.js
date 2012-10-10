@@ -7,17 +7,9 @@ myQuery.define("ui/js/swappable", ["base/client", "main/event", "module/math", "
     var swappable = $.widget("ui.swappable", {
         container: null
         , create: function () {
-            this.path = [];
-            this.isDown = false;
-            this.startY = null;
-            this.startX = null;
-            return this;
-        }
-        , customEventName: ["start", "move", "pause", "stop", "mousemove"]
-        , event: function () {
             var self = this, target = self.target, opt = self.options
              , time, timeout, lastEvent; //IE和绑定顺序有关？找不到startX值？
-            return function (e) {
+            this.event = function (e) {
                 //event.document.stopPropagation(e);
                 var left = target.getLeft(), top = target.getTop(), temp
                     , x = (e.pageX || e.clientX) - left, y = (e.pageY || e.clientY) - top
@@ -103,10 +95,16 @@ myQuery.define("ui/js/swappable", ["base/client", "main/event", "module/math", "
                         break;
 
                 }
-            }
+            };
+
+            return this;
+        }
+        , customEventName: ["start", "move", "pause", "stop", "mousemove"]
+        , event: function () {
+
         }
         , enable: function () {
-            var fun = this.event();
+            var fun = this.event;
             this.disable();
             this.target.addHandler('mousemove', fun).addHandler('mousedown', fun)
             $(document).addHandler('mouseup', fun);
@@ -119,7 +117,7 @@ myQuery.define("ui/js/swappable", ["base/client", "main/event", "module/math", "
             return swaptype;
         }
         , disable: function () {
-            var fun = this.event();
+            var fun = this.event;
             this.target.removeHandler('mousemove', fun).removeHandler('mousedown', fun)
             //event.document.removeHandler(window, 'scroll', fun);
             $(document).removeHandler('mouseup', fun)
@@ -156,7 +154,10 @@ myQuery.define("ui/js/swappable", ["base/client", "main/event", "module/math", "
         }
         , init: function (obj) {
             this.option(obj);
-
+            this.path = [];
+            this.isDown = false;
+            this.startY = null;
+            this.startX = null;
             return this;
         }
         , options: {
@@ -176,9 +177,9 @@ myQuery.define("ui/js/swappable", ["base/client", "main/event", "module/math", "
             return this;
         }
         , target: null
-          , toString: function () {
-              return "ui.swappable";
-          }
+        , toString: function () {
+            return "ui.swappable";
+        }
         , widgetEventPrefix: "swap"
     });
 

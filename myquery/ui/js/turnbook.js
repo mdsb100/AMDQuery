@@ -46,98 +46,6 @@ myQuery.define("ui/js/turnbook", ["ui/js/swappable", "main/class", "html5/css3"]
                 $(this).hide();
             }).hide();
 
-            return this;
-        }
-        , createPage: function () {
-            var opt = this.options
-            , box = $({
-                w: this.pageWidth
-                , h: this.pageHeight
-                , a: "absolute"
-                , overflow: "hidden"
-            }, "div")
-            , page = $({
-                w: this.pageWidth
-                , h: this.pageHeight
-                , a: "absolute"
-                , b: opt.pageBackgroundColor
-                , overflow: "hidden"
-            }, "div", box);
-            //box.initTransform3d && box.initTransform3d();
-            page.box = box;
-            return page;
-        }
-        , createContext: function (html) {
-            var opt = this.options, content;
-            switch (opt.bookType) {
-                case "Array:Image":
-                    content = $({
-                        t: opt.contentTop
-                        , l: opt.contentLeft
-                        , w: opt.contentWidth || this.pageWidth
-                        , h: opt.contentHeight || this.pageHeight
-                        , a: "absolute"
-                        , border: "0px"
-                        , overflow: "hidden"
-                        //, color: opt.contentFontColor
-                        //, font: opt.contentFont
-                        //, b: opt.contentBackgroundColor
-                        , p: "0"
-                        , cursor: "pointer"
-                    }, "img").addHandler("mousedown", function (e) {
-                        $.event.document.preventDefault(e);
-                    }).replaceClass(opt.contentClass);
-                    content[0].setAttribute("src", html);
-                    break;
-                case "Array:String":
-                default:
-                    content = $({
-                        t: opt.contentTop
-                        , l: opt.contentLeft
-                        , w: opt.contentWidth || this.pageWidth
-                        , h: opt.contentHeight || this.pageHeight
-                        , a: "absolute"
-                        , resize: "none"
-                        , border: "0px"
-                        , overflow: "hidden"
-                        , color: opt.contentFontColor
-                        , font: opt.contentFont
-                        , b: opt.contentBackgroundColor
-                        , p: "0"
-                        , pointerEvents: "auto"
-                        , cursor: "pointer"
-                    }, "textArea").addHandler("mousedown", function (e) {
-                        $.event.document.preventDefault(e);
-                    }).replaceClass(opt.contentClass).html(html || "");
-                    content[0].setAttribute("readonly", "readonly");
-                    if ($.isIpad) {
-                        var clip = $({ t: opt.contentTop
-                        , l: opt.contentLeft
-                        , w: opt.contentWidth || this.pageWidth
-                        , h: opt.contentHeight || this.pageHeight
-                        , a: "absolute"
-                        }, "div");
-                        content = $([content[0], clip[0]]);
-                    }
-                    break;
-
-            }
-            return content;
-        }
-        , customEventName: ["star", "move", "pause", "stop"]
-
-        , disable: function () {
-            //var event = this.event();
-            this.container.swappable({
-                start: null
-                , stop: null
-                , move: null
-                , pause: null
-                , mousemove: null
-            }); //.removeHandler("mouseout", event);
-        }
-
-        , event: function () {
             var self = this, target = self.target, opt = self.options
             , bookWidth = self.bookWidth, pageWidth = self.pageWidth
             , shadow = "10px 4px 2px rgba(0,0,0,.6),-5px 4px 2px rgba(0,0,0,.6)", mouseshow
@@ -159,7 +67,7 @@ myQuery.define("ui/js/turnbook", ["ui/js/swappable", "main/class", "html5/css3"]
                 .setBoxCss(index - 2, { w: Math.ceil($.between(0, pageWidth, offsetX / 2)), l: offsetX / 2, boxShadow: shadow }, { tx: offsetX / 2 })
                 .setPageCss(index - 2, { l: $.between(-pageWidth, 0, offsetX / 2 - pageWidth) });
             };
-            return function (e) {
+            this.event = function (e) {
                 var index = opt.bookIndex, offsetX = e.offsetX, offsetY = e.offsetY;
                 switch (e.type) {
                     case "swap.mousemove": //只会在非无线端有作用
@@ -253,17 +161,111 @@ myQuery.define("ui/js/turnbook", ["ui/js/swappable", "main/class", "html5/css3"]
                         e.type = "turnbookstop";
                         target.trigger('turnbookstop', self, e);
                         break;
-                    //                    case "mouseout":                                                                    
-                    //                        if (opt.inductionCorner == true && mouseshow) {                                                                    
-                    //                            self.showPages(index);                                                                    
-                    //                        }                                                                    
-                    //                        break;                                                                    
+                    //                    case "mouseout":                                                                      
+                    //                        if (opt.inductionCorner == true && mouseshow) {                                                                      
+                    //                            self.showPages(index);                                                                      
+                    //                        }                                                                      
+                    //                        break;                                                                      
 
                 }
             }
+
+            return this;
+        }
+        , createPage: function () {
+            var opt = this.options
+            , box = $({
+                w: this.pageWidth
+                , h: this.pageHeight
+                , a: "absolute"
+                , overflow: "hidden"
+            }, "div")
+            , page = $({
+                w: this.pageWidth
+                , h: this.pageHeight
+                , a: "absolute"
+                , b: opt.pageBackgroundColor
+                , overflow: "hidden"
+            }, "div", box);
+            //box.initTransform3d && box.initTransform3d();
+            page.box = box;
+            return page;
+        }
+        , createContext: function (html) {
+            var opt = this.options, content;
+            switch (opt.bookType) {
+                case "Array:Image":
+                    content = $({
+                        t: opt.contentTop
+                        , l: opt.contentLeft
+                        , w: opt.contentWidth || this.pageWidth
+                        , h: opt.contentHeight || this.pageHeight
+                        , a: "absolute"
+                        , border: "0px"
+                        , overflow: "hidden"
+                        //, color: opt.contentFontColor
+                        //, font: opt.contentFont
+                        //, b: opt.contentBackgroundColor
+                        , p: "0"
+                        , cursor: "pointer"
+                    }, "img").addHandler("mousedown", function (e) {
+                        $.event.document.preventDefault(e);
+                    }).replaceClass(opt.contentClass);
+                    content[0].setAttribute("src", html);
+                    break;
+                case "Array:String":
+                default:
+                    content = $({
+                        t: opt.contentTop
+                        , l: opt.contentLeft
+                        , w: opt.contentWidth || this.pageWidth
+                        , h: opt.contentHeight || this.pageHeight
+                        , a: "absolute"
+                        , resize: "none"
+                        , border: "0px"
+                        , overflow: "hidden"
+                        , color: opt.contentFontColor
+                        , font: opt.contentFont
+                        , b: opt.contentBackgroundColor
+                        , p: "0"
+                        , pointerEvents: "auto"
+                        , cursor: "pointer"
+                    }, "textArea").addHandler("mousedown", function (e) {
+                        $.event.document.preventDefault(e);
+                    }).replaceClass(opt.contentClass).html(html || "");
+                    content[0].setAttribute("readonly", "readonly");
+                    if ($.isIpad) {
+                        var clip = $({ t: opt.contentTop
+                        , l: opt.contentLeft
+                        , w: opt.contentWidth || this.pageWidth
+                        , h: opt.contentHeight || this.pageHeight
+                        , a: "absolute"
+                        }, "div");
+                        content = $([content[0], clip[0]]);
+                    }
+                    break;
+
+            }
+            return content;
+        }
+        , customEventName: ["star", "move", "pause", "stop"]
+
+        , disable: function () {
+            //var event = this.event();
+            this.container.swappable({
+                start: null
+                , stop: null
+                , move: null
+                , pause: null
+                , mousemove: null
+            }); //.removeHandler("mouseout", event);
+        }
+
+        , event: function () {
+
         }
         , enable: function () {
-            var event = this.event();
+            var event = this.event;
             this.disable();
             this.container.swappable({
                 start: event
