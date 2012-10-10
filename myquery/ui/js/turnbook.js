@@ -161,11 +161,11 @@ myQuery.define("ui/js/turnbook", ["ui/js/swappable", "main/class", "html5/css3"]
                         e.type = "turnbookstop";
                         target.trigger('turnbookstop', self, e);
                         break;
-                    //                    case "mouseout":                                                                      
-                    //                        if (opt.inductionCorner == true && mouseshow) {                                                                      
-                    //                            self.showPages(index);                                                                      
-                    //                        }                                                                      
-                    //                        break;                                                                      
+                    //                    case "mouseout":                                                                       
+                    //                        if (opt.inductionCorner == true && mouseshow) {                                                                       
+                    //                            self.showPages(index);                                                                       
+                    //                        }                                                                       
+                    //                        break;                                                                       
 
                 }
             }
@@ -524,9 +524,10 @@ myQuery.define("ui/js/turnbook", ["ui/js/swappable", "main/class", "html5/css3"]
             }
             if (autoHide === false)
                 return;
-            $.setTimeout(function () {
-                this.hideMessage();
-            }, this.options.messageHideTime, this);
+            var self = this;
+            setTimeout(function () {
+                self.hideMessage();
+            }, this.options.messageHideTime);
 
         }
 

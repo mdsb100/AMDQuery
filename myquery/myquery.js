@@ -1368,12 +1368,6 @@
             this.init(todo, fail, progress, name);
         }
 
-        tools.extend(Promise, {
-            _branch: {},
-            _back: [],
-            _tag: {}
-        });
-
         Promise.prototype = {
             constructor: Promise,
             _next: function (result) {
@@ -1456,6 +1450,10 @@
                 this.friend = 0;
                 this.asyncCount = 0;
                 this.id = count++;
+                this._branch = {};
+                this._back = [];
+                this._tag = {};
+
                 return this;
             },
             destructor: function () {
@@ -1469,6 +1467,10 @@
                 delete this.parent;
                 delete this.friend;
                 delete this.id;
+                delete this._branch;
+                delete this._back;
+                delete this._tag;
+
                 return this;
             },
 
@@ -1574,11 +1576,11 @@
                 arg = checkArg.apply(this, arguments),
                 name = arg[3] ? arg[3] : "branch" + random++;
 
-                Promise._back.push({ branch: name, promise: this });
-                if (self = Promise._branch[name]) {
+                this.root()._back.push({ branch: name, promise: this });
+                if (self = this.root()._branch[name]) {
                 }
                 else {
-                    Promise._branch[name] = self = this;
+                    this.root()._branch[name] = self = this;
                 }
 
                 return self.then(arg[0], arg[1], arg[2], name);
@@ -1586,24 +1588,24 @@
             reBranch: function () {
                 /// <summary>回到上一个分支</summary>
                 /// <returns type="Promise" />
-                return Promise._back.pop().promise;
+                return this.root()._back.pop().promise;
             },
             tag: function (str) {
                 /// <summary>打上一标签便于管理</summary>
                 /// <returns type="self/Promise" />
                 var self;
-                if (self = Promise._tag[str]) {
+                if (self = this.root()._tag[str]) {
 
                 }
                 else {
-                    Promise._tag[str] = self = this;
+                    this.root()._tag[str] = self = this;
                 }
                 return self;
             },
             master: function () {
                 /// <summary>返回master路径</summary>
                 /// <returns type="Promise" />
-                var master = Promise._branch[0].promise || this;
+                var master = this.root()._branch[0].promise || this;
 
                 return master
             },
@@ -1630,7 +1632,7 @@
                 //                    if (name == this.root().path) {
                 //                        return 
                 //                    }
-                //                    Promise._branch[name]
+                //                    this.root()._branch[name]
 
                 //                } else {
                 return this.path;
