@@ -617,8 +617,8 @@ myQuery.define("main/event", ["base/client", "main/customevent", "main/data"], f
     delete $._redundance.addHandler;
 
     event.on = event.addHandler;
-    event.unOn = event.removeHandler;
-    event.clearOns = event.clearHandlers;
+    event.off = event.removeHandler;
+    event.clear = event.clearHandlers;
 
     $.extend(event);
 
@@ -962,8 +962,8 @@ myQuery.define("main/event", ["base/client", "main/customevent", "main/data"], f
     });
 
     $.fn.on = $.fn.addHandler;
-    $.fn.unOn = $.fn.removeHandler;
-    $.fn.clearOns = $.fn.clearHandlers;
+    $.fn.off = $.fn.removeHandler;
+    $.fn.clear = $.fn.clearHandlers;
 
     for (i = 0, len = mouse.length; i < len; i++) {
         _domEventList[mouse[i]] = event.event.document.imitation.mouse;

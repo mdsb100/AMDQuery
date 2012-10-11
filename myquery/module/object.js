@@ -74,7 +74,7 @@ myQuery.define("module/object", ["base/extend"], function ($, extend) {
             //supper.__tag == "object.Class" ||
 
             if (supper) {
-                anonymous._SupperConstructor =  supper.prototype.init 
+                anonymous._SupperConstructor = supper.prototype.init
                 ? function () {
                     var arg = $.argToArray(arguments), self = arg.splice(0, 1)[0];
                     supper.prototype.init.apply(self, arg);
@@ -178,7 +178,9 @@ myQuery.define("module/object", ["base/extend"], function ($, extend) {
                 clear: function () {
                     /// <summary>重置所含对象</summary>
                     /// <returns type="self" />
-                    return this.init();
+                    this.models = [];
+                    this.__map = {};
+                    return this;
                 },
 
                 each: function (fn, context) {
