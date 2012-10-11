@@ -146,14 +146,14 @@
             });
         });
 
-        $.require(["html5/worker"], function (worker) {
+        $.require(["html5/Worker"], function (worker) {
             worker.onMessage(function (e) {
                 //alert(e.data);
             }).postMessage(function (a) {
                 return this.name + a;
             }, ["d"], { name: "abc" });
         });
-        //        var worker = new window.Worker("myquery/html5/_worker.js");
+        //        var worker = new window.Worker("myquery/html5/_Worker.js");
         //        worker.addEventListener("message", function (e) {
         //            alert(e.data);
         //        }, false);
