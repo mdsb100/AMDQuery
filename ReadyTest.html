@@ -9,7 +9,7 @@
     <script type="text/javascript">
         require([
             "base/ready"
-        //,"module/thread"
+        //,"module/Thread"
         ], function (ready) {
             ready(function () {
                 var div = document.getElementsByTagName("div")
@@ -32,15 +32,15 @@
 
         $.require([
             "base/ready"
-            , "module/csscolors"
-        ], function (ready, csscolors) {
+            , "module/cssColors"
+        ], function (ready, cssColors) {
             var div = document.getElementsByTagName("div")
                 , write = function (s) {
                     div[0].innerHTML = div[0].innerHTML += s + "<br>";
                 }
             write("");
             write("$.ready work");
-            write(csscolors);
+            write(cssColors);
         });
     </script>
 </head>

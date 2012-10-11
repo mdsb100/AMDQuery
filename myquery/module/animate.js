@@ -1,7 +1,7 @@
 ﻿/// <reference path="../myquery.js" />
 /*include JQuery animate*/
 
-myQuery.define("module/animate", ["base/queue", "main/data", "module/fx", "module/thread", "module/tween"], function ($, Queue, data, FX, Thread, Tween, undefined) {
+myQuery.define("module/animate", ["base/queue", "main/data", "module/FX", "module/Thread", "module/tween"], function ($, Queue, data, FX, Thread, tween, undefined) {
     "use strict"; //启用严格模式
     FX.tick = function () {
         if (thread.getStatus() === "run") return;
@@ -191,13 +191,13 @@ myQuery.define("module/animate", ["base/queue", "main/data", "module/fx", "modul
         }
         , getAnimationEasing: function (easing) {
             if ($.isArr(easing)) {
-                var ret = Tween.getFun(easing.splice(0, 1));
+                var ret = tween.getFun(easing.splice(0, 1));
 
                 return function (t, b, c, d) {
-                    ret.apply(Tween, [t, b, c, d].concat(easing));
+                    ret.apply(tween, [t, b, c, d].concat(easing));
                 }
             }
-            return Tween.getFun(easing);
+            return tween.getFun(easing);
 
         }
 

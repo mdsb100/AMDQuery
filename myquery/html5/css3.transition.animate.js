@@ -1,6 +1,6 @@
 ﻿/// <reference path="../myquery.js" />
 
-myQuery.define("html5/css3.transition.animate", ["base/client", "html5/css3", "module/fx", "html5/animate.transform"]
+myQuery.define("html5/css3.transition.animate", ["base/client", "html5/css3", "module/FX", "html5/animate.transform"]
 , function ($, client, css3, FX, transform, undefined) {
     "use strict"; //启用严格模式
 

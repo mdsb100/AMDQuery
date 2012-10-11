@@ -2,7 +2,7 @@
 /// <reference path="../../myquery/html5/css3.js" />
 /// <reference path="../../myquery/module/animate.js" />
 
-myQuery.define("html5/animate.transform", ["module/object", "module/fx", "html5/css3", "module/animate"], function ($, object, FX, css3, animate, undefined) {
+myQuery.define("html5/animate.transform", ["module/object", "module/FX", "html5/css3", "module/animate"], function ($, object, FX, css3, animate, undefined) {
     "use strict"; //启用严格模式
     var getScale = function (r) {
         return r = r ? Math.max(r, 0) : 1;

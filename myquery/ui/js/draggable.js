@@ -1,6 +1,6 @@
 ﻿/// <reference path="../../myquery.js" />
 
-myQuery.define("ui/js/draggable", ["module/widget", "main/event", "main/dom"]
+myQuery.define("ui/js/draggable", ["module/Widget", "main/event", "main/dom"]
 , function ($, widget, event, dom, undefined) {
     var eventFuns = $.event.document
     , draggable = $.widget("ui.draggable", {

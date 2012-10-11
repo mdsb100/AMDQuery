@@ -1,7 +1,7 @@
 ﻿/// <reference path="../myquery.js" />
 // quote from colo.js by Andrew Brehaut, Tim Baumann
 
-myQuery.define('module/color', ['module/object', 'module/csscolors'], function ($, object, css_colors, undefined) {
+myQuery.define('module/color', ['module/object', 'module/cssColors'], function ($, object, cssColors, undefined) {
     "use strict"; //启用严格模式
 
     var css_integer = '(?:\\+|-)?\\d+'
@@ -136,8 +136,8 @@ myQuery.define('module/color', ['module/object', 'module/csscolors'], function (
 
             function (css) {
                 var lower = css.toLowerCase(), bytes, max;
-                if (lower in css_colors) {
-                    css = css_colors[lower];
+                if (lower in cssColors) {
+                    css = cssColors[lower];
                 }
 
                 if (!css.match(/^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/)) {

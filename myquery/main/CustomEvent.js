@@ -1,6 +1,6 @@
 ﻿/// <reference path="../myquery.js" />
 
-myQuery.define("main/customevent", function ($, undefined) {
+myQuery.define("main/CustomEvent", function ($, undefined) {
     "use strict"; //启用严格模式
 
     var proto = {

@@ -270,8 +270,8 @@
             toRGB: function (c) {
                 var r, g, b;
                 if ($.isStr(c)) {
-                    //                if (css_colors[c]) {
-                    //                    c = css_colors[c];
+                    //                if (cssColors[c]) {
+                    //                    c = cssColors[c];
                     //                }
                     if (c.indexOf("#") == 0) {
                         var 

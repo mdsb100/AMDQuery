@@ -1,6 +1,6 @@
 ﻿/// <reference path="../../myquery.js" />
 
-myQuery.define("ui/js/scrollableview", ["module/widget", "ui/js/swappable", "module/animate"]
+myQuery.define("ui/js/scrollableview", ["module/Widget", "ui/js/swappable", "module/animate"]
 , function ($, Widget, swappable, animate, undefined) {
     var eventFuns = $.event.document
     , scrollableview = $.widget("ui.scrollableview", {

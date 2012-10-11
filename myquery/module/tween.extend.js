@@ -1,9 +1,9 @@
 ﻿/// <reference path="../myquery.js" />
 
-myQuery.define("module/tween.extend", ["module/tween"], function ($, Tween, undefined) {
+myQuery.define("module/tween.extend", ["module/tween"], function ($, tween, undefined) {
     "use strict"; //启用严格模式
     var math = Math;
-    $.easyExtend(Tween,
+    $.easyExtend(tween,
    {
        quad: {
            easeIn: function (t, b, c, d) {
@@ -128,7 +128,7 @@ myQuery.define("module/tween.extend", ["module/tween"], function ($, Tween, unde
        },
        bounce: {
            easeIn: function (t, b, c, d) {
-               return c - Tween.Bounce.easeOut(d - t, 0, c, d) + b;
+               return c - tween.Bounce.easeOut(d - t, 0, c, d) + b;
            },
            easeOut: function (t, b, c, d) {
                if ((t /= d) < (1 / 2.75)) {
@@ -142,12 +142,12 @@ myQuery.define("module/tween.extend", ["module/tween"], function ($, Tween, unde
                }
            },
            easeInOut: function (t, b, c, d) {
-               if (t < d / 2) return Tween.Bounce.easeIn(t * 2, 0, c, d) * .5 + b;
-               else return Tween.Bounce.easeOut(t * 2 - d, 0, c, d) * .5 + c * .5 + b;
+               if (t < d / 2) return tween.Bounce.easeIn(t * 2, 0, c, d) * .5 + b;
+               else return tween.Bounce.easeOut(t * 2 - d, 0, c, d) * .5 + c * .5 + b;
            }
        }
    });
 
-    return Tween;
+    return tween;
 
 });

@@ -2,7 +2,7 @@
 /// <reference path="../html5/css3.js" />
 /// <reference path="../module/math.js" />
 
-myQuery.define("ui/js/swappable", ["base/client", "main/event", "module/math", "module/widget"], function ($, client, event, math, widget, undefined) {
+myQuery.define("ui/js/swappable", ["base/client", "main/event", "module/math", "module/Widget"], function ($, client, event, math, widget, undefined) {
     "use strict"; //启用严格模式 
     var swappable = $.widget("ui.swappable", {
         container: null

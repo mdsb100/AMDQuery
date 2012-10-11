@@ -1,7 +1,7 @@
 ﻿/// <reference path="../myquery.js" />
 // quote from colo.js by Andrew Brehaut, Tim Baumann
 
-myQuery.define('module/myeval', ['base/support'], function ($, support) {
+myQuery.define('module/myEval', ['base/support'], function ($, support) {
     return {
         functionEval: function (s) {
             /// <summary>使用Funciont来eval</summary>

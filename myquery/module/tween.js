@@ -8,7 +8,7 @@ myQuery.define('module/tween', function ($, undefined) {
         pow = math.pow,
         sin = math.sin,
         sqrt = math.sqrt,
-        Tween = {
+        tween = {
             getFun: function (name) {
                 var fun;
                 if ($.isFun(name)) {
@@ -117,6 +117,6 @@ myQuery.define('module/tween', function ($, undefined) {
             }
         }
 
-    return $.tween = Tween;
+    return $.tween = tween;
 
 });
