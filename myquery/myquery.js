@@ -2054,9 +2054,9 @@
     }, "1.0.0");
 
     window.myQuery = $;
-
+   
     if (!window[_config.myquery.define]) {
-        window[_config.myquery.define] = window.myQuery;
+        window[_config.myquery.define] = $;
     }
     else {
         tools.error(_config.myquery.define + " is defined");

@@ -181,7 +181,7 @@ myQuery.define("module/Widget", ["main/data", "main/event", "main/attr", "module
                             }
                         }
                         else if (data.public[a]) {
-                            data[a].apply(data, $.toArray(arg, 1));
+                            data[a].apply(data, $.argToArray(arg, 1));
                         }
                         else if (a === "destroy") {
                             data[a].call(data, key);
