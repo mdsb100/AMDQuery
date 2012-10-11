@@ -33,6 +33,7 @@ myQuery.define("module/widget", ["main/data", "main/event", "main/attr", "module
         , constructor: Widget
         , _create_: function () {
             $.isFun(this.create) && this.create();
+            this.options.disabled === false ? this.disable() : this.enable();
             return this;
         }
         , customEventName: []
@@ -95,7 +96,7 @@ myQuery.define("module/widget", ["main/data", "main/event", "main/attr", "module
         , render: null
         , _bindEvent: function () { }
         , _render_: function () {//不应该由这个来绑定事件
-            this.options.disabled === false ? this.disable() : this.enable();
+            
             $.isFun(this.render) && this.render();
             return this;
         }
