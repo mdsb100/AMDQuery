@@ -1,5 +1,5 @@
 ﻿/// <reference path="../../myquery.js" />
-myQuery.define("ui/js/turnbook", ["ui/js/swappable", "main/class", "html5/css3"], function($, swappable, clas, css3, undefined) {
+myQuery.define("ui/js/turnBook", ["ui/js/swappable", "main/class", "html5/css3"], function($, swappable, clas, css3, undefined) {
     "use strict"; //启用严格模式
     var turnBook = $.widget("ui.turnBook", function turnbook(obj, target) {
         this._supper(obj, target).init(obj || {}, target).create();
