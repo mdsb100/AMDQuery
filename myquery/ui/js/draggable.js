@@ -2,7 +2,7 @@
 myQuery.define("ui/js/draggable", ["module/widget", "main/event", "main/dom"], function($, widget, event, dom, undefined) {
     var eventFuns = $.event.document,
         draggable = $.widget("ui.draggable", function draggable(obj, target) {
-            this.init(obj || {}, target).create().render();
+            this._supper(obj, target).init(obj || {}, target).create().render();
         }, {
             container: null,
             create: function() {
@@ -47,11 +47,9 @@ myQuery.define("ui/js/draggable", ["module/widget", "main/event", "main/dom"], f
                 this.options.container.removeHandler('mousemove', fun).removeHandler('mousemove', fun);
                 this.target.removeHandler('mousedown', fun);
             },
-            init: function(obj, target) {
-                this.constructor._SupperConstructor(this, obj, target);
+            init: function(obj, target) {              
                 this.option(obj);
                 this.options.container = $(obj.container || document.body);
-
                 return this;
             },
             options: {
@@ -118,15 +116,11 @@ myQuery.define("ui/js/draggable", ["module/widget", "main/event", "main/dom"], f
                                 y = $.between(cP.pageTop, cP.height + cP.pageTop - target.height(), y); //使用height对不对？
                             }
 
-                            target.css({
-                                cursor: opt.cursor
-                            });
-                            opt.x_axis === true && target.css({
-                                l: x
-                            });
-                            opt.y_axis === true && target.css({
-                                t: y
-                            });
+                            // target.css({
+                            //     cursor: opt.cursor
+                            // });
+                            self.render(x, y);
+
                             eventFuns.preventDefault(e);
                             para.type = "drag.move";
                             para.offsetX = x;
@@ -145,7 +139,7 @@ myQuery.define("ui/js/draggable", ["module/widget", "main/event", "main/dom"], f
                 };
 
             },
-            render: function() {
+            render: function(x, y) {
                 var opt = this.options;
 
                 if(opt.disabled === false) {
@@ -169,6 +163,14 @@ myQuery.define("ui/js/draggable", ["module/widget", "main/event", "main/dom"], f
                 this.target.css({
                     cursor: opt.cursor
                 });
+
+                opt.x_axis === true && x != undefined && this.target.css({
+                    l: x
+                });
+                opt.y_axis === true && y != undefined && this.target.css({
+                    t: y
+                });
+
                 return this;
             },
             target: null,

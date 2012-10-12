@@ -2,7 +2,6 @@
 myQuery.define("module/widget", ["main/data", "main/event", "main/attr", "module/object"], function($, data, event, attr, object, undefined) {
     "use strict"; //启用严格模式
 
-
     function Widget(obj, target) {
         /// <summary>组件的默认基类</summary>
         /// <para></para>
@@ -70,9 +69,11 @@ myQuery.define("module/widget", ["main/data", "main/event", "main/attr", "module
             //                }, this);
             //            }, this);
         },
-        event: function() {}
-        //, init: null
-        ,
+        event: function() {},
+        _supper: function(obj,target) {
+            this.constructor._SupperConstructor(this, obj, target);
+            return this;
+        },
         init: function(obj, target) {
             //元素本身属性高于obj
             var defaultOptions = this.constructor.prototype.options;
@@ -105,12 +106,11 @@ myQuery.define("module/widget", ["main/data", "main/event", "main/attr", "module
             toString: 1
         },
         render: function() {},
-        _bindEvent: function() {}
+        _bindEvent: function() {},
         // , _render_: function () {//不应该由这个来绑定事件
         //     $.isFun(this.render) && this.render();
         //     return this;
         // }
-        ,
         setOption: function(key, value) {
             if(this.options[key] !== undefined) this.options[key] = value;
             else {
@@ -131,107 +131,6 @@ myQuery.define("module/widget", ["main/data", "main/event", "main/attr", "module
         widgetName: "Widget"
     });
 
-    //object.inheritProtypeWidthCombination(Widget, event.event.custom);
-    // $.easyExtend(Widget.prototype, {
-    //     checkAttr: function () {
-    //         var key, value, result = {};
-    //         for (key in this.options) {
-    //             value = this.target.attr(key);
-    //             if (value !== undefined) {
-    //                 result[key] = value;
-    //             }
-    //         }
-    //         return result;
-    //     }
-    //     , create: null
-    //     , container: null
-    //     , constructor: Widget
-    //     , _create_: function () {
-    //         $.isFun(this.create) && this.create();
-    //         this.options.disabled === false ? this.disable() : this.enable();
-    //         return this;
-    //     }
-    //     , customEventName: []
-    //     , destroy: function (key) {
-    //         if (key) {
-    //             this.disable();
-    //             this.target.clearHandlers();
-    //             this.container && $(this.container).remove();
-    //             this.target.removeData(key);
-    //             $.each(this, function (value, name) {
-    //                 !$.isPrototypeProperty && delete this[name];
-    //             }, this);
-    //         }
-    //     }
-    //     , disable: function () {
-    //         //            $.each(this.event, function (control, name) {
-    //         //                $.each(control, function (value, key) {
-    //         //                    this[name].removeHandler(key, value);
-    //         //                }, this);
-    //         //            }, this);
-    //     }
-    //     , enable: function () {
-    //         //            $.each(this.event, function (control, name) {
-    //         //                $.each(control, function (value, key) {
-    //         //                    this[name].removeHandler(key, value);
-    //         //                    this[name].addHandler(key, value);
-    //         //                }, this);
-    //         //            }, this);
-    //     }
-    //     , event: function () { }
-    //     , init: null
-    //     , _init_: function (obj) {
-    //         //元素本身属性高于obj
-    //         obj = $.extend(obj || {}, this.checkAttr());
-    //         $.isFun(this.init) && this.init(obj);
-    //         return this;
-    //     }
-    //     , option: function (key, value) {
-    //         if ($.isObj(key))
-    //             $.each(key, function (value, name) {
-    //                 this.setOption(name, value);
-    //             }, this);
-    //         else if (value === undefined)
-    //             return this.options[key];
-    //         else if ($.isStr(key))
-    //             this.setOption(key, value);
-    //         //return this;
-    //         //this._render_();
-    //     }
-    //     , options: {
-    //         disabled: false
-    //     }
-    //     , public: {
-    //         disable: 1
-    //         , enable: 1
-    //         , widget: 1
-    //         , toString: 1
-    //     }
-    //     , render: null
-    //     , _bindEvent: function () { }
-    //     , _render_: function () {//不应该由这个来绑定事件
-    //         $.isFun(this.render) && this.render();
-    //         return this;
-    //     }
-    //     , setOption: function (key, value) {
-    //         if (this.options[key] !== undefined)
-    //             this.options[key] = value;
-    //         else {
-    //             //if (key.indexOf(this.widgetEventPrefix) > -1) {
-    //             if ($.isFun(value)) this.target.addHandler(this.widgetEventPrefix + "." + key, value);
-    //             //else if (value === null) this.handlers[key] = value;
-    //             //}
-    //         }
-    //     }
-    //     , toString: function () {
-    //         return "ui.widget";
-    //     }
-    //     , widget: function () {
-    //         return this.container;
-    //     }
-    //     , widgetEventPrefix: ""//将来做事件用
-    //     , widgetName: "Widget"
-    // });
     Widget.factory = function(name, constructor, prototype, statics) {
         /// <summary>为$添加部件
         /// <para>作为类得constructor可以这样</para>
@@ -257,12 +156,12 @@ myQuery.define("module/widget", ["main/data", "main/event", "main/attr", "module
         if(!nameSpace || !name) return;
         if(!$.widget[nameSpace]) $.widget[nameSpace] = {};
 
-        if (!$.isFun(constructor)) {
-        //    prototype = $.isPlainObj(constructor) ? constructor : {};
-        //constructor = function (obj, target, base) { base.call(this, obj, target); };
-           statics = prototype;
-           prototype = constructor;
-           constructor = name;
+        if(!$.isFun(constructor)) {
+            //    prototype = $.isPlainObj(constructor) ? constructor : {};
+            //constructor = function (obj, target, base) { base.call(this, obj, target); };
+            statics = prototype;
+            prototype = constructor;
+            constructor = name;
         }
         constructor = object.Class(constructor, prototype, statics, Widget);
         //object.inheritProtypeWidthParasitic(constructor, Widget, "Widget");
