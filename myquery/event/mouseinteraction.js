@@ -31,7 +31,7 @@ myQuery.define("event/mouseinteraction", ["main/event"], function($, event) {
 					target: ele
 				},
 				anonymous = $.data(ele, "mouseinteraction", function(e) {
-					mouseinteraction.call(this, e, temp)；
+					mouseinteraction.call(this, e, temp)
 				});
 				event
 				.on(ele, "mouseinteractiondown", down)
