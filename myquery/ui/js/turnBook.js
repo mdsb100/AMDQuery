@@ -2,7 +2,7 @@
 myQuery.define("ui/js/turnBook", ["ui/js/swappable", "main/class", "html5/css3"], function ($, swappable, clas, css3, undefined) {
     "use strict"; //启用严格模式
     var turnBook = $.widget("ui.turnBook", function turnbook(obj, target) {
-        this._supper(obj, target).init(obj || {}, target).create();
+        this.__supper(obj, target).init(obj || {}, target).create();
     }, {
         appendTo: function (index) {
             var box = this.getBox(index);

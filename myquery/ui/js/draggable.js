@@ -2,7 +2,7 @@
 myQuery.define("ui/js/draggable", ["module/widget", "main/event", "main/dom"], function ($, widget, event, dom, undefined) {
     var eventFuns = $.event.document,
         draggable = $.widget("ui.draggable", function draggable(obj, target) {
-            this._supper(obj, target).init(obj || {}, target).create().render();
+            this.__supper(obj, target).init(obj || {}, target).create().render();
         }, {
             container: null,
             create: function () {

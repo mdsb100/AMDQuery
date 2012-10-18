@@ -74,18 +74,18 @@ myQuery.define("module/object", ["base/extend"], function ($, extend) {
             //supper.__tag == "object.Class" ||
 
             if (supper) {
-                anonymous._SupperConstructor = supper.prototype.init
+                anonymous.prototype.__supper = supper.prototype.init
                 ? function () {
-                    var arg = $.argToArray(arguments), self = arg.splice(0, 1)[0];
-                    supper.prototype.init.apply(self, arg);
+                    supper.prototype.init.apply(this, arguments);
+                    return this;
                     //supper.prototype.render.apply(self);
                 }
                 : function () {
-                    var arg = $.argToArray(arguments), self = arg.splice(0, 1)[0];
-                    supper.call(self, arg);
+                    supper.apply(this, arguments);
+                    return this;
                 }
             } else {
-                anonymous._SupperConstructor = function () { };
+                anonymous.__supper = function () { return this; };
             }
 
             return anonymous;
