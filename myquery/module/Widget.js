@@ -1,23 +1,27 @@
 ﻿/// <reference path="../myquery.js" />
-
-myQuery.define("module/Widget", ["main/data", "main/event", "main/attr", "module/object"], function ($, data, event, attr, object, undefined) {
+myQuery.define("module/widget", ["main/data", "main/event", "main/attr", "module/object"], function ($, data, event, attr, object, undefined) {
     "use strict"; //启用严格模式
+
     function Widget(obj, target) {
         /// <summary>组件的默认基类</summary>
         /// <para></para>
         /// <param name="obj" type="Object">构造函数</param>
         /// <param name="target" type="$">$对象</param>
         /// <returns type="Widget" />
-        var tmp = this.options;
-        this.options = {};
-        $.extend(this.options, tmp);
-        //event.custom.call(this);
-        target._initHandler();
-        this.target = target;
-        this._init_(obj, target)._create_()._render_();
+        // var tmp = this.options;
+        // this.options = {};
+        // $.extend(this.options, tmp);
+        // //event.custom.call(this);
+        // target._initHandler();
+        // this.target = target;
+        this.init(obj.target);
+        //this._init_(obj, target)._create_()._render_();
     }
-    //object.inheritProtypeWidthCombination(Widget, event.event.custom);
-    $.easyExtend(Widget.prototype, {
+
+    object.Class(Widget, {
+        able: function () {
+            this.options.disabled === false ? this.disable() : this.enable();
+        },
         checkAttr: function () {
             var key, value, result = {};
             for (key in this.options) {
@@ -27,17 +31,19 @@ myQuery.define("module/Widget", ["main/data", "main/event", "main/attr", "module
                 }
             }
             return result;
-        }
-        , create: null
-        , container: null
-        , constructor: Widget
-        , _create_: function () {
-            $.isFun(this.create) && this.create();
-            this.options.disabled === false ? this.disable() : this.enable();
-            return this;
-        }
-        , customEventName: []
-        , destroy: function (key) {
+        },
+        create: function () { },
+        container: null,
+        constructor: Widget
+        // , _create_: function () {
+        //     $.isFun(this.create) && this.create();
+        //     //this.options.disabled === false ? this.disable() : this.enable();
+        //     this.able();
+        //     return this;
+        // }
+        ,
+        customEventName: [],
+        destroy: function (key) {
             if (key) {
                 this.disable();
                 this.target.clearHandlers();
@@ -47,80 +53,85 @@ myQuery.define("module/Widget", ["main/data", "main/event", "main/attr", "module
                     !$.isPrototypeProperty && delete this[name];
                 }, this);
             }
-        }
-        , disable: function () {
+        },
+        disable: function () {
             //            $.each(this.event, function (control, name) {
             //                $.each(control, function (value, key) {
             //                    this[name].removeHandler(key, value);
             //                }, this);
             //            }, this);
-        }
-        , enable: function () {
+        },
+        enable: function () {
             //            $.each(this.event, function (control, name) {
             //                $.each(control, function (value, key) {
             //                    this[name].removeHandler(key, value);
             //                    this[name].addHandler(key, value);
             //                }, this);
             //            }, this);
-        }
-        , event: function () { }
-        , init: null
-        , _init_: function (obj) {
-            //元素本身属性高于obj
-            obj = $.extend(obj || {}, this.checkAttr());
-            $.isFun(this.init) && this.init(obj);
-
+        },
+        event: function () { },
+        _supper: function (obj, target) {
+            this.constructor._SupperConstructor(this, obj, target);
             return this;
-        }
-        , option: function (key, value) {
-            if ($.isObj(key))
-                $.each(key, function (value, name) {
-                    this.setOption(name, value);
-                }, this);
-            else if (value === undefined)
-                return this.options[key];
-            else if ($.isStr(key))
-                this.setOption(key, value);
+        },
+        init: function (obj, target) {
+            //元素本身属性高于obj
+            var defaultOptions = this.constructor.prototype.options;
+            this.options = {};
+            $.extend(this.options, defaultOptions);
+            //event.custom.call(this);
+            target._initHandler();
+            this.target = target;
+            //obj = $.extend(obj || {}, this.checkAttr());
+            //$.isFun(this.init) && this.init(obj);
+            $.extend(obj, this.checkAttr());
+            return this;
+        },
+        option: function (key, value) {
+            if ($.isObj(key)) $.each(key, function (value, name) {
+                this.setOption(name, value);
+            }, this);
+            else if (value === undefined) return this.options[key];
+            else if ($.isStr(key)) this.setOption(key, value);
             //return this;
             //this._render_();
-        }
-        , options: {
+        },
+        options: {
             disabled: false
-        }
-        , public: {
-            disable: 1
-            , enable: 1
-            , widget: 1
-            , toString: 1
-        }
-        , render: null
-        , _bindEvent: function () { }
-        , _render_: function () {//不应该由这个来绑定事件
-            
-            $.isFun(this.render) && this.render();
-            return this;
-        }
-        , setOption: function (key, value) {
-            if (this.options[key] !== undefined)
-                this.options[key] = value;
+        },
+        public: {
+            disable: 1,
+            enable: 1,
+            widget: 1,
+            toString: 1
+        },
+        render: function () { },
+        _bindEvent: function () { },
+        // , _render_: function () {//不应该由这个来绑定事件
+        //     $.isFun(this.render) && this.render();
+        //     return this;
+        // }
+        setOption: function (key, value) {
+            if (this.options[key] !== undefined) this.options[key] = value;
             else {
                 //if (key.indexOf(this.widgetEventPrefix) > -1) {
                 if ($.isFun(value)) this.target.addHandler(this.widgetEventPrefix + "." + key, value);
                 //else if (value === null) this.handlers[key] = value;
                 //}
             }
-        }
-        , toString: function () {
+        },
+        toString: function () {
             return "ui.widget";
-        }
-        , widget: function () {
+        },
+        widget: function () {
             return this.container;
-        }
-        , widgetEventPrefix: ""//将来做事件用
-        , widgetName: "Widget"
+        },
+        widgetEventPrefix: "" //将来做事件用
+        ,
+        widgetName: "Widget"
     });
 
-    Widget.factory = function (name, constructor, prototype) {
+    Widget.factory = function (name, constructor, prototype, statics) {
         /// <summary>为$添加部件
         /// <para>作为类得constructor可以这样</para>
         /// <para>function TimePicker(obj, target, base){</para>
@@ -134,22 +145,27 @@ myQuery.define("module/Widget", ["main/data", "main/event", "main/attr", "module
         /// <param name="name" type="String">格式为"ui.scorePicker"ui为命名空间，scorePicer为方法名，若有相同会覆盖</param>
         /// <param name="constructor" type="Function/Object">若为constructor则为类，若为obj则为类prototype</param>
         /// <param name="prototype" type="Object">类的prototype</param>
+        /// <param name="statics" type="Object">类的静态方法</param>
         /// <returns type="Function" />
-
         //consult from jQuery.ui
         if (!$.isStr(name)) return null;
-        var name = name.split("."), nameSpace = name[0], name = name[1], type;
+        var name = name.split("."),
+            nameSpace = name[0],
+            name = name[1],
+            type;
         if (!nameSpace || !name) return;
         if (!$.widget[nameSpace]) $.widget[nameSpace] = {};
 
         if (!$.isFun(constructor)) {
-            prototype = $.isPlainObj(constructor) ? constructor : {};
-            constructor = function (obj, target, base) { base.call(this, obj, target); };
+            //    prototype = $.isPlainObj(constructor) ? constructor : {};
+            //constructor = function (obj, target, base) { base.call(this, obj, target); };
+            statics = prototype;
+            prototype = constructor;
+            constructor = name;
         }
-
-        object.inheritProtypeWidthParasitic(constructor, Widget, "Widget");
-
-        constructor.prototype = $.extend(true, {}, constructor.prototype, prototype);
+        constructor = object.Class(constructor, prototype, statics, Widget);
+        //object.inheritProtypeWidthParasitic(constructor, Widget, "Widget");
+        //constructor.prototype = $.extend(true, {}, constructor.prototype, prototype);
         constructor.prototype.widgetName = name;
 
         $.widget[nameSpace][name] = constructor;
@@ -163,27 +179,24 @@ myQuery.define("module/Widget", ["main/data", "main/event", "main/attr", "module
             /// <param name="b" type="str/nul">属性option子属性名</param>
             /// <param name="c" type="any">属性option子属性名的值</param>
             /// <returns type="self" />
-            var result = this, arg = arguments;
+            var result = this,
+                arg = arguments;
             this.each(function (ele) {
                 var data = $.data(ele, key); //key = nameSpace + "." + name,
-                if (data == undefined)
-                    data = $.data(ele, key, new constructor(a, $(ele), Widget)); //完全调用基类的构造函数 不应当在构造函数 create render
+                if (data == undefined) data = $.data(ele, key, new constructor(a, $(ele))); //完全调用基类的构造函数 不应当在构造函数 create render
                 else {
-                    if ($.isObj(a))
-                        data._init_(a)._render_();
+                    if ($.isObj(a)) data.init(a).render();
                     else if ($.isStr(a)) {
                         //if (b === undefined) {
                         if (a === "option") {
                             result = data.option(b, c);
                             if (result === undefined) {
-                                data._render_();
+                                data.render();
                                 result = this;
                             }
-                        }
-                        else if (data.public[a]) {
-                            data[a].apply(data, $.argToArray(arg, 1));
-                        }
-                        else if (a === "destroy") {
+                        } else if (data.public[a]) {
+                            data[a].apply(data, $.toArray(arg, 1));
+                        } else if (a === "destroy") {
                             data[a].call(data, key);
                         }
                     }

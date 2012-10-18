@@ -1,35 +1,137 @@
 ﻿/// <reference path="../myquery.js" />
 /// <reference path="../html5/css3.js" />
 /// <reference path="../module/math.js" />
-
-myQuery.define("ui/js/swappable", ["base/client", "main/event", "module/math", "module/Widget"], function ($, client, event, math, widget, undefined) {
+myQuery.define("ui/js/swappable", ["base/client", "main/event", "module/math", "module/widget"], function ($, client, event, math, widget, undefined) {
     "use strict"; //启用严格模式 
-    var swappable = $.widget("ui.swappable", {
-        container: null
-        , create: function () {
-            var self = this, target = self.target, opt = self.options
-             , time, timeout, lastEvent; //IE和绑定顺序有关？找不到startX值？
+    var swappable = $.widget("ui.swappable", function swappable(obj, target) {
+        this._supper(obj, target).init(obj || {}, target).create();
+    }, {
+        container: null,
+        create: function () {
+            this.target.css({
+                cursor: this.options.cursor
+            });
+            this._bindEvent();
+            this.able();
+            return this;
+        },
+        customEventName: ["start", "move", "pause", "stop", "mousemove"],
+        event: function () {
+
+        },
+        enable: function () {
+            var fun = this.event;
+            this.disable();
+            this.target.addHandler('mousemove', fun).addHandler('mousedown', fun)
+            $(document).addHandler('mouseup', fun);
+        },
+        computeSwapType: function (swapTypeName) {
+            var path = this.path,
+                swaptype = undefined;
+
+            ///先用简单实现
+            ///这里去计算path 最后返回如: "LeftToRight","Linear","Cicrle" 多元线性回归;
+            return swaptype;
+        },
+        disable: function () {
+            var fun = this.event;
+            this.target.removeHandler('mousemove', fun).removeHandler('mousedown', fun)
+            //event.document.removeHandler(window, 'scroll', fun);
+            $(document).removeHandler('mouseup', fun)
+        },
+        getPara: function (para, time, range, x1, y1, x2, y2) {
+            var diff = (new Date()) - time;
+            para.distance = Math.round(math.distance(x1, y1, x2, y2));
+            para.speed = Math.round(math.speed(para.distance, diff) * 1000);
+
+            para.angle = Math.round(math.radianToDegree(math.angle(x1, y1, x2, y2)) * 10) / 10;
+            para.direction = math.direction(para.angle, range);
+            if (this.path.length < 5 && this.path.length > 2) {
+                para.currentAngle = para.angle
+                para.currentDirection = para.direction
+            }
+
+            return para;
+        },
+        getPath: function (index) {
+            if (index === undefined) {
+                return this.path;
+            }
+            index *= 2
+            return [this.path[index], this.path[index + 1]];
+        },
+        getPathLast: function () {
+            return this.getPath(this.path.length / 2 - 1);
+        },
+        isInPath: function (x, y) {
+            for (var path = this.path, i = this.path.length - 1, item; i >= 0; i -= 2)
+                if (path[i] === x && path[i + 1] === y) return i;
+            return -1;
+        },
+        init: function (obj, target) {
+            this.option(obj);
+            this.path = [];
+            this.isDown = false;
+            this.startY = null;
+            this.startX = null;
+            return this;
+        },
+        options: {
+            cursor: "pointer",
+            directionRange: 22.5,
+            disabled: true,
+            pauseSensitivity: 500
+            //swapFor
+        },
+        public: {
+            isInPath: 1,
+            getPath: 1,
+            getPathLast: 1
+        },
+        _bindEvent: function () {
+            var self = this,
+                target = self.target,
+                opt = self.options,
+                time, timeout, lastEvent; //IE和绑定顺序有关？找不到startX值？
             this.event = function (e) {
                 //event.document.stopPropagation(e);
-                var left = target.getLeft(), top = target.getTop(), temp
-                    , x = (e.pageX || e.clientX) - left, y = (e.pageY || e.clientY) - top
-                    , para;
+                var left = target.getLeft(),
+                    top = target.getTop(),
+                    temp, x = (e.pageX || e.clientX) - left,
+                    y = (e.pageY || e.clientY) - top,
+                    para;
                 if (self.isDown || e.type == "mousedown" || e.type == "touchstart") {
-                    para = { type: 'swap.start', offsetX: x, offsetY: y, event: e
-                        , speed: 0, target: this, startX: self.startX, startY: self.startY
-                        , path: self.path, swapType: undefined
-                        , angle: undefined, direction: undefined, distance: undefined
-                        , currentAngle: undefined, currentDirection: undefined
+                    para = {
+                        type: 'swap.start',
+                        offsetX: x,
+                        offsetY: y,
+                        event: e,
+                        speed: 0,
+                        target: this,
+                        startX: self.startX,
+                        startY: self.startY,
+                        path: self.path,
+                        swapType: undefined,
+                        angle: undefined,
+                        direction: undefined,
+                        distance: undefined,
+                        currentAngle: undefined,
+                        currentDirection: undefined
                     };
-                }
-                else {
-                    para = { offsetX: x, offsetY: y, event: e
-                        , target: this, startX: self.startX, startY: self.startY
+                } else {
+                    para = {
+                        offsetX: x,
+                        offsetY: y,
+                        event: e,
+                        target: this,
+                        startX: self.startX,
+                        startY: self.startY
                     };
                 }
 
                 switch (e.type) {
-                    case "mousedown": if (!client.system.mobile) event.event.document.preventDefault(e);
+                    case "mousedown":
+                        if (!client.system.mobile) event.event.document.preventDefault(e);
                     case "touchstart":
                         //event.document.stopPropagation(e);
                         if (!self.isDown) {
@@ -96,91 +198,16 @@ myQuery.define("ui/js/swappable", ["base/client", "main/event", "module/math", "
 
                 }
             };
+        },
+        render: function () {
 
             return this;
-        }
-        , customEventName: ["start", "move", "pause", "stop", "mousemove"]
-        , event: function () {
-
-        }
-        , enable: function () {
-            var fun = this.event;
-            this.disable();
-            this.target.addHandler('mousemove', fun).addHandler('mousedown', fun)
-            $(document).addHandler('mouseup', fun);
-        }
-        , computeSwapType: function (swapTypeName) {
-            var path = this.path, swaptype = undefined;
-
-            ///先用简单实现
-            ///这里去计算path 最后返回如: "LeftToRight","Linear","Cicrle" 多元线性回归;
-            return swaptype;
-        }
-        , disable: function () {
-            var fun = this.event;
-            this.target.removeHandler('mousemove', fun).removeHandler('mousedown', fun)
-            //event.document.removeHandler(window, 'scroll', fun);
-            $(document).removeHandler('mouseup', fun)
-        }
-        , getPara: function (para, time, range, x1, y1, x2, y2) {
-            var diff = (new Date()) - time;
-            para.distance = Math.round(math.distance(x1, y1, x2, y2));
-            para.speed = Math.round(math.speed(para.distance, diff) * 1000);
-
-            para.angle = Math.round(math.radianToDegree(math.angle(x1, y1, x2, y2)) * 10) / 10;
-            para.direction = math.direction(para.angle, range);
-            if (this.path.length < 5 && this.path.length > 2) {
-                para.currentAngle = para.angle
-                para.currentDirection = para.direction
-            }
-
-            return para;
-        }
-        , getPath: function (index) {
-            if (index === undefined) {
-                return this.path;
-            }
-            index *= 2
-            return [this.path[index], this.path[index + 1]];
-        }
-        , getPathLast: function () {
-            return this.getPath(this.path.length / 2 - 1);
-        }
-        , isInPath: function (x, y) {
-            for (var path = this.path, i = this.path.length - 1, item; i >= 0; i -= 2)
-                if (path[i] === x && path[i + 1] === y)
-                    return i;
-            return -1;
-        }
-        , init: function (obj) {
-            this.option(obj);
-            this.path = [];
-            this.isDown = false;
-            this.startY = null;
-            this.startX = null;
-            return this;
-        }
-        , options: {
-            cursor: "pointer"
-            , directionRange: 22.5
-            , disabled: true
-            , pauseSensitivity: 500
-            //swapFor
-        }
-        , public: {
-            isInPath: 1
-            , getPath: 1
-            , getPathLast: 1
-        }
-        , render: function () {
-            this.target.css({ cursor: this.options.cursor });
-            return this;
-        }
-        , target: null
-        , toString: function () {
+        },
+        target: null,
+        toString: function () {
             return "ui.swappable";
-        }
-        , widgetEventPrefix: "swap"
+        },
+        widgetEventPrefix: "swap"
     });
 
     //提供注释
