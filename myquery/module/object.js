@@ -294,7 +294,7 @@ myQuery.define("module/object", ["base/extend"], function ($, extend) {
 
                 if (/\-w[\s]?/.test(purview)) {
                     this[prefix + $.camelCase(key, "set")] = function (a) {
-                        if (validate(a)) {
+                        if (validate.call(this, a)) {
                             this[key] = a;
                         }
                         return this;
