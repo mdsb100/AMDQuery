@@ -272,7 +272,7 @@ myQuery.define("module/object", ["base/extend"], function ($, extend) {
             }
             //这里加个验证
             return $.each(object, function (value, key) {
-                var purview = defaultPurview, validate = defaultValidate;
+                var purview = defaultPurview, validate = defaultValidate, defaultValue = undefined;
                 switch (typeof value) {
                     case "string":
                         purview = value;
@@ -284,24 +284,33 @@ myQuery.define("module/object", ["base/extend"], function ($, extend) {
                         if (typeof value.validate == "function") {
                             validate = value.validate;
                         }
+                        //if (value.defaultValue !== undefined) {
+                        defaultValue = value.defaultValue;
+                        //}
                         break;
                     case "function":
                         validate = value;
                         break;
 
                 }
-                var prefix = /\-pa[\s]?/.test(purview) ? "_" : "";
+                var prefix = /\-pa[\s]?/.test(purview) ? "_" : "", setPrefix, getPrefix;
 
-                if (/\-w[\s]?/.test(purview)) {
-                    this[prefix + $.camelCase(key, "set")] = function (a) {
+                if (purview.match(/\-w([u|a])?[\s]?/)) {
+                    getPrefix = RegExp.$1 == "a" ? "_" : "";
+                    this[(getPrefix || prefix) + $.camelCase(key, "set")] = function (a) {
                         if (validate.call(this, a)) {
                             this[key] = a;
                         }
+                        else if (value != undefined) {
+                            this[key] = defaultValue;
+                        }
+
                         return this;
                     }
                 }
-                if (/\-r[\s]?/.test(purview)) {
-                    this[prefix + $.camelCase(key, "get")] = function () {
+                if (purview.match(/\-r([u|a])?[\s]?/)) {
+                    setPrefix = RegExp.$1 == "a" ? "_" : "";
+                    this[(setPrefix || prefix) + $.camelCase(key, "get")] = function () {
                         return this[key];
                     }
                 }
