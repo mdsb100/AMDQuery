@@ -272,27 +272,30 @@ myQuery.define("module/object", ["base/extend"], function ($, extend) {
             }
             //这里加个验证
             return $.each(object, function (value, key) {
-                var purview = defaultPurview, validate = defaultValidate, defaultValue = undefined;
+                var purview = defaultPurview, validate = defaultValidate, defaultValue = undefined, edit;
                 switch (typeof value) {
                     case "string":
                         purview = value;
                         break;
                     case "object":
-                        if (typeof value.purview == "string") {
+                        if ($.isStr(value.purview)) {
                             purview = value.purview;
                         }
-                        if (typeof value.validate == "function") {
+                        if ($.isFun(value.validate)) {
                             validate = value.validate;
                         }
-                        //if (value.defaultValue !== undefined) {
-                        defaultValue = value.defaultValue;
-                        //}
+                        if ($.isFun(value.edit)) {
+                            edit = value.edit;
+                        }
+                        defaultValue = value.defaultValue;//undefinded always undefinded
                         break;
                     case "function":
                         validate = value;
                         break;
 
                 }
+                this[key] = defaultValue;
+
                 var prefix = /\-pa[\s]?/.test(purview) ? "_" : "", setPrefix, getPrefix;
 
                 if (purview.match(/\-w([u|a])?[\s]?/)) {
@@ -301,7 +304,7 @@ myQuery.define("module/object", ["base/extend"], function ($, extend) {
                         if (validate.call(this, a)) {
                             this[key] = a;
                         }
-                        else if (value != undefined) {
+                        else if (defaultValidate !== undefined) {
                             this[key] = defaultValue;
                         }
 
@@ -311,7 +314,7 @@ myQuery.define("module/object", ["base/extend"], function ($, extend) {
                 if (purview.match(/\-r([u|a])?[\s]?/)) {
                     setPrefix = RegExp.$1 == "a" ? "_" : "";
                     this[(setPrefix || prefix) + $.camelCase(key, "get")] = function () {
-                        return this[key];
+                        return edit ? edit(this[key]) : this[key];
                     }
                 }
             }, obj.prototype);
