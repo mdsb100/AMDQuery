@@ -13,12 +13,12 @@ myQuery.define("module/object", ["base/extend"], function ($, extend) {
             init: function () {
                 return this;
             }
-            , create: function () {
-                return this;
-            }
-            , render: function () {
-                return this;
-            }
+            //            , create: function () {
+            //                return this;
+            //            }
+            //            , render: function () {
+            //                return this;
+            //            }
         }
         , Class: function (name, prototype, statics, supper) {
             /// <summary>定义一个类</summary>
@@ -74,11 +74,18 @@ myQuery.define("module/object", ["base/extend"], function ($, extend) {
             //supper.__tag == "object.Class" ||
 
             if (supper) {
+                anonymous.prototype.__supperConstructor = supper;
                 anonymous.prototype.__supper = supper.prototype.init
                 ? function () {
-                    supper.prototype.init.apply(this, arguments);
+                    var tempConstructor = this.__supperConstructor;
+                    if (tempConstructor.prototype.__supperConstructor) {
+                        this.__supperConstructor = tempConstructor.prototype.__supperConstructor;
+                    }
+                    else {
+                        delete this.__supperConstructor;
+                    }
+                    tempConstructor.prototype.init ? tempConstructor.prototype.init.apply(this, arguments) : tempConstructor.apply(this, arguments);
                     return this;
-                    //supper.prototype.render.apply(self);
                 }
                 : function () {
                     supper.apply(this, arguments);
@@ -287,7 +294,7 @@ myQuery.define("module/object", ["base/extend"], function ($, extend) {
                         if ($.isFun(value.edit)) {
                             edit = value.edit;
                         }
-                        defaultValue = value.defaultValue;//undefinded always undefinded
+                        defaultValue = value.defaultValue; //undefinded always undefinded
                         break;
                     case "function":
                         validate = value;

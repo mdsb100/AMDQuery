@@ -184,7 +184,7 @@ myQuery.define("main/communicate"
 
 
             if (o.JSONP) {
-                random = "myQuery" + $.now();
+                random = ("myQuery" + $.now()) + parseInt(Math.random() * 10);
                 window[random] = function () {
                     $.isFun(o.complete) && o.complete.apply(o.context || window, arguments);
                 }
