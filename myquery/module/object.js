@@ -74,15 +74,15 @@ myQuery.define("module/object", ["base/extend"], function ($, extend) {
             //supper.__tag == "object.Class" ||
 
             if (supper) {
-                anonymous.prototype.__supperConstructor = supper;
-                anonymous.prototype.__supper = supper.prototype.init
+                anonymous.prototype.__superConstructor = supper;
+                anonymous.prototype.__super = supper.prototype.init
                 ? function () {
-                    var tempConstructor = this.__supperConstructor;
-                    if (tempConstructor.prototype.__supperConstructor) {
-                        this.__supperConstructor = tempConstructor.prototype.__supperConstructor;
+                    var tempConstructor = this.__superConstructor;
+                    if (tempConstructor.prototype.__superConstructor) {
+                        this.__superConstructor = tempConstructor.prototype.__superConstructor;
                     }
                     else {
-                        delete this.__supperConstructor;
+                        delete this.__superConstructor;
                     }
                     tempConstructor.prototype.init ? tempConstructor.prototype.init.apply(this, arguments) : tempConstructor.apply(this, arguments);
                     return this;
@@ -92,7 +92,7 @@ myQuery.define("module/object", ["base/extend"], function ($, extend) {
                     return this;
                 }
             } else {
-                anonymous.__supper = function () { return this; };
+                anonymous.__super = function () { return this; };
             }
 
             return anonymous;
