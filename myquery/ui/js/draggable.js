@@ -1,5 +1,6 @@
 ﻿/// <reference path="../../myquery.js" />
 myQuery.define("ui/js/draggable", ["module/widget", "main/event", "main/dom"], function ($, widget, event, dom, undefined) {
+    "use strict"; //启用严格模式
     var eventFuns = $.event.document,
         draggable = $.widget("ui.draggable", function draggable(obj, target) {
             this.__super(obj, target).init(obj || {}, target).create().render();

@@ -30,17 +30,22 @@ myQuery.define("event/mouseinteraction", ["main/event"], function ($, event) {
                     isDown: 0,
                     target: ele
                 },
-				anonymous = $.data(ele, "mouseinteraction", function (e) {
-				    mouseinteraction.call(this, e, temp);
-				});
+				anonymous = $.data(ele, "mouseinteraction");
                 event
 				.on(ele, "mouseinteractiondown", down)
 				.on(ele, "mouseinteractiondrag", drag)
 				.on(ele, "mouseinteractionup", up)
 				.on(ele, "mouseinteractionmove", move)
-				.on(ele, "mousedown", anonymous)
-				.on(ele, "mousemove", anonymous)
-				.on(ele, "mouseup", anonymous);
+
+                if (!anonymous) {
+                    $.data(ele, "mouseinteraction", function (e) {
+                        mouseinteraction.call(this, e, temp);
+                    });
+                    event
+                    .on(ele, "mousedown", anonymous)
+				    .on(ele, "mousemove", anonymous)
+				    .on(ele, "mouseup", anonymous);
+                }
             });
         },
         unMouseinteraction: function (down, drag, up, move) {
