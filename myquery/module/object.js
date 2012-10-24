@@ -277,7 +277,7 @@ myQuery.define("module/object", ["base/extend"], function ($, extend) {
             if (!$.isPlainObj(object)) {
                 return this;
             }
-            //这里加个验证
+            //这里加个验证a
             return $.each(object, function (value, key) {
                 var purview = defaultPurview, validate = defaultValidate, defaultValue = undefined, edit;
                 switch (typeof value) {
@@ -321,7 +321,7 @@ myQuery.define("module/object", ["base/extend"], function ($, extend) {
                 if (purview.match(/\-r([u|a])?[\s]?/)) {
                     setPrefix = RegExp.$1 == "a" ? "_" : "";
                     this[(setPrefix || prefix) + $.camelCase(key, "get")] = function () {
-                        return edit ? edit(this[key]) : this[key];
+                        return edit ? edit.call(this, this[key]) : this[key];
                     }
                 }
             }, obj.prototype);

@@ -245,7 +245,7 @@ myQuery.define("main/communicate"
             , error: function () {
                 $.console.warn({ fn: "myQuery.getJScript", msg: (this.src || "(empty)") + " of javascript getting error" });
             }
-            , isDelete: false
+            , isDelete: true
             , isRandom: false
             , JSONP: false
             , JSONPKey: "JSONP"
