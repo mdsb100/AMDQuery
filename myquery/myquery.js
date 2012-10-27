@@ -190,7 +190,7 @@
             detectCR: false //检查循环依赖
             ,
             "debug": true,
-            timeout: 30000
+            timeout: 10000
         },
         model: {
 

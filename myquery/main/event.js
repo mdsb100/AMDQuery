@@ -460,7 +460,12 @@ myQuery.define("main/event", ["base/client", "main/CustomEvent", "main/data"], f
                             }
                         }
                     }
-
+                    , on: function (ele, type, fn) {
+                        return this.addHandler(ele, type, fn);
+                    }
+                    , off: function (ele, type, fn) {
+                        return this.removeHandler(ele, type, fn);
+                    }
                  }
                  , domEventList: _domEventList
 
