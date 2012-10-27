@@ -97,6 +97,9 @@ myQuery.define("main/CustomEvent", function ($, undefined) {
                 result = this.handlers[nameSpace];
                 if (!result || re) {
                     result = this.handlers[nameSpace] = {};
+
+                }
+                if (!result["__" + nameSpace]) {
                     result["__" + nameSpace] = [];
                 }
                 result = result["__" + nameSpace];

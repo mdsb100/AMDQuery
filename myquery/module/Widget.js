@@ -106,7 +106,7 @@ myQuery.define("module/widget", ["main/data", "main/event", "main/attr", "module
             toString: 1
         },
         render: function () { },
-        _bindEvent: function () { },
+        _initHandler: function () { },
         // , _render_: function () {//不应该由这个来绑定事件
         //     $.isFun(this.render) && this.render();
         //     return this;

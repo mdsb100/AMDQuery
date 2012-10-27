@@ -11,7 +11,7 @@ myQuery.define("ui/js/swappable", ["base/client", "main/event", "module/math", "
             this.target.css({
                 cursor: this.options.cursor
             });
-            this._bindEvent();
+            this._initHandler();
             this.able();
             return this;
         },
@@ -88,7 +88,7 @@ myQuery.define("ui/js/swappable", ["base/client", "main/event", "module/math", "
             getPath: 1,
             getPathLast: 1
         },
-        _bindEvent: function () {
+        _initHandler: function () {
             var self = this,
                 target = self.target,
                 opt = self.options,

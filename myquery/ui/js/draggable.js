@@ -29,7 +29,7 @@ myQuery.define("ui/js/draggable", ["module/widget", "main/event", "main/dom"], f
                     this.positionParent.css("overflow", "hidden");
                 }
 
-                this._bindEvent();
+                this._initHandler();
 
                 this.able();
 
@@ -67,7 +67,7 @@ myQuery.define("ui/js/draggable", ["module/widget", "main/event", "main/dom"], f
             public: {
 
             },
-            _bindEvent: function () {
+            _initHandler: function () {
                 var self = this,
                     target = self.target,
                     opt = self.options,

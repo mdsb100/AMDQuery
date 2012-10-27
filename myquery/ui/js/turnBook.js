@@ -64,7 +64,7 @@ myQuery.define("ui/js/turnBook", ["ui/js/swappable", "main/class", "html5/css3"]
 
             this.setBook(opt.bookName, opt.bookType, opt.bookContent, opt.bookIndex).showPages(opt.bookIndex);
 
-            this._bindEvent();
+            this._initHandler();
             this.able();
 
             return this;
@@ -289,7 +289,7 @@ myQuery.define("ui/js/turnBook", ["ui/js/swappable", "main/class", "html5/css3"]
             isInLeft: 1,
             isInRight: 1
         },
-        _bindEvent: function () {
+        _initHandler: function () {
             var self = this,
                 target = self.target,
                 opt = self.options,
