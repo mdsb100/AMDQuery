@@ -339,12 +339,11 @@
         version: version,
         _redundance: {
             argToArray: tools.argToArray
-        }
+        },
 
-        ,
-        argToArray: tools.argToArray
+        argToArray: tools.argToArray,
 
-        ,
+        basePath: basePath,
         between: function (min, max, num) {
             /// <summary>如果num在min和max区间内返回num否则返回min或max</summary>
             /// <param name="min" type="Number">最小值</param>
@@ -362,9 +361,8 @@
                 return fun.apply(context || window, arguments);
             }
 
-        }
+        },
 
-        ,
         camelCase: function (name, head) {
             /// <summary>把"margin-left驼峰化"</summary>
             /// <param name="name" type="String">字符串</param>
@@ -395,9 +393,8 @@
                 ele = document.createElement(tag);
             }
             return ele;
-        }
+        },
 
-        ,
         each: function (obj, callback, context) {
             /// <summary>对象遍历</summary>
             /// <param name="obj" type="Object">对象</param>
@@ -414,9 +411,8 @@
                     if (callback.call(context || obj[item], obj[item], item) === false) break;
             } else for (var value = obj[0]; i < len && callback.call(context || value, value, i) !== false; value = obj[++i]) { }
             return this;
-        }
+        },
 
-        ,
         getJScriptConfig: tools.getJScriptConfig,
         getPath: tools.getPath,
         getRunTime: function (unit) {
@@ -460,12 +456,10 @@
                 }
             }
             return result;
-        }
+        },
 
-        ,
-        now: tools.now
+        now: tools.now,
 
-        ,
         reg: {
             num: /^(-?\\d+)(\\.\\d+)?$/,
             className: function (className) {
@@ -494,9 +488,9 @@
             ,
             rupper: /([A-Z]|^ms)/g,
             rnumnonpx: /^-?(?:\d*\.)?\d+(?!px)[^\d\s]+$/i
-        }
+        },
+        rootPath: rootPath,
 
-        ,
         showMsg: function (str, bool) {
             /// <summary>设置浏览器标题或者显示个div 点击会自动消失</summary>
             /// <param name="str" type="any">任何对象都将被toString显示</param>
@@ -527,17 +521,15 @@
             }
             return this;
 
-        }
+        },
 
-        ,
         trim: function (str) {
             /// <summary>去除前后的空格换行符等字符</summary>
             /// <param name="str" type="String">长度 缺省为整个长度</param>
             /// <returns type="String" />
             return str.replace(/(^\s*)|(\s*$)/g, "");
-        }
+        },
 
-        ,
         unCamelCase: function (name, head) {
             /// <summary>反驼峰化</summary>
             /// <para>marginLeft => margin-left</para>

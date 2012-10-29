@@ -7,47 +7,43 @@ myQuery.define('module/effect', ['module/animate'], function ($, animate, undefi
         _show: $.show
         , _hide: $.hide
 
-        , fadeIn: function (ele, queue) {
+        , fadeIn: function (ele, option) {
             /// <summary>淡入</summary>
             /// <param name="ele" type="Element">dom元素</param>
-            /// <param name="queue" type="Boolean/undefined">动画参数 可选</param>
+            /// <param name="option" type="Object">动画选项</param>
             /// <returns type="self" />
             if ($.isVisible(ele)) { return this; }
-            queue = queue == undefined ? true : queue;
-            var o = $.style(ele, "opacity") || 1;
-            return $.setOpacity(ele, 0)._show(ele).animate(ele, { opacity: o }, { duration: "slow", queue: queue
-                , complete: function () {
 
-                }
-            });
+            var o = $.style(ele, "opacity") || 1, opt = $._getAnimateOpt(option);
+            return $.setOpacity(ele, 0)._show(ele).animate(ele, { opacity: o }, opt);
         }
-        , fadeOut: function (ele, queue, visible) {
+        , fadeOut: function (ele, option) {
             /// <summary>淡出</summary>
             /// <param name="ele" type="Element">dom元素</param>
-            /// <param name="queue" type="Boolean/undefined">动画参数 可选</param>
-            /// <param name="visible" type="Boolean/undefined">是否占据文档流</param>
+            /// <param name="option" type="Object">动画选项</param>
             /// <returns type="self" />
             if (!$.isVisible(ele)) { return this; }
-            queue = queue == undefined ? true : queue;
-            var o = $.style(ele, "opacity");
-            return $._show(ele).animate(ele, { opacity: 0 }, { duration: "slow", queue: queue
-                , complete: function () {
-                    $._hide(ele, visible).setOpacity(ele, o);
-                    ele = visible = o = null;
-                }
-            });
+            option = option || { visible: 0 }
+            var o = $.style(ele, "opacity"), opt = $._getAnimateOpt(option);
+            opt.complete = function () {
+                $._hide(ele, option.visible).setOpacity(ele, o);
+                option.complete && option.complete();
+                option = opt = ele = o = null;
+            }
+            return $._show(ele).animate(ele, { opacity: 0 }, opt);
         }
 
-        , hide: function (ele, type, visible) {
+        , hide: function (ele, type, option) {
             /// <summary>隐藏元素
             /// <para>type:slide fade</para>
             /// </summary>
             /// <param name="ele" type="Element">element元素</param>
             /// <param name="type" type="String/undefined">动画类型</param>
-            /// <param name="visible" type="Boolean/undefined">true:隐藏后任然占据文档流中</param>
+            /// <param name="option" type="Object">动画选项</param>
             /// <returns type="self" />
-            if ($.isStr(type) && $[type + "Out"]) {
-                $[type + "Out"](ele, null, visible);
+            ///  name="visible" type="Boolean/undefined">true:隐藏后任然占据文档流中
+            if ($.isStr(type) && $[type]) {
+                $[type](ele, option);
             }
             else {
                 $._hide(ele);
@@ -55,110 +51,111 @@ myQuery.define('module/effect', ['module/animate'], function ($, animate, undefi
             return this;
         }
 
-        , show: function (ele, type) {
+        , show: function (ele, type, option) {
             /// <summary>显示元素
             /// <para>type:slide fade</para>
             /// </summary>
             /// <param name="ele" type="Element">element元素</param>
             /// <param name="type" type="String/undefined">动画类型</param>
+            /// <param name="option" type="Object">动画选项</param>
             /// <returns type="self" />
-            if ($.isStr(type) && $[type + "In"]) {
-                $[type + "In"](ele);
+            if ($.isStr(type) && $[type]) {
+                $[type](ele, option);
             }
             else {
                 $._show(ele);
             }
             return this;
         }
-        , slideIn: function (ele, queue) {
+        , slideDown: function (ele, option) {
             /// <summary>滑动淡入</summary>
             /// <param name="ele" type="Element">dom元素</param>
-            /// <param name="queue" type="Boolean/undefined">动画参数 可选</param>
+            /// <param name="option" type="Object">动画选项</param>
             /// <returns type="self" />
             if ($.isVisible(ele)) { return this; }
-            queue = queue == undefined ? true : queue;
-            var h = $.getInnerH(ele);
-            return $.css(ele, "height", 0)._show(ele).animate(ele, { height: h + "px" }, { duration: "slow", queue: queue
-                , complete: function () {
 
-                }
-            });
+            var h = $.getInnerH(ele), opt = $._getAnimateOpt(option);
+            return $.css(ele, "height", 0)._show(ele).animate(ele, { height: h + "px" }, opt);
+
+            //            { duration: "slow", queue: queue
+            //                , complete: function () {
+
+            //                }
+            //            }
         }
-        , slideOut: function (ele, queue, visible) {
+        , slideUp: function (ele, option) {
             /// <summary>滑动淡出</summary>
             /// <param name="ele" type="Element">dom元素</param>
-            /// <param name="queue" type="Boolean/undefined">动画参数 可选</param>
-            /// <param name="visible" type="Boolean/undefined">是否占据文档流</param>
+            /// <param name="option" type="Object">动画选项</param>
             /// <returns type="self" />
             if (!$.isVisible(ele)) { return this; }
-            queue = queue == undefined ? true : queue;
-            var h = $.getInnerH(ele);
-            return $._show(ele).animate(ele, { height: "0px" }, { duration: "slow", queue: queue
-                , complete: function () {
-                    $._hide(ele, visible).setInnerH(ele, h);
-                    ele = visible = h = null;
-                }
-            });
+            option = option || { visible: 0 }
+            var h = $.getInnerH(ele), opt = $._getAnimateOpt(option);
+            opt.complete = function () {
+                $._hide(ele, option.visible).setInnerH(ele, h);
+                option.complete && option.complete();
+                option = opt = ele = h = null;
+            }
+            return $._show(ele).animate(ele, { height: "0px" }, opt);
         }
     }
     $.extend(effect);
 
     $.fn.extend({
-        fadeIn: function (queue) {
+        fadeIn: function (option) {
             /// <summary>淡入</summary>
-            /// <param name="ele" type="Element">dom元素</param>
-            /// <param name="queue" type="Boolean/undefined">动画参数 可选</param>
+            /// <param name="option" type="Object">动画选项</param>
             /// <returns type="self" />
             return this.each(function (ele) {
-                $.fadeIn(ele, queue)
+                $.fadeIn(ele, option)
             });
         }
-        , fadeOut: function (queue) {
+        , fadeOut: function (option) {
             /// <summary>淡出</summary>
-            /// <param name="queue" type="Boolean/undefined">动画参数 可选</param>
+            /// <param name="option" type="Object">动画选项</param>
             /// <returns type="self" />
             return this.each(function (ele) {
-                $.fadeOut(ele, queue);
+                $.fadeOut(ele, option);
             });
         }
 
-        , hide: function (type, visible) {
+        , hide: function (type, option) {
             /// <summary>隐藏元素
             /// <para>type:slide fade</para>
             /// </summary>
             /// <param name="type" type="String/undefined">动画类型</param>
-            /// <param name="visible" type="Boolean/undefined">true:隐藏后任然占据文档流中</param>
+            /// <param name="option" type="Object">动画选项</param>
             /// <returns type="self" />
             return this.each(function (ele) {
-                $.hide(ele, type, visible);
+                $.hide(ele, type, option);
             })
         }
 
-        , show: function (type) {
+        , show: function (type, option) {
             /// <summary>显示元素
             /// <para>type:slide fade</para>
             /// </summary>
             /// <param name="type" type="String/undefined">动画类型</param>
+            /// <param name="option" type="Object">动画选项</param>
             /// <returns type="self" />
             return this.each(function (ele) {
-                $.show(ele, type);
+                $.show(ele, type, option);
             });
         }
-        , slideIn: function (queue) {
+        , slideDown: function (option) {
             /// <summary>滑动淡入</summary>
-            /// <param name="queue" type="Boolean/undefined">动画参数 可选</param>
+            /// <param name="option" type="Object">动画选项</param>
             /// <returns type="self" />
             return this.each(function (ele) {
-                $.slideIn(ele, queue);
+                $.slideDown(ele, option);
             });
         }
-        , slideOut: function (ele, queue, visible) {
+        , slideUp: function (option) {
             /// <summary>滑动淡出</summary>
-            /// <param name="queue" type="Boolean/undefined">动画参数 可选</param>
-            /// <param name="visible" type="Boolean/undefined">是否占据文档流</param>
+            /// <param name="option" type="Object">动画选项</param>
             /// <returns type="self" />
             return this.each(function (ele) {
-                $.slideOut(ele, queue, visible);
+                $.slideUp(ele, option);
             });
         }
     });

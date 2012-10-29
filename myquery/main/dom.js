@@ -40,6 +40,24 @@ myQuery.define("main/dom", ["base/support", "main/data"], function ($, support, 
     , getPosValue = function (ele, type) {
         return parseFloat(dom.curCss(ele, type) || 0);
     }
+    , getPos = function (ele, type) {
+        type = type || "clientHeight";
+        var result = ele[type], display;
+        if (!result) {
+            display = $.curCss(ele, "display");
+            if (display == "none" || display.indexOf("inline") > -1) {
+                ele.style.display = "block";
+                result = ele[type];
+            }
+            if (!ele.parentNode) {
+                document.body.appendChild(ele);
+                result = ele[type];
+                document.body.removeChild(ele);
+            }
+            ele.style.display = display;
+        }
+        return result;
+    }
     , dom = {
         css: function (ele, name, value) {
             /// <summary>为元素添加样式</summary>
@@ -170,7 +188,7 @@ myQuery.define("main/dom", ["base/support", "main/data"], function ($, support, 
             /// </summary>
             //  <param name="ele" type="Element">element元素</param>
             /// <returns type="Number" />
-            return dom.curCss(ele, "height") || 0;
+            return parseFloat($.curCss(ele, "height")) || getPos(ele, "clientHeight");
         }
         , getHtml: function (ele) {
             /// <summary>获得元素的innerHTML</summary>
@@ -183,30 +201,15 @@ myQuery.define("main/dom", ["base/support", "main/data"], function ($, support, 
             /// </summary>
             /// <param name="ele" type="Element">dom元素</param>
             /// <returns type="Number" />
-            var height = ele.clientHeight
-                , top = 0
-                , bottom = 0;
-            if (!height) {
-                height = parseFloat(dom.styleTable(ele)["height"]);
-                top = getPosValue(ele, "paddingTop");
-                bottom = getPosValue(ele, "paddingBottom");
-            }
-            return height + top + bottom;
+            return getPos(ele, "clientHeight");
         }
         , getInnerW: function (ele) {
             /// <summary>返回元素的内宽度
             /// </summary>
             /// <param name="ele" type="Element">dom元素</param>
             /// <returns type="Number" />
-            var width = ele.clientWidth
-                , left = 0
-                , right = 0;
-            if (!width) {
-                width = parseFloat(dom.styleTable(ele)["width"]);
-                left = getPosValue(ele, "paddingLeft");
-                right = getPosValue(ele, "paddingRight");
-            }
-            return width + left + right;
+            return getPos(ele, "clientWidth");
+
         }
         , getLastChild: function (ele) {
             /// <summary>获得当前DOM元素的最后个真DOM元素</summary>
@@ -327,7 +330,7 @@ myQuery.define("main/dom", ["base/support", "main/data"], function ($, support, 
             /// <returns type="Number" />
             var height = ele.offsetHeight, top, bottom, ret;
             if (!height) {
-                height = dom.getInnerH(ele);
+                height = $.getInnerH(ele);
                 top = getPosValue(ele, "borderTopWidth");
                 bottom = getPosValue(ele, "borderBottomWidth");
                 height += top + bottom;
@@ -347,7 +350,7 @@ myQuery.define("main/dom", ["base/support", "main/data"], function ($, support, 
             /// <returns type="Number" />
             var width = ele.offsetWidth, left, right, ret;
             if (!width) {
-                width = dom.getInnerW(ele);
+                width = $.getInnerW(ele);
                 left = getPosValue(ele, "borderLeftWidth");
                 right = getPosValue(ele, "borderRightWidth");
                 width += left + right;
@@ -369,7 +372,7 @@ myQuery.define("main/dom", ["base/support", "main/data"], function ($, support, 
             /// </summary>
             //  <param name="ele" type="Element">element元素</param>
             /// <returns type="Number" />
-            return dom.curCss(ele, "width") || 0;
+            return parseFloat($.curCss(ele, "width")) || getPos(ele, "clientWidth");
         }
 
         , hide: function (ele, visible) {
@@ -525,24 +528,11 @@ myQuery.define("main/dom", ["base/support", "main/data"], function ($, support, 
             /// <param name="height" type="Number/String">值</param>
             /// <returns type="self" />
             var diffH = getPosValue(ele, "paddingTop") + getPosValue(ele, "paddingBottom")
-                , e = $.getValueAndUnit(height), clientH = ele.clientHeight, display = dom.curCss(ele, "display");
+                , e = $.getValueAndUnit(height), clientH;
 
             ele.style.height = e.value + (e.unit || "px");
-            if (!clientH) {
-                if (display == "none" || display.indexOf("inline") > -1) {
-                    ele.style.display = "block";
-                    clientH = ele.clientHeight;
-                }
-                if (!ele.parentNode) {
-                    document.body.appendChild(ele);
-                    clientH = ele.clientHeight;
-                    document.body.removeChild(ele);
-                }
-                ele.style.display = display;
-            }
-            else {
-                clientH = ele.clientHeight;
-            }
+            clientH = getPos(ele, "clientHeight");
+
             ele.style.height = Math.max(clientH - diffH - diffH, 0) + "px";
             return this;
         }
@@ -554,24 +544,11 @@ myQuery.define("main/dom", ["base/support", "main/data"], function ($, support, 
             /// <param name="width" type="Number/String">值</param>
             /// <returns type="self" />
             var diffW = getPosValue(ele, "paddingLeft") + getPosValue(ele, "paddingRight")
-                , e = $.getValueAndUnit(width), clientW = ele.clientWidth, display = dom.curCss(ele, "display");
+                , e = $.getValueAndUnit(width), clientW;
 
             ele.style.width = e.value + (e.unit || "px");
-            if (!clientW) {
-                if (display == "none" || display.indexOf("inline") > -1) {
-                    ele.style.display = "block";
-                    clientW = ele.clientWidth;
-                }
-                if (!ele.parentNode) {
-                    document.body.appendChild(ele);
-                    clientW = ele.clientWidth;
-                    document.body.removeChild(ele);
-                }
-                ele.style.display = display;
-            }
-            else {
-                clientW = ele.clientWidth;
-            }
+            clientW = getPos(ele, "clientWidth");
+
             ele.style.width = Math.max(clientW - diffW - diffW, 0) + "px";
             return this;
         }
@@ -611,26 +588,13 @@ myQuery.define("main/dom", ["base/support", "main/data"], function ($, support, 
             /// <returns type="self" />
             var diffH = getPosValue(ele, "borderTopWidth") + getPosValue(ele, "borderBottomWidth")
                 , marginH = 0
-                , e = $.getValueAndUnit(height), offsetH = ele.offsetHeight, display = dom.curCss(ele, "display");
+                , e = $.getValueAndUnit(height), offsetH;
             if (bol) {
                 marginH = getPosValue(ele, "marginTop") + getPosValue(ele, "marginBottom");
             }
             ele.style.height = e.value + (e.unit || "px");
-            if (!offsetH) {
-                if (display == "none" || display.indexOf("inline") > -1) {
-                    ele.style.display = "block";
-                    offsetH = ele.offsetHeight;
-                }
-                if (!ele.parentNode) {
-                    document.body.appendChild(ele);
-                    offsetH = ele.offsetHeight;
-                    document.body.removeChild(ele);
-                }
-                ele.style.display = display;
-            }
-            else {
-                offsetH = ele.offsetHeight;
-            }
+            offsetH = getPos(ele, "offsetHeight");
+          
             ele.style.height = Math.max(offsetH - diffH - diffH - marginH, 0) + "px";
             return this;
         }
@@ -643,26 +607,13 @@ myQuery.define("main/dom", ["base/support", "main/data"], function ($, support, 
             /// <returns type="self" />
             var diffW = getPosValue(ele, "borderLeftWidth") + getPosValue(ele, "borderRightWidth")
                 , marginW = 0
-                , e = $.getValueAndUnit(width), offsetW = ele.offsetWidth, display = dom.curCss(ele, "display");
+                , e = $.getValueAndUnit(width), offsetW;
             if (bol) {
                 diffW += getPosValue(ele, "marginLeft") + getPosValue(ele, "marginRight");
             }
             ele.style.width = e.value + (e.unit || "px");
-            if (!offsetW) {
-                if (display == "none" || display.indexOf("inline") > -1) {
-                    ele.style.display = "block";
-                    offsetW = ele.offsetWidth;
-                }
-                if (!ele.parentNode) {
-                    document.body.appendChild(ele);
-                    offsetW = ele.offsetWidth;
-                    document.body.removeChild(ele);
-                }
-                ele.style.display = display;
-            }
-            else {
-                offsetW = ele.offsetWidth;
-            }
+            offsetW = getPos(ele, "offsetWidth");
+          
             ele.style.width = Math.max(offsetW - diffW - diffW - marginW, 0) + "px";
             return this;
         }

@@ -9,12 +9,13 @@ myQuery.define("ui/js/accordion",
    "main/dom",
    "module/src",
    "module/animate",
-   "html5/css3.transition.animate"
+   "html5/css3.transition.animate",
+   "module/effect"
 ]
 , function ($, object, widget, css, event, CustomEvent, dom, src) {
     "use strict"; //启用严格模式
     //缺个event 缺个绑定 和解除 缺配置
-    src.link({ href: "/myquery/myquery/ui/css/accordion.css" });
+    src.link({ href: $.basePath + "/ui/css/accordion.css" });
 
     var Key = object.Class("Key", {
         init: function (item, parent) {
@@ -23,8 +24,8 @@ myQuery.define("ui/js/accordion",
             //                        , "widgetInfo": item.info
             //                    })
             //                    .attr({ "widgetId": this.id + "." + (item.id || $.now()), "title": item.title || "" })
+            this.__super();
             this.parent = parent;
-            this.container = parent.container;
 
             this.a = $($.createEle("a"))
                     .addClass("unselect")
@@ -32,14 +33,14 @@ myQuery.define("ui/js/accordion",
                     .html(item.html)
                     .addClass("a");
 
-            this.key = $($.createEle("li"))
+            this.container = this.key = $($.createEle("li"))
                     .css({ position: "relative", display: "block", width: "100%" })
                     .addClass("key")
                     .attr({ "title": item.title || "" })
-                    .append(this.a).appendTo(this.container);
+                    .append(this.a)
+                    .appendTo(this.parent.container);
 
-            this.container.append(this.key);
-
+            this.initHandler();
             return this;
         },
         initHandler: function () {
@@ -64,27 +65,21 @@ myQuery.define("ui/js/accordion",
 
     var KeyCollection = object.Collection("KeyCollection", {
         init: function (list, parent) {
-            if (!list.length) {
-                return [];
-            }
-            //            this.container = $(container);
+            this.__super();
+
             var i = 0,
                 len = list.length,
                 key,
                 item;
 
-            this.container = this.board = $($.createEle("ul"))
-                        .css({ position: "relative", width: "100%", display: "block" })
-                        .addClass("board")
-                        .hide();
 
             for (; i < len; i++) {//映射表 找到shell 通过name
                 item = list[i];
-                key = new Key(item, this)
+                key = new Key(item, parent);
 
                 this.add(key);
             }
-
+            this.initHandler();
             return this;
         },
         initHandler: function () {
@@ -108,8 +103,9 @@ myQuery.define("ui/js/accordion",
 
     var Shell = object.Class("Shell", {
         init: function (item, parent) {
+            this.__super();
             this.parent = parent;
-            this.container = parent.container;
+
             this.arrow = $($.createEle("div")).css({ "float": "left" }).addClass("arrowRight");
 
             this.text = $($.createEle("div")).css({ "float": "left" }).addClass("text").html(item.html);
@@ -121,17 +117,23 @@ myQuery.define("ui/js/accordion",
                     .append(this.arrow)
                     .append(this.text);
 
+            this.container = this.board = $($.createEle("ul"))
+                        .css({ position: "relative", width: "100%", display: "block" })
+                        .addClass("board")
+                        .hide();
+
             this.shell = $($.createEle("div"))
                     .css({ position: "relative", width: "100%" })
                     .addClass("shell")
                     .attr({ "title": item.title || "" })
                     .append(this.title)
-                    .appendTo(this.container);
+                    .append(this.board)
+                    .appendTo(this.parent.container);
 
             this.keyCollection = new KeyCollection(item.list, this);
 
             this.onfocus = false;
-
+            this.initHandler();
             return this;
 
         },
@@ -152,7 +154,7 @@ myQuery.define("ui/js/accordion",
             if (this.onfocus == false) {
                 this.onfocus = true;
                 this.setOpenStyle();
-                this.keyCollection.container.slideDown({
+                this.board.slideDown({
                     duration: 600,
                     easing: "easeInOutCubic"
                 });
@@ -164,7 +166,7 @@ myQuery.define("ui/js/accordion",
             if (this.onfocus == true) {
                 this.onfocus = false;
                 this.setCloseStyle();
-                this.keyCollection.container.slideUp({
+                this.board.slideUp({
                     duration: 600,
                     easing: "easeInOutCubic"
                 });
@@ -175,8 +177,8 @@ myQuery.define("ui/js/accordion",
             return this.onfocus ? this.close() : this.open();
         },
         setOpenStyle: function () {
-            title.addClass("title_select").removeClass("title_unselect");
-            arrow.addClass("arrowBottom").removeClass("arrowRight");
+            this.title.addClass("title_select").removeClass("title_unselect");
+            this.arrow.addClass("arrowBottom").removeClass("arrowRight");
             return this;
         },
         setCloseStyle: function () {
@@ -194,6 +196,7 @@ myQuery.define("ui/js/accordion",
         init: function (list, parent) {
             //this.parent = parent;
             //this.container = parent.container;
+            this.__super();
             var i = 0,
                 len = list.length,
                 shell,
@@ -207,7 +210,7 @@ myQuery.define("ui/js/accordion",
                 //result.push(shell);
                 this.add(shell);
             }
-
+            this.initHandler();
             return this;
         },
         initHandler: function () {
@@ -241,14 +244,15 @@ myQuery.define("ui/js/accordion",
             return this;
         }
         , create: function (list) {
+
             this.container = $($.createEle("div"))
                 .css("position", "relative")
-                .width(this.width)
                 .addClass("accordion");
             this.shellCollection = new ShellCollection(list, this);
 
             this.target.append(this.container);
 
+            this.container.outerW(this.width);
             return this;
         }
         , initHandler: function () {
