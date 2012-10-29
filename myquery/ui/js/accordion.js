@@ -14,7 +14,7 @@ myQuery.define("ui/js/accordion",
 , function ($, object, widget, css, event, CustomEvent, dom, src) {
     "use strict"; //启用严格模式
     //缺个event 缺个绑定 和解除 缺配置
-    src.link({ href: "ui/css/accordion.css" });
+    src.link({ href: "/myquery/myquery/ui/css/accordion.css" });
 
     var Key = object.Class("Key", {
         init: function (item, parent) {
@@ -62,7 +62,7 @@ myQuery.define("ui/js/accordion",
         }
     }, CustomEvent);
 
-    var KeyCollection = object.Class("KeyCollection", {
+    var KeyCollection = object.Collection("KeyCollection", {
         init: function (list, parent) {
             if (!list.length) {
                 return [];
@@ -104,7 +104,7 @@ myQuery.define("ui/js/accordion",
                 item.setSelectStyle();
             });
         }
-    }, CustomeEvent);
+    }, CustomEvent);
 
     var Shell = object.Class("Shell", {
         init: function (item, parent) {
@@ -188,9 +188,9 @@ myQuery.define("ui/js/accordion",
             return this.toggle();
         }
 
-    }, CustomeEvent);
+    }, CustomEvent);
 
-    var ShellCollection = object.Class("ShellCollection", {
+    var ShellCollection = object.Collection("ShellCollection", {
         init: function (list, parent) {
             //this.parent = parent;
             //this.container = parent.container;
@@ -222,7 +222,7 @@ myQuery.define("ui/js/accordion",
                 self.trigger("key.select", this, key, e);
             });
         }
-    }, CustomeEvent);
+    }, CustomEvent);
 
     var Accordion = object.Class("Accordion", {
         init: function (target, list) {//, keyId, isDittoShellSelect
@@ -276,7 +276,7 @@ myQuery.define("ui/js/accordion",
         , render: function () {
 
         }
-    }, CustomeEvent);
+    }, CustomEvent);
 
     return Accordion;
 });
