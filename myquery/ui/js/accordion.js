@@ -66,7 +66,8 @@ myQuery.define("ui/js/accordion",
     var KeyCollection = object.Collection("KeyCollection", {
         init: function (list, parent) {
             this.__super();
-
+            this.parent = parent;
+            this.container = parent.container;
             var i = 0,
                 len = list.length,
                 key,
@@ -75,7 +76,7 @@ myQuery.define("ui/js/accordion",
 
             for (; i < len; i++) {//映射表 找到shell 通过name
                 item = list[i];
-                key = new Key(item, parent);
+                key = new Key(item, this);
 
                 this.add(key);
             }
@@ -84,7 +85,9 @@ myQuery.define("ui/js/accordion",
         },
         initHandler: function () {
             var self = this;
-            this.on("key.select", function (key, e) {
+            this.onChild("key.select", function (key, e) {
+                self.setUnselectStyle();
+                key.setSelectStyle();
                 self.trigger("key.select", this, key, e);
             });
             return this;
@@ -98,6 +101,21 @@ myQuery.define("ui/js/accordion",
             return this.each(function (item) {
                 item.setSelectStyle();
             });
+        },
+
+        onChild: function (type, fn) {
+            var list = this.models, i;
+            for (i in list) {
+                list[i].on(type, fn);
+            }
+            return this;
+        },
+        offChild: function () {
+            var list = this.models, i;
+            for (i in list) {
+                list[i].off(type, fn);
+            }
+            return this;
         }
     }, CustomEvent);
 
@@ -111,7 +129,7 @@ myQuery.define("ui/js/accordion",
             this.text = $($.createEle("div")).css({ "float": "left" }).addClass("text").html(item.html);
 
             this.title = $($.createEle("a"))
-                    .css({ "float": "clear", position: "relative", display: "block", "text-decoration": "none" })
+                    .css({ "clear": "left", position: "relative", display: "block", "text-decoration": "none" })
                     .addClass("title")
                     .addClass("title_unselect")
                     .append(this.arrow)
@@ -142,7 +160,7 @@ myQuery.define("ui/js/accordion",
             this.title.click(function (e) {
                 //self.selectShell(self,)
                 self.toggle();
-                //self.trigger("title.select", this, e, self);
+                self.trigger("shell.select", this, e, self);
             });
             this.keyCollection.on("key.select", function (key, e) {
                 self.trigger("key.select", this, key, e);
@@ -155,7 +173,7 @@ myQuery.define("ui/js/accordion",
                 this.onfocus = true;
                 this.setOpenStyle();
                 this.board.slideDown({
-                    duration: 600,
+                    duration: 400,
                     easing: "easeInOutCubic"
                 });
             }
@@ -167,7 +185,7 @@ myQuery.define("ui/js/accordion",
                 this.onfocus = false;
                 this.setCloseStyle();
                 this.board.slideUp({
-                    duration: 600,
+                    duration: 400,
                     easing: "easeInOutCubic"
                 });
             }
@@ -189,7 +207,6 @@ myQuery.define("ui/js/accordion",
         render: function () {
             return this.toggle();
         }
-
     }, CustomEvent);
 
     var ShellCollection = object.Collection("ShellCollection", {
@@ -197,6 +214,8 @@ myQuery.define("ui/js/accordion",
             //this.parent = parent;
             //this.container = parent.container;
             this.__super();
+            this.parent = parent;
+            this.container = parent.container;
             var i = 0,
                 len = list.length,
                 shell,
@@ -204,7 +223,7 @@ myQuery.define("ui/js/accordion",
 
             for (; i < len; i++) {//映射表 找到shell 通过name
                 item = list[i];
-                shell = new Shell(item, parent);
+                shell = new Shell(item, this);
                 //parent.append(shell);
 
                 //result.push(shell);
@@ -214,21 +233,50 @@ myQuery.define("ui/js/accordion",
             return this;
         },
         initHandler: function () {
-            this.on("key.select", function (key, e) {
-                this.each(function (shell) {
-                    shell.collectionKey.setUnselectStyle();
-                    //配置 
-
-                    return;
-                    shell.onfocus && shell.close();
-                });
+            var self = this;
+            this.onChild("key.select", function (key, e) {
+                //self.closeOther();
                 self.trigger("key.select", this, key, e);
+            })
+            .onChild("shell.open", function (shell) {
+                //self.closeOther();
+                self.closeOther(shell);
+                self.trigger("shell.open", this, shell);
+            })
+            .onChild("shell.close", function (shell) {
+                self.trigger("shell.close", this, shell);
+            })
+            .onChild("shell.select", function (shell, e) {
+                self.trigger("shell.select", this, shell, e);
             });
+        },
+        closeOther: function (except) {
+            this.each(function (shell) {
+                if (this.parent.option.oneSelectShell) {
+                    except != shell && shell.onfocus && shell.close();
+                }
+            }, this);
+            return this;
+        },
+
+        onChild: function (type, fn) {
+            var list = this.models, i;
+            for (i in list) {
+                list[i].on(type, fn);
+            }
+            return this;
+        },
+        offChild: function () {
+            var list = this.models, i;
+            for (i in list) {
+                list[i].off(type, fn);
+            }
+            return this;
         }
     }, CustomEvent);
 
     var Accordion = object.Class("Accordion", {
-        init: function (target, list) {//, keyId, isDittoShellSelect
+        init: function (target, list, option) {//, keyId, isDittoShellSelect
             this.__super();
             this.target = $(target);
             this.list = list;
@@ -238,7 +286,7 @@ myQuery.define("ui/js/accordion",
             this.container = null;
             this.shellCollection = null;
             this._selectShell = null;
-
+            this.option = $.extend({}, this.defaultSetting, option);
             this.create(list).initHandler();
 
             return this;
@@ -261,24 +309,24 @@ myQuery.define("ui/js/accordion",
             this.shellCollection.on("key.select", function (key, e) {
                 self.trigger("key.select", this, key, e);
             });
-            return this;
             //配置
             this.shellCollection
             .on("shell.open", function (shell) {
-                //                self.shellCollection.each(function (item) {
-                //                    item.onfocus && item.close();
-                //                });
-
                 self.trigger("shell.open", this, shell);
             })
             .on("shell.close", function (shell) {
                 self.trigger("shell.close", this, shell);
             })
-
+            .on("shell.select", function (shell, e) {
+                self.trigger("shell.select", this, shell, e);
+            })
             return this;
         }
         , render: function () {
 
+        }
+        , defaultSetting: {
+            oneSelectShell: 0
         }
     }, CustomEvent);
 

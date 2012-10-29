@@ -594,7 +594,7 @@ myQuery.define("main/dom", ["base/support", "main/data"], function ($, support, 
             }
             ele.style.height = e.value + (e.unit || "px");
             offsetH = getPos(ele, "offsetHeight");
-          
+
             ele.style.height = Math.max(offsetH - diffH - diffH - marginH, 0) + "px";
             return this;
         }
@@ -613,7 +613,7 @@ myQuery.define("main/dom", ["base/support", "main/data"], function ($, support, 
             }
             ele.style.width = e.value + (e.unit || "px");
             offsetW = getPos(ele, "offsetWidth");
-          
+
             ele.style.width = Math.max(offsetW - diffW - diffW - marginW, 0) + "px";
             return this;
         }

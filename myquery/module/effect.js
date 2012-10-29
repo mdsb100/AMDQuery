@@ -14,7 +14,13 @@ myQuery.define('module/effect', ['module/animate'], function ($, animate, undefi
             /// <returns type="self" />
             if ($.isVisible(ele)) { return this; }
 
-            var o = $.style(ele, "opacity") || 1, opt = $._getAnimateOpt(option);
+            var o = $.data(ele, "slideOriginOpacity") || $.style(ele, "opacity") || 1, opt = $._getAnimateOpt(option);
+            $.data(ele, "slideOriginOpacity", o);
+            opt.complete = function () {
+                $.data(ele, "slideOriginOpacity", null);
+                option && option.complete && option.complete();
+                option = opt = ele = o = null;
+            }
             return $.setOpacity(ele, 0)._show(ele).animate(ele, { opacity: o }, opt);
         }
         , fadeOut: function (ele, option) {
@@ -24,10 +30,12 @@ myQuery.define('module/effect', ['module/animate'], function ($, animate, undefi
             /// <returns type="self" />
             if (!$.isVisible(ele)) { return this; }
             option = option || { visible: 0 }
-            var o = $.style(ele, "opacity"), opt = $._getAnimateOpt(option);
+            var o = $.data(ele, "slideOriginOpacity") || $.style(ele, "opacity"), opt = $._getAnimateOpt(option);
+            $.data(ele, "slideOriginOpacity", o);
             opt.complete = function () {
-                $._hide(ele, option.visible).setOpacity(ele, o);
-                option.complete && option.complete();
+                $._hide(ele, opt.visible).setOpacity(ele, o);
+                $.data(ele, "slideOriginOpacity", null);
+                option && option && option.complete && option.complete();
                 option = opt = ele = o = null;
             }
             return $._show(ele).animate(ele, { opacity: 0 }, opt);
@@ -74,7 +82,13 @@ myQuery.define('module/effect', ['module/animate'], function ($, animate, undefi
             /// <returns type="self" />
             if ($.isVisible(ele)) { return this; }
 
-            var h = $.getInnerH(ele), opt = $._getAnimateOpt(option);
+            var h = $.data(ele, "slideOriginHeight") || $.getInnerH(ele), opt = $._getAnimateOpt(option);
+            $.data(ele, "slideOriginHeight", h);
+            opt.complete = function () {
+                $.data(ele, "slideOriginHeight", null);
+                option && option.complete && option.complete();
+                option = opt = ele = h = null;
+            }
             return $.css(ele, "height", 0)._show(ele).animate(ele, { height: h + "px" }, opt);
 
             //            { duration: "slow", queue: queue
@@ -88,12 +102,14 @@ myQuery.define('module/effect', ['module/animate'], function ($, animate, undefi
             /// <param name="ele" type="Element">dom元素</param>
             /// <param name="option" type="Object">动画选项</param>
             /// <returns type="self" />
-            if (!$.isVisible(ele)) { return this; }
-            option = option || { visible: 0 }
-            var h = $.getInnerH(ele), opt = $._getAnimateOpt(option);
+            if (!$.isVisible(ele) || $.data(ele, "_sliedeDown")) { return this; }
+
+            var h = $.data(ele, "slideOriginHeight") || $.getInnerH(ele), opt = $._getAnimateOpt(option);
+            $.data(ele, "slideOriginHeight", h);
             opt.complete = function () {
-                $._hide(ele, option.visible).setInnerH(ele, h);
-                option.complete && option.complete();
+                $._hide(ele, opt.visible).setInnerH(ele, h);
+                $.data(ele, "slideOriginHeight", null);
+                option && option.complete && option.complete();
                 option = opt = ele = h = null;
             }
             return $._show(ele).animate(ele, { height: "0px" }, opt);
