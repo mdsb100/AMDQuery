@@ -15,7 +15,7 @@ myQuery.define("ui/js/accordion",
 , function ($, object, widget, css, event, CustomEvent, dom, src) {
     "use strict"; //启用严格模式
     //缺个event 缺个绑定 和解除 缺配置
-    src.link({ href: $.basePath + "/ui/css/accordion.css" });
+    src.link({ href: $.getPath("ui/css/accordion", ".css") });
 
     var Key = object.Class("Key", {
         init: function (item, parent) {

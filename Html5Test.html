@@ -42,8 +42,7 @@
         } 
     </style>
     <link href="css/reset.css" rel="stylesheet" type="text/css" />
-    <script src="myquery/myquery.js" type="text/javascript" myquery="define:$;"
-        amd="detectCR:1;"></script>
+    <script src="myquery/myquery.js" type="text/javascript" myquery="define:$;" amd="detectCR:1;"></script>
     <script type="text/javascript">
         //        $.require([
         //            "myquery/html5/Storage.js",
@@ -55,7 +54,8 @@
             "main/dom",
             "html5/css3",
             "ui/js/swappable",
-            "html5/css3.transition.animate"
+            "html5/css3.transition.animate",
+            "main/query"
         ], function (my1, my2, my3, my4) {
             $.ready(function () {
                 //ff 10.0.1修复了一个Bug 关于js添加样式的问题"background-color"现在是可以的了
@@ -101,13 +101,14 @@
                             , animationIterationCount: "infinite"
                         });
                 var test2 = $("#test2").initTransform3d();
-                //                var obj = test2.find("div").eq(0).css({ boxShadow: "4px 4px 2px rgba(0, 0, 0, 0.6)" })
-                //                //.transform3d({ tx: 50, ty: 70, rx: 30, ry: 50 })
-                //                //.transformOrigin({ x: "left", y: "top" })
-                //                .transform([["translate", "200px", "200px"], ["rotate", "30deg"], ["scale", "0.5", "0.5"]])
-                //                //.transform3d({ rz: 30, ry: 30, tx: 0, ty: 0, sx: 1, sy: 0.5 })
-                //                //.setRotate3d({ rx: 30, ry: 30 })
-                //                //.setScale({ sx: 0.5 })
+
+                var obj = test2.find("div").eq(0).css({ boxShadow: "4px 4px 2px rgba(0, 0, 0, 0.6)" })
+                //.transform3d({ tx: 50, ty: 70, rx: 30, ry: 50 })
+                //.transformOrigin({ x: "left", y: "top" })
+                                .transform([["translate", "200px", "200px"], ["rotate", "30deg"], ["scale", "0.5", "0.5"]])
+                //.transform3d({ rz: 30, ry: 30, tx: 0, ty: 0, sx: 1, sy: 0.5 })
+                //.setRotate3d({ rx: 30, ry: 30 })
+                //.setScale({ sx: 0.5 })
                 //                //3d来说firefox10还是比较傻的 skew也能解决问题
                 //                var a = obj.css3Style("transform");
                 //                var b = obj.css3("transform");
@@ -128,15 +129,15 @@
                 //                //                } || "left top"
                 //                //                , colorStops: [{ stop: 0, color: "#8f2c00" }, { stop: 1, color: "#ff4f02"}]
                 //                //            });
-                //                $.radialGradient(obj[0], {
-                //                    radial: {
-                //                        webkit: [{ x: 15, y: 15, r: 20 }, { x: 50, y: 50, r: 60}]
-                //                    , moz: { x: "50%", y: "50%" }
-                //                    , o: [{ x: "50%", y: "50%" }, { x: "30%", y: "30%"}]
-                //                    , normal: { x: "50%", y: "50%" }
-                //                    } || { x: "50%", y: "50%" }
-                //                                , colorStops: [{ stop: 0, color: "#8f2c00" }, { stop: 1, color: "#ff4f02"}]
-                //                });
+                $.radialGradient(obj[0], {
+                    radial: {
+                        webkit: [{ x: 15, y: 15, r: 20 }, { x: 50, y: 50, r: 60}],
+                        moz: { x: "50%", y: "50%" },
+                        o: [{ x: "50%", y: "50%" }, { x: "30%", y: "30%"}],
+                        normal: { x: "50%", y: "50%" }
+                    } || { x: "50%", y: "50%" }
+                     , colorStops: [{ stop: 0, color: "#8f2c00" }, { stop: 1, color: "#ff4f02"}]
+                });
 
                 //                test2.find("div").eq(1).animateByTransition({ transform3d: { translateX: "+=100px", translateY: "+=100px"} }, { duration: 2000, easing: "linear" });
                 //obj.css("backgroundImage", "-moz-radial-gradient(50% 50%,rgb(75,75,200) 30%,rgb(25,25,100) 50%,rgb(0,0,75))")
@@ -146,12 +147,12 @@
             });
         });
 
-        $.require(["html5/Worker"], function (worker) {
-            worker.onMessage(function (e) {
-                //alert(e.data);
+        $.require(["html5/Worker"], function (Worker) {
+            new Worker().onMessage(function (e) {
+                alert(e.data);
             }).postMessage(function (a) {
                 return this.name + a;
-            }, ["d"], { name: "abc" });
+            }, { name: "abc" }, "d");
         });
         //        var worker = new window.Worker("myquery/html5/_Worker.js");
         //        worker.addEventListener("message", function (e) {
