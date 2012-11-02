@@ -75,8 +75,8 @@ myQuery.define("base/client", function ($) {
     _system.ps = /playstation/i.test(ua);
 
     _system.x11 = p == "X11" || (p.indexOf("Linux") == 0);
-    _system.macMobile = _system.iphone || _system.ipad || _system.ipod;
-    _system.mobile = _system.macMobile || _system.androidMobile || /AppleWebKit.*Mobile./.test(ua) || _system.winMobile;
+    _system.appleMobile = _system.iphone || _system.ipad || _system.ipod;
+    _system.mobile = _system.appleMobile || _system.androidMobile || /AppleWebKit.*Mobile./.test(ua) || _system.winMobile;
 
     if (/OS (\d).(\d).(\d) like Mac OS X/.test(ua)) {
         _system.ios = parseFloat(reg.$1 + "." + reg.$2 + reg.$3);
@@ -111,11 +111,12 @@ myQuery.define("base/client", function ($) {
                 else if (wit < 531.3) { _safariVer = 4; }
                 else { _safariVer = 5; }
             }
-            else if (_system.macMobile) {
+            else if (_system.appleMobile) {
                 if (wit < 526) { _safariVer = 3; }
                 else if (wit < 531.3) { _safariVer = 4; }
                 else { _safariVer = 5; }
             }
+            _browser.safari = _safariVer;
         }
     }
     else if (/KHTML\/(\S+)/.test(ua) || /Konquersor\/([^;]+)/.test(ua)) {
