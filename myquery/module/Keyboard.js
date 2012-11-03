@@ -10,7 +10,7 @@
             if (this.container.getAttribute("tabindex") == undefined) {
                 this.container.setAttribute("tabindex", Keyboard.tableindex++);
             }
-            this._initHandler().bindHandler().addKeys(keyList);
+            this._initHandler().enable().addKeys(keyList);
         }
         , _initHandler: function () {
             //            if (!this.container) {
@@ -29,14 +29,14 @@
             }
             return this;
         }
-        , bindHandler: function () {
+        , enable: function () {
             event
             .on(this.container, "keydown", this.event)
             .on(this.container, "keypress", this.event)
             .on(this.container, "keyup", this.event);
             return this;
         }
-        , removeHandler: function () {
+        , disable: function () {
             event
             .off(this.container, "keydown", this.event)
             .off(this.container, "keypress", this.event)

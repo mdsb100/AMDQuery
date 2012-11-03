@@ -9,12 +9,13 @@ myQuery.define("ui/js/keyboard", ["module/object", "module/widget", "module/Keyb
         event: function () { },
         enable: function () {
             this.disable();
-            this.keyBoard.bindHandler();
+            this.keyBoard.enable();
         },
         disable: function () {
-            this.keyBoard.removeHandler();
+            this.keyBoard.disable();
         },
         init: function (obj, target) {
+            this.__super(obj, target);
             this.option(obj);
             this.keyboard = new Keyboard(target[0], this.options.keyList);
             this.options.keyList = this.keyboard.keyList;

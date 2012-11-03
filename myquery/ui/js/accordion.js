@@ -234,20 +234,21 @@ myQuery.define("ui/js/accordion",
         },
         initHandler: function () {
             var self = this;
-            this.onChild("key.select", function (key, e) {
+            this
+            .onChild("key.select", function (key, e) {
                 //self.closeOther();
-                self.trigger("key.select", this, key, e);
+                self.trigger("key.select", this, "key.select", key, e);
             })
             .onChild("shell.open", function (shell) {
                 //self.closeOther();
                 self.closeOther(shell);
-                self.trigger("shell.open", this, shell);
+                self.trigger("shell.open", this, "shell.open", shell);
             })
             .onChild("shell.close", function (shell) {
-                self.trigger("shell.close", this, shell);
+                self.trigger("shell.close", this, "shell.close", shell);
             })
             .onChild("shell.select", function (shell, e) {
-                self.trigger("shell.select", this, shell, e);
+                self.trigger("shell.select", this, "shell.select", shell, e);
             });
         },
         closeOther: function (except) {
@@ -287,12 +288,11 @@ myQuery.define("ui/js/accordion",
             this.shellCollection = null;
             this._selectShell = null;
             this.option = $.extend({}, this.defaultSetting, option);
-            this.create(list).initHandler();
+            this.create(list)._initHandler().enable();
 
             return this;
         }
         , create: function (list) {
-
             this.container = $($.createEle("div"))
                 .css("position", "relative")
                 .addClass("accordion");
@@ -303,23 +303,30 @@ myQuery.define("ui/js/accordion",
             this.container.outerW(this.width);
             return this;
         }
-        , initHandler: function () {
+        , _initHandler: function () {
             var self = this;
             //控制其他的
-            this.shellCollection.on("key.select", function (key, e) {
-                self.trigger("key.select", this, key, e);
-            });
             //配置
+            this.event = function (type, target, e) {
+                self.trigger(type, this, type, target, e);
+            }
+
+            return this;
+        }
+        , enable: function () {
             this.shellCollection
-            .on("shell.open", function (shell) {
-                self.trigger("shell.open", this, shell);
-            })
-            .on("shell.close", function (shell) {
-                self.trigger("shell.close", this, shell);
-            })
-            .on("shell.select", function (shell, e) {
-                self.trigger("shell.select", this, shell, e);
-            })
+            .on("key.select", this.event)
+            .on("shell.open", this.event)
+            .on("shell.close", this.event)
+            .on("shell.select", this.event);
+            return this;
+        }
+        , disable: function () {
+            this.shellCollection
+            .off("key.select", this.event)
+            .off("shell.open", this.event)
+            .off("shell.close", this.event)
+            .off("shell.select", this.event);
             return this;
         }
         , render: function () {
@@ -329,6 +336,77 @@ myQuery.define("ui/js/accordion",
             oneSelectShell: 0
         }
     }, CustomEvent);
+
+    var accordion = $.widget("ui.accordion", {
+        container: null,
+        customEventName: ["key.select", "shell.open", "shell.close", "shell.select"],
+        event: function () {
+
+        },
+        enable: function () {
+            this.disable();
+            this.accordion
+            .enable()
+            .on("key.select", this.event)
+            .on("shell.select", this.event)
+            .on("shell.open", this.event)
+            .on("shell.close", this.event);
+        },
+        disable: function () {
+            this.accordion
+            .disable()
+            .on("key.select", this.event)
+            .on("shell.select", this.event)
+            .on("shell.open", this.event)
+            .on("shell.close", this.event);
+        },
+        init: function (obj, target) {
+            this.__super(obj, target);
+            this.option(obj);
+            this.accordion = new Accordion(target[0], this.options.list, this.options.option);
+            this.options = this.accordion.option;
+            this._initHandler();
+            this.able();
+            return this;
+        },
+        options: {
+            list: [],
+            option: {}
+        },
+        public: {
+
+        },
+        _initHandler: function () {
+            var self = this;
+            this.event = function (type, target, e) {
+                self.target.trigger(self.widgetEventPrefix + type, self.target[0], target, e);
+            }
+        },
+        target: null,
+        toString: function () {
+            return "ui.accordion";
+        },
+        widgetEventPrefix: "accordion"
+    });
+
+    //提供注释
+    $.fn.accordion = function (a, b, c, args) {
+        /// <summary>可以参考charcode列表绑定快捷键
+        /// <para>arr obj.keylist:快捷键列表</para>
+        /// <para>{ type: "keyup", keyCode: "Enter" </para>
+        /// <para>    , fun: function (e) { </para>
+        /// <para>        todo(this, e); </para>
+        /// <para>    }, combinationKey: ["alt","ctrls"] </para>
+        /// <para>} </para>
+        /// </summary>
+        /// <param name="a" type="Object/String">初始化obj或属性名:option或方法名</param>
+        /// <param name="b" type="String/null">属性option子属性名</param>
+        /// <param name="c" type="any">属性option子属性名的值</param>
+        /// <param name="args" type="any">在调用方法的时候，后面是方法的参数</param>
+        /// <returns type="$" />
+        accordion.apply(this, arguments);
+        return this;
+    }
 
     return Accordion;
 });
