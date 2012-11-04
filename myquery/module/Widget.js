@@ -27,6 +27,7 @@ myQuery.define("module/widget", ["main/data", "main/event", "main/attr", "module
             for (key in this.options) {
                 value = this.target.attr(key);
                 if (value !== undefined) {
+                    value = eval(value);
                     result[key] = value;
                 }
             }
@@ -70,10 +71,10 @@ myQuery.define("module/widget", ["main/data", "main/event", "main/attr", "module
             //            }, this);
         },
         event: function () { },
-//        _supper: function (obj, target) {
-//            this.constructor._SupperConstructor(this, obj, target);
-//            return this;
-//        },
+        //        _supper: function (obj, target) {
+        //            this.constructor._SupperConstructor(this, obj, target);
+        //            return this;
+        //        },
         init: function (obj, target) {
             //元素本身属性高于obj
             var defaultOptions = this.constructor.prototype.options;

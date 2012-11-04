@@ -9,10 +9,28 @@
     <!--<script src="myquery/oye.js" type="text/javascript"></script>-->
     <script type="text/javascript">
         $.require([
-            "main/event"
+            "main/event",
+            "main/CustomEvent",
+            "main/query"
         //,"module/Thread"
-        ], function (bcd) {
+        ], function (event, CustomEvent, query) {
             $.ready(function () {
+                var cus = new CustomEvent();
+                cus.on("a.b", function () {
+                    alert("a.b");
+                });
+
+                cus.on("a.b.c", function () {
+                    alert("a.b.c");
+                });
+
+                cus.on("a.b.pp", function () {
+                    alert("a.b.pp");
+                });
+
+                cus.trigger("a.b.c");
+                cus.trigger("a.b.pp");
+                return;
                 var a = "123";
                 $("body").delegate("div,#a", "click", function (e) {
                     alert(this.id);

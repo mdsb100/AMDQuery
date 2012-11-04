@@ -18,7 +18,7 @@ myQuery.define("ui/js/accordion",
     src.link({ href: $.getPath("ui/css/accordion", ".css") });
 
     var Key = object.Class("Key", {
-        init: function (item, parent) {
+        init: function (key, parent) {
             //                    .data({
             //                        "shell": parent
             //                        , "widgetInfo": item.info
@@ -26,26 +26,33 @@ myQuery.define("ui/js/accordion",
             //                    .attr({ "widgetId": this.id + "." + (item.id || $.now()), "title": item.title || "" })
             this.__super();
             this.parent = parent;
+            this.originKey = $(key);
+            this.html = this.originKey.html();
+            this.title = this.originKey.attr("title") || this.html;
+            this.originKey.html("");
 
-            this.a = $($.createEle("a"))
+            return this.create().initHandler();
+        },
+        create: function () {
+            this.$a = $($.createEle("a"))
                     .addClass("unselect")
                     .css({ position: "relative", display: "block", height: "100%", width: "100%" })
-                    .html(item.html)
+                    .html(this.html)
                     .addClass("a");
 
-            this.container = this.key = $($.createEle("li"))
+            this.container = this.$key = this.originKey
                     .css({ position: "relative", display: "block", width: "100%" })
                     .addClass("key")
-                    .attr({ "title": item.title || "" })
-                    .append(this.a)
+                    .attr({ "title": this.title })
+                    .append(this.$a)
                     .appendTo(this.parent.container);
 
-            this.initHandler();
             return this;
+
         },
         initHandler: function () {
             var self = this;
-            this.key.click(function (e) {
+            this.$key.click(function (e) {
                 //                self.setSelectStyle();
                 self.trigger("key.select", this, self, e);
                 self.setSelectStyle();
@@ -54,28 +61,27 @@ myQuery.define("ui/js/accordion",
             return this;
         },
         setUnselectStyle: function () {
-            this.a.addClass("unselect").removeClass("select");
+            this.$a.addClass("unselect").removeClass("select");
             return this;
         },
         setSelectStyle: function () {
-            this.a.addClass("select").removeClass("unselect");
+            this.$a.addClass("select").removeClass("unselect");
             return this;
         }
     }, CustomEvent);
 
     var KeyCollection = object.Collection("KeyCollection", {
-        init: function (list, parent) {
+        init: function (keys, parent) {
             this.__super();
             this.parent = parent;
             this.container = parent.container;
             var i = 0,
-                len = list.length,
+                len = keys.length,
                 key,
                 item;
 
-
             for (; i < len; i++) {//映射表 找到shell 通过name
-                item = list[i];
+                item = keys[i];
                 key = new Key(item, this);
 
                 this.add(key);
@@ -120,50 +126,57 @@ myQuery.define("ui/js/accordion",
     }, CustomEvent);
 
     var Shell = object.Class("Shell", {
-        init: function (item, parent) {
+        init: function (shell, parent) {
             this.__super();
             this.parent = parent;
+            this.originShell = $(shell);
+            this.html = this.originShell.attr("html");
+            this.title = this.originShell.attr("title") || this.html;
 
-            this.arrow = $($.createEle("div")).css({ "float": "left" }).addClass("arrowRight");
+            this.originShell.removeAttr("title");
 
-            this.text = $($.createEle("div")).css({ "float": "left" }).addClass("text").html(item.html);
+            this.onfocus = false;
 
-            this.title = $($.createEle("a"))
+            return this.create().initHandler();
+
+        },
+        create: function () {
+            this.$arrow = $($.createEle("div")).css({ "float": "left" }).addClass("arrowRight");
+
+            this.$text = $($.createEle("div")).css({ "float": "left" }).addClass("text").html(this.html);
+
+            this.$title = $($.createEle("a"))
                     .css({ "clear": "left", position: "relative", display: "block", "text-decoration": "none" })
                     .addClass("title")
                     .addClass("title_unselect")
-                    .append(this.arrow)
-                    .append(this.text);
+                    .append(this.$arrow)
+                    .append(this.$text);
 
-            this.container = this.board = $($.createEle("ul"))
-                        .css({ position: "relative", width: "100%", display: "block" })
-                        .addClass("board")
-                        .hide();
+            this.container = this.$board = this.originShell
+                    .css({ position: "relative", width: "100%", display: "block" })
+                    .addClass("board")
+                    .hide();
 
-            this.shell = $($.createEle("div"))
+            this.$shell = $($.createEle("div"))
                     .css({ position: "relative", width: "100%" })
                     .addClass("shell")
-                    .attr({ "title": item.title || "" })
-                    .append(this.title)
-                    .append(this.board)
+                    .attr({ "title": this.title })
+                    .append(this.$title)
+                    .append(this.$board)
                     .appendTo(this.parent.container);
 
-            this.keyCollection = new KeyCollection(item.list, this);
-
-            this.onfocus = false;
-            this.initHandler();
+            this.keyCollection = new KeyCollection(this.$board.child(), this);
             return this;
-
         },
         initHandler: function () {
             var self = this;
-            this.title.click(function (e) {
+            this.$title.click(function (e) {
                 //self.selectShell(self,)
                 self.toggle();
-                self.trigger("shell.select", this, e, self);
+                self.trigger("shell.select", this, "shell.select", self, e);
             });
             this.keyCollection.on("key.select", function (key, e) {
-                self.trigger("key.select", this, key, e);
+                self.trigger("key.select", this, "key.select", key, e);
                 self.open();
             });
             return this;
@@ -172,36 +185,36 @@ myQuery.define("ui/js/accordion",
             if (this.onfocus == false) {
                 this.onfocus = true;
                 this.setOpenStyle();
-                this.board.slideDown({
+                this.$board.slideDown({
                     duration: 400,
                     easing: "easeInOutCubic"
                 });
             }
-            return this.trigger("shell.open", this, this);
+            return this.trigger("shell.open", this, "shell.open", this);
 
         },
         close: function () {
             if (this.onfocus == true) {
                 this.onfocus = false;
                 this.setCloseStyle();
-                this.board.slideUp({
+                this.$board.slideUp({
                     duration: 400,
                     easing: "easeInOutCubic"
                 });
             }
-            return this.trigger("shell.close", this, this);
+            return this.trigger("shell.close", this, "shell.close", this);
         },
         toggle: function () {
             return this.onfocus ? this.close() : this.open();
         },
         setOpenStyle: function () {
-            this.title.addClass("title_select").removeClass("title_unselect");
-            this.arrow.addClass("arrowBottom").removeClass("arrowRight");
+            this.$title.addClass("title_select").removeClass("title_unselect");
+            this.$arrow.addClass("arrowBottom").removeClass("arrowRight");
             return this;
         },
         setCloseStyle: function () {
-            this.title.addClass("title_unselect").removeClass("title_select");
-            this.arrow.addClass("arrowRight").removeClass("arrowBottom");
+            this.$title.addClass("title_unselect").removeClass("title_select");
+            this.$arrow.addClass("arrowRight").removeClass("arrowBottom");
             return this;
         },
         render: function () {
@@ -210,19 +223,19 @@ myQuery.define("ui/js/accordion",
     }, CustomEvent);
 
     var ShellCollection = object.Collection("ShellCollection", {
-        init: function (list, parent) {
+        init: function (shells, parent) {
             //this.parent = parent;
             //this.container = parent.container;
             this.__super();
             this.parent = parent;
             this.container = parent.container;
             var i = 0,
-                len = list.length,
+                len = shells.length,
                 shell,
                 item;
 
             for (; i < len; i++) {//映射表 找到shell 通过name
-                item = list[i];
+                item = shells[i];
                 shell = new Shell(item, this);
                 //parent.append(shell);
 
@@ -233,29 +246,21 @@ myQuery.define("ui/js/accordion",
             return this;
         },
         initHandler: function () {
-            var self = this;
+            var self = this, event = function (type, target, e) {
+                if (type == "shell.select") {
+                    self.closeOther(target);
+                }
+                self.trigger(type, this, type, target, e);
+            }
             this
-            .onChild("key.select", function (key, e) {
-                //self.closeOther();
-                self.trigger("key.select", this, "key.select", key, e);
-            })
-            .onChild("shell.open", function (shell) {
-                //self.closeOther();
-                self.closeOther(shell);
-                self.trigger("shell.open", this, "shell.open", shell);
-            })
-            .onChild("shell.close", function (shell) {
-                self.trigger("shell.close", this, "shell.close", shell);
-            })
-            .onChild("shell.select", function (shell, e) {
-                self.trigger("shell.select", this, "shell.select", shell, e);
-            });
+            .onChild("key.select", event)
+            .onChild("shell.open", event)
+            .onChild("shell.close", event)
+            .onChild("shell.select", event);
         },
         closeOther: function (except) {
-            this.each(function (shell) {
-                if (this.parent.option.oneSelectShell) {
-                    except != shell && shell.onfocus && shell.close();
-                }
+            this.parent.option.oneselectshell && this.each(function (shell) {
+                except != shell && shell.onfocus && shell.close();
             }, this);
             return this;
         },
@@ -277,10 +282,9 @@ myQuery.define("ui/js/accordion",
     }, CustomEvent);
 
     var Accordion = object.Class("Accordion", {
-        init: function (target, list, option) {//, keyId, isDittoShellSelect
+        init: function (target, option) {//, keyId, isDittoShellSelect
             this.__super();
             this.target = $(target);
-            this.list = list;
             this.width = this.target.width();
             //this.height = this.target.height();
             //this.id = "Accordion" + "." + (id || $.now());
@@ -288,19 +292,20 @@ myQuery.define("ui/js/accordion",
             this.shellCollection = null;
             this._selectShell = null;
             this.option = $.extend({}, this.defaultSetting, option);
-            this.create(list)._initHandler().enable();
+            this.create()._initHandler().enable();
 
             return this;
         }
-        , create: function (list) {
+        , create: function () {
             this.container = $($.createEle("div"))
                 .css("position", "relative")
                 .addClass("accordion");
-            this.shellCollection = new ShellCollection(list, this);
-
-            this.target.append(this.container);
+            var shells = this.target.child();
+            this.container.append(shells).appendTo(this.target);
 
             this.container.outerW(this.width);
+
+            this.shellCollection = new ShellCollection(shells, this);
             return this;
         }
         , _initHandler: function () {
@@ -363,15 +368,14 @@ myQuery.define("ui/js/accordion",
         init: function (obj, target) {
             this.__super(obj, target);
             this.option(obj);
-            this.accordion = new Accordion(target[0], this.options.list, this.options.option);
+            this.accordion = new Accordion(target[0], this.options);
             this.options = this.accordion.option;
             this._initHandler();
             this.able();
             return this;
         },
         options: {
-            list: [],
-            option: {}
+            oneselectshell: 0
         },
         public: {
 
@@ -379,7 +383,7 @@ myQuery.define("ui/js/accordion",
         _initHandler: function () {
             var self = this;
             this.event = function (type, target, e) {
-                self.target.trigger(self.widgetEventPrefix + type, self.target[0], target, e);
+                self.target.trigger(self.widgetEventPrefix + "." + type, self.target[0], target, e);
             }
         },
         target: null,

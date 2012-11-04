@@ -81,31 +81,41 @@ myQuery.define("main/CustomEvent", function ($, undefined) {
             //            }
         }
         , _nameSpace: function (type, re) {
-            var nameList = type.split("."), i = 0, nameSpace, name, result;
+            var nameList = type.split("."), result = this._initSpace(nameList, this.handlers, re);
+            //, i = 0, nameSpace, name, result;
             //nameList.length > 2 && tools.error({ fn: "CustomEvent._nameSpace", msg: "nameSpace is too long" });
-            nameSpace = nameList[0];
-            name = nameList[1];
-            if (name) {
-                result = this.handlers[nameSpace] ? $.isArr(result) : (result = this.handlers[nameSpace] = {});
-                //&& tools.error({ fn: "CustomEvent._nameSpace", msg: "nameSpace was Array of event handler" })
 
-                result = this.handlers[nameSpace][name];
 
-                (!result || re) && (result = this.handlers[nameSpace][name] = []);
-            }
-            else {
-                result = this.handlers[nameSpace];
-                if (!result || re) {
-                    result = this.handlers[nameSpace] = {};
-
-                }
-                if (!result["__" + nameSpace]) {
-                    result["__" + nameSpace] = [];
-                }
-                result = result["__" + nameSpace];
-            }
             this._handlerMap[type] || (this._handlerMap[type] = result);
             return result;
+        }
+        , _initSpace: function (nameList, nameSpace, re) {
+            var name = nameList[0],
+            result;
+            //name = nameList[1];
+            if (nameSpace) {
+                result = nameSpace[name];
+                if (!result || re) {
+                    nameSpace[name] = {};
+                }
+                nameSpace = nameSpace[name];
+                if (!nameSpace["__" + name]) {
+                    nameSpace["__" + name] = [];
+                }
+                result = nameSpace["__" + name];
+            }
+
+            //            if (name) {
+            //                result = this.handlers[nameSpace] ? $.isArr(result) : (result = this.handlers[nameSpace] = {});
+            //                //&& tools.error({ fn: "CustomEvent._nameSpace", msg: "nameSpace was Array of event handler" })
+
+            //                result = this.handlers[nameSpace][name];
+
+            //                (!result || re) && (result = this.handlers[nameSpace][name] = []);
+            //            }
+
+            nameList.splice(0, 1);
+            return nameList.length ? this._initSpace(nameList, nameSpace, re) : result;
         }
     };
 

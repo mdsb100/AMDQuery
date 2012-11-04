@@ -405,16 +405,6 @@ myQuery.define("main/dom", ["base/support", "main/data"], function ($, support, 
             }
             return true;
         }
-        , iterationChild: function (ele, fun) {
-            /// <summary>遍历当前元素的所有子元素并返回符合function条件的DOM元素集合</summary>
-            /// <param name="ele" type="Element">DOM元素</param>
-            /// <param name="fun" type="Function">筛选的方法</param>
-            /// <returns type="Array" />
-            return $.filter(function (child) {
-                return fun(child);
-            }, $.children(ele));
-            //return list.length > 0 ? list : null;
-        }
 
         , position: function (ele) {
             /// <summary>返回元素的位置及大小;值都是offset
@@ -790,29 +780,6 @@ myQuery.define("main/dom", ["base/support", "main/data"], function ($, support, 
             return this;
         }
 
-        , child: function (query, real) {
-            /// <summary>返回当前对象的所有一级子元素</summary>
-            /// <param name="str" type="String">字符串query</param>
-            /// <param name="real" type="Boolean/Null">是否获得真元素，默认为真</param>
-            /// <returns type="self" />
-            if ($.isStr(query)) {
-                var child = $.child(this.eles, real === undefined ? true : real);
-                child = $.query(query, child);
-            }
-            else {
-                var child = $.child(this.eles, query === undefined ? true : real);
-            }
-            return $(child);
-        }
-        , children: function (query) {
-            /// <summary>返回当前对象的所有子元素</summary>
-            /// <param name="str" type="String">字符串query</param>
-            /// <param name="real" type="Boolean/Null">是否获得真元素，默认为真</param>
-            /// <returns type="self" />
-            var children = $.children(this.eles);
-            if ($.isStr(query)) children = $.query(query, children);
-            return $(children);
-        }
         , clone: function () {
             /// <summary>clone一个新$</summary>
             /// <returns type="self" />

@@ -326,6 +326,17 @@ myQuery.define("main/query", function ($) {
                 return i;
             }
 
+            , iterationChild: function (ele, fun) {
+                /// <summary>遍历当前元素的所有子元素并返回符合function条件的DOM元素集合</summary>
+                /// <param name="ele" type="Element">DOM元素</param>
+                /// <param name="fun" type="Function">筛选的方法</param>
+                /// <returns type="Array" />
+                return $.filter(function (child) {
+                    return fun(child);
+                }, $.children(ele));
+                //return list.length > 0 ? list : null;
+            }
+
             , next: function (eles) {
                 /// <summary>获得数组中所有元素的下一个同辈元素</summary>
                 /// <param name="eles" type="Array:[ele]/ElementCollection">dom元素</param>
@@ -555,6 +566,27 @@ myQuery.define("main/query", function ($) {
             });
             list = $.filter('same', list);
             return $($.query(str, list));
+        }
+
+        , child: function (query, real) {
+            /// <summary>返回当前对象的所有一级子元素</summary>
+            /// <param name="str" type="String">字符串query</param>
+            /// <param name="real" type="Boolean/Null">是否获得真元素，默认为真</param>
+            /// <returns type="self" />
+            var child = $.child(this.eles, real === undefined ? true : real);
+            if ($.isStr(query)) {
+                child = $.query(query, child);
+            }
+            return $(child);
+        }
+        , children: function (query) {
+            /// <summary>返回当前对象的所有子元素</summary>
+            /// <param name="str" type="String">字符串query</param>
+            /// <param name="real" type="Boolean/Null">是否获得真元素，默认为真</param>
+            /// <returns type="self" />
+            var children = $.children(this.eles);
+            if ($.isStr(query)) children = $.query(query, children);
+            return $(children);
         }
 
         , filter: function (str) {
