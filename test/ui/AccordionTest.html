@@ -32,10 +32,10 @@
 
             $("#container2").accordion({
                 "shell.select": function (target) {
-                    alert(target);
+                    $.showMsg(target);
                 }
             }).on("accordion.key.select", function (target, e) {
-                alert(target);
+                $.showMsg(target);
             });
             //});
         });
