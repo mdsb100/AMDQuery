@@ -25,10 +25,9 @@ myQuery.define("module/widget", ["main/data", "main/event", "main/attr", "module
         checkAttr: function () {
             var key, value, result = {};
             for (key in this.options) {
-                value = this.target.attr(key);
+                value = this.target.attr("widget-" + key);
                 if (value !== undefined) {
-                    value = eval(value);
-                    result[key] = value;
+                    result[key] = Widget.evalAttr(value);;
                 }
             }
             return result;
@@ -130,6 +129,15 @@ myQuery.define("module/widget", ["main/data", "main/event", "main/attr", "module
         widgetEventPrefix: "" //将来做事件用
         ,
         widgetName: "Widget"
+    },{
+        evalAttr: function(attr){
+            if (attr && /^\d+(.[\d]*)?$|true|false|undefined|null/.test(attr)) {
+                return eval(attr);
+            }
+            else{
+                return attr;
+            }
+        }
     });
 
     Widget.factory = function (name, constructor, prototype, statics) {

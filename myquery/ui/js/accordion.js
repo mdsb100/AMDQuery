@@ -19,16 +19,12 @@ myQuery.define("ui/js/accordion",
 
     var Key = object.Class("Key", {
         init: function (key, parent) {
-            //                    .data({
-            //                        "shell": parent
-            //                        , "widgetInfo": item.info
-            //                    })
-            //                    .attr({ "widgetId": this.id + "." + (item.id || $.now()), "title": item.title || "" })
             this.__super();
             this.parent = parent;
             this.originKey = $(key);
+            this.customHandler = this.originKey.attr("widget-handler");
             this.html = this.originKey.html();
-            this.title = this.originKey.attr("title") || this.html;
+            this.title = this.originKey.attr("widget-title") || this.html;
             this.widgetId = this.originKey.attr("widget-id") || this.title;
             this.originKey.html("");
 
@@ -134,8 +130,9 @@ myQuery.define("ui/js/accordion",
             this.__super();
             this.parent = parent;
             this.originShell = $(shell);
-            this.html = this.originShell.attr("html");
-            this.title = this.originShell.attr("title") || this.html;
+            this.customHandler = this.originShell.attr("widget-handler");
+            this.html = this.originShell.attr("widget-html");
+            this.title = this.originShell.attr("widget-title") || this.html;
             this.widgetId = this.originShell.attr("widget-id") || this.title;
 
             this.originShell.removeAttr("title");
@@ -397,6 +394,15 @@ myQuery.define("ui/js/accordion",
             var self = this;
             this.event = function (type, target, e) {
                 self.target.trigger(self.widgetEventPrefix + "." + type, self.target[0], target, e);
+                var handler;
+                switch(type){
+                    case "key.select":
+                        (handler = target.customHandler) && self.target.trigger(self.widgetEventPrefix + ".key." + handler, this, target, e);
+                        break;
+                    case "shell.select":
+                        (handler = target.customHandler) && self.target.trigger(self.widgetEventPrefix + ".shell." + handler, this, target, e);
+                        break;
+                }
             }
         },
         target: null,

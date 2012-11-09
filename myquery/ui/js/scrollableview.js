@@ -44,8 +44,8 @@ myQuery.define("ui/js/scrollableview", ["module/Widget", "ui/js/swappable", "mod
                             }
 
                             target.css({ cursor: opt.cursor });
-                            opt.x_axis === true && target.css({ l: x });
-                            opt.y_axis === true && target.css({ t: y });
+                            opt.xaxis === true && target.css("left", x + "px");
+                            opt.yaxis === true && target.css("top", y + "px");
                             eventFuns.preventDefault(e);
                             para.type = "drag.move";
                             para.offsetX = x;
@@ -89,8 +89,8 @@ myQuery.define("ui/js/scrollableview", ["module/Widget", "ui/js/swappable", "mod
             , diffx: 0
             , diffy: 0
             , axis: null
-            , x_axis: true
-            , y_axis: true
+            , xaxis: true
+            , yaxis: true
             , cursor: 'default'
             , overflow: false
         }
@@ -106,16 +106,16 @@ myQuery.define("ui/js/scrollableview", ["module/Widget", "ui/js/swappable", "mod
             else {
                 switch (opt.axis) {
                     case "x":
-                        opt.y_axis = false;
+                        opt.yaxis = false;
                         opt.cursor = 'e-resize';
                         break;
                     case "y":
-                        x_axis = false;
+                        xaxis = false;
                         cursor = 'n-resize';
                         break;
                     default:
-                        opt.x_axis = true;
-                        opt.y_axis = true;
+                        opt.xaxis = true;
+                        opt.yaxis = true;
                         opt.cursor = 'move';
                 }
             }

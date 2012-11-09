@@ -33,9 +33,14 @@
             $("#container2").accordion({
                 "shell.select": function (target) {
                     $.showMsg(target);
+                },
+                "shell.context2":function(){
+                    $.showMsg("shell.select and trigger customHandler");
                 }
             }).on("accordion.key.select", function (target, e) {
                 target.routing("abc") && $.showMsg("abc");
+            }).on("accordion.key.context2",function(target, e){
+                alert(target);
             });
             //});
         });
@@ -44,20 +49,20 @@
 </head>
 <body style="width: 100%; height: 100%;">
     <div style="width: 200px; background-color: Red;" id="container1">
-        <ul html="测试1" >
+        <ul widget-html="测试1" >
             <li >内容1</li>
         </ul>
-        <ul title="测试2" html="测试2">
+        <ul widget-title="测试2" widget-html="测试2">
             <li>内容1</li>
             <li>内容2</li>
         </ul>
     </div>
-    <div style="width: 200px; background-color: Red;" id="container2" oneselectshell="1">
-        <ul html="测试1" widget-id="abc">
-            <li widget-id="abc">内容1</li>
+    <div style="width: 200px; background-color: Red;" id="container2" widget-oneselectshell="1">
+        <ul widget-html="测试1" widget-id="abc">
+            <li widget-id="abc" >内容1</li>
         </ul>
-        <ul title="测试2" html="测试2">
-            <li>内容1</li>
+        <ul widget-title="测试2" widget-html="测试2" widget-handler="context2">
+            <li widget-handler="context2">内容1</li>
             <li>内容2</li>
         </ul>
     </div>
