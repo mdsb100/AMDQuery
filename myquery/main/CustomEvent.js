@@ -70,15 +70,7 @@ myQuery.define("main/CustomEvent", function ($, undefined) {
             if (i > -1) {
                 handlers.splice(i, 1);
             }
-            return this;
-            //            var handlers = this._nameSpace(type), i = 0, len;
-            //            if (handlers instanceof Array) {
-
-            //                for (len = handlers.length; i < len; i++)
-            //                    if (handlers[i] === handler)
-            //                        break;
-            //                handlers.splice(i, 1);
-            //            }
+            return this;            
         }
         , _nameSpace: function (type, re) {
             var nameList = type.split("."), result = this._initSpace(nameList, this.handlers, re);
@@ -104,16 +96,6 @@ myQuery.define("main/CustomEvent", function ($, undefined) {
                 }
                 result = nameSpace["__" + name];
             }
-
-            //            if (name) {
-            //                result = this.handlers[nameSpace] ? $.isArr(result) : (result = this.handlers[nameSpace] = {});
-            //                //&& tools.error({ fn: "CustomEvent._nameSpace", msg: "nameSpace was Array of event handler" })
-
-            //                result = this.handlers[nameSpace][name];
-
-            //                (!result || re) && (result = this.handlers[nameSpace][name] = []);
-            //            }
-
             nameList.splice(0, 1);
             return nameList.length ? this._initSpace(nameList, nameSpace, re) : result;
         }
