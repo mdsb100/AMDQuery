@@ -29,6 +29,7 @@ myQuery.define("ui/js/accordion",
             this.originKey = $(key);
             this.html = this.originKey.html();
             this.title = this.originKey.attr("title") || this.html;
+            this.widgetId = this.originKey.attr("widget-id") || this.title;
             this.originKey.html("");
 
             return this.create().initHandler();
@@ -67,6 +68,9 @@ myQuery.define("ui/js/accordion",
         setSelectStyle: function () {
             this.$a.addClass("select").removeClass("unselect");
             return this;
+        },
+        routing: function (widgetId) {
+            return this.widgetId == widgetId;
         }
     }, CustomEvent);
 
@@ -92,8 +96,8 @@ myQuery.define("ui/js/accordion",
         initHandler: function () {
             var self = this;
             this.onChild("key.select", function (key, e) {
-                self.setUnselectStyle();
-                key.setSelectStyle();
+                //self.setUnselectStyle();
+                //key.setSelectStyle();
                 self.trigger("key.select", this, key, e);
             });
             return this;
@@ -132,6 +136,7 @@ myQuery.define("ui/js/accordion",
             this.originShell = $(shell);
             this.html = this.originShell.attr("html");
             this.title = this.originShell.attr("title") || this.html;
+            this.widgetId = this.originShell.attr("widget-id") || this.title;
 
             this.originShell.removeAttr("title");
 
@@ -219,6 +224,9 @@ myQuery.define("ui/js/accordion",
         },
         render: function () {
             return this.toggle();
+        },
+        routing: function (widgetId) {
+            return this.widgetId == widgetId;
         }
     }, CustomEvent);
 
@@ -249,6 +257,11 @@ myQuery.define("ui/js/accordion",
             var self = this, event = function (type, target, e) {
                 if (type == "shell.select") {
                     self.closeOther(target);
+                }
+                if (type == "key.select") {
+                    self.each(function (shell) {
+                        shell.keyCollection.setUnselectStyle();
+                    });
                 }
                 self.trigger(type, this, type, target, e);
             }
