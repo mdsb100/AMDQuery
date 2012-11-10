@@ -167,6 +167,8 @@ myQuery.define("ui/js/accordion",
                     .append(this.$board)
                     .appendTo(this.parent.container);
 
+            this.$text.width(this.$board.width()-this.$arrow.width());
+
             this.keyCollection = new KeyCollection(this.$board.child(), this);
             return this;
         },

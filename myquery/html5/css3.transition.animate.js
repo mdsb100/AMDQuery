@@ -5,7 +5,6 @@ myQuery.define("html5/css3.transition.animate", ["base/client", "html5/css3", "m
     "use strict"; //启用严格模式
 
     //无法识别em这种
-    var ret = 0;
 
     if ($.support.transition) {
         var 
@@ -228,8 +227,6 @@ myQuery.define("html5/css3.transition.animate", ["base/client", "html5/css3", "m
                 $.console.log({ msg: "browser is not support transitionEnd", fn: "css3.transition.animate load" });
             }
         }
-        ret = 1;
     }
 
-    return ret;
 });

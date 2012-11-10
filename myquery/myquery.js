@@ -1034,9 +1034,8 @@
                 F._AMD = {
                     id: id,
                     dependencies: dps,
-                    status: 4
+                    status: 4,
                     //, todo: this.todo
-                    ,
                     container: this.container,
                     getDependenciesMap: this.getDependenciesMap
                 };

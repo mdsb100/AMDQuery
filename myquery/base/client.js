@@ -77,9 +77,9 @@ myQuery.define("base/client", function ($) {
     _system.x11 = p == "X11" || (p.indexOf("Linux") == 0);
     _system.appleMobile = _system.iphone || _system.ipad || _system.ipod;
     _system.mobile = _system.appleMobile || _system.androidMobile || /AppleWebKit.*Mobile./.test(ua) || _system.winMobile;
-
-    if (/OS (\d).(\d)(.|\d)* like Mac OS X/.test(ua)) {
-        _system.ios = parseFloat(reg.$1 + "." + reg.$2 + reg.$3 || 0);
+    //alert(ua)
+    if (/OS [X ]*(\d*).(\d*)/.test(ua)) {
+        _system.ios = parseFloat(reg.$1 + "." + reg.$2);
     }
     if (window.opera) {
         _engine.opera = _browser.opera = parseFloat(window.opera.version());
@@ -93,7 +93,7 @@ myQuery.define("base/client", function ($) {
             _browser.safari = parseFloat(reg["$1"]);
         }
         else {
-            var _safariVer = 1, wit = _engine.webki;
+            var _safariVer = 1, wit = _engine.webkit;
             if (_system.mac) {
                 if (wit < 100) { _safariVer = 1; }
                 else if (wit == 100) { _safariVer = 1.1; }

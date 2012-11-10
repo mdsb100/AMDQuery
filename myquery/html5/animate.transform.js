@@ -117,5 +117,5 @@ myQuery.define("html5/animate.transform", ["module/object", "module/FX", "html5/
             transform: TransfromForFX
         });
     }
-
+    
 });

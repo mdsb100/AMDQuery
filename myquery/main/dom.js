@@ -322,7 +322,7 @@ myQuery.define("main/dom", ["base/support", "main/data"], function ($, support, 
             }
             return t;
         }
-        , getOutterH: function (ele, bol) {
+        , getOuterH: function (ele, bol) {
             /// <summary>返回元素的外高度
             /// </summary>
             /// <param name="ele" type="Element">dom元素</param>
@@ -342,7 +342,7 @@ myQuery.define("main/dom", ["base/support", "main/data"], function ($, support, 
             }
             return height;
         }
-        , getOutterW: function (ele, bol) {
+        , getOuterW: function (ele, bol) {
             /// <summary>返回元素的外宽度
             /// </summary>
             /// <param name="ele" type="Element">dom元素</param>
@@ -569,7 +569,7 @@ myQuery.define("main/dom", ["base/support", "main/data"], function ($, support, 
             /// <returns type="self" />
             return $.setOffsetL(ele, top, "Top");
         }
-        , setOutterH: function (ele, height, bol) {
+        , setOuterH: function (ele, height, bol) {
             /// <summary>设置元素的外高度
             /// </summary>
             /// <param name="ele" type="Element">element元素</param>
@@ -588,7 +588,7 @@ myQuery.define("main/dom", ["base/support", "main/data"], function ($, support, 
             ele.style.height = Math.max(offsetH - diffH - diffH - marginH, 0) + "px";
             return this;
         }
-        , setOutterW: function (ele, width, bol) {
+        , setOuterW: function (ele, width, bol) {
             /// <summary>设置元素的外宽度
             /// </summary>
             /// <param name="ele" type="Element">element元素</param>
@@ -963,9 +963,9 @@ myQuery.define("main/dom", ["base/support", "main/data"], function ($, support, 
                 height = null;
             }
             return $.isEmpty(height)
-            ? $.getOutterH(this[0], bol)
+            ? $.getOuterH(this[0], bol)
             : this.each(function (ele) {
-                $.setOutterH(ele, height, bol);
+                $.setOuterH(ele, height, bol);
             })
         }
         , outerW: function (width, bol) {
@@ -978,9 +978,9 @@ myQuery.define("main/dom", ["base/support", "main/data"], function ($, support, 
                 width = null;
             }
             return $.isEmpty(width)
-            ? $.getOutterW(this[0], bol)
+            ? $.getOuterW(this[0], bol)
             : this.each(function (ele) {
-                $.setOutterW(ele, width, bol);
+                $.setOuterW(ele, width, bol);
             });
         }
 
