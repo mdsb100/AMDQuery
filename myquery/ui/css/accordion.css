@@ -1,6 +1,5 @@
 ﻿.accordion
 {
-    
     text-align: center;
     cursor: pointer;
     background-color: White;
@@ -8,7 +7,7 @@
         fix safari
         border: 1px solid #e7d5b4;
     */
-    border:solid #e7d5b4 1px;
+    border:1px solid #e7d5b4;
     /*
     border-right: 1px solid #e7d5b4;
     border-bottom: 1px solid #e7d5b4;

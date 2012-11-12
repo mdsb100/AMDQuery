@@ -95,6 +95,7 @@ myQuery.define("main/dom", ["base/support", "main/data"], function ($, support, 
                     }
                 }
                 // margin wright is bug in safari
+                // border-left-width 1px is wrong
 
             }
             else if (document.documentElement.currentStyle) {

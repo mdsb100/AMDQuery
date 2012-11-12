@@ -1,15 +1,17 @@
 ﻿/// <reference path="../../myquery.js" />
-myQuery.define("ui/js/draggable", ["module/widget", "main/event", "main/dom"], function ($, widget, event, dom, undefined) {
+myQuery.define("ui/js/draggable", ["module/widget", "main/event", "main/dom", "main/query"], function ($, widget, event, dom, query, undefined) {
     "use strict"; //启用严格模式
-    var eventFuns = $.event.document,
-        draggable = $.widget("ui.draggable", function draggable(obj, target) {
+    var eventFuns = event.document,
+        draggable = widget("ui.draggable", function draggable(obj, target) {
             this.__super(obj, target).init(obj || {}, target).create().render();
         }, {
             container: null,
             create: function () {
-                var str, self = this,
-                    result;
-                this.target.ancestors().each(function (ele) {
+                var str, self = this, result;
+
+                this.container.css("overflow", "hidden");
+
+                this.target.css("position", "absolute").ancestors().each(function (ele) {
                     str = $.style(ele, "position");
                     switch (str) {
                         case "absolute":
@@ -40,21 +42,23 @@ myQuery.define("ui/js/draggable", ["module/widget", "main/event", "main/dom"], f
             enable: function () {
                 var fun = this.event;
                 this.disable();
-                this.options.container.addHandler('mousemove', fun).addHandler('mouseup', fun);
-                this.target.addHandler('mousedown', fun);
+                $("body").on("mouseup", fun);
+                this.container.on('mousemove', fun).on('mouseup', fun);
+                this.target.on('mousedown', fun);
             },
             disable: function () {
                 var fun = this.event;
-                this.options.container.removeHandler('mousemove', fun).removeHandler('mousemove', fun);
-                this.target.removeHandler('mousedown', fun);
+                $("body").off("mouseup", fun);
+                this.container.off('mousemove', fun).off('mousemove', fun);
+                this.target.off('mousedown', fun);
             },
             init: function (obj, target) {
                 this.option(obj);
-                this.options.container = $(obj.container || document.body);
+                this.container = $(obj.container || document.body);
                 return this;
             },
             options: {
-                container: null,
+                //container: null,
                 disabled: true,
                 diffx: 0,
                 diffy: 0,
@@ -62,7 +66,8 @@ myQuery.define("ui/js/draggable", ["module/widget", "main/event", "main/dom"], f
                 xaxis: true,
                 yaxis: true,
                 cursor: 'default',
-                overflow: false
+                overflow: false,
+                keepinner: true
             },
             public: {
 
@@ -79,7 +84,7 @@ myQuery.define("ui/js/draggable", ["module/widget", "main/event", "main/dom"], f
                         y = e.pageY || e.clientY,
                         para = {
                             type: 'drag.start',
-                            container: opt.container,
+                            container: self.container,
                             clientX: x,
                             clientY: y,
                             offsetX: e.offsetX || e.layerX || x - offsetLeft,
@@ -104,12 +109,12 @@ myQuery.define("ui/js/draggable", ["module/widget", "main/event", "main/dom"], f
                                 var offset = self.positionParent,
                                 offsetLeft = offset.getLeft(),
                                 offsetTop = offset.getTop(),
-                                con = opt.container,
+                                con = self.container,
                                 cP;
                                 x -= (opt.diffx + offsetLeft);
                                 y -= (opt.diffy + offsetTop);
 
-                                if (con[0]) {
+                                if (opt.keepinner == true && con[0]) {
                                     cP = con.position();
                                     cP.pageLeft -= offsetLeft;
                                     cP.pageTop -= offsetTop;
@@ -117,9 +122,6 @@ myQuery.define("ui/js/draggable", ["module/widget", "main/event", "main/dom"], f
                                     y = $.between(cP.pageTop, cP.height + cP.pageTop - target.height(), y); //使用height对不对？
                                 }
 
-                                // target.css({
-                                //     cursor: opt.cursor
-                                // });
                                 self.render(x, y);
 
                                 eventFuns.preventDefault(e);
@@ -132,6 +134,7 @@ myQuery.define("ui/js/draggable", ["module/widget", "main/event", "main/dom"], f
                         case "touchend":
                         case "mouseup":
                             eventFuns.preventDefault(e);
+                            eventFuns.stopPropagation(e);
                             para.type = 'drag.stop';
                             target.trigger('drag.stop', target[0], para);
                             dragging = null;
@@ -142,8 +145,7 @@ myQuery.define("ui/js/draggable", ["module/widget", "main/event", "main/dom"], f
             },
             render: function (x, y) {
                 var opt = this.options;
-
-                if (opt.disabled === false) {
+                if (opt.disabled == false) {
                     opt.cursor = 'default';
                 } else {
                     switch (opt.axis) {
