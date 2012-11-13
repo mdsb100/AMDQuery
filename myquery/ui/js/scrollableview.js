@@ -11,7 +11,7 @@ myQuery.define("ui/js/scrollableview", ["module/Widget", "ui/js/swappable", "ui/
         }
         , customEventName: ["start", "move", "stop"]
         , event: function () {
-            var self = this, target = self.target, opt = self.options, dragging = null
+            var self = this, target = self.target, opt = self.options, dragging = null;
             
         }
         , enable: function () {
