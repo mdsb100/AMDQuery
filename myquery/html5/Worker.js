@@ -44,7 +44,7 @@ myQuery.define("html5/Worker", function ($, undefined) {
                 this.worker && this.worker.postMessage({
                     todo: todo.toString()
                     , paras: $.argToArray(arguments, 2)
-                    , context: context || window
+                    , context: context || null
                 });
                 return this;
             }
