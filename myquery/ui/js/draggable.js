@@ -1,8 +1,8 @@
 ﻿/// <reference path="../../myquery.js" />
 myQuery.define("ui/js/draggable", ["module/widget", "main/event", "main/dom", "main/query"], function ($, widget, event, dom, query, undefined) {
     "use strict"; //启用严格模式
-    var eventFuns = event.document,
-        draggable = widget("ui.draggable", function draggable(obj, target) {
+    var eventFuns = event.event.document,
+        draggable = widget.factory("ui.draggable", function draggable(obj, target) {
             this.__super(obj, target).init(obj || {}, target).create().render();
         }, {
             container: null,
@@ -136,8 +136,8 @@ myQuery.define("ui/js/draggable", ["module/widget", "main/event", "main/dom", "m
                             eventFuns.preventDefault(e);
                             eventFuns.stopPropagation(e);
                             para.type = 'drag.stop';
-                            target.trigger('drag.stop', target[0], para);
                             dragging = null;
+                            target.trigger('drag.stop', target[0], para);
                             break;
                     }
                 };
