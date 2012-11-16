@@ -415,21 +415,18 @@
 
         getJScriptConfig: tools.getJScriptConfig,
         getPath: tools.getPath,
-        getRunTime: function (unit) {
+        getRunTime: function (msg) {
             /// <summary>检测运行时间</summary>
             /// <param name="unit" type="Boolean">默认为秒,true为毫秒</param>
             /// <returns type="self" />
-            var _now = new Date();
-            if (runTime) {
-                var _info = (_now - runTime);
-                _info = !unit ? _info / 1000 + '秒' : _info + "毫秒";
-                !$.client.browser.ie678 ? tools.console.info({
-                    fn: "myQuery.getRunTime",
-                    msg: _info
-                }) : $.showMsg(_info);
-                runTime = null;
-            } else runTime = now;
-            return this;
+            var now = new Date();
+            if (runTime && msg) {
+                msg += ":" + (now - runTime);
+            } else {
+              runTime = now;
+              msg = "root:0";
+            };
+            console.log(msg);
         },
         getValueAndUnit: function (value) {
             /// <summary>返回一个字符串的数值和单位

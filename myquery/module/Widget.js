@@ -103,7 +103,8 @@ myQuery.define("module/widget", ["main/data", "main/event", "main/attr", "module
             disable: 1,
             enable: 1,
             widget: 1,
-            toString: 1
+            toString: 1,
+            getSelf: 1
         },
         render: function () { },
         _initHandler: function () { },
@@ -126,8 +127,11 @@ myQuery.define("module/widget", ["main/data", "main/event", "main/attr", "module
         widget: function () {
             return this.container;
         },
-        widgetEventPrefix: "" //将来做事件用
-        ,
+        getSelf: function () {
+            return this;
+        },
+        widgetEventPrefix: "", //将来做事件用
+        
         widgetName: "Widget"
     },{
         evalAttr: function(attr){

@@ -1,45 +1,88 @@
 ﻿/// <reference path="../../myquery.js" />
 
-myQuery.define("ui/js/scrollableview", ["module/Widget", "ui/js/swappable", "ui/js/draggable", "module/animate"]
-, function ($, Widget, swappable, draggable, animate, undefined) {
+myQuery.define("ui/js/scrollableview", ["module/Widget", "main/query", "main/dom", "ui/js/swappable", "ui/js/draggable", "module/animate"]
+, function ($, Widget, query, dom, swappable, draggable, animate, undefined) {
     var eventFuns = $.event.document
     , scrollableview = $.widget("ui.scrollableview", {
         container: null
         , create: function () {
-            this.target.swappable();
+            this.container = 
+            $($.create("div"))
+            .css({
+                "overflow": "hidden",
+                "position": "absolute"
+            })
+            .append(this.target.child());
+
+            this
+            .render(0, 0)
+            ._initHandler()
+            .able();
+            
+            
             return this;
         }
         , customEventName: ["start", "move", "stop"]
         , event: function () {
-            var self = this, target = self.target, opt = self.options, dragging = null;
+            
             
         }
         , enable: function () {
-            
+            this.target.swappable()
+            this.container.draggable();
         }
         , disable: function () {
             
         }
-        , destory: function (key) {
+        , _initHandler: function () {
+            var self = this, target = self.target, opt = self.options; 
+            this.event = function(){
+
+            }
+            return this;
+        }
+        , destory: function () {
             
         }
         , init: function (obj) {
+            this.option(obj);
+            this.overflow = this.target.css("overflow");
+            this.refreshScroll();
+            this.target.css("overflow","hidden");
             
+            return this;
         }
         , options: {
             
         }
         , public: {
-
+            xaxis:1,
+            yaxis:1
         }
-        , render: function () {
-            
+        , render: function (x, y) {
+            if (this.options.isTransform) {
+
+            }
+            else{
+                this.container.offsetL(x).offsetT(y);
+            }
+            return this;
         }
         , target: null
         , toString: function () {
+            return "ui.scrollableview";
+        }
+        , widgetEventPrefix: "scrollableview"
+
+        , refreshScroll: function(){
+            this.scrollHeight = this.target.scrollHeight();
+            this.scrollWidth = this.target.scrollWidth();
             
         }
-        , widgetEventPrefix: "scrollview"
+        // , resize: function(){ 
+        //     this.container.width(this.scrollWidth);
+        //     this.container.height(this.scrollHeight);
+        // }
     });
 
     //提供注释
