@@ -25,8 +25,8 @@ myQuery.define("module/Widget", ["main/data", "main/event", "main/attr", "module
         checkAttr: function () {
             var key, attr, value, result = {};
             for (key in this.options) {
-                attr = $.unCamelCase(key);
-                value = this.target.attr(this.widgetEventPrefix+ "-" + attr);
+                attr = $.unCamelCase(key, this.widgetEventPrefix);
+                value = this.target.attr(attr);
                 if (value !== undefined) {
                     result[key] = Widget.evalAttr(value);;
                 }

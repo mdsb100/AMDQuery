@@ -10,22 +10,24 @@ myQuery.define("ui/js/scrollableview", ["main/query", "main/dom", "ui/js/swappab
         container: null
         , create: function () {
             
-            this.positionParent = $({"overflow": "auto"},"div")
+            this.positionParent = $({"overflow": "visible"},"div")
             .width(this.target.width())
             .height(this.target.height())
             .css()
             .append(this.target.child());
 
-            this.container = 
-            $({
-                "overflow": "hidden",
-                "position": "absolute"
-            }, "div")
+            this.container = $({"position": "absolute"}, "div")
             .append(this.positionParent)
             .appendTo(this.target);
 
+            this.container.draggable({
+                keepinner: 0, 
+                axis: this.options.overflow,
+                axisx: this.options["overflow-x"],
+                axisy: this.options["overflow-y"],
+            });
+
             this
-            ._initHandler()
             .able();
             
             
@@ -38,7 +40,7 @@ myQuery.define("ui/js/scrollableview", ["main/query", "main/dom", "ui/js/swappab
         }
         , enable: function () {
             //this.target.swappable()
-            this.container.draggable();
+
         }
         , disable: function () {
             
@@ -55,19 +57,20 @@ myQuery.define("ui/js/scrollableview", ["main/query", "main/dom", "ui/js/swappab
         }
         , init: function (obj) {
             this.option(obj);
-            this.overflow = this.target.css("overflow");
+            this.originOverflow = this.target.css("overflow");
             this.refreshScroll();
+            this._initHandler()
             this.target.css("overflow","hidden");
             
             return this;
         }
         , options: {
-            
-        }
-        , public: {
             "overflow":1,
             "overflow-x":1,
             "overflow-y":1
+        }
+        , public: {
+            
         }
         , render: function (x, y) {
             if (this.options.isTransform) {
