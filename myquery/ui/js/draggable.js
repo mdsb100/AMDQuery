@@ -154,8 +154,8 @@ myQuery.define("ui/js/draggable", ["module/Widget", "main/event", "main/dom", "m
                             opt.cursor = 'e-resize';
                             break;
                         case "y":
-                            axisx = false;
-                            cursor = 'n-resize';
+                            opt.axisx = false;
+                            opt.cursor = 'n-resize';
                             break;
                         default:
                             opt.axisx = true;
