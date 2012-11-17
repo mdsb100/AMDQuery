@@ -255,6 +255,7 @@ myQuery.define("module/object", ["base/extend"], function ($, extend) {
                 return this;
             }
             var 
+            originPrototype = Sub.prototype,
             name = Super.name || name,
             Parasitic =
             typeof name == "string" ?
@@ -264,7 +265,8 @@ myQuery.define("module/object", ["base/extend"], function ($, extend) {
             Sub.prototype = new Parasitic();
             //var prototype = Object(Super.prototype);
             //Sub.prototype = prototype;
-            Sub.prototype.constructor = Sub;
+            $.easyExtend(Sub.prototype, originPrototype);
+            //Sub.prototype.constructor = Sub;
 
             return this;
         }
