@@ -7,6 +7,29 @@ myQuery.define("module/object", ["base/extend"], function ($, extend) {
     var 
     defaultPurview = "-pu -w -r",
     defaultValidate = function () { return 1; },
+    inerit = function (Sub, Super, name) {
+        $.object.inheritProtypeWidthParasitic(Sub, Super, name);
+        Sub.prototype.__superConstructor = Super;
+        Sub.prototype.__super = Super.prototype.init
+            ? function () {
+                var tempConstructor = this.__superConstructor;
+                if (tempConstructor.prototype.__superConstructor) {
+                    this.__superConstructor = tempConstructor.prototype.__superConstructor;
+                }
+                else {
+                    delete this.__superConstructor;
+                }
+                tempConstructor.prototype.init ? tempConstructor.prototype.init.apply(this, arguments) : tempConstructor.apply(this, arguments);
+                return this;
+            }
+            : function () {
+                Super.apply(this, arguments);
+                return this;
+            }
+    },
+    extend = function (Sub, Super) {
+        object.inheritProtypeWidthExtend(Sub, Super);
+    },
     object = {
         //继承模块 可以自己实现一个 function模式 单继承
         _defaultPrototype: {
@@ -20,13 +43,13 @@ myQuery.define("module/object", ["base/extend"], function ($, extend) {
             //                return this;
             //            }
         }
-        , Class: function (name, prototype, statics, supper) {
+        , Class: function (name, prototype, statics, Super) {
             /// <summary>定义一个类</summary>
             /// <para>构造函数会执行init和render</para>
             /// <param name="name" type="String/Function/null">函数名或构造函数</param>
             /// <param name="prototype" type="Object">prototype原型</param>
             /// <param name="static" type="Object">静态方法</param>
-            /// <param name="supper" type="Function">父类</param>
+            /// <param name="Super" type="Function">父类</param>
             /// <returns type="self" />
             var anonymous;
             switch (arguments.length) {
@@ -35,7 +58,7 @@ myQuery.define("module/object", ["base/extend"], function ($, extend) {
                     return null;
                 case 3:
                     if (typeof statics == "function") {
-                        supper = statics;
+                        Super = statics;
                         statics = null;
                     }
                     break;
@@ -63,49 +86,40 @@ myQuery.define("module/object", ["base/extend"], function ($, extend) {
                     }
             }
 
-            $.object.inheritProtypeWidthParasitic(anonymous, supper, name);
+            if (Super) {
+                inerit(anonymous, Super);
+            } else {
+                anonymous.__super = function () { return this; };
+            }
+
             prototype = $.extend({}, $.object._defaultPrototype, prototype);
             prototype.constructor = anonymous;
             $.easyExtend(anonymous.prototype, prototype);
 
             $.easyExtend(anonymous, statics);
-            
+            anonymous.inherit = function(Super){
+                inerit(this, Super);
+                return this;
+            };
+            anonymous.extend = function(Super){
+                extend(this, Super);
+                return this;
+            };
+
             anonymous.fn = anonymous.prototype;
             //anonymous.__tag = "object.Class";
-            //supper.__tag == "object.Class" ||
-
-            if (supper) {
-                anonymous.prototype.__superConstructor = supper;
-                anonymous.prototype.__super = supper.prototype.init
-                ? function () {
-                    var tempConstructor = this.__superConstructor;
-                    if (tempConstructor.prototype.__superConstructor) {
-                        this.__superConstructor = tempConstructor.prototype.__superConstructor;
-                    }
-                    else {
-                        delete this.__superConstructor;
-                    }
-                    tempConstructor.prototype.init ? tempConstructor.prototype.init.apply(this, arguments) : tempConstructor.apply(this, arguments);
-                    return this;
-                }
-                : function () {
-                    supper.apply(this, arguments);
-                    return this;
-                }
-            } else {
-                anonymous.__super = function () { return this; };
-            }
+            //Super.__tag == "object.Class" ||       
 
             return anonymous;
         }
-        , Collection: function (model, prototype, statics, supper) {
+        , Collection: function (model, prototype, statics, Super) {
             switch (arguments.length) {
                 case 0:
                 case 1:
                     return null;
                 case 3:
                     if (typeof statics == "function") {
-                        supper = statics;
+                        Super = statics;
                         statics = null;
                     }
                     break;
@@ -204,7 +218,7 @@ myQuery.define("module/object", ["base/extend"], function ($, extend) {
             _statics = $.extend({}, statics),
             name = typeof model == "string" ? model : model.name + "Collection";
 
-            return object.Class(name, _prototype, _statics, supper);
+            return object.Class(name, _prototype, _statics, Super);
         }
 
         , getObjectAttrCount: function (obj, bool) {
@@ -219,47 +233,49 @@ myQuery.define("module/object", ["base/extend"], function ($, extend) {
             return count;
         }
 
-        , inheritProtypeWidthExtend: function (child, parent) {
+        , inheritProtypeWidthExtend: function (Sub, Super) {
             /// <summary>继承prototype 使用普通添加模式 不保有统一个内存地址 也不会调用多次构造函数</summary>
             /// <para>如果anotherPrototype为false对子类的prototype添加属性也会添加到父类</para>
-            /// <para>如果child不为空也不会使用相同引用</para>
-            /// <param name="child" type="Object">子类</param>
-            /// <param name="parent" type="Object">父类</param>
+            /// <para>如果Sub不为空也不会使用相同引用</para>
+            /// <param name="Sub" type="Object">子类</param>
+            /// <param name="Super" type="Object">父类</param>
             /// <returns type="self" />
-            var con = child.prototype.constructor;
-            $.easyExtend(child.prototype, parent.prototype);
-            child.prototype.constructor = con || parent.prototype.constructor;
+            var con = Sub.prototype.constructor;
+            $.easyExtend(Sub.prototype, Super.prototype);
+            Sub.prototype.constructor = con || Super.prototype.constructor;
             return this;
         }
-        , inheritProtypeWidthParasitic: function (child, parent, name) {//加个parentName
+        , inheritProtypeWidthParasitic: function (Sub, Super, name) {//加个SuperName
             /// <summary>继承prototype 使用寄生 不会保有同一个内存地址</summary>
-            /// <param name="child" type="Object">子类</param>
-            /// <param name="parent" type="Object">父类</param>
+            /// <param name="Sub" type="Object">子类</param>
+            /// <param name="Super" type="Object">父类</param>
             /// <param name="name" tuype="String">可以再原型链中看到父类的名字 而不是Parasitic</param>
             /// <returns type="self" />
-            if (!parent) {
+            if (!Super) {
                 return this;
             }
-            var Parasitic =
+            var 
+            name = Super.name || name,
+            Parasitic =
             typeof name == "string" ?
             (eval("(function " + name + "() { });") || eval("(" + name + ")"))
             : function () { };
-            Parasitic.prototype = parent.prototype;
-            child.prototype = new Parasitic();
-            //var prototype = Object(parent.prototype);
-            //child.prototype = prototype;
-            child.prototype.constructor = child;
+            Parasitic.prototype = Super.prototype;
+            Sub.prototype = new Parasitic();
+            //var prototype = Object(Super.prototype);
+            //Sub.prototype = prototype;
+            Sub.prototype.constructor = Sub;
 
             return this;
         }
-        , inheritProtypeWidthCombination: function (child, parent) {
+        , inheritProtypeWidthCombination: function (Sub, Super) {
             /// <summary>继承prototype 使用经典组合继承 不会保有同一个内存地址</summary>
             /// <para>如果anotherPrototype为false对子类的prototype添加属性也会添加到父类</para>
-            /// <para>如果child不为空也不会使用相同引用</para>
-            /// <param name="child" type="Object">子类</param>
-            /// <param name="parent" type="Object">父类</param>
+            /// <para>如果Sub不为空也不会使用相同引用</para>
+            /// <param name="Sub" type="Object">子类</param>
+            /// <param name="Super" type="Object">父类</param>
             /// <returns type="self" />
-            child.prototype = new parent();
+            Sub.prototype = new Super();
             return this;
         }
         , isPrototypeProperty: function (obj, name) {
