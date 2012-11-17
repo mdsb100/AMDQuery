@@ -147,9 +147,8 @@ myQuery.define("ui/js/turnBook", ["ui/js/swappable", "main/class", "html5/css3"]
             }
             return content;
         },
-        customEventName: ["star", "move", "pause", "stop"]
+        customEventName: ["star", "move", "pause", "stop"],
 
-        ,
         disable: function () {
             //var event = this.event();
             this.container.swappable({
@@ -159,9 +158,8 @@ myQuery.define("ui/js/turnBook", ["ui/js/swappable", "main/class", "html5/css3"]
                 pause: null,
                 mousemove: null
             }); //.removeHandler("mouseout", event);
-        }
+        },
 
-        ,
         event: function () {
 
         },
@@ -175,9 +173,8 @@ myQuery.define("ui/js/turnBook", ["ui/js/swappable", "main/class", "html5/css3"]
                 pause: event,
                 mousemove: event
             }); //.addHandler("mouseout", event);
-        }
+        },
 
-        ,
         getBox: function (index) {
             var page = this.getPage(index),
                 box = page != undefined ? page.box : undefined;
@@ -188,14 +185,12 @@ myQuery.define("ui/js/turnBook", ["ui/js/swappable", "main/class", "html5/css3"]
         },
         getPage: function (index) {
             return this.options.pages[index];
-        }
+        },
 
-        ,
         hideMessage: function () {
             this.message.hide();
-        }
+        },
 
-        ,
         init: function (obj, target) {
             return this;
         },
@@ -224,20 +219,18 @@ myQuery.define("ui/js/turnBook", ["ui/js/swappable", "main/class", "html5/css3"]
         },
         isInRight: function (x) {
             return x > this.bookWidth / 2;
-        }
+        },
 
-        ,
-        message: null
+        message: null,
 
-        , option:function(obj){
+        option:function(obj){
             this.__superConstructor.fn.option.call(this, obj); 
             var opt = this.options;
             if (opt.bookType != "half" && opt.bookIndex % 2) {
                 opt.bookIndex += 1;
             }
-        }
+        },
 
-        ,
         options: {
             bookName: "default",
             bookType: "Array:String",
@@ -276,9 +269,8 @@ myQuery.define("ui/js/turnBook", ["ui/js/swappable", "main/class", "html5/css3"]
             ,
             positionType: "whole",
             pauseSensitivity: 500
-        }
+        },
 
-        ,
         pageHeight: 0,
         pageWidth: 0,
         public: {
@@ -461,9 +453,8 @@ myQuery.define("ui/js/turnBook", ["ui/js/swappable", "main/class", "html5/css3"]
                 }
             }
             return this;
-        }
+        },
 
-        ,
         setBook: function (bookName, bookType, bookContent, bookIndex) {
             var opt = this.options,
                 cache = this.cache[bookName];
@@ -561,9 +552,8 @@ myQuery.define("ui/js/turnBook", ["ui/js/swappable", "main/class", "html5/css3"]
                 });
             }
             return this;
-        }
+        },
 
-        ,
         setSwap: function (pauseSensitivity, directionRange, cursor) {
             var opt = this.options;
             pauseSensitivity = pauseSensitivity || opt.pauseSensitivity;
@@ -692,15 +682,13 @@ myQuery.define("ui/js/turnBook", ["ui/js/swappable", "main/class", "html5/css3"]
                 self.hideMessage();
             }, this.options.messageHideTime);
 
-        }
-
-        ,
+        },
+        
         target: null,
         toString: function () {
             return "ui.turnbook";
-        }
+        },
 
-        ,
         widgetEventPrefix: "turnbook"
     });
 
