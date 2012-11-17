@@ -69,7 +69,8 @@ myQuery.define("module/object", ["base/extend"], function ($, extend) {
             $.easyExtend(anonymous.prototype, prototype);
 
             $.easyExtend(anonymous, statics);
-
+            
+            anonymous.fn = anonymous.prototype;
             //anonymous.__tag = "object.Class";
             //supper.__tag == "object.Class" ||
 

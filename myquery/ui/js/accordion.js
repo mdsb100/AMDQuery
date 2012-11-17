@@ -379,7 +379,6 @@ myQuery.define("ui/js/accordion",
         },
         init: function (obj, target) {
             this.__super(obj, target);
-            this.option(obj);
             this.accordion = new Accordion(target[0], this.options);
             this.options = this.accordion.option;
             this._initHandler();

@@ -53,7 +53,6 @@ myQuery.define("ui/js/draggable", ["module/Widget", "main/event", "main/dom", "m
                 this.target.off('mousedown', fun);
             },
             init: function (obj, target) {
-                this.option(obj);
                 this.container = $(obj.container || document.body);
                 return this;
             },

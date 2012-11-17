@@ -85,7 +85,8 @@ myQuery.define("module/Widget", ["main/data", "main/event", "main/attr", "module
             this.target = target;
             //obj = $.extend(obj || {}, this.checkAttr());
             //$.isFun(this.init) && this.init(obj);
-            $.extend(obj, this.checkAttr());
+            obj = $.extend(this.checkAttr(), obj);
+            this.option(obj);
             return this;
         },
         option: function (key, value) {
@@ -202,7 +203,10 @@ myQuery.define("module/Widget", ["main/data", "main/event", "main/attr", "module
                 var data = $.data(ele, key); //key = nameSpace + "." + name,
                 if (data == undefined) data = $.data(ele, key, new constructor(a, $(ele))); //完全调用基类的构造函数 不应当在构造函数 create render
                 else {
-                    if ($.isObj(a)) data.init(a).render();
+                    if ($.isObj(a)){ 
+                        data.option(a);
+                        data.render();
+                    }
                     else if ($.isStr(a)) {
                         //if (b === undefined) {
                         if (a === "option") {

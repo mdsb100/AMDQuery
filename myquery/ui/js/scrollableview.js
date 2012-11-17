@@ -13,7 +13,6 @@ myQuery.define("ui/js/scrollableview", ["main/query", "main/dom", "ui/js/swappab
             this.positionParent = $({"overflow": "visible"},"div")
             .width(this.target.width())
             .height(this.target.height())
-            .css()
             .append(this.target.child());
 
             this.container = $({"position": "absolute"}, "div")
@@ -23,8 +22,6 @@ myQuery.define("ui/js/scrollableview", ["main/query", "main/dom", "ui/js/swappab
             this.container.draggable({
                 keepinner: 0, 
                 axis: this.options.overflow,
-                axisx: this.options["overflow-x"],
-                axisy: this.options["overflow-y"],
             });
 
             this
@@ -65,9 +62,7 @@ myQuery.define("ui/js/scrollableview", ["main/query", "main/dom", "ui/js/swappab
             return this;
         }
         , options: {
-            "overflow":1,
-            "overflow-x":1,
-            "overflow-y":1
+            "overflow":"xy",
         }
         , public: {
             
