@@ -1,7 +1,7 @@
 ﻿/// <reference path="../../myquery.js" />
 
-myQuery.define("ui/js/scrollableview", ["module/Widget", "main/query", "main/dom", "ui/js/swappable", "ui/js/draggable", "module/animate"]
-, function ($, Widget, query, dom, swappable, draggable, animate, undefined) {
+myQuery.define("ui/js/scrollableview", ["main/query", "main/dom", "ui/js/swappable", "ui/js/draggable", "module/Widget", "module/animate"]
+, function ($, query, dom, swappable, draggable, Widget, animate, undefined) {
     var eventFuns = $.event.document
     , scrollableview = $.widget("ui.scrollableview", {
         container: null
@@ -113,4 +113,5 @@ myQuery.define("ui/js/scrollableview", ["module/Widget", "main/query", "main/dom
         return this;
     }
 
+    return scrollableview;
 });

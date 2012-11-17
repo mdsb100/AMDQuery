@@ -2,7 +2,7 @@
 myQuery.define("ui/js/accordion",
 [
    "module/object",
-   "module/widget",
+   "module/Widget",
    "main/class",
    "main/event",
    "main/CustomEvent",
@@ -12,7 +12,7 @@ myQuery.define("ui/js/accordion",
    "html5/css3.transition.animate",
    "module/effect"
 ]
-, function ($, object, widget, css, event, CustomEvent, dom, src) {
+, function ($, object, Widget, css, event, CustomEvent, dom, src) {
     "use strict"; //启用严格模式
     //缺个event 缺个绑定 和解除 缺配置
     src.link({ href: $.getPath("ui/css/accordion", ".css") });

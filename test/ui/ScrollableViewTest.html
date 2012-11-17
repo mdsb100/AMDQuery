@@ -1,0 +1,22 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>滚动条</title>
+    <meta charset="utf-8" />
+    <link href="../../css/reset.css" rel="stylesheet" type="text/css" />
+    <script src="../../myquery/myquery.js" type="text/javascript" amd="detectCR=1"></script>
+    <script type="text/javascript">
+        $.require(["ui/js/scrollableview", "main/query"], function (scrollableview, query) {
+            $("#container1").scrollableview();
+        });
+       
+    </script>
+</head>
+<body style="width: 100%; height: 100%;">
+    <div style="left: 50px; top: 50px; width: 500px; height: 500px; background-color: Green;position: absolute;overflow: hidden;" id="container1">
+        <div style="width:1000px;height:1000px;background-color: red;">
+
+        </div>
+    </div>
+</body>
+</html>

@@ -1,5 +1,5 @@
 ﻿/// <reference path="../myquery.js" />
-myQuery.define("module/widget", ["main/data", "main/event", "main/attr", "module/object"], function ($, data, event, attr, object, undefined) {
+myQuery.define("module/Widget", ["main/data", "main/event", "main/attr", "module/object"], function ($, data, event, attr, object, undefined) {
     "use strict"; //启用严格模式
 
     function Widget(obj, target) {
