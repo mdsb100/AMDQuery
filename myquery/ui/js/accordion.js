@@ -387,6 +387,7 @@ myQuery.define("ui/js/accordion",
             return this;
         },
         options: {
+            disable: 1, 
             oneSelect: 0
         },
         public: {

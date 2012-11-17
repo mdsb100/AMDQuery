@@ -98,7 +98,7 @@ myQuery.define("module/Widget", ["main/data", "main/event", "main/attr", "module
             //this._render_();
         },
         options: {
-            disabled: false
+            disabled: 1
         },
         public: {
             disable: 1,
