@@ -109,17 +109,20 @@ myQuery.define("module/Widget", ["main/data", "main/event", "main/attr", "module
         },
         render: function () { },
         _initHandler: function () { },
+
+        _isEventName: function(name){
+            return $.inArray(this.customEventName, name) > -1;
+        },
         // , _render_: function () {//不应该由这个来绑定事件
         //     $.isFun(this.render) && this.render();
         //     return this;
         // }
         setOption: function (key, value) {
-            if (this.options[key] !== undefined) this.options[key] = value;
-            else {
-                //if (key.indexOf(this.widgetEventPrefix) > -1) {
-                if ($.isFun(value)) this.target.addHandler(this.widgetEventPrefix + "." + key, value);
-                //else if (value === null) this.handlers[key] = value;
-                //}
+            if (this.options[key] !== undefined){ 
+                this.options[key] = value;
+            }
+            else if($.isFun(value) && this._isEventName(key)){
+                this.target.addHandler(this.widgetEventPrefix + "." + key, value);
             }
         },
         toString: function () {

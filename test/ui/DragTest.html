@@ -11,7 +11,10 @@
                 var con = $("#container");
 
                 $("#drag").draggable({
-                    container: con
+                    container: con,
+                    stop: function(){
+                        $.showMsg("1");
+                    }
                 }).addHandler("drag.start", function (e) {
                     $.showMsg("3");
                 });
