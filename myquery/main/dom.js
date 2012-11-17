@@ -238,14 +238,14 @@ myQuery.define("main/dom", ["base/support", "main/data"], function ($, support, 
             /// <para>left:相对于显示部分</para>
             /// </summary>
             /// <returns type="Number" />
-            return $.getOffsetH(ele, "Left");
+            return ele.offsetLeft;
         }
         , getOffsetT: function (ele) {
             /// <summary>返回元素的顶边距离
             /// <para>top:相对于显示部分</para>
             /// </summary>
             /// <returns type="Number" />
-            return $.getOffsetH(ele, "Top");
+            return ele.offsetTop;
         }
         , getOpacity: function (ele) {
             /// <summary>获得ele的透明度</summary>
@@ -551,12 +551,11 @@ myQuery.define("main/dom", ["base/support", "main/data"], function ($, support, 
             /// <param name="ele" type="Element">element元素</param>
             /// <param name="left" type="Number/String/undefined">值 可缺省 缺省则返回</param>
             /// <returns type="self" />
-            var type = arguments[2] || "Left", lower = type.toLowerCase();
-            if ($.isNum(left)) {
-                ele.style[lower] = left + "px";
-            }
-            else if ($.isStr(left)) {
-                ele.style[lower] = left;
+            switch(typeof left){
+                case "number":
+                    left +=  "px";
+                case "string":
+                    ele.style["left"] = left;
             }
             return this;
         }
@@ -568,7 +567,14 @@ myQuery.define("main/dom", ["base/support", "main/data"], function ($, support, 
             /// <param name="ele" type="Element">element元素</param>
             /// <param name="left" type="Number/String/undefined">值 可缺省 缺省则返回</param>
             /// <returns type="self" />
-            return $.setOffsetL(ele, top, "Top");
+            switch(typeof top){
+                case "number":
+                    top +=  "px";
+                case "string":
+                    ele.style["top"] = top;
+            }
+
+            return this;
         }
         , setOuterH: function (ele, height, bol) {
             /// <summary>设置元素的外高度
@@ -924,7 +930,7 @@ myQuery.define("main/dom", ["base/support", "main/data"], function ($, support, 
             /// </summary>
             /// <param name="left" type="num/any">宽度</param>
             /// <returns type="self" />
-            return left
+            return $.isNum(left)
             ? this.each(function (ele) {
                 $.setOffsetL(ele, left);
             }) : $.getOffsetL(this[0]);
@@ -936,7 +942,7 @@ myQuery.define("main/dom", ["base/support", "main/data"], function ($, support, 
             /// </summary>
             /// <param name="top" type="num/any">宽度</param>
             /// <returns type="self" />
-            return top
+            return $.isNum(top)
             ? this.each(function (ele) {
                 $.setOffsetT(ele, top);
             }) : $.getOffsetT(this[0]);
