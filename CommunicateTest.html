@@ -26,7 +26,7 @@
         }
 
         myQuery.require(["main/communicate", "module/src"], function (communicate, src) {
-            communicate.getJScript({
+            communicate.jsonp({
                 url: "http://192.168.26.89:8180/chart/hq/npdata.do"
                 , JSONP: true
                 , complete: test.complete

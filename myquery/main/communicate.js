@@ -112,7 +112,7 @@ myQuery.define("main/communicate"
         , ajaxByFinal: function (list, complete, context) {
             /// <summary>加载几段ajax，当他们都加载完毕触发个事件
             /// </summary>
-            /// <param name="list" type="Array:[options]">包含获取js配置的数组，参考getJScript</param>
+            /// <param name="list" type="Array:[options]">包含获取js配置的数组，参考jsonp</param>
             /// <param name="complete" type="Function">complete</param>
             /// <param name="context" type="Object">作用域</param>
             /// <returns type="self" />
@@ -155,7 +155,7 @@ myQuery.define("main/communicate"
             }
         }
 
-        , getJScript: function (options) {
+        , jsonp: function (options) {
             /// <summary>加载一段script
             /// <para>str options.url：不可缺省</para>
             /// <para>str options.chaset:缺省为"GBK"</para>
@@ -173,7 +173,7 @@ myQuery.define("main/communicate"
 
             var _scripts = document.createElement("script")
                 , _head = document.getElementsByTagName('HEAD').item(0)
-                , o = $.extend({}, $.getJScriptSetting, options)
+                , o = $.extend({}, $.jsonpSetting, options)
                 , _data = ""
                 , _timeId
                 , random = "";
@@ -239,11 +239,11 @@ myQuery.define("main/communicate"
             _head.insertBefore(_scripts, _head.firstChild);
             return this;
         }
-        , getJScriptSetting: {
+        , jsonpSetting: {
             chaset: ""
             , checkString: ""
             , error: function () {
-                $.console.warn({ fn: "myQuery.getJScript", msg: (this.src || "(empty)") + " of javascript getting error" });
+                $.console.warn({ fn: "myQuery.jsonp", msg: (this.src || "(empty)") + " of javascript getting error" });
             }
             , isDelete: true
             , isRandom: false
@@ -252,14 +252,14 @@ myQuery.define("main/communicate"
             , routing: ""
             , timeout: false
             , timeoutFun: function (o) {
-                $.console.warn({ fn: "myQuery.getJScript", msg: (o.url || "(empty)") + "of ajax is timeout:" + (o.timeout / 1000) + "second" });
+                $.console.warn({ fn: "myQuery.jsonp", msg: (o.url || "(empty)") + "of ajax is timeout:" + (o.timeout / 1000) + "second" });
             }
             , url: ""
         }
-        , getJScriptsByFinal: function (list, complete, context) {
+        , jsonpsByFinal: function (list, complete, context) {
             /// <summary>加载几段script，当他们都加载完毕触发个事件
             /// </summary>
-            /// <param name="list" type="Array:[options]">包含获取js配置的数组，参考getJScript</param>
+            /// <param name="list" type="Array:[options]">包含获取js配置的数组，参考jsonp</param>
             /// <param name="complete" type="Function">complete</param>
             /// <param name="context" type="Object">作用域</param>
             /// <returns type="self" />
@@ -275,7 +275,7 @@ myQuery.define("main/communicate"
                         sum = null;
                     }
                 }
-                $.getJScript(item);
+                $.jsonp(item);
             });
             return this;
         }
