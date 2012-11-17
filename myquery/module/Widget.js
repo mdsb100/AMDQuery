@@ -79,7 +79,7 @@ myQuery.define("module/Widget", ["main/data", "main/event", "main/attr", "module
             //元素本身属性高于obj
             var defaultOptions = this.constructor.prototype.options;
             this.options = {};
-            $.extend(this.options, defaultOptions);
+            $.extend(this.options, Widget.prototype.options, defaultOptions);
             //event.custom.call(this);
             target._initHandler();
             this.target = target;
