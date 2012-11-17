@@ -3,27 +3,28 @@
 myQuery.define("ui/js/scrollableview", ["main/query", "main/dom", "ui/js/swappable", "ui/js/draggable", "module/Widget", "module/animate"]
 , function ($, query, dom, swappable, draggable, Widget, animate, undefined) {
     var eventFuns = $.event.document
-    , scrollableview = $.widget("ui.scrollableview", {
+    , scrollableview = $.widget("ui.scrollableview"
+        , function scrollableview(obj, target) {
+            this.__super(obj, target).init(obj || {}, target).create().render(0, 0);
+        }, {
         container: null
         , create: function () {
             
-            this.positionParent = $($.create("div"))
+            this.positionParent = $({"overflow": "auto"},"div")
             .width(this.target.width())
             .height(this.target.height())
-            .css({"overflow": "auto"})
+            .css()
             .append(this.target.child());
 
             this.container = 
-            $($.create("div"))
-            .css({
+            $({
                 "overflow": "hidden",
                 "position": "absolute"
-            })
+            }, "div")
             .append(this.positionParent)
             .appendTo(this.target);
 
             this
-            .render(0, 0)
             ._initHandler()
             .able();
             
