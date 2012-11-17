@@ -271,7 +271,7 @@ myQuery.define("ui/js/accordion",
             .onChild("shell.select", event);
         },
         closeOther: function (except) {
-            this.parent.option.oneselectshell && this.each(function (shell) {
+            this.parent.option.oneSelect && this.each(function (shell) {
                 except != shell && shell.onfocus && shell.close();
             }, this);
             return this;
@@ -350,7 +350,7 @@ myQuery.define("ui/js/accordion",
 
         }
         , defaultSetting: {
-            oneSelectShell: 0
+            oneSelect: 0
         }
     }, CustomEvent);
 
@@ -387,7 +387,7 @@ myQuery.define("ui/js/accordion",
             return this;
         },
         options: {
-            oneselectshell: 0
+            oneSelect: 0
         },
         public: {
 

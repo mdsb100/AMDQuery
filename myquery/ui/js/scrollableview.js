@@ -6,13 +6,21 @@ myQuery.define("ui/js/scrollableview", ["module/Widget", "main/query", "main/dom
     , scrollableview = $.widget("ui.scrollableview", {
         container: null
         , create: function () {
+            
+            this.positionParent = $($.create("div"))
+            .width(this.target.width())
+            .height(this.target.height())
+            .css({"overflow": "auto"})
+            .append(this.target.child());
+
             this.container = 
             $($.create("div"))
             .css({
                 "overflow": "hidden",
                 "position": "absolute"
             })
-            .append(this.target.child());
+            .append(this.positionParent)
+            .appendTo(this.target);
 
             this
             .render(0, 0)
@@ -28,7 +36,7 @@ myQuery.define("ui/js/scrollableview", ["module/Widget", "main/query", "main/dom
             
         }
         , enable: function () {
-            this.target.swappable()
+            //this.target.swappable()
             this.container.draggable();
         }
         , disable: function () {
@@ -56,8 +64,9 @@ myQuery.define("ui/js/scrollableview", ["module/Widget", "main/query", "main/dom
             
         }
         , public: {
-            xaxis:1,
-            yaxis:1
+            "overflow":1,
+            "overflow-x":1,
+            "overflow-y":1
         }
         , render: function (x, y) {
             if (this.options.isTransform) {

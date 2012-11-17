@@ -23,9 +23,10 @@ myQuery.define("module/widget", ["main/data", "main/event", "main/attr", "module
             this.options.disabled === false ? this.disable() : this.enable();
         },
         checkAttr: function () {
-            var key, value, result = {};
+            var key, attr, value, result = {};
             for (key in this.options) {
-                value = this.target.attr("widget-" + key);
+                attr = $.unCamelCase(key);
+                value = this.target.attr(this.widgetEventPrefix+ "-" + attr);
                 if (value !== undefined) {
                     result[key] = Widget.evalAttr(value);;
                 }

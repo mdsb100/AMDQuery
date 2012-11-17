@@ -63,8 +63,8 @@ myQuery.define("ui/js/draggable", ["module/widget", "main/event", "main/dom", "m
                 diffx: 0,
                 diffy: 0,
                 axis: null,
-                xaxis: true,
-                yaxis: true,
+                axisx: true,
+                axisy: true,
                 cursor: 'default',
                 overflow: false,
                 keepinner: true
@@ -150,16 +150,16 @@ myQuery.define("ui/js/draggable", ["module/widget", "main/event", "main/dom", "m
                 } else {
                     switch (opt.axis) {
                         case "x":
-                            opt.yaxis = false;
+                            opt.axisy = false;
                             opt.cursor = 'e-resize';
                             break;
                         case "y":
-                            xaxis = false;
+                            axisx = false;
                             cursor = 'n-resize';
                             break;
                         default:
-                            opt.xaxis = true;
-                            opt.yaxis = true;
+                            opt.axisx = true;
+                            opt.axisy = true;
                             opt.cursor = 'move';
                     }
                 }
@@ -167,8 +167,8 @@ myQuery.define("ui/js/draggable", ["module/widget", "main/event", "main/dom", "m
                     cursor: opt.cursor
                 });
 
-                opt.xaxis === true && x != undefined && this.target.css("left",x + "px");
-                opt.yaxis === true && y != undefined && this.target.css("top",y + "px");
+                opt.axisx === true && x != undefined && this.target.css("left",x + "px");
+                opt.axisy === true && y != undefined && this.target.css("top",y + "px");
 
                 return this;
             },
