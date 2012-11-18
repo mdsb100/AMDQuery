@@ -66,7 +66,8 @@ myQuery.define("ui/js/draggable", ["module/Widget", "main/event", "main/dom", "m
                 axisy: true,
                 cursor: 'default',
                 overflow: false,
-                keepinner: true
+                keepinner: true,
+                stopPropagation:true
             },
             public: {
 
@@ -99,7 +100,7 @@ myQuery.define("ui/js/draggable", ["module/Widget", "main/event", "main/dom", "m
                             opt.diffx = x - offsetLeft;
                             opt.diffy = y - offsetTop;
                             eventFuns.preventDefault(e);
-                            eventFuns.stopPropagation(e);
+                            opt.stopPropagation && eventFuns.stopPropagation(e);
                             target.trigger(para.type, target[0], para);
                             break;
                         case "touchmove":
@@ -133,7 +134,7 @@ myQuery.define("ui/js/draggable", ["module/Widget", "main/event", "main/dom", "m
                         case "touchend":
                         case "mouseup":
                             eventFuns.preventDefault(e);
-                            eventFuns.stopPropagation(e);
+                            opt.stopPropagation && eventFuns.stopPropagation(e);
                             para.type = 'drag.stop';
                             dragging = null;
                             target.trigger('drag.stop', target[0], para);

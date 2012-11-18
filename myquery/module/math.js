@@ -8,7 +8,11 @@ myQuery.define('module/math', function ($, undefined) {
           this.init(a, b, c)
       }
       , math = {
-          angle: function (x1, y1, x2, y2) {
+          acceleration: function(distance, time){
+              return (distance + distance) / (time * time);
+          }
+
+          , angle: function (x1, y1, x2, y2) {
               /// <summary>计算两点的斜率</summary>
               /// <param name="x1" type="Number">点1x坐标</param>
               /// <param name="y1" type="Number">点1y坐标</param>
@@ -58,7 +62,6 @@ myQuery.define('module/math', function ($, undefined) {
           }
 
           , martrix: martrix
-
 
           , radianToDegree: function (angle) {
               /// <summary>弧度转为角度</summary>

@@ -1,7 +1,7 @@
 ﻿/// <reference path="../../myquery.js" />
 
-myQuery.define("ui/js/scrollableview", ["main/query", "main/dom", "ui/js/swappable", "ui/js/draggable", "module/Widget", "module/animate"]
-, function ($, query, dom, swappable, draggable, Widget, animate, undefined) {
+myQuery.define("ui/js/scrollableview", ["main/query", "main/dom", "ui/js/swappable", "ui/js/draggable", "module/Widget", "module/animate", "module/tween.extend"]
+, function ($, query, dom, swappable, draggable, Widget, animate, tween, undefined) {
     var eventFuns = $.event.document
     , scrollableview = $.widget("ui.scrollableview"
         , function scrollableview(obj, target) {
@@ -9,7 +9,7 @@ myQuery.define("ui/js/scrollableview", ["main/query", "main/dom", "ui/js/swappab
         }, {
         container: null
         , create: function () {
-            
+            var opt = this.options;
             this.positionParent = $({"overflow": "visible"},"div")
             .width(this.target.width())
             .height(this.target.height())
@@ -18,15 +18,22 @@ myQuery.define("ui/js/scrollableview", ["main/query", "main/dom", "ui/js/swappab
             this.container = $({"position": "absolute"}, "div")
             .append(this.positionParent)
             .appendTo(this.target);
+            
+            this.target.swappable({
+                disabled:opt.disabled
+            })
 
             this.container.draggable({
                 keepinner: 0, 
-                axis: this.options.overflow,
-            });
+                axis: opt.overflow,
+                disabled: opt.disabled,
+                stopPropagation:false
+            })
 
             this
             .able();
             
+            // s = V0 * t + a * t * t / 2
             
             return this;
         }
@@ -36,7 +43,8 @@ myQuery.define("ui/js/scrollableview", ["main/query", "main/dom", "ui/js/swappab
             
         }
         , enable: function () {
-            //this.target.swappable()
+            var event = this.event;
+            this.target.on("swap.stop", event);
 
         }
         , disable: function () {
@@ -44,8 +52,12 @@ myQuery.define("ui/js/scrollableview", ["main/query", "main/dom", "ui/js/swappab
         }
         , _initHandler: function () {
             var self = this, target = self.target, opt = self.options; 
-            this.event = function(){
-
+            this.event = function(e){
+                switch(e.type){
+                    case "swap.stop":
+                        
+                    break;
+                }
             }
             return this;
         }

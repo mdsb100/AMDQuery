@@ -22,8 +22,8 @@ myQuery.define("ui/js/swappable", ["base/client", "main/event", "module/math", "
         enable: function () {
             var fun = this.event;
             this.disable();
-            this.target.addHandler('mousemove', fun).addHandler('mousedown', fun)
-            $(document).addHandler('mouseup', fun);
+            this.target.on('mousemove', fun).on('mousedown', fun)
+            $(document).on('mouseup', fun);
         },
         computeSwapType: function (swapTypeName) {
             var path = this.path,
@@ -35,9 +35,9 @@ myQuery.define("ui/js/swappable", ["base/client", "main/event", "module/math", "
         },
         disable: function () {
             var fun = this.event;
-            this.target.removeHandler('mousemove', fun).removeHandler('mousedown', fun)
-            //event.document.removeHandler(window, 'scroll', fun);
-            $(document).removeHandler('mouseup', fun)
+            this.target.off('mousemove', fun).off('mousedown', fun)
+            //event.document.off(window, 'scroll', fun);
+            $(document).off('mouseup', fun)
         },
         getPara: function (para, time, range, x1, y1, x2, y2) {
             var diff = (new Date()) - time;
@@ -46,6 +46,10 @@ myQuery.define("ui/js/swappable", ["base/client", "main/event", "module/math", "
 
             para.angle = Math.round(math.radianToDegree(math.angle(x1, y1, x2, y2)) * 10) / 10;
             para.direction = math.direction(para.angle, range);
+
+            para.acceleration  = math.acceleration(para.distance, diff);
+            para.duration = diff;
+
             if (this.path.length < 5 && this.path.length > 2) {
                 para.currentAngle = para.angle
                 para.currentDirection = para.direction
@@ -114,6 +118,7 @@ myQuery.define("ui/js/swappable", ["base/client", "main/event", "module/math", "
                         angle: undefined,
                         direction: undefined,
                         distance: undefined,
+                        duration: undefined,
                         currentAngle: undefined,
                         currentDirection: undefined
                     };
@@ -166,7 +171,7 @@ myQuery.define("ui/js/swappable", ["base/client", "main/event", "module/math", "
                             clearTimeout(timeout);
                             timeout = setTimeout(function () {
                                 para.type = "swap.pause";
-                                self.swapType = self.computeSwapType()
+                                para.swapType = self.computeSwapType()
                                 target.trigger(para.type, target[0], para);
                             }, opt.pauseSensitivity)
                             //}
@@ -188,7 +193,7 @@ myQuery.define("ui/js/swappable", ["base/client", "main/event", "module/math", "
 
                             self.getPara(para, time, opt.directionRange, self.startX, self.startY, $.between(0, target.width(), x), $.between(0, target.height(), y));
                             para.type = "swap.stop";
-                            self.swapType = self.computeSwapType();
+                            para.swapType = self.computeSwapType();
                             target.trigger(para.type, target[0], para);
                             self.startX = undefined;
                             self.startY = undefined;
