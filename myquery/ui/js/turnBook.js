@@ -369,31 +369,31 @@ myQuery.define("ui/js/turnBook", ["ui/js/swappable", "main/class", "html5/css3"]
                     case "swap.move":
                         if (opt.positionType == "half") {
                             switch (e.direction) {
-                                case 7:
+                                case 10:
                                     //向后翻页
-                                case 0:
-                                case 1:
+                                case 9:
+                                case 8:
                                     self.isInRight(e.startX) ? turnNextHalf(index, offsetX) : turnPreHalf(index, offsetX);
                                     break;
-                                case 3:
+                                case 2:
                                     //向前翻页
+                                case 3:
                                 case 4:
-                                case 5:
                                     self.isInLeft(e.startX) ? turnPreHalf(index, offsetX) : turnNextHalf(index, offsetX);
                                     break;
                             }
                         } else {
                             switch (e.direction) {
-                                case 7:
+                                case 8:
                                     //向后翻页
-                                case 0:
-                                case 1:
+                                case 9:
+                                case 10:
                                     self.isInRight(e.startX) ? turnNextWhole(index, offsetX) : turnPreWhole(index, offsetX);
                                     break;
-                                case 3:
+                                case 2:
                                     //向前翻页
+                                case 3:
                                 case 4:
-                                case 5:
                                     self.isInLeft(e.startX) ? turnPreWhole(index, offsetX) : turnNextWhole(index, offsetX);
                                     break;
                             }
@@ -408,16 +408,16 @@ myQuery.define("ui/js/turnBook", ["ui/js/swappable", "main/class", "html5/css3"]
                         break;
                     case "swap.stop":
                         switch (e.direction) {
-                            case 7:
+                            case 10:
                                 //向后翻页
-                            case 0:
-                            case 1:
+                            case 9:
+                            case 8:
                                 self.render("right", e.startX);
                                 break;
-                            case 3:
+                            case 2:
                                 //向前翻页
+                            case 3:
                             case 4:
-                            case 5:
                                 self.render("left", e.startX);
                                 break;
                         }

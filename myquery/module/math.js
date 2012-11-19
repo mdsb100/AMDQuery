@@ -7,6 +7,20 @@ myQuery.define('module/math', function ($, undefined) {
       , martrix = function (a, b, c) {
           this.init(a, b, c)
       }
+      , directionHash = {
+          0 : 3,
+          1 : 4,
+          2 : 5,
+          3 : 6,
+          4 : 7,
+          5 : 8,
+          6 : 9,
+          7 : 10,
+          8 : 11,
+          9 : 12,
+         10 : 1,
+         11 : 2
+      }
       , math = {
           acceleration: function(distance, time){
               return (distance + distance) / (time * time);
@@ -19,7 +33,7 @@ myQuery.define('module/math', function ($, undefined) {
               /// <param name="x2" type="Number">点2x坐标</param>
               /// <param name="y2" type="Number">点2y坐标</param>
               /// <returns type="Number" />
-              return M.atan2(y1 - y2, x1 - x2);
+              return M.atan2(y2 - y1, x2 - x1);
           }
          
           , degreeToRadian: function (angle) {
@@ -30,26 +44,29 @@ myQuery.define('module/math', function ($, undefined) {
           }
 
           , direction: function (angle, range) {
-              /// <summary>确定返回的向量朝向。从x轴瞬时针起。反方向值为10-值。</summary>
+              /// <summary>确定返回的向量朝向。从x轴瞬时针起。时钟</summary>
               /// <param name="angle" type="Number">角度</param>
-              /// <param name="range" type="Number">范围：0-22.5</param>
+              /// <param name="range" type="Number">范围：0-15</param>
               /// <returns type="Number" />
-              var result = -1;
-              range = $.between(0, 22.5, range);
-              for (var i = 0, value; i <= 8; i++) {
-                  if (i <= 4) {
-                      value = i * 45
+              var result = 9;
+              range = $.between(0, 15, range || 15);
+              if (0 - range < angle && angle <= value + range) {
+
+              };
+              for (var i = 0, value; i <= 11; i++) {
+                  if (i < 6) {
+                      value = i * 30
                   }
-                  else if (i > 4) {
-                      value = (i % 4 * 45) - 180;
+                  else if (i >= 6) {
+                      value = (i % 6 * 30) - 180;
                   }
                   if (value - range < angle && angle <= value + range) {
-                      result = i;
+                      result = directionHash[i];
                       break;
                   }
 
               }
-              return result == 8 ? 4 : result;
+              return result;
           }
           , distance: function (x1, y1, x2, y2) {
               /// <summary>计算两点之间距离</summary>

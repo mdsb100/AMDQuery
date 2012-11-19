@@ -51,8 +51,8 @@ myQuery.define("ui/js/swappable", ["base/client", "main/event", "module/math", "
             para.duration = diff;
 
             if (this.path.length < 5 && this.path.length > 2) {
-                para.currentAngle = para.angle
-                para.currentDirection = para.direction
+                para.currentAngle = para.angle;
+                para.currentDirection = para.direction;
             }
 
             return para;
