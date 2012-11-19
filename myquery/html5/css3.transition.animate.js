@@ -75,15 +75,16 @@ myQuery.define("html5/css3.transition.animate", ["base/client", "html5/css3", "m
             ele.addEventListener(transitionEndType, opt._transitionEnd, false);
 
             $.each(property, function (value, key) {
-                var ret, i, temp, value, tran = [];
-
+                var ret, i, temp, value, tran = [],
+                duration = opt.duration / 1000, delay = opt.delay /1000;
+                //para肯定要在这里用
                 easing = opt.specialEasing && opt.specialEasing[key] ? $.getTransitionEasing(opt.specialEasing[key]) : defaultEasing;
                 if ($.isFun($.fx.custom[key])) {
                     ret = $.fx.custom[key](ele, opt, value, key);
                     temp = ret[0]._originCss;
                     opt._transitionList.push(temp);
-                    tran.push(temp, (opt.duration / 1000) + "s", easing);
-                    opt.delay && tran.push((opt.delay / 1000) + "s");
+                    tran.push(temp, duration + "s", easing);
+                    opt.delay && tran.push(delay + "s");
                     css3.addTransition(ele, tran.join(" "));
                     value = ret[0].update();
                     for (i = 0; i < ret.length; i++) {
@@ -94,8 +95,8 @@ myQuery.define("html5/css3.transition.animate", ["base/client", "html5/css3", "m
                     opt._transitionList.push(key);
                     //temp = $.camelCase(key);
                     //ele.style[temp] = ret.from + ret.unit;
-                    tran.push(key, (opt.duration / 1000) + "s", easing);
-                    opt.delay && tran.push((opt.delay / 1000) + "s");
+                    tran.push(key, opt.duration + "s", easing);
+                    opt.delay && tran.push(opt.delay + "s");
 
                     css3.addTransition(ele, tran.join(" "));
                     ele.style[$.camelCase(key)] = ret.end + ret.unit;
@@ -156,6 +157,7 @@ myQuery.define("html5/css3.transition.animate", ["base/client", "html5/css3", "m
                         }
                         , specialEasing: opt.specialEasing
                         , queue: opt.queue === false ? false : true
+                        , para:opt.para || [] //如何使用
                     };
 
                 return ret;

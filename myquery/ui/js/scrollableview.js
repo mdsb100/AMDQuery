@@ -33,8 +33,30 @@ myQuery.define("ui/js/scrollableview", ["main/query", "main/dom", "ui/js/swappab
             this
             .able();
             
-            // s = V0 * t + a * t * t / 2
-            
+            /*
+                var 
+                para = e.para || 0.2
+                a0 = e.acceleration, a1 = para * G,
+                t0 = e.duration,
+                s0 = a0 * t0 * t0 * 0.5,
+                v0 = a0 * t0,
+                t1 = math.ceil(v1 / a1) //duration * （1 - weight),
+                s1 = v0 * t1 - a1 * t1 * t1 * 0.5,
+                Ssum = s0 + s1;
+                // (v1 - a1 * t) = 0 
+                
+                function(tick, begin, closure, duration, a0, a1, v0, t1){
+                    var result = 0, t0 = duration - t1;
+                    if(tick <= t0){
+                        t0 = tick;
+                    }
+                    result += a0 * t0 * t0 * 0.5;
+                    if (tick > t1) {
+                        result +=v0 * t1 + a1 * t1 * t1 * 0.5;
+                    };
+                    return result; 
+                }
+            */
             return this;
         }
         , customEventName: ["start", "move", "stop"]
@@ -55,7 +77,7 @@ myQuery.define("ui/js/scrollableview", ["main/query", "main/dom", "ui/js/swappab
             this.event = function(e){
                 switch(e.type){
                     case "swap.stop":
-                        
+                    self.animate(e);
                     break;
                 }
             }
@@ -74,10 +96,11 @@ myQuery.define("ui/js/scrollableview", ["main/query", "main/dom", "ui/js/swappab
             return this;
         }
         , options: {
-            "overflow":"xy",
+            "overflow": "xy",
+            "animateDuration": 600,
         }
         , public: {
-            
+           
         }
         , render: function (x, y) {
             if (this.options.isTransform) {
@@ -103,6 +126,35 @@ myQuery.define("ui/js/scrollableview", ["main/query", "main/dom", "ui/js/swappab
         //     this.container.width(this.scrollWidth);
         //     this.container.height(this.scrollHeight);
         // }
+
+        , animate: function(e){
+            var self = this, opt = this.options,
+                a0 = e.acceleration,
+                t0 = opt.animateDuration - e.duration,
+                s0 = Math.round(a0 * t0 * t0 * 0.5);
+                //v0 = a0 * t0,
+                // t1 = Math.ceil(a0 / a1), //duration * （1 - weight),
+                // s1 = v0 * t1 - a1 * t1 * t1 * 0.5,
+                // Ssum =Math.round(s0 + s1);
+                if (t0 <= 0) {return this;};
+                this.container.animate({ left: (this.container.offsetL() - s0) + "px" },
+                {
+                        duration: t0,
+                        easing: "expo.easeOut",
+                });
+                // function(tick, begin, closure, duration, a0, a1, v0, t0, t1){
+                //             var result = 0, t0 = duration - t1;
+                //             if(tick <= t0){
+                //                 t0 = tick;
+                //             }
+                //             result += a0 * t0 * t0 * 0.5;
+                //             if (tick >duration - t1) {
+                //                 result +=v0 * t1 - a1 * t1 * t1 * 0.5;
+                //             };
+                //             return result; 
+                //         }
+                return this;
+        }
     });
 
     //提供注释

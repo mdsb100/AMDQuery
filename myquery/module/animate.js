@@ -177,7 +177,7 @@ myQuery.define("module/animate", ["base/queue", "main/data", "module/FX", "modul
             ret = {
                 delay: delay
                 , duration: duration
-                , easing: $.getAnimationEasing(opt.easing)
+                , easing: $.getAnimationEasing(opt.easing, opt.para)
                 , specialEasing: opt.specialEasing
                 , complete: function (fx) {
 
@@ -189,15 +189,14 @@ myQuery.define("module/animate", ["base/queue", "main/data", "module/FX", "modul
             }
             return ret;
         }
-        , getAnimationEasing: function (easing) {
-            if ($.isArr(easing)) {
-                var ret = tween.getFun(easing.splice(0, 1));
-
+        , getAnimationEasing: function (easing, para) {
+            var ret = tween.getFun(easing);
+            if (para && para.length) {
                 return function (t, b, c, d) {
-                    ret.apply(tween, [t, b, c, d].concat(easing));
+                    ret.apply(tween, [t, b, c, d].concat(para));
                 }
             }
-            return tween.getFun(easing);
+            return ret;
 
         }
 
