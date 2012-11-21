@@ -10,7 +10,7 @@ myQuery.define("main/event", ["base/client", "main/CustomEvent", "main/data"], f
         , other = "resize scroll change select submit".split(" ")
         , _eventNameList = [].concat(mouse, mutation, html, key, other)
         , _domEventList = {}
-        , addHandler = $._redundance.addHandler
+        //, addHandler = $._redundance.addHandler
         , tools = {
             editEventType: function (type) {
                 /// <summary>兼容事件类型名</summary>
@@ -202,15 +202,15 @@ myQuery.define("main/event", ["base/client", "main/CustomEvent", "main/data"], f
                          /// <param name="type" type="String">事件类型</param>
                          /// <param name="fn" type="Function">事件方法</param>
                          /// <returns type="null" />
-                         addHandler(ele, type, fn);
-                         //                         if (ele.addEventListener)
-                         //                             ele.addEventListener(type, fn, false); //事件冒泡
-                         //                         else if (ele.attachEvent)
-                         //                             ele.attachEvent("on" + type, fn);
-                         //                         else {
-                         //                             ele['on' + type] = fn;
-                         //                             ele = null;
-                         //                         }
+                         //addHandler(ele, type, fn);
+                        if (ele.addEventListener)
+                            ele.addEventListener(type, fn, false); //事件冒泡
+                        else if (ele.attachEvent)
+                            ele.attachEvent("on" + type, fn);
+                        else {
+                            ele['on' + type] = fn;
+                            ele = null;
+                        }
                      }
                     , removeHandler: function (ele, type, fn) {
                         /// <summary>给DOM元素移除事件</summary>
@@ -620,7 +620,7 @@ myQuery.define("main/event", ["base/client", "main/CustomEvent", "main/data"], f
         , i = 0
         , len;
 
-    delete $._redundance.addHandler;
+    //delete $._redundance.addHandler;
 
     event.on = event.addHandler;
     event.off = event.removeHandler;

@@ -1747,24 +1747,29 @@
 
     myQuery.define("base/ready", ["base/promise"], function ($, Promise) {
         "use strict"; //启用严格模式
-        var addHandler = function (ele, type, fns) {
-            if (ele.addEventListener) ele.addEventListener(type, fns, false); //事件冒泡
-            else if (ele.attachEvent) ele.attachEvent('on' + type, fns);
-            else {
-                ele['on' + type] = fns;
-            }
+        
+        var ready = function (fn) {
+            promise.and(fn);
         },
-            ready = function (fn) {
-                promise.and(fn);
-            },
-            promise;
-        $._redundance.addHandler = addHandler;
+        promise;
 
         promise = new Promise(function () { //window.ready first to fix ie
-            var promise = new Promise();
-            addHandler(window, "load", function (e) {
+            var promise = new Promise(), ready = function (e) {
                 promise.resolve(e);
-            });
+            }
+            if (document.addEventListener) {
+                document.addEventListener("DOMContentLoaded", ready, false);
+            }
+            else if(document.attachEvent){
+                document.attachEvent("onreadystatechange", function(e){
+                    if (document.readyState === "complete") {
+                        ready(e);
+                    };
+                });
+            }else{
+                document.onload = ready;
+            }
+            
             return promise;
         }).then(function () {
             if (_config.myquery.package) {
