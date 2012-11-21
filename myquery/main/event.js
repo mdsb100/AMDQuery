@@ -124,7 +124,7 @@ myQuery.define("main/event", ["base/client", "main/CustomEvent", "main/data"], f
                  /// <returns type="self" />
                  if ($.isEle(ele)) {
                      var data = $.data(ele, "_handlers_")
-                     , map = data._map, j = 0, len = 0
+                     , map = data._handlerMap, j = 0, len = 0
                      , nameSpace = ""
                      , i
                      , item;

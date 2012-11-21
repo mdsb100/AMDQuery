@@ -44,6 +44,7 @@
                 fn2 = function (str) {
                     str.stopPropagation();
                     alert(str.screenX || "fn2");
+                    //这里停止向body 冒泡 所以点击不到
                 },
                 fn3 = function (e) {
                     var code = $.event.document.getCharCode(e);
