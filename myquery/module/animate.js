@@ -139,6 +139,18 @@ myQuery.define("module/animate", ["base/queue", "main/data", "module/FX", "modul
             }
             return this;
         }
+        , stopAnimation: function(ele){
+            for (var timers = FX.timers, i = timers.length - 1; i >= 0; i--) {
+                if(timers[i].ele === ele){
+                    timers.splice(i, 1);
+                }
+            };
+            return this;
+        }
+        , popAnimation: function(){//不一定能实现
+
+        }
+
         , animationPower: thread
 
         , clearQueue: function (ele, type) {
@@ -257,17 +269,18 @@ myQuery.define("module/animate", ["base/queue", "main/data", "module/FX", "modul
             }
             //return this; //提供注释
         }
-        , animateStop: function () {
-            /// <summary>停止所有元素的动画</summary>
+        , stopAnimation: function () {
+            /// <summary>停止当前动画</summary>
             /// <returns type="self" />
-            var i = timers.length - 1
-            this.each(function (ele) {
-                for (; i >= 0; i--) {
-                    if (timers[i].ele === ele) {
-                        timers[i].stop();
-                    }
-                }
-            });
+
+            // var i = timers.length - 1
+            // this.each(function (ele) {
+            //     for (; i >= 0; i--) {
+            //         if (timers[i].ele === ele) {
+            //             timers[i].stop();
+            //         }
+            //     }
+            // });
             return this;
         }
 

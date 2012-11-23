@@ -7,8 +7,8 @@ myQuery.define("ui/js/scrollableview", ["main/query", "main/dom", "ui/js/swappab
         , function scrollableview(obj, target) {
             this.__super(obj, target).init(obj || {}, target).create().render(0, 0);
         }, {
-        container: null
-        , create: function () {
+        container: null,
+        create: function () {
             var opt = this.options;
             this.positionParent = $({"overflow": "visible"},"div")
             .width(this.target.width())
@@ -33,46 +33,22 @@ myQuery.define("ui/js/scrollableview", ["main/query", "main/dom", "ui/js/swappab
             this
             .able();
             
-            /*
-                var 
-                para = e.para || 0.2
-                a0 = e.acceleration, a1 = para * G,
-                t0 = e.duration,
-                s0 = a0 * t0 * t0 * 0.5,
-                v0 = a0 * t0,
-                t1 = math.ceil(v1 / a1) //duration * （1 - weight),
-                s1 = v0 * t1 - a1 * t1 * t1 * 0.5,
-                Ssum = s0 + s1;
-                // (v1 - a1 * t) = 0 
-                
-                function(tick, begin, closure, duration, a0, a1, v0, t1){
-                    var result = 0, t0 = duration - t1;
-                    if(tick <= t0){
-                        t0 = tick;
-                    }
-                    result += a0 * t0 * t0 * 0.5;
-                    if (tick > t1) {
-                        result +=v0 * t1 + a1 * t1 * t1 * 0.5;
-                    };
-                    return result; 
-                }
-            */
             return this;
-        }
-        , customEventName: ["start", "move", "stop"]
-        , event: function () {
+        },
+        customEventName: ["start", "move", "stop"],
+        event: function () {
             
             
-        }
-        , enable: function () {
+        },
+        enable: function () {
             var event = this.event;
             this.target.on("swap.stop", event);
 
-        }
-        , disable: function () {
+        },
+        disable: function () {
             
-        }
-        , _initHandler: function () {
+        },
+        _initHandler: function () {
             var self = this, target = self.target, opt = self.options; 
             this.event = function(e){
                 switch(e.type){
@@ -82,11 +58,11 @@ myQuery.define("ui/js/scrollableview", ["main/query", "main/dom", "ui/js/swappab
                 }
             }
             return this;
-        }
-        , destory: function () {
+        },
+        destory: function () {
             
-        }
-        , init: function (obj) {
+        },
+        init: function (obj) {
             this.option(obj);
             this.originOverflow = this.target.css("overflow");
             this.refreshScroll();
@@ -94,15 +70,16 @@ myQuery.define("ui/js/scrollableview", ["main/query", "main/dom", "ui/js/swappab
             this.target.css("overflow","hidden");
             
             return this;
-        }
-        , options: {
+        },
+        options: {
             "overflow": "xy",
             "animateDuration": 600,
-        }
-        , public: {
+            "boundary": 300
+        },
+        public: {
            
-        }
-        , render: function (x, y) {
+        },
+        render: function (x, y) {
             if (this.options.isTransform) {
 
             }
@@ -110,25 +87,25 @@ myQuery.define("ui/js/scrollableview", ["main/query", "main/dom", "ui/js/swappab
                 this.container.offsetL(x).offsetT(y);
             }
             return this;
-        }
-        , target: null
-        , toString: function () {
+        },
+        target: null,
+        toString: function () {
             return "ui.scrollableview";
-        }
-        , widgetEventPrefix: "scrollableview"
+        },
+        widgetEventPrefix: "scrollableview",
 
-        , refreshScroll: function(){
+        refreshScroll: function(){
             this.scrollHeight = this.target.scrollHeight();
             this.scrollWidth = this.target.scrollWidth();
-            
-        }
+            return this;
+        },
         // , resize: function(){ 
         //     this.container.width(this.scrollWidth);
         //     this.container.height(this.scrollHeight);
         // }
 
-        , animate: function(e){
-            var self = this, opt = this.options,
+        animate: function(e){
+            var opt = this.options,
                 a0 = e.acceleration,
                 t0 = opt.animateDuration - e.duration,
                 s0 = Math.round(a0 * t0 * t0 * 0.5);
@@ -137,11 +114,19 @@ myQuery.define("ui/js/scrollableview", ["main/query", "main/dom", "ui/js/swappab
                 // s1 = v0 * t1 - a1 * t1 * t1 * 0.5,
                 // Ssum =Math.round(s0 + s1);
                 if (t0 <= 0) {return this;};
-                this.container.animate({ left: (this.container.offsetL() - s0) + "px" },
-                {
-                        duration: t0,
-                        easing: "expo.easeOut",
-                });
+
+                switch(e.derection){
+                    case 3: this.toRight(s0, t0);
+                    break;
+                    case 9: this.toLeft(s0, t0);
+                    break;
+                    case 6: this.toBottom(s0, t0);
+                    break;
+                    case 12: this.toTop(s0, t0);
+                    break;
+                }
+
+                
                 // function(tick, begin, closure, duration, a0, a1, v0, t0, t1){
                 //             var result = 0, t0 = duration - t1;
                 //             if(tick <= t0){
@@ -154,6 +139,43 @@ myQuery.define("ui/js/scrollableview", ["main/query", "main/dom", "ui/js/swappab
                 //             return result; 
                 //         }
                 return this;
+        },
+
+        checkBoundary: function(origin, distance){
+
+        },
+
+        toRight: function(s, t){
+            this.container.animate({ left: (this.container.offsetL() - s) + "px" },
+            {
+                duration: t,
+                easing: "expo.easeOut"
+            });
+            return this;
+        },
+        toLeft: function(s, t){
+            this.container.animate({ left: (this.container.offsetL() + s) + "px" },
+            {
+                duration: t,
+                easing: "expo.easeOut"
+            });
+            return this;
+        },
+        toBottom: function(s, t){
+            this.container.animate({ top: (this.container.offsetT() - s) + "px" },
+            {
+                duration: t,
+                easing: "expo.easeOut"
+            });
+            return this;
+        },
+        toTop: function(s, t){
+            this.container.animate({ left: (this.container.offsetT() + s) + "px" },
+            {
+                duration: t,
+                easing: "expo.easeOut"
+            });
+            return this;
         }
     });
 
