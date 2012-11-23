@@ -129,15 +129,7 @@ myQuery.define("html5/css3.transition.animate", ["base/client", "html5/css3", "m
                             $.dequeue(ele, [ele]);
                             property = option = null;
                         });
-                        //                        var queue = $.queue(ele, "fx", function (ele, dequeue) {
-                        //                            animateByTransition(ele, property, option);
-                        //                            dequeue();
-                        //                            easingList = property = option = null;
-                        //                        });
-
-                        //                        if (queue[0] !== "inprogress") {
-                        //                            $.dequeue(ele, "fx");
-                        //                        }
+                        
                     }
                 }
                 return this;
@@ -207,18 +199,6 @@ myQuery.define("html5/css3.transition.animate", ["base/client", "html5/css3", "m
                 }
             }
         });
-
-        //        $.support.transition = (function () {
-        //            var result = false;
-        //            (
-        //            client.browser.chrome ||
-        //            client.browser.firefox >= 16 ||
-        //            client.browser.ie >= 10 ||
-        //            client.browser.opera >= 10.5 ||
-        //            client.browser.sarfari >= 3.2
-        //            ) && (result = true);
-        //            return result;
-        //        })();
 
         if ($.config.model.transitionToAnimation) {
             if ($.support.transition) {

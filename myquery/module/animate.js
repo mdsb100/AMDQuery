@@ -163,22 +163,7 @@ myQuery.define("module/animate", ["base/queue", "main/data", "module/FX", "modul
             var q = $.queue(ele, type);
 
             return q.dequeue(ele, [ele]);
-            //            var queue = $.queue(ele, type), fn = queue.shift();
-
-            //            if (fn === "inprogress") {
-            //                fn = queue.shift();
-            //            }
-
-            //            if (fn) {
-            //                if (type === "fx") {
-            //                    //queue.unshift("inprogress");
-            //                    queue.splice(0, 0, "inprogress");
-            //                }
-
-            //                fn.call(ele, ele, function () {
-            //                    $.dequeue(ele, type);
-            //                });
-            //            }
+            
         }
 
         , _getAnimateOpt: function (opt) {
@@ -273,14 +258,6 @@ myQuery.define("module/animate", ["base/queue", "main/data", "module/FX", "modul
             /// <summary>停止当前元素当前动画</summary>
             /// <returns type="self" />
 
-            // var i = timers.length - 1
-            // this.each(function (ele) {
-            //     for (; i >= 0; i--) {
-            //         if (timers[i].ele === ele) {
-            //             timers[i].stop();
-            //         }
-            //     }
-            // });
             this.each(function(ele){
                 $.stopAnimation(ele);
             });
