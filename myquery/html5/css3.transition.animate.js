@@ -8,18 +8,18 @@ myQuery.define("html5/css3.transition.animate", ["base/client", "html5/css3", "m
 
     if ($.support.transition) {
         var 
-         transitionEndType = (function () {
-             var type = "";
-             if (client.engine.ie)
-                 type = "MS";
-             else if (client.engine.webkit || client.system.mobile)
-                 type = "webkit";
-             else if (client.engine.gecko)
-                 type = "";
-             else if (client.engine.opera)
-                 type = "o";
-             return type + 'TransitionEnd';
-         })()
+        transitionEndType = (function () {
+            var type = "";
+            if (client.engine.ie)
+                type = "MS";
+            else if (client.engine.webkit || client.system.mobile)
+                type = "webkit";
+            else if (client.engine.gecko)
+                type = "";
+            else if (client.engine.opera)
+                type = "o";
+            return type + 'TransitionEnd';
+        })()
         , animateByTransition = function (ele, property, option) {
             /// <summary>给所有元素添加一个动画
             /// <para>obj property:{ width: "50em", top: "+=500px" }</para>
@@ -223,6 +223,7 @@ myQuery.define("html5/css3.transition.animate", ["base/client", "html5/css3", "m
         if ($.config.model.transitionToAnimation) {
             if ($.support.transition) {
                 $.animate = $.animateByTransition;
+                $.animationPower = "css3.transition";
                 $.fn.animate = $.fn.animateByTransition;
             }
             else {

@@ -140,15 +140,15 @@ myQuery.define("module/animate", ["base/queue", "main/data", "module/FX", "modul
             return this;
         }
         , stopAnimation: function(ele){
+            /// <summary>停止当前元素当前动画</summary>
+            /// <returns type="self" />
             for (var timers = FX.timers, i = timers.length - 1; i >= 0; i--) {
                 if(timers[i].ele === ele){
                     timers.splice(i, 1);
                 }
             };
+            $(ele).dequeue();
             return this;
-        }
-        , popAnimation: function(){//不一定能实现
-
         }
 
         , animationPower: thread
@@ -270,7 +270,7 @@ myQuery.define("module/animate", ["base/queue", "main/data", "module/FX", "modul
             //return this; //提供注释
         }
         , stopAnimation: function () {
-            /// <summary>停止当前动画</summary>
+            /// <summary>停止当前元素当前动画</summary>
             /// <returns type="self" />
 
             // var i = timers.length - 1
