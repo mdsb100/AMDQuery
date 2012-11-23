@@ -281,6 +281,10 @@ myQuery.define("module/animate", ["base/queue", "main/data", "module/FX", "modul
             //         }
             //     }
             // });
+            this.each(function(ele){
+                $.stopAnimation(ele);
+            });
+            
             return this;
         }
 

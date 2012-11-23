@@ -95,8 +95,8 @@ myQuery.define("html5/css3.transition.animate", ["base/client", "html5/css3", "m
                     opt._transitionList.push(key);
                     //temp = $.camelCase(key);
                     //ele.style[temp] = ret.from + ret.unit;
-                    tran.push(key, opt.duration + "s", easing);
-                    opt.delay && tran.push(opt.delay + "s");
+                    tran.push(key, duration + "s", easing);
+                    opt.delay && tran.push(delay + "s");
 
                     css3.addTransition(ele, tran.join(" "));
                     ele.style[$.camelCase(key)] = ret.end + ret.unit;
