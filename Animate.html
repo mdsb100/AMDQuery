@@ -10,7 +10,7 @@
     </style>
     <link href="css/reset.css" rel="stylesheet" type="text/css" />
     <script src="myquery/myquery.js" type="text/javascript" myquery="define:$;" amd="detectCR:1;async:1"
-        model="transitionToAnimation:1"></script>
+        model="transitionToAnimation:0"></script>
     <script type="text/javascript">
         $.require([
         "main/query",
@@ -152,6 +152,10 @@
                 go1.css({ w: 100, h: 100, t: 0, l: 0, o: 1, backgroundColor: "white" }).css3({ transform: [] });
             });
 
+            var button13 = $("#button13").on("click",function () {
+                go1.stopAnimation();
+            });
+
             //            var b = go1.styleTable();
             //            var v = go1.style("MozTransform");
             //            var c = 0
@@ -198,6 +202,9 @@
         </button>
         <button id="button12">
             reset
+        </button>
+        <button id="button13">
+            stop
         </button>
     </div>
 </body>

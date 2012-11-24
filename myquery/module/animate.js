@@ -139,7 +139,7 @@ myQuery.define("module/animate", ["base/queue", "main/data", "module/FX", "modul
             }
             return this;
         }
-        , stopAnimation: function(ele){
+        , stopAnimation: function(ele, isDequeue){
             /// <summary>停止当前元素当前动画</summary>
             /// <returns type="self" />
             for (var timers = FX.timers, i = timers.length - 1; i >= 0; i--) {
@@ -147,7 +147,7 @@ myQuery.define("module/animate", ["base/queue", "main/data", "module/FX", "modul
                     timers.splice(i, 1);
                 }
             };
-            $(ele).dequeue();
+            isDequeue && $(ele).dequeue();
             return this;
         }
 
@@ -254,12 +254,13 @@ myQuery.define("module/animate", ["base/queue", "main/data", "module/FX", "modul
             }
             //return this; //提供注释
         }
-        , stopAnimation: function () {
+        , stopAnimation: function (isDequeue) {
             /// <summary>停止当前元素当前动画</summary>
+            /// <param name="isDequeue" type="Boolean">是否继续之后的动画</param>
             /// <returns type="self" />
 
             this.each(function(ele){
-                $.stopAnimation(ele);
+                $.stopAnimation(ele, isDequeue);
             });
             
             return this;
