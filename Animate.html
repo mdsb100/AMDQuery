@@ -70,9 +70,9 @@
             var button2 = $("#button2").addHandler("click", function () {
                 go1
                 .animate({
-                    transform3d: { translateX: "+=100px", translateY: "+=100px", rotateZ: "+=30deg" }
+                    transform3d: { translateX: "+=200px", translateY: "+=200px", rotateZ: "+=30deg" }
                 }
-                , { duration: 2000, easing: "linear"
+                , { duration: 2000, easing: "quart.easeInOut"
                     , complete: function () {
                         //$.animationPower.sleep(2000);
                     }
