@@ -526,9 +526,16 @@ myQuery.define("html5/css3", ["base/client", "main/dom"], function ($, client, d
             }
 
             $.each(list, function (item) {
-                match = transition.match((item || item.name) + "[\\w\\s\\d\\.\\-]*((\\,|\\,\\s)|$)");
-                n += n && match[1] ? ", " : "";
-                transition = transition.replace(match[0], n);
+                match = transition.match((item || item.name) + ".+?(\\D,|[^,]$)");
+                if (match) {
+                    if (n && match[1] && match[1].indexOf(",") > -1) {
+                        n += ","
+                    }
+                    transition = transition.replace(match[0], n);
+                };
+                // match = transition.match((item || item.name) + "[\\w\\s\\d\\.\\-]*((\\,|\\,\\s)|$)");
+                // n += n && match[1] ? ", " : "";
+                // transition = transition.replace(match[0], n);
                 //transition = transition.replace(/(,\s|,)$/, "");
             });
 
