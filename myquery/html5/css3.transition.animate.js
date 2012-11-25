@@ -134,6 +134,11 @@ myQuery.define("html5/css3.transition.animate", ["base/client", "html5/css3", "m
                 }
                 return this;
             }
+            , stopAnimationByTransition: function(ele, isDequeue){
+                css3.removeTransition(ele);
+                isDequeue && $.dequeue(ele);
+                return this;
+            }
             , _getAnimateByTransitionOpt: function (opt) {
                 opt = opt || {};
                 var duration = FX.getDuration(opt.duration)
@@ -198,13 +203,20 @@ myQuery.define("html5/css3.transition.animate", ["base/client", "html5/css3", "m
                     });
                 }
             }
+            , stopAnimationByTransition: function(isDequeue){
+                return this.each(function(ele){
+                    $.stopAnimationByTransition(ele, isDequeue);
+                });
+            }
         });
 
         if ($.config.model.transitionToAnimation) {
             if ($.support.transition) {
                 $.animate = $.animateByTransition;
+                $.stopAnimation = $.stopAnimationByTransition;
                 $.animationPower = "css3.transition";
                 $.fn.animate = $.fn.animateByTransition;
+                $.fn.stopAnimation = $.fn.stopAnimationByTransition;
             }
             else {
                 $.console.log({ msg: "browser is not support transitionEnd", fn: "css3.transition.animate load" });

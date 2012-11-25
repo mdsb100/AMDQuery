@@ -147,7 +147,7 @@ myQuery.define("module/animate", ["base/queue", "main/data", "module/FX", "modul
                     timers.splice(i, 1);
                 }
             };
-            isDequeue && $(ele).dequeue();
+            isDequeue && $.dequeue(ele);
             return this;
         }
 
@@ -259,11 +259,9 @@ myQuery.define("module/animate", ["base/queue", "main/data", "module/FX", "modul
             /// <param name="isDequeue" type="Boolean">是否继续之后的动画</param>
             /// <returns type="self" />
 
-            this.each(function(ele){
+            return this.each(function(ele){
                 $.stopAnimation(ele, isDequeue);
             });
-            
-            return this;
         }
 
         , dequeue: function (type) {
