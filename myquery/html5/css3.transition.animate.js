@@ -29,20 +29,31 @@ myQuery.define("html5/css3.transition.animate", ["base/client", "html5/css3", "m
             var opt = {},
                 p, self = ele,
                 defaultEasing = option.easing,
-                easing;
+                easing, transitionList = $.data(ele, "_transitionList");
+
+            if (!transitionList) {
+                transitionList = {};
+            };
 
             $.easyExtend(opt, option);
-            opt._transitionList = [];
-
+            //opt._transitionList = [];
             opt._transitionEnd = function (event) {
-                for (var i = 0, len = opt._transitionList.length, that = this; i < len; i++) {
-                    css3.removeTransition(this, opt._transitionList[i]);
-                }
-                this.removeEventListener(transitionEndType, opt._transitionEnd);
+                var i,
+                    ele = this,
+                    transitionList = $.data(ele, "_transitionList");
+
+                for (i in transitionList) {
+                    css3.removeTransition(ele, i);
+                    delete transitionList[i];
+                };
+                // for (; i < len; i++) {
+                //     css3.removeTransition(this, opt._transitionList[i]);
+                // }
+                ele.removeEventListener(transitionEndType, opt._transitionEnd);
 
                 setTimeout(function () {
-                    opt.complete.call(that);
-                    that = opt = null;
+                    opt.complete.call(ele);
+                    ele = opt = null;
                 }, 0);
 
             };
@@ -71,23 +82,31 @@ myQuery.define("html5/css3.transition.animate", ["base/client", "html5/css3", "m
             $.each(property, function (value, key) {
                 var ret, i, temp, value, tran = [],
                     duration = opt.duration / 1000,
-                    delay = opt.delay / 1000;
+                    delay = opt.delay / 1000,
+                    item, startTime;
                 //para肯定要在这里用
                 easing = opt.specialEasing && opt.specialEasing[key] ? $.getTransitionEasing(opt.specialEasing[key]) : defaultEasing;
                 if ($.isFun($.fx.custom[key])) {
                     ret = $.fx.custom[key](ele, opt, value, key);
                     temp = ret[0]._originCss;
-                    opt._transitionList.push(temp);
+                    //opt._transitionList.push(temp);
                     tran.push(temp, duration + "s", easing);
                     opt.delay && tran.push(delay + "s");
                     css3.addTransition(ele, tran.join(" "));
                     value = ret[0].update();
+                    startTime = new Date();
                     for (i = 0; i < ret.length; i++) {
-                        value = ret[i].update(value, ret[i].end);
+                        item = ret[i];
+                        value = item.update(value, item.end);
+                        item.startTime = startTime;
                     }
+                    if (!transitionList[temp]) {
+                        transitionList[temp] = [];
+                    };
+                    transitionList[temp] = transitionList[temp].concat(ret);
                 } else {
                     ret = new FX(ele, opt, value, key);
-                    opt._transitionList.push(key);
+                    //opt._transitionList.push(key);
                     //temp = $.camelCase(key);
                     //ele.style[temp] = ret.from + ret.unit;
                     tran.push(key, duration + "s", easing);
@@ -95,8 +114,13 @@ myQuery.define("html5/css3.transition.animate", ["base/client", "html5/css3", "m
 
                     css3.addTransition(ele, tran.join(" "));
                     ele.style[$.camelCase(key)] = ret.end + ret.unit;
+                    ret.startTime = new Date();
+                    transitionList[key] = ret;
                 }
             });
+
+            $.data(ele, "_transitionList", transitionList);
+
         },
             easingList = {
                 "linear": 1,
