@@ -1,26 +1,18 @@
 ﻿/// <reference path="../myquery.js" />
-
-myQuery.define("html5/css3.transition.animate", ["base/client", "html5/css3", "module/FX", "html5/animate.transform"]
-, function ($, client, css3, FX, transform, undefined) {
+myQuery.define("html5/css3.transition.animate", ["base/client", "html5/css3", "module/FX", "html5/animate.transform", "hash/cubicBezier.tween"], function ($, client, css3, FX, transform, cubicBezierTween, undefined) {
     "use strict"; //启用严格模式
-
     //无法识别em这种
-
     if ($.support.transition) {
-        var 
+        var
         transitionEndType = (function () {
             var type = "";
-            if (client.engine.ie)
-                type = "MS";
-            else if (client.engine.webkit || client.system.mobile)
-                type = "webkit";
-            else if (client.engine.gecko)
-                type = "";
-            else if (client.engine.opera)
-                type = "o";
+            if (client.engine.ie) type = "MS";
+            else if (client.engine.webkit || client.system.mobile) type = "webkit";
+            else if (client.engine.gecko) type = "";
+            else if (client.engine.opera) type = "o";
             return type + 'TransitionEnd';
-        })()
-        , animateByTransition = function (ele, property, option) {
+        })(),
+            animateByTransition = function (ele, property, option) {
             /// <summary>给所有元素添加一个动画
             /// <para>obj property:{ width: "50em", top: "+=500px" }</para>
             /// <para>obj option</para>
@@ -34,7 +26,10 @@ myQuery.define("html5/css3.transition.animate", ["base/client", "html5/css3", "m
             /// <param name="property" type="Object">样式属性</param>
             /// <param name="option" type="Object">参数</param>
             /// <returns type="self" />
-            var opt = {}, p, self = ele, defaultEasing = option.easing, easing;
+            var opt = {},
+                p, self = ele,
+                defaultEasing = option.easing,
+                easing;
 
             $.easyExtend(opt, option);
             opt._transitionList = [];
@@ -64,7 +59,6 @@ myQuery.define("html5/css3.transition.animate", ["base/client", "html5/css3", "m
 
                 if ((p === "height" || p === "width") && ele.style) {
                     opt.display = ele.style.display; //$.css(ele, "display");
-
                     opt.overflow = ele.style.overflow;
 
                     ele.style.display = "block"; //是否对呢？
@@ -76,7 +70,8 @@ myQuery.define("html5/css3.transition.animate", ["base/client", "html5/css3", "m
 
             $.each(property, function (value, key) {
                 var ret, i, temp, value, tran = [],
-                duration = opt.duration / 1000, delay = opt.delay /1000;
+                    duration = opt.duration / 1000,
+                    delay = opt.delay / 1000;
                 //para肯定要在这里用
                 easing = opt.specialEasing && opt.specialEasing[key] ? $.getTransitionEasing(opt.specialEasing[key]) : defaultEasing;
                 if ($.isFun($.fx.custom[key])) {
@@ -102,15 +97,15 @@ myQuery.define("html5/css3.transition.animate", ["base/client", "html5/css3", "m
                     ele.style[$.camelCase(key)] = ret.end + ret.unit;
                 }
             });
-        }
-        , easingList = {
-            "linear": 1
-            , "ease": 1
-            , "ease-in": 1
-            , "ease-out": 1
-            , "ease-in-out": 1
-            , "cubic-bezier": 1
-        };
+        },
+            easingList = {
+                "linear": 1,
+                "ease": 1,
+                "ease-in": 1,
+                "ease-out": 1,
+                "ease-in-out": 1,
+                "cubic-bezier": 1
+            };
 
         $.extend({
             animateByTransition: function (ele, property, option) {
@@ -118,64 +113,68 @@ myQuery.define("html5/css3.transition.animate", ["base/client", "html5/css3", "m
 
                 if ($.isEmptyObj(property)) {
                     return option.complete(ele);
-                }
-                else {
+                } else {
                     if (option.queue === false) {
                         animateByTransition(ele, property, option);
-                    }
-                    else {
+                    } else {
                         $.queue(ele, "fx", function () {
                             animateByTransition(ele, property, option);
                             $.dequeue(ele, [ele]);
                             property = option = null;
                         });
-                        
+
                     }
                 }
                 return this;
-            }
-            , stopAnimationByTransition: function(ele, isDequeue){
+            },
+            stopAnimationByTransition: function (ele, isDequeue) {
                 css3.removeTransition(ele);
                 isDequeue && $.dequeue(ele);
                 return this;
-            }
-            , _getAnimateByTransitionOpt: function (opt) {
+            },
+            _getAnimateByTransitionOpt: function (opt) {
                 opt = opt || {};
-                var duration = FX.getDuration(opt.duration)
-                    , delay = FX.getDelay(opt.delay)
-                    , ret = {
-                        delay: delay
-                        , duration: duration
-                        , easing: $.getTransitionEasing(opt.easing)
-                        , complete: function (fx) {
+                var duration = FX.getDuration(opt.duration),
+                    delay = FX.getDelay(opt.delay),
+                    ret = {
+                        delay: delay,
+                        duration: duration,
+                        easing: $.getTransitionEasing(opt.easing),
+                        complete: function (fx) {
                             opt.complete && opt.complete();
                             $(this).dequeue(); // this is ele
                             opt = duration = null;
-                        }
-                        , specialEasing: opt.specialEasing
-                        , queue: opt.queue === false ? false : true
-                        , para:opt.para || [] //如何使用
+                        },
+                        specialEasing: opt.specialEasing,
+                        queue: opt.queue === false ? false : true,
+                        para: opt.para || [] //如何使用
                     };
 
                 return ret;
-            }
-            , getTransitionEasing: function (easing) {
+            },
+            getTransitionEasing: function (easing) {
+                var name = easing;
                 if (easing) {
                     if ($.isArr(easing)) {
-                        var name = easing.slice(0, 1)[0];
-                        if ($.unCamelCase(name) == "cubic-bezier") {
-                            return "cubic-bezier(" + easing.join(",") + ")";
-                        }
-                        else {
-                            easing = name;
-                        }
+                        name = easing.splice(0, 1)[0];
                     }
-                    easing = $.unCamelCase(easing);
-                    if (easing.indexOf(".") > -1) {
-                        easing = easing.replace(".", "-");
-                    }
+                    name = $.unCamelCase(name);
+
+                    name = name.replace(".", "-");
+
+                    if (easing = cubicBezierTween[easing]) {
+                        name = "cubic-bezier";
+                    };
+
+                    if (name == "cubic-bezier") {
+                        return name + "(" + easing.join(",") + ")";
+                    };
+
+                    if (easingList[name]) {
+                        return name;
+                    };
                 }
-                return (easingList[easing] && easing) || "linear"
+                return "linear";
             }
         });
 
@@ -196,15 +195,14 @@ myQuery.define("html5/css3.transition.animate", ["base/client", "html5/css3", "m
                 var option = $._getAnimateByTransitionOpt(option);
                 if ($.isEmptyObj(property)) {
                     return this.each(option.complete);
-                }
-                else {
+                } else {
                     return this[option.queue === false ? "each" : "queue"](function (ele) {
                         animateByTransition(ele, property, option);
                     });
                 }
-            }
-            , stopAnimationByTransition: function(isDequeue){
-                return this.each(function(ele){
+            },
+            stopAnimationByTransition: function (isDequeue) {
+                return this.each(function (ele) {
                     $.stopAnimationByTransition(ele, isDequeue);
                 });
             }
@@ -217,9 +215,11 @@ myQuery.define("html5/css3.transition.animate", ["base/client", "html5/css3", "m
                 $.animationPower = "css3.transition";
                 $.fn.animate = $.fn.animateByTransition;
                 $.fn.stopAnimation = $.fn.stopAnimationByTransition;
-            }
-            else {
-                $.console.log({ msg: "browser is not support transitionEnd", fn: "css3.transition.animate load" });
+            } else {
+                $.console.log({
+                    msg: "browser is not support transitionEnd",
+                    fn: "css3.transition.animate load"
+                });
             }
         }
     }
