@@ -38,8 +38,7 @@ myQuery.define("html5/css3.transition.animate", ["base/client", "html5/css3", "m
             $.easyExtend(opt, option);
             //opt._transitionList = [];
             opt._transitionEnd = function (event) {
-                var i,
-                    ele = this,
+                var i, ele = this,
                     transitionList = $.data(ele, "_transitionList");
 
                 for (i in transitionList) {
@@ -86,6 +85,7 @@ myQuery.define("html5/css3.transition.animate", ["base/client", "html5/css3", "m
                     item, startTime;
                 //para肯定要在这里用
                 easing = opt.specialEasing && opt.specialEasing[key] ? $.getTransitionEasing(opt.specialEasing[key]) : defaultEasing;
+                opt.easing = opt.originEasing;
                 if ($.isFun($.fx.custom[key])) {
                     ret = $.fx.custom[key](ele, opt, value, key);
                     temp = ret[0]._originCss;
@@ -152,8 +152,25 @@ myQuery.define("html5/css3.transition.animate", ["base/client", "html5/css3", "m
                 return this;
             },
             stopAnimationByTransition: function (ele, isDequeue) {
+                var transitionList = $.data(ele, "_transitionList"),
+                    type, fx, i, item;
+                for (type in transitionList) {
+                    fx = transitionList[type];
+                    if ($.isArr(fx)) {
+                        for (i = fx.length - 1; i >= 0; i--) {
+                            item = fx[i];
+                            console.log(item.easing);
+                            item.isInDelay() ? item.update(null, fx.from) : item.step();
+                        };
+                    } else {
+                        console.log(fx.isInDelay())
+                        fx.isInDelay() ? fx.update(fx.from) : fx.step();
+                    }
+                    delete transitionList[type];
+                }
+
                 css3.removeTransition(ele);
-                isDequeue && $.dequeue(ele);
+                isDequeue == false || $.dequeue(ele);
                 return this;
             },
             _getAnimateByTransitionOpt: function (opt) {
@@ -164,6 +181,7 @@ myQuery.define("html5/css3.transition.animate", ["base/client", "html5/css3", "m
                         delay: delay,
                         duration: duration,
                         easing: $.getTransitionEasing(opt.easing),
+                        originEasing: $.getAnimationEasing(opt.easing, opt.para),
                         complete: function (fx) {
                             opt.complete && opt.complete();
                             $(this).dequeue(); // this is ele

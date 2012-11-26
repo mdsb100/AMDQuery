@@ -88,13 +88,18 @@ myQuery.define("module/FX", ["main/dom", "module/object"], function ($, dom, obj
             index > -1 && FX.timers.splice(index, 1);
         }
 
-        , update: function () {
+        , update: function (nowPos) {
+            nowPos = nowPos == undefined? this.nowPos.toFixed(2): nowPos;
             switch (this.name) {
-                case "opacity": return $.setOpacity(this.ele, this.nowPos);
+                case "opacity": return $.setOpacity(this.ele, nowPos);
                     break;
                 default:
-                    this.ele.style[this.name] = this.nowPos + this.unit;
+                    this.ele.style[this.name] = nowPos + this.unit;
             }
+        }
+
+        , isInDelay: function(){
+            return new Date() - this.startTime < this.delay;
         }
     }, {
         speeds: function (type) {

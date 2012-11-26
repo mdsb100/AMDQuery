@@ -34,7 +34,7 @@ myQuery.define("html5/animate.transform", ["module/object", "module/FX", "html5/
             }
             , update: function (transform, value) {
                 transform = transform || $.getTransform3d(this.ele);
-                value = value != undefined ? value : this.nowPos;
+                value = value != undefined ? value : parseInt(this.nowPos);
                 if (value != undefined) {
                     transform[this.type] = value + this.unit;
                     $[this.name](this.ele, transform);
@@ -87,7 +87,7 @@ myQuery.define("html5/animate.transform", ["module/object", "module/FX", "html5/
             }
             , update: function (transform, value) {
                 transform = transform || $.getTransform(this.ele, this.type[0])[0] || [];
-                value = value != undefined ? value : this.nowPos;
+                value = value != undefined ? value : parseInt(this.nowPos);
                 if (value != undefined) {
                     transform[0] = this.type[0];
 
