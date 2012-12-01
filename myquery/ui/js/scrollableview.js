@@ -1,6 +1,13 @@
 ﻿/// <reference path="../../myquery.js" />
 
-myQuery.define("ui/js/scrollableview", ["main/query", "main/dom", "ui/js/swappable", "ui/js/draggable", "module/Widget", "module/animate", "module/tween.extend"]
+myQuery.define("ui/js/scrollableview", 
+["main/query", 
+"main/dom",
+"ui/js/swappable",
+"ui/js/draggable", 
+"module/Widget", 
+"module/animate", 
+"module/tween.extend"]
 , function ($, query, dom, swappable, draggable, Widget, animate, tween, undefined) {
     var eventFuns = $.event.document
     , scrollableview = $.widget("ui.scrollableview"
@@ -74,13 +81,14 @@ myQuery.define("ui/js/scrollableview", ["main/query", "main/dom", "ui/js/swappab
         options: {
             "overflow": "xy",
             "animateDuration": 600,
-            "boundary": 300
+            "boundary": 300,
+            "isTransform3d": 1
         },
         public: {
            
         },
         render: function (x, y) {
-            if (this.options.isTransform) {
+            if (this.options.isTransform3d && $.support.transform3d) {
 
             }
             else{
@@ -115,7 +123,7 @@ myQuery.define("ui/js/scrollableview", ["main/query", "main/dom", "ui/js/swappab
                 // Ssum =Math.round(s0 + s1);
                 if (t0 <= 0) {return this;};
 
-                switch(e.derection){
+                switch(e.direction){
                     case 3: this.toRight(s0, t0);
                     break;
                     case 9: this.toLeft(s0, t0);

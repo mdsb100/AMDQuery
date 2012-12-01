@@ -81,7 +81,7 @@ myQuery.define("ui/js/swappable", ["base/client", "main/event", "module/math", "
         },
         options: {
             cursor: "pointer",
-            directionRange: 22.5,
+            directionRange: 15,
             disabled: true,
             pauseSensitivity: 500
             //swapFor
