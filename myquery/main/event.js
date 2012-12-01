@@ -20,6 +20,7 @@ myQuery.define("main/event", ["base/client", "main/CustomEvent", "main/data"], f
                 switch (type) {
                     case 'focus': if (client.browser.ie) type += 'in'; break;
                     case 'blur': if (client.browser.ie) type = 'focusout'; break;
+                    case 'touchwheel': type = "mousewheel"; if (client.browser.firefox) type = 'DOMMouseScroll'; break;
                     case 'mousewheel': if (client.browser.firefox) type = 'DOMMouseScroll'; break;
                 }
                 if ((temp = $.interfaces.trigger("editEventType", type)))
@@ -905,6 +906,35 @@ myQuery.define("main/event", ["base/client", "main/CustomEvent", "main/data"], f
                 if (delta)
                     fun.call(this, delta);
                 $.event.document.stopPropagation(e);
+            }) : this.trigger("mousewheel", fun);
+        }
+
+        , touchwheel: function(fun){
+            /// <summary>触摸板事件或触发</summary>
+            /// <param name="fun" type="Function/Object/undefined">事件方法</param>
+            /// <returns type="self" />
+            return $.isFun(fun) ? this.addHandler('mousewheel', function (e) {
+                var e = $.event.document.getEvent(e), delta = 0, direction = "y";
+                if (e.wheelDelta){
+                    delta = e.wheelDelta / 120;
+                    if (e.wheelDeltaX) {
+                        direction = "x";
+                    };
+                    if (e.wheelDeltaY) {
+                        direction = "y";
+                    };
+                }    
+                else if (e.detail){
+                    delta = -e.detail / 3;
+                }
+                e.delta = delta;
+                e.direction = direction;
+                delete e.type;
+                e.type = "touchwheel";
+                fun.call(this, e);
+                $.event.document.stopPropagation(e);
+                $.event.document.stopPropagation(e);
+
             }) : this.trigger("mousewheel", fun);
         }
 

@@ -1,4 +1,4 @@
-﻿/// <reference path="../../myquery.js" />
+/// <reference path="../../myquery.js" />
 
 myQuery.define("ui/js/scrollableview", 
 ["main/query", 
@@ -49,18 +49,26 @@ myQuery.define("ui/js/scrollableview",
         },
         enable: function () {
             var event = this.event;
-            this.target.on("swap.stop", event);
-
+            this.target.on("swap.stop", event).touchwheel(event);
         },
         disable: function () {
-            
+            this.target.off("swap.stop", event).off("touchwheel", event);
         },
         _initHandler: function () {
             var self = this, target = self.target, opt = self.options; 
-            this.event = function(e){
+            this.event = function(e) {
                 switch(e.type){
                     case "swap.stop":
                     self.animate(e);
+                    case "touchwheel":
+                    var x = null, y = null;
+                    if (e.direction == "x") {
+                        x = e.wheelDelta * opt.touchWheelAccuracy;
+                    }
+                    else if (e.direction == "y") {
+                        y = e.wheelDelta * opt.touchWheelAccuracy;
+                    };
+                    self.render(x, y, true);
                     break;
                 }
             }
@@ -72,7 +80,7 @@ myQuery.define("ui/js/scrollableview",
         init: function (obj) {
             this.option(obj);
             this.originOverflow = this.target.css("overflow");
-            this.refreshScroll();
+            this.refreshPosition();
             this._initHandler()
             this.target.css("overflow","hidden");
             
@@ -81,18 +89,25 @@ myQuery.define("ui/js/scrollableview",
         options: {
             "overflow": "xy",
             "animateDuration": 600,
-            "boundary": 300,
-            "isTransform3d": 1
+            "boundary": 150,
+            "isTransform3d": 1,
+            "touchWheelAccuracy": 0.5
         },
         public: {
            
         },
-        render: function (x, y) {
+        render: function (x, y, addtion) {
+            var originX = 0, originY=0;
             if (this.options.isTransform3d && $.support.transform3d) {
 
             }
             else{
-                this.container.offsetL(x).offsetT(y);
+                if (addtion) {
+                    originX = this.container.offsetL();
+                    originY = this.container.offsetT();
+                };
+                x !== null && this.container.offsetL(originX + x);
+                y !== null && this.container.offsetT(originY + y);
             }
             return this;
         },
@@ -102,16 +117,20 @@ myQuery.define("ui/js/scrollableview",
         },
         widgetEventPrefix: "scrollableview",
 
-        refreshScroll: function(){
+        refreshPosition: function(){
             this.scrollHeight = this.target.scrollHeight();
             this.scrollWidth = this.target.scrollWidth();
+            this.viewportHeight = this.target.width();
+            this.viewporttWidth = this.target.height();
             return this;
         },
         // , resize: function(){ 
         //     this.container.width(this.scrollWidth);
         //     this.container.height(this.scrollHeight);
         // }
-
+        _isAllowedDirection: function(direction){
+            return this.options.overflow.indexOf(direction) > -1;
+        },
         animate: function(e){
             var opt = this.options,
                 a0 = e.acceleration,
@@ -124,13 +143,13 @@ myQuery.define("ui/js/scrollableview",
                 if (t0 <= 0) {return this;};
 
                 switch(e.direction){
-                    case 3: this.toRight(s0, t0);
+                    case 3: this.toX(-s0, t0);
                     break;
-                    case 9: this.toLeft(s0, t0);
+                    case 9: this.toX(s0, t0);
                     break;
-                    case 6: this.toBottom(s0, t0);
+                    case 6: this.toY(-s0, t0);
                     break;
-                    case 12: this.toTop(s0, t0);
+                    case 12:this.toY(s0, t0);
                     break;
                 }
 
@@ -153,32 +172,25 @@ myQuery.define("ui/js/scrollableview",
 
         },
 
-        toRight: function(s, t){
-            this.container.animate({ left: (this.container.offsetL() - s) + "px" },
-            {
+        toX: function(s, t){
+            if(!this._isAllowedDirection("x")){
+                return this;
+            }
+            var opt = this.options,
+            boundary = opt.boundary,
+            left = $.between(-(this.scrollWidth + boundary - this.viewporttWidth), boundary, this.container.offsetL() - s);
+            console.log(this.scrollWidth)
+            this.container.animate({ left: left + "px" }, {
                 duration: t,
                 easing: "expo.easeOut"
             });
             return this;
         },
-        toLeft: function(s, t){
-            this.container.animate({ left: (this.container.offsetL() + s) + "px" },
-            {
-                duration: t,
-                easing: "expo.easeOut"
-            });
-            return this;
-        },
-        toBottom: function(s, t){
+        toY: function(s, t){
+            if(!this._isAllowedDirection("y")){
+                return this;
+            }
             this.container.animate({ top: (this.container.offsetT() - s) + "px" },
-            {
-                duration: t,
-                easing: "expo.easeOut"
-            });
-            return this;
-        },
-        toTop: function(s, t){
-            this.container.animate({ left: (this.container.offsetT() + s) + "px" },
             {
                 duration: t,
                 easing: "expo.easeOut"
