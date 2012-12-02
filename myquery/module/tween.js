@@ -54,6 +54,8 @@ myQuery.define('module/tween', function ($, undefined) {
         pow = math.pow,
         sin = math.sin,
         sqrt = math.sqrt,
+        abs = math.abs,
+        cos = math.cos,
         tween = {
             getFun: function (name) {
                 var fun;
@@ -76,10 +78,11 @@ myQuery.define('module/tween', function ($, undefined) {
             linear: function (t, b, c, d) {
                 return t / d;
             },
-            swing: function (t) {
-                return 0.5 - math.cos(t * math.PI) / 2;
+            swing: function (t, b, c, d) {
+                return 0.5 - cos(t / d * math.PI) / 2;
             },
-            ease: function (t) {
+            ease: function (t, b, c, d) {
+                t /= d;
                 var q = 0.07813 - t / 2,
                     Q = sqrt(0.0066 + q * q),
                     x = Q - q,
@@ -89,13 +92,14 @@ myQuery.define('module/tween', function ($, undefined) {
                     t = X + Y + 0.25;
                 return pow(1 - t, 2) * 3 * t * 0.1 + (1 - t) * 3 * t * t + t * t * t;
             },
-            easeIn: function (t) {
-                return pow(t, 1.7);
+            easeIn: function (t, b, c, d) {
+                return pow(t / d, 1.7);
             },
-            easeOut: function (t) {
-                return pow(t, 0.48);
+            easeOut: function (t, b, c, d) {
+                return pow(t / d, 0.48);
             },
-            easeInOut: function (t) {
+            easeInOut: function (t, b, c, d) {
+                t /= d;
                 var q = 0.48 - t / 1.04,
                     Q = sqrt(0.1734 + q * q),
                     x = Q - q,

@@ -60,13 +60,14 @@ myQuery.define("ui/js/scrollableview",
                 switch(e.type){
                     case "swap.stop":
                     self.animate(e);
-                    case "touchwheel":
+                    case "mousewheel":
+                    case "DOMMouseScroll":
                     var x = null, y = null;
                     if (e.direction == "x") {
-                        x = e.wheelDelta * opt.touchWheelAccuracy;
+                        x = e.delta * opt.mouseWheelAccuracy;
                     }
                     else if (e.direction == "y") {
-                        y = e.wheelDelta * opt.touchWheelAccuracy;
+                        y = e.delta * opt.mouseWheelAccuracy;
                     };
                     self.render(x, y, true);
                     break;
@@ -90,11 +91,12 @@ myQuery.define("ui/js/scrollableview",
             "overflow": "xy",
             "animateDuration": 600,
             "boundary": 150,
+            "boundaryDruation": 300,
             "isTransform3d": 1,
-            "touchWheelAccuracy": 0.5
+            "mouseWheelAccuracy": 0.5
         },
         public: {
-           
+           "refreshPosition": 1
         },
         render: function (x, y, addtion) {
             var originX = 0, originY=0;
@@ -106,8 +108,14 @@ myQuery.define("ui/js/scrollableview",
                     originX = this.container.offsetL();
                     originY = this.container.offsetT();
                 };
-                x !== null && this.container.offsetL(originX + x);
-                y !== null && this.container.offsetT(originY + y);
+                if (x !== null && this._isAllowedDirection("x")) {
+                    x = this.checkXBoundary(originX + x);
+                    this.container.offsetL(x);
+                }
+                else if(y !== null && this._isAllowedDirection("y")){
+                    y = this.checkXBoundary(originY + y);
+                    this.container.offsetT(y); 
+                }
             }
             return this;
         },
@@ -121,7 +129,10 @@ myQuery.define("ui/js/scrollableview",
             this.scrollHeight = this.target.scrollHeight();
             this.scrollWidth = this.target.scrollWidth();
             this.viewportHeight = this.target.width();
-            this.viewporttWidth = this.target.height();
+            this.viewportWidth = this.target.height();
+            this.overflowHeight = this.scrollHeight - this.viewportHeight;
+            this.overflowWidth = this.scrollWidth - this.viewportWidth;
+
             return this;
         },
         // , resize: function(){ 
@@ -168,33 +179,81 @@ myQuery.define("ui/js/scrollableview",
                 return this;
         },
 
-        checkBoundary: function(origin, distance){
+        checkXBoundary: function(s){
+            var boundary = this.options.boundary;
+            return $.between(-(this.overflowWidth + boundary), boundary, s);
+        },
+        checkYBoundary: function(s){
+            var boundary = this.options.boundary;
+            return $.between(-(this.overflowHeight + boundary), boundary, s);
+        },
 
+        outerXBoundary: function(t){
+            if (t > 0) {
+                return 0;
+            }
+            else if(t < -this.overflowWidth){
+                return -this.overflowWidth;
+            }
+            return null;
+        },
+
+        outerYBoundary: function(t){
+            if (t > 0) {
+                return 0;
+            }
+            else if(t < -this.overflowHeight){
+                return -this.overflowHeight;
+            }
+            return null;
         },
 
         toX: function(s, t){
             if(!this._isAllowedDirection("x")){
                 return this;
             }
-            var opt = this.options,
+            var 
+            self = this,
+            opt = this.options,
             boundary = opt.boundary,
-            left = $.between(-(this.scrollWidth + boundary - this.viewporttWidth), boundary, this.container.offsetL() - s);
-            console.log(this.scrollWidth)
+            left = this.checkXBoundary(this.container.offsetL() - s),
+            outer = this.outerXBoundary(left);
+
             this.container.animate({ left: left + "px" }, {
                 duration: t,
-                easing: "expo.easeOut"
+                easing: "easeOut"
             });
+
+            if (outer !== null) {
+                this.container.animate({left: outer + "px"},{
+                    duration: opt.boundaryDruation,
+                    easing: "expo.easeOut"
+                });
+            };
             return this;
         },
         toY: function(s, t){
             if(!this._isAllowedDirection("y")){
                 return this;
             }
-            this.container.animate({ top: (this.container.offsetT() - s) + "px" },
-            {
+            var 
+            self = this,
+            opt = this.options,
+            boundary = opt.boundary,
+            top = this.checkYBoundary(this.container.offsetT() - s),
+            outer = this.outerYBoundary(top);
+
+            this.container.animate({ top: top + "px" }, {
                 duration: t,
-                easing: "expo.easeOut"
+                easing: "easeOut"
             });
+
+            if (outer !== null) {
+                this.container.animate({top: outer + "px"},{
+                    duration: opt.boundaryDruation,
+                    easing: "expo.easeOut"
+                });
+            };
             return this;
         }
     });

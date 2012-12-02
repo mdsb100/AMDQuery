@@ -916,7 +916,7 @@ myQuery.define("main/event", ["base/client", "main/CustomEvent", "main/data"], f
             return $.isFun(fun) ? this.addHandler('mousewheel', function (e) {
                 var e = $.event.document.getEvent(e), delta = 0, direction = "y";
                 if (e.wheelDelta){
-                    delta = e.wheelDelta / 120;
+                    delta = e.wheelDelta;
                     if (e.wheelDeltaX) {
                         direction = "x";
                     };
@@ -925,16 +925,22 @@ myQuery.define("main/event", ["base/client", "main/CustomEvent", "main/data"], f
                     };
                 }    
                 else if (e.detail){
-                    delta = -e.detail / 3;
+                    delta = -e.detail * 40;
                 }
+                if (e.axis) {
+                    direction = e.axis == 1 ? "x" : "y";
+                };
                 e.delta = delta;
                 e.direction = direction;
-                delete e.type;
-                e.type = "touchwheel";
-                fun.call(this, e);
-                $.event.document.stopPropagation(e);
-                $.event.document.stopPropagation(e);
 
+                $.event.document.stopPropagation(e);
+                $.event.document.preventDefault(e);
+
+                // if (e.type == "DOMMouseScroll") {
+                //     e.type = "mousewheel";
+                // };
+                
+                fun.call(this, e);
             }) : this.trigger("mousewheel", fun);
         }
 
