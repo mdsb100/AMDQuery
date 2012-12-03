@@ -59,17 +59,23 @@ myQuery.define("ui/js/scrollableview",
             this.event = function(e) {
                 switch(e.type){
                     case "swap.stop":
-                    self.animate(e);
+                        self.animate(e);
+                    break;
                     case "mousewheel":
                     case "DOMMouseScroll":
-                    var x = null, y = null;
-                    if (e.direction == "x") {
-                        x = e.delta * opt.mouseWheelAccuracy;
-                    }
-                    else if (e.direction == "y") {
-                        y = e.delta * opt.mouseWheelAccuracy;
-                    };
-                    self.render(x, y, true);
+                        var x = null, y = null;
+                        if (e.direction == "x") {
+                            x = e.delta * opt.mouseWheelAccuracy;
+                        }
+                        else if (e.direction == "y") {
+                            y = e.delta * opt.mouseWheelAccuracy;
+                        };
+                        self.render(x, y, true);
+                        // clearTimeout(self.wheelTimeId);
+                        // self.wheelTimeId = setTimeout(function(){
+                        //     self.toXBoundary(self.container.offsetL());
+                        //     self.toYBoundary(self.container.offsetT());
+                        // }, 20);
                     break;
                 }
             }
@@ -164,18 +170,6 @@ myQuery.define("ui/js/scrollableview",
                     break;
                 }
 
-                
-                // function(tick, begin, closure, duration, a0, a1, v0, t0, t1){
-                //             var result = 0, t0 = duration - t1;
-                //             if(tick <= t0){
-                //                 t0 = tick;
-                //             }
-                //             result += a0 * t0 * t0 * 0.5;
-                //             if (tick >duration - t1) {
-                //                 result +=v0 * t1 - a1 * t1 * t1 * 0.5;
-                //             };
-                //             return result; 
-                //         }
                 return this;
         },
 
@@ -208,6 +202,26 @@ myQuery.define("ui/js/scrollableview",
             return null;
         },
 
+        toXBoundary: function(left){
+            var outer = this.outerXBoundary(left);
+            if (outer !== null) {
+                this.container.animate({left: outer + "px"},{
+                    duration: this.options.boundaryDruation,
+                    easing: "expo.easeOut"
+                });
+            };
+        },
+
+        toYBoundary: function(top){
+            var outer = this.outerYBoundary(top);
+            if (outer !== null) {
+                this.container.animate({top: outer + "px"},{
+                    duration: this.options.boundaryDruation,
+                    easing: "expo.easeOut"
+                });
+            };
+        },
+
         toX: function(s, t){
             if(!this._isAllowedDirection("x")){
                 return this;
@@ -216,20 +230,13 @@ myQuery.define("ui/js/scrollableview",
             self = this,
             opt = this.options,
             boundary = opt.boundary,
-            left = this.checkXBoundary(this.container.offsetL() - s),
-            outer = this.outerXBoundary(left);
+            left = this.checkXBoundary(this.container.offsetL() - s);
 
             this.container.animate({ left: left + "px" }, {
                 duration: t,
                 easing: "easeOut"
             });
-
-            if (outer !== null) {
-                this.container.animate({left: outer + "px"},{
-                    duration: opt.boundaryDruation,
-                    easing: "expo.easeOut"
-                });
-            };
+            this.toXBoundary(left);
             return this;
         },
         toY: function(s, t){
@@ -240,20 +247,14 @@ myQuery.define("ui/js/scrollableview",
             self = this,
             opt = this.options,
             boundary = opt.boundary,
-            top = this.checkYBoundary(this.container.offsetT() - s),
-            outer = this.outerYBoundary(top);
+            top = this.checkYBoundary(this.container.offsetT() - s);
 
             this.container.animate({ top: top + "px" }, {
                 duration: t,
                 easing: "easeOut"
             });
 
-            if (outer !== null) {
-                this.container.animate({top: outer + "px"},{
-                    duration: opt.boundaryDruation,
-                    easing: "expo.easeOut"
-                });
-            };
+            this.toYBoundary(top);
             return this;
         }
     });

@@ -925,7 +925,7 @@ myQuery.define("main/event", ["base/client", "main/CustomEvent", "main/data"], f
                     };
                 }    
                 else if (e.detail){
-                    delta = -e.detail * 40;
+                    delta = -e.detail * 40;//40也许太多
                 }
                 if (e.axis) {
                     direction = e.axis == 1 ? "x" : "y";
