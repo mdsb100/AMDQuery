@@ -267,7 +267,7 @@ myQuery.define("main/query", function ($) {
                 else
                     $.each(eles, function (ele) {
                         list = list.concat($.iterationChild(ele, function (child, arr) {
-                            if ($.isEle(child) && $.getClass(child, className))
+                            if ($.isEle(child) && $.containsClass(child, className))
                                 return true
                         }));
                     }, this);
@@ -534,7 +534,7 @@ myQuery.define("main/query", function ($) {
                 else if ($.reg.css.test(str)) {
                     var temp = reg.$1;
                     list = $.filter(function (ele) {
-                        return $.getClass(ele, temp) && true;
+                        return $.containsClass(ele, temp) && true;
                     }, child);
                 }
                 return list;
