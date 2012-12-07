@@ -102,8 +102,8 @@ myQuery.define("base/client", function ($) {
                 else if (wit < 420) { _safariVer = 2; }
                 else if (wit < 529) { _safariVer = 3; }
                 else if (wit < 533.18) { _safariVer = 4; }
-                else if (wit < 533.49) { _safariVer = 5; }
-                else { _safariVer = 5; }
+                else if (wit < 536.25) { _safariVer = 5; }
+                else { _safariVer = 6; }
             }
             else if (_system.win) {
                 if (wit == 5) { _safariVer = 5; }
@@ -114,7 +114,8 @@ myQuery.define("base/client", function ($) {
             else if (_system.appleMobile) {
                 if (wit < 526) { _safariVer = 3; }
                 else if (wit < 531.3) { _safariVer = 4; }
-                else { _safariVer = 5; }
+                else if (wit < 536.25) { _safariVer = 5; }
+                else{ _safariVer = 6;}
             }
             _browser.safari = _safariVer;
         }

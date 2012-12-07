@@ -1,0 +1,29 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+    <link href="css/reset.css" rel="stylesheet" type="text/css" />
+    <script src="myquery/myquery.js" type="text/javascript" myquery="define:$;"
+        amd="detectCR:1;"></script>
+    <script type="text/javascript">
+        $.require(["main/query","main/class"], function (query, css) {
+            var test = $("#test");
+            test.addClass("a");
+            console.log(test.containsClass("a"));
+            console.log(test.addClass("b"));
+            console.log(test.classLength());
+            console.log("index 1:" + test.getClassByIndex(1));
+            console.log("index 2:" + test.getClassByIndex(2));
+            test.toggleClass("c");
+            console.log("has c:" + test.containsClass("c"));
+            test.toggleClass("c");
+            console.log("has c:" + test.containsClass("c"));
+            test.removeClass("b");
+            console.log("has b:" + test.containsClass("b"));
+        })
+    </script>
+</head>
+<body style="overflow: auto">
+    <div id="test"></div>
+</body>
+</html>
