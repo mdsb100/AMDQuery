@@ -122,13 +122,13 @@ myQuery.define("ui/js/draggable", ["module/Widget", "main/event", "main/dom", "m
                                     y = $.between(cP.pageTop, cP.height + cP.pageTop - target.height(), y); //使用height对不对？
                                 }
 
-                                self.render(x, y);
-
                                 eventFuns.preventDefault(e);
                                 para.type = "drag.move";
                                 para.offsetX = x;
                                 para.offsetY = y;
                                 target.trigger(para.type, target[0], para);
+
+                                self.render(para.offsetX, para.offsetY);
                             }
                             break;
                         case "touchend":
