@@ -1,11 +1,11 @@
 /// <reference path="../../myquery.js" />
 myQuery.define("ui/js/scrollableview", ["main/query",
-                "main/dom",
-                "ui/js/swappable",
-                "ui/js/draggable",
-                "module/Widget",
-                "module/animate",
-                "module/tween.extend"], function ($, query, dom, swappable, draggable, Widget, animate, tween, undefined) {
+                    "main/dom",
+                    "ui/js/swappable",
+                    "ui/js/draggable",
+                    "module/Widget",
+                    "module/animate",
+                    "module/tween.extend"], function ($, query, dom, swappable, draggable, Widget, animate, tween, undefined) {
     var eventFuns = $.event.document,
         scrollableview = $.widget("ui.scrollableview", function scrollableview(obj, target) {
             this.__super(obj, target).init(obj || {}, target).create().render(0, 0);
@@ -57,30 +57,37 @@ myQuery.define("ui/js/scrollableview", ["main/query",
                 this.event = function (e) {
                     switch (e.type) {
                     case "drag.move":
-                        e.offsetX = 0;
-                    break;
+                        //e.offsetX = 0;
+                        break;
                     case "swap.stop":
                         self.animate(e);
                         break;
                     case "mousewheel":
                     case "DOMMouseScroll":
+                        clearTimeout(self.wheelTimeId);
                         var x = null,
                             y = null;
+                            //timeStamp = e.timeStamp || new Date(),
+                            //timeout;
                         if (e.direction == "x") {
                             x = e.delta * opt.mouseWheelAccuracy;
                         } else if (e.direction == "y") {
                             y = e.delta * opt.mouseWheelAccuracy;
                         };
-
-                        // console.log(e.timeStamp - self.timeStamp);
-                        // self.timeStamp = e.timeStamp
+                        // console.log(e)
+                        // //console.log(e.timeStamp - self.timeStamp);
+                        // timeout = timeStamp - self.timeStamp + 5;
+                        // timeout = timeout < 20 ? 20 : timeout;
+                        // self.timeStamp = timeStamp;
+                        // console.log(timeout);
                         self.render(x, y, true, 0);
-                        // clearTimeout(self.wheelTimeId);
+                        
                         // self.wheelTimeId = setTimeout(function(){
+                        //     console.log("inner");
                         //     self
                         //     .toXBoundary(self.container.offsetL())
                         //     .toYBoundary(self.container.offsetT());
-                        // }, 30);
+                        // }, timeout);
                         break;
                     }
                 }
@@ -93,6 +100,8 @@ myQuery.define("ui/js/scrollableview", ["main/query",
                 this.option(obj);
                 this.originOverflow = this.target.css("overflow");
                 this.refreshPosition();
+                //this.timeStamp = new Date();
+                //this.wheelTimeId = null;
                 this._initHandler()
                 this.target.css("overflow", "hidden");
 
