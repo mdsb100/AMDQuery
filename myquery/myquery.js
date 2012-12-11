@@ -1599,7 +1599,7 @@
                 if (this.state != 'todo') {
                     tools.error({
                         fn: "Promise.resolve",
-                        msg: "already resolveed"
+                        msg: "already resolved"
                     })
                     return this;
                 };
