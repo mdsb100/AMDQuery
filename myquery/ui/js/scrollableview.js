@@ -1,6 +1,8 @@
 /// <reference path="../../myquery.js" />
 myQuery.define("ui/js/scrollableview", ["main/query", "main/dom", "main/class", "ui/js/swappable", "ui/js/draggable", "module/src", "module/Widget", "module/animate", "module/tween.extend"], function($, query, dom, cls, swappable, draggable, src, Widget, animate, tween, undefined) {
-    src.link({ href: $.getPath("ui/css/scrollableview", ".css") });
+    src.link({
+        href: $.getPath("ui/css/scrollableview", ".css")
+    });
     var eventFuns = $.event.document,
         scrollableview = $.widget("ui.scrollableview", function scrollableview(obj, target) {
             this.__super(obj, target).init(obj || {}, target).create().render(0, 0);
@@ -57,12 +59,12 @@ myQuery.define("ui/js/scrollableview", ["main/query", "main/dom", "main/class", 
             enable: function() {
                 var event = this.event;
                 this.container.on("DomNodeInserted", event).on("DomNodeRemoved", event);
-                this.target.on("swap.stop", event).on("swap.pause", event).touchwheel(event);
+                this.target.on("swap.move", event).on("swap.stop", event).on("swap.pause", event).touchwheel(event);
             },
             disable: function() {
                 //this.container.off("drag.move", event);
                 this.container.on("DomNodeInserted", event).on("DomNodeRemoved", event);
-                this.target.off("swap.stop", event).on("swap.pause", event).off("touchwheel", event);
+                this.target.on("swap.move", event).off("swap.stop", event).on("swap.pause", event).off("touchwheel", event);
             },
             _initHandler: function() {
                 var self = this,
@@ -76,6 +78,9 @@ myQuery.define("ui/js/scrollableview", ["main/query", "main/dom", "main/class", 
                     case "DomNodeInserted":
                     case "DomNodeRemoved":
                         this.refreshPosition().toYBoundary(this.getTop()).toXBoundary(this.getLeft());
+                        break;
+                    case "swap.move":
+                        self.showStatusBar();
                         break;
                     case "swap.stop":
                         self.animate(e);
@@ -95,6 +100,7 @@ myQuery.define("ui/js/scrollableview", ["main/query", "main/dom", "main/class", 
                         } else if(e.direction == "y") {
                             y = e.delta * opt.mouseWheelAccuracy;
                         };
+                        self.showStatusBar();
 
                         self.wheelTimeId = setTimeout(function() {
                             self.toXBoundary(self.container.offsetL()).toYBoundary(self.container.offsetT());
@@ -114,7 +120,7 @@ myQuery.define("ui/js/scrollableview", ["main/query", "main/dom", "main/class", 
             init: function(obj) {
                 this.option(obj);
                 this.originOverflow = this.target.css("overflow");
-                
+
                 //this.timeStamp = new Date();
                 //this.wheelTimeId = null;
                 this._initHandler()
@@ -162,10 +168,31 @@ myQuery.define("ui/js/scrollableview", ["main/query", "main/dom", "main/class", 
             },
             widgetEventPrefix: "scrollableview",
 
-            refreshStatusBar: function () {
-                var width = this.viewportWidth * this.viewportWidth / scrollWidth;
-                this.statusBarX.width();
-                this.statusBary;
+            refreshStatusBar: function() {
+                var viewportWidth = this.viewportWidth,
+                    scrollWidth = this.scrollWidth,
+                    viewportHeight = this.viewportHeight,
+                    scrollHeight = this.scrollHeight,
+                    width = 0,
+                    height = 0;
+
+                if(scrollWidth != viewportWidth) {
+                    this.statusBarXVisible = 1;
+                    width = viewportWidth * viewportWidth / scrollWidth
+                } else {
+                    width = this.statusBarXVisible = 0;
+                }
+
+                if(scrollHeight != viewportHeight) {
+                    this.statusBarYVisible = 1;
+                    height = viewportHeight * viewportHeight / scrollHeight
+                } else {
+                    height = this.statusBarYVisible = 0;
+                }
+
+                this.statusBarX.width(width);
+                this.statusBarY.height(height);
+
                 return this;
             },
 
@@ -211,7 +238,7 @@ myQuery.define("ui/js/scrollableview", ["main/query", "main/dom", "main/class", 
                 // console.log(a0)
                 if(t0 <= 0) {
                     this.toYBoundary(this.getTop()).toXBoundary(this.getLeft());
-                    return this;
+                    return this.hideStatusBar();
                 };
 
                 switch(e.direction) {
@@ -243,6 +270,27 @@ myQuery.define("ui/js/scrollableview", ["main/query", "main/dom", "main/class", 
                 return $.between(-(this.overflowHeight + boundary), boundary, s);
             },
 
+            checkXStatusBar: function(left) {
+                var result = (this.viewportWidth + left) / this.scrollWidth * this.viewportWidth;
+                return result;
+            },
+
+            checkYStatusBar: function(top) {
+                var result = (this.viewportHeight + top) / this.scrollHeight * this.viewportHeight;
+                return result;
+            },
+
+            showStatusBar: function () {
+                this.statusBarXVisible && this.statusBarX.show();
+                this.statusBarYVisible && this.statusBarY.show();
+                return this;
+            },
+            hideStatusBar: function  () {
+                this.statusBarX.hide();
+                this.statusBarY.hide();
+                return this;
+            },
+
             outerXBoundary: function(t) {
                 if(t > 0) {
                     return 0;
@@ -262,28 +310,34 @@ myQuery.define("ui/js/scrollableview", ["main/query", "main/dom", "main/class", 
             },
 
             toXBoundary: function(left) {
-                var outer = this.outerXBoundary(left);
+                var outer = this.outerXBoundary(left), self = this;
                 if(outer !== null) {
                     this.container.animate({
                         left: outer + "px"
                     }, {
                         duration: this.options.boundaryDruation,
                         easing: "expo.easeOut",
-                        queue: false
+                        queue: false,
+                        complete: function () {
+                            self.hideStatusBar();
+                        }
                     });
                 };
                 return this;
             },
 
             toYBoundary: function(top) {
-                var outer = this.outerYBoundary(top);
+                var outer = this.outerYBoundary(top), self = this;
                 if(outer !== null) {
                     this.container.animate({
                         top: outer + "px"
                     }, {
                         duration: this.options.boundaryDruation,
                         easing: "expo.easeOut",
-                        queue: false
+                        queue: false,
+                        complete: function () {
+                            self.hideStatusBar();
+                        }
                     });
                 };
                 return this;
@@ -293,11 +347,12 @@ myQuery.define("ui/js/scrollableview", ["main/query", "main/dom", "main/class", 
                 if(!this._isAllowedDirection("x")) {
                     return this;
                 }
-                var
-                self = this,
+                var self = this,
                     opt = this.options,
                     boundary = opt.boundary,
-                    left = this.checkXBoundary(this.container.offsetL() - s);
+                    left = this.checkXBoundary(this.container.offsetL() - s),
+                    statusLeft = this.checkXStatusBar(s);
+                //console.log(statusLeft)
                 //this.toXBoundary(this.getTop());
                 this.container.animate({
                     left: left + "px"
@@ -305,8 +360,15 @@ myQuery.define("ui/js/scrollableview", ["main/query", "main/dom", "main/class", 
                     duration: t,
                     easing: "easeOut",
                     complete: function() {
-                        self.toXBoundary(left);
+                        self.toXBoundary(left).toYBoundary(self.container.offsetT());
                     }
+                });
+
+                this.statusBarX.animate({
+                    left: statusLeft + "px"
+                }, {
+                    duration: t,
+                    easing: "easeOut"
                 });
 
                 return this;
@@ -315,11 +377,11 @@ myQuery.define("ui/js/scrollableview", ["main/query", "main/dom", "main/class", 
                 if(!this._isAllowedDirection("y")) {
                     return this;
                 }
-                var
-                self = this,
+                var self = this,
                     opt = this.options,
                     boundary = opt.boundary,
-                    top = this.checkYBoundary(this.container.offsetT() - s);
+                    top = this.checkYBoundary(this.container.offsetT() - s),//要换算吧
+                    statusTop = this.checkYStatusBar(s);
                 //this.toXBoundary(this.getLeft());
                 this.container.animate({
                     top: top + "px"
@@ -327,9 +389,16 @@ myQuery.define("ui/js/scrollableview", ["main/query", "main/dom", "main/class", 
                     duration: t,
                     easing: "easeOut",
                     complete: function() {
-                        self.toYBoundary(top);
+                        self.toYBoundary(top).toXBoundary(self.container.offsetL());
                     }
                 });
+
+                this.statusBarY.animate({
+                    top: statusTop + "px"
+                }, {
+                    duration: t,
+                    easing: "easeOut"
+                })
 
                 return this;
             }
