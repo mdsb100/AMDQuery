@@ -1,17 +1,12 @@
 /// <reference path="../../myquery.js" />
-myQuery.define("ui/js/scrollableview", ["main/query",
-                    "main/dom",
-                    "ui/js/swappable",
-                    "ui/js/draggable",
-                    "module/Widget",
-                    "module/animate",
-                    "module/tween.extend"], function ($, query, dom, swappable, draggable, Widget, animate, tween, undefined) {
+myQuery.define("ui/js/scrollableview", ["main/query", "main/dom", "main/class", "ui/js/swappable", "ui/js/draggable", "module/src", "module/Widget", "module/animate", "module/tween.extend"], function($, query, dom, cls, swappable, draggable, src, Widget, animate, tween, undefined) {
+    src.link({ href: $.getPath("ui/css/scrollableview", ".css") });
     var eventFuns = $.event.document,
         scrollableview = $.widget("ui.scrollableview", function scrollableview(obj, target) {
             this.__super(obj, target).init(obj || {}, target).create().render(0, 0);
         }, {
             container: null,
-            create: function () {
+            create: function() {
                 var opt = this.options;
                 this.positionParent = $({
                     "overflow": "visible"
@@ -23,83 +18,103 @@ myQuery.define("ui/js/scrollableview", ["main/query",
 
                 this.target.swappable({
                     disabled: opt.disabled
-                })
+                });
+
+                this.statusBarX = $({
+                    height: "10px",
+                    //width: "40px",
+                    display: "none",
+                    position: "absolute",
+                    bottom: "0px"
+                }, "div").addClass("scrollableViewStatusBar").appendTo(this.target);
+
+                this.statusBarY = $({
+                    //height: "30px",
+                    width: "10px",
+                    display: "none",
+                    position: "absolute",
+                    right: "0px"
+                }, "div").addClass("scrollableViewStatusBar").appendTo(this.target);
 
                 this.container.draggable({
                     keepinner: 0,
                     axis: opt.overflow,
                     disabled: opt.disabled,
                     stopPropagation: false
-                })
+                });
+
+                this.refreshPosition();
 
                 this.able();
 
                 return this;
             },
-            customEventName: ["start", "move", "stop"],
-            event: function () {
+            customEventName: [],
+            event: function() {
 
 
             },
-            enable: function () {
+            enable: function() {
                 var event = this.event;
-                this.container.on("drag.move", event);
-                this.target.on("swap.stop", event).touchwheel(event);
+                this.container.on("DomNodeInserted", event).on("DomNodeRemoved", event);
+                this.target.on("swap.stop", event).on("swap.pause", event).touchwheel(event);
             },
-            disable: function () {
-                this.container.off("drag.move", event);
-                this.target.off("swap.stop", event).off("touchwheel", event);
+            disable: function() {
+                //this.container.off("drag.move", event);
+                this.container.on("DomNodeInserted", event).on("DomNodeRemoved", event);
+                this.target.off("swap.stop", event).on("swap.pause", event).off("touchwheel", event);
             },
-            _initHandler: function () {
+            _initHandler: function() {
                 var self = this,
                     target = self.target,
                     opt = self.options;
-                this.event = function (e) {
-                    switch (e.type) {
-                    case "drag.move":
-                        //e.offsetX = 0;
+                this.event = function(e) {
+                    switch(e.type) {
+                        // case "drag.move":
+                        //     //e.offsetX = 0;
+                        //     break;
+                    case "DomNodeInserted":
+                    case "DomNodeRemoved":
+                        this.refreshPosition().toYBoundary(this.getTop()).toXBoundary(this.getLeft());
                         break;
                     case "swap.stop":
                         self.animate(e);
+                        break;
+                    case "swap.pause":
+                        self.pause(e);
                         break;
                     case "mousewheel":
                     case "DOMMouseScroll":
                         clearTimeout(self.wheelTimeId);
                         var x = null,
                             y = null;
-                            //timeStamp = e.timeStamp || new Date(),
-                            //timeout;
-                        if (e.direction == "x") {
+                        //timeStamp = e.timeStamp || new Date(),
+                        //timeout;
+                        if(e.direction == "x") {
                             x = e.delta * opt.mouseWheelAccuracy;
-                        } else if (e.direction == "y") {
+                        } else if(e.direction == "y") {
                             y = e.delta * opt.mouseWheelAccuracy;
                         };
-                        // console.log(e)
-                        // //console.log(e.timeStamp - self.timeStamp);
-                        // timeout = timeStamp - self.timeStamp + 5;
-                        // timeout = timeout < 20 ? 20 : timeout;
-                        // self.timeStamp = timeStamp;
-                        // console.log(timeout);
-                        self.render(x, y, true, 0);
-                        
-                        // self.wheelTimeId = setTimeout(function(){
-                        //     console.log("inner");
-                        //     self
-                        //     .toXBoundary(self.container.offsetL())
-                        //     .toYBoundary(self.container.offsetT());
-                        // }, timeout);
+
+                        self.wheelTimeId = setTimeout(function() {
+                            self.toXBoundary(self.container.offsetL()).toYBoundary(self.container.offsetT());
+                        }, 50);
+
+                        self.render(x, y, true, opt.boundary);
+
+
                         break;
                     }
                 }
                 return this;
             },
-            destory: function () {
+            destory: function() {
 
             },
-            init: function (obj) {
+            init: function(obj) {
                 this.option(obj);
                 this.originOverflow = this.target.css("overflow");
-                this.refreshPosition();
+                
                 //this.timeStamp = new Date();
                 //this.wheelTimeId = null;
                 this._initHandler()
@@ -113,28 +128,28 @@ myQuery.define("ui/js/scrollableview", ["main/query",
                 "boundary": 150,
                 "boundaryDruation": 300,
                 "isTransform3d": 0,
-                "mouseWheelAccuracy": 0.5
+                "mouseWheelAccuracy": 0.3
             },
             public: {
                 "refreshPosition": 1
             },
-            isTransform3d: function () {
+            isTransform3d: function() {
                 return this.options.isTransform3d && $.support.transform3d;
             },
-            render: function (x, y, addtion, boundary) {
+            render: function(x, y, addtion, boundary) {
                 var originX = 0,
                     originY = 0;
-                if (this.isTransform3d()) {
+                if(this.isTransform3d()) {
 
                 } else {
-                    if (addtion) {
+                    if(addtion) {
                         originX = this.container.offsetL();
                         originY = this.container.offsetT();
                     };
-                    if (x !== null && this._isAllowedDirection("x")) {
+                    if(x !== null && this._isAllowedDirection("x")) {
                         x = this.checkXBoundary(originX + x, boundary);
                         this.container.offsetL(x);
-                    } else if (y !== null && this._isAllowedDirection("y")) {
+                    } else if(y !== null && this._isAllowedDirection("y")) {
                         y = this.checkXBoundary(originY + y, boundary);
                         this.container.offsetT(y);
                     }
@@ -142,12 +157,19 @@ myQuery.define("ui/js/scrollableview", ["main/query",
                 return this;
             },
             target: null,
-            toString: function () {
+            toString: function() {
                 return "ui.scrollableview";
             },
             widgetEventPrefix: "scrollableview",
 
-            refreshPosition: function () {
+            refreshStatusBar: function () {
+                var width = this.viewportWidth * this.viewportWidth / scrollWidth;
+                this.statusBarX.width();
+                this.statusBary;
+                return this;
+            },
+
+            refreshPosition: function() {
                 this.scrollHeight = this.target.scrollHeight();
                 this.scrollWidth = this.target.scrollWidth();
                 this.viewportHeight = this.target.width();
@@ -155,23 +177,27 @@ myQuery.define("ui/js/scrollableview", ["main/query",
                 this.overflowHeight = this.scrollHeight - this.viewportHeight;
                 this.overflowWidth = this.scrollWidth - this.viewportWidth;
 
-                return this;
+                return this.refreshStatusBar();
             },
             // , resize: function(){ 
             //     this.container.width(this.scrollWidth);
             //     this.container.height(this.scrollHeight);
             // }
-            _isAllowedDirection: function (direction) {
+            _isAllowedDirection: function(direction) {
                 return this.options.overflow.indexOf(direction) > -1;
             },
-            getTop: function () {
+            getTop: function() {
                 return this.isTransform3d() ? 0 : this.container.offsetT();
             },
-            getLeft: function () {
-                return this.isTransform3d() ? 0 : this.container.offsetT();
+            getLeft: function() {
+                return this.isTransform3d() ? 0 : this.container.offsetL();
+            },
+            pause: function() {
+
+                return this;
             },
             //专门换算个方法
-            animate: function (e) {
+            animate: function(e) {
                 var opt = this.options,
                     a0 = e.acceleration,
                     t0 = opt.animateDuration - e.duration,
@@ -180,15 +206,15 @@ myQuery.define("ui/js/scrollableview", ["main/query",
                 // t1 = Math.ceil(a0 / a1), //duration * （1 - weight),
                 // s1 = v0 * t1 - a1 * t1 * t1 * 0.5,
                 // Ssum =Math.round(s0 + s1);
-                console.log(t0)
-                console.log(s0)
-                console.log(a0)
-                if (t0 <= 0) {
+                // console.log(t0)
+                // console.log(s0)
+                // console.log(a0)
+                if(t0 <= 0) {
                     this.toYBoundary(this.getTop()).toXBoundary(this.getLeft());
                     return this;
                 };
 
-                switch (e.direction) {
+                switch(e.direction) {
                 case 3:
                     this.toX(-s0, t0);
                     break;
@@ -208,36 +234,36 @@ myQuery.define("ui/js/scrollableview", ["main/query",
                 return this;
             },
 
-            checkXBoundary: function (s, boundary) {
+            checkXBoundary: function(s, boundary) {
                 var boundary = boundary !== undefined ? boundary : this.options.boundary;
                 return $.between(-(this.overflowWidth + boundary), boundary, s);
             },
-            checkYBoundary: function (s, boundary) {
+            checkYBoundary: function(s, boundary) {
                 var boundary = boundary !== undefined ? boundary : this.options.boundary;
                 return $.between(-(this.overflowHeight + boundary), boundary, s);
             },
 
-            outerXBoundary: function (t) {
-                if (t > 0) {
+            outerXBoundary: function(t) {
+                if(t > 0) {
                     return 0;
-                } else if (t < -this.overflowWidth) {
+                } else if(t < -this.overflowWidth) {
                     return -this.overflowWidth;
                 }
                 return null;
             },
 
-            outerYBoundary: function (t) {
-                if (t > 0) {
+            outerYBoundary: function(t) {
+                if(t > 0) {
                     return 0;
-                } else if (t < -this.overflowHeight) {
+                } else if(t < -this.overflowHeight) {
                     return -this.overflowHeight;
                 }
                 return null;
             },
 
-            toXBoundary: function (left) {
+            toXBoundary: function(left) {
                 var outer = this.outerXBoundary(left);
-                if (outer !== null) {
+                if(outer !== null) {
                     this.container.animate({
                         left: outer + "px"
                     }, {
@@ -249,9 +275,9 @@ myQuery.define("ui/js/scrollableview", ["main/query",
                 return this;
             },
 
-            toYBoundary: function (top) {
+            toYBoundary: function(top) {
                 var outer = this.outerYBoundary(top);
-                if (outer !== null) {
+                if(outer !== null) {
                     this.container.animate({
                         top: outer + "px"
                     }, {
@@ -263,8 +289,8 @@ myQuery.define("ui/js/scrollableview", ["main/query",
                 return this;
             },
 
-            toX: function (s, t) {
-                if (!this._isAllowedDirection("x")) {
+            toX: function(s, t) {
+                if(!this._isAllowedDirection("x")) {
                     return this;
                 }
                 var
@@ -272,21 +298,21 @@ myQuery.define("ui/js/scrollableview", ["main/query",
                     opt = this.options,
                     boundary = opt.boundary,
                     left = this.checkXBoundary(this.container.offsetL() - s);
-                this.toXBoundary(this.getTop());
+                //this.toXBoundary(this.getTop());
                 this.container.animate({
                     left: left + "px"
                 }, {
                     duration: t,
                     easing: "easeOut",
-                    complete: function () {
+                    complete: function() {
                         self.toXBoundary(left);
                     }
                 });
 
                 return this;
             },
-            toY: function (s, t) {
-                if (!this._isAllowedDirection("y")) {
+            toY: function(s, t) {
+                if(!this._isAllowedDirection("y")) {
                     return this;
                 }
                 var
@@ -294,13 +320,13 @@ myQuery.define("ui/js/scrollableview", ["main/query",
                     opt = this.options,
                     boundary = opt.boundary,
                     top = this.checkYBoundary(this.container.offsetT() - s);
-                this.toXBoundary(this.getLeft());
+                //this.toXBoundary(this.getLeft());
                 this.container.animate({
                     top: top + "px"
                 }, {
                     duration: t,
                     easing: "easeOut",
-                    complete: function () {
+                    complete: function() {
                         self.toYBoundary(top);
                     }
                 });
@@ -310,7 +336,7 @@ myQuery.define("ui/js/scrollableview", ["main/query",
         });
 
     //提供注释
-    $.fn.scrollableview = function (a, b, c, args) {
+    $.fn.scrollableview = function(a, b, c, args) {
         /// <summary>使对象的第一元素可以拖动
         /// <para>bol obj.disabled:事件是否可用</para>
         /// <para>num obj.axis:"x"表示横轴移动;"y"表示纵轴移动;缺省或其他值为2轴</para>
