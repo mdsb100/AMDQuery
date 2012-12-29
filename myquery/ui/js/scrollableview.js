@@ -103,12 +103,10 @@ myQuery.define("ui/js/scrollableview", ["main/query", "main/dom", "main/class", 
                         self.showStatusBar();
 
                         self.wheelTimeId = setTimeout(function() {
-                            self.toXBoundary(self.container.offsetL()).toYBoundary(self.container.offsetT());
+                            self.toXBoundary(self.container.offsetL()).toYBoundary(self.container.offsetT()).hideStatusBar();
                         }, 50);
 
                         self.render(x, y, true, opt.boundary);
-
-
                         break;
                     }
                 }
@@ -137,14 +135,19 @@ myQuery.define("ui/js/scrollableview", ["main/query", "main/dom", "main/class", 
                 "mouseWheelAccuracy": 0.3
             },
             public: {
-                "refreshPosition": 1
+                "refreshPosition": 1,
+                "showStatusBar": 1,
+                "hideStatusBar": 1,
+                "render":1
             },
             isTransform3d: function() {
                 return this.options.isTransform3d && $.support.transform3d;
             },
             render: function(x, y, addtion, boundary) {
                 var originX = 0,
-                    originY = 0;
+                    originY = 0,
+                    statusX,
+                    statusY;
                 if(this.isTransform3d()) {
 
                 } else {
@@ -154,10 +157,14 @@ myQuery.define("ui/js/scrollableview", ["main/query", "main/dom", "main/class", 
                     };
                     if(x !== null && this._isAllowedDirection("x")) {
                         x = this.checkXBoundary(originX + x, boundary);
+                        statusX = this.checkXStatusBar(x);
                         this.container.offsetL(x);
+                        this.statusBarX.offsetL(statusX);
                     } else if(y !== null && this._isAllowedDirection("y")) {
-                        y = this.checkXBoundary(originY + y, boundary);
+                        y = this.checkYBoundary(originY + y, boundary);
+                        statusY = this.checkYStatusBar(y);
                         this.container.offsetT(y);
+                        this.statusBarY.offsetT(statusY);
                     }
                 }
                 return this;
@@ -271,13 +278,13 @@ myQuery.define("ui/js/scrollableview", ["main/query", "main/dom", "main/class", 
             },
 
             checkXStatusBar: function(left) {
-                var result = (this.viewportWidth + left) / this.scrollWidth * this.viewportWidth;
-                return result;
+                var result = - left / this.scrollWidth * this.viewportWidth;
+                return $.between(0, this.viewportWidth - this.statusBarX.width(), result);
             },
 
             checkYStatusBar: function(top) {
-                var result = (this.viewportHeight + top) / this.scrollHeight * this.viewportHeight;
-                return result;
+                var result =  - top / this.scrollHeight * this.viewportHeight;
+                return $.between(0, this.viewportHeight - this.statusBarY.height(), result);
             },
 
             showStatusBar: function () {
@@ -350,17 +357,16 @@ myQuery.define("ui/js/scrollableview", ["main/query", "main/dom", "main/class", 
                 var self = this,
                     opt = this.options,
                     boundary = opt.boundary,
-                    left = this.checkXBoundary(this.container.offsetL() - s),
-                    statusLeft = this.checkXStatusBar(s);
-                //console.log(statusLeft)
-                //this.toXBoundary(this.getTop());
+                    left = this.checkXBoundary(this.getLeft() - s),
+                    statusLeft = this.checkXStatusBar(left);
+                
                 this.container.animate({
                     left: left + "px"
                 }, {
                     duration: t,
                     easing: "easeOut",
                     complete: function() {
-                        self.toXBoundary(left).toYBoundary(self.container.offsetT());
+                        self.toXBoundary(left).toYBoundary(self.getTop());
                     }
                 });
 
@@ -380,19 +386,19 @@ myQuery.define("ui/js/scrollableview", ["main/query", "main/dom", "main/class", 
                 var self = this,
                     opt = this.options,
                     boundary = opt.boundary,
-                    top = this.checkYBoundary(this.container.offsetT() - s),//要换算吧
-                    statusTop = this.checkYStatusBar(s);
-                //this.toXBoundary(this.getLeft());
+                    top = this.checkYBoundary(this.getTop() - s),//要换算吧
+                    statusTop = this.checkYStatusBar(top);
+                
                 this.container.animate({
                     top: top + "px"
                 }, {
                     duration: t,
                     easing: "easeOut",
                     complete: function() {
-                        self.toYBoundary(top).toXBoundary(self.container.offsetL());
+                        self.toYBoundary(top).toXBoundary(self.getLeft());
                     }
                 });
-
+                
                 this.statusBarY.animate({
                     top: statusTop + "px"
                 }, {
