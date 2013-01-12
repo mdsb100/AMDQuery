@@ -198,11 +198,18 @@ myQuery.define("main/event", ["base/client", "main/CustomEvent", "main/data"], f
                  , document: {
                      addHandler: function (ele, type, fn) {
                          /// <summary>给DOM元素添加事件</summary>
+                         /// <para>例:"mousedown mouseup"</para>
                          /// <param name="ele" type="Element">元素</param>
                          /// <param name="type" type="String">事件类型</param>
                          /// <param name="fn" type="Function">事件方法</param>
                          /// <returns type="null" />
-                         //addHandler(ele, type, fn);
+                         var types = type.split(" "), i = types.length;
+                         for (; i >= 0; i--) {
+                             this._addHanler(ele, types[i], fn);
+                         };
+                        
+                     }
+                    , _addHanler: function(ele, type, fn){
                         if (ele.addEventListener)
                             ele.addEventListener(type, fn, false); //事件冒泡
                         else if (ele.attachEvent)
@@ -211,13 +218,19 @@ myQuery.define("main/event", ["base/client", "main/CustomEvent", "main/data"], f
                             ele['on' + type] = fn;
                             ele = null;
                         }
-                     }
+                    }
                     , removeHandler: function (ele, type, fn) {
                         /// <summary>给DOM元素移除事件</summary>
                         /// <param name="ele" type="Element">元素</param>
                         /// <param name="type" type="String">事件类型</param>
                         /// <param name="fn" type="Function">事件方法</param>
                         /// <returns type="null" />
+                        var types = type.split(" "), i = types.length;
+                         for (; i >= 0; i--) {
+                             this._removeHandler(ele, types[i], fn);
+                         };
+                    }
+                    , _removeHandler: function(ele, type, fn){
                         if (ele.removeEventListener)
                             ele.removeEventListener(type, fn, false);
                         else if (ele.detachEvent)
