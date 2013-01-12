@@ -12,6 +12,17 @@ myQuery.define("main/CustomEvent", function ($, undefined) {
         }
         , addHandler: function (type, handler) {
             /// <summary>添加自定义事件</summary>
+            /// <para>例:"do undo"</para>
+            /// <param name="type" type="String">方法类型</param>
+            /// <param name="handler" type="Function">方法</param>
+            /// <returns type="self" />
+            var types = type.split(" "), i = Things.length - 1;
+            for (; i >= 0; i--) {
+                this._addHandler(types[i], handler);
+            };
+        }
+        , _addHandler: function(type, handler){
+            /// <summary>添加自定义事件</summary>
             /// <param name="type" type="String">方法类型</param>
             /// <param name="handler" type="Function">方法</param>
             /// <returns type="self" />
@@ -60,13 +71,23 @@ myQuery.define("main/CustomEvent", function ($, undefined) {
             }
             return this;
         }
-        , removeHandler: function (type, handler) {
+        , removeHandler: function(type, handler){
+            /// <summary>移除自定义事件</summary>
+            /// <para>例:"do undo"</para>
+            /// <param name="type" type="String">方法类型</param>
+            /// <param name="handler" type="Function">方法</param>
+            /// <returns type="self" />
+            var types = type.split(" "), i = Things.length - 1;
+            for (; i >= 0; i--) {
+                this._removeHandler(types[i], handler);
+            };
+        }
+        , _removeHandler: function (type, handler) {
             /// <summary>移除自定义事件</summary>
             /// <param name="type" type="String">方法类型</param>
             /// <param name="handler" type="Function">方法</param>
             /// <returns type="self" />
-            var handlers = this._nameSpace(type)
-            , i = this.hasHandler(type, handler, handlers);
+            var handlers = this._nameSpace(type), i = this.hasHandler(type, handler, handlers);
             if (i > -1) {
                 handlers.splice(i, 1);
             }

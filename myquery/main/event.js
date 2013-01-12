@@ -203,7 +203,7 @@ myQuery.define("main/event", ["base/client", "main/CustomEvent", "main/data"], f
                          /// <param name="type" type="String">事件类型</param>
                          /// <param name="fn" type="Function">事件方法</param>
                          /// <returns type="null" />
-                         var types = type.split(" "), i = types.length;
+                         var types = type.split(" "), i = types.length - 1;
                          for (; i >= 0; i--) {
                              this._addHanler(ele, types[i], fn);
                          };
@@ -225,7 +225,7 @@ myQuery.define("main/event", ["base/client", "main/CustomEvent", "main/data"], f
                         /// <param name="type" type="String">事件类型</param>
                         /// <param name="fn" type="Function">事件方法</param>
                         /// <returns type="null" />
-                        var types = type.split(" "), i = types.length;
+                        var types = type.split(" "), i = types.length - 1;
                          for (; i >= 0; i--) {
                              this._removeHandler(ele, types[i], fn);
                          };
@@ -697,6 +697,7 @@ myQuery.define("main/event", ["base/client", "main/CustomEvent", "main/data"], f
 
         , removeHandler: function (type, fun) {
             /// <summary>给所有DOM元素移除事件</summary>
+            /// <para>例:"mousedown mouseup"</para>
             /// <param name="type" type="String">事件类型</param>
             /// <param name="fun" type="Function">事件方法</param>
             /// <returns type="self" />
