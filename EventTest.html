@@ -16,13 +16,13 @@
         ], function (event, CustomEvent, query) {
             $.ready(function () {
                 var cus = new CustomEvent();
-                cus.on("a.b", function () {
-                    alert("a.b");
+                cus.on("a.b a.b.c", function () {
+                    alert("multibind");
                 });
 
-                cus.on("a.b.c", function () {
-                    alert("a.b.c");
-                });
+                // cus.on("a.b.c", function () {
+                //     alert("a.b.c");
+                // });
 
                 cus.on("a.b.pp", function () {
                     alert("a.b.pp");

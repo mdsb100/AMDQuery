@@ -16,7 +16,7 @@ myQuery.define("main/CustomEvent", function ($, undefined) {
             /// <param name="type" type="String">方法类型</param>
             /// <param name="handler" type="Function">方法</param>
             /// <returns type="self" />
-            var types = type.split(" "), i = Things.length - 1;
+            var types = type.split(" "), i = types.length - 1;
             for (; i >= 0; i--) {
                 this._addHandler(types[i], handler);
             };
@@ -77,7 +77,7 @@ myQuery.define("main/CustomEvent", function ($, undefined) {
             /// <param name="type" type="String">方法类型</param>
             /// <param name="handler" type="Function">方法</param>
             /// <returns type="self" />
-            var types = type.split(" "), i = Things.length - 1;
+            var types = type.split(" "), i = types.length - 1;
             for (; i >= 0; i--) {
                 this._removeHandler(types[i], handler);
             };
@@ -97,7 +97,6 @@ myQuery.define("main/CustomEvent", function ($, undefined) {
             var nameList = type.split("."), result = this._initSpace(nameList, this.handlers, re);
             //, i = 0, nameSpace, name, result;
             //nameList.length > 2 && tools.error({ fn: "CustomEvent._nameSpace", msg: "nameSpace is too long" });
-
 
             this._handlerMap[type] || (this._handlerMap[type] = result);
             return result;
