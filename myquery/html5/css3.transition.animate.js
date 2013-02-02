@@ -223,7 +223,7 @@ myQuery.define("html5/css3.transition.animate", ["base/client", "html5/css3", "m
         $.fn.extend({
             animateByTransition: function (property, option) {
                 // <summary>给所有元素添加一个动画
-                /// <para>obj property:{ width: "50em", top: "+=500px" }</para>
+                /// <para>obj property:{ width: "50px", top: "+=500px" }</para>
                 /// <para>obj option</para>
                 /// <para>num/str option.duration:持续时间 也可输入"slow","fast","normal"</para>
                 /// <para>fun option.complete:结束时要执行的方法</para>
@@ -255,6 +255,7 @@ myQuery.define("html5/css3.transition.animate", ["base/client", "html5/css3", "m
                 $.animate = $.animateByTransition;
                 $.stopAnimation = $.stopAnimationByTransition;
                 $.animationPower = "css3.transition";
+                $._getAnimateOpt = $._getAnimateByTransitionOpt;
                 $.fn.animate = $.fn.animateByTransition;
                 $.fn.stopAnimation = $.fn.stopAnimationByTransition;
             } else {

@@ -14,7 +14,10 @@ myQuery.define('module/effect', ['module/animate'], function ($, animate, undefi
             /// <returns type="self" />
             if ($.isVisible(ele)) { return this; }
 
-            var o = $.data(ele, "slideOriginOpacity") || $.style(ele, "opacity") || 1, opt = $._getAnimateOpt(option);
+            var o, opt = $._getAnimateOpt(option);
+            o = $.data(ele, "slideOriginOpacity");
+            o = o != null ? o : ($.style(ele, "opacity") || 1);
+
             $.data(ele, "slideOriginOpacity", o);
             opt.complete = function () {
                 $.data(ele, "slideOriginOpacity", null);
@@ -30,7 +33,11 @@ myQuery.define('module/effect', ['module/animate'], function ($, animate, undefi
             /// <returns type="self" />
             if (!$.isVisible(ele)) { return this; }
             option = option || { visible: 0 }
-            var o = $.data(ele, "slideOriginOpacity") || $.style(ele, "opacity"), opt = $._getAnimateOpt(option);
+            
+            var o, opt = $._getAnimateOpt(option);
+            o = $.data(ele, "slideOriginOpacity");
+            o = o != null ? o : $.style(ele, "opacity");
+
             $.data(ele, "slideOriginOpacity", o);
             opt.complete = function () {
                 $._hide(ele, opt.visible).setOpacity(ele, o);
