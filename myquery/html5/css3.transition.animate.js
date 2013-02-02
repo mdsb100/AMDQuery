@@ -196,7 +196,7 @@ myQuery.define("html5/css3.transition.animate", ["base/client", "html5/css3", "m
             },
             getTransitionEasing: function (easing) {
                 var name = easing;
-                if (easing) {
+                if (easing && $.isStr(easing)) {
                     if ($.isArr(easing)) {
                         name = easing.splice(0, 1)[0];
                     }
