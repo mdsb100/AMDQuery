@@ -34,7 +34,13 @@ myQuery.define("main/CustomEvent", function ($, undefined) {
             /// <summary>清楚所有自定义事件</summary>
             /// <returns type="self" />
             if (type) {
-                this._nameSpace(type, true);
+                var types = type.split(" "), i = types.length - 1, item;
+                for (; i >= 0; i--) {
+                    item = types[i];
+                    this._nameSpace(item, true);
+                    delete this._handlerMap[item];
+                    delete this.handlers[item];
+                } 
             }
             else {
                 this.handlers = {};

@@ -16,9 +16,10 @@
         ], function (event, CustomEvent, query) {
             $.ready(function () {
                 var cus = new CustomEvent();
-                cus.on("a.b a.b.c", function () {
+                var multibind = function () {
                     alert("multibind");
-                });
+                }
+                cus.on("a.b a.b.c", multibind);
 
                 // cus.on("a.b.c", function () {
                 //     alert("a.b.c");
@@ -28,14 +29,20 @@
                     alert("a.b.pp");
                 });
 
-                cus.trigger("a.b");
-                cus.trigger("a.b.c");
-                cus.trigger("a.b.pp");
+                // cus.trigger("a.b");
+                // cus.trigger("a.b.c");
+                // cus.trigger("a.b.pp");
+
+                // cus.off("a.b a.b.c", multibind)
+
+                // cus.trigger("a.b");
+                // cus.trigger("a.b.c");
+                // cus.trigger("a.b.pp");
                 
                 var a = "123";
-                $("body").delegate("div,#a", "click", function (e) {
-                    alert(this.id);
-                });
+                // $("body").delegate("div,#a", "click", function (e) {
+                //     alert(this.id);
+                // });
 
                 var test1 = $("#a");
                 var fn1 = function (str) {
@@ -53,6 +60,26 @@
                 fn4 = function (e) {
                     alert(e.info);
                 };
+                test1.on("mousedown", fn1);
+
+                test1.on("mousedown mouseup", fn2);
+
+                //test1.off("mousedown", fn2);
+
+                //test1.off("mousedown mouseup", fn2);
+
+                test1.clearHandlers("mousedown mouseup")
+
+                test1.trigger("mousedown", {
+                    screenX: 5
+                });
+
+                test1.trigger("mouseup", {
+                    screenX: 6
+                });  
+
+                return
+
                 test1.on("my.test1", fn1);
                 test1.on("my.test1", fn1);
 

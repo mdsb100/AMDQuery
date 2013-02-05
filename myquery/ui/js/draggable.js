@@ -49,7 +49,7 @@ myQuery.define("ui/js/draggable", ["module/Widget", "main/event", "main/dom", "m
             disable: function () {
                 var fun = this.event;
                 $("body").off("mouseup", fun);
-                this.container.off('mousemove mousemove', fun);
+                this.container.off('mousemove mouseup', fun);
                 this.target.off('mousedown', fun);
             },
             init: function (obj, target) {

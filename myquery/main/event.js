@@ -75,19 +75,23 @@ myQuery.define("main/event", ["base/client", "main/CustomEvent", "main/data"], f
                 if (fun === null || type === null) {
                     return this.clearHandlers(ele, type);
                 }
+                
                 if ($.isEle(ele)) {
-                    var data, proxy, handlers;
+                    var data, proxy, handlers, item, types = type.split(" "), i = types.length - 1;
 
                     if (!(data = $.data(ele, "_handlers_"))) {
                         data = $.data(ele, "_handlers_", new CustomEvent());
                     }
+                    proxy = tools.proxy(fun, this);
 
-                    if (data.hasHandler(type, fun) == -1 && _domEventList[type]) {
-                        proxy = tools.proxy(fun, this);
-                        type = tools.editEventType(type);
-                        $.event.document.addHandler(ele, type, proxy);
+                    for (; i >= 0; i--) {
+                        item = types[i]
+                        if (data.hasHandler(item, fun) == -1 && _domEventList[item]) {
+                            item = tools.editEventType(item);
+                            $.event.document._addHanler(ele, item, proxy);
+                        }
                     }
-
+                    
                     type && fun && data.addHandler(type, fun);
                 }
                 else {
@@ -95,19 +99,20 @@ myQuery.define("main/event", ["base/client", "main/CustomEvent", "main/data"], f
                 }
                 return this;
             }
-             , ajaxStart: function (fun) {
+
+            , ajaxStart: function (fun) {
                  /// <summary>ajax开始</summary>
                  /// <param name="fun" type="Function">方法</param>
                  /// <returns type="self" />
-                 $.bus.addHandler(arguments[1] || "ajaxStart", fun);
-                 return this;
-             }
-             , ajaxStop: function (fun) {
+                $.bus.addHandler(arguments[1] || "ajaxStart", fun);
+                return this;
+            }
+            , ajaxStop: function (fun) {
                  /// <summary>ajax停止</summary>
                  /// <param name="fun" type="Function">方法</param>
                  /// <returns type="self" />
-                 return $.ajaxStart(fun, "ajaxStop");
-             }
+                return $.ajaxStart(fun, "ajaxStop");
+            }
              , ajaxTimeout: function (fun) {
                  /// <summary>ajax超时</summary>
                  /// <param name="fun" type="Function">方法</param>
@@ -124,25 +129,28 @@ myQuery.define("main/event", ["base/client", "main/CustomEvent", "main/data"], f
                  /// <returns type="self" />
                  if ($.isEle(ele)) {
                      var data = $.data(ele, "_handlers_")
-                     , map = data._handlerMap, j = 0, len = 0
+                     , handlerMap = data._handlerMap
+                     , map = {}, j = 0, len = 0
                      , nameSpace = ""
                      , i
-                     , item;
+                     , item
+                     , fun;
+
                      if (type) {
-                         if (type in map) {
-                             map = {};
-                             map[type] = 1;
-                         }
-                         else {
-                             $.console.warn({ fn: "$.clearHandlers", msg: "type is not in handlers" });
-                             return this;
-                         }
+                        var types = type.split(" "), z = types.length - 1;
+                        for (; z >= 0; z--) {
+                            item = types[z]
+                            if (item in handlerMap) {
+                                map[item] = 1;
+                            }
+                        }
                      }
 
                      for (i in map) {
                          item = data._nameSpace(i);
                          for (j = 0, len = item.length; j < len; j++) {
-                             _domEventList[i] && $.event.document.removeHandler(ele, i, item[j]);
+                            fun = item[j]
+                            _domEventList[i] && $.event.document._removeHandler(ele, i, fun.__guid || fun);
                              //data.removeHandler(i, item[j]);
                          }
                      }
@@ -238,10 +246,10 @@ myQuery.define("main/event", ["base/client", "main/CustomEvent", "main/data"], f
                         else
                             ele['on' + type] = null;
                     }
-                    , clearHandlers: function (ele) {
-                        /// <summary>移除dom元素的所有事件</summary>
-                        /// <param name="ele" type="Element">元素</param>
-                    }
+                    // , clearHandlers: function (ele) {
+                    //     /// <summary>移除dom元素的所有事件</summary>
+                    //     /// <param name="ele" type="Element">元素</param>
+                    // }
                     , createEvent: function (type) {
                         /// <summary>创建原生事件对象</summary>
                         /// <param name="type" type="String">事件类型</param>
@@ -516,16 +524,21 @@ myQuery.define("main/event", ["base/client", "main/CustomEvent", "main/data"], f
                  /// <param name="fun" type="Function/undefined">方法或空</param>
                  /// <returns type="self" />
                  if ($.isEle(ele)) {
-                     var data, proxy;
-                     if (_domEventList[type]) {
-                         proxy = fun.__guid || fun;
-                         type = tools.editEventType(type);
-                         $.event.document.removeHandler(ele, type, proxy);
-                     }
-                     if (!(data = $.data(ele, "_handlers_"))) {
-                         data = $.data(ele, "_handlers_", new CustomEvent());
-                     }
-                     type && fun && data.removeHandler(type, fun);
+                    var data, proxy = fun.__guid || fun, types = type.split(" "), i = types.length - 1, item;
+
+                    for (; i >= 0; i--) {
+                        item = types[i]
+                        if (_domEventList[item]) {
+                            item = tools.editEventType(item);
+                            $.event.document._removeHandler(ele, item, proxy);
+                        }
+                    }
+
+                    if (!(data = $.data(ele, "_handlers_"))) {
+                        data = $.data(ele, "_handlers_", new CustomEvent());
+                    }
+
+                    type && fun && data.removeHandler(type, fun);
 
                  }
                  else {
