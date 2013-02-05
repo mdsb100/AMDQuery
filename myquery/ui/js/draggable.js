@@ -43,13 +43,13 @@ myQuery.define("ui/js/draggable", ["module/Widget", "main/event", "main/dom", "m
                 var fun = this.event;
                 this.disable();
                 $("body").on("mouseup", fun);
-                this.container.on('mousemove', fun).on('mouseup', fun);
+                this.container.on('mousemove mouseup', fun);
                 this.target.on('mousedown', fun);
             },
             disable: function () {
                 var fun = this.event;
                 $("body").off("mouseup", fun);
-                this.container.off('mousemove', fun).off('mousemove', fun);
+                this.container.off('mousemove mousemove', fun);
                 this.target.off('mousedown', fun);
             },
             init: function (obj, target) {
