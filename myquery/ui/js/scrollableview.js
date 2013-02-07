@@ -138,7 +138,8 @@ myQuery.define("ui/js/scrollableview", ["main/query", "main/dom", "main/class", 
                 "refreshPosition": 1,
                 "showStatusBar": 1,
                 "hideStatusBar": 1,
-                "render": 1
+                "render": 1,
+                "distory":1
             },
             isTransform3d: function() {
                 return this.options.isTransform3d && $.support.transform3d;

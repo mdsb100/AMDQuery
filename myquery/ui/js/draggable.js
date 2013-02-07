@@ -1,5 +1,5 @@
 ﻿/// <reference path="../../myquery.js" />
-myQuery.define("ui/js/draggable", ["module/Widget", "main/event", "main/dom", "main/query"], function ($, Widget, event, dom, query, undefined) {
+myQuery.define("ui/js/draggable", ["module/Widget", "main/event", "main/dom", "html5/css3", "main/query"], function ($, Widget, event, dom, cls3, query, undefined) {
     "use strict"; //启用严格模式
     var eventFuns = event.event.document,
         draggable = Widget.factory("ui.draggable", function draggable(obj, target) {
@@ -7,31 +7,15 @@ myQuery.define("ui/js/draggable", ["module/Widget", "main/event", "main/dom", "m
         }, {
             container: null,
             create: function () {
-                var str, self = this, result;
+                var self = this;
 
                 this.container.css("overflow", "hidden");
 
-                this.target.css("position", "absolute").ancestors().each(function (ele) {
-                    str = $.style(ele, "position");
-                    switch (str) {
-                        case "absolute":
-                        case "relative":
-                            result = ele;
-                            return false;
-                            break;
-                    }
-                });
-                if (!result) {
-                    result = document.body;
-                    $(result).css("position", "relative");
-                }
-                //self.container = $(result);
-                this.positionParent = $(result);
-                if (this.options.overflow == true) {
-                    this.positionParent.css("overflow", "hidden");
-                }
+                this.target.css("position", "absolute")
 
                 this._initHandler();
+
+                this.initPositionParent();
 
                 this.able();
 
@@ -56,6 +40,35 @@ myQuery.define("ui/js/draggable", ["module/Widget", "main/event", "main/dom", "m
                 this.container = $(obj.container || document.body);
                 return this;
             },
+            initPositionParent: function(){
+                var result;
+                if(this.isTransform3d()){
+                    this.container.initTransform3d();
+                    this.positionParent = this.container;
+                }
+                else{
+                    this.target.ancestors().each(function (ele) {
+                        switch ($.style(ele, "position")) {
+                            case "absolute":
+                            case "relative":
+                                result = ele;
+                                return false;
+                                break;
+                        }
+                    });
+                    if (!result) {
+                        result = document.body;
+                        $.css(result, "position", "relative");
+                    }
+                    //self.container = $(result);
+                    this.positionParent = $(result);
+                    if (this.options.overflow == true) {
+                        this.positionParent.css("overflow", "hidden");
+                    }
+                }
+
+                return this;
+            },
             options: {
                 //container: null,
                 disabled: true,
@@ -67,19 +80,32 @@ myQuery.define("ui/js/draggable", ["module/Widget", "main/event", "main/dom", "m
                 cursor: 'default',
                 overflow: false,
                 keepinner: true,
-                stopPropagation:true
+                stopPropagation:true,
+                isTransform3d:false
             },
             public: {
-
+                getPositionX:1,
+                getPositionY:1
+            },
+            isTransform3d: function() {
+                return this.options.isTransform3d && $.support.transform3d;
+            },
+            getPositionX: function(){
+                return this.target.getLeft();
+            },
+            getPositionY: function(){
+                return this.target.getTop();
             },
             _initHandler: function () {
                 var self = this,
                     target = self.target,
                     opt = self.options,
+                    parentLeft = null,
+                    parentTop = null,
                     dragging = null;
                 this.event = function (e) {
-                    var offsetLeft = target.getLeft(),
-                        offsetTop = target.getTop(),
+                    var offsetLeft = self.getPositionX(),
+                        offsetTop = self.getPositionY(),
                         x = e.pageX || e.clientX,
                         y = e.pageY || e.clientY,
                         para = {
@@ -99,6 +125,30 @@ myQuery.define("ui/js/draggable", ["module/Widget", "main/event", "main/dom", "m
                             dragging = target;
                             opt.diffx = x - offsetLeft;
                             opt.diffy = y - offsetTop;
+                            parentLeft = self.positionParent.getLeft();
+                            parentTop = self.positionParent.getTop();
+                            if (opt.disabled == false) {
+                                opt.cursor = 'default';
+                            } else {
+                                switch (opt.axis) {
+                                    case "x":
+                                        opt.axisy = false;
+                                        opt.cursor = 'e-resize';
+                                        break;
+                                    case "y":
+                                        opt.axisx = false;
+                                        opt.cursor = 'n-resize';
+                                        break;
+                                    default:
+                                        opt.axisx = true;
+                                        opt.axisy = true;
+                                        opt.cursor = 'move';
+                                }
+                            }
+                            self.target.css({
+                                cursor: opt.cursor
+                            });
+
                             eventFuns.preventDefault(e);
                             opt.stopPropagation && eventFuns.stopPropagation(e);
                             target.trigger(para.type, target[0], para);
@@ -106,18 +156,16 @@ myQuery.define("ui/js/draggable", ["module/Widget", "main/event", "main/dom", "m
                         case "touchmove":
                         case "mousemove":
                             if (dragging !== null) {
-                                var offset = self.positionParent,
-                                offsetLeft = offset.getLeft(),
-                                offsetTop = offset.getTop(),
+                                var
                                 con = self.container,
                                 cP;
-                                x -= (opt.diffx + offsetLeft);
-                                y -= (opt.diffy + offsetTop);
+                                x -= (opt.diffx + parentLeft);
+                                y -= (opt.diffy + parentTop);
 
                                 if (opt.keepinner == true && con[0]) {
                                     cP = con.position();
-                                    cP.pageLeft -= offsetLeft;
-                                    cP.pageTop -= offsetTop;
+                                    cP.pageLeft -= parentLeft;
+                                    cP.pageTop -= parentTop;
                                     x = $.between(cP.pageLeft, cP.width + cP.pageLeft - target.width(), x);
                                     y = $.between(cP.pageTop, cP.height + cP.pageTop - target.height(), y); //使用height对不对？
                                 }
@@ -145,30 +193,13 @@ myQuery.define("ui/js/draggable", ["module/Widget", "main/event", "main/dom", "m
             },
             render: function (x, y) {
                 var opt = this.options;
-                if (opt.disabled == false) {
-                    opt.cursor = 'default';
-                } else {
-                    switch (opt.axis) {
-                        case "x":
-                            opt.axisy = false;
-                            opt.cursor = 'e-resize';
-                            break;
-                        case "y":
-                            opt.axisx = false;
-                            opt.cursor = 'n-resize';
-                            break;
-                        default:
-                            opt.axisx = true;
-                            opt.axisy = true;
-                            opt.cursor = 'move';
-                    }
+                
+                if(opt.axisx === true && x != undefined){
+                    this.isTransform3d() ? this.target.transform3d({tx: x}): this.target.css("left",x + "px");
                 }
-                this.target.css({
-                    cursor: opt.cursor
-                });
-
-                opt.axisx === true && x != undefined && this.target.css("left",x + "px");
-                opt.axisy === true && y != undefined && this.target.css("top",y + "px");
+                if(opt.axisy === true && y != undefined){
+                    this.isTransform3d() ? this.target.transform3d({ty: y}): this.target.css("top",y + "px");
+                }
 
                 return this;
             },
