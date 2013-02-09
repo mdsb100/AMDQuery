@@ -42,7 +42,10 @@ myQuery.define("ui/js/scrollableview", ["main/query", "main/dom", "main/class", 
                     keepinner: 0,
                     axis: opt.overflow,
                     disabled: opt.disabled,
-                    stopPropagation: false
+                    stopPropagation: false,
+                    axisx: this._isAllowedDirection("x"),
+                    axisy: this._isAllowedDirection("y"),
+                    isTransform3d: opt.isTransform3d
                 });
 
                 this.refreshPosition();
@@ -123,7 +126,7 @@ myQuery.define("ui/js/scrollableview", ["main/query", "main/dom", "main/class", 
                 //this.wheelTimeId = null;
                 this._initHandler()
                 this.target.css("overflow", "hidden");
-                this.isTransform3d() && this.container.initTransform3d();
+                //this.isTransform3d() && this.container.initTransform3d();
                 return this;
             },
             options: {
@@ -170,11 +173,9 @@ myQuery.define("ui/js/scrollableview", ["main/query", "main/dom", "main/class", 
 
             },
             _renderByDefault: function(x1, x2, y1, y2) {
-                this.container.offsetL(x1);
-                this.statusBarX.offsetL(x2);
+                this._isAllowedDirection("x") && this.container.offsetL(x1) && this.statusBarX.offsetL(x2);
 
-                this.container.offsetT(y1);
-                this.statusBarY.offsetT(y2);
+                this._isAllowedDirection("y") && this.container.offsetT(y1) && this.statusBarY.offsetT(y2);
                 return this;
             },
             getContainerPosition: function() {
@@ -312,8 +313,8 @@ myQuery.define("ui/js/scrollableview", ["main/query", "main/dom", "main/class", 
             },
 
             showStatusBar: function() {
-                this.statusBarXVisible && this.statusBarX.show();
-                this.statusBarYVisible && this.statusBarY.show();
+                this.statusBarXVisible && this._isAllowedDirection("x") && this.statusBarX.show();
+                this.statusBarYVisible && this._isAllowedDirection("y") && this.statusBarY.show();
                 return this;
             },
             hideStatusBar: function() {

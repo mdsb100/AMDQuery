@@ -18,7 +18,7 @@
                     }
                 }).addHandler("drag.start", function (e) {
                     $.showMsg("3");
-                });
+                }).draggable("render", 20, 0);
 
                 $("#drag1").draggable({
                     container: query.getEleById("container1")

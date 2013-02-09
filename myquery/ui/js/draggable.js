@@ -85,7 +85,8 @@ myQuery.define("ui/js/draggable", ["module/Widget", "main/event", "main/dom", "h
             },
             public: {
                 getPositionX:1,
-                getPositionY:1
+                getPositionY:1,
+                render:1
             },
             isTransform3d: function() {
                 return this.options.isTransform3d && $.support.transform3d;
@@ -192,15 +193,30 @@ myQuery.define("ui/js/draggable", ["module/Widget", "main/event", "main/dom", "h
 
             },
             render: function (x, y) {
+                return this.isTransform3d() ? this._renderByTransform3d(x, y): this._render(x, y);
+            },
+            _render: function(x, y){
                 var opt = this.options;
                 
                 if(opt.axisx === true && x != undefined){
-                    this.isTransform3d() ? this.target.transform3d({tx: x}): this.target.css("left",x + "px");
+                    this.target.css("left",x + "px");
                 }
                 if(opt.axisy === true && y != undefined){
-                    this.isTransform3d() ? this.target.transform3d({ty: y}): this.target.css("top",y + "px");
+                    this.target.css("top",y + "px");
                 }
 
+                return this; 
+            },
+            _renderByTransform3d: function(x, y){
+                var opt = this.options, obj ={};
+                
+                if(opt.axisx === true && x != undefined){
+                    obj.tx = x;
+                }
+                if(opt.axisy === true && y != undefined){
+                    obj.ty = y;
+                }
+                this.target.transform3d(obj);
                 return this;
             },
             target: null,
