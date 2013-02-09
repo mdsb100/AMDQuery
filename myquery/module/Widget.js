@@ -1,5 +1,5 @@
 ﻿/// <reference path="../myquery.js" />
-myQuery.define("module/Widget", ["main/data", "main/event", "main/attr", "module/object"], function($, data, event, attr, object, undefined) {
+myQuery.define("module/Widget", ["main/data", "main/query", "main/event", "main/attr", "module/object"], function($, data, query, event, attr, object, undefined) {
     "use strict"; //启用严格模式
 
     function Widget(obj, target) {
@@ -26,7 +26,7 @@ myQuery.define("module/Widget", ["main/data", "main/event", "main/attr", "module
             var key, attr, value, item, result = {},
                 i = 0,
                 len = 0;
-            attr = this.target.attr(this.widgetName);
+            attr = this.target.attr("myquery-" + this.widgetName);
             if(attr !== undefined) {
                 attr = attr.split(/;|,/);
                 for(len = attr.length; i < len; i++) {
@@ -81,10 +81,7 @@ myQuery.define("module/Widget", ["main/data", "main/event", "main/attr", "module
             //            }, this);
         },
         event: function() {},
-        //        _supper: function (obj, target) {
-        //            this.constructor._SupperConstructor(this, obj, target);
-        //            return this;
-        //        },
+
         init: function(obj, target) {
             //元素本身属性高于obj
             var defaultOptions = this.constructor.prototype.options;
@@ -151,6 +148,8 @@ myQuery.define("module/Widget", ["main/data", "main/event", "main/attr", "module
         evalAttr: function(attr) {
             if(attr && /^\d+(.[\d]*)?$|true|false|undefined|null/.test(attr)) {
                 return eval(attr);
+            } else if($.reg.id.test(attr) || $.reg.css.test(attr)) {
+                return $(attr);
             } else {
                 return attr;
             }
