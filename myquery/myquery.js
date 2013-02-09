@@ -178,7 +178,6 @@
     var _config = {
         myquery: {
             define: "$",
-            ui: false,
             package: "json/package",
             packageNames: ""
         },
@@ -202,7 +201,7 @@
     if(typeof myQueryConfig != "undefined") {
         _config = myQueryConfig;
     } else {
-        var temp = tools.getJScriptConfig(["myquery", "amd", "model"]);
+        var temp = tools.getJScriptConfig(["myquery", "amd", "ui", "model"]);
         tools.extend(_config.myquery, temp.myquery);
         tools.extend(_config.amd, temp.amd);
         tools.extend(_config.ui, temp.ui);
@@ -1732,79 +1731,6 @@
         return Promise;
     }, "1.0.0");
 
-    myQuery.define("base/ready", ["base/promise"], function($, Promise) {
-        "use strict"; //启用严格模式
-        var ready = function(fn) {
-                rootPromise.and(fn);
-            },
-            rootPromise;
-
-        if(_config.myquery.ui) {
-            _config.myquery.packageNames += ",ui";
-        }
-
-        rootPromise = new Promise(function() { //window.ready first to fix ie
-            var promise = new Promise(),
-                ready = function(e) {
-                    promise.resolve(e);
-                }
-            if(document.addEventListener) {
-                document.addEventListener("DOMContentLoaded", ready, false);
-            } else if(document.attachEvent) {
-                document.attachEvent("onreadystatechange", function(e) {
-                    if(document.readyState === "complete") {
-                        ready(e);
-                    };
-                });
-            } else {
-                document.onload = ready;
-            }
-
-            return promise;
-        }).then(function() {
-            if(_config.myquery.packageNames) {
-                var promise = new Promise();
-                require(_config.myquery.package, function(_package) {
-                    promise.resolve(_package);
-                });
-                return promise;
-            }
-        }).then(function(_package) {
-            if(_package) {
-                var promise = new Promise(),
-                    packageNames = _config.myquery.packageNames.split(","),
-                    i = 0,
-                    item = null,
-                    len = packageNames.length,
-                    result = [];
-
-                for(; i < len; i++) {
-                    item = _package[packageNames[i]];
-                    if($.isArr(item)) {
-                        result = result.concat(item)
-                    }
-                }
-
-                result.length && require(result, function() {
-                    promise.resolve();
-                });
-                return promise;
-            }
-        }).then(function() {
-            if(_config.ui.init) {
-                var body = $("body"),
-                    image = _config.ui.image.split("."),
-                    cover = $({
-                        width: "100%",
-                        height: "100%",
-                        backgroundImage: $.getPath("ui/images/" + image[0], image[1])
-                    }, "div", body)
-            }
-        }).rootResolve();
-
-        return $.ready = ready;
-    }, "1.0.0");
-
     myQuery.define("base/is", function($) {
         "use strict"; //启用严格模式
         var hasOwnProperty = Object.prototype.hasOwnProperty,
@@ -2162,6 +2088,85 @@
 
         return array;
     }, "1.0.0");
+
+    myQuery.define("base/ready", ["base/promise"], function($, Promise) {
+        "use strict"; //启用严格模式
+        var ready = function(fn) {
+                rootPromise.and(fn);
+            },
+            rootPromise;
+
+        if(_config.ui.init) {
+            _config.myquery.packageNames += ",ui";
+            document.documentElement.style.display = "none";
+        }
+
+        rootPromise = new Promise(function() { //window.ready first to fix ie
+            var promise = new Promise(),
+                ready = function(e) {
+                    promise.resolve(e);
+                }
+            if(document.addEventListener) {
+                document.addEventListener("DOMContentLoaded", ready, false);
+            } else if(document.attachEvent) {
+                document.attachEvent("onreadystatechange", function(e) {
+                    if(document.readyState === "complete") {
+                        ready(e);
+                    };
+                });
+            } else {
+                document.onload = ready;
+            }
+
+            return promise;
+        }).then(function() {
+            if(_config.myquery.packageNames) {
+                var promise = new Promise();
+                require(_config.myquery.package, function(_package) {
+                    promise.resolve(_package);
+                });
+                return promise;
+            }
+        }).then(function(_package) {
+            if(_package) {
+                var promise = new Promise(),
+                    packageNames = _config.myquery.packageNames.split(","),
+                    i = 0,
+                    item = null,
+                    len = packageNames.length,
+                    result = [];
+
+                for(; i < len; i++) {
+                    item = _package[packageNames[i]];
+                    if($.isArr(item)) {
+                        result = result.concat(item)
+                    }
+                }
+
+                result.length && require(result, function() {
+                    promise.resolve();
+                });
+                return promise;
+            }
+        }).then(function() {
+            if(_config.ui.init) {
+                document.documentElement.style.display = "block";
+                var body = $("body"),
+                    image = _config.ui.image.split("."),
+                    cover = $({
+                        width: "100%",
+                        height: "100%",
+                        position: "absolute",
+                        top: 0,
+                        left: 0,
+                        zIndex: 10000
+                    }, "img", body).attr("src", $.getPath("ui/images/" + image[0], "." + image[1]))
+            }
+        }).rootResolve();
+
+        return $.ready = ready;
+    }, "1.0.0");
+
 
     window.myQuery = $;
 
