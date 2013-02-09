@@ -61,7 +61,7 @@ myQuery.define('module/threed', ["main/event", "module/math"], function ($, even
         this.location = location;
     }
     Space.prototype = {
-        constructor: space
+        constructor: Space
 
         , flatten: function (point) {
             var p = [[point.x, point.y, point.z, 1]]

@@ -1,6 +1,6 @@
 ﻿/// <reference path="../myquery.js" />
 
-myQuery.define("html5/threed.canvas.extend", ["html5/canvas", "moudule/threed"], function ($, canvas, threed, undefined) {
+myQuery.define("html5/threed.canvas.extend", ["html5/canvas", "module/threed"], function ($, canvas, threed, undefined) {
     "use strict"; //启用严格模式
     var Polygon = threed.Polygon;
 

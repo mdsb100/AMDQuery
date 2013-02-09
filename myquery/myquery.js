@@ -178,6 +178,7 @@
     var _config = {
         myquery: {
             define: "$",
+            ui: false,
             package: "json/package",
             packageNames: ""
         },
@@ -188,6 +189,10 @@
             //检查循环依赖
             "debug": true,
             timeout: 10000
+        },
+        ui: {
+            init: false,
+            image: "welcome.png"
         },
         model: {
 
@@ -200,6 +205,7 @@
         var temp = tools.getJScriptConfig(["myquery", "amd", "model"]);
         tools.extend(_config.myquery, temp.myquery);
         tools.extend(_config.amd, temp.amd);
+        tools.extend(_config.ui, temp.ui);
         tools.extend(_config.model, temp.model);
     }
 
@@ -1733,6 +1739,10 @@
             },
             rootPromise;
 
+        if(_config.myquery.ui) {
+            _config.myquery.packageNames += ",ui";
+        }
+
         rootPromise = new Promise(function() { //window.ready first to fix ie
             var promise = new Promise(),
                 ready = function(e) {
@@ -1779,6 +1789,16 @@
                     promise.resolve();
                 });
                 return promise;
+            }
+        }).then(function() {
+            if(_config.ui.init) {
+                var body = $("body"),
+                    image = _config.ui.image.split("."),
+                    cover = $({
+                        width: "100%",
+                        height: "100%",
+                        backgroundImage: $.getPath("ui/images/" + image[0], image[1])
+                    }, "div", body)
             }
         }).rootResolve();
 
