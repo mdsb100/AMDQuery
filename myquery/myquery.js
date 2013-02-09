@@ -105,7 +105,7 @@
                     j = 0,
                     item, attrs, attr, result = {};
                 for(; item = list[i++];) {
-                    attrs = (_script.getAttribute(item) || "").split(/,|;/);
+                    attrs = (_script.getAttribute(item) || "").split(/;/);
                     if(item == "src") {
                         result[item] = attrs[0];
                         break;
@@ -178,7 +178,8 @@
     var _config = {
         myquery: {
             define: "$",
-            package: ""
+            package: "json/package",
+            packageNames: ""
         },
         amd: {
             async: false,
@@ -1473,7 +1474,7 @@
                     name = "todo"
                 }
 
-                return result && arguments.constructor == result.constructor ? this[name].apply(this, result) : this[name](result);
+                return result && "callee" in result ? this[name].apply(this, result) : this[name](result);
             },
             get: function(propertyName) {
                 /// <summary>获得某个属性</summary>
@@ -1728,11 +1729,11 @@
     myQuery.define("base/ready", ["base/promise"], function($, Promise) {
         "use strict"; //启用严格模式
         var ready = function(fn) {
-                promise.and(fn);
+                rootPromise.and(fn);
             },
-            promise;
+            rootPromise;
 
-        promise = new Promise(function() { //window.ready first to fix ie
+        rootPromise = new Promise(function() { //window.ready first to fix ie
             var promise = new Promise(),
                 ready = function(e) {
                     promise.resolve(e);
@@ -1751,17 +1752,30 @@
 
             return promise;
         }).then(function() {
-            if(_config.myquery.package) {
+            if(_config.myquery.packageNames) {
                 var promise = new Promise();
-                require("json/package", function(_package) {
-                    promise.resolve(_package[_config.myquery.package]);
+                require(_config.myquery.package, function(_package) {
+                    promise.resolve(_package);
                 });
                 return promise;
             }
         }).then(function(_package) {
             if(_package) {
-                var promise = new Promise();
-                require(_package, function() {
+                var promise = new Promise(),
+                    packageNames = _config.myquery.packageNames.split(","),
+                    i = 0,
+                    item = null,
+                    len = packageNames.length,
+                    result = [];
+
+                for(; i < len; i++) {
+                    item = _package[packageNames[i]];
+                    if($.isArr(item)) {
+                        result = result.concat(item)
+                    }
+                }
+
+                result.length && require(result, function() {
                     promise.resolve();
                 });
                 return promise;
@@ -1784,7 +1798,7 @@
                     return false;
                 },
                 isArguments: function(a) {
-                    return !!a && arguments.constructor == a.constructor;
+                    return !!a && "callee" in arguments;
                 },
                 isArr: function(a) {
                     /// <summary>是否为数组</summary>
