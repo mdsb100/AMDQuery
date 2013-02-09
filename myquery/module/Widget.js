@@ -1,5 +1,5 @@
 ﻿/// <reference path="../myquery.js" />
-myQuery.define("module/Widget", ["main/data", "main/event", "main/attr", "module/object"], function ($, data, event, attr, object, undefined) {
+myQuery.define("module/Widget", ["main/data", "main/event", "main/attr", "module/object"], function($, data, event, attr, object, undefined) {
     "use strict"; //启用严格模式
 
     function Widget(obj, target) {
@@ -19,21 +19,31 @@ myQuery.define("module/Widget", ["main/data", "main/event", "main/attr", "module
     }
 
     object.Class(Widget, {
-        able: function () {
+        able: function() {
             this.options.disabled === false ? this.disable() : this.enable();
         },
-        checkAttr: function () {
-            var key, attr, value, result = {};
-            for (key in this.options) {
-                attr = $.unCamelCase(key, this.widgetEventPrefix);
-                value = this.target.attr(attr);
-                if (value !== undefined) {
-                    result[key] = Widget.evalAttr(value);;
+        checkAttr: function() {
+            var key, attr, value, item, result = {},
+                i = 0,
+                len = 0;
+            attr = this.target.attr(this.widgetName);
+            if(attr !== undefined) {
+                attr = attr.split(/;|,/);
+                for(len = attr.length; i < len; i++) {
+                    item = attr[i].split(":");
+                    if(item.length == 2) {
+                        key = item[0];
+                        if(this.options[key] !== undefined) {
+                            value = Widget.evalAttr(item[1]);
+                            result[key] = value;
+                        }
+                    }
                 }
             }
+
             return result;
         },
-        create: function () { },
+        create: function() {},
         container: null,
         constructor: Widget
         // , _create_: function () {
@@ -44,25 +54,25 @@ myQuery.define("module/Widget", ["main/data", "main/event", "main/attr", "module
         // }
         ,
         customEventName: [],
-        destroy: function (key) {
-            if (key) {
+        destroy: function(key) {
+            if(key) {
                 this.disable();
                 this.target.clearHandlers();
                 this.container && $(this.container).remove();
                 this.target.removeData(key);
-                $.each(this, function (value, name) {
+                $.each(this, function(value, name) {
                     !$.isPrototypeProperty && delete this[name];
                 }, this);
             }
         },
-        disable: function () {
+        disable: function() {
             //            $.each(this.event, function (control, name) {
             //                $.each(control, function (value, key) {
             //                    this[name].removeHandler(key, value);
             //                }, this);
             //            }, this);
         },
-        enable: function () {
+        enable: function() {
             //            $.each(this.event, function (control, name) {
             //                $.each(control, function (value, key) {
             //                    this[name].removeHandler(key, value);
@@ -70,12 +80,12 @@ myQuery.define("module/Widget", ["main/data", "main/event", "main/attr", "module
             //                }, this);
             //            }, this);
         },
-        event: function () { },
+        event: function() {},
         //        _supper: function (obj, target) {
         //            this.constructor._SupperConstructor(this, obj, target);
         //            return this;
         //        },
-        init: function (obj, target) {
+        init: function(obj, target) {
             //元素本身属性高于obj
             var defaultOptions = this.constructor.prototype.options;
             this.options = {};
@@ -89,12 +99,12 @@ myQuery.define("module/Widget", ["main/data", "main/event", "main/attr", "module
             this.option(obj);
             return this;
         },
-        option: function (key, value) {
-            if ($.isObj(key)) $.each(key, function (value, name) {
+        option: function(key, value) {
+            if($.isObj(key)) $.each(key, function(value, name) {
                 this.setOption(name, value);
             }, this);
-            else if (value === undefined) return this.options[key];
-            else if ($.isStr(key)) this.setOption(key, value);
+            else if(value === undefined) return this.options[key];
+            else if($.isStr(key)) this.setOption(key, value);
             //return this;
             //this._render_();
         },
@@ -108,48 +118,46 @@ myQuery.define("module/Widget", ["main/data", "main/event", "main/attr", "module
             toString: 1,
             getSelf: 1
         },
-        render: function () { },
-        _initHandler: function () { },
+        render: function() {},
+        _initHandler: function() {},
 
-        _isEventName: function(name){
+        _isEventName: function(name) {
             return $.inArray(this.customEventName, name) > -1;
         },
         // , _render_: function () {//不应该由这个来绑定事件
         //     $.isFun(this.render) && this.render();
         //     return this;
         // }
-        setOption: function (key, value) {
-            if (this.options[key] !== undefined){ 
+        setOption: function(key, value) {
+            if(this.options[key] !== undefined) {
                 this.options[key] = value;
-            }
-            else if($.isFun(value) && this._isEventName(key)){
+            } else if($.isFun(value) && this._isEventName(key)) {
                 this.target.addHandler(this.widgetEventPrefix + "." + key, value);
             }
         },
-        toString: function () {
+        toString: function() {
             return "ui.widget";
         },
-        widget: function () {
+        widget: function() {
             return this.container;
         },
-        getSelf: function () {
+        getSelf: function() {
             return this;
         },
-        widgetEventPrefix: "", //将来做事件用
-        
+        widgetEventPrefix: "",
+        //将来做事件用
         widgetName: "Widget"
-    },{
-        evalAttr: function(attr){
-            if (attr && /^\d+(.[\d]*)?$|true|false|undefined|null/.test(attr)) {
+    }, {
+        evalAttr: function(attr) {
+            if(attr && /^\d+(.[\d]*)?$|true|false|undefined|null/.test(attr)) {
                 return eval(attr);
-            }
-            else{
+            } else {
                 return attr;
             }
         }
     });
 
-    Widget.factory = function (name, constructor, prototype, statics) {
+    Widget.factory = function(name, constructor, prototype, statics) {
         /// <summary>为$添加部件
         /// <para>作为类得constructor可以这样</para>
         /// <para>function TimePicker(obj, target, base){</para>
@@ -166,15 +174,15 @@ myQuery.define("module/Widget", ["main/data", "main/event", "main/attr", "module
         /// <param name="statics" type="Object">类的静态方法</param>
         /// <returns type="Function" />
         //consult from jQuery.ui
-        if (!$.isStr(name)) return null;
+        if(!$.isStr(name)) return null;
         var name = name.split("."),
             nameSpace = name[0],
             name = name[1],
             type;
-        if (!nameSpace || !name) return;
-        if (!$.widget[nameSpace]) $.widget[nameSpace] = {};
+        if(!nameSpace || !name) return;
+        if(!$.widget[nameSpace]) $.widget[nameSpace] = {};
 
-        if (!$.isFun(constructor)) {
+        if(!$.isFun(constructor)) {
             //    prototype = $.isPlainObj(constructor) ? constructor : {};
             //constructor = function (obj, target, base) { base.call(this, obj, target); };
             statics = prototype;
@@ -190,7 +198,7 @@ myQuery.define("module/Widget", ["main/data", "main/event", "main/attr", "module
 
         var key = nameSpace + "." + name + $.now();
 
-        return $.prototype[name] = function (a, b, c) {
+        return $.prototype[name] = function(a, b, c) {
             /// <summary>对当前$的所有元素初始化某个UI控件或者修改属性或使用其方法</summary>
             /// <para>返回option属性时，只返回第一个对象的</para>
             /// <param name="a" type="Object/String">初始化obj或属性名:option或方法名</param>
@@ -199,25 +207,24 @@ myQuery.define("module/Widget", ["main/data", "main/event", "main/attr", "module
             /// <returns type="self" />
             var result = this,
                 arg = arguments;
-            this.each(function (ele) {
+            this.each(function(ele) {
                 var data = $.data(ele, key); //key = nameSpace + "." + name,
-                if (data == undefined) data = $.data(ele, key, new constructor(a, $(ele))); //完全调用基类的构造函数 不应当在构造函数 create render
+                if(data == undefined) data = $.data(ele, key, new constructor(a, $(ele))); //完全调用基类的构造函数 不应当在构造函数 create render
                 else {
-                    if ($.isObj(a)){ 
+                    if($.isObj(a)) {
                         data.option(a);
                         data.render();
-                    }
-                    else if ($.isStr(a)) {
+                    } else if($.isStr(a)) {
                         //if (b === undefined) {
-                        if (a === "option") {
+                        if(a === "option") {
                             result = data.option(b, c);
-                            if (result === undefined) {
+                            if(result === undefined) {
                                 data.render();
                                 result = this;
                             }
-                        } else if (data.public[a]) {
+                        } else if(data.public[a]) {
                             data[a].apply(data, $.argToArray(arg, 1));
-                        } else if (a === "destroy") {
+                        } else if(a === "destroy") {
                             data[a].call(data, key);
                         }
                     }
