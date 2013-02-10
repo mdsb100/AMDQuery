@@ -1,6 +1,6 @@
 ﻿/// <reference path="../myquery.js" />
 
-myQuery.define("main/dom", ["base/support", "main/data"], function ($, support, data, undefined) {
+myQuery.define("main/dom", ["base/support", "main/data", "main/event"], function ($, support, data, event, undefined) {
     "use strict"; //启用严格模式
     //和jquery做个测试
     var 
@@ -1010,11 +1010,11 @@ myQuery.define("main/dom", ["base/support", "main/data"], function ($, support, 
             /// <summary>把所有元素从文档流里移除并且移除所有子元素</summary>
             /// <returns type="self" />
             return this.each(function (ele) {
-                //移除事件
                 $.each($.children(ele), function (child) {
+                    event.clearHandlers(child);
                     $.removeData(child);
-                    //移除事件
                 });
+                event.clearHandlers(ele);
                 $.removeData(ele);
                 $.remove(ele);
             });
@@ -1027,24 +1027,25 @@ myQuery.define("main/dom", ["base/support", "main/data"], function ($, support, 
             if ($.isNum(child))
                 this.each(function (ele) {
                     temp = $.getRealChild(ele, child);
+                    event.clearHandlers(temp);
                     $.removeData(temp);
                     ele.removeChild(temp);
-                    //移除事件
+                    
                 });
             else if ($.isEle(child)) {
                 try {
+                    event.clearHandlers(child);
                     $.removeData(child);
                     this.eles[0].removeChild(child);
-                    //移除事件
                 } catch (e) { }
             }
             else if ($.is$(child))
                 this.each(function (ele) {
                     child.each(function (son) {
                         try {
+                            event.clearHandlers(son);
                             $.removeData(son);
                             ele.removeChild(son);
-                            //移除事件
                         } catch (e) { }
                     });
                 });
@@ -1055,8 +1056,8 @@ myQuery.define("main/dom", ["base/support", "main/data"], function ($, support, 
             /// <param name="child" type="Number/Element/$"></param>
             /// <returns type="self" />
             $.each($.children(this.eles), function (ele) {
+                event.clearHandlers(ele);
                 $.removeData(ele);
-                //移除事件
             });
             return this.each(function (ele) {
                 $.removeChildren(ele);

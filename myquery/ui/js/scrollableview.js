@@ -1,5 +1,6 @@
 /// <reference path="../../myquery.js" />
 myQuery.define("ui/js/scrollableview", ["main/query", "main/dom", "main/class", "html5/css3", "ui/js/swappable", "ui/js/draggable", "module/src", "module/Widget", "module/animate", "module/tween.extend"], function($, query, dom, cls, cls3, swappable, draggable, src, Widget, animate, tween, undefined) {
+    "use strict"; //启用严格模式
     src.link({
         href: $.getPath("ui/css/scrollableview", ".css")
     });

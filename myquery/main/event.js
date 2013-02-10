@@ -136,8 +136,11 @@ myQuery.define("main/event", ["base/client", "main/CustomEvent", "main/data"], f
                 /// <param name="type" type="String/undefinded">事件类型</param>
                 /// <returns type="self" />
                 if($.isEle(ele)) {
-                    var data = $.data(ele, "_handlers_"),
-                        handlerMap = data._handlerMap,
+                    var data = $.data(ele, "_handlers_");
+                    if(!data){
+                        return this;
+                    }
+                    var handlerMap = data._handlerMap,
                         map = {},
                         j = 0,
                         len = 0,

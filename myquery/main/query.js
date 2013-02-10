@@ -2,8 +2,6 @@
 
 myQuery.define("main/query", ["main/attr"], function ($, attr, undefined) {
     "use strict"; //启用严格模式
-    $.module.query = "1.0.0";
-
     var reg = RegExp,
         propertyFun = {
             "default": function (item, value) { return item !== undefined; }

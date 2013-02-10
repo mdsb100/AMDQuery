@@ -32,9 +32,6 @@ myQuery.define("main/attr", ["base/support"], function ($, support, undefined) {
             //				    ret.nodeValue :
             //				    undefined;
             //                }
-            // if (true) {
-                
-            // };
             return (ret = ele.getAttributeNode(name)) ? ret.nodeValue : undefined;
         }
         , getVal: function (ele) {

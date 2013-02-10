@@ -1,7 +1,6 @@
 ﻿/// <reference path="../myquery.js" />
 myQuery.define("module/Widget", ["main/data", "main/query", "main/event", "main/attr", "module/object"], function($, data, query, event, attr, object, undefined) {
     "use strict"; //启用严格模式
-
     function Widget(obj, target) {
         /// <summary>组件的默认基类</summary>
         /// <para></para>
