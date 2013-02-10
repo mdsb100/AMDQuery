@@ -1005,6 +1005,9 @@
                 return ret;
             },
             getReady: function() {
+                if(this.status == 4){
+                    return;
+                }
                 var dps = this.dependencies,
                     l = dps.length,
                     i = 0,
@@ -1057,7 +1060,7 @@
                     MD = ClassModule.modules;
                 if(hd && hd.length) {
                     for(; md = MD[hd.shift()];) {
-                        md.status != 4 && md.getReady();
+                        md.getReady();
                     }
                 }
                 return this;
@@ -2158,17 +2161,18 @@
                 return promise;
             }
         }).then(function(){ 
-            document.documentElement.style.display = "block";
             if(_config.ui.init) {
                 var promise = new Promise();
                 require("ui/init", function(init) {
-                    init.showIndex();
-                    promise.resolve();
+                    init.renderWidget(function(){
+
+                        promise.resolve();
+                    });
                 });
                 return promise;
             }
         }).then(function() {
-
+            document.documentElement.style.display = "block";
         }).rootResolve();
 
         return $.ready = ready;
