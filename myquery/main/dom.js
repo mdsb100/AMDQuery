@@ -438,10 +438,13 @@ myQuery.define("main/dom", ["base/support", "main/data", "main/event"], function
             /// <param name="ele" type="Object">对象</param>
             /// <param name="isDelete" type="Boolean">是否彻底删除</param>
             /// <returns type="self" />
-            ele.parentNode.removeChild(ele);
-            if ($.client.browser.ie678) {
-                ele = null;
-            }
+            if(ele.parentNode){
+                var parentNode = ele.parentNode;
+                parentNode.removeChild(ele);
+                if ($.client.browser.ie678) {
+                    ele = null;
+                }
+            }   
             return this;
         }
         , removeChild: function (ele, child) {
