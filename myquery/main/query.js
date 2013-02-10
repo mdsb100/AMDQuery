@@ -1,12 +1,12 @@
 ﻿/// <reference path="../myquery.js" />
 
-myQuery.define("main/query", function ($) {
+myQuery.define("main/query", ["main/attr"], function ($, attr, undefined) {
     "use strict"; //启用严格模式
     $.module.query = "1.0.0";
 
     var reg = RegExp,
         propertyFun = {
-            "default": function (item, value) { return item != undefined; }
+            "default": function (item, value) { return item !== undefined; }
             , "=": function (item, value) { return item == value; }
             , "!=": function (item, value) { return item != value; }
             , "^=": function (item, value) {
@@ -445,7 +445,7 @@ myQuery.define("main/query", function ($) {
                 }
 
                 list = $.filter(function (item) {
-                    return fun(item[name], value);
+                    return fun(attr.getAttr(item, name), value); //是否该这样拿属性 存疑
                 }, eles);
                 return list;
             }
