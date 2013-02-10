@@ -1,5 +1,4 @@
 ﻿/// <reference path="../myquery.js" />
-// quote from colo.js by Andrew Brehaut, Tim Baumann
 myQuery.define("base/support", function ($) {
     //consult from jquery-1.7.2
     "use strict"; //启用严格模式
