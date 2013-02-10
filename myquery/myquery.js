@@ -730,6 +730,14 @@
             cache: {},
             container: {},
             dependenciesMap: {},
+            checkNamed: function(id) {
+                if(this.anonymousID != null && id.indexOf("tempDefine") < 0) {
+                    id !== this.anonymousID && tools.error({
+                        fn: 'define',
+                        msg: 'the named ' + id + ' is not equal require'
+                    });
+                }
+            },
             detectCR: function(md, dp) {
                 /// <summary>检测模块是否存在循环引用,返回存在循环引用的模块名</summary>
                 /// <param name="md" type="String">要检测的模块名</param>
@@ -1178,6 +1186,7 @@
                 break;
             case 2:
                 if(typeof arg[0] == "string") {
+                    ClassModule.checkNamed(id);
                     id = id; //tools.getJScriptConfig(["src"], true).src; //_tempId();_amdAnonymousID
                     body = dependencies;
                     dependencies = [];
@@ -1201,6 +1210,7 @@
                         msg: id + ':two arguments ahead should be String and Array'
                     }, "TypeError");
                 }
+                ClassModule.checkNamed(id);
                 factory = ClassModule.funBody(arg[2]);
             }
             container = ClassModule.getContainer(id);
@@ -2098,10 +2108,10 @@
 
         if(_config.ui.init) {
             _config.myquery.packageNames += ",ui";
-            document.documentElement.style.display = "none";
         }
 
         rootPromise = new Promise(function() { //window.ready first to fix ie
+            document.documentElement.style.display = "none";
             var promise = new Promise(),
                 ready = function(e) {
                     promise.resolve(e);
@@ -2149,19 +2159,7 @@
                 return promise;
             }
         }).then(function() {
-            if(_config.ui.init) {
-                document.documentElement.style.display = "block";
-                var body = $("body"),
-                    image = _config.ui.image.split("."),
-                    cover = $({
-                        width: "100%",
-                        height: "100%",
-                        position: "absolute",
-                        top: 0,
-                        left: 0,
-                        zIndex: 10000
-                    }, "img", body).attr("src", $.getPath("ui/images/" + image[0], "." + image[1]))
-            }
+            document.documentElement.style.display = "block";
         }).rootResolve();
 
         return $.ready = ready;
