@@ -742,7 +742,7 @@ myQuery.define("main/dom", ["base/support", "main/data", "main/event"], function
             /// </summary>
             /// <param name="child" type="String/Element/$">子元素类型</param>
             /// <returns type="self" />
-            var a = null, c = child, fun = arguments[1] || "appendChild", ele = this.eles[0];
+            var a = null, c = child, ele = this.eles[0];
             if (!c)
                 return this;
             if ($.isStr(c)) {
@@ -754,18 +754,17 @@ myQuery.define("main/dom", ["base/support", "main/data", "main/event"], function
                         childNodes = $.createEle(c);
                         //div.innerHTML = c;
                         for (i = 0, len = childNodes.length; i < len; i++) {
-                            ele[fun](childNodes[i]);
+                            ele.appendChild(childNodes[i]);
                         }
                         //delete div;
                     });
                 }
             }
-            //this.html(c, true);
             else if ($.isEle(c) || c.nodeType === 3 || c.nodeType === 8)
-                ele[fun](c);
+                ele.appendChild(c);
             else if ($.is$(c)) {
                 c.each(function (son) {
-                    ele[fun](son);
+                    ele.appendChild(son);
                 });
             }
             return this;
@@ -777,16 +776,17 @@ myQuery.define("main/dom", ["base/support", "main/data", "main/event"], function
             /// </summary>
             /// <param name="father" type="Element/$">父元素类型</param>
             /// <returns type="self" />
-            var a = null, f = father, fun = arguments[1] || "appendChild";
-            if ($.isEle(f)) a = [f];
-            else if ($.is$(f)) a = f.eles;
-            if (a)
-                $.each(a, function (ele) {
-                    this.each(function (child) {
-                        ele[fun](child);
-                    });
-                    return false;
-                }, this);
+            debugger
+            var f = father;
+            if ($.isEle(f)){ }
+            else if ($.is$(f)){ f = f[0]; }
+            else { f = null; }
+            if (f){
+                this.each(function (ele) {
+                    f.appendChild(ele);
+                });
+            }
+
             return this;
         }
 
@@ -880,8 +880,8 @@ myQuery.define("main/dom", ["base/support", "main/data", "main/event"], function
                 $.setInnerW(ele, width);
             }) : $.getInnerW(this[0]);
         }
-        , insertBefore: function (child) {
-            /// <summary>为$的第一个元素最前面加入子元素
+        , insertBefore: function (newChild, refChild) {
+            /// <summary>为$的某个元素前面加入子元素
             /// <para>字符串是标签名:div</para>
             /// <para>DOM元素</para>
             /// <para>若为$，则为此$第一个元素添加另一个$的所有元素</para>
@@ -889,18 +889,62 @@ myQuery.define("main/dom", ["base/support", "main/data", "main/event"], function
             /// <para>select去append("<option></option>")存在问题</para>
             /// <para>$({ i:"abc" }, "option")可以以这样方式实现</para>
             /// </summary>
-            /// <param name="child" type="String/Element/$">子元素类型</param>
+            /// <param name="newChild" type="String/Element/$">新元素</param>
+            /// <param name="refChild" type="String/Element/$">已有元素,若为$则以第一个为准</param>
             /// <returns type="self" />
-            return this.append(child, "insertBefore");
+            var ele = this.eles[0];
+            if (!newChild)
+                return this;
+            if($.is$(refChild)){
+                refChild = refChild[0];
+            }
+            if ($.isStr(newChild)) {
+                var str, childNodes, i = 0, len;
+                str = newChild.match(/^<\w.+[\/>|<\/\w.>]$/);
+                if (str) {
+                    newChild = str[0];
+                    this.each(function (ele) {
+                        childNodes = $.createEle(newChild);
+                        //div.innerHTML = c;
+                        for (i = 0, len = childNodes.length; i < len; i++) {
+                            ele.insertBefore(childNodes[i], refChild);
+                        }
+                        //delete div;
+                    });
+                }
+            }
+            else if ($.isEle(newChild) || newChild.nodeType === 3 || newChild.nodeType === 8)
+                ele.insertBefore(newChild, refChild);
+            else if ($.is$(newChild)) {
+                newChild.each(function (newChild) {
+                    ele.insertBefore(newChild, refChild);
+                });
+            }
+            return this;
         }
-        , insertBeforeTo: function (father) {
-            /// <summary>添加当前的$所有元素到最前面
+        , insertBeforeTo: function (father, refChild) {
+            /// <summary>添加当前的$元素到添加到某个元素前面
             /// <para>father为$添加的目标为第一个子元素</para>
             /// <para>father为ele则目标就是father</para>
             /// </summary>
-            /// <param name="father" type="Element/$">父元素类型</param>
+            /// <param name="father" type="Element/$">父元素</param>
+            /// <param name="refChild" type="String/Element/$">已有元素</param>
             /// <returns type="self" />
-            return this.appendTo(father, "insertBefore");
+            debugger
+            var f = father;
+            if ($.isEle(f)){ }
+            else if ($.is$(f)){ f = f[0]; }
+            else { f = null; }
+            if($.is$(refChild)){
+                refChild = refChild[0];
+            }
+            if (f){
+                this.each(function (ele) {
+                    f.insertBefore(ele, refChild);
+                });
+            }
+
+            return this;
         }
         , insertText: function (str) {
             /// <summary>给当前对象的所有ele插入TextNode</summary>
