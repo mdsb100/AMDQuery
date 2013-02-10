@@ -182,10 +182,10 @@
             packageNames: ""
         },
         amd: {
-            async: false,
             //异步
-            detectCR: false,
+            async: false,
             //检查循环依赖
+            detectCR: false,
             "debug": true,
             timeout: 10000
         },
@@ -295,6 +295,9 @@
         },
         config: _config,
         copyright: "2012 Cao Jun",
+        has: function(name, obj){
+            return obj && typeof name == "string" && name in obj;
+        },
         interfaces: {
             achieve: function(name, fun) {
                 /// <summary>实现一个接口</summary>
@@ -1054,7 +1057,7 @@
                     MD = ClassModule.modules;
                 if(hd && hd.length) {
                     for(; md = MD[hd.shift()];) {
-                        md.getReady();
+                        md.status != 4 && md.getReady();
                     }
                 }
                 return this;
@@ -1410,7 +1413,7 @@
                     success = function() {
                         var arg = arguments;
                         $.ready(function() {
-                            fn.apply(null, arg);
+                            fn && fn.apply(null, arg);
                         });
                     }
 
@@ -2106,10 +2109,6 @@
             },
             rootPromise;
 
-        if(_config.ui.init) {
-            _config.myquery.packageNames += ",ui";
-        }
-
         rootPromise = new Promise(function() { //window.ready first to fix ie
             document.documentElement.style.display = "none";
             var promise = new Promise(),
@@ -2158,8 +2157,18 @@
                 });
                 return promise;
             }
-        }).then(function() {
+        }).then(function(){ 
             document.documentElement.style.display = "block";
+            if(_config.ui.init) {
+                var promise = new Promise();
+                require("ui/init", function(init) {
+                    init.showIndex();
+                    promise.resolve();
+                });
+                return promise;
+            }
+        }).then(function() {
+
         }).rootResolve();
 
         return $.ready = ready;
