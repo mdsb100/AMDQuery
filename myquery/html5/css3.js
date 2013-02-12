@@ -80,18 +80,6 @@ myQuery.define("html5/css3", ["base/client", "main/dom"], function ($, client, d
             , scaleY: /scaleY\([^\)]+\)/
             , skew: /skew\([^\)]+\)/
         }
-        , transformAttrLength = {//可能用不到
-            translate3d: 3
-            , translate: 2
-            , rotate: 1
-            , rotateX: 1
-            , rotateY: 1
-            , rotateZ: 1
-            , scale: 2
-            , scaleX: 1
-            , scaleY: 1
-            , skew: 2
-        }
         , editScale = function (obj) {
             var sx = obj.sx != undefined ? obj.sx : obj.scaleX || 1
             , sy = obj.sy != undefined ? obj.sy : obj.scaleY || 1;

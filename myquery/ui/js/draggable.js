@@ -92,10 +92,10 @@ myQuery.define("ui/js/draggable", ["module/Widget", "main/event", "main/dom", "h
                 return this.options.isTransform3d && $.support.transform3d;
             },
             getPositionX: function(){
-                return this.target.getLeft();
+                return this.target.getLeft() + (this.isTransform3d() ? parseFloat(this.target.transform3d().translateX): 0);
             },
             getPositionY: function(){
-                return this.target.getTop();
+                return this.target.getTop() + (this.isTransform3d() ? parseFloat(this.target.transform3d().translateY): 0);
             },
             _initHandler: function () {
                 var self = this,
@@ -105,21 +105,22 @@ myQuery.define("ui/js/draggable", ["module/Widget", "main/event", "main/dom", "h
                     parentTop = null,
                     dragging = null;
                 this.event = function (e) {
-                    var offsetLeft = self.getPositionX(),
-                        offsetTop = self.getPositionY(),
-                        x = e.pageX || e.clientX,
-                        y = e.pageY || e.clientY,
-                        para = {
-                            type: 'drag.start',
-                            container: self.container,
-                            clientX: x,
-                            clientY: y,
-                            offsetX: e.offsetX || e.layerX || x - offsetLeft,
-                            offsetY: e.offsetY || e.layerY || y - offsetTop,
-                            event: e,
-                            target: this
-                        };
-
+                    if(e.type !== "mousemove" || dragging){
+                        var offsetLeft = self.getPositionX(),
+                            offsetTop = self.getPositionY(),
+                            x = e.pageX || e.clientX,
+                            y = e.pageY || e.clientY,
+                            para = {
+                                type: 'drag.start',
+                                container: self.container,
+                                clientX: x,
+                                clientY: y,
+                                offsetX: e.offsetX || e.layerX || x - offsetLeft,
+                                offsetY: e.offsetY || e.layerY || y - offsetTop,
+                                event: e,
+                                target: this
+                            };
+                    }
                     switch (e.type) {
                         case "touchstart":
                         case "mousedown":
