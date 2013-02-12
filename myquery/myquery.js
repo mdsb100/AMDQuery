@@ -254,7 +254,7 @@
         $ = myQuery;
 
     tools.extend($, {
-        cabinet: {}
+        cabinet: {},
         client: {
             browser: {
                 ie678: ie678
