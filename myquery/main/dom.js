@@ -776,7 +776,6 @@ myQuery.define("main/dom", ["base/support", "main/data", "main/event"], function
             /// </summary>
             /// <param name="father" type="Element/$">父元素类型</param>
             /// <returns type="self" />
-            debugger
             var f = father;
             if ($.isEle(f)){ }
             else if ($.is$(f)){ f = f[0]; }
@@ -930,7 +929,6 @@ myQuery.define("main/dom", ["base/support", "main/data", "main/event"], function
             /// <param name="father" type="Element/$">父元素</param>
             /// <param name="refChild" type="String/Element/$">已有元素</param>
             /// <returns type="self" />
-            debugger
             var f = father;
             if ($.isEle(f)){ }
             else if ($.is$(f)){ f = f[0]; }

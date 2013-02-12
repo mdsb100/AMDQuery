@@ -37,7 +37,7 @@ myQuery.define("ui/js/draggable", ["module/Widget", "main/event", "main/dom", "h
                 this.target.off('mousedown', fun);
             },
             init: function (obj, target) {
-                this.container = $(obj.container || document.body);
+                this.container = $(this.options.container || document.body);
                 return this;
             },
             initPositionParent: function(){
@@ -70,7 +70,7 @@ myQuery.define("ui/js/draggable", ["module/Widget", "main/event", "main/dom", "h
                 return this;
             },
             options: {
-                //container: null,
+                container: null,
                 disabled: true,
                 diffx: 0,
                 diffy: 0,

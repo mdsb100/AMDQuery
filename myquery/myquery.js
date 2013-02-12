@@ -295,7 +295,7 @@
         },
         config: _config,
         copyright: "2012 Cao Jun",
-        has: function(name, obj){
+        has: function(name, obj) {
             return obj && typeof name == "string" && name in obj;
         },
         interfaces: {
@@ -1005,7 +1005,7 @@
                 return ret;
             },
             getReady: function() {
-                if(this.status == 4){
+                if(this.status == 4) {
                     return;
                 }
                 var dps = this.dependencies,
@@ -2160,12 +2160,11 @@
                 });
                 return promise;
             }
-        }).then(function(){ 
+        }).then(function() {
             if(_config.ui.init) {
                 var promise = new Promise();
                 require("ui/init", function(init) {
-                    init.renderWidget(function(){
-
+                    init.renderWidget(function() {
                         promise.resolve();
                     });
                 });

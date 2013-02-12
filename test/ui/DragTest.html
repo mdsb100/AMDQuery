@@ -10,21 +10,21 @@
             //$.ready(function () {
                 var con = $("#container");
 
-                $("#drag").draggable({
-                    container: con,
-                    isTransform3d: true,
-                    stop: function(){
-                        $.showMsg("1");
-                    }
-                }).addHandler("drag.start", function (e) {
-                    $.showMsg("3");
-                }).draggable("render", 20, 0);
+                // $("#drag").draggable({
+                //     container: con,
+                //     isTransform3d: true,
+                //     stop: function(){
+                //         $.showMsg("1");
+                //     }
+                // }).addHandler("drag.start", function (e) {
+                //     $.showMsg("3");
+                // }).draggable("render", 20, 0);
 
-                $("#drag1").draggable({
-                    container: query.getEleById("container1")
-                }).addHandler("drag.start", function (e) {
-                    $.showMsg("2");
-                });
+                // $("#drag1").draggable({
+                //     container: query.getEleById("container1")
+                // }).addHandler("drag.start", function (e) {
+                //     $.showMsg("2");
+                // });
             //});
         });
        
@@ -35,7 +35,7 @@
         position: relative" id="container">
         <div>
             <div style="position: inherit">
-                <div id="drag" myquery-ui="draggabel" myquery-draggable="axis:x;keepinner:true;" style="width: 100px; height: 100px; background-color: Red;">
+                <div id="drag" myquery-ui="draggable" myquery-draggable="axis:x;keepinner:true;container:#container" style="width: 100px; height: 100px; background-color: Red;">
                     拖动我
                 </div>
             </div>
@@ -45,7 +45,7 @@
         position: relative" id="container1">
         <div>
             <div style="position: inherit">
-                <div id="drag1" myquery-ui="draggabel" myquery-draggable="keepinner:false" style="width: 500px; height: 500px; background-color: Red; position: absolute">
+                <div id="drag1" myquery-ui="draggable" myquery-draggable="keepinner:false;container:#container1" style="width: 500px; height: 500px; background-color: Red; position: absolute">
                     拖动我
                 </div>
             </div>

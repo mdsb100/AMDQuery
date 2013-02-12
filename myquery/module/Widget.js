@@ -147,8 +147,6 @@ myQuery.define("module/Widget", ["main/data", "main/query", "main/event", "main/
         evalAttr: function(attr) {
             if(attr && /^\d+(.[\d]*)?$|true|false|undefined|null/.test(attr)) {
                 return eval(attr);
-            } else if($.reg.id.test(attr) || $.reg.css.test(attr)) {
-                return $(attr);
             } else {
                 return attr;
             }
