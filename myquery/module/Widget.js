@@ -1,5 +1,5 @@
 ﻿/// <reference path="../myquery.js" />
-myQuery.define("module/Widget", ["main/data", "main/query", "main/event", "main/attr", "module/object"], function($, data, query, event, attr, object, undefined) {
+myQuery.define("module/Widget", ["main/data", "main/query", "main/event", "main/attr", "module/object", "module/myEval"], function($, data, query, event, attr, object, myEval, undefined) {
     "use strict"; //启用严格模式
     function Widget(obj, target) {
         /// <summary>组件的默认基类</summary>
@@ -33,8 +33,10 @@ myQuery.define("module/Widget", ["main/data", "main/query", "main/event", "main/
                     if(item.length == 2) {
                         key = item[0];
                         if(this.options[key] !== undefined) {
-                            value = Widget.evalAttr(item[1]);
-                            result[key] = value;
+                            result[key] = myEval.evalBasicDataType(item[1]);
+                        }
+                        else if($.inArray(this.customEventName, key) > -1){
+                             result[key] = myEval.functionEval(item[1], $);
                         }
                     }
                 }
@@ -143,14 +145,6 @@ myQuery.define("module/Widget", ["main/data", "main/query", "main/event", "main/
         widgetEventPrefix: "",
         //将来做事件用
         widgetName: "Widget"
-    }, {
-        evalAttr: function(attr) {
-            if(attr && /^\d+(.[\d]*)?$|true|false|undefined|null/.test(attr)) {
-                return eval(attr);
-            } else {
-                return attr;
-            }
-        }
     });
 
     Widget.factory = function(name, constructor, prototype, statics) {

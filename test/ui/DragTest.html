@@ -6,10 +6,13 @@
     <link href="../../css/reset.css" rel="stylesheet" type="text/css" />
     <script src="../../myquery/myquery.js" type="text/javascript" ui="init:1"></script>
     <script type="text/javascript">
+        myQuery.cabinet.start = function(){
+            $.showMsg("3");
+        }
         $.require(["ui/js/draggable", "main/query"], function (draggable, query) {
             //$.ready(function () {
                 var con = $("#container");
-
+                
                 // $("#drag").draggable({
                 //     container: con,
                 //     isTransform3d: true,
@@ -18,7 +21,8 @@
                 //     }
                 // }).addHandler("drag.start", function (e) {
                 //     $.showMsg("3");
-                // }).draggable("render", 20, 0);
+                // })
+                $("#drag").draggable("render", 20, 0);
 
                 // $("#drag1").draggable({
                 //     container: query.getEleById("container1")
@@ -35,7 +39,7 @@
         position: relative" id="container">
         <div>
             <div style="position: inherit">
-                <div id="drag" myquery-ui="draggable" myquery-draggable="axis:x;keepinner:true;container:#container" style="width: 100px; height: 100px; background-color: Red;">
+                <div id="drag" myquery-ui="draggable" myquery-draggable="axis:x;keepinner:true;container:#container;start:this.cabinet.start" style="width: 100px; height: 100px; background-color: Red;">
                     拖动我
                 </div>
             </div>
