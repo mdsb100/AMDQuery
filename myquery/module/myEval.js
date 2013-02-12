@@ -3,14 +3,25 @@
 
 myQuery.define('module/myEval', ['base/support'], function ($, support) {
     return {
-        functionEval: function (s) {
-            /// <summary>使用Funciont来eval</summary>
+        evalBasicDataType: function(str){
+            /// <summary>如果是基本数据类型就eval</summary>
             /// <param name="s" type="String"></param>
             /// <returns type="any" />
-            return (new Function("return " + s))();
-        }
+            if($.isStr(str) && /^\d+(.[\d]*)?$|true|false|undefined|null|NaN/.test(str)) {
+                return eval(str);
+            }
+            return str;
+        },
 
-        , globalEval: function (data) {
+        functionEval: function (s, context) {
+            /// <summary>使用Funciont来eval</summary>
+            /// <param name="s" type="String"></param>
+            /// <param name="context" type="Object">作用域</param>
+            /// <returns type="any" />
+            return (new Function("return " + s)).call(context);
+        },
+
+        globalEval: function (data) {
             ///	<summary>
             ///	把一段String用js的方式声明为全局的
             ///	</summary>
