@@ -2085,7 +2085,8 @@
             rootPromise;
 
         rootPromise = new Promise(function() { //window.ready first to fix ie
-            document.documentElement.style.display = "none";
+            document.documentElement.style.position = "absolute";
+            document.documentElement.style.left = "100000px";
             var promise = new Promise(),
                 ready = function(e) {
                     promise.resolve(e);
@@ -2136,14 +2137,13 @@
             if(_config.ui.init) {
                 var promise = new Promise();
                 require("ui/init", function(init) {
-                    init.renderWidget(function() {
-                        promise.resolve();
-                    });
+                    promise.resolve();
                 });
                 return promise;
             }
         }).then(function() {
-            document.documentElement.style.display = "block";
+            document.documentElement.style.left = "0px";
+            document.documentElement.style.position = "";
         }).rootResolve();
 
         return $.ready = ready;

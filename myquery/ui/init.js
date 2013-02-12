@@ -14,6 +14,7 @@ myQuery.define("ui/init", ["main/query", "main/dom", "main/attr", "module/Widget
 			backgroundColor: "white"
 		}, "img").attr("src", $.getPath("ui/images/" + image[0], "." + image[1])).insertBeforeTo(body, body.child()),
 		widgetNames = [],
+		init,
 		widgetMap = {};
 
 	$("body *[myquery-ui]").each(function(ele) {
@@ -43,10 +44,10 @@ myQuery.define("ui/init", ["main/query", "main/dom", "main/attr", "module/Widget
 
 	})
 
-	return {
+	init = {
 		widgetNames: widgetNames,
 		widgetMap: widgetMap,
-		renderWidget: function(callback) {
+		renderWidget: function() {
 			var self = this;
 			if(this.widgetNames.length){
 				require(this.widgetNames, function(){
@@ -56,12 +57,10 @@ myQuery.define("ui/init", ["main/query", "main/dom", "main/attr", "module/Widget
 						self.initWidget(widgetName, eles);
 					}
 					self.showIndex();
-					callback();
 				});
 			}
 			else{
 				self.showIndex();
-				callback();
 			}
 			return this;
 		},
@@ -74,4 +73,6 @@ myQuery.define("ui/init", ["main/query", "main/dom", "main/attr", "module/Widget
 			return this;
 		}
 	};
+	init.renderWidget();
+	return init;
 });
