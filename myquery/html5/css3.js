@@ -80,6 +80,14 @@ myQuery.define("html5/css3", ["base/client", "main/dom"], function ($, client, d
             , scaleY: /scaleY\([^\)]+\)/
             , skew: /skew\([^\)]+\)/
         }
+        , transform3dNameMap = {
+            translateX: 1,
+            translateY: 2,
+            translateZ: 3,
+            scaleX:1,
+            scaleY:1
+
+        }
         , editScale = function (obj) {
             var sx = obj.sx != undefined ? obj.sx : obj.scaleX || 1
             , sy = obj.sy != undefined ? obj.sy : obj.scaleY || 1;
@@ -266,7 +274,7 @@ myQuery.define("html5/css3", ["base/client", "main/dom"], function ($, client, d
             }
             return result;
         }
-        , getTransform3d: function (ele) {
+        , getTransform3d: function (ele, toNumber) {
             /// <summary>获得css3d
             /// <para>返回的 Object属性</para>
             /// <para>num obj.rotateX:x轴旋转</para>
@@ -279,11 +287,12 @@ myQuery.define("html5/css3", ["base/client", "main/dom"], function ($, client, d
             /// <para>num obj.scaleY:缩放（范围0到1）</para>
             /// </summary>
             /// <param name="ele" type="Element">元素</param>
+            /// <param name="toNumber" type="Boolean">是否直接把返回的结果转为数字</param>
             /// <returns type="Object" />
             var obj = {}
             if (hasTransform3d) {
                 obj = { rotateX: 0, rotateY: 0, rotateZ: 0, translateX: 0, translateY: 0, translateZ: 0, scaleX: 1, scaleY: 1 };
-                var transform = dom.css(ele, transformCssName), result;
+                var transform = dom.css(ele, transformCssName), result , i;
                 if (isFullCss(transform)) {
                     result = getTransformValue(transform, "rotateX");
                     result.length && (obj.rotateX = result[1]);
@@ -300,10 +309,50 @@ myQuery.define("html5/css3", ["base/client", "main/dom"], function ($, client, d
                         obj.translateZ = result[3];
                     }
 
+                    if(toNumber === true){
+                        for (i in obj){
+                            obj[i] = parseFloat(obj[i]);
+                        }
+                    }
+                }
+            }      
+
+            return obj;
+        }
+        , getTransform3dByName: function (ele, name, toNumber) {
+            /// <summary>获得css3d
+            /// </summary>
+            /// <param name="ele" type="Element">元素</param>
+            /// <param name="name" type="String">属性名</param>
+            /// <param name="toNumber" type="Boolean">是否直接把返回的结果转为数字</param>
+            /// <returns type="Object" />
+            var result = null;
+            if (hasTransform3d) { 
+                var transform = dom.css(ele, transformCssName), index;
+                if (isFullCss(transform)) {
+                    switch(name){
+                        case "translateX":
+                        case "translateY": 
+                        case "translateZ": 
+                            result = getTransformValue(transform, "translate3d");
+                            index = transform3dNameMap[name];
+                        break;
+                        case "rotateX":
+                        case "rotateY":
+                        case "rotateZ":
+                            result = getTransformValue(transform, name);
+                            index = 1;
+                        break;
+                        case "scaleX":
+                        case "scaleY":
+                            result = getTransformValue(transform, "scale");
+                            index = transform3dNameMap[name];
+                        break;
+                    }
                 }
             }
 
-            return obj;
+            return result && result.length ?( toNumber === true ? parseFloat(result[index]) : result[index] ): null;
         }
         , getTransformOrigin: function (ele) {
             /// <summary>返回元素的运动的基点(参照点)。返回值是百分比。
@@ -947,7 +996,7 @@ myQuery.define("html5/css3", ["base/client", "main/dom"], function ($, client, d
                 $.setTransform(ele, style);
             }) : $.getTransform(this[0], style);
         }
-        , transform3d: function (obj) {
+        , transform3d: function (obj, toNumber) {
             /// <summary>设置或返回css3d 默认是先translate ==> rotate ==> scale
             /// <para>如果要改变顺序 请使用setTransform</para>
             /// <para>设置的Object属性:</para>
@@ -968,14 +1017,24 @@ myQuery.define("html5/css3", ["base/client", "main/dom"], function ($, client, d
             /// <para>num obj.translateZ:z轴位移</para>
             /// <para>num obj.scaleX:缩放（范围0到1）</para>
             /// <para>num obj.scaleY:缩放（范围0到1）</para>
+            /// <para>如果是具名的name则返回具体的值</para>
             /// </summary>
-            /// <param name="obj" type="Object/undefined">参数</param>
+            /// <param name="obj" type="Object/undefined/String">参数</param>
+            /// <param name="toNumber" type="Boolean">是否直接把返回的结果转为数字</param>
             /// <returns type="self" />
             if (hasTransform3d) {
-                return obj
-                ? this.each(function (ele) {
-                    $.setTransform3d(ele, obj);
-                }) : $.getTransform3d(this[0]);
+                switch(typeof obj){
+                    case "boolean":
+                        toNumber = obj;
+                    case "undefined":
+                        return $.getTransform3d(this[0], toNumber);
+                    case "string":
+                        return $.getTransform3dByName(this[0], obj, toNumber);
+                    case "object":
+                        return this.each(function (ele) {
+                            $.setTransform3d(ele, obj);
+                        });
+                }
             }
             else {
                 return this;
