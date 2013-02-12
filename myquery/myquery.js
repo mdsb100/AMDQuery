@@ -254,6 +254,7 @@
         $ = myQuery;
 
     tools.extend($, {
+        cabinet: {}
         client: {
             browser: {
                 ie678: ie678
@@ -263,35 +264,6 @@
             },
             system: {},
             language: ""
-        },
-        color: {
-            toRGB: function(c) {
-                var r, g, b;
-                if($.isStr(c)) {
-                    //                if (cssColors[c]) {
-                    //                    c = cssColors[c];
-                    //                }
-                    if(c.indexOf("#") == 0) {
-                        var
-                        r = '0x' + c.substring(1, 3),
-                            g = '0x' + c.substring(3, 5),
-                            b = '0x' + c.substring(5, 7);
-                    } else if(c.indexOf("rgb") == 0) {
-                        return c;
-                    }
-                } else if(c.hasOwnProperty('red') && c.hasOwnProperty('green') && c.hasOwnProperty('blue')) {
-                    r = c.red;
-                    g = c.green;
-                    b = c.blue;
-                } else {
-                    return "";
-                }
-                return ['rgb(', +r, ',', +g, ',', +b, ')'].join('');
-            },
-            toRGBA: function(c, a) {
-                c = $.color.toRGB(c);
-                if(c && c.indexOf("rgb") == 0) return c.replace("rgb", "rgba").replace(")", "," + a + ")");
-            }
         },
         config: _config,
         copyright: "2012 Cao Jun",
