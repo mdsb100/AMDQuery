@@ -92,10 +92,10 @@ myQuery.define("ui/js/draggable", ["module/Widget", "main/event", "main/dom", "h
                 return this.options.isTransform3d && $.support.transform3d;
             },
             getPositionX: function(){
-                return this.target.getLeft() + (this.isTransform3d() ? parseFloat(this.target.transform3d().translateX): 0);
+                return this.target.getLeft() + (this.isTransform3d() ? this.target.transform3d("translateX", true): 0);
             },
             getPositionY: function(){
-                return this.target.getTop() + (this.isTransform3d() ? parseFloat(this.target.transform3d().translateY): 0);
+                return this.target.getTop()  + (this.isTransform3d() ? this.target.transform3d("translateY", true): 0);
             },
             _initHandler: function () {
                 var self = this,
