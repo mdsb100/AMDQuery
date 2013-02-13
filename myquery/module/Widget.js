@@ -215,10 +215,12 @@ myQuery.define("module/Widget", ["main/data", "main/query", "main/event", "main/
                                 data.render();
                                 result = this;
                             }
-                        } else if(data.public[a]) {
-                            data[a].apply(data, $.argToArray(arg, 1));
-                        } else if(a === "destory") {
+                        } 
+                        else if(a === "destory") {
                             data[a].call(data, key);
+                        } 
+                        else if(data.public[a]) {
+                            data[a].apply(data, $.argToArray(arg, 1));
                         }
                     }
 
