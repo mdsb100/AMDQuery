@@ -99,14 +99,14 @@ myQuery.define("html5/css3", ["base/client", "main/dom"], function ($, client, d
         }
         , editTranslate3d = function (obj) {
             return ['translate3d(',
-                    obj.tx ? obj.tx + "px" : obj.translateX || 0, ', ',
-                    obj.ty ? obj.ty + "px" : obj.translateY || 0, ', ',
-                    obj.tz ? obj.tz + "px" : obj.translateZ || 0, ') ']
+                    obj.tx != undefined ? obj.tx + "px" : obj.translateX || 0, ', ',
+                    obj.ty != undefined ? obj.ty + "px" : obj.translateY || 0, ', ',
+                    obj.tz != undefined ? obj.tz + "px" : obj.translateZ || 0, ') ']
         }
         , editRotate3d = function (obj) {
-            return ['rotateX(', obj.rx ? obj.rx + "deg" : obj.rotateX || 0, ') ',
-		        'rotateY(', obj.ry ? obj.ry + "deg" : obj.rotateY || 0, ') ',
-		        'rotateZ(', obj.rz ? obj.rz + "deg" : obj.rotateZ || 0, ') ']
+            return ['rotateX(', obj.rx != undefined ? obj.rx + "deg" : obj.rotateX || 0, ') ',
+		        'rotateY(', obj.ry != undefined ? obj.ry + "deg" : obj.rotateY || 0, ') ',
+		        'rotateZ(', obj.rz != undefined ? obj.rz + "deg" : obj.rotateZ || 0, ') ']
         }
         , regTransform = /[^\d\w\.\-\+]+/
         , getTransformValue = function (transform, name) {
