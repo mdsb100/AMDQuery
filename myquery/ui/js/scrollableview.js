@@ -1,5 +1,5 @@
 /// <reference path="../../myquery.js" />
-myQuery.define("ui/js/scrollableview", ["main/query", "main/dom", "main/class", "html5/css3", "ui/js/swappable", "ui/js/draggable", "module/src", "module/Widget", "module/animate", "module/tween.extend"], function($, query, dom, cls, cls3, swappable, draggable, src, Widget, animate, tween, undefined) {
+myQuery.define("ui/js/scrollableview", ["main/query", "main/dom", "main/class", "html5/css3", "html5/animate.transform", "ui/js/swappable", "ui/js/draggable", "module/src", "module/Widget", "module/animate", "module/tween.extend"], function($, query, dom, cls, cls3, animateTransform, swappable, draggable, src, Widget, animate, tween, undefined) {
     "use strict"; //启用严格模式
     src.link({
         href: $.getPath("ui/css/scrollableview", ".css")
@@ -50,6 +50,8 @@ myQuery.define("ui/js/scrollableview", ["main/query", "main/dom", "main/class", 
                 });
 
                 this.refreshPosition();
+
+                this.isTransform3d() && this.container.initTransform3d();
 
                 this.able();
 
@@ -107,7 +109,7 @@ myQuery.define("ui/js/scrollableview", ["main/query", "main/dom", "main/class", 
                         self.showStatusBar();
 
                         self.wheelTimeId = setTimeout(function() {
-                            self.toXBoundary(self.container.offsetL()).toYBoundary(self.container.offsetT()).hideStatusBar();
+                            self.toXBoundary(self.getLeft()).toYBoundary(self.getTop()).hideStatusBar();
                         }, 50);
 
                         self.render(x, y, true, opt.boundary);
@@ -116,8 +118,16 @@ myQuery.define("ui/js/scrollableview", ["main/query", "main/dom", "main/class", 
                 }
                 return this;
             },
-            destory: function() {
-
+            destory: function(key) {
+                if(key) {
+                    this.target.removeChild();
+                    this.positionParent.child().appendTo(this.target);
+                    this.container.draggable("destory");
+                    this.target.swappable("destory");
+                    this.statusBarX.remove();
+                    this.statusBarY.remove();
+                    this.__superConstructor.prototype.destory.call(this, key);
+                }
             },
             init: function(obj) {
                 this.option(obj);
@@ -127,7 +137,7 @@ myQuery.define("ui/js/scrollableview", ["main/query", "main/dom", "main/class", 
                 //this.wheelTimeId = null;
                 this._initHandler()
                 this.target.css("overflow", "hidden");
-                //this.isTransform3d() && this.container.initTransform3d();
+                
                 return this;
             },
             options: {
@@ -135,7 +145,7 @@ myQuery.define("ui/js/scrollableview", ["main/query", "main/dom", "main/class", 
                 "animateDuration": 600,
                 "boundary": 150,
                 "boundaryDruation": 300,
-                "isTransform3d": 0,
+                "isTransform3d": false,
                 "mouseWheelAccuracy": 0.3
             },
             public: {
@@ -143,18 +153,21 @@ myQuery.define("ui/js/scrollableview", ["main/query", "main/dom", "main/class", 
                 "showStatusBar": 1,
                 "hideStatusBar": 1,
                 "render": 1,
-                "distory":1
+                "toX": 1,
+                "toY": 1
             },
             isTransform3d: function() {
                 return this.options.isTransform3d && $.support.transform3d;
             },
             render: function(x, y, addtion, boundary) {
-                var position, originX = 0,
+                var position, 
+                    originX = 0,
                     originY = 0,
                     statusX, statusY;
 
                 if(addtion) {
                     position = this.getContainerPosition();
+
                     originX = position.x;
                     originY = position.y;
                 }
@@ -163,28 +176,39 @@ myQuery.define("ui/js/scrollableview", ["main/query", "main/dom", "main/class", 
                     x = this.checkXBoundary(originX + x, boundary);
                     statusX = this.checkXStatusBar(x);
                 }
-                else if(y !== null && this._isAllowedDirection("y")) {
+                if(y !== null && this._isAllowedDirection("y")) {
                     y = this.checkYBoundary(originY + y, boundary);
                     statusY = this.checkYStatusBar(y);
                 }
+
                 this.isTransform3d() ? this._renderByTransform3d(x, statusX, y, statusY) : this._renderByDefault(x, statusX, y, statusY);
                 return this;
             },
-            _renderByTransform3d: function() {
-
+            _renderByTransform3d: function(x1, x2, y1, y2) {
+                var opt1 = {};
+                if(x1 !== null && this._isAllowedDirection("x")){
+                    opt1.tx = parseInt(x1);
+                    this.statusBarX.setTranslate3d({tx: parseInt(x2)});
+                }
+                if (y1 !== null && this._isAllowedDirection("y")) {
+                    opt1.ty = parseInt(y1);
+                    this.statusBarY.setTranslate3d({ty: parseInt(y2)});
+                }
+                this.container.setTranslate3d(opt1)
+    
+                return this;
             },
             _renderByDefault: function(x1, x2, y1, y2) {
-                this._isAllowedDirection("x") && this.container.offsetL(x1) && this.statusBarX.offsetL(x2);
+                x1 !== null && this._isAllowedDirection("x") && this.container.offsetL(parseInt(x1)) && this.statusBarX.offsetL(parseInt(x2));
 
-                this._isAllowedDirection("y") && this.container.offsetT(y1) && this.statusBarY.offsetT(y2);
+                y1 !== null && this._isAllowedDirection("y") && this.container.offsetT(parseInt(y1)) && this.statusBarY.offsetT(parseInt(y2));
                 return this;
             },
             getContainerPosition: function() {
                 var x, y, transform3d;
                 if(this.isTransform3d()) {
-                    transform3d = this.container.transform3d()
-                    x = transform3d.translateX;
-                    y = transform3d.translateY;
+                    x = this.container.transform3d("translateX", true);
+                    y = this.container.transform3d("translateY", true);
                 } else {
                     x = this.container.offsetL();
                     y = this.container.offsetT();
@@ -247,10 +271,10 @@ myQuery.define("ui/js/scrollableview", ["main/query", "main/dom", "main/class", 
                 return this.options.overflow.indexOf(direction) > -1;
             },
             getTop: function() {
-                return this.isTransform3d() ? 0 : this.container.offsetT();
+                return this.isTransform3d() ? this.container.transform3d("translateY", true) : this.container.offsetT();
             },
             getLeft: function() {
-                return this.isTransform3d() ? 0 : this.container.offsetL();
+                return this.isTransform3d() ? this.container.transform3d("translateX", true) : this.container.offsetL();
             },
             pause: function() {
 
@@ -344,11 +368,16 @@ myQuery.define("ui/js/scrollableview", ["main/query", "main/dom", "main/class", 
 
             toXBoundary: function(left) {
                 var outer = this.outerXBoundary(left),
+                    opt,
                     self = this;
                 if(outer !== null) {
-                    this.container.animate({
-                        left: outer + "px"
-                    }, {
+                    if(this.isTransform3d()){
+                        opt = {transform3d:{ translateX: outer + "px"}};
+                    }
+                    else{
+                        opt = {left: outer + "px"};
+                    }
+                    this.container.animate(opt, {
                         duration: this.options.boundaryDruation,
                         easing: "expo.easeOut",
                         queue: false,
@@ -362,11 +391,16 @@ myQuery.define("ui/js/scrollableview", ["main/query", "main/dom", "main/class", 
 
             toYBoundary: function(top) {
                 var outer = this.outerYBoundary(top),
+                    opt,
                     self = this;
                 if(outer !== null) {
-                    this.container.animate({
-                        top: outer + "px"
-                    }, {
+                    if(this.isTransform3d()){
+                        opt = {transform3d:{ translateY: outer + "px"}};
+                    }
+                    else{
+                        opt = {top: outer + "px"};
+                    }
+                    this.container.animate(opt, {
                         duration: this.options.boundaryDruation,
                         easing: "expo.easeOut",
                         queue: false,
@@ -379,62 +413,61 @@ myQuery.define("ui/js/scrollableview", ["main/query", "main/dom", "main/class", 
             },
 
             toX: function(s, t) {
-                if(!this._isAllowedDirection("x")) {
-                    return this;
-                }
-                var self = this,
-                    opt = this.options,
-                    boundary = opt.boundary,
-                    left = this.checkXBoundary(this.getLeft() - s),
-                    statusLeft = this.checkXStatusBar(left);
-
-                this.container.animate({
-                    left: left + "px"
-                }, {
-                    duration: t,
-                    easing: "easeOut",
-                    complete: function() {
-                        self.toXBoundary(left).toYBoundary(self.getTop());
-                    }
-                });
-
-                this.statusBarX.animate({
-                    left: statusLeft + "px"
-                }, {
-                    duration: t,
-                    easing: "easeOut"
-                });
-
-                return this;
+                return this._isAllowedDirection("x") ? this.animateX(this.checkXBoundary(this.getLeft() - s), t) : this;
             },
             toY: function(s, t) {
-                if(!this._isAllowedDirection("y")) {
-                    return this;
-                }
-                var self = this,
-                    opt = this.options,
-                    boundary = opt.boundary,
-                    top = this.checkYBoundary(this.getTop() - s),
-                    //要换算吧
-                    statusTop = this.checkYStatusBar(top);
+                return this._isAllowedDirection("y") ? this.animateY(this.checkYBoundary(this.getTop() - s), t) : this;
+            },
+            animateY: function(y1, t){
+                var self = this, y2 = this.checkYStatusBar(y1), opt1, opt2;
 
-                this.container.animate({
-                    top: top + "px"
-                }, {
+                if(this.isTransform3d()){
+                    opt1 = {transform3d: {translateY: y1+ "px"}};
+                    opt2 = {transform3d: {translateY: y2+ "px"}};
+                }
+                else{
+                    opt1 = {top: y1 + "px"};
+                    opt2 = {top: y2 + "px"};
+                }
+
+                this.container.animate(opt1, {
                     duration: t,
                     easing: "easeOut",
                     complete: function() {
-                        self.toYBoundary(top).toXBoundary(self.getLeft());
+                        self.toXBoundary(self.getLeft()).toYBoundary(y1);
                     }
                 });
 
-                this.statusBarY.animate({
-                    top: statusTop + "px"
-                }, {
+                this.statusBarY.animate(opt2, {
                     duration: t,
                     easing: "easeOut"
-                })
+                });
+                return this;
+            },
+            animateX: function(x1, t){
+                var self = this, x2 = this.checkXStatusBar(x1), opt1, opt2;
 
+                if(this.isTransform3d()){
+                    opt1 = {transform3d: {translateX: x1+ "px"}};
+                    opt2 = {transform3d: {translateX: x2+ "px"}};
+                }
+                else{
+                    opt1 = {left: x1 + "px"};
+                    opt2 = {left: x2 + "px"};
+                }
+
+                this.container.animate(opt1, {
+                    duration: t,
+                    easing: "easeOut",
+                    complete: function() {
+                        self.toXBoundary(x1).toYBoundary(self.getTop());
+                    }
+                });
+
+                this.statusBarX.animate(opt2, {
+                    duration: t,
+                    easing: "easeOut"
+                });
                 return this;
             }
         });
