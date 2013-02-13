@@ -217,7 +217,7 @@ myQuery.define("ui/js/draggable", ["module/Widget", "main/event", "main/dom", "h
                 if(opt.axisy === true && y != undefined){
                     obj.ty = y;
                 }
-                this.target.transform3d(obj);
+                this.target.setTranslate3d(obj);
                 return this;
             },
             target: null,
