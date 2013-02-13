@@ -47,7 +47,7 @@ myQuery.define("ui/init", ["main/query", "main/dom", "main/attr", "module/Widget
 	init = {
 		widgetNames: widgetNames,
 		widgetMap: widgetMap,
-		renderWidget: function() {
+		renderWidget: function(callback) {
 			var self = this;
 			if(this.widgetNames.length){
 				require(this.widgetNames, function(){
@@ -57,10 +57,12 @@ myQuery.define("ui/init", ["main/query", "main/dom", "main/attr", "module/Widget
 						self.initWidget(widgetName, eles);
 					}
 					self.showIndex();
+					callback();
 				});
 			}
 			else{
 				self.showIndex();
+				callback();
 			}
 			return this;
 		},
@@ -73,6 +75,5 @@ myQuery.define("ui/init", ["main/query", "main/dom", "main/attr", "module/Widget
 			return this;
 		}
 	};
-	init.renderWidget();
 	return init;
 });
