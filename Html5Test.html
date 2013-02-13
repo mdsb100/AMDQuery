@@ -105,7 +105,7 @@
                 var obj = test2.find("div").eq(0).css({ boxShadow: "4px 4px 2px rgba(0, 0, 0, 0.6)" })
                 //.transform3d({ tx: 50, ty: 70, rx: 30, ry: 50 })
                 //.transformOrigin({ x: "left", y: "top" })
-                                .transform([["translate", "200px", "200px"], ["rotate", "30deg"], ["scale", "0.5", "0.5"]])
+                    .transform([["translate", "200px", "200px"], ["rotate", "30deg"], ["scale", "0.5", "0.5"]])
                 //.transform3d({ rz: 30, ry: 30, tx: 0, ty: 0, sx: 1, sy: 0.5 })
                 //.setRotate3d({ rx: 30, ry: 30 })
                 //.setScale({ sx: 0.5 })
@@ -116,7 +116,7 @@
                 //                var d = obj.transform3d();
                 //                var e = $.getValueAndUnit("30px");
 
-                //                //var g = $.setTransformByCurrent(obj[0], [["translate3d", "300px", "300px", "0px"]]);
+                var g = $.setTransformByCurrent(obj[0], [["translate", "", "300px"]]);
                 //                var h = obj.transformOrigin();
                 //                var i = obj.transform("translate");
                 //                var j = obj.transform("translate3d");

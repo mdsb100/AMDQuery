@@ -603,6 +603,14 @@ myQuery.define("html5/css3", ["base/client", "main/dom"], function ($, client, d
             /// <param name="obj" type="Object">参数</param>
             /// <returns type="self" />
             if (!obj || !hasTransform3d) return this;
+
+            var origin = $.getTransform3d(ele), temp = {
+                rotateX: origin.rotateX,
+                rotateY: origin.rotateY,
+                rotateZ: origin.rotateZ
+            };
+            $.easyExtend(obj, temp);
+
             ele.style[transformCssName] = editRotate3d(obj).join("");
         }
         , setScale: function (ele, obj) {
@@ -614,7 +622,13 @@ myQuery.define("html5/css3", ["base/client", "main/dom"], function ($, client, d
             /// <returns type="self" />
             if (!obj || !hasTransform3d) return this;
 
-            ele.style[transformCssName] = editScale(obj).join("");
+            var origin = $.getTransform3d(ele), temp = {
+                scaleX: origin.scaleX,
+                scaleY: origin.scaleY
+            };
+            $.easyExtend(obj, temp);
+
+            dom.css(ele, transformCssName, editScale(obj).join(""));
             return this;
         }
         , setTransform: function (ele, style) {
@@ -626,7 +640,7 @@ myQuery.define("html5/css3", ["base/client", "main/dom"], function ($, client, d
             /// <param name="style" type="Array">样式名数组或样式名</param>
             /// <returns type="self" />
             if (hasTransform && $.isArr(style)) {
-                var result = [], obj = { transform: "" };
+                var result = [];
 
                 $.each(style, function (value, index) {
                     if (transformReg[value[0]]) {
@@ -635,7 +649,6 @@ myQuery.define("html5/css3", ["base/client", "main/dom"], function ($, client, d
                 }, this);
 
                 dom.css(ele, transformCssName, result.join(""));
-                // dom.css(ele, transformCssName, result.join(""));
             }
             return this;
         }
@@ -664,14 +677,15 @@ myQuery.define("html5/css3", ["base/client", "main/dom"], function ($, client, d
             /// <param name="obj" type="Object">参数</param>
             /// <returns type="self" />
             if (!obj || !hasTransform3d) return this;
-
-            ele.style[transformCssName] = editTranslate3d(obj).concat(editRotate3d(obj)).concat(editScale(obj)).join('');
+            obj = $.extend($.getTransform3d(ele), obj);
+            dom.css(ele, transformCssName, editTranslate3d(obj).concat(editRotate3d(obj)).concat(editScale(obj)).join(''));
             return this;
         }
         , setTransformByCurrent: function (ele, style) {
             /// <summary>设置transform属性 transform有顺序之别
             /// <para>如果已有transform样式，将会按照原先顺序赋值 没有的将按顺序push进去</para>
             /// <para>数组形式为[["translate","30px","30px"],["skew","30px","30px"]]</para>
+            /// <para>若其中一个为空，则结果是原值[["translate","","30px"]]</para>
             /// </summary>
             /// <param name="style" type="Array">样式名数组</param>
             /// <returns type="self" />
@@ -679,17 +693,25 @@ myQuery.define("html5/css3", ["base/client", "main/dom"], function ($, client, d
                 var transform = $.getTransform(ele)
                 , len1 = style.length || 0
                 , len2 = transform.length || 0
+                , len3 = 0
                 , item1 = null
                 , item2 = null
-                , i = len1 - 1, j = len2 - 1;
+                , item3 = null
+                , i = len1 - 1, j = len2 - 1
+                , z = 1;
                 for (; i > -1; i--) {
                     item1 = style[i]
                     if (transformReg[item1[0]]) {
                         for (; j > -1; j--) {
                             item2 = transform[j];
                             if (item1[0] == item2[0]) {
-                                transform.splice(j, 1, item1);
-                                style.splice(i, 1)
+                                z = 1;
+                                len3 = item1.length;
+                                for(;z < len3; z++){
+                                    item3 = item1[z];
+                                    if(!$.isEmpty(item3) && item3 !== "")
+                                        item2[z] = item3;
+                                }
                                 break;
                             }
                         }
@@ -698,9 +720,9 @@ myQuery.define("html5/css3", ["base/client", "main/dom"], function ($, client, d
                         style.splice(i, 1);
                     }
                 }
-                $.each(style, function (value) {
-                    transform.push(value)
-                });
+                // $.each(style, function (value) {
+                //     transform.push(value)
+                // });
 
                 $.setTransform(ele, transform);
             }
@@ -719,7 +741,7 @@ myQuery.define("html5/css3", ["base/client", "main/dom"], function ($, client, d
             /// <param name="style" type="Object">参数</param>
             /// <returns type="self" />
             if (hasTransform && style) {
-                ele.style[transformCssName + "Origin"] = [style.x || "left", " ", style.y || "top"].join("");
+                dom.css(ele, transformCssName + "Origin", [style.x || "left", " ", style.y || "top"].join(""));
             }
             return this;
         }
@@ -771,7 +793,14 @@ myQuery.define("html5/css3", ["base/client", "main/dom"], function ($, client, d
             /// <param name="obj" type="Object">参数</param>
             /// <returns type="self" />
             if (!obj || !hasTransform3d) return this;
-            ele.style[transformCssName] = editTranslate3d(obj).join("");
+            var origin = $.getTransform3d(ele), temp = {
+                translateX: origin.translateX,
+                translateY: origin.translateY,
+                translateZ: origin.translateZ
+            };
+            $.easyExtend(obj, temp);
+
+            dom.css(ele, transformCssName, editTranslate3d(obj).join(""));
             return this;
         }
     };
@@ -978,7 +1007,7 @@ myQuery.define("html5/css3", ["base/client", "main/dom"], function ($, client, d
             /// <param name="obj" type="Object">参数</param>
             /// <returns type="self" />
             return this.each(function (ele) {
-                $.setTransform3d(ele, obj);
+                $.setTranslate3d(ele, obj);
             });
         }
 
