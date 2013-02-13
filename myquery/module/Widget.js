@@ -55,10 +55,13 @@ myQuery.define("module/Widget", ["main/data", "main/query", "main/event", "main/
         // }
         ,
         customEventName: [],
-        destroy: function(key) {
+        destory: function(key) {
             if(key) {
                 this.disable();
-                this.target.clearHandlers();
+                for(var i = this.customEventName.length-1; i>=0 ;i--) {
+                    this.target.clearHandlers(this.widgetEventPrefix + "." +this.customEventName);
+                }
+                
                 this.container && $(this.container).remove();
                 this.target.removeData(key);
                 $.each(this, function(value, name) {
@@ -214,7 +217,7 @@ myQuery.define("module/Widget", ["main/data", "main/query", "main/event", "main/
                             }
                         } else if(data.public[a]) {
                             data[a].apply(data, $.argToArray(arg, 1));
-                        } else if(a === "destroy") {
+                        } else if(a === "destory") {
                             data[a].call(data, key);
                         }
                     }
