@@ -69,6 +69,7 @@ myQuery.define("ui/js/scrollableview", ["main/query", "main/dom", "main/class", 
             },
             disable: function() {
                 //this.container.off("drag.move", event);
+                var event = this.event;
                 this.container.off("DomNodeInserted DomNodeRemoved", event);
                 this.target.off("swap.move swap.stop swap.pause", event).off("touchwheel", event);
             },
@@ -120,12 +121,10 @@ myQuery.define("ui/js/scrollableview", ["main/query", "main/dom", "main/class", 
             },
             destory: function(key) {
                 if(key) {
-                    this.target.removeChild();
-                    this.positionParent.child().appendTo(this.target);
-                    this.container.draggable("destory");
                     this.target.swappable("destory");
-                    this.statusBarX.remove();
-                    this.statusBarY.remove();
+                    this.container.draggable("destory");
+                    this.target.child().remove();
+                    this.positionParent.child().appendTo(this.target);
                     this.__superConstructor.prototype.destory.call(this, key);
                 }
             },

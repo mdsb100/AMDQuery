@@ -81,7 +81,8 @@ myQuery.define("ui/js/draggable", ["module/Widget", "main/event", "main/dom", "h
                 overflow: false,
                 keepinner: true,
                 stopPropagation:true,
-                isTransform3d:false
+                isTransform3d:false,
+                removeContainer: 0
             },
             public: {
                 getPositionX:1,

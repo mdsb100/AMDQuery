@@ -59,10 +59,10 @@ myQuery.define("module/Widget", ["main/data", "main/query", "main/event", "main/
             if(key) {
                 this.disable();
                 for(var i = this.customEventName.length-1; i>=0 ;i--) {
-                    this.target.clearHandlers(this.widgetEventPrefix + "." +this.customEventName);
+                    this.target.clearHandlers(this.widgetEventPrefix + "." + this.customEventName[i]);
                 }
                 
-                this.container && $(this.container).remove();
+                this.container && this.options.removeContainer && $(this.container).remove();
                 this.target.removeData(key);
                 $.each(this, function(value, name) {
                     !$.isPrototypeProperty && delete this[name];
@@ -110,7 +110,8 @@ myQuery.define("module/Widget", ["main/data", "main/query", "main/event", "main/
             //this._render_();
         },
         options: {
-            disabled: 1
+            disabled: 1,
+            removeContainer: 1
         },
         public: {
             disable: 1,
