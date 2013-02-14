@@ -9,6 +9,10 @@
         myQuery.cabinet.start = function(){
             $.showMsg("3");
         }
+
+        myQuery.cabinet.pause = function(){
+            $.showMsg("4");
+        }
         $.require(["ui/js/draggable", "main/query"], function (draggable, query) {
             //$.ready(function () {
                 var con = $("#container");
@@ -39,7 +43,7 @@
         position: relative" id="container">
         <div>
             <div style="position: inherit">
-                <div id="drag" myquery-ui="draggable" myquery-draggable="axis:x;keepinner:true;container:#container;start:this.cabinet.start;isTransform3d:true" style="width: 100px; height: 100px; background-color: Red;">
+                <div id="drag" myquery-ui="draggable" myquery-draggable="axis:x;keepinner:true;container:#container;pause:this.cabinet.pause;isTransform3d:true" style="width: 100px; height: 100px; background-color: Red;">
                     拖动我
                 </div>
             </div>

@@ -21,7 +21,7 @@ myQuery.define("ui/js/draggable", ["module/Widget", "main/event", "main/dom", "h
 
                 return this;
             },
-            customEventName: ["start", "move", "stop"],
+            customEventName: ["start", "move", "stop", "pause"],
             event: function () { },
             enable: function () {
                 var fun = this.event;
@@ -82,7 +82,8 @@ myQuery.define("ui/js/draggable", ["module/Widget", "main/event", "main/dom", "h
                 keepinner: true,
                 stopPropagation:true,
                 isTransform3d:false,
-                removeContainer: 0
+                removeContainer: 0,
+                pauseSensitivity: 500
             },
             public: {
                 getPositionX:1,
@@ -102,6 +103,7 @@ myQuery.define("ui/js/draggable", ["module/Widget", "main/event", "main/dom", "h
                 var self = this,
                     target = self.target,
                     opt = self.options,
+                    timeout,
                     parentLeft = null,
                     parentTop = null,
                     dragging = null;
@@ -179,11 +181,18 @@ myQuery.define("ui/js/draggable", ["module/Widget", "main/event", "main/dom", "h
                                 para.offsetY = y;
                                 target.trigger(para.type, target[0], para);
 
+                                clearTimeout(timeout);
+                                timeout = setTimeout(function () {
+                                    para.type = "drag.pause";
+                                    target.trigger(para.type, target[0], para);
+                                }, opt.pauseSensitivity)
+
                                 self.render(para.offsetX, para.offsetY);
                             }
                             break;
                         case "touchend":
                         case "mouseup":
+                            clearTimeout(timeout);
                             eventFuns.preventDefault(e);
                             opt.stopPropagation && eventFuns.stopPropagation(e);
                             para.type = 'drag.stop';
