@@ -46,7 +46,8 @@ myQuery.define("ui/js/scrollableview", ["main/query", "main/dom", "main/class", 
                     stopPropagation: false,
                     axisx: this._isAllowedDirection("x"),
                     axisy: this._isAllowedDirection("y"),
-                    isTransform3d: opt.isTransform3d
+                    isTransform3d: opt.isTransform3d,
+                    container: this.target
                 });
 
                 this.refreshPosition();
@@ -57,20 +58,20 @@ myQuery.define("ui/js/scrollableview", ["main/query", "main/dom", "main/class", 
 
                 return this;
             },
-            customEventName: [],
+            customEventName: ["pulldown", "pullup", "pullleft", "pullright"],
             event: function() {
 
 
             },
             enable: function() {
                 var event = this.event;
-                this.container.on("DomNodeInserted DomNodeRemoved", event);
+                this.container.on("DomNodeInserted DomNodeRemoved drag.pause", event);
                 this.target.on("swap.move swap.stop swap.pause", event).touchwheel(event);
             },
             disable: function() {
                 //this.container.off("drag.move", event);
                 var event = this.event;
-                this.container.off("DomNodeInserted DomNodeRemoved", event);
+                this.container.off("DomNodeInserted DomNodeRemoved drag.pause", event);
                 this.target.off("swap.move swap.stop swap.pause", event).off("touchwheel", event);
             },
             _initHandler: function() {
@@ -79,12 +80,32 @@ myQuery.define("ui/js/scrollableview", ["main/query", "main/dom", "main/class", 
                     opt = self.options;
                 this.event = function(e) {
                     switch(e.type) {
-                        // case "drag.move":
-                        //     //e.offsetX = 0;
-                        //     break;
+                    case "drag.pause":
+                        var left = self.getLeft(), 
+                        top = self.getTop(),
+                        distance = opt.pullDistance;
+
+                        if(left > distance){
+                            e.type = "scrollableview.pullleft";
+                            target.trigger(e.type, this, e);
+                        }
+                        else if(left < - self.overflowWidth - distance){
+                            e.type = "scrollableview.pullright";
+                            target.trigger(e.type, this, e);
+                        }
+                        if (top > distance){
+                            e.type = "scrollableview.pulldown";
+                            target.trigger(e.type, this, e);
+                        }
+                        else if(top < - self.overflowHeight - distance){
+                            e.type = "scrollableview.pullup";
+                            target.trigger(e.type, this, e);
+                        }
+
+                        break;
                     case "DomNodeInserted":
                     case "DomNodeRemoved":
-                        this.refreshPosition().toYBoundary(this.getTop()).toXBoundary(this.getLeft());
+                        self.refreshPosition().toYBoundary(self.getTop()).toXBoundary(self.getLeft());
                         break;
                     case "swap.move":
                         self.showStatusBar();
@@ -145,7 +166,8 @@ myQuery.define("ui/js/scrollableview", ["main/query", "main/dom", "main/class", 
                 "boundary": 150,
                 "boundaryDruation": 300,
                 "isTransform3d": false,
-                "mouseWheelAccuracy": 0.3
+                "mouseWheelAccuracy": 0.3,
+                "pullDistance": 50,
             },
             public: {
                 "refreshPosition": 1,
@@ -262,10 +284,6 @@ myQuery.define("ui/js/scrollableview", ["main/query", "main/dom", "main/class", 
 
                 return this.refreshStatusBar();
             },
-            // , resize: function(){ 
-            //     this.container.width(this.scrollWidth);
-            //     this.container.height(this.scrollHeight);
-            // }
             _isAllowedDirection: function(direction) {
                 return this.options.overflow.indexOf(direction) > -1;
             },
@@ -279,7 +297,6 @@ myQuery.define("ui/js/scrollableview", ["main/query", "main/dom", "main/class", 
 
                 return this;
             },
-            //专门换算个方法
             animate: function(e) {
                 var opt = this.options,
                     a0 = e.acceleration,
