@@ -1,5 +1,5 @@
 /// <reference path="../../myquery.js" />
-myQuery.define("ui/js/scrollableview", ["main/query", "main/dom", "main/class", "html5/css3", "html5/animate.transform", "ui/js/swappable", "ui/js/draggable", "module/src", "module/Widget", "module/animate", "module/tween.extend"], function($, query, dom, cls, cls3, animateTransform, swappable, draggable, src, Widget, animate, tween, undefined) {
+myQuery.define("ui/js/scrollableview", ["main/query", "main/dom", "main/class", "html5/css3", "html5/animate.transform", "html5/css3.transition.animate", "ui/js/swappable", "ui/js/draggable", "module/src", "module/Widget", "module/animate", "module/tween.extend"], function($, query, dom, cls, cls3, animateTransform, cls3Transition, swappable, draggable, src, Widget, animate, tween, undefined) {
     "use strict"; //启用严格模式
     src.link({
         href: $.getPath("ui/css/scrollableview", ".css")
@@ -58,7 +58,7 @@ myQuery.define("ui/js/scrollableview", ["main/query", "main/dom", "main/class", 
 
                 return this;
             },
-            customEventName: ["pulldown", "pullup", "pullleft", "pullright"],
+            customEventName: ["pulldown", "pullup", "pullleft", "pullright", "animationEnd"],
             event: function() {
 
 
@@ -301,7 +301,8 @@ myQuery.define("ui/js/scrollableview", ["main/query", "main/dom", "main/class", 
                 var opt = this.options,
                     a0 = e.acceleration,
                     t0 = opt.animateDuration - e.duration,
-                    s0 = Math.round(a0 * t0 * t0 * 0.5);
+                    s0 = Math.round(a0 * t0 * t0 * 0.5),
+                    direction = e.direction;
                 //v0 = a0 * t0,
                 // t1 = Math.ceil(a0 / a1), //duration * （1 - weight),
                 // s1 = v0 * t1 - a1 * t1 * t1 * 0.5,
@@ -314,18 +315,18 @@ myQuery.define("ui/js/scrollableview", ["main/query", "main/dom", "main/class", 
                     return this.hideStatusBar();
                 };
 
-                switch(e.direction) {
+                switch(direction) {
                 case 3:
-                    this.toX(-s0, t0);
+                    this.toX(-s0, t0, direction);
                     break;
                 case 9:
-                    this.toX(s0, t0);
+                    this.toX(s0, t0), direction;
                     break;
                 case 6:
-                    this.toY(-s0, t0);
+                    this.toY(-s0, t0, direction);
                     break;
                 case 12:
-                    this.toY(s0, t0);
+                    this.toY(s0, t0, direction);
                     break;
                 default:
                     this.toXBoundary(this.getTop()).toYBoundary(this.getLeft());
@@ -382,7 +383,18 @@ myQuery.define("ui/js/scrollableview", ["main/query", "main/dom", "main/class", 
                 return null;
             },
 
-            toXBoundary: function(left) {
+            _triggerAnimate: function(scene, direction, duration, distance){
+                var type = "scrollableview.animationEnd";
+                this.target.trigger(type, this.container[0], {
+                    type: type,
+                    scene: scene,
+                    direction: direction,
+                    duration: duration,
+                    distance: distance
+                });
+            },
+
+            toXBoundary: function(left, direction) {
                 var outer = this.outerXBoundary(left),
                     opt,
                     self = this;
@@ -399,13 +411,14 @@ myQuery.define("ui/js/scrollableview", ["main/query", "main/dom", "main/class", 
                         queue: false,
                         complete: function() {
                             self.hideStatusBar();
+                            self._triggerAnimate("boundary", direction, self.options.boundaryDruation, outer);
                         }
                     });
                 };
                 return this;
             },
 
-            toYBoundary: function(top) {
+            toYBoundary: function(top, direction) {
                 var outer = this.outerYBoundary(top),
                     opt,
                     self = this;
@@ -422,19 +435,20 @@ myQuery.define("ui/js/scrollableview", ["main/query", "main/dom", "main/class", 
                         queue: false,
                         complete: function() {
                             self.hideStatusBar();
+                            self._triggerAnimate("boundary", direction, self.options.boundaryDruation, outer);
                         }
                     });
                 };
                 return this;
             },
 
-            toX: function(s, t) {
-                return this._isAllowedDirection("x") ? this.animateX(this.checkXBoundary(this.getLeft() - s), t) : this;
+            toX: function(s, t, d) {
+                return this._isAllowedDirection("x") ? this.animateX(this.checkXBoundary(this.getLeft() - s), t, d) : this;
             },
-            toY: function(s, t) {
-                return this._isAllowedDirection("y") ? this.animateY(this.checkYBoundary(this.getTop() - s), t) : this;
+            toY: function(s, t, d) {
+                return this._isAllowedDirection("y") ? this.animateY(this.checkYBoundary(this.getTop() - s), t, d) : this;
             },
-            animateY: function(y1, t){
+            animateY: function(y1, t, direction){
                 var self = this, y2 = this.checkYStatusBar(y1), opt1, opt2;
 
                 if(this.isTransform3d()){
@@ -450,7 +464,8 @@ myQuery.define("ui/js/scrollableview", ["main/query", "main/dom", "main/class", 
                     duration: t,
                     easing: "easeOut",
                     complete: function() {
-                        self.toXBoundary(self.getLeft()).toYBoundary(y1);
+                        self.toXBoundary(self.getLeft(), direction).toYBoundary(y1, direction);
+                        self._triggerAnimate("inner", direction, t, y1);
                     }
                 });
 
@@ -460,7 +475,7 @@ myQuery.define("ui/js/scrollableview", ["main/query", "main/dom", "main/class", 
                 });
                 return this;
             },
-            animateX: function(x1, t){
+            animateX: function(x1, t, direction){
                 var self = this, x2 = this.checkXStatusBar(x1), opt1, opt2;
 
                 if(this.isTransform3d()){
@@ -476,7 +491,8 @@ myQuery.define("ui/js/scrollableview", ["main/query", "main/dom", "main/class", 
                     duration: t,
                     easing: "easeOut",
                     complete: function() {
-                        self.toXBoundary(x1).toYBoundary(self.getTop());
+                        self.toXBoundary(x1, direction).toYBoundary(self.getTop(), direction);
+                        self._triggerAnimate("inner", direction, t, x1);
                     }
                 });
 

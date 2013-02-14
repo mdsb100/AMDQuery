@@ -16,6 +16,8 @@
                     $.showMsg("3")
                 }).on("scrollableview.pullright", function(){
                     $.showMsg("4")
+                }).on("scrollableview.animationEnd", function(e){
+                    $.showMsg(e.scene)
                 });
             });
         });
