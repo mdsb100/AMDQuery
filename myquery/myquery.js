@@ -7,7 +7,7 @@
     "use strict"; //启用严格模式
     var
     version = "MyQuery 1.0.0",
-        tools = {
+        util = {
             argToArray: function(arg, start, end) {
                 /// <summary>把arguments变成数组</summary>
                 /// <param name="arg" type="arguments]">arguments</param>
@@ -161,7 +161,7 @@
         count = 0,
         reg = RegExp,
         basePath = (function() {
-            var ret = tools.getJScriptConfig(["src"]).src.replace(/\/[^\/]+$/, '');
+            var ret = util.getJScriptConfig(["src"]).src.replace(/\/[^\/]+$/, '');
             if(!/^[a-z]+?:\/\//.test(ret)) {
                 var sl = document.location.toString();
                 if(/^\//.test(ret)) {
@@ -201,11 +201,11 @@
     if(typeof myQueryConfig != "undefined") {
         _config = myQueryConfig;
     } else {
-        var temp = tools.getJScriptConfig(["myquery", "amd", "ui", "model"]);
-        tools.extend(_config.myquery, temp.myquery);
-        tools.extend(_config.amd, temp.amd);
-        tools.extend(_config.ui, temp.ui);
-        tools.extend(_config.model, temp.model);
+        var temp = util.getJScriptConfig(["myquery", "amd", "ui", "model"]);
+        util.extend(_config.myquery, temp.myquery);
+        util.extend(_config.amd, temp.amd);
+        util.extend(_config.ui, temp.ui);
+        util.extend(_config.model, temp.model);
     }
 
     //$("<div></div>") 需要自己先parseXML 这样就不用依赖 parseXML
@@ -253,7 +253,7 @@
         },
         $ = myQuery;
 
-    tools.extend($, {
+    util.extend($, {
         cabinet: {},
         client: {
             browser: {
@@ -315,10 +315,10 @@
         },
         version: version,
         _redundance: {
-            argToArray: tools.argToArray
+            argToArray: util.argToArray
         },
 
-        argToArray: tools.argToArray,
+        argToArray: util.argToArray,
 
         basePath: basePath,
         between: function(min, max, num) {
@@ -355,7 +355,7 @@
             }
             return name.join("");
         },
-        console: tools.console,
+        console: util.console,
         createEle: function(tag) {
             /// <summary>制造一个Dom元素</summary>
             /// <param name="tag" type="String">标签名</param>
@@ -390,8 +390,8 @@
             return this;
         },
 
-        getJScriptConfig: tools.getJScriptConfig,
-        getPath: tools.getPath,
+        getJScriptConfig: util.getJScriptConfig,
+        getPath: util.getPath,
         getRunTime: function(msg) {
             /// <summary>检测运行时间</summary>
             /// <param name="unit" type="Boolean">默认为秒,true为毫秒</param>
@@ -432,7 +432,7 @@
             return result;
         },
 
-        now: tools.now,
+        now: util.now,
 
         reg: {
             num: /^(-?\\d+)(\\.\\d+)?$/,
@@ -576,7 +576,7 @@
             this.last = null;
             this.context = null;
             if(!eles.length) {
-                //tools.console.warn({ fn: "myQuery.init", msg: "has not query any element" });
+                //util.console.warn({ fn: "myQuery.init", msg: "has not query any element" });
             }
             if(this.eles) this.each(function(ele, index) {
                 delete this[index];
@@ -676,11 +676,11 @@
 
         var _define, _require;
         if(window.define) {
-            tools.console.warn("window.define has defined");
+            util.console.warn("window.define has defined");
             _define = window.define;
         }
         if(window.require) {
-            tools.console.warn("window.require has defined");
+            util.console.warn("window.require has defined");
             _require = window.require;
         }
 
@@ -700,14 +700,14 @@
         }
         //0:init 1:queue 2:require 3:define 4:ready
         //0 init 1 require 2define 3ready
-        tools.extend(ClassModule, {
+        util.extend(ClassModule, {
             anonymousID: null,
             cache: {},
             container: {},
             dependenciesMap: {},
             checkNamed: function(id) {
                 if(this.anonymousID != null && id.indexOf("tempDefine") < 0) {
-                    id !== this.anonymousID && tools.error({
+                    id !== this.anonymousID && util.error({
                         fn: 'define',
                         msg: 'the named ' + id + ' is not equal require'
                     });
@@ -779,7 +779,7 @@
                 if(ClassModule.container[id]) {
                     src = ClassModule.container[id];
                 } else {
-                    src = tools.getJScriptConfig(["src"], typeof a == "boolean" ? a : true).src || "it is local"; //或者改成某个字段是 config里的
+                    src = util.getJScriptConfig(["src"], typeof a == "boolean" ? a : true).src || "it is local"; //或者改成某个字段是 config里的
                     id && (ClassModule.container[id] = src);
                 }
                 return src;
@@ -798,7 +798,7 @@
                     }
                     ret = _config.amd.rootPath + key;
                 } else {
-                    ret = tools.getPath(path, suffix);
+                    ret = util.getPath(path, suffix);
                 }
                 return ret;
             },
@@ -914,7 +914,7 @@
                         sMD, sDP, mDP;
                     if(status > 0 && _config.amd.detectCR == true) {
                         if(sMD = ClassModule.detectCR(this.id, dps)) {
-                            tools.error({
+                            util.error({
                                 fn: 'define',
                                 msg: 'There is a circular reference between "' + sMD + '" and "' + module + '"'
                             }, "ReferenceError");
@@ -969,7 +969,7 @@
                         });
                     }
                 } else {
-                    tools.console.warn({
+                    util.console.warn({
                         fn: "getDependenciesMap",
                         msg: "you had to set require.detectCR true for getting map list"
                     });
@@ -1059,7 +1059,7 @@
                     return this;
                 }
 
-                (url = ClassModule.getPath(id, ".js")) || tools.error({
+                (url = ClassModule.getPath(id, ".js")) || util.error({
                     fn: 'require',
                     msg: 'Could not load module: ' + id + ', Cannot match its URL'
                 });
@@ -1151,7 +1151,7 @@
 
             switch(arg.length) {
             case 0:
-                tools.error({
+                util.error({
                     fn: "window.define",
                     msg: id + ":define something that cannot be null"
                 }, "TypeError");
@@ -1165,7 +1165,7 @@
             case 2:
                 if(typeof arg[0] == "string") {
                     ClassModule.checkNamed(id);
-                    id = id; //tools.getJScriptConfig(["src"], true).src; //_tempId();_amdAnonymousID
+                    id = id; //util.getJScriptConfig(["src"], true).src; //_tempId();_amdAnonymousID
                     body = dependencies;
                     dependencies = [];
                 } else if(arg[0] && arg[0].constructor == Array) {
@@ -1174,7 +1174,7 @@
                     body = dependencies;
                     dependencies = temp;
                 } else {
-                    tools.error({
+                    util.error({
                         fn: 'define',
                         msg: id + ':The first arguments should be String or Array'
                     }, "TypeError");
@@ -1183,7 +1183,7 @@
                 break;
             default:
                 if(!(typeof arg[0] == "string" && arg[1] && arg[1].constructor == Array)) {
-                    tools.error({
+                    util.error({
                         fn: 'define',
                         msg: id + ':two arguments ahead should be String and Array'
                     }, "TypeError");
@@ -1212,7 +1212,7 @@
             return ret;
 
         };
-        tools.extend(define, {
+        util.extend(define, {
             amd: ClassModule.maps,
             noConflict: function() {
                 window.define = _define;
@@ -1235,18 +1235,18 @@
                     var de = module;
                     module = "tempDefine:" + module.join(",");
                     ret = ClassModule.getModule(module) || define(module, de, function() {
-                        return tools.argToArray(arguments);
+                        return util.argToArray(arguments);
                     });
                 }
             }
-            success && typeof success != "function" && tools.error({
+            success && typeof success != "function" && util.error({
                 fn: 'require',
                 msg: module + ':success should be a Function'
             }, "TypeError");
 
             if(typeof fail != "function") {
                 fail = function() {
-                    tools.error({
+                    util.error({
                         fn: 'require',
                         msg: module + ':Could not load , Cannot fetch the file'
                     });
@@ -1259,7 +1259,7 @@
 
             return ret.request(success);
         };
-        tools.extend(require, {
+        util.extend(require, {
             noConflict: function() {
                 window.require = _require;
                 return require;
@@ -1267,7 +1267,7 @@
 
             cache: function(cache) {
                 var container = ClassModule.getContainer(null, ClassModule.amdAnonymousID ? true : false);
-                //tools.extend(ClassModule.cache, a.cache);
+                //util.extend(ClassModule.cache, a.cache);
                 for(var i in cache) {
                     require.named(i);
                     ClassModule.cache[i] = cache[i];
@@ -1321,7 +1321,7 @@
                         a.reflect && require.reflect(a.reflect);
                         a.named && a.named == true ? require.named(a.reflect) : require.named(a.named);
                         //如果named=true其实就是映射a.reflect 
-                        a.amd && tools.extend(_config.amd, a.amd);
+                        a.amd && util.extend(_config.amd, a.amd);
                         a.cache && require.cache(a.cache);
                     }
                     break;
@@ -1335,7 +1335,7 @@
             }
         });
 
-        tools.extend($, {
+        util.extend($, {
             define: function(id, dependencies, factory) {
                 /// <summary>myQuery的define对象定义
                 /// <para>遵循AMD规范重载</para>
@@ -1345,7 +1345,7 @@
                 /// <param name="dependencies" type="Array">依赖列表</param>
                 /// <param name="factory" type="Function">对象工厂</param>
                 /// <returns type="self" />
-                var arg = tools.argToArray(arguments, 0),
+                var arg = util.argToArray(arguments, 0),
                     len = arg.length,
                     fn = arg[len - 1],
                     version = "no signing version";
@@ -1360,7 +1360,7 @@
                 //                }
                 if(typeof fn == "function") {
                     arg[arg.length - 1] = function() {
-                        var arg = tools.argToArray(arguments, 0);
+                        var arg = util.argToArray(arguments, 0);
                         arg.splice(0, 0, myQuery);
                         if(_config.amd.debug) {
                             return fn.apply(null, arg);
@@ -1406,7 +1406,7 @@
     myQuery.define("base/promise", function($) {
         "use strict"; //启用严格模式
         var checkArg = function(todo, fail, progress, name) {
-                var arg = tools.argToArray(arguments),
+                var arg = util.argToArray(arguments),
                     len = arg.length,
                     last = arg[len - 1],
                     hasName = typeof last == "string",
@@ -1571,7 +1571,7 @@
                 /// <param name="obj" type="any/arguments">参数，如果参数是argument则会使用apply</param>
                 /// <returns type="self" />
                 if(this.state != 'todo') {
-                    tools.error({
+                    util.error({
                         fn: "Promise.resolve",
                         msg: "already resolved"
                     })
@@ -1879,7 +1879,7 @@
                 }
             };
 
-        tools.extend($, is);
+        util.extend($, is);
 
         return is;
     }, "1.0.0");
@@ -1912,7 +1912,7 @@
                     options, name, src, copy;
 
                 if(length == 1 && $.isObj(target)) {
-                    tools.extend($, target);
+                    util.extend($, target);
                     return this;
                 }
 
@@ -1958,7 +1958,7 @@
             }
         };
 
-        tools.extend($, extend);
+        util.extend($, extend);
 
         $.fn.extend = function(params) {
             /// <summary>把对象属性复制$.prototype上</summary>
@@ -1966,7 +1966,7 @@
             /// <returns type="self" />
             for(var i = 0, len = arguments.length, obj; i < len; i++) {
                 obj = arguments[i];
-                $.isPlainObj(obj) && tools.extend($.prototype, obj);
+                $.isPlainObj(obj) && util.extend($.prototype, obj);
             }
             return $.fn;
         };
@@ -2157,7 +2157,7 @@
     if(!window[_config.myquery.define]) {
         window[_config.myquery.define] = $;
     } else {
-        tools.error(_config.myquery.define + " is defined");
+        util.error(_config.myquery.define + " is defined");
     }
 
 })(window);
