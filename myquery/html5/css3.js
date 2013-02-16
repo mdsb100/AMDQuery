@@ -570,12 +570,7 @@ myQuery.define("html5/css3", ["base/client", "main/dom"], function ($, client, d
                     }
                     transition = transition.replace(match[0], n);
                 };
-                // match = transition.match((item || item.name) + "[\\w\\s\\d\\.\\-]*((\\,|\\,\\s)|$)");
-                // n += n && match[1] ? ", " : "";
-                // transition = transition.replace(match[0], n);
-                //transition = transition.replace(/(,\s|,)$/, "");
             });
-
             return dom.css(ele, transitionCssName, transition);
         }
         , replaceTransition: function (ele, name, value) {
@@ -776,7 +771,9 @@ myQuery.define("html5/css3", ["base/client", "main/dom"], function ($, client, d
                     });
                     result = list.join(",");
                 }
-                dom.css(ele, transitionCssName, (origin ? origin + "," : "") + result);
+                if(origin.replace(/\s/g, "").indexOf(result.replace(/\s/g, "")) < 0){
+                    dom.css(ele, transitionCssName, (origin ? origin + "," : "") + result);
+                }
             }
             return this;
         }
@@ -992,6 +989,20 @@ myQuery.define("html5/css3", ["base/client", "main/dom"], function ($, client, d
             /// <returns type="self" />
             return this.each(function (ele) {
                 $.setTransformByCurrent(ele, style);
+            });
+        }
+        , setTransition: function (style) {
+            /// <summary>设置transition属性
+            /// <para>可以如下方式设置</para>
+            /// <para>$.setTransition("background-color 1s linear")</para>
+            /// <para>$.setTransition({name:"width"}) 为obj时可缺省duration,function</para>
+            /// <para>$.setTransition([{name:"width",duration:"1s",function:"linear"}, {name:"height"])</para>
+            /// <para>$.setTransition(["background-color 1s linear", "width 1s linear"])</para>
+            /// </summary>
+            /// <param name="style" type="Array/Object/String">值得数组或值</param>
+            /// <returns type="self" />
+            return this.each(function (ele) {
+                $.setTransition(ele, style);
             });
         }
         , setTranslate3d: function (obj) {
