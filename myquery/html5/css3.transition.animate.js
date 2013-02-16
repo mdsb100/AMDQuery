@@ -1,5 +1,5 @@
 ﻿/// <reference path="../myquery.js" />
-myQuery.define("html5/css3.transition.animate", ["base/client", "html5/css3", "module/FX", "html5/animate.transform", "hash/cubicBezier.tween"], function ($, client, css3, FX, transform, cubicBezierTween, undefined) {
+myQuery.define("html5/css3.transition.animate", ["base/client", "main/event", "html5/css3", "module/FX", "html5/animate.transform", "hash/cubicBezier.tween"], function ($, client, event, css3, FX, transform, cubicBezierTween, undefined) {
     "use strict"; //启用严格模式
     //无法识别em这种
     if ($.support.transition) {
@@ -38,23 +38,21 @@ myQuery.define("html5/css3.transition.animate", ["base/client", "html5/css3", "m
             $.easyExtend(opt, option);
             //opt._transitionList = [];
             opt._transitionEnd = function (event) {
-                var i, ele = this,
+                var i, ele = this, item,
                     transitionList = $.data(ele, "_transitionList");
 
                 for (i in transitionList) {
                     css3.removeTransition(ele, i);
-                    delete transitionList[i];
+                    item = transitionList[i];
+                    item.length || delete transitionList[i];
                 };
-                // for (; i < len; i++) {
-                //     css3.removeTransition(this, opt._transitionList[i]);
-                // }
+                
                 ele.removeEventListener(transitionEndType, opt._transitionEnd);
 
                 setTimeout(function () {
                     opt.complete.call(ele);
                     ele = opt = null;
                 }, 0);
-
             };
 
             for (var p in property) {
@@ -75,7 +73,6 @@ myQuery.define("html5/css3.transition.animate", ["base/client", "html5/css3", "m
                 }
             }
 
-            //css3.removeTransition(ele);
             ele.addEventListener(transitionEndType, opt._transitionEnd, false);
 
             $.each(property, function (value, key) {
@@ -159,11 +156,9 @@ myQuery.define("html5/css3.transition.animate", ["base/client", "html5/css3", "m
                     if ($.isArr(fx)) {
                         for (i = fx.length - 1; i >= 0; i--) {
                             item = fx[i];
-                            console.log(item.easing);
                             item.isInDelay() ? item.update(null, fx.from) : item.step();
                         };
                     } else {
-                        console.log(fx.isInDelay())
                         fx.isInDelay() ? fx.update(fx.from) : fx.step();
                     }
                     delete transitionList[type];
