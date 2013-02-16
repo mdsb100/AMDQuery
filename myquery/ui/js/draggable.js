@@ -192,6 +192,7 @@ myQuery.define("ui/js/draggable", ["module/Widget", "main/event", "main/dom", "h
                             break;
                         case "touchend":
                         case "mouseup":
+                            clearTimeout(timeout);
                             eventFuns.preventDefault(e);
                             opt.stopPropagation && eventFuns.stopPropagation(e);
                             para.type = 'drag.stop';
