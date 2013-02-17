@@ -217,7 +217,7 @@ myQuery.define("main/query", ["main/attr"], function ($, attr, undefined) {
                 /// <returns type="Array" />
                 var list = [], tmp;
                 if ($.isStr(ele)) {
-                    ele = $.trim(ele);
+                    ele = $.util.trim(ele);
                     if (/^<.*>$/.test(ele)) {
                         list = $.elementCollectionToArray($.createEle(ele), false);
                     } else {

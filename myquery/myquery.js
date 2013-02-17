@@ -495,13 +495,6 @@
 
         },
 
-        trim: function(str) {
-            /// <summary>去除前后的空格换行符等字符</summary>
-            /// <param name="str" type="String">长度 缺省为整个长度</param>
-            /// <returns type="String" />
-            return str.replace(/(^\s*)|(\s*$)/g, "");
-        },
-
         unCamelCase: function(name, head) {
             /// <summary>反驼峰化</summary>
             /// <para>marginLeft => margin-left</para>
@@ -514,7 +507,14 @@
         },
 
         util: {
-            argToArray: util.argToArray
+            argToArray: util.argToArray,
+            
+            trim: function(str) {
+                /// <summary>去除前后的空格换行符等字符</summary>
+                /// <param name="str" type="String">长度 缺省为整个长度</param>
+                /// <returns type="String" />
+                return str.replace(/(^\s*)|(\s*$)/g, "");
+            }
 
         }
     });

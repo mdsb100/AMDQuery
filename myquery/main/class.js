@@ -103,14 +103,14 @@ myQuery.define("main/class", ["base/support"], function ($, support, undefined) 
                 /// <summary>获得Class的个数</summary>
                 /// <param name="ele" type="Object">对象</param>
                 /// <returns type="Number" />
-                return ($.trim(ele.className).split(" ")).length;
+                return ($.util.trim(ele.className).split(" ")).length;
             },
             getClassByIndex: function (ele, index) {
                 /// <summary>获得样式在元素的索引</summary>
                 /// <param name="ele" type="Object">对象</param>
                 /// <param name="index" type="Number">样式名</param>
                 /// <returns type="String" />
-                return ($.trim(ele.className).split(" "))[index] || null;
+                return ($.util.trim(ele.className).split(" "))[index] || null;
             }
         }
     }

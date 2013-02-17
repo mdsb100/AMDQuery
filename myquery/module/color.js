@@ -110,7 +110,7 @@ myQuery.define('module/color', ['module/object', 'hash/cssColors'], function ($,
         _stringParsers: [
         // CSS RGB(A) literal:
             function (css) {
-                css = $.trim(css);
+                css = $.util.trim(css);
 
                 var withInteger = match(rgb_rgba_integer_regex, 255);
                 if (withInteger) {
@@ -183,7 +183,7 @@ myQuery.define('module/color', ['module/object', 'hash/cssColors'], function ($,
         constructor: RGB,
         create: function (o) {
             if ("string" == typeof o) {
-                return this._fromCSS($.trim(o));
+                return this._fromCSS($.util.trim(o));
             }
             if (o.hasOwnProperty('red') && o.hasOwnProperty('green') && o.hasOwnProperty('blue')) {
                 return this._fromRGB(o);
@@ -518,7 +518,7 @@ myQuery.define('module/color', ['module/object', 'hash/cssColors'], function ($,
         constructor: HSL,
         create: function (h, s, l) {
             if ("string" == typeof h) {
-                var cg = $.trim(h).match(hsl_hsla_regex);
+                var cg = $.util.trim(h).match(hsl_hsla_regex);
                 if (!cg || (!!cg[1] + !!cg[5] === 1)) {
                     return null;
                 }
