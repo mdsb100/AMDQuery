@@ -1862,6 +1862,12 @@
 
                     return key === undefined || hasOwnProperty.call(obj, key);
                 },
+                isRegExp: function(){
+                    /// <summary>是否为字符产</summary>
+                    /// <param name="a" type="any">任意对象</param>
+                    /// <returns type="Boolean" />
+                    return $.isType(a, '[object RegExp]');
+                },
                 isStr: function(a) {
                     /// <summary>是否为字符产</summary>
                     /// <param name="a" type="any">任意对象</param>
