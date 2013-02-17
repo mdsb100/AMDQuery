@@ -563,7 +563,7 @@ myQuery.define("main/event", ["base/client", "main/CustomEvent", "main/data"], f
                 /// <param name="ele" type="Element">element元素</param>
                 /// <param name="funParas" type="Function:[]">方法组</param>
                 /// <returns type="self" />
-                var arg = $.argToArray(arguments, 1),
+                var arg = $.util.argToArray(arguments, 1),
                     index = 0,
                     data;
                 if(arg.length) {
@@ -599,7 +599,7 @@ myQuery.define("main/event", ["base/client", "main/CustomEvent", "main/data"], f
                 /// <param name="ele" type="Element">element元素</param>
                 /// <param name="classParas" type="String:[]">样式名</param>
                 /// <returns type="self" />
-                var arg = $.argToArray(arguments, 1),
+                var arg = $.util.argToArray(arguments, 1),
                     index = 0,
                     data;
                 if(arg.length) {
@@ -649,7 +649,7 @@ myQuery.define("main/event", ["base/client", "main/CustomEvent", "main/data"], f
                             msg: "triggering" + type + " is not supported"
                         });
                     } else {
-                        (data = $.data(ele, "_handlers_")) && data.trigger.apply(data, [type, context].concat($.argToArray(arguments, 3)));
+                        (data = $.data(ele, "_handlers_")) && data.trigger.apply(data, [type, context].concat($.util.argToArray(arguments, 3)));
                     }
                 } else {
                     $.bus.trigger.apply($.bus, arguments);
@@ -749,7 +749,7 @@ myQuery.define("main/event", ["base/client", "main/CustomEvent", "main/data"], f
             /// <summary>切换点击</summary>
             /// <param name="funParas" type="Function:[]/Array[Function]">方法组</param>
             /// <returns type="self" />
-            var arg = $.isArr(funParas) ? funParas : $.argToArray(arguments, 0),
+            var arg = $.isArr(funParas) ? funParas : $.util.argToArray(arguments, 0),
                 temp, i = 0,
                 ele;
             for(; ele = this.eles[i++];) {
@@ -770,7 +770,7 @@ myQuery.define("main/event", ["base/client", "main/CustomEvent", "main/data"], f
             /// <param name="ele" type="Element">element元素</param>
             /// <param name="classParas" type="String:[]">样式名</param>
             /// <returns type="self" />
-            var arg = $.isArr(classParas) ? classParas : $.argToArray(arguments, 0),
+            var arg = $.isArr(classParas) ? classParas : $.util.argToArray(arguments, 0),
                 temp;
             for(; ele = this.eles[i++];) {
                 temp = arg.concat();
@@ -794,7 +794,7 @@ myQuery.define("main/event", ["base/client", "main/CustomEvent", "main/data"], f
             /// <param name="b" type="Object">当为自定义事件时 为作用域 否则为事件参数</param>
             /// <param name="c" type="para:[any]">当为自定义事件时 为参数列表</param> 
             /// <returns type="self"></returns>
-            var arg = $.argToArray(arguments);
+            var arg = $.util.argToArray(arguments);
             return this.each(function(ele) {
                 $.trigger.apply(null, [ele].concat(arg));
             });

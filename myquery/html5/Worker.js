@@ -43,7 +43,7 @@ myQuery.define("html5/Worker", function ($, undefined) {
                 /// <returns type="self" />
                 this.worker && this.worker.postMessage({
                     todo: todo.toString()
-                    , paras: $.argToArray(arguments, 2)
+                    , paras: $.util.argToArray(arguments, 2)
                     , context: context || null
                 });
                 return this;

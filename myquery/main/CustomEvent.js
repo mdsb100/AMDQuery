@@ -72,7 +72,7 @@ myQuery.define("main/CustomEvent", function ($, undefined) {
             /// <returns type="self" />
             var handlers = this._nameSpace(type);
             if (handlers instanceof Array && handlers.length) {
-                for (var i = 0, len = handlers.length, arg = $.argToArray(arguments, 2); i < len; i++)
+                for (var i = 0, len = handlers.length, arg = $.util.argToArray(arguments, 2); i < len; i++)
                     handlers[i].apply(target, arg);
             }
             return this;

@@ -43,7 +43,7 @@ myQuery.define('module/Thread', ["main/CustomEvent", "base/extend", "module/obje
             this.__super();
             $.extend(this, Thread._defaultSetting, obj);
             this.id = this.id || $.now();
-            this.args = $.argToArray(arguments, 1);
+            this.args = $.util.argToArray(arguments, 1);
 
             return this.setFps()
             .setDuration(this.duration);

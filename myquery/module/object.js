@@ -139,7 +139,7 @@ myQuery.define("module/object", ["base/extend"], function ($, extend) {
                     /// <summary>添加对象</summary>
                     /// <param name="model" type="model<arguments>">对象</param>
                     /// <returns type="self" />
-                    var arg = $.argToArray(arguments),
+                    var arg = $.util.argToArray(arguments),
                     len = arg.length,
                     i = 0,
                     model;

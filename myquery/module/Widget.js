@@ -221,7 +221,7 @@ myQuery.define("module/Widget", ["main/data", "main/query", "main/event", "main/
                             data[a].call(data, key);
                         } 
                         else if(data.public[a]) {
-                            data[a].apply(data, $.argToArray(arg, 1));
+                            data[a].apply(data, $.util.argToArray(arg, 1));
                         }
                     }
 

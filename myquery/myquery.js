@@ -318,8 +318,6 @@
             argToArray: util.argToArray
         },
 
-        argToArray: util.argToArray,
-
         basePath: basePath,
         between: function(min, max, num) {
             /// <summary>如果num在min和max区间内返回num否则返回min或max</summary>
@@ -513,6 +511,11 @@
             name = name.replace($.reg.rupper, "-$1").toLowerCase();
             head && (name = head + "-" + name);
             return name;
+        },
+
+        util: {
+            argToArray: util.argToArray
+
         }
     });
 
