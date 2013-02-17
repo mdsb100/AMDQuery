@@ -41,10 +41,10 @@ myQuery.define("module/animate", ["base/queue", "main/data", "module/FX", "modul
         $.easyExtend(opt, option);
 
         for (var p in property) {
-            var name = $.camelCase(p);
+            var name = $.util.camelCase(p);
             if (p !== name) {
                 property[name] = property[p];
-                //把值复制给camelCase转化后的属性  
+                //把值复制给$.util.camelCase转化后的属性  
                 delete property[p];
                 //删除已经无用的属性  
                 p = name;

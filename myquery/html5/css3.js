@@ -22,7 +22,7 @@ myQuery.define("html5/css3", ["base/client", "main/dom"], function ($, client, d
     , hasTransition = false
     , domStyle = document.documentElement.style
     , getCss3Support = function (type) {
-        return ($.camelCase(type) in domStyle || $.camelCase(type, css3Head) in domStyle);
+        return ($.util.camelCase(type) in domStyle || $.util.camelCase(type, css3Head) in domStyle);
     }
     , css3Support = (function () {
         var result = {};
@@ -204,14 +204,14 @@ myQuery.define("html5/css3", ["base/client", "main/dom"], function ($, client, d
             $.each(style, function (item) {
                 $.each(item.events, function (value, name) {
                     eleObj.addHandler(name, function () {
-                        dom.css(this, $.camelCase(item.name), value);
+                        dom.css(this, $.util.camelCase(item.name), value);
                     });
                 });
                 if (item.toggle) {
                     var arr = [ele];
                     $.each(item.toggle, function (value, index) {
                         arr.push(function () {
-                            dom.css(this, $.camelCase(item.name, item.head), value);
+                            dom.css(this, $.util.camelCase(item.name, item.head), value);
                         });
                     });
                     $.toggle.apply(this, arr);
@@ -229,7 +229,7 @@ myQuery.define("html5/css3", ["base/client", "main/dom"], function ($, client, d
             /// <param name="value" type="String/Number/undefined">值</param>
             /// <returns type="self" />
             if (hasCss3) {
-                return dom.css(ele, $.camelCase(name, css3Head), value);
+                return dom.css(ele, $.util.camelCase(name, css3Head), value);
             }
             return this;
         }
@@ -757,7 +757,7 @@ myQuery.define("html5/css3", ["base/client", "main/dom"], function ($, client, d
                     result = style;
                 }
                 else if ($.isObj(style)) {
-                    style["name"] && (result = [$.unCamelCase(value["name"], value["head"]), style["duration"] || "1s", style["function"] || "linear", style["delay"] || ""].join(" "));
+                    style["name"] && (result = [$.util.unCamelCase(value["name"], value["head"]), style["duration"] || "1s", style["function"] || "linear", style["delay"] || ""].join(" "));
                 }
                 else if ($.isArr(style)) {
                     var list = [];
@@ -766,7 +766,7 @@ myQuery.define("html5/css3", ["base/client", "main/dom"], function ($, client, d
                             list.push(value);
                         }
                         else if ($.isObj(value)) {
-                            value["name"] && list.push([$.unCamelCase(value["name"], value["head"]), value["duration"] || "1s", value["function"] || "linear", value["delay"] || ""].join(" "));
+                            value["name"] && list.push([$.util.unCamelCase(value["name"], value["head"]), value["duration"] || "1s", value["function"] || "linear", value["delay"] || ""].join(" "));
                         }
                     });
                     result = list.join(",");

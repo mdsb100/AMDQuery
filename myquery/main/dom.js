@@ -142,7 +142,7 @@ myQuery.define("main/dom", ["base/support", "main/data", "main/event"], function
             if (type) {
                 switch (type) {
                     case "opacity": style = $.getOpacity(ele); break;
-                    default: style = dom.styleTable(ele)[$.camelCase(type, head)];
+                    default: style = dom.styleTable(ele)[$.util.camelCase(type, head)];
 
                 }
             }

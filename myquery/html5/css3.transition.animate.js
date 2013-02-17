@@ -56,10 +56,10 @@ myQuery.define("html5/css3.transition.animate", ["base/client", "main/event", "h
             };
 
             for (var p in property) {
-                var name = $.unCamelCase(p);
+                var name = $.util.unCamelCase(p);
                 if (p !== name) {
                     property[name] = property[p];
-                    //把值复制给camelCase转化后的属性  
+                    //把值复制给$.util.camelCase转化后的属性  
                     delete property[p];
                     //删除已经无用的属性  
                     p = name;
@@ -104,13 +104,13 @@ myQuery.define("html5/css3.transition.animate", ["base/client", "main/event", "h
                 } else {
                     ret = new FX(ele, opt, value, key);
                     //opt._transitionList.push(key);
-                    //temp = $.camelCase(key);
+                    //temp = $.util.camelCase(key);
                     //ele.style[temp] = ret.from + ret.unit;
                     tran.push(key, duration + "s", easing);
                     opt.delay && tran.push(delay + "s");
 
                     css3.addTransition(ele, tran.join(" "));
-                    ele.style[$.camelCase(key)] = ret.end + ret.unit;
+                    ele.style[$.util.camelCase(key)] = ret.end + ret.unit;
                     ret.startTime = new Date();
                     transitionList[key] = ret;
                 }
@@ -195,7 +195,7 @@ myQuery.define("html5/css3.transition.animate", ["base/client", "main/event", "h
                     if ($.isArr(easing)) {
                         name = easing.splice(0, 1)[0];
                     }
-                    name = $.unCamelCase(name);
+                    name = $.util.unCamelCase(name);
 
                     name = name.replace(".", "-");
 

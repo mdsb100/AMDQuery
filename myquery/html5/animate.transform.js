@@ -14,7 +14,7 @@ myQuery.define("html5/animate.transform", ["module/object", "module/FX", "html5/
             if (this instanceof Transfrom3dForFX) {
                 this.type = type;
                 this._originCss = transformCss;
-                name = name.indexOf("set") < 0 ? $.camelCase(name, "set") : name;
+                name = name.indexOf("set") < 0 ? $.util.camelCase(name, "set") : name;
                 this.__super(ele, options, value, name);
             }
             else {
@@ -64,7 +64,7 @@ myQuery.define("html5/animate.transform", ["module/object", "module/FX", "html5/
                 this.type = type;
                 this.index = index;
                 this._originCss = transformCss;
-                name = name.indexOf("set") < 0 ? $.camelCase(name, "set") : name;
+                name = name.indexOf("set") < 0 ? $.util.camelCase(name, "set") : name;
                 this.__super(ele, options, value, name);
             }
             else {

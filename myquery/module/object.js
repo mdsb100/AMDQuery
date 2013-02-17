@@ -326,7 +326,7 @@ myQuery.define("module/object", ["base/extend"], function ($, extend) {
 
                 if (purview.match(/\-w([u|a])?[\s]?/)) {
                     getPrefix = RegExp.$1 == "a" ? "_" : "";
-                    this[(getPrefix || prefix) + $.camelCase(key, "set")] = function (a) {
+                    this[(getPrefix || prefix) + $.util.camelCase(key, "set")] = function (a) {
                         if (validate.call(this, a)) {
                             this[key] = a;
                         }
@@ -339,7 +339,7 @@ myQuery.define("module/object", ["base/extend"], function ($, extend) {
                 }
                 if (purview.match(/\-r([u|a])?[\s]?/)) {
                     setPrefix = RegExp.$1 == "a" ? "_" : "";
-                    this[(setPrefix || prefix) + $.camelCase(key, "get")] = function () {
+                    this[(setPrefix || prefix) + $.util.camelCase(key, "get")] = function () {
                         return edit ? edit.call(this, this[key]) : this[key];
                     }
                 }

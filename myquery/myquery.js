@@ -338,21 +338,6 @@
 
         },
 
-        camelCase: function(name, head) {
-            /// <summary>把"margin-left驼峰化"</summary>
-            /// <param name="name" type="String">字符串</param>
-            /// <param name="head" type="String">字符串头</param>
-            /// <returns type="String" />
-            name.indexOf("-") > 0 ? name = name.toLowerCase().split("-") : name = [name];
-
-            head && name.splice(0, 0, head);
-
-            for(var i = 1, item; i < name.length; i++) {
-                item = name[i]
-                name[i] = item.substr(0, 1).toUpperCase() + item.slice(1);
-            }
-            return name.join("");
-        },
         console: util.console,
         createEle: function(tag) {
             /// <summary>制造一个Dom元素</summary>
@@ -495,27 +480,42 @@
 
         },
 
-        unCamelCase: function(name, head) {
-            /// <summary>反驼峰化</summary>
-            /// <para>marginLeft => margin-left</para>
-            /// <param name="name" type="String">字符串</param>
-            /// <param name="head" type="String">字符串头</param>
-            /// <returns type="String" />
-            name = name.replace($.reg.rupper, "-$1").toLowerCase();
-            head && (name = head + "-" + name);
-            return name;
-        },
-
         util: {
             argToArray: util.argToArray,
-            
+
+            camelCase: function(name, head) {
+                /// <summary>把"margin-left驼峰化"</summary>
+                /// <param name="name" type="String">字符串</param>
+                /// <param name="head" type="String">字符串头</param>
+                /// <returns type="String" />
+                name.indexOf("-") > 0 ? name = name.toLowerCase().split("-") : name = [name];
+
+                head && name.splice(0, 0, head);
+
+                for(var i = 1, item; i < name.length; i++) {
+                    item = name[i]
+                    name[i] = item.substr(0, 1).toUpperCase() + item.slice(1);
+                }
+                return name.join("");
+            },
+
             trim: function(str) {
                 /// <summary>去除前后的空格换行符等字符</summary>
                 /// <param name="str" type="String">长度 缺省为整个长度</param>
                 /// <returns type="String" />
                 return str.replace(/(^\s*)|(\s*$)/g, "");
-            }
+            },
 
+            unCamelCase: function(name, head) {
+                /// <summary>反驼峰化</summary>
+                /// <para>marginLeft => margin-left</para>
+                /// <param name="name" type="String">字符串</param>
+                /// <param name="head" type="String">字符串头</param>
+                /// <returns type="String" />
+                name = name.replace($.reg.rupper, "-$1").toLowerCase();
+                head && (name = head + "-" + name);
+                return name;
+            }
         }
     });
 
