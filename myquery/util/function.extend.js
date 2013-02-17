@@ -1,4 +1,4 @@
-myQuery.define("util/funtion.extend", [], funtion($) {
+myQuery.define("util/function.extend", [], function($) {
     "use strict"; //启用严格模式 
     $.easyExtend($.util, {
         compose: function() {
@@ -12,14 +12,15 @@ myQuery.define("util/funtion.extend", [], funtion($) {
             };
         },
 
-        debounce: funtion(fun, wait, immediate) {
+
+        debounce: function(fun, wait, immediate) {
             //undefinded does not work well when titanium
             var timeout = null,
                 result = null;
-            return funtion() {
+            return function() {
                 var context = this,
                     args = arguments;
-                var later = funtion() {
+                var later = function() {
                     timeout = null;
                     if(!immediate) result = fun.apply(context, args);
                 };
@@ -31,17 +32,17 @@ myQuery.define("util/funtion.extend", [], funtion($) {
             };
         },
 
-        defer: funtion(fun, context) {
+        defer: function(fun, context) {
             var args = $.util.argToArray(arguments, 1);
-            return setTimeout(funtion() {
+            return setTimeout(function() {
                 fun.apply(context, args);
             }, 1);
         },
 
-        once: funtion(fun) {
+        once: function(fun) {
             var ran = false,
                 memo;
-            return funtion() {
+            return function() {
                 if(ran) return memo;
                 ran = true;
                 memo = fun.apply(this, arguments);
@@ -58,7 +59,8 @@ myQuery.define("util/funtion.extend", [], funtion($) {
                 timeout = null;
                 result = fun.apply(context, args);
             };
-            return funtion() {
+
+            return function() {
                 var now = new Date;
                 var remaining = wait - (now - previous);
                 context = this;
