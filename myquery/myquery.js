@@ -1786,7 +1786,7 @@
                     /// <returns type="Boolean" />
                     if(a == null) return true;
                     if($.isArr(a) || $.isStr(a)) return a.length == 0;
-                    return $.isEmptyObj();
+                    return $.isEmptyObj(a);
                 },
                 isEmptyObj: function(obj) {
                     /// <summary>是否为空的Object</summary>

@@ -704,7 +704,7 @@ myQuery.define("html5/css3", ["base/client", "main/dom"], function ($, client, d
                                 len3 = item1.length;
                                 for(;z < len3; z++){
                                     item3 = item1[z];
-                                    if(!$.isEmpty(item3) && item3 !== "")
+                                    if(!$.isEmpty(item3))
                                         item2[z] = item3;
                                 }
                                 break;

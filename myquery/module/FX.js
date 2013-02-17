@@ -140,13 +140,13 @@ myQuery.define("module/FX", ["main/dom", "module/object"], function ($, dom, obj
             if ($.isStr(d)) {
                 delay = FX.speeds(d);
             }
-            else if ($.isEmpty(d) || !$.isNum(d)) {
+            else if ($.isNul(d) || !$.isNum(d)) {
                 d = 0;
             }
             return d;
         }
         , getDuration: function (d) {
-            if ($.isEmpty(d) || !$.isNum(d)) {
+            if ($.isNul(d) || !$.isNum(d)) {
                 d = FX.speeds(d);
             }
             return d;

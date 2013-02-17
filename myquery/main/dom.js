@@ -819,7 +819,7 @@ myQuery.define("main/dom", ["base/support", "main/data", "main/event"], function
             /// </summary>
             /// <param name="height" type="Number">高度</param>
             /// <returns type="Number" />
-            return $.isEmpty(height)
+            return $.isNul(height)
             ? parseFloat($.getHeight(this[0]))
             : this.each(function (ele) {
                 $.setHeight(ele, height);
@@ -864,7 +864,7 @@ myQuery.define("main/dom", ["base/support", "main/data", "main/event"], function
             /// </summary>
             /// <param name="height" type="Number">高度</param>
             /// <returns type="Number" />
-            return !$.isEmpty(height)
+            return !$.isNul(height)
             ? this.each(function (ele) {
                 $.setInnerH(ele, height);
             }) : $.getInnerH(this[0]);
@@ -874,7 +874,7 @@ myQuery.define("main/dom", ["base/support", "main/data", "main/event"], function
             /// </summary>
             /// <param name="height" type="Number">宽度</param>
             /// <returns type="Number" />
-            return !$.isEmpty(width)
+            return !$.isNul(width)
             ? this.each(function (ele) {
                 $.setInnerW(ele, width);
             }) : $.getInnerW(this[0]);
@@ -1014,7 +1014,7 @@ myQuery.define("main/dom", ["base/support", "main/data", "main/event"], function
                 bol = height;
                 height = null;
             }
-            return $.isEmpty(height)
+            return $.isNul(height)
             ? $.getOuterH(this[0], bol)
             : this.each(function (ele) {
                 $.setOuterH(ele, height, bol);
@@ -1029,7 +1029,7 @@ myQuery.define("main/dom", ["base/support", "main/data", "main/event"], function
                 bol = width;
                 width = null;
             }
-            return $.isEmpty(width)
+            return $.isNul(width)
             ? $.getOuterW(this[0], bol)
             : this.each(function (ele) {
                 $.setOuterW(ele, width, bol);
@@ -1214,7 +1214,7 @@ myQuery.define("main/dom", ["base/support", "main/data", "main/event"], function
             /// </summary>
             /// <param name="width" type="Number">宽度</param>
             /// <returns type="Number" />
-            return $.isEmpty(width)
+            return $.isNul(width)
             ? parseFloat($.getWidth(this[0]))
             : this.each(function (ele) {
                 $.setWidth(ele, width);
