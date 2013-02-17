@@ -1784,7 +1784,9 @@
                     /// <summary>是否为空</summary>
                     /// <param name="a" type="any">任意对象</param>
                     /// <returns type="Boolean" />
-                    return a === null || a === undefined;
+                    if(a == null) return true;
+                    if($.isArr(a) || $.isStr(a)) return a.length == 0;
+                    return $.isEmptyObj();
                 },
                 isEmptyObj: function(obj) {
                     /// <summary>是否为空的Object</summary>
@@ -1795,11 +1797,23 @@
                     }
                     return true;
                 },
+                isFinite: function(a){
+                    /// <summary>是否为Finite</summary>
+                    /// <param name="a" type="any">任意对象</param>
+                    /// <returns type="Boolean" />
+                    return isFinite(a) && !isNaN(parseFloat(a));
+                },
                 isFun: function(a) {
                     /// <summary>是否为方法</summary>
                     /// <param name="a" type="any">任意对象</param>
                     /// <returns type="Boolean" />
                     return $.isType(a, '[object Function]');
+                },
+                isNaN: function(a) {
+                    /// <summary>是否为NaN</summary>
+                    /// <param name="a" type="any">任意对象</param>
+                    /// <returns type="Boolean" />
+                    return $.isNum(a) && a != +a;
                 },
                 isNum: function(a) {
                     /// <summary>是否为数字</summary>

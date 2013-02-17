@@ -7,7 +7,7 @@ myQuery.define('module/myEval', ['base/support'], function ($, support) {
             /// <summary>如果是基本数据类型就eval</summary>
             /// <param name="s" type="String"></param>
             /// <returns type="any" />
-            if($.isStr(str) && /^\d+(.[\d]*)?$|true|false|undefined|null|NaN/.test(str)) {
+            if($.isStr(str) && /^\d+(.[\d]*)?$|true|false|undefined|null|NaN|Infinite/.test(str)) {
                 return eval(str);
             }
             return str;
