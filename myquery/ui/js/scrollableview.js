@@ -65,13 +65,13 @@ myQuery.define("ui/js/scrollableview", ["main/query", "main/dom", "main/class", 
             },
             enable: function() {
                 var event = this.event;
-                this.container.on("DomNodeInserted DomNodeRemoved drag.pause", event);
+                this.container.on("DomNodeInserted DomNodeRemoved drag.pause drag.move", event);
                 this.target.on("swap.move swap.stop swap.pause", event).touchwheel(event);
             },
             disable: function() {
                 //this.container.off("drag.move", event);
                 var event = this.event;
-                this.container.off("DomNodeInserted DomNodeRemoved drag.pause", event);
+                this.container.off("DomNodeInserted DomNodeRemoved drag.pause drag.move", event);
                 this.target.off("swap.move swap.stop swap.pause", event).off("touchwheel", event);
             },
             _initHandler: function() {
@@ -80,6 +80,12 @@ myQuery.define("ui/js/scrollableview", ["main/query", "main/dom", "main/class", 
                     opt = self.options;
                 this.event = function(e) {
                     switch(e.type) {
+                    case "drag.move":
+                        var 
+                        x = self.checkXBoundary(e.offsetX, opt.boundary),
+                        y = self.checkYBoundary(e.offsetY, opt.boundary);
+                        self.renderStatusBar(self.checkXStatusBar(x), self.checkYStatusBar(y));
+                        break;
                     case "drag.pause":
                         var left = self.getLeft(), 
                         top = self.getTop(),
@@ -223,6 +229,21 @@ myQuery.define("ui/js/scrollableview", ["main/query", "main/dom", "main/class", 
                 x1 !== null && this._isAllowedDirection("x") && this.container.offsetL(parseInt(x1)) && this.statusBarX.offsetL(parseInt(x2));
 
                 y1 !== null && this._isAllowedDirection("y") && this.container.offsetT(parseInt(y1)) && this.statusBarY.offsetT(parseInt(y2));
+                return this;
+            },
+            renderStatusBar: function(x, y){
+                var isTransform3d = this.isTransform3d();
+
+                this._isAllowedDirection("x") && 
+                isTransform3d ? 
+                    this.statusBarX.setTranslate3d({tx: parseInt(x)})
+                    : this.statusBarX.offsetL(parseInt(x));
+
+                this._isAllowedDirection("y") && 
+                isTransform3d ?
+                    this.statusBarY.setTranslate3d({ty: parseInt(y)})
+                    : this.statusBarY.offsetT(parseInt(y));
+
                 return this;
             },
             getContainerPosition: function() {
