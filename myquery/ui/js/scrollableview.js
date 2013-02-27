@@ -77,7 +77,11 @@ myQuery.define("ui/js/scrollableview", ["main/query", "main/dom", "main/class", 
             _initHandler: function() {
                 var self = this,
                     target = self.target,
-                    opt = self.options;
+                    opt = self.options,
+                    check = function() {
+                        self.toXBoundary(self.getLeft()).toYBoundary(self.getTop()).hideStatusBar();
+                    };
+
                 this.event = function(e) {
                     switch(e.type) {
                     case "drag.move":
@@ -136,9 +140,7 @@ myQuery.define("ui/js/scrollableview", ["main/query", "main/dom", "main/class", 
                         };
                         self.showStatusBar();
 
-                        self.wheelTimeId = setTimeout(function() {
-                            self.toXBoundary(self.getLeft()).toYBoundary(self.getTop()).hideStatusBar();
-                        }, 50);
+                        self.wheelTimeId = setTimeout(check, 50);
 
                         self.render(x, y, true, opt.boundary);
                         break;
