@@ -39,7 +39,7 @@ myQuery.define("module/AnimateColor", ["module/object", "module/color", "main/do
 
     }, FX);
 
-    if (!($.config.model.transitionToAnimation && $.support.transition)) {
+    if (!($.config.module.transitionToAnimation && $.support.transition)) {
         $.easyExtend(FX.custom, {
             backgroundColor: AnimateColor,
             borderColor: AnimateColor,

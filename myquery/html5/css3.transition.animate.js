@@ -245,7 +245,7 @@ myQuery.define("html5/css3.transition.animate", ["base/client", "main/event", "h
             }
         });
 
-        if ($.config.model.transitionToAnimation) {
+        if ($.config.module.transitionToAnimation) {
             if ($.support.transition) {
                 $.animate = $.animateByTransition;
                 $.stopAnimation = $.stopAnimationByTransition;
