@@ -193,7 +193,7 @@
             init: false,
             image: "welcome.png"
         },
-        model: {
+        module: {
 
         }
     };
@@ -201,11 +201,11 @@
     if(typeof myQueryConfig != "undefined") {
         _config = myQueryConfig;
     } else {
-        var temp = util.getJScriptConfig(["myquery", "amd", "ui", "model"]);
+        var temp = util.getJScriptConfig(["myquery", "amd", "ui", "module"]);
         util.extend(_config.myquery, temp.myquery);
         util.extend(_config.amd, temp.amd);
         util.extend(_config.ui, temp.ui);
-        util.extend(_config.model, temp.model);
+        util.extend(_config.module, temp.module);
     }
 
     //$("<div></div>") 需要自己先parseXML 这样就不用依赖 parseXML

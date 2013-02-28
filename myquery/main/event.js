@@ -64,7 +64,7 @@ myQuery.define("main/event", ["base/client", "main/CustomEvent", "main/data"], f
                             evt = temp.event;
                             target = temp.target;
                         }
-                        $.config.model.compatibleEvent && tools.compatibleEvent(evt);
+                        $.config.module.compatibleEvent && tools.compatibleEvent(evt);
                         fun.call(target, evt);
                     }
                 }

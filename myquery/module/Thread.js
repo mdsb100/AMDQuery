@@ -81,7 +81,6 @@ myQuery.define('module/Thread', ["main/CustomEvent", "base/extend", "module/obje
         , _interval: function () {
             /// <summary>私有</summary>
             var self = this
-            , power = self.power
             , every = function () {
                 if (self.runFlag === false || (self.tick >= self.duration && !self.forever)) {
                     return self.stop();
