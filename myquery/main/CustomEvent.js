@@ -20,6 +20,7 @@ myQuery.define("main/CustomEvent", function ($, undefined) {
             for (; i >= 0; i--) {
                 this._addHandler(types[i], handler);
             };
+            return this;
         }
         , _addHandler: function(type, handler){
             /// <summary>添加自定义事件</summary>
@@ -87,6 +88,7 @@ myQuery.define("main/CustomEvent", function ($, undefined) {
             for (; i >= 0; i--) {
                 this._removeHandler(types[i], handler);
             };
+            return this;
         }
         , _removeHandler: function (type, handler) {
             /// <summary>移除自定义事件</summary>

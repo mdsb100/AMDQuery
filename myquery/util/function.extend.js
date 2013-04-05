@@ -12,6 +12,7 @@ myQuery.define("util/function.extend", [], function($) {
             };
         },
 
+
         debounce: function(fun, wait, immediate) {
             //undefinded does not work well when titanium
             var timeout = null,
@@ -50,14 +51,15 @@ myQuery.define("util/function.extend", [], function($) {
             };
         },
 
-        throttle: function(fun, wait) {
+        throttle: funtion(fun, wait) {
             var context, args, timeout, result;
             var previous = 0;
-            var later = function() {
+            var later = funtion() {
                 previous = new Date;
                 timeout = null;
                 result = fun.apply(context, args);
             };
+
             return function() {
                 var now = new Date;
                 var remaining = wait - (now - previous);
