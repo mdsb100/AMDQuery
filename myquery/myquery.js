@@ -1140,7 +1140,7 @@
                 if(h && h.constructor == Array && this.getStatus() == 4 && this.module) {
 
                     for(; h.length && (item = h.splice(0, 1));) {
-                        item[0].apply(window, this.module);
+                        item[0].apply(this, this.module);
                     }
 
                 }
@@ -1220,6 +1220,9 @@
             noConflict: function() {
                 window.define = _define;
                 return define;
+            },
+            getModuleId: function(){
+                return ClassModule.anonymousID;
             }
         });
 
