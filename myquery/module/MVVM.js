@@ -48,16 +48,10 @@ define("module/MVVM", ["main/query", "main/attr", "main/CustomEvent", "module/ob
 				collectionsSrc: collectionsSrc
 			}
 
-			require(ViewModelSrc, callback);
-
-			// require(dependencies, function(view) {
-			// 	var arg = $.argToArray(arguments),
-			// 		models = arg.slice(2, 2 + Models.length),
-			// 		collections = arg.slice(2 + models.length, arguments.length);
-			// 		require([ViewModel], function(){
-
-			// 		});
-			// });
+			require(ViewModelSrc, function(){
+				callback();
+				_tempMVVMData = null;
+			});
 		},
 
 		defineView: function() {},
@@ -87,8 +81,6 @@ define("module/MVVM", ["main/query", "main/attr", "main/CustomEvent", "module/ob
 
 				return viewModel;
 			});
-
-			_tempMVVMData = null;
 		},
 		defineModel: function() {},
 		defineCollection: function() {}

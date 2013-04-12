@@ -2106,7 +2106,9 @@
     myQuery.define("base/ready", ["base/promise"], function($, Promise) {
         "use strict"; //启用严格模式
         var ready = function(fn) {
-                rootPromise.and(fn);
+                setTimeout(function(){
+                    rootPromise.and(fn);
+                }, 0);
             },
             rootPromise;
 

@@ -28,7 +28,7 @@ myQuery.define("ui/js/accordion",
             this.widgetId = this.originKey.attr("widget-id") || this.title;
             this.originKey.html("");
 
-            return this.create().initHandler();
+            return this.create().initHandler().addHandler();
         },
         create: function () {
             this.$a = $($.createEle("a"))
@@ -47,14 +47,23 @@ myQuery.define("ui/js/accordion",
             return this;
 
         },
+        event : function(){
+
+        },
         initHandler: function () {
             var self = this;
-            this.$key.click(function (e) {
+            this.event = function (e) {
                 //                self.setSelectStyle();
-                self.trigger("key.select", this, self, e);
-                self.setSelectStyle();
-            });
-
+                self.selectKey(e);   
+            }
+            return this;
+        },
+        addHandler: function(){
+            this.$key.click(this.event);
+            return this;
+        },
+        removeHandler: function(){
+            this.$key.off("click", this.event);
             return this;
         },
         setUnselectStyle: function () {
@@ -64,6 +73,10 @@ myQuery.define("ui/js/accordion",
         setSelectStyle: function () {
             this.$a.addClass("select").removeClass("unselect");
             return this;
+        },
+        selectKey: function(e){
+            this.trigger("key.select", this, this, e);
+            this.setSelectStyle();
         },
         routing: function (widgetId) {
             return this.widgetId == widgetId;
@@ -86,16 +99,28 @@ myQuery.define("ui/js/accordion",
 
                 this.add(key);
             }
-            this.initHandler();
+            this.initHandler().addHandler();
             return this;
+        },
+        event : function(){
+
         },
         initHandler: function () {
             var self = this;
-            this.onChild("key.select", function (key, e) {
+            this.event = function (key, e) {
                 //self.setUnselectStyle();
                 //key.setSelectStyle();
                 self.trigger("key.select", this, key, e);
-            });
+            }
+            
+            return this;
+        },
+        addHandler: function(){
+            this.onChild("key.select", this.event);
+            return this;
+        },
+        removeHandler: function(){
+            this.offChild("key.select", this.event);
             return this;
         },
         setUnselectStyle: function () {
@@ -139,7 +164,7 @@ myQuery.define("ui/js/accordion",
 
             this.onfocus = false;
 
-            return this.create().initHandler();
+            return this.create().initHandler().addHandler();
 
         },
         create: function () {
@@ -172,20 +197,32 @@ myQuery.define("ui/js/accordion",
             this.keyCollection = new KeyCollection(this.$board.child(), this);
             return this;
         },
+        event: {
+            click: function(){},
+            keyselect: function(){}
+        },
         initHandler: function () {
             var self = this;
-            this.$title.click(function (e) {
-                //self.selectShell(self,)
-                self.toggle();
-                self.trigger("shell.select", this, "shell.select", self, e);
-            });
-            this.keyCollection.on("key.select", function (key, e) {
+            this.event.click = function(e){
+                self.toggle(e);
+            }
+            this.event.keyselect = function(key, e){
                 self.trigger("key.select", this, "key.select", key, e);
-                self.open();
-            });
+                self.open(key, e);
+            }
             return this;
         },
-        open: function () {
+        addHandler: function(){
+            this.$title.click(this.event.click);
+            this.keyCollection.on("key.select", this.event.keyselect);
+            return this;
+        },
+        removeHandler: function (argument) {
+            this.$title.off("click", this.event.click);
+            this.keyCollection.off("key.select", this.event.keyselect);
+            return this;
+        },
+        open: function (key, e) {   
             if (this.onfocus == false) {
                 this.onfocus = true;
                 this.setOpenStyle();
@@ -208,8 +245,10 @@ myQuery.define("ui/js/accordion",
             }
             return this.trigger("shell.close", this, "shell.close", this);
         },
-        toggle: function () {
-            return this.onfocus ? this.close() : this.open();
+        toggle: function (e) {
+            this.trigger("shell.select", this, "shell.select", this, e);
+            this.onfocus ? this.close() : this.open();
+            return this;
         },
         setOpenStyle: function () {
             this.$title.addClass("title_select").removeClass("title_unselect");
@@ -249,11 +288,17 @@ myQuery.define("ui/js/accordion",
                 //result.push(shell);
                 this.add(shell);
             }
-            this.initHandler();
+            this.initHandler().addHandler();
             return this;
         },
+
+        event: function(){
+
+        },
+
         initHandler: function () {
-            var self = this, event = function (type, target, e) {
+            var self = this;
+            this.event = function (type, target, e) {
                 if (type == "shell.select") {
                     self.closeOther(target);
                 }
@@ -264,11 +309,23 @@ myQuery.define("ui/js/accordion",
                 }
                 self.trigger(type, this, type, target, e);
             }
+            return this;
+        },
+        addHandler: function (){
             this
-            .onChild("key.select", event)
-            .onChild("shell.open", event)
-            .onChild("shell.close", event)
-            .onChild("shell.select", event);
+            .onChild("key.select", this.event)
+            .onChild("shell.open", this.event)
+            .onChild("shell.close", this.event)
+            .onChild("shell.select", this.event);
+            return this;
+        },
+        removeHandler: function(){
+            this
+            .offChild("key.select", this.event)
+            .offChild("shell.open", this.event)
+            .offChild("shell.close", this.event)
+            .offChild("shell.select", this.event);
+            return this;
         },
         closeOther: function (except) {
             this.parent.option.oneSelect && this.each(function (shell) {
@@ -284,12 +341,44 @@ myQuery.define("ui/js/accordion",
             }
             return this;
         },
-        offChild: function () {
+        offChild: function (type, fn) {
             var list = this.models, i;
             for (i in list) {
                 list[i].off(type, fn);
             }
             return this;
+        },
+        getShell: function(shell){
+            var ret = null , item, i, list = this.models;
+            if($.isStr(shell)){
+                for (i in list) {
+                    item = list[i];
+                    if(item.widgetId == shell){
+                        ret = item;
+                        break
+                    }
+                }
+            }
+            else if ($.isEle(shell)){
+                for (i in list) {
+                    item = list[i];
+                    if(item.originShell == shell){
+                        ret = item;
+                        break
+                    }
+                }
+            }
+            else if(shell instanceof Shell){
+                ret = Shell;
+            }
+            return ret;
+        },
+        selectShell: function(shell){
+            var ret = this.getShell(shell);
+            if(ret != null){
+                ret.toggle();
+            }
+            return this
         }
     }, CustomEvent);
 
@@ -352,6 +441,10 @@ myQuery.define("ui/js/accordion",
         , defaultSetting: {
             oneSelect: 0
         }
+        , selectShell: function(shell){
+            this.shellCollection.selectShell(shell);
+            return this;
+        }
     }, CustomEvent);
 
     var accordion = $.widget("ui.accordion", {
@@ -390,7 +483,7 @@ myQuery.define("ui/js/accordion",
             oneSelect: 0
         },
         public: {
-
+            selectShell: 1
         },
         _initHandler: function () {
             var self = this;
@@ -406,6 +499,9 @@ myQuery.define("ui/js/accordion",
                         break;
                 }
             }
+        },
+        selectShell: function(shell){
+            this.accordion.selectShell(shell);
         },
         target: null,
         toString: function () {
