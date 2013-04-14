@@ -17,7 +17,7 @@ myQuery.define("ui/init", ["main/query", "main/dom", "main/attr", "module/Widget
 		init,
 		widgetMap = {};
 
-	$("body *[myquery-ui]").each(function(ele) {
+	$("body *[myquery-ui]").reverse().each(function(ele) {
 		var value = attr.getAttr(ele, "myquery-ui"),
 			attrNames = $.isStr(value) && value != "" ? value.split(/;|,/) : [],
 			len = attrNames.length,

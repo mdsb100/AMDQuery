@@ -73,6 +73,7 @@ myQuery.define("ui/js/swappable", ["base/client", "main/event", "module/math", "
             return -1;
         },
         init: function (obj, target) {
+            target.attr("myquery-ui", "swappable");
             this.path = [];
             this.isDown = false;
             this.startY = null;

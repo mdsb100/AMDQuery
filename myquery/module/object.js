@@ -10,6 +10,11 @@ myQuery.define("module/object", ["base/extend"], function ($, extend) {
     inerit = function (Sub, Super, name) {
         $.object.inheritProtypeWidthParasitic(Sub, Super, name);
         Sub.prototype.__superConstructor = Super;
+        Sub.prototype.__superCall = function(name){
+            /// <summary>调用基类方法</summary>
+            var arg = $.argToArray(arguments, 1);
+            this.__superConstructor[name].apply(this, arg);
+        }
         Sub.prototype.__super = Super.prototype.init
             ? function () {
                 var tempConstructor = this.__superConstructor;
@@ -23,7 +28,7 @@ myQuery.define("module/object", ["base/extend"], function ($, extend) {
                 return this;
             }
             : function () {
-                Super.apply(this, arguments);
+                this.__superConstructor.apply(this, arguments);
                 return this;
             }
     },

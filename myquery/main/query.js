@@ -214,6 +214,7 @@ myQuery.define("main/query", ["main/attr"], function ($, attr, undefined) {
             , getEle: function (ele, context) {
                 /// <summary>通过各种筛选获得包含DOM元素的数组</summary>
                 /// <param name="ele" type="Element/$/document/str">各种筛选</param>
+                /// <param name="ele" type="Element/document/undefined">各种筛选</param>
                 /// <returns type="Array" />
                 var list = [], tmp;
                 if ($.isStr(ele)) {

@@ -1,0 +1,186 @@
+myQuery.define("ui/js/navitem", [
+    "module/Widget",
+    "main/class",
+    "main/event",
+    "main/dom",
+    "main/attr"
+    "module/animate",
+    "html5/css3.transition.animate",
+    "module/effect"],
+
+function($, Widget, cls, event, dom, attr, src, animate) {
+    "use strict"; //启用严格模式
+
+    var navitem = Widget.factory("ui.navitem", function navitem(obj, target) {
+        this.__super(obj, target).init(obj || {}, target);
+    }, {
+        container: null,
+        customEventName: ["open", "close"],
+        event: function() {},
+        initHandler: function() {
+            var self = this,
+                target = self.target,
+                opt = self.options;
+            this.event = function(e) {
+                switch (e.type) {
+                    case "click":
+                        this.toggle();
+                        break;
+                }
+
+            }
+        },
+        enable: function() {
+            var fun = this.event;
+            this.$title.on("click", fun);
+        },
+        disable: function() {
+            var fun = this.event;
+            this.$title.off("click", fun);
+        },
+        getBoard: function() {
+            return this.$board;
+        },
+        render: function() {
+            var opt = this.options;
+            this.$text.html(opt.html);
+            this.$img.attr("src", opt.img);
+            if (opt.status) {
+                this.$title.addClass("title_select").removeClass("title_unselect");
+                this.$arrow.addClass("arrowBottom").removeClass("arrowRight");
+            } else {
+                this.$title.addClass("title_unselect").removeClass("title_select");
+                this.$arrow.addClass("arrowRight").removeClass("arrowBottom");
+            }
+            return this;
+        },
+        toggle: function() {
+            return this.onfocus ? this.close() : this.open();
+        }
+        open: function() {
+            if (this.onfocus == false) {
+                this.onfocus = true;
+                this.$board.slideDown({
+                    duration: 400,
+                    easing: "easeInOutCubic"
+                });
+                this.render();
+
+                var para = {
+                    type: 'navitem.open',
+                    container: this.container,
+                    target: this.$board
+                }
+
+                return this.trigger("navitem.open", this.$board, para);
+            }
+            return this;
+        },
+        close: function() {
+            if (this.onfocus == true) {
+                this.onfocus = false;
+                this.$board.slideUp({
+                    duration: 400,
+                    easing: "easeInOutCubic"
+                });
+                this.render();
+
+                var para = {
+                    type: 'navitem.close',
+                    container: this.container,
+                    target: this.$board
+                }
+
+                return this.trigger("navitem.close", para);
+            }
+            return this;
+        },
+        init: function(obj, target) {
+            var opt = this.options;
+            this.container = target;
+            target.attr("myquery-ui", "navitem");
+            this.onfocus = false;
+
+            this.$child = this.target.child();
+
+            this.$item = $($.createEle("div"))
+                .css("position", "relative")
+                .addClass("item");
+
+            this.$arrow = $($.createEle("div")).css({
+                "float": "left"
+            });
+
+            this.$img = $($.createEle("img")).css({
+                "float": "left"
+            }).addClass("img");
+
+            this.$text = $($.createEle("div")).css({
+                "float": "left"
+            }).addClass("text");
+
+            this.$title = $($.createEle("a")).css({
+                "clear": "left",
+                position: "relative",
+                display: "block",
+                "text-decoration": "none"
+            })
+                .addClass("title");
+
+            this.$board = $($.createEle("div")).css({
+                marginLeft: opt.marginLeft + "px"
+                position: "relative",
+                width: "100%",
+                display: "block"
+            }).addClass("board").hide();
+
+            this.$board.append(this.$child);
+
+            this.$tilte.append(this.$arrow).append(this.$img).append(this.$text);
+
+            this.$item.append(this.$title).append(this.$board);
+
+            this.target.append(this.$item);
+
+            this.render();
+
+            return this;
+        }
+        options: {
+            html: "",
+            img: "",
+            marginLeft: 20
+        },
+        public: {
+            render: 1,
+            getBorad: 1,
+            open: 1,
+            close: 1
+        },
+        target: null,
+        toString: function() {
+            return "ui.navitem";
+        },
+        widgetEventPrefix: "navitem"
+    });
+
+    //提供注释
+    $.fn.navmenu = function(a, b, c, args) {
+        /// <summary>使对象的第一元素可以拖动
+        /// <para>bol obj.disabled:事件是否可用</para>
+        /// <para>num obj.axis:"x"表示横轴移动;"y"表示纵轴移动;缺省或其他值为2轴</para>
+        /// <para>num obj.second:秒数</para>
+        /// <para>fun obj.dragstar:拖动开始</para>
+        /// <para>fun obj.dragmove:拖动时</para>
+        /// <para>fun obj.dragstop:拖动结束</para>
+        /// </summary>
+        /// <param name="a" type="Object/String">初始化obj或属性名:option或方法名</param>
+        /// <param name="b" type="String/null">属性option子属性名</param>
+        /// <param name="c" type="any">属性option子属性名的值</param>
+        /// <param name="args" type="any">在调用方法的时候，后面是方法的参数</param>
+        /// <returns type="$" />
+        navmenu.apply(this, arguments);
+        return this;
+    }
+    return navitem;
+}

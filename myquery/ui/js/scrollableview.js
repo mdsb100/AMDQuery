@@ -158,12 +158,14 @@ myQuery.define("ui/js/scrollableview", ["main/query", "main/dom", "main/class", 
                 }
             },
             init: function(obj) {
+
                 this.option(obj);
                 this.originOverflow = this.target.css("overflow");
 
                 //this.timeStamp = new Date();
                 //this.wheelTimeId = null;
-                this._initHandler()
+                this._initHandler();
+                this.target.attr("myquery-ui", "scrollableview");
                 this.target.css("overflow", "hidden");
                 
                 return this;

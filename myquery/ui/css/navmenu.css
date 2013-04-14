@@ -1,0 +1,91 @@
+.navmenu
+{
+    text-align: center;
+    cursor: pointer;
+    background-color: White;
+    /*
+        fix safari
+        border: 1px solid #e7d5b4;
+    */
+    border:1px solid #e7d5b4;
+    /*
+    border-right: 1px solid #e7d5b4;
+    border-bottom: 1px solid #e7d5b4;
+    */
+    height: auto;
+    overflow:hidden;
+    border-top:2px solid #a8680e;
+}
+
+.navmenu .item
+{
+    height: auto;
+    width: 100%;
+    font: 24px Arial, "\5FAE\8F6F\96C5\9ED1";
+}
+
+.navmenu .title:hover /*改成shell就一起变了*/
+{
+}
+.navmenu .title:active
+{
+}
+
+
+.navmenu .title 
+{
+    width: 100%;
+    height: 28px;
+    text-align: left;
+    cursor: pointer;
+    line-height: 28px;
+    font-family: 宋体;
+    font-weight: bold;
+    font-size: 14px;
+    color: #6B573B;
+}
+.navmenu .title_select
+{
+    background: url(../images/navmenu_typeSelect.jpg) repeat-x;
+    
+}
+.navmenu .title_unselect
+{
+    background: url(../images/navmenu_typeUnselect.jpg) repeat-x;
+}
+
+.navmenu .arrowRight
+{
+    width: 32px;
+    height: 100%;
+    background: url(../images/navmenu_arrowRight.jpg) 50% 50% no-repeat;
+}
+
+.navmenu .arrowBottom
+{
+    width: 32px;
+    height: 100%;
+    background: url(../images/navmenu_arrowBottom.jpg) 50% 50% no-repeat;
+}
+
+.navmenu .text
+{
+    /*width: 166px;*/
+    height: 100%;
+    font-size:14px;
+}
+
+.navmenu .board
+{
+    width: 100%;
+    background: url(../images/navmenu_bottomBackground.jpg) bottom repeat-x;
+}
+
+.navmenu .board .select
+{
+    color: #d30000;
+}
+.navmenu .board .unselect
+{
+    color:#6B573B;
+}

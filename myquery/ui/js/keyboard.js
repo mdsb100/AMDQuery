@@ -16,6 +16,7 @@ myQuery.define("ui/js/keyboard", ["module/object", "module/Widget", "module/Keyb
         },
         init: function (obj, target) {
             this.__super(obj, target);
+            target.attr("myquery-ui", "keyboard");
             this.keyboard = new Keyboard(target[0], this.options.keyList);
             this.options.keyList = this.keyboard.keyList;
 
