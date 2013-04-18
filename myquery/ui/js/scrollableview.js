@@ -5,9 +5,7 @@ myQuery.define("ui/js/scrollableview", ["main/query", "main/dom", "main/class", 
         href: $.getPath("ui/css/scrollableview", ".css")
     });
     var eventFuns = $.event.document,
-        scrollableview = Widget.factory("ui.scrollableview", function scrollableview(obj, target) {
-            this.__super(obj, target).init(obj || {}, target).create().render(0, 0);
-        }, {
+        scrollableview = Widget.factory("ui.scrollableview", {
             container: null,
             create: function() {
                 var opt = this.options;
@@ -83,73 +81,71 @@ myQuery.define("ui/js/scrollableview", ["main/query", "main/dom", "main/class", 
                     };
 
                 this.event = function(e) {
-                    switch(e.type) {
-                    case "drag.move":
-                        var 
-                        x = self.checkXBoundary(e.offsetX, opt.boundary),
-                        y = self.checkYBoundary(e.offsetY, opt.boundary);
-                        self.renderStatusBar(self.checkXStatusBar(x), self.checkYStatusBar(y));
-                        break;
-                    case "drag.pause":
-                        var left = self.getLeft(), 
-                        top = self.getTop(),
-                        distance = opt.pullDistance;
+                    switch (e.type) {
+                        case "drag.move":
+                            var
+                            x = self.checkXBoundary(e.offsetX, opt.boundary),
+                                y = self.checkYBoundary(e.offsetY, opt.boundary);
+                            self.renderStatusBar(self.checkXStatusBar(x), self.checkYStatusBar(y));
+                            break;
+                        case "drag.pause":
+                            var left = self.getLeft(),
+                                top = self.getTop(),
+                                distance = opt.pullDistance;
 
-                        if(left > distance){
-                            e.type = "scrollableview.pullleft";
-                            target.trigger(e.type, this, e);
-                        }
-                        else if(left < - self.overflowWidth - distance){
-                            e.type = "scrollableview.pullright";
-                            target.trigger(e.type, this, e);
-                        }
-                        if (top > distance){
-                            e.type = "scrollableview.pulldown";
-                            target.trigger(e.type, this, e);
-                        }
-                        else if(top < - self.overflowHeight - distance){
-                            e.type = "scrollableview.pullup";
-                            target.trigger(e.type, this, e);
-                        }
+                            if (left > distance) {
+                                e.type = "scrollableview.pullleft";
+                                target.trigger(e.type, this, e);
+                            } else if (left < -self.overflowWidth - distance) {
+                                e.type = "scrollableview.pullright";
+                                target.trigger(e.type, this, e);
+                            }
+                            if (top > distance) {
+                                e.type = "scrollableview.pulldown";
+                                target.trigger(e.type, this, e);
+                            } else if (top < -self.overflowHeight - distance) {
+                                e.type = "scrollableview.pullup";
+                                target.trigger(e.type, this, e);
+                            }
 
-                        break;
-                    case "DomNodeInserted":
-                    case "DomNodeRemoved":
-                        self.refreshPosition().toYBoundary(self.getTop()).toXBoundary(self.getLeft());
-                        break;
-                    case "swap.move":
-                        self.showStatusBar();
-                        break;
-                    case "swap.stop":
-                        self.animate(e);
-                        break;
-                    case "swap.pause":
-                        self.pause(e);
-                        break;
-                    case "mousewheel":
-                    case "DOMMouseScroll":
-                        clearTimeout(self.wheelTimeId);
-                        var x = null,
-                            y = null;
-                        //timeStamp = e.timeStamp || new Date(),
-                        //timeout;
-                        if(e.direction == "x") {
-                            x = e.delta * opt.mouseWheelAccuracy;
-                        } else if(e.direction == "y") {
-                            y = e.delta * opt.mouseWheelAccuracy;
-                        };
-                        self.showStatusBar();
+                            break;
+                        case "DomNodeInserted":
+                        case "DomNodeRemoved":
+                            self.refreshPosition().toYBoundary(self.getTop()).toXBoundary(self.getLeft());
+                            break;
+                        case "swap.move":
+                            self.showStatusBar();
+                            break;
+                        case "swap.stop":
+                            self.animate(e);
+                            break;
+                        case "swap.pause":
+                            self.pause(e);
+                            break;
+                        case "mousewheel":
+                        case "DOMMouseScroll":
+                            clearTimeout(self.wheelTimeId);
+                            var x = null,
+                                y = null;
+                            //timeStamp = e.timeStamp || new Date(),
+                            //timeout;
+                            if (e.direction == "x") {
+                                x = e.delta * opt.mouseWheelAccuracy;
+                            } else if (e.direction == "y") {
+                                y = e.delta * opt.mouseWheelAccuracy;
+                            };
+                            self.showStatusBar();
 
-                        self.wheelTimeId = setTimeout(check, 50);
+                            self.wheelTimeId = setTimeout(check, 50);
 
-                        self.render(x, y, true, opt.boundary);
-                        break;
+                            self.render(x, y, true, opt.boundary);
+                            break;
                     }
                 }
                 return this;
             },
             destory: function(key) {
-                if(key) {
+                if (key) {
                     this.target.swappable("destory");
                     this.container.draggable("destory");
                     this.target.child().remove();
@@ -157,8 +153,8 @@ myQuery.define("ui/js/scrollableview", ["main/query", "main/dom", "main/class", 
                     this.__superConstructor.prototype.destory.call(this, key);
                 }
             },
-            init: function(obj) {
-
+            init: function(obj, target) {
+                this.__super(obj, target);
                 this.option(obj);
                 this.originOverflow = this.target.css("overflow");
 
@@ -167,8 +163,8 @@ myQuery.define("ui/js/scrollableview", ["main/query", "main/dom", "main/class", 
                 this._initHandler();
                 this.target.attr("myquery-ui", "scrollableview");
                 this.target.css("overflow", "hidden");
-                
-                return this;
+
+                return this.create().render(0, 0);
             },
             options: {
                 "overflow": "xy",
@@ -191,23 +187,23 @@ myQuery.define("ui/js/scrollableview", ["main/query", "main/dom", "main/class", 
                 return this.options.isTransform3d && $.support.transform3d;
             },
             render: function(x, y, addtion, boundary) {
-                var position, 
-                    originX = 0,
+                var position,
+                originX = 0,
                     originY = 0,
                     statusX, statusY;
 
-                if(addtion) {
+                if (addtion) {
                     position = this.getContainerPosition();
 
                     originX = position.x;
                     originY = position.y;
                 }
 
-                if(x !== null && this._isAllowedDirection("x")) {
+                if (x !== null && this._isAllowedDirection("x")) {
                     x = this.checkXBoundary(originX + x, boundary);
                     statusX = this.checkXStatusBar(x);
                 }
-                if(y !== null && this._isAllowedDirection("y")) {
+                if (y !== null && this._isAllowedDirection("y")) {
                     y = this.checkYBoundary(originY + y, boundary);
                     statusY = this.checkYStatusBar(y);
                 }
@@ -217,16 +213,20 @@ myQuery.define("ui/js/scrollableview", ["main/query", "main/dom", "main/class", 
             },
             _renderByTransform3d: function(x1, x2, y1, y2) {
                 var opt1 = {};
-                if(x1 !== null && this._isAllowedDirection("x")){
+                if (x1 !== null && this._isAllowedDirection("x")) {
                     opt1.tx = parseInt(x1);
-                    this.statusBarX.setTranslate3d({tx: parseInt(x2)});
+                    this.statusBarX.setTranslate3d({
+                        tx: parseInt(x2)
+                    });
                 }
                 if (y1 !== null && this._isAllowedDirection("y")) {
                     opt1.ty = parseInt(y1);
-                    this.statusBarY.setTranslate3d({ty: parseInt(y2)});
+                    this.statusBarY.setTranslate3d({
+                        ty: parseInt(y2)
+                    });
                 }
                 this.container.setTranslate3d(opt1)
-    
+
                 return this;
             },
             _renderByDefault: function(x1, x2, y1, y2) {
@@ -235,24 +235,22 @@ myQuery.define("ui/js/scrollableview", ["main/query", "main/dom", "main/class", 
                 y1 !== null && this._isAllowedDirection("y") && this.container.offsetT(parseInt(y1)) && this.statusBarY.offsetT(parseInt(y2));
                 return this;
             },
-            renderStatusBar: function(x, y){
+            renderStatusBar: function(x, y) {
                 var isTransform3d = this.isTransform3d();
 
-                this._isAllowedDirection("x") && 
-                isTransform3d ? 
-                    this.statusBarX.setTranslate3d({tx: parseInt(x)})
-                    : this.statusBarX.offsetL(parseInt(x));
+                this._isAllowedDirection("x") && isTransform3d ? this.statusBarX.setTranslate3d({
+                    tx: parseInt(x)
+                }) : this.statusBarX.offsetL(parseInt(x));
 
-                this._isAllowedDirection("y") && 
-                isTransform3d ?
-                    this.statusBarY.setTranslate3d({ty: parseInt(y)})
-                    : this.statusBarY.offsetT(parseInt(y));
+                this._isAllowedDirection("y") && isTransform3d ? this.statusBarY.setTranslate3d({
+                    ty: parseInt(y)
+                }) : this.statusBarY.offsetT(parseInt(y));
 
                 return this;
             },
             getContainerPosition: function() {
                 var x, y, transform3d;
-                if(this.isTransform3d()) {
+                if (this.isTransform3d()) {
                     x = this.container.transform3d("translateX", true);
                     y = this.container.transform3d("translateY", true);
                 } else {
@@ -279,14 +277,14 @@ myQuery.define("ui/js/scrollableview", ["main/query", "main/dom", "main/class", 
                     width = 0,
                     height = 0;
 
-                if(scrollWidth != viewportWidth) {
+                if (scrollWidth != viewportWidth) {
                     this.statusBarXVisible = 1;
                     width = viewportWidth * viewportWidth / scrollWidth
                 } else {
                     width = this.statusBarXVisible = 0;
                 }
 
-                if(scrollHeight != viewportHeight) {
+                if (scrollHeight != viewportHeight) {
                     this.statusBarYVisible = 1;
                     height = viewportHeight * viewportHeight / scrollHeight
                 } else {
@@ -335,26 +333,26 @@ myQuery.define("ui/js/scrollableview", ["main/query", "main/dom", "main/class", 
                 // console.log(t0)
                 // console.log(s0)
                 // console.log(a0)
-                if(t0 <= 0) {
+                if (t0 <= 0) {
                     this.toYBoundary(this.getTop()).toXBoundary(this.getLeft());
                     return this.hideStatusBar();
                 };
 
-                switch(direction) {
-                case 3:
-                    this.toX(-s0, t0, direction);
-                    break;
-                case 9:
-                    this.toX(s0, t0), direction;
-                    break;
-                case 6:
-                    this.toY(-s0, t0, direction);
-                    break;
-                case 12:
-                    this.toY(s0, t0, direction);
-                    break;
-                default:
-                    this.toXBoundary(this.getTop()).toYBoundary(this.getLeft());
+                switch (direction) {
+                    case 3:
+                        this.toX(-s0, t0, direction);
+                        break;
+                    case 9:
+                        this.toX(s0, t0), direction;
+                        break;
+                    case 6:
+                        this.toY(-s0, t0, direction);
+                        break;
+                    case 12:
+                        this.toY(s0, t0, direction);
+                        break;
+                    default:
+                        this.toXBoundary(this.getTop()).toYBoundary(this.getLeft());
                 }
 
                 return this;
@@ -391,24 +389,24 @@ myQuery.define("ui/js/scrollableview", ["main/query", "main/dom", "main/class", 
             },
 
             outerXBoundary: function(t) {
-                if(t > 0) {
+                if (t > 0) {
                     return 0;
-                } else if(t < -this.overflowWidth) {
+                } else if (t < -this.overflowWidth) {
                     return -this.overflowWidth;
                 }
                 return null;
             },
 
             outerYBoundary: function(t) {
-                if(t > 0) {
+                if (t > 0) {
                     return 0;
-                } else if(t < -this.overflowHeight) {
+                } else if (t < -this.overflowHeight) {
                     return -this.overflowHeight;
                 }
                 return null;
             },
 
-            _triggerAnimate: function(scene, direction, duration, distance){
+            _triggerAnimate: function(scene, direction, duration, distance) {
                 var type = "scrollableview.animationEnd";
                 this.target.trigger(type, this.container[0], {
                     type: type,
@@ -423,12 +421,17 @@ myQuery.define("ui/js/scrollableview", ["main/query", "main/dom", "main/class", 
                 var outer = this.outerXBoundary(left),
                     opt,
                     self = this;
-                if(outer !== null) {
-                    if(this.isTransform3d()){
-                        opt = {transform3d:{ translateX: outer + "px"}};
-                    }
-                    else{
-                        opt = {left: outer + "px"};
+                if (outer !== null) {
+                    if (this.isTransform3d()) {
+                        opt = {
+                            transform3d: {
+                                translateX: outer + "px"
+                            }
+                        };
+                    } else {
+                        opt = {
+                            left: outer + "px"
+                        };
                     }
                     this.container.animate(opt, {
                         duration: this.options.boundaryDruation,
@@ -447,12 +450,17 @@ myQuery.define("ui/js/scrollableview", ["main/query", "main/dom", "main/class", 
                 var outer = this.outerYBoundary(top),
                     opt,
                     self = this;
-                if(outer !== null) {
-                    if(this.isTransform3d()){
-                        opt = {transform3d:{ translateY: outer + "px"}};
-                    }
-                    else{
-                        opt = {top: outer + "px"};
+                if (outer !== null) {
+                    if (this.isTransform3d()) {
+                        opt = {
+                            transform3d: {
+                                translateY: outer + "px"
+                            }
+                        };
+                    } else {
+                        opt = {
+                            top: outer + "px"
+                        };
                     }
                     this.container.animate(opt, {
                         duration: this.options.boundaryDruation,
@@ -473,16 +481,29 @@ myQuery.define("ui/js/scrollableview", ["main/query", "main/dom", "main/class", 
             toY: function(s, t, d) {
                 return this._isAllowedDirection("y") ? this.animateY(this.checkYBoundary(this.getTop() - s), t, d) : this;
             },
-            animateY: function(y1, t, direction){
-                var self = this, y2 = this.checkYStatusBar(y1), opt1, opt2;
+            animateY: function(y1, t, direction) {
+                var self = this,
+                    y2 = this.checkYStatusBar(y1),
+                    opt1, opt2;
 
-                if(this.isTransform3d()){
-                    opt1 = {transform3d: {translateY: y1+ "px"}};
-                    opt2 = {transform3d: {translateY: y2+ "px"}};
-                }
-                else{
-                    opt1 = {top: y1 + "px"};
-                    opt2 = {top: y2 + "px"};
+                if (this.isTransform3d()) {
+                    opt1 = {
+                        transform3d: {
+                            translateY: y1 + "px"
+                        }
+                    };
+                    opt2 = {
+                        transform3d: {
+                            translateY: y2 + "px"
+                        }
+                    };
+                } else {
+                    opt1 = {
+                        top: y1 + "px"
+                    };
+                    opt2 = {
+                        top: y2 + "px"
+                    };
                 }
 
                 this.container.animate(opt1, {
@@ -500,16 +521,29 @@ myQuery.define("ui/js/scrollableview", ["main/query", "main/dom", "main/class", 
                 });
                 return this;
             },
-            animateX: function(x1, t, direction){
-                var self = this, x2 = this.checkXStatusBar(x1), opt1, opt2;
+            animateX: function(x1, t, direction) {
+                var self = this,
+                    x2 = this.checkXStatusBar(x1),
+                    opt1, opt2;
 
-                if(this.isTransform3d()){
-                    opt1 = {transform3d: {translateX: x1+ "px"}};
-                    opt2 = {transform3d: {translateX: x2+ "px"}};
-                }
-                else{
-                    opt1 = {left: x1 + "px"};
-                    opt2 = {left: x2 + "px"};
+                if (this.isTransform3d()) {
+                    opt1 = {
+                        transform3d: {
+                            translateX: x1 + "px"
+                        }
+                    };
+                    opt2 = {
+                        transform3d: {
+                            translateX: x2 + "px"
+                        }
+                    };
+                } else {
+                    opt1 = {
+                        left: x1 + "px"
+                    };
+                    opt2 = {
+                        left: x2 + "px"
+                    };
                 }
 
                 this.container.animate(opt1, {

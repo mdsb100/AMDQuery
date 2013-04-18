@@ -15,7 +15,6 @@ myQuery.define("module/Widget", ["main/data", "main/query", "main/event", "main/
         // target._initHandler();
         // this.target = target;
         this.init(obj.target);
-        //this._init_(obj, target)._create_()._render_();
     }
 
     object.Class(Widget, {
@@ -174,7 +173,7 @@ myQuery.define("module/Widget", ["main/data", "main/query", "main/event", "main/
         widgetNameSpace: "ui"
     });
 
-    Widget.factory = function(name, constructor, prototype, statics, Super) {
+    Widget.factory = function(name, prototype, statics, Super) {
         /// <summary>为$添加部件
         /// <para>作为类得constructor可以这样</para>
         /// <para>function TimePicker(obj, target, base){</para>
@@ -186,7 +185,6 @@ myQuery.define("module/Widget", ["main/data", "main/query", "main/event", "main/
         /// <para>对外公开的方法返回值不能为this</para>
         /// </summary>
         /// <param name="name" type="String">格式为"ui.scorePicker"ui为命名空间，scorePicer为方法名，若有相同会覆盖</param>
-        /// <param name="constructor" type="Function/Object">若为constructor则为类，若为obj则为类prototype</param>
         /// <param name="prototype" type="Object">类的prototype 或者是基widget的name</param>
         /// <param name="statics" type="Object">类的静态方法</param>
         /// <param name="Super" type="Function/undefined">基类</param>
@@ -207,13 +205,17 @@ myQuery.define("module/Widget", ["main/data", "main/query", "main/event", "main/
             Super = Widget;
         }
 
-        if (!$.isFun(constructor)) {
-            statics = prototype;
-            prototype = constructor;
-            constructor = name;
+        // if (!$.isFun(constructor)) {
+        //     statics = prototype;
+        //     prototype = constructor;
+        //     constructor = name;
+        // } else {
+        if (!$.isObj(statics)) {
+            statics = {};
         }
+        //}
 
-        constructor = object.Class(constructor, prototype, statics, Super);
+        var constructor = object.Class(name, prototype, statics, Super);
         constructor.prototype.widgetName = name;
         constructor.prototype.widgetNameSpace = nameSpace;
 
@@ -268,7 +270,7 @@ myQuery.define("module/Widget", ["main/data", "main/query", "main/event", "main/
         /// <returns type="Boolean" />
         nameSpace = nameSpace || "ui";
         return $.is$(item) && item.attr("myquery-" + nameSpace + "-" + name) !== undefined;
-    }
+    };
 
     $.widget.inherit = function(name, SuperName, constructor, prototype, statics) {
         /// <summary>继承某个widget实例</summary>
@@ -279,13 +281,26 @@ myQuery.define("module/Widget", ["main/data", "main/query", "main/event", "main/
         /// <param name="prototype" type="Object">类的prototype 或者是基widget的name</param>
         /// <param name="statics" type="Object">类的静态方法</param>
         /// <returns type="Function" />
-        var thisName = name.split("."),
-            thisNameSpace = thisName[0],
-            thisName = thisName[1],
-            Super = $.widget[thisNameSpace][thisName],
-            arg = [name].concat($.argToArray(2).push(Super);
 
-            return Widget.factory.apply(null, arg);
+        var tName = SuperName.split("."),
+            tNameSpace = tName[0],
+            tName = tName[1],
+            arg;
+
+        var Super = $.widget[tNameSpace][tName];
+        if (!Super) {
+            $.console.error({
+                fn: "$.widget.inherit",
+                msg: "Super undefined"
+            }, true);
+        }
+
+        arg = [name];
+        arg = arg.concat($.util.argToArray(arguments, 2));
+        arg.push(Super);
+
+        return Widget.factory.apply(null, arg);
+
     }
     return Widget;
 });

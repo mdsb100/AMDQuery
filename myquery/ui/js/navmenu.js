@@ -5,7 +5,7 @@ myQuery.define("ui/js/navmenu", [
     "main/class",
     "main/event",
     "main/dom",
-    "module/attr",
+    "main/attr",
     "module/src"],
 
 function($, NavItem, Widget, cls, event, dom, attr, src) {
@@ -16,9 +16,7 @@ function($, NavItem, Widget, cls, event, dom, attr, src) {
     });
 
     var eventFuns = event.event.document,
-        navmenu = $.widget.inherit("ui.navmenu", "ui.navitem", function navmenu(obj, target) {
-            this.__super(obj, target).init(obj || {}, target);
-        }, {
+        navmenu = $.widget.inherit("ui.navmenu", "ui.navitem", {
             container: null,
             customEventName: [],
             event: function() {},
@@ -69,6 +67,7 @@ function($, NavItem, Widget, cls, event, dom, attr, src) {
                 this.navItemList = thit.getNavItemList();
             },
             init: function(obj, target) {
+                this.__super(obj, target);
                 this.target.addClass(".navmenu");
                 this.navItemList = [];
                 this.detectNavItemList();

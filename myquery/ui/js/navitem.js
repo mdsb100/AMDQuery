@@ -3,7 +3,7 @@ myQuery.define("ui/js/navitem", [
     "main/class",
     "main/event",
     "main/dom",
-    "main/attr"
+    "main/attr",
     "module/animate",
     "html5/css3.transition.animate",
     "module/effect"],
@@ -11,9 +11,7 @@ myQuery.define("ui/js/navitem", [
 function($, Widget, cls, event, dom, attr, src, animate) {
     "use strict"; //启用严格模式
 
-    var navitem = Widget.factory("ui.navitem", function navitem(obj, target) {
-        this.__super(obj, target).init(obj || {}, target);
-    }, {
+    var navitem = Widget.factory("ui.navitem"), {
         container: null,
         customEventName: ["open", "close"],
         event: function() {},
@@ -56,7 +54,7 @@ function($, Widget, cls, event, dom, attr, src, animate) {
         },
         toggle: function() {
             return this.onfocus ? this.close() : this.open();
-        }
+        },
         open: function() {
             if (this.onfocus == false) {
                 this.onfocus = true;
@@ -96,12 +94,13 @@ function($, Widget, cls, event, dom, attr, src, animate) {
             return this;
         },
         init: function(obj, target) {
+            this.__super(obj, target);
             var opt = this.options;
             this.container = target;
             target.attr("myquery-ui", "navitem");
             this.onfocus = false;
 
-            this.$child = this.target.child();
+            this.$child = target.child();
 
             this.$item = $($.createEle("div"))
                 .css("position", "relative")
@@ -128,7 +127,7 @@ function($, Widget, cls, event, dom, attr, src, animate) {
                 .addClass("title");
 
             this.$board = $($.createEle("div")).css({
-                marginLeft: opt.marginLeft + "px"
+                marginLeft: opt.marginLeft + "px",
                 position: "relative",
                 width: "100%",
                 display: "block"
@@ -136,7 +135,7 @@ function($, Widget, cls, event, dom, attr, src, animate) {
 
             this.$board.append(this.$child);
 
-            this.$tilte.append(this.$arrow).append(this.$img).append(this.$text);
+            this.$title.append(this.$arrow).append(this.$img).append(this.$text);
 
             this.$item.append(this.$title).append(this.$board);
 
@@ -145,7 +144,7 @@ function($, Widget, cls, event, dom, attr, src, animate) {
             this.render();
 
             return this;
-        }
+        },
         options: {
             html: "",
             img: "",
@@ -183,4 +182,4 @@ function($, Widget, cls, event, dom, attr, src, animate) {
         return this;
     }
     return navitem;
-}
+});

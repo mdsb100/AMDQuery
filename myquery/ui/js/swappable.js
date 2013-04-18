@@ -3,9 +3,7 @@
 /// <reference path="../module/math.js" />
 myQuery.define("ui/js/swappable", ["base/client", "main/event", "module/math", "module/Widget"], function ($, client, event, math, Widget, undefined) {
     "use strict"; //启用严格模式 
-    var swappable = $.widget("ui.swappable", function swappable(obj, target) {
-        this.__super(obj, target).init(obj || {}, target).create();
-    }, {
+    var swappable = $.widget("ui.swappable", {
         container: null,
         create: function () {
             this.target.css({
@@ -73,12 +71,13 @@ myQuery.define("ui/js/swappable", ["base/client", "main/event", "module/math", "
             return -1;
         },
         init: function (obj, target) {
+            this.__super(obj, target);
             target.attr("myquery-ui", "swappable");
             this.path = [];
             this.isDown = false;
             this.startY = null;
             this.startX = null;
-            return this;
+            return this.create();
         },
         options: {
             cursor: "pointer",

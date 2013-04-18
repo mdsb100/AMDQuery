@@ -1,9 +1,7 @@
 ﻿/// <reference path="../../myquery.js" />
 myQuery.define("ui/js/turnBook", ["ui/js/swappable", "main/class", "html5/css3"], function ($, swappable, clas, css3, undefined) {
     "use strict"; //启用严格模式
-    var turnBook = $.widget("ui.turnBook", function turnbook(obj, target) {
-        this.__super(obj, target).init(obj || {}, target).create();
-    }, {
+    var turnBook = $.widget("ui.turnBook", {
         appendTo: function (index) {
             var box = this.getBox(index);
             box && box.appendTo(this.container[0]);
@@ -192,6 +190,7 @@ myQuery.define("ui/js/turnBook", ["ui/js/swappable", "main/class", "html5/css3"]
         },
 
         init: function (obj, target) {
+            this.__super(obj, target).create();
             return this;
         },
         inductionCorner: function (x, y) {

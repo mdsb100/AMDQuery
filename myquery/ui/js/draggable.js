@@ -2,9 +2,7 @@
 myQuery.define("ui/js/draggable", ["module/Widget", "main/event", "main/dom", "html5/css3", "main/query"], function ($, Widget, event, dom, cls3, query, undefined) {
     "use strict"; //启用严格模式
     var eventFuns = event.event.document,
-        draggable = Widget.factory("ui.draggable", function draggable(obj, target) {
-            this.__super(obj, target).init(obj || {}, target).create().render();
-        }, {
+        draggable = Widget.factory("ui.draggable", {
             container: null,
             create: function () {
                 var self = this;
@@ -37,9 +35,10 @@ myQuery.define("ui/js/draggable", ["module/Widget", "main/event", "main/dom", "h
                 this.target.off('mousedown', fun);
             },
             init: function (obj, target) {
+                this.__super(obj, target);
                 target.attr("myquery-ui", "draggable");
                 this.container = $(this.options.container || document.body);
-                return this;
+                return this.create().render();
             },
             initPositionParent: function(){
                 var result;

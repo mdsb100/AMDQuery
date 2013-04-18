@@ -6,12 +6,8 @@
     <link href="../css/reset.css" rel="stylesheet" type="text/css" />
     <script src="../myquery/myquery.js" type="text/javascript" model="transitionToAnimation:1" ui="init:1"></script>
     <script type="text/javascript">
-        $.require(["ui/js/accordion", "main/query", "main/attr"], function (Accordion, query) {
-            $("#nav")
-            .on("accordion.key.select", function (target) {
-                target.container.attr("src");
-            })
-            .accordion("selectShell", "index");
+        $.require(["ui/js/navmenu", "main/query", "main/attr"], function (Accordion, query) {
+            
             
         });
        
@@ -22,17 +18,8 @@
         <tbody>
             <tr>
                 <td style="width: 200px;">
-                    <div style="width: 200px; background-color: Red;" id="nav" myquery-ui="accordion" myquery-accordion="oneSelect:true">
-                        <ul widget-title="MyQuery Document" widget-html="Index" widget-handler="" widget-id="index" >
-                            <li widget-handler="" src="abc">welcome</li>
-                        </ul>
-                        <ul widget-html="module" widget-id="module">
-                            <li widget-id="object" >object</li>
-                        </ul>
-                        <!-- <ul widget-title="测试2" widget-html="测试2" widget-handler="context2">
-                            <li widget-handler="context2">内容1</li>
-                            <li>内容2</li>
-                        </ul> -->
+                    <div style="width: 200px; background-color: Red;" id="nav" myquery-ui="navmenu">
+                        <div myquery-ui="navitem" myquery-ui-navitem="html:test" ></div>
                     </div>
                 </td>
                 <td>
