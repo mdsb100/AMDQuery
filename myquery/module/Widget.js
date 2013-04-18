@@ -54,14 +54,7 @@ myQuery.define("module/Widget", ["main/data", "main/query", "main/event", "main/
         },
         create: function() {},
         container: null,
-        constructor: Widget
-        // , _create_: function () {
-        //     $.isFun(this.create) && this.create();
-        //     //this.options.disabled === false ? this.disable() : this.enable();
-        //     this.able();
-        //     return this;
-        // }
-        ,
+        constructor: Widget,
         customEventName: [],
         destory: function(key) {
             if (key) {
@@ -96,9 +89,20 @@ myQuery.define("module/Widget", ["main/data", "main/query", "main/event", "main/
 
         init: function(obj, target) {
             //元素本身属性高于obj
-            var defaultOptions = this.constructor.prototype.options;
+            var defaultOptions = this.constructor.prototype.options,
+            defulatPublic = this.constructor.prototype.public,
+            customEventName = this.constructor.prototype.customEventName;
+            
+            if(!customEventName){
+                customEventName = [];
+            }
+
             this.options = {};
+            this.public = {};
+
             $.extend(this.options, Widget.prototype.options, defaultOptions);
+            $.extend(this.public, Widget.prototype.public, defulatPublic);
+            customEventName = customEventName.concat(Widget.prototype.customEventName);
             //event.custom.call(this);
             target._initHandler();
             this.target = target;
@@ -223,7 +227,7 @@ myQuery.define("module/Widget", ["main/data", "main/query", "main/event", "main/
 
         var key = nameSpace + "." + name + $.now();
 
-        return $.prototype[name] = function(a, b, c) {
+        var ret = $.prototype[name] = function(a, b, c) {
             /// <summary>对当前$的所有元素初始化某个UI控件或者修改属性或使用其方法</summary>
             /// <para>返回option属性时，只返回第一个对象的</para>
             /// <param name="a" type="Object/String">初始化obj或属性名:option或方法名</param>
@@ -259,6 +263,11 @@ myQuery.define("module/Widget", ["main/data", "main/query", "main/event", "main/
             return result;
         }
 
+        ret.multiply = function(tName, prototype, statics, isExtendStatic){
+            return $.widget.inherit(tName, nameSpace + "." + name , prototype, statics, isExtendStatic);
+        }
+
+        return ret;
     }
     $.widget = Widget.factory;
 
@@ -272,14 +281,14 @@ myQuery.define("module/Widget", ["main/data", "main/query", "main/event", "main/
         return $.is$(item) && item.attr("myquery-" + nameSpace + "-" + name) !== undefined;
     };
 
-    $.widget.inherit = function(name, SuperName, constructor, prototype, statics) {
+    $.widget.inherit = function(name, SuperName, prototype, statics, isExtendStatic) {
         /// <summary>继承某个widget实例</summary>
         /// <param name="constructor" type="Function"></param>
         /// <param name="name" type="String">widget名字</param>
         /// <param name="SuperName" type="String">基类widget名字</param>
-        /// <param name="constructor" type="Function/Object">若为constructor则为类，若为obj则为类prototype</param>
         /// <param name="prototype" type="Object">类的prototype 或者是基widget的name</param>
         /// <param name="statics" type="Object">类的静态方法</param>
+        /// <param name="isExtendStatic" type="Bolean">是否扩展静态public customeEventName option 默认true</param>
         /// <returns type="Function" />
 
         var tName = SuperName.split("."),
@@ -294,9 +303,29 @@ myQuery.define("module/Widget", ["main/data", "main/query", "main/event", "main/
                 msg: "Super undefined"
             }, true);
         }
+        var len = arguments.length;
+
+        if(isExtendStatic !== undefined){
+            len - 1; 
+        }
+
+        if (isExtendStatic !== false) {
+            var options = {}, pub = {};
+            if($.isObj(prototype.options)){
+                prototype.options = $.extend(options, Super.prototype.options, prototype.options);
+            }
+
+            if($.isArr(prototype.customEventName)){
+                prototype.customEventName = prototype.customEventName.concat(Super.prototype.customEventName);
+            }
+            
+            if($.isObj(prototype.public)){
+                prototype.public = $.extend(pub, Super.prototype.public, prototype.public);
+            }  
+        }
 
         arg = [name];
-        arg = arg.concat($.util.argToArray(arguments, 2));
+        arg = arg.concat($.util.argToArray(arguments, 2, len));
         arg.push(Super);
 
         return Widget.factory.apply(null, arg);

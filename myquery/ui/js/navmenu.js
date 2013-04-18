@@ -16,7 +16,7 @@ function($, NavItem, Widget, cls, event, dom, attr, src) {
     });
 
     var eventFuns = event.event.document,
-        navmenu = $.widget.inherit("ui.navmenu", "ui.navitem", {
+        navmenu = NavItem.multiply("ui.navmenu", {
             container: null,
             customEventName: [],
             event: function() {},
@@ -64,14 +64,13 @@ function($, NavItem, Widget, cls, event, dom, attr, src) {
                 return this.target.find("[myquery-navitem]").reverse();
             },
             detectNavItemList: function() {
-                this.navItemList = thit.getNavItemList();
+                this.navItemList = this.getNavItemList();
             },
             init: function(obj, target) {
                 this.__super(obj, target);
-                this.target.addClass(".navmenu");
+                this.target.addClass("navmenu");
                 this.navItemList = [];
                 this.detectNavItemList();
-
                 return this;
             },
             options: {

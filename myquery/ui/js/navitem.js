@@ -11,7 +11,7 @@ myQuery.define("ui/js/navitem", [
 function($, Widget, cls, event, dom, attr, src, animate) {
     "use strict"; //启用严格模式
 
-    var navitem = Widget.factory("ui.navitem"), {
+    var navitem = Widget.factory("ui.navitem", {
         container: null,
         customEventName: ["open", "close"],
         event: function() {},
