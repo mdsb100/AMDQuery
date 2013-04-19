@@ -66,7 +66,7 @@ myQuery.define("module/Widget", ["main/data", "main/query", "main/event", "main/
                 this.container && this.options.removeContainer && $(this.container).remove();
                 this.target.removeData(key);
                 $.each(this, function(value, name) {
-                    !$.isPrototypeProperty && delete this[name];
+                    !$.isPrototypeProperty && (this[name] = null) && delete this[name];
                 }, this);
             }
         },
@@ -89,6 +89,7 @@ myQuery.define("module/Widget", ["main/data", "main/query", "main/event", "main/
 
         init: function(obj, target) {
             //元素本身属性高于obj
+            this.__super();
             var defaultOptions = this.constructor.prototype.options,
             defulatPublic = this.constructor.prototype.public,
             customEventName = this.constructor.prototype.customEventName;

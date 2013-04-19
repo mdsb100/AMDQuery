@@ -150,7 +150,7 @@ myQuery.define("ui/js/scrollableview", ["main/query", "main/dom", "main/class", 
                     this.container.draggable("destory");
                     this.target.child().remove();
                     this.positionParent.child().appendTo(this.target);
-                    this.__superConstructor.prototype.destory.call(this, key);
+                    this.__superCall("destory", key);
                 }
             },
             init: function(obj, target) {

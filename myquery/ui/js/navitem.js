@@ -15,18 +15,19 @@ function($, Widget, cls, event, dom, attr, src, animate) {
         container: null,
         customEventName: ["open", "close"],
         event: function() {},
-        initHandler: function() {
+        _initHandler: function() {
             var self = this,
                 target = self.target,
                 opt = self.options;
             this.event = function(e) {
                 switch (e.type) {
                     case "click":
-                        this.toggle();
+                        self.toggle();
                         break;
                 }
 
             }
+            return this;
         },
         enable: function() {
             var fun = this.event;
@@ -70,7 +71,7 @@ function($, Widget, cls, event, dom, attr, src, animate) {
                     target: this.$board
                 }
 
-                return this.trigger("navitem.open", this.$board, para);
+                return this.target.trigger("navitem.open", this.$board, para);
             }
             return this;
         },
@@ -89,7 +90,7 @@ function($, Widget, cls, event, dom, attr, src, animate) {
                     target: this.$board
                 }
 
-                return this.trigger("navitem.close", para);
+                return this.target.trigger("navitem.close", para);
             }
             return this;
         },
@@ -141,7 +142,7 @@ function($, Widget, cls, event, dom, attr, src, animate) {
 
             this.target.append(this.$item);
 
-            this.render();
+            this.render()._initHandler().enable();
 
             return this;
         },

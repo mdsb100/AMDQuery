@@ -20,15 +20,13 @@ function($, NavItem, Widget, cls, event, dom, attr, src) {
             container: null,
             customEventName: [],
             event: function() {},
-            initHandler: function() {
-                var self = this,
-                    target = self.target,
-                    opt = self.options;
-
+            _initHandler: function() {
+                this.__superCall("_initHandler");
+                return this;
             },
             enable: function() {
                 var fun = this.event;
-
+                this.__superCall("enable");
             },
             disable: function() {
                 var fun = this.event;
