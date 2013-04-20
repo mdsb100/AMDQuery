@@ -131,9 +131,10 @@ function($, Widget, cls, event, dom, attr, src, animate) {
                 "float": "left"
             }).addClass("arrow");
 
-            this.$img = $($.createEle("img")).css({
+            this.$img = $($.createEle("div")).css({
                 "float": "left"
-            }).attr("src", "data:image/gif;base64,R0lGODlhAQABAID/AMDAwAAAACH5BAEAAAAALAA" /*to fix chrome border*/ );
+            }).addClass("img");
+            //.attr("src", "data:image/gif;base64,R0lGODlhAQABAID/AMDAwAAAACH5BAEAAAAALAA" /*to fix chrome border*/ );
 
             this.$text = $($.createEle("div")).css({
                 "float": "left"

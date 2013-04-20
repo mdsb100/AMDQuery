@@ -18,16 +18,16 @@
     position: absolute;
 }
 
-.navmenu img{
+.navmenu .img{
     width: 16px;
     height: 28px;
 }
 
-.navmenu img.module{
+.navmenu .module{
     background: url(../images/icons.png) 0px -35px no-repeat;
 }
 
-.navmenu img.class{
+.navmenu .class{
     background: url(../images/icons.png) 0px -74px no-repeat;
 }
 
