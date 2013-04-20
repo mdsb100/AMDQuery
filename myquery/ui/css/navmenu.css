@@ -17,28 +17,36 @@
     border-top:2px solid #a8680e;
 }
 
-.navmenu img.moudule{
-    background: url(../images/icons.png) 0px 100px;
+.navmenu img{
+    width: 16px;
+    height: 28px;
+}
+
+.navmenu img.module{
+    background: url(../images/icons.png) 0px -35px no-repeat;
+}
+
+.navmenu img.class{
+    background: url(../images/icons.png) 0px -74px no-repeat;
 }
 
 .navmenu .item
 {
     height: auto;
-    width: 100%;
     font: 24px Arial, "\5FAE\8F6F\96C5\9ED1";
 }
 
 .navmenu .title:hover /*改成shell就一起变了*/
 {
+    color: #d30000;
 }
 .navmenu .title:active
 {
-}
 
+}
 
 .navmenu .title 
 {
-    width: 100%;
     height: 28px;
     text-align: left;
     cursor: pointer;
@@ -50,26 +58,31 @@
 }
 .navmenu .title_select
 {
-    background: url(../images/navmenu_typeSelect.jpg) repeat-x;
-    
+    /*background: url(../images/navmenu_typeSelect.jpg) repeat-x;*/
+    color: #d30000;
 }
 .navmenu .title_unselect
 {
-    background: url(../images/navmenu_typeUnselect.jpg) repeat-x;
+    /*background: url(../images/navmenu_typeUnselect.jpg) repeat-x;*/
+}
+
+.navmenu .arrow{
+    width: 16px;
+    height: 100%;
 }
 
 .navmenu .arrowRight
 {
-    width: 32px;
+    width: 16px;
     height: 100%;
-    background: url(../images/navmenu_arrowRight.jpg) 50% 50% no-repeat;
+    background: url(../images/navmenu_arrows.png) 2px 5px no-repeat;
 }
 
 .navmenu .arrowBottom
 {
-    width: 32px;
+    width: 16px;
     height: 100%;
-    background: url(../images/navmenu_arrowBottom.jpg) 50% 50% no-repeat;
+    background: url(../images/navmenu_arrows.png) -12px 5px no-repeat;
 }
 
 .navmenu .text
@@ -81,7 +94,8 @@
 
 .navmenu .board
 {
-    width: 100%;
+    margin-left: 16px;
+    height:auto;
     background: url(../images/navmenu_bottomBackground.jpg) bottom repeat-x;
 }
 

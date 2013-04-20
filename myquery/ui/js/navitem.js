@@ -43,13 +43,17 @@ function($, Widget, cls, event, dom, attr, src, animate) {
         render: function() {
             var opt = this.options;
             this.$text.html(opt.html);
-            //this.$img.addClass(opt.img);
+            this.$img.addClass(opt.img);
             if (opt.onfocus) {
                 this.$title.addClass("title_select").removeClass("title_unselect");
                 this.$arrow.addClass("arrowBottom").removeClass("arrowRight");
             } else {
                 this.$title.addClass("title_unselect").removeClass("title_select");
                 this.$arrow.addClass("arrowRight").removeClass("arrowBottom");
+            }
+
+            if (!this.hasChild()) {
+                this.$arrow.removeClass("arrowRight").removeClass("arrowBottom");
             }
             return this;
         },
@@ -96,40 +100,44 @@ function($, Widget, cls, event, dom, attr, src, animate) {
             }
             return this;
         },
+        hasChild: function() {
+            return !!this.target.query("div[myquery-ui-navitem]").length;
+        },
         init: function(obj, target) {
             this.__super(obj, target);
             var opt = this.options;
             this.container = target;
-            target.attr("myquery-ui", "navitem");
 
             this.$child = target.child();
 
-            this.$item = $($.createEle("div"))
-                .css("position", "relative")
+            this.$item = $($.createEle("div")).css({
+                "position": "relative",
+                "display": "inline-block",
+                "float": "left"
+            })
                 .addClass("item");
 
             this.$arrow = $($.createEle("div")).css({
                 "float": "left"
-            });
+            }).addClass("arrow");
 
             this.$img = $($.createEle("img")).css({
                 "float": "left"
-            }).addClass("img");
+            }).attr("src", "data:image/gif;base64,R0lGODlhAQABAID/AMDAwAAAACH5BAEAAAAALAA" /*to fix chrome border*/ );
 
             this.$text = $($.createEle("div")).css({
                 "float": "left"
             }).addClass("text");
 
             this.$title = $($.createEle("a")).css({
-                "clear": "left",
-                position: "relative",
-                display: "block",
+                "float": "left",
+                "position": "relative",
+                "display": "inline-block",
                 "text-decoration": "none"
             })
                 .addClass("title");
 
             this.$board = $($.createEle("div")).css({
-                marginLeft: opt.marginLeft + "px",
                 position: "relative",
                 width: "100%",
                 display: "block"
@@ -150,7 +158,6 @@ function($, Widget, cls, event, dom, attr, src, animate) {
         options: {
             html: "",
             img: "",
-            marginLeft: 20,
             onfocus: false
         },
         public: {
