@@ -17,6 +17,10 @@
     border-top:2px solid #a8680e;
 }
 
+.navmenu img.moudule{
+    background: url(../images/icons.png) 0px 100px;
+}
+
 .navmenu .item
 {
     height: auto;

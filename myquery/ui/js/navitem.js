@@ -43,8 +43,8 @@ function($, Widget, cls, event, dom, attr, src, animate) {
         render: function() {
             var opt = this.options;
             this.$text.html(opt.html);
-            this.$img.attr("src", opt.img);
-            if (opt.status) {
+            //this.$img.addClass(opt.img);
+            if (opt.onfocus) {
                 this.$title.addClass("title_select").removeClass("title_unselect");
                 this.$arrow.addClass("arrowBottom").removeClass("arrowRight");
             } else {
@@ -54,11 +54,12 @@ function($, Widget, cls, event, dom, attr, src, animate) {
             return this;
         },
         toggle: function() {
-            return this.onfocus ? this.close() : this.open();
+            return this.options.onfocus ? this.close() : this.open();
         },
         open: function() {
-            if (this.onfocus == false) {
-                this.onfocus = true;
+            var opt = this.options;
+            if (opt.onfocus == false) {
+                opt.onfocus = true;
                 this.$board.slideDown({
                     duration: 400,
                     easing: "easeInOutCubic"
@@ -76,8 +77,9 @@ function($, Widget, cls, event, dom, attr, src, animate) {
             return this;
         },
         close: function() {
-            if (this.onfocus == true) {
-                this.onfocus = false;
+            var opt = this.options;
+            if (opt.onfocus == true) {
+                opt.onfocus = false;
                 this.$board.slideUp({
                     duration: 400,
                     easing: "easeInOutCubic"
@@ -99,7 +101,6 @@ function($, Widget, cls, event, dom, attr, src, animate) {
             var opt = this.options;
             this.container = target;
             target.attr("myquery-ui", "navitem");
-            this.onfocus = false;
 
             this.$child = target.child();
 
@@ -149,7 +150,8 @@ function($, Widget, cls, event, dom, attr, src, animate) {
         options: {
             html: "",
             img: "",
-            marginLeft: 20
+            marginLeft: 20,
+            onfocus: false
         },
         public: {
             render: 1,
