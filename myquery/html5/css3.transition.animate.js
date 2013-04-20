@@ -10,7 +10,7 @@ myQuery.define("html5/css3.transition.animate", ["base/client", "main/event", "h
                 var type = "";
                 if (client.engine.ie) type = "MS";
                 else if (client.engine.webkit || client.system.mobile) type = "webkit";
-                else if (client.engine.gecko) type = "";
+                else if (client.engine.gecko) return "transitionend";
                 else if (client.engine.opera) type = "o";
                 return type + 'TransitionEnd';
             })(),
@@ -75,7 +75,7 @@ myQuery.define("html5/css3.transition.animate", ["base/client", "main/event", "h
                         ele.style.display = "block"; //是否对呢？
                     }
                 }
-
+                
                 ele.addEventListener(transitionEndType, opt._transitionEnd, false);
 
                 $.each(property, function(value, key) {
