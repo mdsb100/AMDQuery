@@ -105,20 +105,27 @@ function($, Widget, cls, event, dom, attr, src, animate) {
             return this;
         },
         hasChild: function() {
-            return !!this.target.query("div[myquery-ui-navitem]").length;
+            return !!this.target.query("li[myquery-ui-navitem]").length;
         },
         init: function(obj, target) {
             this.__super(obj, target);
             var opt = this.options;
             this.container = target;
 
-            this.$child = target.child();
+            target.css({
+                "display":"block",
+                "clear": "both"
+            });
+
+            this.$board = target.child().css({
+                "display":"block",
+                "clear": "both"
+            }).addClass("board").hide();
 
             this.$item = $($.createEle("div")).css({
-                "position": "relative",
-                "float": "left"
-            })
-                .addClass("item");
+                "display":"block",
+                "clear": "both"
+            }).addClass("item");
 
             this.$arrow = $($.createEle("div")).css({
                 "float": "left"
@@ -133,25 +140,19 @@ function($, Widget, cls, event, dom, attr, src, animate) {
             }).addClass("text");
 
             this.$title = $($.createEle("a")).css({
-                "float": "left",
-                "position": "relative",
+                "display":"block",
                 "text-decoration": "none"
-            })
-                .addClass("title");
-
-            this.$board = $($.createEle("div")).css({
-                "position": "relative",
-                "float": "left",
-                "clear": "both"
-            }).addClass("board").hide();
+            }).addClass("title");
 
             this.$board.append(this.$child);
 
             this.$title.append(this.$arrow).append(this.$img).append(this.$text);
 
-            this.$item.append(this.$title).append(this.$board);
+            this.$item.append(this.$title)
 
             this.target.append(this.$item);
+
+            this.target.append(this.$board);
 
             this.render()._initHandler().enable();
 

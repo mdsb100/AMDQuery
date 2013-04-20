@@ -144,7 +144,7 @@ myQuery.define("html5/css3.transition.animate", ["base/client", "main/event", "h
                         $.queue(ele, "fx", function() {
                             animateByTransition(ele, property, option);
                             $.dequeue(ele, [ele]);
-                            property = option = null;
+                            ele = property = option = null;
                         });
 
                     }

@@ -7,14 +7,15 @@
         fix safari
         border: 1px solid #e7d5b4;
     */
-    border:1px solid #e7d5b4;
+    /*border:1px solid #e7d5b4;*/
     /*
     border-right: 1px solid #e7d5b4;
     border-bottom: 1px solid #e7d5b4;
     */
     height: auto;
     overflow:hidden;
-    border-top:2px solid #a8680e;
+    /*border-top:2px solid #a8680e;*/
+    position: absolute;
 }
 
 .navmenu img{
