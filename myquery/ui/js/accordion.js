@@ -228,7 +228,7 @@ myQuery.define("ui/js/accordion",
                 this.setOpenStyle();
                 this.$board.slideDown({
                     duration: 400,
-                    easing: "easeInOutCubic"
+                    easing: "cubic.easeInOut"
                 });
             }
             return this.trigger("shell.open", this, "shell.open", this);
@@ -240,7 +240,7 @@ myQuery.define("ui/js/accordion",
                 this.setCloseStyle();
                 this.$board.slideUp({
                     duration: 400,
-                    easing: "easeInOutCubic"
+                    easing: "cubic.easeInOut"
                 });
             }
             return this.trigger("shell.close", this, "shell.close", this);

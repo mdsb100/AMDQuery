@@ -6,14 +6,14 @@ myQuery.define("html5/css3.transition.animate", ["base/client", "main/event", "h
         var
         originComplete = $._originComplete,
 
-        transitionEndType = (function() {
-            var type = "";
-            if (client.engine.ie) type = "MS";
-            else if (client.engine.webkit || client.system.mobile) type = "webkit";
-            else if (client.engine.gecko) type = "";
-            else if (client.engine.opera) type = "o";
-            return type + 'TransitionEnd';
-        })(),
+            transitionEndType = (function() {
+                var type = "";
+                if (client.engine.ie) type = "MS";
+                else if (client.engine.webkit || client.system.mobile) type = "webkit";
+                else if (client.engine.gecko) type = "";
+                else if (client.engine.opera) type = "o";
+                return type + 'TransitionEnd';
+            })(),
             animateByTransition = function(ele, property, option) {
                 /// <summary>给所有元素添加一个动画
                 /// <para>obj property:{ width: "50em", top: "+=500px" }</para>
@@ -201,10 +201,14 @@ myQuery.define("html5/css3.transition.animate", ["base/client", "main/event", "h
             },
             getTransitionEasing: function(easing) {
                 var name = easing;
+                // if ($.isArr(easing)) {
+                //     name = easing.splice(0, 1)[0];
+                // }
                 if (easing && $.isStr(easing)) {
-                    if ($.isArr(easing)) {
-                        name = easing.splice(0, 1)[0];
+                    if(name.indexOf("cubic-bezier") > -1){
+                        return name;
                     }
+
                     name = $.util.unCamelCase(name);
 
                     name = name.replace(".", "-");

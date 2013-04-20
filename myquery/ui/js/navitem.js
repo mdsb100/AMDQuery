@@ -6,6 +6,7 @@ myQuery.define("ui/js/navitem", [
     "main/attr",
     "module/animate",
     "html5/css3.transition.animate",
+    "module/tween.extend",
     "module/effect"],
 
 function($, Widget, cls, event, dom, attr, src, animate) {
@@ -66,7 +67,7 @@ function($, Widget, cls, event, dom, attr, src, animate) {
                 opt.onfocus = true;
                 this.$board.slideDown({
                     duration: 400,
-                    easing: "easeInOutCubic",
+                    easing: "cubic.easeInOut",
                     complete: function(opt) {
                         dom.css(this, "height", "auto");
                     }
@@ -89,7 +90,7 @@ function($, Widget, cls, event, dom, attr, src, animate) {
                 opt.onfocus = false;
                 this.$board.slideUp({
                     duration: 400,
-                    easing: "easeInOutCubic"
+                    easing: "cubic.easeInOut"
                 });
                 this.render();
 
