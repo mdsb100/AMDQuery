@@ -62,9 +62,8 @@ myQuery.define('module/effect', ['module/animate'], function($, animate, undefin
             return $._show(ele).animate(ele, {
                 opacity: 0
             }, opt);
-        }
+        },
 
-        ,
         hide: function(ele, type, option) {
             /// <summary>隐藏元素
             /// <para>type:slide fade</para>
@@ -109,6 +108,7 @@ myQuery.define('module/effect', ['module/animate'], function($, animate, undefin
             var h = $.data(ele, "slideOriginHeight") || $.getInnerH(ele),
                 opt = $._getAnimateOpt(option);
             $.data(ele, "slideOriginHeight", h);
+            $.setInnerH(ele, 0);
             opt.complete.push(slideDownComplete);
             return $.css(ele, "height", 0)._show(ele).animate(ele, {
                 height: h + "px"
@@ -125,10 +125,9 @@ myQuery.define('module/effect', ['module/animate'], function($, animate, undefin
 
             var h = $.data(ele, "slideOriginHeight") || $.getInnerH(ele),
                 opt = $._getAnimateOpt(option);
-            $.setInnerH(ele, h);
+            $.setInnerH(ele, h + "px");
             $.data(ele, "slideOriginHeight", h);
             opt.complete.push(slideUpComplete);
-
             return $._show(ele).animate(ele, {
                 height: "0px"
             }, opt);

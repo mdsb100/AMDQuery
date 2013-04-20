@@ -75,6 +75,10 @@ myQuery.define("html5/css3.transition.animate", ["base/client", "main/event", "h
                         ele.style.display = "block"; //是否对呢？
                     }
                 }
+
+                if (opt.overflow != null) {
+                    ele.style.overflow = "hidden";
+                }
                 
                 ele.addEventListener(transitionEndType, opt._transitionEnd, false);
 
