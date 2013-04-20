@@ -66,7 +66,10 @@ function($, Widget, cls, event, dom, attr, src, animate) {
                 opt.onfocus = true;
                 this.$board.slideDown({
                     duration: 400,
-                    easing: "easeInOutCubic"
+                    easing: "easeInOutCubic",
+                    complete: function(opt) {
+                        dom.css(this, "height", "auto");
+                    }
                 });
                 this.render();
 
@@ -112,7 +115,6 @@ function($, Widget, cls, event, dom, attr, src, animate) {
 
             this.$item = $($.createEle("div")).css({
                 "position": "relative",
-                "display": "inline-block",
                 "float": "left"
             })
                 .addClass("item");
@@ -132,15 +134,14 @@ function($, Widget, cls, event, dom, attr, src, animate) {
             this.$title = $($.createEle("a")).css({
                 "float": "left",
                 "position": "relative",
-                "display": "inline-block",
                 "text-decoration": "none"
             })
                 .addClass("title");
 
             this.$board = $($.createEle("div")).css({
-                position: "relative",
-                width: "100%",
-                display: "block"
+                "position": "relative",
+                "float": "left",
+                "clear": "both"
             }).addClass("board").hide();
 
             this.$board.append(this.$child);
