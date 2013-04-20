@@ -125,7 +125,7 @@ myQuery.define('module/effect', ['module/animate'], function($, animate, undefin
 
             var h = $.data(ele, "slideOriginHeight") || $.getInnerH(ele),
                 opt = $._getAnimateOpt(option);
-
+            $.setInnerH(ele, h);
             $.data(ele, "slideOriginHeight", h);
             opt.complete.push(slideUpComplete);
 
