@@ -840,7 +840,7 @@ myQuery.define("main/event", ["base/client", "main/CustomEvent", "main/data"], f
             /// <summary>绑定或触发resize事件</summary>
             /// <param name="fun" type="Function/Object/undefined">不存在则触发</param>
             /// <returns type="self" />
-            return this.blur(fun, "load");
+            return this.blur(fun, "resize");
         },
 
         scroll: function(fun) {

@@ -16,17 +16,17 @@ function($, NavItem, Widget, cls, event, dom, attr, src) {
     });
 
     var eventFuns = event.event.document,
-        navmenu = NavItem.multiply("ui.navmenu", {
+        navmenu = Widget.factory("ui.navmenu", {
             container: null,
             customEventName: [],
             event: function() {},
             _initHandler: function() {
-                this.__superCall("_initHandler");
+                
                 return this;
             },
             enable: function() {
                 var fun = this.event;
-                this.__superCall("enable");
+                
             },
             disable: function() {
                 var fun = this.event;
@@ -66,7 +66,11 @@ function($, NavItem, Widget, cls, event, dom, attr, src) {
             },
             init: function(obj, target) {
                 this.__super(obj, target);
-                this.target.addClass("navmenu");
+                target= target;
+                target.addClass("navmenu");
+                target.on("load", function(){
+                    alert();
+                });
                 this.navItemList = [];
                 this.detectNavItemList();
                 return this;

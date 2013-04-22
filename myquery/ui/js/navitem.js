@@ -66,7 +66,7 @@ function($, Widget, cls, event, dom, attr, src, animate) {
             if (opt.onfocus == false) {
                 opt.onfocus = true;
                 this.$board.slideDown({
-                    duration: 400,
+                    duration: 200,
                     easing: "cubic.easeInOut",
                     complete: function(opt) {
                         dom.css(this, "height", "auto");
@@ -89,7 +89,7 @@ function($, Widget, cls, event, dom, attr, src, animate) {
             if (opt.onfocus == true) {
                 opt.onfocus = false;
                 this.$board.slideUp({
-                    duration: 400,
+                    duration: 200,
                     easing: "cubic.easeInOut"
                 });
                 this.render();
@@ -159,6 +159,9 @@ function($, Widget, cls, event, dom, attr, src, animate) {
 
             return this;
         },
+        isOnFocus: function(){
+            return this.options.onfocus;
+        },
         options: {
             html: "",
             img: "",
@@ -168,7 +171,8 @@ function($, Widget, cls, event, dom, attr, src, animate) {
             render: 1,
             getBorad: 1,
             open: 1,
-            close: 1
+            close: 1,
+            isOnFocus: 1
         },
         target: null,
         toString: function() {
