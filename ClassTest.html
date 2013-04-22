@@ -23,92 +23,44 @@
                 , write = function (s) {
                     div[0].innerHTML = div[0].innerHTML += s;
                 }
-                var test1 = object.Class("test1", {}, {});
-                var test2 = object.Class("test2", {}, {}, test1);
-                var test3 = object.Class("test3", {}, {});
-                var test4 = object.Class("test4", {});
-                var test5 = object.Class("test5", {}, test1);
-                var test6 = object.Class("test6", {});
-
-                var Supper = object.Class("Supper", {
-                    init: function (name, color) {
-                        this.name = name;
-                        this.color = color;
-                        return this;
+                var test1 = object.Class("test1", {
+                    init: function(){
+                        var a =3;
+                        console.log("init test1")
                     },
-                    render: function () {
-                        this.showColor();
-                        this.showName();
-                    },
-                    showColor: function () {
-                        write("supper.color.fun:" + this.color + "<br>");
-                    },
-                    showName: function () {
-                        write("supper.name.fun:" + this.name + "<br>");
+                    test: function(){
+                        console.log("test1")
                     }
-
-                });
-
-                var Sub = object.Class("Sub", {
-                    init: function (weight, name, color) {
-                        Sub._SupperConstructor(this, name, color);
-                        this.weight = weight;
-                        return this;
+                }, {});
+                var test2 = object.Class("test2", {
+                    init: function(){
+                        //this.__super();
+                        console.log("init test2")
                     },
-                    render: function () {
-                        this.showWeight();
-                    },
-                    showWeight: function () {
-                        write("sub.weight.fun:" + this.weight + "<br>");
+                    test: function(){
+                        console.log("test2")
+                        this.__superCall("test");
                     }
-                }, Supper)
-
-                var Child = object.Class("Child", {
-                    init: function (age, weight, name, color) {
-                        Child._SupperConstructor(this, weight, name, color);
-                        this.age = age;
-                        return this;
+                }, {}, test1);
+                var test3 = object.Class("test3", {
+                    init: function(){
+                        this.__super();
+                        console.log("init test3")
                     },
-                    render: function () {
-                        this.showName();
-                        this.showAge();
-                        this.showWeight();
-                        this.showColor();
-                    },
-                    showAge: function () {
-                        write("child.age.fun:" + this.age + "<br>");
-                    },
-                    showColor: function () {
-                        write("child.color.fun:" + this.color + "<br>");
+                    test: function(){
+                        console.log("test3")
+                        this.__superCall("test");
                     }
-                }, {
-                    todo: function () {
+                }, {}, test2);
 
-                    }
-                }, Sub);
+                var t1 = new test3();
+                t1.test()
+                var t2 = new test3();
+                t2.test()
+                var t3 = new test2();
+                t3.test()
 
-                object.providePropertyGetSet(Child, {
-                    name: "-pu -w -r",
-                    age: "-pu -r",
-                    color: "-pu -w -r",
-                    weight: "-pa -w -r"
-                })
 
-                var child = new Child(25, 75, "caojun", "black");
-
-                child.setName("jarry");
-
-                var age = child.getAge();
-
-                var color = child.getColor();
-
-                var weight = child._getWeight();
-
-                child.render();
-
-                write("constructor:" + child.constructor.toString() + "<br>");
-                write("<br>");
-                write("code:" + "<br>");
             });
         });
     </script>
