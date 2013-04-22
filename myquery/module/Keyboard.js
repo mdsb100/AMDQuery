@@ -4,7 +4,7 @@
     var Keyboard = object.Class("Keyboard", {
         constructor: Keyboard
         , init: function (container, keyList) {
-            this.__super();
+            this._super();
             this.keyList = [];
             this.container = container;
             if (this.container.getAttribute("tabindex") == undefined) {

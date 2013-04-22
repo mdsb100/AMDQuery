@@ -12,10 +12,11 @@ myQuery.define("html5/animate.transform", ["module/object", "module/FX", "html5/
     if ($.support.transform3d) {
         var Transfrom3dForFX = object.Class(function Transfrom3dForFX(ele, options, value, name, type) {
             if (this instanceof Transfrom3dForFX) {
+                this._super(ele, options, value, name);
                 this.type = type;
                 this._originCss = transformCss;
-                name = name.indexOf("set") < 0 ? $.util.camelCase(name, "set") : name;
-                this.__super(ele, options, value, name);
+                this.name = name.indexOf("set") < 0 ? $.util.camelCase(name, "set") : name;
+                
             }
             else {
                 var ret = []; options.curCount = 0;
@@ -61,11 +62,11 @@ myQuery.define("html5/animate.transform", ["module/object", "module/FX", "html5/
     if ($.support.transform) {
         var TransfromForFX = object.Class(function TransfromForFX(ele, options, value, name, type, index) {
             if (this instanceof TransfromForFX) {
+                this._super(ele, options, value, name);
                 this.type = type;
                 this.index = index;
                 this._originCss = transformCss;
-                name = name.indexOf("set") < 0 ? $.util.camelCase(name, "set") : name;
-                this.__super(ele, options, value, name);
+                this.name = name.indexOf("set") < 0 ? $.util.camelCase(name, "set") : name; 
             }
             else {
                 var ret = []; options.curCount = 0;

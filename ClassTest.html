@@ -34,22 +34,22 @@
                 }, {});
                 var test2 = object.Class("test2", {
                     init: function(){
-                        //this.__super();
+                        //this._super();
                         console.log("init test2")
                     },
                     test: function(){
                         console.log("test2")
-                        this.__superCall("test");
+                        this._superCall("test");
                     }
                 }, {}, test1);
                 var test3 = object.Class("test3", {
                     init: function(){
-                        this.__super();
+                        this._super();
                         console.log("init test3")
                     },
                     test: function(){
                         console.log("test3")
-                        this.__superCall("test");
+                        this._superCall("test");
                     }
                 }, {}, test2);
 

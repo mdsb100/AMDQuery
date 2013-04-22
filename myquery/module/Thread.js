@@ -40,7 +40,7 @@ myQuery.define('module/Thread', ["main/CustomEvent", "base/extend", "module/obje
             /// <param name="paras" type="paras:[any]">计算参数</param>
             /// <returns type="self" />
             //this.stop();
-            this.__super();
+            this._super();
             $.extend(this, Thread._defaultSetting, obj);
             this.id = this.id || $.now();
             this.args = $.util.argToArray(arguments, 1);

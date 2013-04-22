@@ -108,7 +108,7 @@ function($, Widget, cls, event, dom, attr, src, animate) {
             return !!this.target.query("li[myquery-ui-navitem]").length;
         },
         init: function(obj, target) {
-            this.__super(obj, target);
+            this._super(obj, target);
             var opt = this.options;
             this.container = target;
 

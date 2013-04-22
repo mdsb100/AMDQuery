@@ -150,11 +150,11 @@ myQuery.define("ui/js/scrollableview", ["main/query", "main/dom", "main/class", 
                     this.container.draggable("destory");
                     this.target.child().remove();
                     this.positionParent.child().appendTo(this.target);
-                    this.__superCall("destory", key);
+                    this._superCall("destory", key);
                 }
             },
             init: function(obj, target) {
-                this.__super(obj, target);
+                this._super(obj, target);
                 this.option(obj);
                 this.originOverflow = this.target.css("overflow");
 

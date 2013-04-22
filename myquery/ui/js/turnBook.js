@@ -190,7 +190,8 @@ myQuery.define("ui/js/turnBook", ["ui/js/swappable", "main/class", "html5/css3"]
         },
 
         init: function (obj, target) {
-            this.__super(obj, target).create();
+            this._super(obj, target);
+            this.create();
             return this;
         },
         inductionCorner: function (x, y) {
@@ -223,7 +224,7 @@ myQuery.define("ui/js/turnBook", ["ui/js/swappable", "main/class", "html5/css3"]
         message: null,
 
         option:function(obj){
-            this.__superConstructor.fn.option.call(this, obj); 
+            this._superCall("option", obj); 
             var opt = this.options;
             if (opt.bookType != "half" && opt.bookIndex % 2) {
                 opt.bookIndex += 1;

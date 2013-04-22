@@ -25,7 +25,7 @@ myQuery.define("module/object", ["base/extend"], function($, extend) {
             stack.pop();
         }
     },
-    __getSuperConstructor = function(self) {
+    _getSuperConstructor = function(self) {
         var stack = self.__superStack, tempConstructor;
 
         if(stack && stack.length){
@@ -36,14 +36,14 @@ myQuery.define("module/object", ["base/extend"], function($, extend) {
         }
         return tempConstructor;
     },
-    __superCallTimeout = function(name, constructor) {
+    _superCallTimeout = function(name, constructor) {
         /// <summary>调用基类方法</summary>
         /// <param name="name" type="String">函数名</param>
         /// <param name="constructor" type="Function">当前调用自己的构造</param>
         var tempConstructor = constructor.prototype.__superConstructor;
         return tempConstructor.prototype[name].apply(this, arg);
     },
-    __superCall = function(name) {
+    _superCall = function(name) {
         /// <summary>调用基类方法</summary>
         /// <param name="name" type="String">函数名</param>
         var arg = $.util.argToArray(arguments, 1),
@@ -51,17 +51,17 @@ myQuery.define("module/object", ["base/extend"], function($, extend) {
             ret;
 
         pushSuperStack(this);
-        tempConstructor = __getSuperConstructor(this);
+        tempConstructor = _getSuperConstructor(this);
         ret = tempConstructor.prototype[name].apply(this, arg);
         popSuperStack(this)
 
         return ret;
     },
-    __superInit = function() {
+    _superInit = function() {
         var tempConstructor;
 
         pushSuperStack(this);
-        tempConstructor = __getSuperConstructor(this);
+        tempConstructor = _getSuperConstructor(this);
         
         tempConstructor.prototype.init ? tempConstructor.prototype.init.apply(this, arguments) : tempConstructor.apply(this, arguments);
         popSuperStack(this);
@@ -74,8 +74,9 @@ myQuery.define("module/object", ["base/extend"], function($, extend) {
         inerit = function(Sub, Super, name) {
             $.object.inheritProtypeWidthParasitic(Sub, Super, name);
             Sub.prototype.__superConstructor = Super;
-            Sub.prototype.__superCall = __superCall;
-            Sub.prototype.__super = __superInit;
+            Sub.prototype._superCall = _superCall;
+            Sub.prototype._superCallTimeout = _superCallTimeout;
+            Sub.prototype._super = _superInit;
         },
         extend = function(Sub, Super) {
             object.inheritProtypeWidthExtend(Sub, Super);

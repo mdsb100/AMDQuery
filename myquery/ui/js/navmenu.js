@@ -65,7 +65,7 @@ function($, NavItem, Widget, cls, event, dom, attr, src) {
                 this.navItemList = this.getNavItemList();
             },
             init: function(obj, target) {
-                this.__super(obj, target);
+                this._super(obj, target);
                 target= target;
                 target.addClass("navmenu");
                 target.on("load", function(){

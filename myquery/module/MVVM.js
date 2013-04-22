@@ -59,7 +59,7 @@ define("module/MVVM", ["main/query", "main/attr", "main/CustomEvent", "module/ob
 			//util.checkInit(prototype);
 			var originInit = prototype.init;
 			prototype.init = function(view, models, collections) {
-				this.__super(view, models, collections);
+				this._super(view, models, collections);
 
 
 				originInit && originInit(view, models, collections);
@@ -88,10 +88,10 @@ define("module/MVVM", ["main/query", "main/attr", "main/CustomEvent", "module/ob
 	};
 
 	MVVM.Base = object.Class("Base", {
-		init: function(type) {
+		init: function(type) {			
+			this._super();
 			this._setType(type);
 
-			this.__super();
 		}
 	}, CustomEvent);
 
@@ -107,7 +107,7 @@ define("module/MVVM", ["main/query", "main/attr", "main/CustomEvent", "module/ob
 
 	MVVM.BaseViewModel = object.Class("BaseViewModel", {
 		init: function() {
-			this.__super("ViewModel");
+			this._super("ViewModel");
 			this.setView(view)
 				.setModels(models)
 				.setCollections(collections);
@@ -125,13 +125,13 @@ define("module/MVVM", ["main/query", "main/attr", "main/CustomEvent", "module/ob
 
 	MVVM.BaseModel = object.Class("BaseModel", {
 		init: function(view, models, collections) {
-			this.__super();
+			this._super();
 		}
 	}, {}, MVVM.Base);
 
 	MVVM.BaseViewCollection = object.Class("BaseViewCollection", {
 		init: function() {
-			this.__super();
+			this._super();
 		}
 	}, {}, MVVM.Base);
 

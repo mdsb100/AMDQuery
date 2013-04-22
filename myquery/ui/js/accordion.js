@@ -19,7 +19,7 @@ myQuery.define("ui/js/accordion",
 
     var Key = object.Class("Key", {
         init: function (key, parent) {
-            this.__super();
+            this._super();
             this.parent = parent;
             this.originKey = $(key);
             this.customHandler = this.originKey.attr("widget-handler");
@@ -85,7 +85,7 @@ myQuery.define("ui/js/accordion",
 
     var KeyCollection = object.Collection("KeyCollection", {
         init: function (keys, parent) {
-            this.__super();
+            this._super();
             this.parent = parent;
             this.container = parent.container;
             var i = 0,
@@ -152,7 +152,7 @@ myQuery.define("ui/js/accordion",
 
     var Shell = object.Class("Shell", {
         init: function (shell, parent) {
-            this.__super();
+            this._super();
             this.parent = parent;
             this.originShell = $(shell);
             this.customHandler = this.originShell.attr("widget-handler");
@@ -272,7 +272,7 @@ myQuery.define("ui/js/accordion",
         init: function (shells, parent) {
             //this.parent = parent;
             //this.container = parent.container;
-            this.__super();
+            this._super();
             this.parent = parent;
             this.container = parent.container;
             var i = 0,
@@ -384,7 +384,7 @@ myQuery.define("ui/js/accordion",
 
     var Accordion = object.Class("Accordion", {
         init: function (target, option) {//, keyId, isDittoShellSelect
-            this.__super();
+            this._super();
             this.target = $(target);
             this.width = this.target.width();
             //this.height = this.target.height();
@@ -471,7 +471,7 @@ myQuery.define("ui/js/accordion",
             .on("shell.close", this.event);
         },
         init: function (obj, target) {
-            this.__super(obj, target);
+            this._super(obj, target);
             target.attr("myquery-ui", "accordion");
             this.accordion = new Accordion(target[0], this.options);
             this.options = this.accordion.option;
