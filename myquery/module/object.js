@@ -87,12 +87,6 @@ myQuery.define("module/object", ["base/extend"], function($, extend) {
                 init: function() {
                     return this;
                 }
-                //            , create: function () {
-                //                return this;
-                //            }
-                //            , render: function () {
-                //                return this;
-                //            }
             },
             Class: function(name, prototype, statics, Super) {
                 /// <summary>定义一个类</summary>
@@ -124,13 +118,11 @@ myQuery.define("module/object", ["base/extend"], function($, extend) {
                         [
                             "(function ", name, "() {\n",
                             "    this.init.apply(this, arguments);\n",
-                        //"    this.create.apply(this,arguments);\n",
                         "});\n"].join("")) || eval("(" + name + ")")) //fix ie678
                         break;
                     default:
                         anonymous = function() {
                             this.init.apply(this, arguments);
-                            //this.create.apply(this, arguments);
                         }
                 }
 
@@ -153,8 +145,6 @@ myQuery.define("module/object", ["base/extend"], function($, extend) {
                 };
 
                 anonymous.fn = anonymous.prototype;
-                //anonymous.__tag = "object.Class";
-                //Super.__tag == "object.Class" ||       
 
                 return anonymous;
             },

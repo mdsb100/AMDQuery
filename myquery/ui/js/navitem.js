@@ -77,10 +77,10 @@ function($, Widget, cls, event, dom, attr, src, animate) {
                 var para = {
                     type: 'navitem.open',
                     container: this.container,
-                    target: this.$board
+                    target: this.target[0]
                 }
 
-                return this.target.trigger("navitem.open", this.$board, para);
+                return this.target.trigger("navitem.open", this.target[0], para);
             }
             return this;
         },
@@ -97,10 +97,10 @@ function($, Widget, cls, event, dom, attr, src, animate) {
                 var para = {
                     type: 'navitem.close',
                     container: this.container,
-                    target: this.$board
+                    target: this.target[0]
                 }
 
-                return this.target.trigger("navitem.close", para);
+                return this.target.trigger("navitem.close", this.target[0], para);
             }
             return this;
         },
@@ -183,19 +183,6 @@ function($, Widget, cls, event, dom, attr, src, animate) {
 
     //提供注释
     $.fn.navmenu = function(a, b, c, args) {
-        /// <summary>使对象的第一元素可以拖动
-        /// <para>bol obj.disabled:事件是否可用</para>
-        /// <para>num obj.axis:"x"表示横轴移动;"y"表示纵轴移动;缺省或其他值为2轴</para>
-        /// <para>num obj.second:秒数</para>
-        /// <para>fun obj.dragstar:拖动开始</para>
-        /// <para>fun obj.dragmove:拖动时</para>
-        /// <para>fun obj.dragstop:拖动结束</para>
-        /// </summary>
-        /// <param name="a" type="Object/String">初始化obj或属性名:option或方法名</param>
-        /// <param name="b" type="String/null">属性option子属性名</param>
-        /// <param name="c" type="any">属性option子属性名的值</param>
-        /// <param name="args" type="any">在调用方法的时候，后面是方法的参数</param>
-        /// <returns type="$" />
         navmenu.apply(this, arguments);
         return this;
     }

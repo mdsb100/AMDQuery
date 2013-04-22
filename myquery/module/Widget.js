@@ -8,12 +8,7 @@ myQuery.define("module/Widget", ["main/data", "main/query", "main/event", "main/
         /// <param name="obj" type="Object">构造函数</param>
         /// <param name="target" type="$">$对象</param>
         /// <returns type="Widget" />
-        // var tmp = this.options;
-        // this.options = {};
-        // $.extend(this.options, tmp);
-        // //event.custom.call(this);
-        // target._initHandler();
-        // this.target = target;
+        
         this.init(obj.target);
     }
 
@@ -74,19 +69,10 @@ myQuery.define("module/Widget", ["main/data", "main/query", "main/event", "main/
             }
         },
         disable: function() {
-            //            $.each(this.event, function (control, name) {
-            //                $.each(control, function (value, key) {
-            //                    this[name].removeHandler(key, value);
-            //                }, this);
-            //            }, this);
+            
         },
         enable: function() {
-            //            $.each(this.event, function (control, name) {
-            //                $.each(control, function (value, key) {
-            //                    this[name].removeHandler(key, value);
-            //                    this[name].addHandler(key, value);
-            //                }, this);
-            //            }, this);
+            
         },
         event: function() {},
 
@@ -110,8 +96,7 @@ myQuery.define("module/Widget", ["main/data", "main/query", "main/event", "main/
             target._initHandler();
             this.target = target;
             this.addTag();
-            //obj = $.extend(obj || {}, this.checkAttr());
-            //$.isFun(this.init) && this.init(obj);
+            
             obj = $.extend(this.checkAttr(), obj);
             this.option(obj);
             return this;
@@ -131,8 +116,6 @@ myQuery.define("module/Widget", ["main/data", "main/query", "main/event", "main/
             }, this);
             else if (value === undefined) return this.options[key];
             else if ($.isStr(key)) this.setOption(key, value);
-            //return this;
-            //this._render_();
         },
         options: {
             disabled: 1,
@@ -153,10 +136,6 @@ myQuery.define("module/Widget", ["main/data", "main/query", "main/event", "main/
         _isEventName: function(name) {
             return $.inArray(this.customEventName, name) > -1;
         },
-        // , _render_: function () {//不应该由这个来绑定事件
-        //     $.isFun(this.render) && this.render();
-        //     return this;
-        // }
         setOption: function(key, value) {
             if (this.options[key] !== undefined) {
                 this.options[key] = value;
@@ -168,7 +147,7 @@ myQuery.define("module/Widget", ["main/data", "main/query", "main/event", "main/
             return "ui.widget";
         },
         widget: function() {
-            return this.container;
+            return this.constructor;
         },
         getSelf: function() {
             return this;
@@ -212,15 +191,9 @@ myQuery.define("module/Widget", ["main/data", "main/query", "main/event", "main/
             Super = Widget;
         }
 
-        // if (!$.isFun(constructor)) {
-        //     statics = prototype;
-        //     prototype = constructor;
-        //     constructor = name;
-        // } else {
         if (!$.isObj(statics)) {
             statics = {};
         }
-        //}
 
         var constructor = object.Class(name, prototype, statics, Super);
         constructor.prototype.widgetName = name;

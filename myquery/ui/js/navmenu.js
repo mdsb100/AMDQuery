@@ -2,13 +2,14 @@
 myQuery.define("ui/js/navmenu", [
     "ui/js/navitem",
     "module/Widget",
+    "main/query",
     "main/class",
     "main/event",
     "main/dom",
     "main/attr",
     "module/src"],
 
-function($, NavItem, Widget, cls, event, dom, attr, src) {
+function($, NavItem, Widget, query, cls, event, dom, attr, src) {
     "use strict"; //启用严格模式
 
     src.link({
@@ -18,43 +19,98 @@ function($, NavItem, Widget, cls, event, dom, attr, src) {
     var eventFuns = event.event.document,
         navmenu = Widget.factory("ui.navmenu", {
             container: null,
-            customEventName: [],
+            customEventName: ["open", "close"],
             event: function() {},
             _initHandler: function() {
-                
+                var self = this;
+                this.event = function(e) {
+                    var para = $.extend({}, e),
+                        type,
+                        target;
+                    target = para.target = self.target[0];
+
+                    para.navitem = e.target;
+
+                    switch (e.type) {
+                        case "navitem.open":
+                            type = para.type = "navmenu.open";
+                            self.target.trigger(type, target[0], para);
+                            break;
+                        case "navitem.close":
+                            type = para.type = "navmenu.close";
+                            self.target.trigger(type, target[0], para);
+                            break;
+                    }
+                }
                 return this;
             },
             enable: function() {
-                var fun = this.event;
-                
+                var fun = this.event,
+                    ret, i = 0,
+                    len = this.navItemList.length,
+                    ele;
+                for (i = 0; i < len; i++) {
+                    ele = this.navItemList[i];
+                    $(ele).on("navitem.open", fun);
+                    $(ele).on("navitem.close", fun);
+                }
+                return this;
             },
             disable: function() {
-                var fun = this.event;
-
+                var fun = this.event,
+                    ret, i = 0,
+                    len = this.navItemList.length,
+                    ele;
+                for (i = 0; i < len; i++) {
+                    ele = this.navItemList[i];
+                    $(ele).off("navitem.open", fun);
+                    $(ele).off("navitem.close", fun);
+                }
+                return this;
+            },
+            getNavItemsByHtml: function(str) {
+                var ret = [],
+                    i = 0,
+                    len = this.navItemList.length,
+                    ele,
+                    html;
+                for (i = 0; i < len; i++) {
+                    ele = this.navItemList[i];
+                    html = $(ele).navitem("option", "html");
+                    if (html === str) {
+                        ret.push(ele);
+                    }
+                }
+                return ret;
             },
             getNavItem: function(item) {
-                var ret;
+                var ret, i = 0,
+                    len = this.navItemList.length,
+                    ele;
                 if ($.isStr(item)) {
-                    this.navItemList.each(function(ele) {
-                        if ($.attr(ele, "id") == item) {
+                    for (i = 0; i < len; i++) {
+                        ele = this.navItemList[i];
+                        if ($.attr(ele, "id") === item) {
                             ret = ele;
-                            return false;
+                            break;
                         }
-                    });
+                    }
                 } else if ($.Widget.is(item, "navmenu")) {
-                    this.navItemList.each(function(ele) {
+                    for (i = 0; i < len; i++) {
+                        ele = this.navItemList[i];
                         if ($(ele).navitem("equals", item)) {
                             ret = ele;
-                            return false;
+                            break;
                         }
-                    });
+                    }
                 } else if ($.isEle(item)) {
-                    this.navItemList.each(function(ele) {
-                        if (ele == item) {
+                    for (i = 0; i < len; i++) {
+                        ele = this.navItemList[i];
+                        if (ele === item) {
                             ret = ele;
-                            return false;
+                            break;
                         }
-                    });
+                    }
                 }
                 return ret;
             },
@@ -66,13 +122,13 @@ function($, NavItem, Widget, cls, event, dom, attr, src) {
             },
             init: function(obj, target) {
                 this._super(obj, target);
-                target= target;
                 target.addClass("navmenu");
-                target.on("load", function(){
-                    alert();
-                });
+
                 this.navItemList = [];
                 this.detectNavItemList();
+
+                this._initHandler().enable();
+
                 return this;
             },
             options: {
@@ -90,19 +146,6 @@ function($, NavItem, Widget, cls, event, dom, attr, src) {
 
     //提供注释
     $.fn.navmenu = function(a, b, c, args) {
-        /// <summary>使对象的第一元素可以拖动
-        /// <para>bol obj.disabled:事件是否可用</para>
-        /// <para>num obj.axis:"x"表示横轴移动;"y"表示纵轴移动;缺省或其他值为2轴</para>
-        /// <para>num obj.second:秒数</para>
-        /// <para>fun obj.dragstar:拖动开始</para>
-        /// <para>fun obj.dragmove:拖动时</para>
-        /// <para>fun obj.dragstop:拖动结束</para>
-        /// </summary>
-        /// <param name="a" type="Object/String">初始化obj或属性名:option或方法名</param>
-        /// <param name="b" type="String/null">属性option子属性名</param>
-        /// <param name="c" type="any">属性option子属性名的值</param>
-        /// <param name="args" type="any">在调用方法的时候，后面是方法的参数</param>
-        /// <returns type="$" />
         navmenu.apply(this, arguments);
         return this;
     }

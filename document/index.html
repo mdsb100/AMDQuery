@@ -6,9 +6,10 @@
     <link href="../css/reset.css" rel="stylesheet" type="text/css" />
     <script src="../myquery/myquery.js" type="text/javascript" module="transitionToAnimation:1" ui="init:1"></script>
     <script type="text/javascript">
-        $.require(["ui/js/navmenu", "main/query", "main/attr"], function (Accordion, query) {
-            
-            
+        $.require(["ui/js/navmenu", "main/query", "main/attr"], function (Navmenu, query, attr) {
+            $("#nav").on("navmenu.open", function(e){
+                
+            });
         });
        
     </script>
