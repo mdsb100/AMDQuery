@@ -8,7 +8,7 @@ myQuery.define("module/Widget", ["main/data", "main/query", "main/event", "main/
         /// <param name="obj" type="Object">构造函数</param>
         /// <param name="target" type="$">$对象</param>
         /// <returns type="Widget" />
-        
+
         this.init(obj.target);
     }
 
@@ -26,13 +26,26 @@ myQuery.define("module/Widget", ["main/data", "main/query", "main/event", "main/
             return this;
         },
         checkAttr: function() {
-            var key, attr, value, item, result = {},
-            i = 0,
-                len = 0;
-            attr = this.target.attr("myquery-ui-" + this.widgetName);
+            var key, attr, value, item, result = {}, i = 0,
+                len = 0,
+                widgetName = this.widgetName,
+                eventNames = this.customEventName;
+
+            for (i = 0, len = eventNames.length; i < len; i++) {
+                item = eventNames[i];
+                key = $.util.unCamelCase(item, widgetName);
+                attr = this.target.attr(key);
+                if (attr !== undefined) {
+                    value = attr.split(":");
+                    result[item] = myEval.functionEval(value[0], value[1] || window);
+                }
+            }
+
+            attr = this.target.attr("myquery-ui-" + this.widgetName) || this.target.attr(this.widgetName);
+
             if (attr !== undefined) {
                 attr = attr.split(/;|,/);
-                for (len = attr.length; i < len; i++) {
+                for (i = 0, len = attr.length; i < len; i++) {
                     item = attr[i].split(":");
                     if (item.length == 2) {
                         key = item[0];
@@ -54,7 +67,8 @@ myQuery.define("module/Widget", ["main/data", "main/query", "main/event", "main/
         destory: function(key) {
             if (key) {
                 this.disable();
-                var i = 0, name;
+                var i = 0,
+                    name;
                 for (i = this.customEventName.length - 1; i >= 0; i--) {
                     this.target.clearHandlers(this.widgetEventPrefix + "." + this.customEventName[i]);
                 }
@@ -62,27 +76,27 @@ myQuery.define("module/Widget", ["main/data", "main/query", "main/event", "main/
                 this.container && this.options.removeContainer && $(this.container).remove();
                 this.target.removeData(key);
 
-                for(i in this){
+                for (i in this) {
                     name = i;
                     !$.isPrototypeProperty(this, name) && (this[name] = null) && delete this[name];
                 }
             }
         },
         disable: function() {
-            
+
         },
         enable: function() {
-            
+
         },
         event: function() {},
 
         init: function(obj, target) {
             //元素本身属性高于obj
             var defaultOptions = this.constructor.prototype.options,
-            defulatPublic = this.constructor.prototype.public,
-            customEventName = this.constructor.prototype.customEventName;
-            
-            if(!customEventName){
+                defulatPublic = this.constructor.prototype.public,
+                customEventName = this.constructor.prototype.customEventName;
+
+            if (!customEventName) {
                 customEventName = [];
             }
 
@@ -96,7 +110,7 @@ myQuery.define("module/Widget", ["main/data", "main/query", "main/event", "main/
             target._initHandler();
             this.target = target;
             this.addTag();
-            
+
             obj = $.extend(this.checkAttr(), obj);
             this.option(obj);
             return this;
@@ -239,8 +253,8 @@ myQuery.define("module/Widget", ["main/data", "main/query", "main/event", "main/
             return result;
         }
 
-        ret.multiply = function(tName, prototype, statics, isExtendStatic){
-            return $.widget.inherit(tName, nameSpace + "." + name , prototype, statics, isExtendStatic);
+        ret.multiply = function(tName, prototype, statics, isExtendStatic) {
+            return $.widget.inherit(tName, nameSpace + "." + name, prototype, statics, isExtendStatic);
         }
 
         return ret;
@@ -281,23 +295,23 @@ myQuery.define("module/Widget", ["main/data", "main/query", "main/event", "main/
         }
         var len = arguments.length;
 
-        if(isExtendStatic !== undefined){
-            len - 1; 
+        if (isExtendStatic !== undefined) {
+            len - 1;
         }
 
         if (isExtendStatic !== false) {
             var options = {}, pub = {};
-            if($.isObj(prototype.options)){
+            if ($.isObj(prototype.options)) {
                 prototype.options = $.extend(options, Super.prototype.options, prototype.options);
             }
 
-            if($.isArr(prototype.customEventName)){
+            if ($.isArr(prototype.customEventName)) {
                 prototype.customEventName = prototype.customEventName.concat(Super.prototype.customEventName);
             }
-            
-            if($.isObj(prototype.public)){
+
+            if ($.isObj(prototype.public)) {
                 prototype.public = $.extend(pub, Super.prototype.public, prototype.public);
-            }  
+            }
         }
 
         arg = [name];
