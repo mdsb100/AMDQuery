@@ -26,12 +26,12 @@ myQuery.define("module/object", ["base/extend"], function($, extend) {
         }
     },
     _getSuperConstructor = function(self) {
-        var stack = self.__superStack, tempConstructor;
+        var stack = self.__superStack,
+            tempConstructor;
 
-        if(stack && stack.length){
+        if (stack && stack.length) {
             tempConstructor = stack[stack.length - 1];
-        }
-        else{
+        } else {
             tempConstructor = self.constructor.prototype.__superConstructor;
         }
         return tempConstructor;
@@ -62,7 +62,7 @@ myQuery.define("module/object", ["base/extend"], function($, extend) {
 
         pushSuperStack(this);
         tempConstructor = _getSuperConstructor(this);
-        
+
         tempConstructor.prototype.init ? tempConstructor.prototype.init.apply(this, arguments) : tempConstructor.apply(this, arguments);
         popSuperStack(this);
         return this;
@@ -72,14 +72,14 @@ myQuery.define("module/object", ["base/extend"], function($, extend) {
             return 1;
         },
         inerit = function(Sub, Super, name) {
-            $.object.inheritProtypeWidthParasitic(Sub, Super, name);
+            $.object.inheritProtypeWithParasitic(Sub, Super, name);
             Sub.prototype.__superConstructor = Super;
             Sub.prototype._superCall = _superCall;
             Sub.prototype._superCallTimeout = _superCallTimeout;
             Sub.prototype._super = _superInit;
         },
         extend = function(Sub, Super) {
-            object.inheritProtypeWidthExtend(Sub, Super);
+            object.inheritProtypeWithExtend(Sub, Super);
         },
         object = {
             //继承模块 可以自己实现一个 function模式 单继承
@@ -118,7 +118,7 @@ myQuery.define("module/object", ["base/extend"], function($, extend) {
                         [
                             "(function ", name, "() {\n",
                             "    this.init.apply(this, arguments);\n",
-                        "});\n"].join("")) || eval("(" + name + ")")) //fix ie678
+                            "});\n"].join("")) || eval("(" + name + ")")) //fix ie678
                         break;
                     default:
                         anonymous = function() {
@@ -161,8 +161,7 @@ myQuery.define("module/object", ["base/extend"], function($, extend) {
                         break;
                 }
 
-                var
-                _expendo = 0,
+                var _expendo = 0,
                     _prototype = $.extend({}, prototype, {
                         init: function() {
                             this.models = [];
@@ -270,7 +269,7 @@ myQuery.define("module/object", ["base/extend"], function($, extend) {
                 return count;
             },
 
-            inheritProtypeWidthExtend: function(Sub, Super) {
+            inheritProtypeWithExtend: function(Sub, Super) {
                 /// <summary>继承prototype 使用普通添加模式 不保有统一个内存地址 也不会调用多次构造函数</summary>
                 /// <para>如果anotherPrototype为false对子类的prototype添加属性也会添加到父类</para>
                 /// <para>如果Sub不为空也不会使用相同引用</para>
@@ -282,7 +281,7 @@ myQuery.define("module/object", ["base/extend"], function($, extend) {
                 Sub.prototype.constructor = con || Super.prototype.constructor;
                 return this;
             },
-            inheritProtypeWidthParasitic: function(Sub, Super, name) { //加个SuperName
+            inheritProtypeWithParasitic: function(Sub, Super, name) { //加个SuperName
                 /// <summary>继承prototype 使用寄生 不会保有同一个内存地址</summary>
                 /// <param name="Sub" type="Object">子类</param>
                 /// <param name="Super" type="Object">父类</param>
