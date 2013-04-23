@@ -1,4 +1,3 @@
-/// <reference path="../../myquery.js" />
 myQuery.define("ui/js/navmenu", [
     "ui/js/navitem",
     "module/Widget",
@@ -8,7 +7,6 @@ myQuery.define("ui/js/navmenu", [
     "main/dom",
     "main/attr",
     "module/src"],
-
 function($, NavItem, Widget, query, cls, event, dom, attr, src) {
     "use strict"; //启用严格模式
 
@@ -16,8 +14,7 @@ function($, NavItem, Widget, query, cls, event, dom, attr, src) {
         href: $.getPath("ui/css/navmenu", ".css")
     });
 
-    var eventFuns = event.event.document,
-        navmenu = Widget.factory("ui.navmenu", {
+    var navmenu = Widget.factory("ui.navmenu", {
             container: null,
             customEventName: ["open", "close"],
             event: function() {},
