@@ -53,6 +53,28 @@
                     }
                 }, {}, test2);
 
+                test3.joinPrototype({
+                    my: function (argument) {
+                        // body...
+                    }
+                })
+
+                var test4 = test3.extend({
+                    init: function(){
+                        this._super();
+                        console.log("init test4")
+                    },
+                    test: function(){
+                        console.log("test4")
+                    }
+                }, {
+                    staticFun: function (){
+                        console.log("staticFun")
+                    }
+                });
+
+                test4.staticFun();
+
                 var t1 = new test3();
                 t1.test()
                 var t2 = new test3();

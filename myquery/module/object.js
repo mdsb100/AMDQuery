@@ -1,6 +1,6 @@
 ﻿/// <reference path="../myquery.js" />
 
-myQuery.define("module/object", ["base/extend"], function($, extend) {
+myQuery.define("module/object", ["base/extend"], function($, utilExtend) {
     //依赖extend
     "use strict"; //启用严格模式
 
@@ -67,6 +67,27 @@ myQuery.define("module/object", ["base/extend"], function($, extend) {
         popSuperStack(this);
         return this;
     },
+    _anonymousTemplate = function() {
+        this.init.apply(this, arguments);
+    },
+    _inheritTemplate = function(Super) {
+        inerit(this, Super);
+        return this;
+    },
+    _extendTemplate = function(prototype, statics) {
+        var arg = $.util.argToArray(arguments);
+        arg.splice(0, 0, null);
+        arg.push(this);
+        /*arg = [null, prototype, statics, constructor]*/
+        return object.Class.apply(object, arg);;
+    },
+    _joinPrototypeTemplate = function() {
+        for (var i = 0, len = arguments.length, obj; i < len; i++) {
+            obj = arguments[i];
+            $.isPlainObj(obj) && $.extend(this.prototype, obj);
+        }
+        return this;
+    },
     defaultPurview = "-pu -w -r",
         defaultValidate = function() {
             return 1;
@@ -121,9 +142,7 @@ myQuery.define("module/object", ["base/extend"], function($, extend) {
                             "});\n"].join("")) || eval("(" + name + ")")) //fix ie678
                         break;
                     default:
-                        anonymous = function() {
-                            this.init.apply(this, arguments);
-                        }
+                        anonymous = _anonymousTemplate;
                 }
 
                 if (Super) {
@@ -135,15 +154,10 @@ myQuery.define("module/object", ["base/extend"], function($, extend) {
                 $.easyExtend(anonymous.prototype, prototype);
 
                 $.easyExtend(anonymous, statics);
-                anonymous.inherit = function(Super) {
-                    inerit(this, Super);
-                    return this;
-                };
-                anonymous.extend = function(Super) {
-                    extend(this, Super);
-                    return this;
-                };
 
+                anonymous.inherit = _inheritTemplate;
+                anonymous.extend = _extendTemplate;
+                anonymous.joinPrototype = _joinPrototypeTemplate;
                 anonymous.fn = anonymous.prototype;
 
                 return anonymous;

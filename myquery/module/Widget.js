@@ -1,5 +1,4 @@
-﻿/// <reference path="../myquery.js" />
-myQuery.define("module/Widget", ["main/data", "main/query", "main/event", "main/attr", "module/object", "module/myEval"], function($, data, query, event, attr, object, myEval, undefined) {
+﻿myQuery.define("module/Widget", ["main/data", "main/query", "main/event", "main/attr", "module/object", "module/myEval"], function($, data, query, event, attr, object, myEval, undefined) {
     "use strict"; //启用严格模式
 
     function Widget(obj, target) {
@@ -253,7 +252,7 @@ myQuery.define("module/Widget", ["main/data", "main/query", "main/event", "main/
             return result;
         }
 
-        ret.multiply = function(tName, prototype, statics, isExtendStatic) {
+        ret.extend = function(tName, prototype, statics, isExtendStatic) {
             return $.widget.inherit(tName, nameSpace + "." + name, prototype, statics, isExtendStatic);
         }
 
