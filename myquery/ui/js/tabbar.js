@@ -14,7 +14,7 @@ function($, Widget, query, cls, event, dom, attr, src) {
         href: $.getPath("ui/css/tabbar", ".css")
     });
 
-    var tabbar = Widget.factory("ui.tabbar", {
+    var tabbar = Widget.extend("ui.tabbar", {
             container: null,
             customEventName: [],
             event: function() {},

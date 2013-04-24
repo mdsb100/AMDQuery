@@ -8,10 +8,11 @@ myQuery.define("ui/js/navitem", [
     "html5/css3.transition.animate",
     "module/tween.extend",
     "module/effect"],
+
 function($, Widget, cls, event, dom, attr, src, animate) {
     "use strict"; //启用严格模式
 
-    var navitem = Widget.factory("ui.navitem", {
+    var navitem = Widget.extend("ui.navitem", {
         container: null,
         customEventName: ["open", "close"],
         event: function() {},

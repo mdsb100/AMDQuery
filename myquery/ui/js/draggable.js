@@ -2,7 +2,7 @@
 myQuery.define("ui/js/draggable", ["module/Widget", "main/event", "main/dom", "html5/css3", "main/query"], function ($, Widget, event, dom, cls3, query, undefined) {
     "use strict"; //启用严格模式
     var eventFuns = event.event.document,
-        draggable = Widget.factory("ui.draggable", {
+        draggable = Widget.extend("ui.draggable", {
             container: null,
             create: function () {
                 var self = this;

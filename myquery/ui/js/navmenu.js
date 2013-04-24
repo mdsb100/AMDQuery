@@ -14,7 +14,7 @@ function($, NavItem, Widget, query, cls, event, dom, attr, src) {
         href: $.getPath("ui/css/navmenu", ".css")
     });
 
-    var navmenu = Widget.factory("ui.navmenu", {
+    var navmenu = Widget.extend("ui.navmenu", {
             container: null,
             customEventName: ["open", "close"],
             event: function() {},

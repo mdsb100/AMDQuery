@@ -5,7 +5,7 @@ myQuery.define("ui/js/scrollableview", ["main/query", "main/dom", "main/class", 
         href: $.getPath("ui/css/scrollableview", ".css")
     });
     var eventFuns = $.event.document,
-        scrollableview = Widget.factory("ui.scrollableview", {
+        scrollableview = Widget.extend("ui.scrollableview", {
             container: null,
             create: function() {
                 var opt = this.options;

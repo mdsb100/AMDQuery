@@ -172,7 +172,7 @@
         widgetNameSpace: "ui"
     });
 
-    Widget.factory = function(name, prototype, statics, Super) {
+    Widget.extend = function(name, prototype, statics, Super) {
         /// <summary>为$添加部件
         /// <para>作为类得constructor可以这样</para>
         /// <para>function TimePicker(obj, target, base){</para>
@@ -258,7 +258,7 @@
 
         return ret;
     }
-    $.widget = Widget.factory;
+    $.widget = Widget.extend;
 
     $.widget.is = function(item, thisName, name, nameSpace) {
         /// <summary>是否含某个widget实例</summary>
@@ -317,7 +317,7 @@
         arg = arg.concat($.util.argToArray(arguments, 2, len));
         arg.push(Super);
 
-        return Widget.factory.apply(null, arg);
+        return Widget.extend.apply(null, arg);
 
     }
     return Widget;
