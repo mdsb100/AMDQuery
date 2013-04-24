@@ -1,4 +1,5 @@
 myQuery.define("ui/js/button", [
+    "base/client",
     "module/Widget",
     "main/query",
     "main/class",
@@ -7,7 +8,7 @@ myQuery.define("ui/js/button", [
     "main/attr",
     "module/src"],
 
-function($, Widget, query, cls, event, dom, attr, src) {
+function($, client, Widget, query, cls, event, dom, attr, src) {
     "use strict"; //启用严格模式
 
     src.link({
@@ -46,8 +47,11 @@ function($, Widget, query, cls, event, dom, attr, src) {
         },
         render: function() {
             var opt = this.options;
+            client.browser.ie < 9 && this.$text.remove();
             this.$text.html(opt.text);
-            this.$text.width(this.container.width() - this.$img.width());
+            client.browser.ie < 9 && this.$text.appendTo(this.container);
+            this.container.attr("title", opt.title);
+            //this.$text.width(this.container.width() - this.$img.width());
             return this;
         },
         init: function(opt, target) {
@@ -56,10 +60,8 @@ function($, Widget, query, cls, event, dom, attr, src) {
             target.addClass(this.options.cssName);
 
             this.container = $($.createEle("a")).css({
-                "display": "block",
-                "text-decoration": "none",
-                "height": "100%",
-                "width": "100%"
+                "display": "inline-block",
+                "text-decoration": "none"
             }).addClass("back");
 
             this.$img = $($.createEle("a")).css({
@@ -84,10 +86,12 @@ function($, Widget, query, cls, event, dom, attr, src) {
         },
         options: {
             cssName: "button",
-            text: "click me"
+            text: "clickme",
+            title: "",
+            background: "abc"
         },
         public: {
-            
+
         },
         target: null,
         toString: function() {

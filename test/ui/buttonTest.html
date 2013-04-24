@@ -8,13 +8,15 @@
     <script type="text/javascript">
         $.require(["ui/js/button", "main/query"], function (button, query) {
             $.ready(function() {
-                
+                $("#button").on("button.click", function (argument) {
+                    alert()
+                });
             });
         });
        
     </script>
 </head>
 <body style="width: 100%; height: 100%;">
-    <div myquery-ui="button" navitem="text:点击我" style="width:100px;height:20px"></div>
+    <div id="button" myquery-ui="button" button="text:click me;title:test" ></div>
 </body>
 </html>

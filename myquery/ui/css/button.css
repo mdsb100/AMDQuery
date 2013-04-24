@@ -1,16 +1,39 @@
 .button
 {
-    
+	float: left;
+    cursor: pointer;
+    background-color: White;
+    overflow:hidden;
 }
 
-.button .back{background-color: red;}
-.button .back:hover {color: #FF00FF}
-.button .back:active {color: #0000FF}
+.button .back{
+	background: url(../images/tabs.png) 0px -173px repeat-x;
+	-moz-border-radius: 8px;
+    -webkit-border-radius: 8px;
+    border-radius:8px;  
+}
+.button .back:hover {}
+.button .back:active {}
 
-.button .img{}
-.button .img:hover {color: #FF00FF}
-.button .img:active {color: #0000FF}
+.button .img{
+	background: url(../images/tabs.png) 0px -173px repeat-x;
+}
+.button .img:hover {}
+.button .img:active {}
 
-.button .text{}
-.button .text:hover {color: #FF00FF}
-.button .text:active {color: #0000FF}
+.button .text{
+	font: 12px Arial, "\5FAE\8F6F\96C5\9ED1";
+	padding: 4px;
+	text-align: center;
+	vertical-align: middle;
+	font-family: 宋体;
+    font-weight: bold;
+    font-size: 14px;
+    color: #6B573B;
+}
+.button .text:hover {
+	
+}
+.button .text:active {
+    color: #FF0000;
+}
