@@ -58,7 +58,7 @@ myQuery.define("main/class", ["base/support"], function($, support, undefined) {
             }
         };
     } else {
-        Class = {
+        cls = {
             addClass: function(ele, className) {
                 /// <summary>给DOM元素添加样式表</summary>
                 /// <param name="ele" type="Element">ele元素</param>
