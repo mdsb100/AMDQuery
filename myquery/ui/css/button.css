@@ -1,0 +1,16 @@
+.button
+{
+    
+}
+
+.button .back{background-color: red;}
+.button .back:hover {color: #FF00FF}
+.button .back:active {color: #0000FF}
+
+.button .img{}
+.button .img:hover {color: #FF00FF}
+.button .img:active {color: #0000FF}
+
+.button .text{}
+.button .text:hover {color: #FF00FF}
+.button .text:active {color: #0000FF}
