@@ -56,6 +56,8 @@ function($, Widget, cls, event, dom, attr, src, animate) {
             if (!this.hasChild()) {
                 this.$arrow.removeClass("arrowRight").removeClass("arrowBottom");
             }
+
+            /*to fix ie*/this.target.width(this.$item.scrollWidth());
             return this;
         },
         toggle: function() {

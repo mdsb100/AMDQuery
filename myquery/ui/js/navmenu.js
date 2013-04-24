@@ -124,7 +124,7 @@ function($, NavItem, Widget, query, cls, event, dom, attr, src) {
                 this.navItemList = [];
                 this.detectNavItemList();
 
-                this._initHandler().enable();
+                this._initHandler().enable().render();
 
                 return this;
             },
