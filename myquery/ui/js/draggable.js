@@ -34,8 +34,8 @@ myQuery.define("ui/js/draggable", ["module/Widget", "main/event", "main/dom", "h
                 this.container.off('mousemove mouseup', fun);
                 this.target.off('mousedown', fun);
             },
-            init: function (obj, target) {
-                this._super(obj, target);
+            init: function (opt, target) {
+                this._super(opt, target);
                 target.attr("myquery-ui", "draggable");
                 this.container = $(this.options.container || document.body);
                 return this.create().render();

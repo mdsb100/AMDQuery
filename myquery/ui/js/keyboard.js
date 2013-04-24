@@ -3,7 +3,7 @@ myQuery.define("ui/js/keyboard", ["module/object", "module/Widget", "module/Keyb
 , function ($, object, Widget, Keyboard, undefined) {
     "use strict"; //启用严格模式
 
-    var keyboard = $.widget("ui.keyboard", {
+    var keyboard = Widget.extend("ui.keyboard", {
         container: null,
         customEventName: [],
         event: function () { },
@@ -14,8 +14,8 @@ myQuery.define("ui/js/keyboard", ["module/object", "module/Widget", "module/Keyb
         disable: function () {
             this.keyBoard.disable();
         },
-        init: function (obj, target) {
-            this._super(obj, target);
+        init: function (opt, target) {
+            this._super(opt, target);
             target.attr("myquery-ui", "keyboard");
             this.keyboard = new Keyboard(target[0], this.options.keyList);
             this.options.keyList = this.keyboard.keyList;

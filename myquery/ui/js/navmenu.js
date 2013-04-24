@@ -117,8 +117,8 @@ function($, NavItem, Widget, query, cls, event, dom, attr, src) {
             detectNavItemList: function() {
                 this.navItemList = this.getNavItemList();
             },
-            init: function(obj, target) {
-                this._super(obj, target);
+            init: function(opt, target) {
+                this._super(opt, target);
                 target.addClass("navmenu");
 
                 this.navItemList = [];

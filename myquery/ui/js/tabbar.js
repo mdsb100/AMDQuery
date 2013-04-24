@@ -1,4 +1,3 @@
-/// <reference path="../../myquery.js" />
 myQuery.define("ui/js/tabbar", [
     "module/Widget",
     "main/query",
@@ -33,8 +32,8 @@ function($, Widget, query, cls, event, dom, attr, src) {
                 
                 return this;
             },
-            init: function(obj, target) {
-                this._super(obj, target);
+            init: function(opt, target) {
+                this._super(opt, target);
                 
                 return this;
             },

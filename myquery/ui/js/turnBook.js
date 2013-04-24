@@ -189,8 +189,8 @@ myQuery.define("ui/js/turnBook", ["ui/js/swappable", "main/class", "html5/css3"]
             this.message.hide();
         },
 
-        init: function (obj, target) {
-            this._super(obj, target);
+        init: function (opt, target) {
+            this._super(opt, target);
             this.create();
             return this;
         },

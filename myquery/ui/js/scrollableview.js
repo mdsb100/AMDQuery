@@ -153,9 +153,9 @@ myQuery.define("ui/js/scrollableview", ["main/query", "main/dom", "main/class", 
                     this._superCall("destory", key);
                 }
             },
-            init: function(obj, target) {
-                this._super(obj, target);
-                this.option(obj);
+            init: function(opt, target) {
+                this._super(opt, target);
+                //this.option(obj);
                 this.originOverflow = this.target.css("overflow");
 
                 //this.timeStamp = new Date();

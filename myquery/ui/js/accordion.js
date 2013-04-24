@@ -470,8 +470,8 @@ myQuery.define("ui/js/accordion",
             .on("shell.open", this.event)
             .on("shell.close", this.event);
         },
-        init: function (obj, target) {
-            this._super(obj, target);
+        init: function (opt, target) {
+            this._super(opt, target);
             target.attr("myquery-ui", "accordion");
             this.accordion = new Accordion(target[0], this.options);
             this.options = this.accordion.option;

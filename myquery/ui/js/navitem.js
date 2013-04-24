@@ -107,8 +107,8 @@ function($, Widget, cls, event, dom, attr, src, animate) {
         hasChild: function() {
             return !!this.target.query("li[myquery-ui-navitem]").length;
         },
-        init: function(obj, target) {
-            this._super(obj, target);
+        init: function(opt, target) {
+            this._super(opt, target);
             var opt = this.options;
             this.container = target;
 
@@ -149,7 +149,7 @@ function($, Widget, cls, event, dom, attr, src, animate) {
 
             this.$title.append(this.$arrow).append(this.$img).append(this.$text);
 
-            this.$item.append(this.$title)
+            this.$item.append(this.$title);
 
             this.target.append(this.$item);
 

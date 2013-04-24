@@ -70,8 +70,8 @@ myQuery.define("ui/js/swappable", ["base/client", "main/event", "module/math", "
                 if (path[i] === x && path[i + 1] === y) return i;
             return -1;
         },
-        init: function (obj, target) {
-            this._super(obj, target);
+        init: function (opt, target) {
+            this._super(opt, target);
             target.attr("myquery-ui", "swappable");
             this.path = [];
             this.isDown = false;
