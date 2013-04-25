@@ -30,28 +30,28 @@ function($, Widget, Button, query, cls, event, dom, src) {
                 switch (e.type) {
                     case "click":
                         var para = {
-                            type: 'tabbutton.click',
+                            type: self.getEventName("click"),
                             container: self.container,
                             target: self.target[0],
                             event: e
                         }
                         self.select();
-                        self.target.trigger("tabbutton.click", self.target[0], para);
+                        self.target.trigger(para.type, self.target[0], para);
                         break;
                 }
             }
             return this;
         },
-        select: function () {
+        select: function() {
             this.options.select = true;
             return this.change();
         },
-        toggle: function () {
+        toggle: function() {
             var opt = this.options;
             opt.select = !opt.select;
             return this.change();;
         },
-        change: function () {
+        change: function() {
             var opt = this.options;
 
             if (opt.select == true) {

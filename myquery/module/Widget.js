@@ -11,6 +11,51 @@
         this.init(obj.target);
     }
 
+    var booleanExtend = function(a, b) {
+        for (var i in b) {
+            if (b[i] == 0) {
+                a[i] = 0;
+            } else {
+                if ($.isBol(a[i]) || $.isNum(a[i])) {
+                    if (a[i] == 1) {
+                        a[i] = 1;
+                    } else {
+                        a[i] = 0;
+                    }
+                } else {
+                    a[i] = 1;
+                }
+            }
+        }
+    },
+    _extendAttr = function(key, self, booleanCheck) {
+        /*出了option 其他应该扩展到prototype上*/
+        var constructor = booleanCheck ? self : self.constructor,
+            originConstructor = constructor,
+            newValue = {}, i, params = [];
+
+        while (( !! constructor) && ( !! constructor.prototype[key])) {
+            params.push(constructor.prototype[key]);
+            constructor = constructor.prototype.__superConstructor;
+        }
+
+        
+        var extend;
+
+        if (booleanCheck) {
+            originConstructor.prototype[key] = newValue;
+            extend = booleanExtend;
+        } else {
+            self[key] = newValue;
+            extend = $.easyExtend;
+        }
+        for (i = params.length - 1; i >= 0; i--) {
+            extend(newValue, params[i]);
+        }
+
+    };
+
+
     object.Class(Widget, {
         able: function() {
             this.options.disabled === false ? this.disable() : this.enable();
@@ -62,7 +107,6 @@
         create: function() {},
         container: null,
         constructor: Widget,
-        customEventName: [],
         destory: function(key) {
             if (key) {
                 this.disable();
@@ -91,26 +135,15 @@
 
         init: function(obj, target) {
             //元素本身属性高于obj
-            var defaultOptions = this.constructor.prototype.options,
-                defulatPublic = this.constructor.prototype.public,
-                customEventName = this.constructor.prototype.customEventName;
 
-            if (!customEventName) {
-                customEventName = [];
-            }
+            _extendAttr("options", this);
+            /*事件名是需要自己写清楚的*/
 
-            this.options = {};
-            this.public = {};
-
-            $.extend(this.options, Widget.prototype.options, defaultOptions);
-            $.extend(this.public, Widget.prototype.public, defulatPublic);
-            customEventName = customEventName.concat(Widget.prototype.customEventName);
-            //event.custom.call(this);
             target._initHandler();
             this.target = target;
             this.addTag();
-
-            obj = $.extend(this.checkAttr(), obj);
+            obj = obj || {};
+            $.extend(obj, this.checkAttr());
             this.option(obj);
             return this;
         },
@@ -124,15 +157,22 @@
             return false;
         },
         option: function(key, value) {
-            if ($.isObj(key)) $.each(key, function(value, name) {
-                this.setOption(name, value);
-            }, this);
-            else if (value === undefined) return this.options[key];
+            if ($.isObj(key)) {
+                for (var name in key) {
+                    this.setOption(name, key[name]);
+                }
+            } else if (value === undefined) return this.getOption(key);
             else if ($.isStr(key)) this.setOption(key, value);
         },
+        customEventName: [],
         options: {
-            disabled: 1,
-            removeContainer: 1
+            disabled: 1
+        },
+        getter: {
+            disabled: 1
+        },
+        setter: {
+            disabled: 0
         },
         public: {
             disable: 1,
@@ -141,7 +181,12 @@
             toString: 1,
             getSelf: 1,
             instance: 1,
-            equals: 1
+            equals: 1,
+            beSetter: 1,
+            beGetter: 1
+        },
+        getEventName: function(name) {
+            return this.widgetEventPrefix + "." + name;
         },
         render: function() {},
         _initHandler: function() {},
@@ -150,11 +195,25 @@
             return $.inArray(this.customEventName, name) > -1;
         },
         setOption: function(key, value) {
-            if (this.options[key] !== undefined) {
+            if (this.beSetter(key) && this.options[key] !== undefined) {
                 this.options[key] = value;
             } else if ($.isFun(value) && this._isEventName(key)) {
                 this.target.addHandler(this.widgetEventPrefix + "." + key, value);
             }
+        },
+        getOption: function(key) {
+            if (this.beGetter(key)) {
+                return this.options[key];
+            } else {
+                $.console.warn("widget:" + this.toString() + " can not get option" + key);
+                return undefined;
+            }
+        },
+        beGetter: function(key) {
+            return !!this.getter[key];
+        },
+        beSetter: function(key) {
+            return !!this.setter[key];
         },
         toString: function() {
             return "ui.widget";
@@ -213,6 +272,10 @@
         constructor.prototype.widgetNameSpace = nameSpace;
 
         $.widget[nameSpace][name] = constructor;
+
+        _extendAttr("public", constructor, true);
+        _extendAttr("getter", constructor, true);
+        _extendAttr("setter", constructor, true);
 
         var key = nameSpace + "." + name + $.now();
 

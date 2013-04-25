@@ -25,13 +25,13 @@ function($, client, Widget, query, cls, event, dom, attr, src) {
                 switch (e.type) {
                     case "click":
                         var para = {
-                            type: 'button.click',
+                            type: self.getEventName("click"),
                             container: self.container,
                             target: self.target[0],
                             event: e
                         }
 
-                        self.target.trigger("button.click", self.target[0], para);
+                        self.target.trigger(para.type, self.target[0], para);
                         break;
                 }
             }

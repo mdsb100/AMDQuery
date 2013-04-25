@@ -57,7 +57,8 @@ function($, Widget, cls, event, dom, attr, src, animate) {
                 this.$arrow.removeClass("arrowRight").removeClass("arrowBottom");
             }
 
-            /*to fix ie*/this.target.width(this.$item.scrollWidth());
+            /*to fix ie*/
+            this.target.width(this.$item.scrollWidth());
             return this;
         },
         toggle: function() {
@@ -77,12 +78,12 @@ function($, Widget, cls, event, dom, attr, src, animate) {
                 this.render();
 
                 var para = {
-                    type: 'navitem.open',
+                    type: this.getEventName("open"),
                     container: this.container,
                     target: this.target[0]
                 }
 
-                return this.target.trigger("navitem.open", this.target[0], para);
+                return this.target.trigger(para.type, this.target[0], para);
             }
             return this;
         },
@@ -97,12 +98,12 @@ function($, Widget, cls, event, dom, attr, src, animate) {
                 this.render();
 
                 var para = {
-                    type: 'navitem.close',
+                    type: this.getEventName("close"),
                     container: this.container,
                     target: this.target[0]
                 }
 
-                return this.target.trigger("navitem.close", this.target[0], para);
+                return this.target.trigger(para.type, this.target[0], para);
             }
             return this;
         },
@@ -115,17 +116,17 @@ function($, Widget, cls, event, dom, attr, src, animate) {
             this.container = target;
 
             target.css({
-                "display":"block",
+                "display": "block",
                 "clear": "both"
             });
 
             this.$board = target.child().css({
-                "display":"block",
+                "display": "block",
                 "clear": "both"
             }).addClass("board").hide();
 
             this.$item = $($.createEle("div")).css({
-                "display":"block",
+                "display": "block",
                 "clear": "both"
             }).addClass("item");
 
@@ -143,7 +144,7 @@ function($, Widget, cls, event, dom, attr, src, animate) {
             }).addClass("text");
 
             this.$title = $($.createEle("a")).css({
-                "display":"block",
+                "display": "block",
                 "text-decoration": "none"
             }).addClass("title");
 
@@ -161,7 +162,7 @@ function($, Widget, cls, event, dom, attr, src, animate) {
 
             return this;
         },
-        isOnFocus: function(){
+        isOnFocus: function() {
             return this.options.onfocus;
         },
         options: {
@@ -175,6 +176,16 @@ function($, Widget, cls, event, dom, attr, src, animate) {
             open: 1,
             close: 1,
             isOnFocus: 1
+        },
+        getter: {
+            html: 1,
+            img: 1,
+            onfocus: 1
+        },
+        setter:{
+            html: 1,
+            img: 1,
+            onfocus: 0
         },
         target: null,
         toString: function() {
