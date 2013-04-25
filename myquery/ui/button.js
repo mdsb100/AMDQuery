@@ -46,18 +46,18 @@ function($, client, Widget, query, cls, event, dom, attr, src) {
             return this;
         },
         render: function() {
-            var opt = this.options;
-            client.browser.ie < 9 && this.$text.remove();
+            var opt = this.options,
+                ie = client.browser.ie < 9;
+            ie && this.$text.remove();
             this.$text.html(opt.text);
-            client.browser.ie < 9 && this.$text.appendTo(this.container);
+            ie this.$text.appendTo(this.container);
             this.container.attr("title", opt.title);
-            //this.$text.width(this.container.width() - this.$img.width());
             return this;
         },
         init: function(opt, target) {
             this._super(opt, target);
 
-            target.addClass(this.options.cssName);
+            target.addClass(this.options.defualtCssName);
 
             this.container = $($.createEle("a")).css({
                 "display": "inline-block",
@@ -85,7 +85,7 @@ function($, client, Widget, query, cls, event, dom, attr, src) {
             return this;
         },
         options: {
-            cssName: "button",
+            defualtCssName: "button",
             text: "clickme",
             title: ""
         },
