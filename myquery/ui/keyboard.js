@@ -1,5 +1,4 @@
-﻿/// <reference path="../../myquery.js" />
-myQuery.define("ui/js/keyboard", ["module/object", "module/Widget", "module/Keyboard"]
+﻿myQuery.define("ui/keyboard", ["module/object", "module/Widget", "module/Keyboard"]
 , function ($, object, Widget, Keyboard, undefined) {
     "use strict"; //启用严格模式
 

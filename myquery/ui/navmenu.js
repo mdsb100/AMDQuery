@@ -1,5 +1,5 @@
-myQuery.define("ui/js/navmenu", [
-    "ui/js/navitem",
+myQuery.define("ui/navmenu", [
+    "ui/navitem",
     "module/Widget",
     "main/query",
     "main/class",

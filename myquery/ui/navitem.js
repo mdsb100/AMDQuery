@@ -1,4 +1,4 @@
-myQuery.define("ui/js/navitem", [
+myQuery.define("ui/navitem", [
     "module/Widget",
     "main/class",
     "main/event",

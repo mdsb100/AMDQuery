@@ -1,5 +1,4 @@
-﻿/// <reference path="../../myquery.js" />
-myQuery.define("ui/js/accordion",
+﻿myQuery.define("ui/accordion",
 [
    "module/object",
    "module/Widget",

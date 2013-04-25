@@ -2164,7 +2164,7 @@
         }).then(function() {
             if(_config.ui.init) {
                 var promise = new Promise();
-                require("ui/init", function(init) {
+                require("module/init", function(init) {
                     init.renderWidget(function(){
                         promise.resolve();
                     });

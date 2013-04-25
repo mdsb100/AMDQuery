@@ -1,5 +1,5 @@
 /// <reference path="../myquery.js" />
-myQuery.define("ui/init", ["main/query", "main/dom", "main/attr", "module/Widget"], function($, query, dom, attr, Widget, undefinded) {
+myQuery.define("module/init", ["main/query", "main/dom", "main/attr", "module/Widget"], function($, query, dom, attr, Widget, undefinded) {
 	"use strict"; //启用严格模式
 
 	var body = $("body"),
@@ -28,7 +28,7 @@ myQuery.define("ui/init", ["main/query", "main/dom", "main/attr", "module/Widget
 			widgetName = attrNames[i]
 			if(widgetName && !widgetMap[widgetName]) {
 				if (widgetName.indexOf("/") < 0){
-					widgetPath = "ui/js/" + widgetName;
+					widgetPath = "ui/" + widgetName;
 				}
 				else{
 					widgetPath = widgetName;

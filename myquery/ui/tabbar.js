@@ -1,6 +1,6 @@
-myQuery.define("ui/js/tabbar", [
+myQuery.define("ui/tabbar", [
     "module/Widget",
-    "ui/js/button",
+    "ui/button",
     "main/query",
     "main/class",
     "main/event",

@@ -1,4 +1,4 @@
-myQuery.define("ui/js/button", [
+myQuery.define("ui/button", [
     "base/client",
     "module/Widget",
     "main/query",
