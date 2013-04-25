@@ -1,4 +1,4 @@
-myQuery.define("ui/js/tabbar", [
+myQuery.define("ui/js/tabbutton", [
     "module/Widget",
     "ui/js/button",
     "main/query",
@@ -12,10 +12,10 @@ function($, Widget, Button, query, cls, event, dom, attr, src) {
     "use strict"; //启用严格模式
 
     src.link({
-        href: $.getPath("ui/css/tabbar", ".css")
+        href: $.getPath("ui/css/tabbutton", ".css")
     });
 
-    var tabbar = Widget.extend("ui.tabbar", {
+    var tabbutton = Widget.extend("ui.tabbutton", {
         container: null,
         customEventName: [],
         event: function() {},
@@ -47,16 +47,16 @@ function($, Widget, Button, query, cls, event, dom, attr, src) {
         },
         target: null,
         toString: function() {
-            return "ui.tabbar";
+            return "ui.tabbutton";
         },
-        widgetEventPrefix: "ui.tabbar"
+        widgetEventPrefix: "ui.tabbutton"
     });
 
     //提供注释
-    $.fn.tabbar = function(a, b, c, args) {
-        tabbar.apply(this, arguments);
+    $.fn.tabbutton = function(a, b, c, args) {
+        tabbutton.apply(this, arguments);
         return this;
     }
 
-    return tabbar;
+    return tabbutton;
 });
