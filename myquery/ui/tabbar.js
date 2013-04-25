@@ -49,7 +49,7 @@ function($, Widget, Button, query, cls, event, dom, attr, src) {
         toString: function() {
             return "ui.tabbar";
         },
-        widgetEventPrefix: "ui.tabbar"
+        widgetEventPrefix: "tabbar"
     });
 
     //提供注释

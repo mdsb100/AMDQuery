@@ -21,17 +21,15 @@ function($, Widget, Button, query, cls, event, dom, attr, src) {
         event: function() {},
         _initHandler: function() {
             var self = this;
-            this.event = function(e) {
-
-            }
+            this._superCall();
             return this;
         },
         enable: function() {
-
+            this._superCall();
             return this;
         },
         disable: function() {
-
+            this._superCall();
             return this;
         },
         init: function(opt, target) {
@@ -40,7 +38,7 @@ function($, Widget, Button, query, cls, event, dom, attr, src) {
             return this;
         },
         options: {
-
+            cssName: "tabbutton"
         },
         public: {
 
@@ -49,7 +47,7 @@ function($, Widget, Button, query, cls, event, dom, attr, src) {
         toString: function() {
             return "ui.tabbutton";
         },
-        widgetEventPrefix: "ui.tabbutton"
+        widgetEventPrefix: "tabbutton"
     });
 
     //提供注释

@@ -87,8 +87,7 @@ function($, client, Widget, query, cls, event, dom, attr, src) {
         options: {
             cssName: "button",
             text: "clickme",
-            title: "",
-            background: "abc"
+            title: ""
         },
         public: {
 
@@ -97,7 +96,7 @@ function($, client, Widget, query, cls, event, dom, attr, src) {
         toString: function() {
             return "ui.button";
         },
-        widgetEventPrefix: "ui.button"
+        widgetEventPrefix: "button"
     });
 
     //提供注释
