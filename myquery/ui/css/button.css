@@ -12,12 +12,16 @@
     -webkit-border-radius: 8px;
     border-radius:8px;  
 }
+.button .back:link {}
+.button .back:visited {}
 .button .back:hover {}
 .button .back:active {}
 
 .button .img{
 	background: url(../images/tabs.png) 0px -173px repeat-x;
 }
+.button .img:link {}
+.button .img:visited {}
 .button .img:hover {}
 .button .img:active {}
 
@@ -31,6 +35,8 @@
     font-size: 14px;
     color: #6B573B;
 }
+.button .text:link {}
+.button .text:visited {}
 .button .text:hover {
 	
 }
