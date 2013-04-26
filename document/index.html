@@ -11,12 +11,14 @@
             alert()
         }
 
-        $.require(["ui/navmenu", "main/query", "main/attr"], function (Navmenu, query, attr) {
-
-            $("#nav").on("navmenu.open", function(e){
+        $.require(["main/query", "main/attr", "ui/navmenu", "module/Widget"], function (query, attr, Navmenu, Widget) {
+            var $nav = $("#nav")
+            $nav.on("navmenu.open", function(e){
                 
             });
-            
+
+            var ret1 = $nav.navmenu("instanceof", Widget);
+            var ret2 = $nav.navmenu("instanceof", "ui.navmenu");
         });
        
     </script>

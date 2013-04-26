@@ -49,6 +49,30 @@
         }
 
         constructor.prototype[key] = newValue;
+    },
+    _initOptionsPurview = function(constructor) {
+        var proto = constructor.prototype,
+            getter = proto.getter,
+            setter = proto.setter,
+            options = proto.options || {},
+            i;
+
+        if (!$.isObj(getter)) {
+            getter = proto.getter = {};
+        }
+        if (!$.isObj(setter)) {
+            setter = proto.setter = {};
+        }
+
+        for (i in options) {
+            if (getter[i] === undefined) {
+                getter[i] = 1;
+            }
+            if (setter[i] === undefined) {
+                setter[i] = 1;
+            }
+        }
+
     };
 
 
@@ -58,7 +82,7 @@
         },
         addTag: function() {
             var
-            attr = "myquery-ui-" + this.widgetName,
+            attr = "myquery-" + this.widgetNameSpace + "-" + this.widgetName,
                 origin = this.target.attr(attr);
             if (!origin) {
                 this.target.attr(attr, "");
@@ -142,8 +166,15 @@
             this.option(obj);
             return this;
         },
-        instance: function(item) {
-            return $.is$(item) ? item.attr("myquery-" + this.widgetName) !== undefined : false;
+        instanceof: function(item) {
+            var name, constructor = item;
+            if ($.isStr(item)) {
+                constructor = $.widget.get(item);
+            }
+            if ($.isFun(constructor)) {
+                return constructor.instance ? constructor.instance(this) : (this instanceof constructor);
+            }
+            return false;
         },
         equals: function(item) {
             if (this.instance(item)) {
@@ -172,10 +203,17 @@
         public: {
             disable: 1,
             enable: 1,
-            widget: 1,
             toString: 1,
             getSelf: 1,
-            instance: 1,
+            instanceof: 1,
+            equals: 1,
+            beSetter: 1,
+            beGetter: 1
+        },
+        returns: {
+            toString: 1,
+            getSelf: 1,
+            instanceof: 1,
             equals: 1,
             beSetter: 1,
             beGetter: 1
@@ -200,7 +238,11 @@
             if (this.beGetter(key)) {
                 return this.options[key];
             } else {
-                $.console.warn("widget:" + this.toString() + " can not get option" + key);
+                if (this.options[key] !== undefined) {
+                    $.console.error("widget:" + this.toString() + " can not get option " + key + "; please check getter");
+                } else {
+                    $.console.error("widget:" + this.toString() + " option " + key + "is undefined; please check options");
+                }
                 return undefined;
             }
         },
@@ -212,9 +254,6 @@
         },
         toString: function() {
             return "ui.widget";
-        },
-        widget: function() {
-            return this.constructor;
         },
         getSelf: function() {
             return this;
@@ -235,7 +274,13 @@
         /// <para>方法会被传入3个参数。obj为初始化参数、target为$的对象、base为Widget基类</para>
         /// <para>prototype应当实现的属性:container:容器 options:参数 target:目标$ public:对外公开的方法 widgetEventPrefix:自定义事件前缀</para>
         /// <para>prototype应当实现的方法:返回类型 方法名 this create, this init, this render,Object event</para>
-        /// <para>对外公开的方法返回值不能为this</para>
+        /// <para>prototype.public为对外公开的方法，父类覆盖子类遵从于private</para>
+        /// <para>prototype.returns 为对外共开方法是否返回一个自己的值 否则将会默认返回原 $对象</para>
+        /// <para>prototype.options为参数子类扩展父类</para>
+        /// <para>prototype.getter属性器，子类扩展与父类，但遵从于private</para>
+        /// <para>prototype.setter属性器，子类扩展与父类，但遵从于private</para>
+        /// <para>prototype.customEventName事件列表，子类覆盖父类</para>
+        /// <para>对外公开的方法返回值不能为this只能使用getSelf</para>
         /// </summary>
         /// <param name="name" type="String">格式为"ui.scorePicker"ui为命名空间，scorePicer为方法名，若有相同会覆盖</param>
         /// <param name="prototype" type="Object">类的prototype 或者是基widget的name</param>
@@ -268,16 +313,23 @@
 
         $.widget[nameSpace][name] = constructor;
 
-        _extendAttr("public", constructor, true);
+        /*如果当前prototype没有定义setter和getter将自动生成*/
+        _initOptionsPurview(constructor);
+
+        _extendAttr("public", constructor, prototype, true);
+        _extendAttr("returns", constructor, prototype, true);
+        _extendAttr("options", constructor);
+
+        /*遵从父级为false 子集就算设为ture 最后也会为false*/
         _extendAttr("getter", constructor, true);
         _extendAttr("setter", constructor, true);
-        _extendAttr("options", constructor);
+
 
         var key = nameSpace + "." + name + $.now();
 
         var ret = $.prototype[name] = function(a, b, c) {
             /// <summary>对当前$的所有元素初始化某个UI控件或者修改属性或使用其方法</summary>
-            /// <para>返回option属性时，只返回第一个对象的</para>
+            /// <para>返回option属性或returns方法时，只返回第一个对象的</para>
             /// <param name="a" type="Object/String">初始化obj或属性名:option或方法名</param>
             /// <param name="b" type="String/nul">属性option子属性名</param>
             /// <param name="c" type="any">属性option子属性名的值</param>
@@ -292,20 +344,26 @@
                         data.option(a);
                         data.render();
                     } else if ($.isStr(a)) {
-                        //if (b === undefined) {
                         if (a === "option") {
-                            result = data.option(b, c);
-                            if (result === undefined) {
+                            if (data.beSetter(b) && c !== undefined) {
+                                /*若可set 则全部set*/
+                                data.option(b, c);
                                 data.render();
-                                result = this;
+                            } else {
+                                /*若可get 则返回第一个*/
+                                result = data.option(b);
+                                return false;
                             }
                         } else if (a === "destory") {
                             data[a].call(data, key);
                         } else if (data.public[a]) {
-                            data[a].apply(data, $.util.argToArray(arg, 1));
+                            var temp = data[a].apply(data, $.util.argToArray(arg, 1));
+                            if (data.returns[a]) {
+                                result = temp;
+                                return false;
+                            }
                         }
                     }
-
                 }
             });
             return result;
@@ -329,6 +387,16 @@
         return $.is$(item) && item.attr("myquery-" + nameSpace + "-" + name) !== undefined;
     };
 
+    $.widget.get = function(name) {
+        /// <summary>获得某个widget</summary>
+        /// <param name="name" type="String">widget名字</param>
+        /// <returns type="Function" />
+        var tName = name.split("."),
+            tNameSpace = tName[0],
+            tName = tName[1];
+        return $.widget[tNameSpace][tName];
+    };
+
     $.widget.inherit = function(name, SuperName, prototype, statics, isExtendStatic) {
         /// <summary>继承某个widget实例</summary>
         /// <param name="constructor" type="Function"></param>
@@ -339,12 +407,8 @@
         /// <param name="isExtendStatic" type="Bolean">是否扩展静态public customeEventName option 默认true</param>
         /// <returns type="Function" />
 
-        var tName = SuperName.split("."),
-            tNameSpace = tName[0],
-            tName = tName[1],
+        var Super = $.widget.get(SuperName),
             arg;
-
-        var Super = $.widget[tNameSpace][tName];
         if (!Super) {
             $.console.error({
                 fn: "$.widget.inherit",
