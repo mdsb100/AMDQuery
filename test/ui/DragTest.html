@@ -27,6 +27,7 @@
                 //     $.showMsg("3");
                 // })
                 $("#drag").draggable("render", 20, 0);
+                //$("#drag").draggable("option", "overflow", false);
 
                 // $("#drag1").draggable({
                 //     container: query.getEleById("container1")
@@ -43,7 +44,7 @@
         position: relative" id="container">
         <div>
             <div style="position: inherit">
-                <div id="drag" myquery-ui="draggable" myquery-ui-draggable="axis:x;keepinner:true;container:#container;pause:this.cabinet.pause;isTransform3d:true" style="width: 100px; height: 100px; background-color: Red;">
+                <div id="drag" myquery-ui="draggable" draggable-pause="myQuery.cabinet.pause" myquery-ui-draggable="axis:x;keepinner:true;container:#container;isTransform3d:true" style="width: 100px; height: 100px; background-color: Red;">
                     拖动我
                 </div>
             </div>
