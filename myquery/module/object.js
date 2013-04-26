@@ -88,6 +88,41 @@ myQuery.define("module/object", ["base/extend"], function($, utilExtend) {
         }
         return this;
     },
+    _instance = function(target) {
+        var constructor = this,
+            ret = target instanceof this;
+
+        if (ret == false) {
+            constructor = target.constructor;
+            while ( !! constructor) {
+                constructor = constructor.prototype.__superConstructor;
+                if (constructor === target) {
+                    ret = true;
+                    break;
+                }
+            }
+        }
+        return ret;
+    },
+    _instanceof = function(target) {
+        if (!$.isFun(target)) {
+            return false;
+        }
+        var constructor = this,
+            ret = target instanceof this;
+
+        if (ret == false) {
+            constructor = target.constructor;
+            while ( !! constructor) {
+                constructor = constructor.prototype.__superConstructor;
+                if (constructor === target) {
+                    ret = true;
+                    break;
+                }
+            }
+        }
+        return ret;
+    },
     defaultPurview = "-pu -w -r",
         defaultValidate = function() {
             return 1;
@@ -158,6 +193,7 @@ myQuery.define("module/object", ["base/extend"], function($, utilExtend) {
                 anonymous.inherit = _inheritTemplate;
                 anonymous.extend = _extendTemplate;
                 anonymous.joinPrototype = _joinPrototypeTemplate;
+                anonymous.instance = _instance;
                 anonymous.fn = anonymous.prototype;
 
                 return anonymous;
