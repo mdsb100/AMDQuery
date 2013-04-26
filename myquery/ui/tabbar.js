@@ -17,7 +17,6 @@ function($, Widget, Button, query, cls, event, dom, attr, src) {
 
     var tabbar = Widget.extend("ui.tabbar", {
         container: null,
-        customEventName: [],
         event: function() {},
         _initHandler: function() {
             var self = this;
@@ -39,8 +38,15 @@ function($, Widget, Button, query, cls, event, dom, attr, src) {
 
             return this;
         },
+        customEventName: [],
         options: {
 
+        },
+        getter:{
+            
+        },
+        setter:{
+            
         },
         public: {
 

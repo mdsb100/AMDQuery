@@ -37,14 +37,16 @@
 
         var extend;
 
-        if (booleanCheck) {
-            extend = booleanExtend;
-        } else {
-            extend = $.easyExtend;
-        }
-
         $.easyExtend(newValue, superValue);
-        extend(newValue, subValue);
+
+        if (subValue != undefined) {
+            if (booleanCheck) {
+                extend = booleanExtend;
+            } else {
+                extend = $.easyExtend;
+            }
+            extend(newValue, subValue);
+        }
 
         constructor.prototype[key] = newValue;
     };

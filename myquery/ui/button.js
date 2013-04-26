@@ -17,7 +17,6 @@ function($, client, Widget, query, cls, event, dom, attr, src) {
 
     var button = Widget.extend("ui.button", {
         container: null,
-        customEventName: ["click"],
         event: function() {},
         _initHandler: function() {
             var self = this;
@@ -84,10 +83,21 @@ function($, client, Widget, query, cls, event, dom, attr, src) {
 
             return this;
         },
+        customEventName: ["click"],
         options: {
             defualtCssName: "button",
             text: "clickme",
             title: ""
+        },
+        getter:{
+            defualtCssName: 1,
+            text: 1,
+            title: 1
+        },
+        setter:{
+            defualtCssName: 0,
+            text: 1,
+            title: 1
         },
         public: {
 

@@ -20,9 +20,25 @@ function($, Widget, Button, query, cls, event, dom, src) {
             selectCssName: "selectTabButton",
             select: false,
             text: "",
+            title: ""
+        },
+        getter: {
+            defualtCssName: 1,
+            selectCssName: 1,
+            select: 1,
+            text: 1,
+            title: 1
+        },
+        setter: {
+            defualtCssName: 1,
+            selectCssName: 1,
+            select: 1,
+            text: 1,
+            title: 1
         },
         public: {
-
+            select: 1,
+            toggle: 1
         },
         _initHandler: function() {
             var self = this;
