@@ -69,7 +69,7 @@ define("module/MVVM", ["main/query", "main/attr", "main/CustomEvent", "module/ob
 			var dependencies = [_tempMVVMData.viewSrc].concat(_tempMVVMData.modelsSrc, _tempMVVMData.collectionsSrc),
 				modelsLen = _tempMVVMData.Models.length;
 			define(dependencies, function(view) {
-				var ViewModel = object.Class(this.id, prototype, statics, BaseViewModel);
+				var ViewModel = object.extend(this.id, prototype, statics, BaseViewModel);
 
 				var arg = $.argToArray(arguments),
 					models = arg.slice(1, 1 + modelsLen),
@@ -87,7 +87,7 @@ define("module/MVVM", ["main/query", "main/attr", "main/CustomEvent", "module/ob
 
 	};
 
-	MVVM.Base = object.Class("Base", {
+	MVVM.Base = object.extend("Base", {
 		init: function(type) {			
 			this._super();
 			this._setType(type);
@@ -99,13 +99,13 @@ define("module/MVVM", ["main/query", "main/attr", "main/CustomEvent", "module/ob
 		type: "-pa -w"
 	});
 
-	MVVM.BaseView = object.Class("BaseView", {
+	MVVM.BaseView = object.extend("BaseView", {
 		init: function() {
 
 		}
 	}, {}, MVVM.Base);
 
-	MVVM.BaseViewModel = object.Class("BaseViewModel", {
+	MVVM.BaseViewModel = object.extend("BaseViewModel", {
 		init: function() {
 			this._super("ViewModel");
 			this.setView(view)
@@ -123,13 +123,13 @@ define("module/MVVM", ["main/query", "main/attr", "main/CustomEvent", "module/ob
 		collections: "-pu -r"
 	});
 
-	MVVM.BaseModel = object.Class("BaseModel", {
+	MVVM.BaseModel = object.extend("BaseModel", {
 		init: function(view, models, collections) {
 			this._super();
 		}
 	}, {}, MVVM.Base);
 
-	MVVM.BaseViewCollection = object.Class("BaseViewCollection", {
+	MVVM.BaseViewCollection = object.extend("BaseViewCollection", {
 		init: function() {
 			this._super();
 		}

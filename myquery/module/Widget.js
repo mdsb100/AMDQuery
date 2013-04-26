@@ -76,7 +76,7 @@
     };
 
 
-    object.Class(Widget, {
+    object.extend(Widget, {
         able: function() {
             this.options.disabled === false ? this.disable() : this.enable();
         },
@@ -320,7 +320,7 @@
             statics = {};
         }
 
-        var constructor = object.Class(name, prototype, statics, Super);
+        var constructor = object.extend(name, prototype, statics, Super);
         constructor.prototype.widgetName = name;
         constructor.prototype.widgetNameSpace = nameSpace;
 

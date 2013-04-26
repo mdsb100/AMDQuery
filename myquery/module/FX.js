@@ -5,7 +5,7 @@ myQuery.define("module/FX", ["main/dom", "module/object"], function($, dom, obje
     "use strict"; //启用严格模式
     var rfxnum = /^([+-]=)?([\d+-.]+)(.*)$/;
 
-    var FX = object.Class("FX", {
+    var FX = object.extend("FX", {
         start: function() {
 
             FX.timers.push(this);

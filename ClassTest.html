@@ -23,7 +23,7 @@
                 , write = function (s) {
                     div[0].innerHTML = div[0].innerHTML += s;
                 }
-                var test1 = object.Class("test1", {
+                var test1 = object.extend("test1", {
                     init: function(){
                         var a =3;
                         console.log("init test1")
@@ -32,7 +32,7 @@
                         console.log("test1")
                     }
                 }, {});
-                var test2 = object.Class("test2", {
+                var test2 = object.extend("test2", {
                     init: function(){
                         //this._super();
                         console.log("init test2")
@@ -42,7 +42,7 @@
                         this._superCall("test");
                     }
                 }, {}, test1);
-                var test3 = object.Class("test3", {
+                var test3 = object.extend("test3", {
                     init: function(){
                         this._super();
                         console.log("init test3")
@@ -97,7 +97,7 @@
                 , write = function (s) {
                     div[0].innerHTML = div[0].innerHTML += s;
                 }
-                var Supper = object.Class({
+                var Supper = object.extend({
                     init: function (name, color) {
                         this.name = name;
                         this.color = color;
@@ -118,7 +118,7 @@
 
                 }, "Supper");
 
-                var Sub = object.Class({
+                var Sub = object.extend({
                     init: function (weight, name, color) {
                         Sub._SupperConstructor(this, name, color);
                         this.weight = weight;
@@ -133,7 +133,7 @@
                     }
                 }, Supper, "Sub")
 
-                var Child = object.Class({
+                var Child = object.extend({
                     init: function (age, weight, name, color) {
                         Child._SupperConstructor(this, weight, name, color);
                         this.age = age;

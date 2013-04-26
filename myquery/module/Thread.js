@@ -33,7 +33,7 @@ myQuery.define('module/Thread', ["main/CustomEvent", "base/extend", "module/obje
             window.msCancelRequestAnimationFrame ||
             clearTimeout;
 
-    var Thread = object.Class("Thread", {
+    var Thread = object.extend("Thread", {
         init: function (obj, paras) {
             /// <summary>初始化参数 初始化参数会停止进程</summary>
             /// <param name="obj" type="Object">进程参数</param>

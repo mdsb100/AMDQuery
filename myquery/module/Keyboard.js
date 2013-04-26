@@ -1,7 +1,7 @@
 ﻿myQuery.define("module/Keyboard", ["main/event", "main/CustomEvent", "module/object", "hash/charcode"]
 , function ($, event, CustomEvent, object, charcode) {
     "use strict"; //启用严格模式
-    var Keyboard = object.Class("Keyboard", {
+    var Keyboard = object.extend("Keyboard", {
         constructor: Keyboard
         , init: function (container, keyList) {
             this._super();

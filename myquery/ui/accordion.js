@@ -15,7 +15,7 @@
         href: $.getPath("ui/css/accordion", ".css")
     });
 
-    var Key = object.Class("Key", {
+    var Key = object.extend("Key", {
         init: function(key, parent) {
             this._super();
             this.parent = parent;
@@ -160,7 +160,7 @@
         }
     }, CustomEvent);
 
-    var Shell = object.Class("Shell", {
+    var Shell = object.extend("Shell", {
         init: function(shell, parent) {
             this._super();
             this.parent = parent;
@@ -408,7 +408,7 @@
         }
     }, CustomEvent);
 
-    var Accordion = object.Class("Accordion", {
+    var Accordion = object.extend("Accordion", {
         init: function(target, option) { //, keyId, isDittoShellSelect
             this._super();
             this.target = $(target);

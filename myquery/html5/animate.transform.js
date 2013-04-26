@@ -10,7 +10,7 @@ myQuery.define("html5/animate.transform", ["module/object", "module/FX", "html5/
     , transformCss = "-" + css3.css3Head + "-transform";
     //给动画类添加一个自定义方法
     if ($.support.transform3d) {
-        var Transfrom3dForFX = object.Class(function Transfrom3dForFX(ele, options, value, name, type) {
+        var Transfrom3dForFX = object.extend(function Transfrom3dForFX(ele, options, value, name, type) {
             if (this instanceof Transfrom3dForFX) {
                 this._super(ele, options, value, name);
                 this.type = type;
@@ -60,7 +60,7 @@ myQuery.define("html5/animate.transform", ["module/object", "module/FX", "html5/
         });
     }
     if ($.support.transform) {
-        var TransfromForFX = object.Class(function TransfromForFX(ele, options, value, name, type, index) {
+        var TransfromForFX = object.extend(function TransfromForFX(ele, options, value, name, type, index) {
             if (this instanceof TransfromForFX) {
                 this._super(ele, options, value, name);
                 this.type = type;

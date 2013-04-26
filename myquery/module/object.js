@@ -79,7 +79,7 @@ myQuery.define("module/object", ["base/extend"], function($, utilExtend) {
         arg.splice(0, 0, null);
         arg.push(this);
         /*arg = [null, prototype, statics, constructor]*/
-        return object.Class.apply(object, arg);;
+        return object.extend.apply(object, arg);;
     },
     _joinPrototypeTemplate = function() {
         for (var i = 0, len = arguments.length, obj; i < len; i++) {
@@ -144,7 +144,7 @@ myQuery.define("module/object", ["base/extend"], function($, utilExtend) {
                     return this;
                 }
             },
-            Class: function(name, prototype, statics, Super) {
+            extend: function(name, prototype, statics, Super) {
                 /// <summary>定义一个类</summary>
                 /// <para>构造函数会执行init和render</para>
                 /// <param name="name" type="String/Function/null">函数名或构造函数</param>
@@ -304,7 +304,7 @@ myQuery.define("module/object", ["base/extend"], function($, utilExtend) {
                     _statics = $.extend({}, statics),
                     name = typeof model == "string" ? model : model.name + "Collection";
 
-                return object.Class(name, _prototype, _statics, Super);
+                return object.extend(name, _prototype, _statics, Super);
             },
 
             getObjectAttrCount: function(obj, bool) {

@@ -3,7 +3,7 @@
 
 myQuery.define("module/AnimateColor", ["module/object", "module/color", "main/dom", "module/FX"], function ($, object, color, dom, FX) {
     "use strict"; //启用严格模式
-    var AnimateColor = object.Class(function AnimateColor(ele, options, value, name, type) {
+    var AnimateColor = object.extend(function AnimateColor(ele, options, value, name, type) {
         if (this instanceof AnimateColor) {
             this.type = type;
             //this.color = color(css.style(ele, name));
