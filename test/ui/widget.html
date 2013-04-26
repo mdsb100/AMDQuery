@@ -1,0 +1,27 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>MyQuery Document</title>
+    <meta charset="utf-8" />
+    <link href="../css/reset.css" rel="stylesheet" type="text/css" />
+    <script src="../myquery/myquery.js" type="text/javascript" module="transitionToAnimation:1" ui="init:1"></script>
+    <script type="text/javascript">
+        $.require(["main/query", "main/attr", "ui/navmenu", "module/Widget"], function (query, attr, Navmenu, Widget) {
+            var $nav = $("#nav")
+            $nav.on("navmenu.open", function(e){
+                
+            });
+
+            var ret1 = $nav.navmenu("instanceof", Widget);
+            var ret2 = $nav.navmenu("instanceof", "ui.navmenu");
+            $nav.navmenu("option", "abc", "111");
+            
+        });
+       
+    </script>
+</head>
+<body style="width: 100%; height: 100%;">
+    <div id="nav" myquery-ui="navmenu" >
+    </div>
+</body>
+</html>

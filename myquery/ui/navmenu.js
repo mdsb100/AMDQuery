@@ -129,6 +129,9 @@ function($, NavItem, Widget, query, cls, event, dom, attr, src) {
             return this;
         },
         customEventName: ["open", "close"],
+        // _setAbc: function(value){
+        //     this.options.abc = value;
+        // },
         // options: {
         //     abc: "abc"
         // },
@@ -136,7 +139,6 @@ function($, NavItem, Widget, query, cls, event, dom, attr, src) {
         //     abc: 0
         // },
         // public: {
-
         // },
         target: null,
         toString: function() {
