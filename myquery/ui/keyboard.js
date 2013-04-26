@@ -72,8 +72,7 @@
         /// <param name="c" type="any">属性option子属性名的值</param>
         /// <param name="args" type="any">在调用方法的时候，后面是方法的参数</param>
         /// <returns type="$" />
-        keyboard.apply(this, arguments);
-        return this;
+        return keyboard.apply(this, arguments);
     }
 
     return keyboard;

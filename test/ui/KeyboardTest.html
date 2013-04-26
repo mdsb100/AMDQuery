@@ -12,47 +12,47 @@
 
             con.keyboard({
                 keyList: [
-                                    { type: "keyup", keyCode: "Up"
-                                        , fun: function (e) {
-                                            alert("Up")
-                                        }
-                                    },
-                                    { type: "keyup", keyCode: "Down"
-                                        , fun: function (e) {
-                                            alert("Down")
-                                        }
-                                    }
-                                ]
+                    { type: "keyup", keyCode: "Up"
+                        , fun: function (e) {
+                            alert("Up")
+                        }
+                    },
+                    { type: "keyup", keyCode: "Down"
+                        , fun: function (e) {
+                            alert("Down")
+                        }
+                    }
+                ]
             });
             con.keyboard("addKeys",
-                            [{
-                                type: "keyup",
-                                keyCode: "J",
-                                fun: function (e) {
-                                    alert("ctrl+alt+J");
-                                },
-                                combinationKey: ["ctrl", "alt"]
-                            },
-                            {
-                                type: "keydown",
-                                keyCode: "J",
-                                fun: function (e) {
-                                    alert("alt+J");
-                                },
-                                combinationKey: ["alt"]
-                            }]
-                        );
+                [{
+                    type: "keyup",
+                    keyCode: "J",
+                    fun: function (e) {
+                        alert("ctrl+alt+J");
+                    },
+                    combinationKey: ["ctrl", "alt"]
+                },
+                {
+                    type: "keydown",
+                    keyCode: "J",
+                    fun: function (e) {
+                        alert("alt+J");
+                    },
+                    combinationKey: ["alt"]
+                }]
+            );
 
             con.keyboard("addKey",
-                            {
-                                type: "keyup",
-                                keyCode: "K",
-                                fun: function (e) {
-                                    alert("ctrl+alt+K");
-                                },
-                                combinationKey: ["ctrl", "alt"]
-                            }
-                        );
+                {
+                    type: "keyup",
+                    keyCode: "K",
+                    fun: function (e) {
+                        alert("ctrl+alt+K");
+                    },
+                    combinationKey: ["ctrl", "alt"]
+                }
+            );
 
             con.keyboard("removeKey", {
                 type: "keyup",
