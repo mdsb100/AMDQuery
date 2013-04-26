@@ -36,7 +36,7 @@ myQuery.define("module/object", ["base/extend"], function($, utilExtend) {
         }
         return tempConstructor;
     },
-    _superCallTimeout = function(name, constructor) {
+    _superTimeoutCall = function(name, constructor) {
         /// <summary>调用基类方法</summary>
         /// <param name="name" type="String">函数名</param>
         /// <param name="constructor" type="Function">当前调用自己的构造</param>
@@ -96,7 +96,7 @@ myQuery.define("module/object", ["base/extend"], function($, utilExtend) {
             $.object.inheritProtypeWithParasitic(Sub, Super, name);
             Sub.prototype.__superConstructor = Super;
             Sub.prototype._superCall = _superCall;
-            Sub.prototype._superCallTimeout = _superCallTimeout;
+            Sub.prototype._superTimeoutCall = _superTimeoutCall;
             Sub.prototype._super = _superInit;
         },
         extend = function(Sub, Super) {
