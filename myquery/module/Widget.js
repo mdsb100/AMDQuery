@@ -28,31 +28,25 @@
             }
         }
     },
-    _extendAttr = function(key, self, booleanCheck) {
+    _extendAttr = function(key, constructor, booleanCheck) {
         /*出了option 其他应该扩展到prototype上*/
-        var constructor = booleanCheck ? self : self.constructor,
-            originConstructor = constructor,
-            newValue = {}, i, params = [];
+        var subValue = constructor.prototype[key],
+            superConstructor = constructor.prototype.__superConstructor,
+            superValue = superConstructor.prototype[key],
+            newValue = {};
 
-        while (( !! constructor) && ( !! constructor.prototype[key])) {
-            params.push(constructor.prototype[key]);
-            constructor = constructor.prototype.__superConstructor;
-        }
-
-        
         var extend;
 
         if (booleanCheck) {
-            originConstructor.prototype[key] = newValue;
             extend = booleanExtend;
         } else {
-            self[key] = newValue;
             extend = $.easyExtend;
         }
-        for (i = params.length - 1; i >= 0; i--) {
-            extend(newValue, params[i]);
-        }
 
+        $.easyExtend(newValue, superValue);
+        extend(newValue, subValue);
+
+        constructor.prototype[key] = newValue;
     };
 
 
@@ -135,9 +129,8 @@
 
         init: function(obj, target) {
             //元素本身属性高于obj
-
-            _extendAttr("options", this);
-            /*事件名是需要自己写清楚的*/
+            this.options = {};
+            $.easyExtend(this.options, this.constructor.prototype.options);
 
             target._initHandler();
             this.target = target;
@@ -276,6 +269,7 @@
         _extendAttr("public", constructor, true);
         _extendAttr("getter", constructor, true);
         _extendAttr("setter", constructor, true);
+        _extendAttr("options", constructor);
 
         var key = nameSpace + "." + name + $.now();
 
