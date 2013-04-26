@@ -113,7 +113,9 @@
                     item = attr[i].split(":");
                     if (item.length == 2) {
                         key = item[0];
-                        if (this.options[key] !== undefined) {
+                        if ($.reg.id.test(item[1])) {
+                            result[key] = $(item[1])[0];
+                        } else if (this.options[key] !== undefined) {
                             result[key] = myEval.evalBasicDataType(item[1]);
                         } else if ($.inArray(this.customEventName, key) > -1) {
                             result[key] = myEval.functionEval(item[1], $);
@@ -187,8 +189,11 @@
                 for (var name in key) {
                     this.setOption(name, key[name]);
                 }
-            } else if (value === undefined) return this.getOption(key);
-            else if ($.isStr(key)) this.setOption(key, value);
+            } else if (value === undefined) {
+                return this.getOption(key);
+            } else if ($.isStr(key)) {
+                this.setOption(key, value);
+            }
         },
         customEventName: [],
         options: {
@@ -229,14 +234,14 @@
         },
         setOption: function(key, value) {
             if (this.beSetter(key) && this.options[key] !== undefined) {
-                this.options[key] = value;
+                this.doSpecialSetter(key, value);
             } else if ($.isFun(value) && this._isEventName(key)) {
                 this.target.addHandler(this.widgetEventPrefix + "." + key, value);
             }
         },
         getOption: function(key) {
             if (this.beGetter(key)) {
-                return this.options[key];
+                return this.doSpecialGetter(key);
             } else {
                 if (this.options[key] !== undefined) {
                     $.console.error("widget:" + this.toString() + " can not get option " + key + "; please check getter");
@@ -245,6 +250,14 @@
                 }
                 return undefined;
             }
+        },
+        doSpecialGetter: function(key) {
+            var fn = this[$.util.camelCase(key, "_get")];
+            $.isFun(fn) ? fn.call(this) : this.options[key];
+        },
+        doSpecialSetter: function(key, value) {
+            var fn = this[$.util.camelCase(key, "_set")];
+            $.isFun(fn) ? fn.call(this, value) : (this.options[key] = value);
         },
         beGetter: function(key) {
             return !!this.getter[key];
@@ -345,13 +358,13 @@
                         data.render();
                     } else if ($.isStr(a)) {
                         if (a === "option") {
-                            if (data.beSetter(b) && c !== undefined) {
+                            if (c !== undefined) {
                                 /*若可set 则全部set*/
                                 data.option(b, c);
                                 data.render();
                             } else {
                                 /*若可get 则返回第一个*/
-                                result = data.option(b);
+                                result = data.option(b, c);
                                 return false;
                             }
                         } else if (a === "destory") {
