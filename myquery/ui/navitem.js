@@ -14,7 +14,6 @@ function($, Widget, cls, event, dom, attr, src, animate) {
 
     var navitem = Widget.extend("ui.navitem", {
         container: null,
-        customEventName: ["open", "close"],
         event: function() {},
         _initHandler: function() {
             var self = this,
@@ -165,6 +164,7 @@ function($, Widget, cls, event, dom, attr, src, animate) {
         isOnFocus: function() {
             return this.options.onfocus;
         },
+        customEventName: ["open", "close"],
         options: {
             html: "",
             img: "",
@@ -194,10 +194,5 @@ function($, Widget, cls, event, dom, attr, src, animate) {
         widgetEventPrefix: "navitem"
     });
 
-    //提供注释
-    $.fn.navmenu = function(a, b, c, args) {
-        navmenu.apply(this, arguments);
-        return this;
-    }
     return navitem;
 });

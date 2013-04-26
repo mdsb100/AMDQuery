@@ -17,7 +17,6 @@ function($, NavItem, Widget, query, cls, event, dom, attr, src) {
 
     var navmenu = Widget.extend("ui.navmenu", {
         container: null,
-        customEventName: ["open", "close"],
         event: function() {},
         _initHandler: function() {
             var self = this;
@@ -129,8 +128,12 @@ function($, NavItem, Widget, query, cls, event, dom, attr, src) {
 
             return this;
         },
+        customEventName: ["open", "close"],
         // options: {
-
+        //     abc: "abc"
+        // },
+        // getter: {
+        //     abc: 0
         // },
         // public: {
 
@@ -141,12 +144,6 @@ function($, NavItem, Widget, query, cls, event, dom, attr, src) {
         },
         widgetEventPrefix: "navmenu"
     });
-
-    //提供注释
-    $.fn.navmenu = function(a, b, c, args) {
-        navmenu.apply(this, arguments);
-        return this;
-    }
 
     return navmenu;
 });
