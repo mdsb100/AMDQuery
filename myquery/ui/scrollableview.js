@@ -55,7 +55,6 @@ myQuery.define("ui/scrollableview", ["main/query", "main/dom", "main/class", "ht
 
                 return this;
             },
-            customEventName: ["pulldown", "pullup", "pullleft", "pullright", "animationEnd"],
             event: function() {
 
 
@@ -93,17 +92,17 @@ myQuery.define("ui/scrollableview", ["main/query", "main/dom", "main/class", "ht
                                 distance = opt.pullDistance;
 
                             if (left > distance) {
-                                e.type = "scrollableview.pullleft";
+                                e.type = self.getEventName("pullleft");
                                 target.trigger(e.type, this, e);
                             } else if (left < -self.overflowWidth - distance) {
-                                e.type = "scrollableview.pullright";
+                                e.type = self.getEventName("pullright");
                                 target.trigger(e.type, this, e);
                             }
                             if (top > distance) {
-                                e.type = "scrollableview.pulldown";
+                                e.type = self.getEventName("pulldown");
                                 target.trigger(e.type, this, e);
                             } else if (top < -self.overflowHeight - distance) {
-                                e.type = "scrollableview.pullup";
+                                e.type = self.getEventName("pullup");
                                 target.trigger(e.type, this, e);
                             }
 
@@ -165,6 +164,7 @@ myQuery.define("ui/scrollableview", ["main/query", "main/dom", "main/class", "ht
 
                 return this.create().render(0, 0);
             },
+            customEventName: ["pulldown", "pullup", "pullleft", "pullright", "animationEnd"],
             options: {
                 "overflow": "xy",
                 "animateDuration": 600,
@@ -406,7 +406,7 @@ myQuery.define("ui/scrollableview", ["main/query", "main/dom", "main/class", "ht
             },
 
             _triggerAnimate: function(scene, direction, duration, distance) {
-                var type = "scrollableview.animationEnd";
+                var type = self.getEventName("animationEnd");
                 this.target.trigger(type, this.container[0], {
                     type: type,
                     scene: scene,
@@ -577,8 +577,7 @@ myQuery.define("ui/scrollableview", ["main/query", "main/dom", "main/class", "ht
         /// <param name="c" type="any">属性option子属性名的值</param>
         /// <param name="args" type="any">在调用方法的时候，后面是方法的参数</param>
         /// <returns type="$" />
-        scrollableview.apply(this, arguments);
-        return this;
+        return scrollableview.apply(this, arguments);
     }
 
     return scrollableview;

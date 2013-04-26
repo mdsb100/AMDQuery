@@ -3,14 +3,11 @@
     var swappable = $.widget("ui.swappable", {
         container: null,
         create: function () {
-            this.target.css({
-                cursor: this.options.cursor
-            });
             this._initHandler();
-            this.able();
+            this.enable();
+            this.render();
             return this;
         },
-        customEventName: ["start", "move", "pause", "stop", "mousemove"],
         event: function () {
 
         },
@@ -76,14 +73,18 @@
             this.startX = null;
             return this.create();
         },
+        customEventName: ["start", "move", "pause", "stop", "mousemove"],
         options: {
             cursor: "pointer",
             directionRange: 15,
-            disabled: true,
             pauseSensitivity: 500
-            //swapFor
         },
         public: {
+            isInPath: 1,
+            getPath: 1,
+            getPathLast: 1
+        },
+        returns:{
             isInPath: 1,
             getPath: 1,
             getPathLast: 1
@@ -102,7 +103,7 @@
                     para;
                 if (self.isDown || e.type == "mousedown" || e.type == "touchstart") {
                     para = {
-                        type: 'swap.start',
+                        type: self.getEventName("start"),
                         offsetX: x,
                         offsetY: y,
                         event: e,
@@ -150,7 +151,7 @@
                         //event.document.stopPropagation(e);
                         if (e.which === 0 || (client.browser.ie678 && e.button != 1) || self.isDown == false) {
                             self.isDown = false;
-                            para.type = "swap.mousemove";
+                            para.type = self.getEventName("mousemove");
                             target.trigger(para.type, target[0], para);
                             break;
                         }
@@ -162,12 +163,12 @@
                             if (temp[0] === x && temp[1] === y) break;
                             self.path.push(x, y);
                             self.getPara(para, time, opt.directionRange, self.startX, self.startY, x, y);
-                            para.type = "swap.move";
+                            para.type = self.getEventName("move");
                             target.trigger(para.type, target[0], para);
                             //if (!$.isMobile) {
                             clearTimeout(timeout);
                             timeout = setTimeout(function () {
-                                para.type = "swap.pause";
+                                para.type = self.getEventName("pause");
                                 para.swapType = self.computeSwapType()
                                 target.trigger(para.type, target[0], para);
                             }, opt.pauseSensitivity)
@@ -189,7 +190,7 @@
                             clearTimeout(timeout);
 
                             self.getPara(para, time, opt.directionRange, self.startX, self.startY, $.between(0, target.width(), x), $.between(0, target.height(), y));
-                            para.type = "swap.stop";
+                            para.type = self.getEventName("stop");
                             para.swapType = self.computeSwapType();
                             target.trigger(para.type, target[0], para);
                             self.startX = undefined;
@@ -201,7 +202,10 @@
             };
         },
         render: function () {
-
+            var opt = this.options
+            this.target.css({
+                cursor: opt.cursor
+            });
             return this;
         },
         target: null,
@@ -234,8 +238,7 @@
         /// <param name="c" type="any">属性option子属性名的值</param>
         /// <param name="args" type="any">在调用方法的时候，后面是方法的参数</param>
         /// <returns type="$" />
-        swappable.apply(this, arguments);
-        return this;
+        return swappable.apply(this, arguments);
     }
 
     return swappable;

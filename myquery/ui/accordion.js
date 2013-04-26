@@ -519,10 +519,10 @@
                 var handler;
                 switch (type) {
                     case "key.select":
-                        (handler = target.customHandler) && self.target.trigger(self.widgetEventPrefix + ".key." + handler, this, target, e);
+                        (handler = target.customHandler) && self.target.trigger(self.getEventName("key." + handler), this, target, e);
                         break;
                     case "shell.select":
-                        (handler = target.customHandler) && self.target.trigger(self.widgetEventPrefix + ".shell." + handler, this, target, e);
+                        (handler = target.customHandler) && self.target.trigger(self.getEventName("shell." + handler), this, target, e);
                         break;
                 }
             }

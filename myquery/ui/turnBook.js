@@ -1,4 +1,5 @@
-﻿myQuery.define("ui/turnBook", ["ui/swappable", "main/class", "html5/css3"], function ($, swappable, clas, css3, undefined) {
+﻿/*deprecated*/
+myQuery.define("ui/turnBook", ["ui/swappable", "main/class", "html5/css3"], function ($, swappable, clas, css3, undefined) {
     "use strict"; //启用严格模式
     var turnBook = $.widget("ui.turnBook", {
         appendTo: function (index) {
@@ -234,9 +235,8 @@
             bookName: "default",
             bookType: "Array:String",
             bookContent: null,
-            bookIndex: 0
+            bookIndex: 0,
 
-            ,
             contents: [],
             contentTop: 0,
             contentLeft: 0,
@@ -246,26 +246,21 @@
             contentBackgroundColor: "white",
             contentClass: "myquery_turnbook_content",
             contentFont: "12px",
-            cursor: 'pointer'
+            cursor: 'pointer',
 
-            ,
             inductionWidth: 20,
             isShowMessage: true,
-            inductionCorner: true
+            inductionCorner: true,
 
-            ,
             directionRange: 22.5,
-            disabled: true
+            disabled: true,
 
-            ,
             messageHideTime: 1500,
-            messageClass: "myquery_turnbook_message"
+            messageClass: "myquery_turnbook_message",
 
-            ,
             pages: [],
-            pageBackgroundColor: "white"
+            pageBackgroundColor: "white",
 
-            ,
             positionType: "whole",
             pauseSensitivity: 500
         },
@@ -279,6 +274,11 @@
             setSwap: 1,
             showMessage: 1,
             showPages: 1,
+            isInLeft: 1,
+            isInRight: 1
+        },
+        returns:{
+            inductionCorner: 1,
             isInLeft: 1,
             isInRight: 1
         },
@@ -727,8 +727,7 @@
         /// <param name="c" type="any">属性option子属性名的值</param>
         /// <param name="args" type="any">在调用方法的时候，后面是方法的参数</param>
         /// <returns type="$" />
-        turnBook.apply(this, arguments);
-        return this;
+        return turnBook.apply(this, arguments);
     }
 
     return turnBook;

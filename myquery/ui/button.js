@@ -111,8 +111,7 @@ function($, client, Widget, query, cls, event, dom, attr, src) {
 
     //提供注释
     $.fn.button = function(a, b, c, args) {
-        button.apply(this, arguments);
-        return this;
+        return button.apply(this, arguments);
     }
 
     return button;

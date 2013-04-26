@@ -60,8 +60,7 @@ function($, Widget, Button, query, cls, event, dom, attr, src) {
 
     //提供注释
     $.fn.tabbar = function(a, b, c, args) {
-        tabbar.apply(this, arguments);
-        return this;
+        return tabbar.apply(this, arguments);
     }
 
     return tabbar;

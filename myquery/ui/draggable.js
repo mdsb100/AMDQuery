@@ -14,7 +14,7 @@
 
                 this.initPositionParent();
 
-                this.able();
+                this.enable();
 
                 return this;
             },
@@ -138,7 +138,7 @@
                             x = e.pageX || e.clientX,
                             y = e.pageY || e.clientY,
                             para = {
-                                type: 'drag.start',
+                                type: self.getEventName("start"),
                                 container: self.container,
                                 clientX: x,
                                 clientY: y,
@@ -200,14 +200,14 @@
                                 }
 
                                 eventFuns.preventDefault(e);
-                                para.type = "drag.move";
+                                para.type = self.getEventName("move");
                                 para.offsetX = x;
                                 para.offsetY = y;
                                 target.trigger(para.type, target[0], para);
 
                                 clearTimeout(timeout);
                                 timeout = setTimeout(function() {
-                                    para.type = "drag.pause";
+                                    para.type = self.getEventName("pause");
                                     target.trigger(para.type, target[0], para);
                                 }, opt.pauseSensitivity)
 
@@ -219,9 +219,9 @@
                             clearTimeout(timeout);
                             eventFuns.preventDefault(e);
                             opt.stopPropagation && eventFuns.stopPropagation(e);
-                            para.type = 'drag.stop';
+                            para.type = self.getEventName("stop");
                             dragging = null;
-                            target.trigger('drag.stop', target[0], para);
+                            target.trigger(para.type, target[0], para);
                             break;
                     }
                 };
