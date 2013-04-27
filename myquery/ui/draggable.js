@@ -103,7 +103,7 @@
                 diffx: 0,
                 diffy: 0,
                 axisx: 0,
-                axisy: 0,
+                axisy: 0
             },
             publics: {
                 getPositionX: 1,

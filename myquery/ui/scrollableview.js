@@ -160,7 +160,12 @@ myQuery.define("ui/scrollableview", ["main/query", "main/dom", "main/class", "ht
                 //this.wheelTimeId = null;
                 this._initHandler();
                 this.target.attr("myquery-ui", "scrollableview");
-                this.target.css("overflow", "hidden");
+                this.target.css({
+                    "overflow": "hidden",
+                    /*fix ie*/
+                    "overflow-x": "hidden",
+                    "overflow-y": "hidden"
+                });
 
                 return this.create().render(0, 0);
             },
@@ -172,7 +177,7 @@ myQuery.define("ui/scrollableview", ["main/query", "main/dom", "main/class", "ht
                 "boundaryDruation": 300,
                 "isTransform3d": false,
                 "mouseWheelAccuracy": 0.3,
-                "pullDistance": 50,
+                "pullDistance": 50
             },
             publics: {
                 "refreshPosition": 1,
@@ -297,12 +302,14 @@ myQuery.define("ui/scrollableview", ["main/query", "main/dom", "main/class", "ht
             },
 
             refreshPosition: function() {
-                this.scrollHeight = this.target.scrollHeight();
                 this.scrollWidth = this.target.scrollWidth();
-                this.viewportHeight = this.target.width();
-                this.viewportWidth = this.target.height();
-                this.overflowHeight = this.scrollHeight - this.viewportHeight;
+                this.scrollHeight = this.target.scrollHeight();
+              
+                this.viewportWidth = this.target.width();
+                this.viewportHeight = this.target.height();
+
                 this.overflowWidth = this.scrollWidth - this.viewportWidth;
+                this.overflowHeight = this.scrollHeight - this.viewportHeight;
 
                 return this.refreshStatusBar();
             },
