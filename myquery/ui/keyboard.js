@@ -24,7 +24,7 @@
         options: {
             keyList: []
         },
-        public: {
+        publics: {
             addKey: 1,
             addKeys: 1,
             changeKey: 1,

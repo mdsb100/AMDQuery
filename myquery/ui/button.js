@@ -99,7 +99,7 @@ function($, client, Widget, query, cls, event, dom, attr, src) {
             text: 1,
             title: 1
         },
-        public: {
+        publics: {
 
         },
         target: null,

@@ -36,7 +36,7 @@ function($, Widget, Button, query, cls, event, dom, src) {
             text: 1,
             title: 1
         },
-        public: {
+        publics: {
             select: 1,
             toggle: 1
         },

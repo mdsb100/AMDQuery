@@ -138,7 +138,7 @@ function($, NavItem, Widget, query, cls, event, dom, attr, src) {
         // getter: {
         //     abc: 0
         // },
-        // public: {
+        // publics: {
         // },
         target: null,
         toString: function() {

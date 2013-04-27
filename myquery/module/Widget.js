@@ -205,7 +205,7 @@
         setter: {
             disabled: 0
         },
-        public: {
+        publics: {
             disable: 1,
             enable: 1,
             toString: 1,
@@ -285,9 +285,9 @@
         /// <para>      base.call(this, obj, target);</para>
         /// <para>}</para>
         /// <para>方法会被传入3个参数。obj为初始化参数、target为$的对象、base为Widget基类</para>
-        /// <para>prototype应当实现的属性:container:容器 options:参数 target:目标$ public:对外公开的方法 widgetEventPrefix:自定义事件前缀</para>
+        /// <para>prototype应当实现的属性:container:容器 options:参数 target:目标$ publics:对外公开的方法 widgetEventPrefix:自定义事件前缀</para>
         /// <para>prototype应当实现的方法:返回类型 方法名 this create, this init, this render,Object event</para>
-        /// <para>prototype.public为对外公开的方法，父类覆盖子类遵从于private</para>
+        /// <para>prototype.publics为对外公开的方法，父类覆盖子类遵从于private</para>
         /// <para>prototype.returns 为对外共开方法是否返回一个自己的值 否则将会默认返回原 $对象</para>
         /// <para>prototype.options为参数子类扩展父类</para>
         /// <para>prototype.getter属性器，子类扩展与父类，但遵从于private</para>
@@ -329,7 +329,7 @@
         /*如果当前prototype没有定义setter和getter将自动生成*/
         _initOptionsPurview(constructor);
 
-        _extendAttr("public", constructor, prototype, true);
+        _extendAttr("publics", constructor, prototype, true);
         _extendAttr("returns", constructor, prototype, true);
         _extendAttr("options", constructor);
 
@@ -369,7 +369,7 @@
                             }
                         } else if (a === "destory") {
                             data[a].call(data, key);
-                        } else if (data.public[a]) {
+                        } else if (data.publics[a]) {
                             var temp = data[a].apply(data, $.util.argToArray(arg, 1));
                             if (data.returns[a]) {
                                 result = temp;
@@ -417,7 +417,7 @@
         /// <param name="SuperName" type="String">基类widget名字</param>
         /// <param name="prototype" type="Object">类的prototype 或者是基widget的name</param>
         /// <param name="statics" type="Object">类的静态方法</param>
-        /// <param name="isExtendStatic" type="Bolean">是否扩展静态public customeEventName option 默认true</param>
+        /// <param name="isExtendStatic" type="Bolean">是否扩展静态publics customeEventName option 默认true</param>
         /// <returns type="Function" />
 
         var Super = $.widget.get(SuperName),
@@ -444,8 +444,8 @@
                 prototype.customEventName = prototype.customEventName.concat(Super.prototype.customEventName);
             }
 
-            if ($.isObj(prototype.public)) {
-                prototype.public = $.extend(pub, Super.prototype.public, prototype.public);
+            if ($.isObj(prototype.publics)) {
+                prototype.publics = $.extend(pub, Super.prototype.publics, prototype.publics);
             }
         }
 

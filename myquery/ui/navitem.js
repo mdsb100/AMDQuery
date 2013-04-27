@@ -57,7 +57,11 @@ function($, Widget, cls, event, dom, attr, src, animate) {
             }
 
             /*to fix ie*/
-            this.target.width(this.$item.scrollWidth());
+            this.target.width(this.$title.width());
+            // console.log("title" + this.$title.width())
+            // console.log("arrow" + this.$arrow.width())
+            // console.log("img" + this.$img.width())
+            // console.log("text" + this.$text.width())
             return this;
         },
         toggle: function() {
@@ -170,7 +174,7 @@ function($, Widget, cls, event, dom, attr, src, animate) {
             img: "",
             onfocus: false
         },
-        public: {
+        publics: {
             render: 1,
             getBorad: 1,
             open: 1,

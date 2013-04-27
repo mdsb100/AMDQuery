@@ -79,7 +79,7 @@
             directionRange: 15,
             pauseSensitivity: 500
         },
-        public: {
+        publics: {
             isInPath: 1,
             getPath: 1,
             getPathLast: 1

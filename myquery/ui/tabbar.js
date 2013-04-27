@@ -48,7 +48,7 @@ function($, Widget, Button, query, cls, event, dom, attr, src) {
         setter:{
             
         },
-        public: {
+        publics: {
 
         },
         target: null,

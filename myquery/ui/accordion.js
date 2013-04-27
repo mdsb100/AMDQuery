@@ -509,7 +509,7 @@
             disable: 0,
             oneSelect: 0
         },
-        public: {
+        publics: {
             selectShell: 1
         },
         _initHandler: function() {

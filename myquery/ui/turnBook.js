@@ -267,7 +267,7 @@ myQuery.define("ui/turnBook", ["main/class", "html5/css3", "ui/swappable", "modu
 
         pageHeight: 0,
         pageWidth: 0,
-        public: {
+        publics: {
             hideMessage: 1,
             inductionCorner: 1,
             setBook: 1,

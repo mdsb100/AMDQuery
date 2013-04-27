@@ -105,7 +105,7 @@
                 axisx: 0,
                 axisy: 0,
             },
-            public: {
+            publics: {
                 getPositionX: 1,
                 getPositionY: 1,
                 render: 1

@@ -174,7 +174,7 @@ myQuery.define("ui/scrollableview", ["main/query", "main/dom", "main/class", "ht
                 "mouseWheelAccuracy": 0.3,
                 "pullDistance": 50,
             },
-            public: {
+            publics: {
                 "refreshPosition": 1,
                 "showStatusBar": 1,
                 "hideStatusBar": 1,
