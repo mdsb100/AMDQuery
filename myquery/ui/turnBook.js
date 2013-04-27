@@ -1,8 +1,8 @@
 ﻿/*deprecated*/
-myQuery.define("ui/turnBook", ["ui/swappable", "main/class", "html5/css3"], function ($, swappable, clas, css3, undefined) {
+myQuery.define("ui/turnBook", ["main/class", "html5/css3", "ui/swappable", "module/Widget"], function($, cls, css3, swappable, Widget, undefined) {
     "use strict"; //启用严格模式
-    var turnBook = $.widget("ui.turnBook", {
-        appendTo: function (index) {
+    var turnBook = Widget.extend("ui.turnBook", {
+        appendTo: function(index) {
             var box = this.getBox(index);
             box && box.appendTo(this.container[0]);
             return this;
@@ -13,7 +13,7 @@ myQuery.define("ui/turnBook", ["ui/swappable", "main/class", "html5/css3"], func
 
         cache: null,
         container: null,
-        create: function () {
+        create: function() {
             var opt = this.options,
                 size;
 
@@ -50,7 +50,7 @@ myQuery.define("ui/turnBook", ["ui/swappable", "main/class", "html5/css3"], func
                 l: this.bookWidth / 4,
                 w: this.bookWidth / 2,
                 h: this.bookHeight / 2
-            }, "div").replaceClass(opt.messageClass).addHandler("mousedown", function () {
+            }, "div").replaceClass(opt.messageClass).addHandler("mousedown", function() {
                 $(this).hide();
             }).hide();
 
@@ -66,7 +66,7 @@ myQuery.define("ui/turnBook", ["ui/swappable", "main/class", "html5/css3"], func
 
             return this;
         },
-        createPage: function () {
+        createPage: function() {
             var opt = this.options,
                 box = $({
                     w: this.pageWidth,
@@ -85,7 +85,7 @@ myQuery.define("ui/turnBook", ["ui/swappable", "main/class", "html5/css3"], func
             page.box = box;
             return page;
         },
-        createContext: function (html) {
+        createContext: function(html) {
             var opt = this.options,
                 content;
             switch (opt.bookType) {
@@ -101,10 +101,10 @@ myQuery.define("ui/turnBook", ["ui/swappable", "main/class", "html5/css3"], func
                         //, color: opt.contentFontColor
                         //, font: opt.contentFont
                         //, b: opt.contentBackgroundColor
-                    ,
+                        ,
                         p: "0",
                         cursor: "pointer"
-                    }, "img").addHandler("mousedown", function (e) {
+                    }, "img").addHandler("mousedown", function(e) {
                         $.event.document.preventDefault(e);
                     }).replaceClass(opt.contentClass);
                     content[0].setAttribute("src", html);
@@ -126,7 +126,7 @@ myQuery.define("ui/turnBook", ["ui/swappable", "main/class", "html5/css3"], func
                         p: "0",
                         pointerEvents: "auto",
                         cursor: "pointer"
-                    }, "textArea").addHandler("mousedown", function (e) {
+                    }, "textArea").addHandler("mousedown", function(e) {
                         $.event.document.preventDefault(e);
                     }).replaceClass(opt.contentClass).html(html || "");
                     content[0].setAttribute("readonly", "readonly");
@@ -147,7 +147,7 @@ myQuery.define("ui/turnBook", ["ui/swappable", "main/class", "html5/css3"], func
         },
         customEventName: ["star", "move", "pause", "stop"],
 
-        disable: function () {
+        disable: function() {
             //var event = this.event();
             this.container.swappable({
                 start: null,
@@ -158,10 +158,10 @@ myQuery.define("ui/turnBook", ["ui/swappable", "main/class", "html5/css3"], func
             }); //.removeHandler("mouseout", event);
         },
 
-        event: function () {
+        event: function() {
 
         },
-        enable: function () {
+        enable: function() {
             var event = this.event;
             this.disable();
             this.container.swappable({
@@ -173,28 +173,28 @@ myQuery.define("ui/turnBook", ["ui/swappable", "main/class", "html5/css3"], func
             }); //.addHandler("mouseout", event);
         },
 
-        getBox: function (index) {
+        getBox: function(index) {
             var page = this.getPage(index),
                 box = page != undefined ? page.box : undefined;
             return box
         },
-        getContent: function (index) {
+        getContent: function(index) {
             return this.options.contents[index];
         },
-        getPage: function (index) {
+        getPage: function(index) {
             return this.options.pages[index];
         },
 
-        hideMessage: function () {
+        hideMessage: function() {
             this.message.hide();
         },
 
-        init: function (opt, target) {
+        init: function(opt, target) {
             this._super(opt, target);
             this.create();
             return this;
         },
-        inductionCorner: function (x, y) {
+        inductionCorner: function(x, y) {
             var opt = this.options,
                 result = false;
             //&& opt.positionType != "half"
@@ -214,17 +214,17 @@ myQuery.define("ui/turnBook", ["ui/swappable", "main/class", "html5/css3"], func
             return result;
 
         },
-        isInLeft: function (x) {
+        isInLeft: function(x) {
             return x < this.bookWidth / 2;
         },
-        isInRight: function (x) {
+        isInRight: function(x) {
             return x > this.bookWidth / 2;
         },
 
         message: null,
 
-        option:function(obj){
-            this._superCall("option", obj); 
+        option: function(obj) {
+            Widget.invoke("option", this, obj);
             var opt = this.options;
             if (opt.bookType != "half" && opt.bookIndex % 2) {
                 opt.bookIndex += 1;
@@ -277,19 +277,19 @@ myQuery.define("ui/turnBook", ["ui/swappable", "main/class", "html5/css3"], func
             isInLeft: 1,
             isInRight: 1
         },
-        returns:{
+        returns: {
             inductionCorner: 1,
             isInLeft: 1,
             isInRight: 1
         },
-        _initHandler: function () {
+        _initHandler: function() {
             var self = this,
                 target = self.target,
                 opt = self.options,
                 bookWidth = self.bookWidth,
                 pageWidth = self.pageWidth,
                 shadow = "10px 4px 2px rgba(0,0,0,.6),-5px 4px 2px rgba(0,0,0,.6)",
-                mouseshow, turnNextHalf = function (index, offsetX) {
+                mouseshow, turnNextHalf = function(index, offsetX) {
                     self.setBoxCss(index, {
                         w: $.between(0, pageWidth, pageWidth + offsetX - bookWidth)
                     })
@@ -301,7 +301,7 @@ myQuery.define("ui/turnBook", ["ui/swappable", "main/class", "html5/css3"], func
                         tx: offsetX
                     });
                 },
-                turnPreHalf = function (index, offsetX) {
+                turnPreHalf = function(index, offsetX) {
                     index && self.setCss(self.backgound, {
                         w: $.between(0, pageWidth, (bookWidth - offsetX) / 2),
                         l: offsetX,
@@ -310,7 +310,7 @@ myQuery.define("ui/turnBook", ["ui/swappable", "main/class", "html5/css3"], func
                         tx: offsetX
                     })
                 },
-                turnNextWhole = function (index, offsetX) {
+                turnNextWhole = function(index, offsetX) {
                     self.setBoxCss(index, {
                         w: $.between(0, pageWidth, pageWidth + offsetX - bookWidth)
                     }).setBoxCss(index + 1, {
@@ -321,7 +321,7 @@ myQuery.define("ui/turnBook", ["ui/swappable", "main/class", "html5/css3"], func
                         tx: offsetX
                     });
                 },
-                turnPreWhole = function (index, offsetX) {
+                turnPreWhole = function(index, offsetX) {
                     self.setBoxCss(index - 1, {
                         w: $.between(0, pageWidth, pageWidth - offsetX),
                         l: offsetX
@@ -339,7 +339,7 @@ myQuery.define("ui/turnBook", ["ui/swappable", "main/class", "html5/css3"], func
                         l: $.between(-pageWidth, 0, offsetX / 2 - pageWidth)
                     });
                 };
-            this.event = function (e) {
+            this.event = function(e) {
                 var index = opt.bookIndex,
                     offsetX = e.offsetX,
                     offsetY = e.offsetY;
@@ -348,7 +348,7 @@ myQuery.define("ui/turnBook", ["ui/swappable", "main/class", "html5/css3"], func
                         //只会在非无线端有作用
                         //var x = (e.pageX || e.clientX) - self.target.getLeft(), y = (e.pageY || e.clientY) - self.target.getTop();
                         var x = e.offsetX,
-                        y = e.offsetY;
+                            y = e.offsetY;
                         if (opt.inductionCorner == true && self.inductionCorner(x, y)) {
                             mouseshow = true;
                             if (opt.positionType != "half") {
@@ -423,16 +423,16 @@ myQuery.define("ui/turnBook", ["ui/swappable", "main/class", "html5/css3"], func
                         e.type = "turnbookstop";
                         target.trigger('turnbookstop', self, e);
                         break;
-                    //                    case "mouseout":                                                                        
-                    //                        if (opt.inductionCorner == true && mouseshow) {                                                                        
-                    //                            self.showPages(index);                                                                        
-                    //                        }                                                                        
-                    //                        break;                                                                        
+                        //                    case "mouseout":                                                                        
+                        //                        if (opt.inductionCorner == true && mouseshow) {                                                                        
+                        //                            self.showPages(index);                                                                        
+                        //                        }                                                                        
+                        //                        break;                                                                        
                 }
             }
 
         },
-        render: function (direction, startX) {
+        render: function(direction, startX) {
             var opt = this.options;
             if (direction == "right") {
                 if (opt.bookIndex >= opt.pages.length - 1) {
@@ -454,7 +454,7 @@ myQuery.define("ui/turnBook", ["ui/swappable", "main/class", "html5/css3"], func
             return this;
         },
 
-        setBook: function (bookName, bookType, bookContent, bookIndex) {
+        setBook: function(bookName, bookType, bookContent, bookIndex) {
             var opt = this.options,
                 cache = this.cache[bookName];
             if (cache) {
@@ -470,7 +470,7 @@ myQuery.define("ui/turnBook", ["ui/swappable", "main/class", "html5/css3"], func
                             opt.pages = [];
                             opt.contents = [];
                             len % 2 == 1 && bookContent.push("");
-                            $.each(bookContent, function (value, index) {
+                            $.each(bookContent, function(value, index) {
                                 page = this.createPage();
                                 opt.pages[index] = page;
                                 content = this.createContext(value).appendTo(page);
@@ -483,7 +483,7 @@ myQuery.define("ui/turnBook", ["ui/swappable", "main/class", "html5/css3"], func
                             opt.pages = [];
                             opt.contents = [];
                             len % 2 == 1 && bookContent.push("");
-                            $.each(bookContent, function (value, index) {
+                            $.each(bookContent, function(value, index) {
                                 page = this.createPage();
                                 opt.pages[index] = page;
                                 content = this.createContext(value).appendTo(page);
@@ -504,13 +504,13 @@ myQuery.define("ui/turnBook", ["ui/swappable", "main/class", "html5/css3"], func
             }
             return this;
         },
-        setBoxCss: function (index, css, css3d) {
+        setBoxCss: function(index, css, css3d) {
             var opt = this.options,
                 box = this.getBox(index);
             box && this.setCss(box, css, css3d);
             return this;
         },
-        setContextCss: function (index, css) {
+        setContextCss: function(index, css) {
             var opt = this.options,
                 content = this.getContent(index);
             if (content) {
@@ -526,7 +526,7 @@ myQuery.define("ui/turnBook", ["ui/swappable", "main/class", "html5/css3"], func
             }
             return this;
         },
-        setPageCss: function (index, css, css3d) {
+        setPageCss: function(index, css, css3d) {
             var opt = this.options,
                 page = this.getPage(index);
             if (page) {
@@ -536,7 +536,7 @@ myQuery.define("ui/turnBook", ["ui/swappable", "main/class", "html5/css3"], func
             }
             return this;
         },
-        setCss: function (item, css, css3d) {
+        setCss: function(item, css, css3d) {
             if (css3d && $.support.transform3d) {
                 delete css.l;
                 delete css.left;
@@ -553,7 +553,7 @@ myQuery.define("ui/turnBook", ["ui/swappable", "main/class", "html5/css3"], func
             return this;
         },
 
-        setSwap: function (pauseSensitivity, directionRange, cursor) {
+        setSwap: function(pauseSensitivity, directionRange, cursor) {
             var opt = this.options;
             pauseSensitivity = pauseSensitivity || opt.pauseSensitivity;
             directionRange = directionRange || opt.directionRange;
@@ -567,7 +567,7 @@ myQuery.define("ui/turnBook", ["ui/swappable", "main/class", "html5/css3"], func
             opt.directionRange = directionRange;
             opt.cursor = cursor;
         },
-        showPages: function (index) {
+        showPages: function(index) {
             var opt = this.options,
                 begin, close, len = opt.pages.length - 1,
                 pageWidth = this.pageWidth,
@@ -667,7 +667,7 @@ myQuery.define("ui/turnBook", ["ui/swappable", "main/class", "html5/css3"], func
             }
             this.cache[opt.bookName].bookIndex = opt.bookIndex = index;
         },
-        showMessage: function (msg, autoHide) {
+        showMessage: function(msg, autoHide) {
             if (this.options.isShowMessage !== true) return this.hideMessage();
             this.message.appendTo(this.container).show();
             if ($.isStr(msg)) {
@@ -677,14 +677,14 @@ myQuery.define("ui/turnBook", ["ui/swappable", "main/class", "html5/css3"], func
             }
             if (autoHide === false) return;
             var self = this;
-            setTimeout(function () {
+            setTimeout(function() {
                 self.hideMessage();
             }, this.options.messageHideTime);
 
         },
-        
+
         target: null,
-        toString: function () {
+        toString: function() {
             return "ui.turnbook";
         },
 
@@ -692,7 +692,7 @@ myQuery.define("ui/turnBook", ["ui/swappable", "main/class", "html5/css3"], func
     });
 
     //提供注释
-    $.fn.turnBook = function (a, b, c, args) {
+    $.fn.turnBook = function(a, b, c, args) {
         /// <summary>翻书
         /// <para>大小位置关系初始化后不得修改</para>
         /// <para>str obj.bookName:书名 缺省"default"</para>

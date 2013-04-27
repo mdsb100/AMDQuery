@@ -14,7 +14,7 @@ function($, Widget, Button, query, cls, event, dom, src) {
         href: $.getPath("ui/css/tabbutton", ".css")
     });
 
-    var tabbutton = Widget.extend("ui.tabbutton", {
+    var tabbutton = Button.extend("ui.tabbutton", {
         options: {
             defualtCssName: "defaultTabButton",
             selectCssName: "selectTabButton",
@@ -78,7 +78,7 @@ function($, Widget, Button, query, cls, event, dom, src) {
             return this;
         },
         render: function() {
-            this._superCall("render");
+            Button.invoke("render", this);
 
             if (this.defualtCssName != opt.defualtCssName) {
                 this.target.removeClass(this.defualtCssName);
