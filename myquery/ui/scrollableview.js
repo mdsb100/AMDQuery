@@ -388,7 +388,7 @@ myQuery.define("ui/scrollableview", ["main/query", "main/dom", "main/class", "ht
             },
 
             outerXBoundary: function(t) {
-                if (t > 0) {
+                if (t >= 0) {
                     return 0;
                 } else if (t < -this.overflowWidth) {
                     return -this.overflowWidth;
@@ -397,7 +397,7 @@ myQuery.define("ui/scrollableview", ["main/query", "main/dom", "main/class", "ht
             },
 
             outerYBoundary: function(t) {
-                if (t > 0) {
+                if (t >= 0) {
                     return 0;
                 } else if (t < -this.overflowHeight) {
                     return -this.overflowHeight;
@@ -406,7 +406,7 @@ myQuery.define("ui/scrollableview", ["main/query", "main/dom", "main/class", "ht
             },
 
             _triggerAnimate: function(scene, direction, duration, distance) {
-                var type = self.getEventName("animationEnd");
+                var type = this.getEventName("animationEnd");
                 this.target.trigger(type, this.container[0], {
                     type: type,
                     scene: scene,
