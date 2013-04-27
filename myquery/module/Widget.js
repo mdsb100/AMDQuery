@@ -168,7 +168,7 @@
             this.option(obj);
             return this;
         },
-        instanceof: function(item) {
+        instanceofWidget: function(item) {
             var name, constructor = item;
             if ($.isStr(item)) {
                 constructor = $.widget.get(item);
@@ -210,7 +210,7 @@
             enable: 1,
             toString: 1,
             getSelf: 1,
-            instanceof: 1,
+            instanceofWidget: 1,
             equals: 1,
             beSetter: 1,
             beGetter: 1
@@ -218,7 +218,7 @@
         returns: {
             toString: 1,
             getSelf: 1,
-            instanceof: 1,
+            instanceofWidget: 1,
             equals: 1,
             beSetter: 1,
             beGetter: 1
