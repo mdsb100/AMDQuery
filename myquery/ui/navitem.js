@@ -32,11 +32,11 @@ function($, client, Widget, cls, event, dom, attr, src, animate) {
         },
         enable: function() {
             var fun = this.event;
-            this.$title.on("click", fun);
+            this.$text.on("click", fun);
         },
         disable: function() {
             var fun = this.event;
-            this.$title.off("click", fun);
+            this.$text.off("click", fun);
         },
         getBoard: function() {
             return this.$board;
