@@ -22,16 +22,20 @@
             event: function() {},
             enable: function() {
                 var fun = this.event;
-                this.disable();
+                this.disable();    
                 $("body").on("mouseup", fun);
                 this.container.on('mousemove mouseup', fun);
                 this.target.on('mousedown', fun);
+                this.options.disabled = true;
+                return this;
             },
             disable: function() {
                 var fun = this.event;
                 $("body").off("mouseup", fun);
                 this.container.off('mousemove mouseup', fun);
                 this.target.off('mousedown', fun);
+                this.options.disabled = false;
+                return this;
             },
             init: function(opt, target) {
                 this._super(opt, target);
@@ -76,9 +80,7 @@
                 if(this.positionParent){
                     if (this.options.overflow == true) {
                         this.positionParent.css({
-                            "overflow": "hidden",
-                            "overflow-y": "hidden",
-                            "overflow-x": "hidden"
+                            "overflow": "hidden"
                         });
                     } else {
                         this.positionParent.css("overflow", "");

@@ -37,11 +37,14 @@ function($, client, Widget, query, cls, event, dom, attr, src) {
             return this;
         },
         enable: function() {
+            this.disable();
             this.target.on("click", this.event);
+            this.options.disabled = true;
             return this;
         },
         disable: function() {
             this.target.off("click", this.event);
+            this.options.disabled = false;
             return this;
         },
         render: function() {

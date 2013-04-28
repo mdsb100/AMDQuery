@@ -14,8 +14,18 @@
         enable: function () {
             var fun = this.event;
             this.disable();
-            this.target.on('mousemove', fun).on('mousedown', fun)
+            this.target.on('mousemove', fun).on('mousedown', fun);
             $(document).on('mouseup', fun);
+            this.options.disabled = true;
+            return this;
+        },
+        disable: function () {
+            var fun = this.event;
+            this.target.off('mousemove', fun).off('mousedown', fun);
+            //event.document.off(window, 'scroll', fun);
+            $(document).off('mouseup', fun);
+            this.options.disabled = false;
+            return this;
         },
         computeSwapType: function (swapTypeName) {
             var path = this.path,
@@ -24,13 +34,7 @@
             ///先用简单实现
             ///这里去计算path 最后返回如: "LeftToRight","Linear","Cicrle" 多元线性回归;
             return swaptype;
-        },
-        disable: function () {
-            var fun = this.event;
-            this.target.off('mousemove', fun).off('mousedown', fun)
-            //event.document.off(window, 'scroll', fun);
-            $(document).off('mouseup', fun)
-        },
+        },  
         getPara: function (para, time, range, x1, y1, x2, y2) {
             var diff = (new Date()) - time;
             para.distance = Math.round(math.distance(x1, y1, x2, y2));

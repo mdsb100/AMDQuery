@@ -51,6 +51,7 @@ function($, NavItem, Widget, query, cls, event, dom, attr, src) {
                 $(ele).on("navitem.open", fun);
                 $(ele).on("navitem.close", fun);
             }
+            this.options.disabled = true;
             return this;
         },
         disable: function() {
@@ -63,6 +64,7 @@ function($, NavItem, Widget, query, cls, event, dom, attr, src) {
                 $(ele).off("navitem.open", fun);
                 $(ele).off("navitem.close", fun);
             }
+            this.options.disabled = false;
             return this;
         },
         getNavItemsByHtml: function(str) {

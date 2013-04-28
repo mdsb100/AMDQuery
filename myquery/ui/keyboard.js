@@ -9,9 +9,13 @@
         enable: function () {
             this.disable();
             this.keyBoard.enable();
+            this.options.disabled = true;
+            return this;
         },
         disable: function () {
             this.keyBoard.disable();
+            this.options.disabled = false;
+            return this;
         },
         init: function (opt, target) {
             this._super(opt, target);

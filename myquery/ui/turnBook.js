@@ -146,7 +146,9 @@ myQuery.define("ui/turnBook", ["main/class", "html5/css3", "ui/swappable", "modu
             return content;
         },
         customEventName: ["star", "move", "pause", "stop"],
+        event: function() {
 
+        },
         disable: function() {
             //var event = this.event();
             this.container.swappable({
@@ -155,11 +157,9 @@ myQuery.define("ui/turnBook", ["main/class", "html5/css3", "ui/swappable", "modu
                 move: null,
                 pause: null,
                 mousemove: null
-            }); //.removeHandler("mouseout", event);
-        },
-
-        event: function() {
-
+            });
+            this.options.disabled = false;
+            return this;
         },
         enable: function() {
             var event = this.event;
@@ -170,7 +170,9 @@ myQuery.define("ui/turnBook", ["main/class", "html5/css3", "ui/swappable", "modu
                 move: event,
                 pause: event,
                 mousemove: event
-            }); //.addHandler("mouseout", event);
+            });
+            this.options.disabled = true;
+            return this;
         },
 
         getBox: function(index) {

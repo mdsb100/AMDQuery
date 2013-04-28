@@ -77,9 +77,6 @@
 
 
     object.extend(Widget, {
-        able: function() {
-            this.options.disabled === false ? this.disable() : this.enable();
-        },
         addTag: function() {
             var
             attr = "myquery-" + this.widgetNameSpace + "-" + this.widgetName,
@@ -147,11 +144,16 @@
                 }
             }
         },
+        able: function() {
+            this.options.disabled === false ? this.disable() : this.enable();
+        },
         disable: function() {
-
+            this.options.disabled = false;
+            return this;
         },
         enable: function() {
-
+            this.options.disabled = true;
+            return this;
         },
         event: function() {},
 

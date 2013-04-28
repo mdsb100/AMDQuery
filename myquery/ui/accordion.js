@@ -484,6 +484,7 @@
                 .on("shell.select", this.event)
                 .on("shell.open", this.event)
                 .on("shell.close", this.event);
+             this.options.disabled = true;
         },
         disable: function() {
             this.accordion.disable()
@@ -491,6 +492,7 @@
                 .on("shell.select", this.event)
                 .on("shell.open", this.event)
                 .on("shell.close", this.event);
+            this.options.disabled = false;
         },
         init: function(opt, target) {
             this._super(opt, target);

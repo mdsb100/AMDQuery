@@ -27,10 +27,12 @@ function($, Widget, Button, query, cls, event, dom, attr, src) {
         },
         enable: function() {
 
+            this.options.disabled = true;
             return this;
         },
         disable: function() {
 
+            this.options.disabled = false;
             return this;
         },
         init: function(opt, target) {
