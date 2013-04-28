@@ -231,7 +231,6 @@
                             para.type = self.getEventName("stop");
                             dragging = null;
                             target.trigger(para.type, target[0], para);
-                            console.log("pointer", opt.cursor);
                             self.target.css({
                                 cursor: "pointer"
                             });
