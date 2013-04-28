@@ -1,4 +1,5 @@
 myQuery.define("ui/navitem", [
+    "base/client",
     "module/Widget",
     "main/class",
     "main/event",
@@ -9,7 +10,7 @@ myQuery.define("ui/navitem", [
     "module/tween.extend",
     "module/effect"],
 
-function($, Widget, cls, event, dom, attr, src, animate) {
+function($, client, Widget, cls, event, dom, attr, src, animate) {
     "use strict"; //启用严格模式
 
     var navitem = Widget.extend("ui.navitem", {
@@ -56,12 +57,10 @@ function($, Widget, cls, event, dom, attr, src, animate) {
                 this.$arrow.removeClass("arrowRight").removeClass("arrowBottom");
             }
 
-            /*to fix ie*/
-            this.target.width(this.$title.width());
-            // console.log("title" + this.$title.width())
-            // console.log("arrow" + this.$arrow.width())
-            // console.log("img" + this.$img.width())
-            // console.log("text" + this.$text.width())
+           
+            // if(client.browser.ie){
+            //     //this.$title.width(this.$arrow.width() + this.$img.width() + this.$text.width());
+            // }
             return this;
         },
         toggle: function() {
@@ -133,27 +132,35 @@ function($, Widget, cls, event, dom, attr, src, animate) {
                 "clear": "both"
             }).addClass("item");
 
-            this.$arrow = $($.createEle("div")).css({
+            this.$arrow = $($.createEle("li")).css({
                 "float": "left"
             }).addClass("arrow");
 
-            this.$img = $($.createEle("div")).css({
+            this.$img = $($.createEle("li")).css({
                 "float": "left"
             }).addClass("img");
             //.attr("src", "data:image/gif;base64,R0lGODlhAQABAID/AMDAwAAAACH5BAEAAAAALAA" /*to fix chrome border*/ );
 
-            this.$text = $($.createEle("div")).css({
+            this.$text = $($.createEle("li")).css({
                 "float": "left"
             }).addClass("text");
 
+            this.$titleContainer = $($.createEle("ul")).css({
+                "display": "block",
+                "float": "left"
+            }).addClass("title");
+
             this.$title = $($.createEle("a")).css({
                 "display": "block",
+                "clear": "both",
                 "text-decoration": "none"
             }).addClass("title");
 
             this.$board.append(this.$child);
 
-            this.$title.append(this.$arrow).append(this.$img).append(this.$text);
+            this.$titleContainer.append(this.$arrow).append(this.$img).append(this.$text);
+
+            this.$title.append(this.$titleContainer);
 
             this.$item.append(this.$title);
 

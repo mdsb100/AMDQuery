@@ -16,7 +16,6 @@
             $nav.on("navmenu.open", function(e){
                 
             });
-
         });
        
     </script>
@@ -26,6 +25,7 @@
         <tbody>
             <tr>
                 <td style="width: 200px;">
+
                     <div id="nav" myquery-ui="navmenu" >
                         <ul>
                             <li myquery-ui="navitem" navitem="html:main;img:module">
@@ -42,7 +42,11 @@
                             </li>
                             <li myquery-ui="navitem" navitem="html:module;img:module">
                                 <ul>
-                                    <li myquery-ui="navitem" navitem="html:animate;img:class"></li>
+                                    <li myquery-ui="navitem" navitem="html:animate;img:class">
+                                         <ul>
+                                            <li myquery-ui="navitem" navitem="html:animate;img:class"></li>
+                                        </ul>
+                                    </li>
                                     <li myquery-ui="navitem" navitem="html:AnimateColor;img:class"></li> 
                                     <li myquery-ui="navitem" navitem="html:color;img:class"></li> 
                                     <li myquery-ui="navitem" navitem="html:date.prototype;img:class"></li> 
