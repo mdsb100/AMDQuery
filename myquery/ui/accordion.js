@@ -471,7 +471,7 @@
         }
     }, CustomEvent);
 
-    var accordion = $.widget("ui.accordion", {
+    var accordion = Widget.extend("ui.accordion", {
         container: null,
         customEventName: ["key.select", "shell.open", "shell.close", "shell.select"],
         event: function() {

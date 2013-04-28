@@ -153,13 +153,13 @@ myQuery.define("module/object", ["base/extend"], function($, utilExtend) {
             prototype.constructor = anonymous;
             $.easyExtend(anonymous.prototype, prototype);
 
-            $.easyExtend(anonymous, statics);
-
             anonymous.inherit = _inheritTemplate;
             anonymous.extend = _extendTemplate;
             anonymous.joinPrototype = _joinPrototypeTemplate;
             anonymous.instance = _instance;
             anonymous.fn = anonymous.prototype;
+
+            $.easyExtend(anonymous, statics);
 
             return anonymous;
         },

@@ -1,6 +1,6 @@
 ﻿myQuery.define("ui/swappable", ["base/client", "main/event", "module/math", "module/Widget"], function ($, client, event, math, Widget, undefined) {
     "use strict"; //启用严格模式 
-    var swappable = $.widget("ui.swappable", {
+    var swappable = Widget.extend("ui.swappable", {
         container: null,
         create: function () {
             this._initHandler();
