@@ -1,7 +1,6 @@
 .navmenu
 {
     /*text-align: center;*/
-    cursor: pointer;
     background-color: White;
     /*
         fix safari
@@ -21,6 +20,7 @@
 .navmenu .img{
     width: 16px;
     height: 28px;
+    cursor: pointer;
 }
 
 .navmenu .module{
@@ -52,7 +52,6 @@
 {
     height: 28px;
     text-align: left;
-    cursor: pointer;
     line-height: 28px;
     font-family: 宋体;
     font-weight: bold;
@@ -72,6 +71,7 @@
 .navmenu .arrow{
     width: 16px;
     height: 28px;
+    cursor: pointer;
 }
 
 .navmenu .arrowRight
@@ -93,6 +93,7 @@
     /*width: 166px;*/
     height: 100%;
     font-size:14px;
+    cursor: pointer;
 }
 
 .navmenu .board

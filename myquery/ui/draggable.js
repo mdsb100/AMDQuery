@@ -111,7 +111,8 @@
                 diffx: 0,
                 diffy: 0,
                 axisx: 0,
-                axisy: 0
+                axisy: 0,
+                cursor: 0
             },
             publics: {
                 getPositionX: 1,
@@ -230,6 +231,10 @@
                             para.type = self.getEventName("stop");
                             dragging = null;
                             target.trigger(para.type, target[0], para);
+                            console.log("pointer", opt.cursor);
+                            self.target.css({
+                                cursor: "pointer"
+                            });
                             break;
                     }
                 };
