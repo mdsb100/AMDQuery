@@ -73,10 +73,16 @@
                 if (overflow !== undefined) {
                     this.options.overflow = overflow;
                 }
-                if (overflow == true) {
-                    this.positionParent.css("overflow", "hidden");
-                } else {
-                    this.positionParent.css("overflow", "");
+                if(this.positionParent){
+                    if (this.options.overflow == true) {
+                        this.positionParent.css({
+                            "overflow": "hidden",
+                            "overflow-y": "hidden",
+                            "overflow-x": "hidden"
+                        });
+                    } else {
+                        this.positionParent.css("overflow", "");
+                    }
                 }
             },
             _setContainer: function(container) {
