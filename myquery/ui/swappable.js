@@ -66,7 +66,6 @@
         },
         init: function (opt, target) {
             this._super(opt, target);
-            target.attr("myquery-ui", "swappable");
             this.path = [];
             this.isDown = false;
             this.startY = null;
