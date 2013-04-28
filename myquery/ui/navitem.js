@@ -33,10 +33,12 @@ function($, client, Widget, cls, event, dom, attr, src, animate) {
         enable: function() {
             var fun = this.event;
             this.$text.on("click", fun);
+            this.$arrow.on("click", fun);
         },
         disable: function() {
             var fun = this.event;
             this.$text.off("click", fun);
+            this.$arrow.off("click", fun);
         },
         getBoard: function() {
             return this.$board;
@@ -56,7 +58,6 @@ function($, client, Widget, cls, event, dom, attr, src, animate) {
             if (!this.hasChild()) {
                 this.$arrow.removeClass("arrowRight").removeClass("arrowBottom");
             }
-
            
             // if(client.browser.ie){
             //     //this.$title.width(this.$arrow.width() + this.$img.width() + this.$text.width());
