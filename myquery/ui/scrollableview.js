@@ -3,7 +3,7 @@ myQuery.define("ui/scrollableview", ["main/query", "main/dom", "main/class", "ht
     src.link({
         href: $.getPath("ui/css/scrollableview", ".css")
     });
-    var eventFuns = $.event.document,
+    var transitionToAnimation = !! $.config.module.transitionToAnimation,
         scrollableview = Widget.extend("ui.scrollableview", {
             container: null,
             create: function() {
@@ -44,7 +44,8 @@ myQuery.define("ui/scrollableview", ["main/query", "main/dom", "main/class", "ht
                     axisx: this._isAllowedDirection("x"),
                     axisy: this._isAllowedDirection("y"),
                     isTransform3d: opt.isTransform3d,
-                    container: this.target
+                    container: this.target,
+                    overflow: true
                 });
 
                 this.refreshPosition();
@@ -175,7 +176,6 @@ myQuery.define("ui/scrollableview", ["main/query", "main/dom", "main/class", "ht
                 "animateDuration": 600,
                 "boundary": 150,
                 "boundaryDruation": 300,
-                "isTransform3d": false,
                 "mouseWheelAccuracy": 0.3,
                 "pullDistance": 50
             },
@@ -188,7 +188,7 @@ myQuery.define("ui/scrollableview", ["main/query", "main/dom", "main/class", "ht
                 "toY": 1
             },
             isTransform3d: function() {
-                return this.options.isTransform3d && $.support.transform3d;
+                return transitionToAnimation && $.support.transform3d;
             },
             render: function(x, y, addtion, boundary) {
                 var position,
@@ -304,7 +304,7 @@ myQuery.define("ui/scrollableview", ["main/query", "main/dom", "main/class", "ht
             refreshPosition: function() {
                 this.scrollWidth = this.target.scrollWidth();
                 this.scrollHeight = this.target.scrollHeight();
-              
+
                 this.viewportWidth = this.target.width();
                 this.viewportHeight = this.target.height();
 
