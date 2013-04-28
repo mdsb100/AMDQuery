@@ -1,6 +1,6 @@
 ﻿/// <reference path="../myquery.js" />
 
-myQuery.define("main/dom", ["base/support", "main/data", "main/event"], function ($, support, data, event, undefined) {
+myQuery.define("main/dom", ["base/support", "base/client", "main/data", "main/event"], function ($, support, client, data, event, undefined) {
     "use strict"; //启用严格模式
     //和jquery做个测试
     var 
@@ -441,7 +441,7 @@ myQuery.define("main/dom", ["base/support", "main/data", "main/event"], function
             if(ele.parentNode){
                 var parentNode = ele.parentNode;
                 parentNode.removeChild(ele);
-                if ($.client.browser.ie678) {
+                if (client.browser.ie678) {
                     ele = null;
                 }
             }   
@@ -507,7 +507,7 @@ myQuery.define("main/dom", ["base/support", "main/data", "main/event"], function
             /// <param name="alpha" type="Number">0-1</param>
             /// <returns type="self" />
             alpha = $.between(0, 1, alpha);
-            if ($.client.browser.ie678)
+            if (client.browser.ie678)
                 ele.style.filter = 'Alpha(opacity=' + (alpha * 100) + ')'; //progid:DXImageTransform.Microsoft.
             else
                 ele.style.opacity = alpha;
@@ -1186,6 +1186,14 @@ myQuery.define("main/dom", ["base/support", "main/data", "main/event"], function
             /// <para>Height:相对于整个大小</para>
             /// </summary>
             /// <returns type="Number" />
+            if(client.browser.ie < 8){
+                var ele = this[0],
+                origin = $.style(ele, "overflow"), ret;
+                $.css(ele, "overflow", "scroll");
+                ret = ele.scrollHeight || 0;
+                $.css(ele, "overflow", origin);
+                return ret;
+            }
             return this[0].scrollHeight || 0;
         }
         , scrollWidth: function () {
