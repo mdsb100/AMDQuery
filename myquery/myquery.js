@@ -26,7 +26,7 @@
                         /// <param name="info" type="String/Object">方法名</param>
                         /// <returns />
                         var a = arguments[2] || "log";
-                        if(window.console[a]) {
+                        if(window.console && window.console[a]) {
                             var s = "";
                             if(info.fn && info.msg) {
                                 s = ["call ", info.fn, "()", " error: ", info.msg].join("");
@@ -187,7 +187,8 @@
             //检查循环依赖
             detectCR: false,
             "debug": true,
-            timeout: 10000
+            timeout: 10000,
+            console: false
         },
         ui: {
             init: false,
@@ -1020,7 +1021,7 @@
                     F = [F]
                 };
                 this.module = F;
-
+                _config.amd.console && $.console.log("module " + id + " ready");
                 //_getMoudule(id, F);
                 //当传入的模块是已准备好的，开启转正机会
                 //setTimeout?
