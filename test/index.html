@@ -6,15 +6,24 @@
     <link href="../css/reset.css" rel="stylesheet" type="text/css" />
     <script src="../myquery/myquery.js" type="text/javascript" module="transitionToAnimation:0" ui="init:1"></script>
     <script type="text/javascript">
-        
-        window.attr = function  (argument) {
-            alert()
-        }
+        $.require(["main/query", "main/attr", "ui/navmenu", "module/Widget", "module/src"], function (query, attr, Navmenu, Widget, src) {
+            var $nav = $("#nav"), $content = $("#content");
 
-        $.require(["main/query", "main/attr", "ui/navmenu", "module/Widget"], function (query, attr, Navmenu, Widget) {
-            var $nav = $("#nav")
             $nav.on("navmenu.open", function(e){
-               //console.log($.getPath("../test/ui/", ".html"));
+                var target = $(e.navitem),
+                ret = target.uiNavitem("getOptionToRoot"),
+                path;
+                if(ret.length > 1){
+                    ret.push("test", "..")/*relative*/
+                    path = $.getPath(ret.reverse().join("/"), ".html");
+                    $content.src({
+                        src : path
+                    });
+                }
+            });
+
+            $("#td").on("dblclick", function () {
+                window.open($content.attr("src"));
             });
 
         });
@@ -25,8 +34,8 @@
     <table style="width: 100%; height: 100%;border-spacing: 0;">
         <tbody>
             <tr>
-                <td style="width: 200px; height: 100%;background-color:green;">
-                    <div myquery-widget="ui.scrollableview" ui-scrollableview="overflow:y"; style="width:200px;height: 300px;background-color:red;" >
+                <td id="td" style="width: 200px; height: 100%;border:1px solid black">
+                    <div myquery-widget="ui.scrollableview" ui-scrollableview="overflow:y"; style="width:200px;height: 100%;">
                         <div id="nav" myquery-widget="ui.navmenu">
                             <ul>
                                 <li myquery-widget="ui.navitem" ui-navitem="html:base;img:module">
@@ -36,7 +45,7 @@
                                         <li myquery-widget="ui.navitem" ui-navitem="html:Require;img:class"></li> 
                                     </ul>
                                 </li>
-                                <li myquery-widget="ui.navitem" ui-navitem="html:module;img:module">
+                                <li myquery-widget="ui.navitem" ui-navitem="html:html5;img:module">
                                     <ul>
                                         <li myquery-widget="ui.navitem" ui-navitem="html:html5;img:class"></li>
                                     </ul>
@@ -79,9 +88,9 @@
                     </div>
                 </td>
                 <td>
-                    <div style="float:left;width:100%;height:100%;" id="content">
+                    <iframe style="float:left;width:100%;height:100%;postion:relative" id="content">
 
-                    </div>
+                    </iframe>
                 </td>
             </tr>
         </tbody>
