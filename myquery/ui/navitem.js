@@ -194,11 +194,11 @@ function($, client, Widget, cls, event, dom, attr, src, animate) {
             onfocus: false
         },
         publics: {
-            render: 1,
-            getBorad: 1,
-            open: 1,
-            close: 1,
-            isOnFocus: 1
+            render: Widget.AllowPublic,
+            getBorad: Widget.AllowPublic,
+            open: Widget.AllowPublic,
+            close: Widget.AllowPublic,
+            isOnFocus: Widget.AllowReturn
         },
         getter: {
             html: 1,

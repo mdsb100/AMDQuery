@@ -130,18 +130,11 @@ function($, NavItem, Widget, query, cls, event, dom, attr, src) {
 
             return this;
         },
+        publics: {
+            getNavItemsByHtml: Widget.AllowReturn,
+            getNavItem: Widget.AllowReturn
+        },
         customEventName: ["open", "close"],
-        // _setAbc: function(value){
-        //     this.options.abc = value;
-        // },
-        // options: {
-        //     abc: "abc"
-        // },
-        // getter: {
-        //     abc: 0
-        // },
-        // publics: {
-        // },
         target: null,
         toString: function() {
             return "ui.navmenu";

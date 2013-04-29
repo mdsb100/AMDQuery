@@ -29,10 +29,10 @@
             keyList: []
         },
         publics: {
-            addKey: 1,
-            addKeys: 1,
-            changeKey: 1,
-            removeKey: 1
+            addKey: Widget.AllowPublic,
+            addKeys: Widget.AllowPublic,
+            changeKey: Widget.AllowPublic,
+            removeKey: Widget.AllowPublic
         },
         addKey: function (obj) {
             this.keyboard.addKey(obj);

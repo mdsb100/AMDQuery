@@ -10,9 +10,9 @@
 
         this.init(obj.target);
     }
-    Widget.FunctionPrivate = 0;
-    Widget.FunctionPublic = 1;
-    Widget.FunctionReturn = 2;
+
+    Widget.AllowPublic = 1;
+    Widget.AllowReturn = 2;
 
     var booleanExtend = function(a, b) {
         for (var i in b) {
@@ -249,14 +249,14 @@
             disabled: 0
         },
         publics: {
-            disable: Widget.FunctionPublic,
-            enable: Widget.FunctionPublic,
-            toString: Widget.FunctionReturn,
-            getSelf: Widget.FunctionReturn,
-            instanceofWidget: Widget.FunctionReturn,
-            equals: Widget.FunctionReturn,
-            beSetter: Widget.FunctionReturn,
-            beGetter: Widget.FunctionReturn
+            disable: Widget.AllowPublic,
+            enable: Widget.AllowPublic,
+            toString: Widget.AllowReturn,
+            getSelf: Widget.AllowReturn,
+            instanceofWidget: Widget.AllowReturn,
+            equals: Widget.AllowReturn,
+            beSetter: Widget.AllowReturn,
+            beGetter: Widget.AllowReturn
         },
         getEventName: function(name) {
             return this.widgetEventPrefix + "." + name;
@@ -364,7 +364,6 @@
             _initOptionsPurview(constructor);
 
             _extendAttr("publics", constructor, prototype, true);
-            _extendAttr("returns", constructor, prototype, true);
             _extendAttr("options", constructor);
 
             /*遵从父级为false 子集就算设为ture 最后也会为false*/
@@ -374,7 +373,7 @@
 
             var key = nameSpace + "." + name + $.now();
 
-            var ret = function(a, b, c) {
+            var widget = function(a, b, c) {
                 /// <summary>对当前$的所有元素初始化某个UI控件或者修改属性或使用其方法</summary>
                 /// <para>返回option属性或returns方法时，只返回第一个对象的</para>
                 /// <param name="a" type="Object/String">初始化obj或属性名:option或方法名</param>
@@ -405,7 +404,7 @@
                                 data[a].call(data, key);
                             } else if (!!data.publics[a]) {
                                 var temp = data[a].apply(data, $.util.argToArray(arg, 1));
-                                if (data.publics[a] == Widget.FunctionReturn) {
+                                if (data.publics[a] == Widget.AllowReturn) {
                                     result = temp;
                                     return false;
                                 }
@@ -416,7 +415,7 @@
                 return result;
             }
 
-            ret.extend = function(tName, prototype, statics) {
+            widget.extend = function(tName, prototype, statics) {
                 if ($.isObj(statics)) {
                     return Widget.extend(tName, prototype, statics, this);
                 } else {
@@ -425,12 +424,12 @@
             }
 
             if (!$.prototype[name]) {
-                $.prototype[name] = ret;
+                $.prototype[name] = widget;
             }
 
-            $.prototype[$.util.camelCase(name, nameSpace)] = ret;
+            $.prototype[$.util.camelCase(name, nameSpace)] = widget;
 
-            return ret;
+            return widget;
         },
         is: function(item, widgetName) {
             /// <summary>是否含某个widget实例</summary>

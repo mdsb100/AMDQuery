@@ -115,13 +115,9 @@
                 cursor: 0
             },
             publics: {
-                getPositionX: 1,
-                getPositionY: 1,
-                render: 1
-            },
-            returns: {
-                getPositionX: 1,
-                getPositionY: 1
+                getPositionX: Widget.AllowReturn,
+                getPositionY: Widget.AllowReturn,
+                render: Widget.AllowPublic
             },
             isTransform3d: function() {
                 return this.options.isTransform3d && $.support.transform3d;

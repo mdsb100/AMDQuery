@@ -512,7 +512,7 @@
             oneSelect: 0
         },
         publics: {
-            selectShell: 1
+            selectShell: Widget.AllowPublic
         },
         _initHandler: function() {
             var self = this;

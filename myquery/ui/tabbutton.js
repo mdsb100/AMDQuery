@@ -37,8 +37,8 @@ function($, Widget, Button, query, cls, event, dom, src) {
             title: 1
         },
         publics: {
-            select: 1,
-            toggle: 1
+            select: Widget.AllowPublic,
+            toggle: Widget.AllowPublic
         },
         _initHandler: function() {
             var self = this;

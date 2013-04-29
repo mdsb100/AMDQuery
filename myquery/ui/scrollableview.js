@@ -182,12 +182,12 @@ myQuery.define("ui/scrollableview", ["main/query", "main/dom", "main/class", "ht
                 "pullDistance": 50
             },
             publics: {
-                "refreshPosition": 1,
-                "showStatusBar": 1,
-                "hideStatusBar": 1,
-                "render": 1,
-                "toX": 1,
-                "toY": 1
+                "refreshPosition": Widget.AllowPublic,
+                "showStatusBar": Widget.AllowPublic,
+                "hideStatusBar": Widget.AllowPublic,
+                "render": Widget.AllowPublic,
+                "toX": Widget.AllowPublic,
+                "toY": Widget.AllowPublic
             },
             isTransform3d: function() {
                 return transitionToAnimation && $.support.transform3d;

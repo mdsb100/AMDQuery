@@ -270,20 +270,15 @@ myQuery.define("ui/turnBook", ["main/class", "html5/css3", "ui/swappable", "modu
         pageHeight: 0,
         pageWidth: 0,
         publics: {
-            hideMessage: 1,
-            inductionCorner: 1,
-            setBook: 1,
-            setSwap: 1,
-            showMessage: 1,
-            showPages: 1,
-            isInLeft: 1,
-            isInRight: 1
-        },
-        returns: {
-            inductionCorner: 1,
-            isInLeft: 1,
-            isInRight: 1
-        },
+            hideMessage: Widget.AllowPublic,
+            inductionCorner: Widget.AllowReturn,
+            setBook: Widget.AllowPublic,
+            setSwap: Widget.AllowPublic,
+            showMessage: Widget.AllowPublic,
+            showPages: Widget.AllowPublic,
+            isInLeft: Widget.AllowReturn,
+            isInRight: Widget.AllowReturn
+        }
         _initHandler: function() {
             var self = this,
                 target = self.target,

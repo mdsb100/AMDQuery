@@ -83,14 +83,9 @@
             pauseSensitivity: 500
         },
         publics: {
-            isInPath: 1,
-            getPath: 1,
-            getPathLast: 1
-        },
-        returns:{
-            isInPath: 1,
-            getPath: 1,
-            getPathLast: 1
+            isInPath: Widget.AllowReturn,
+            getPath: Widget.AllowReturn,
+            getPathLast: Widget.AllowReturn
         },
         _initHandler: function () {
             var self = this,
