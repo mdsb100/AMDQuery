@@ -78,12 +78,29 @@
 
     object.extend(Widget, {
         addTag: function() {
-            var
-            attr = "myquery-" + this.widgetNameSpace + "-" + this.widgetName,
-                origin = this.target.attr(attr);
-            if (!origin) {
-                this.target.attr(attr, "");
+            var tag = this.toString(),
+                optionAttr = "myquery-" + this.widgetNameSpace + "-" + this.widgetName,
+                optionTag = this.target.attr(optionTag),
+                widgetAttr = "myquery-widget",
+                widgetTag = this.target.attr(widgetAttr);
+
+            if (widgetTag == undefined) {
+                this.target.attr(widgetAttr, tag)
+            } else {
+                var reg = new RegExp('(\\W|^)' + tag + '(\\W|$)'),
+                    result = widgetTag.match(reg),
+                    symbol = widgetTag.length ? ";" : "";
+
+                if (!result || !result[0]) {
+                    widgetTag = widgetTag.replace(/\W$/, "") + symbol + tag;
+                    this.target.attr(widgetAttr, widgetTag);
+                }
             }
+
+            if (!optionTag) {
+                this.target.attr(optionTag, "");
+            }
+
             return this;
         },
         checkAttr: function() {
@@ -94,7 +111,7 @@
 
             for (i = 0, len = eventNames.length; i < len; i++) {
                 item = eventNames[i];
-                key = $.util.unCamelCase(item, widgetName);
+                key = this.widgetNameSpace + "-" + this.widgetName + "-" + item;
                 attr = this.target.attr(key);
                 if (attr !== undefined) {
                     value = attr.split(":");
@@ -102,7 +119,7 @@
                 }
             }
 
-            attr = this.target.attr("myquery-ui-" + this.widgetName) || this.target.attr(this.widgetName);
+            attr = this.target.attr(this.widgetNameSpace + "-" + this.widgetName) || this.target.attr(this.widgetName);
 
             if (attr !== undefined) {
                 attr = attr.split(/;|,/);
@@ -126,8 +143,16 @@
         create: function() {},
         container: null,
         constructor: Widget,
+        destoryChildren: function() {
+            var children = this.target.query("*[myquery-widget]").reverse().each(function(ele) {
+
+            });
+
+            return this;
+        },
         destory: function(key) {
             if (key) {
+                this.destoryChildren();
                 this.disable();
                 var i = 0,
                     name;
@@ -136,13 +161,15 @@
                 }
 
                 this.container && this.options.removeContainer && $(this.container).remove();
-                this.target.removeData(key);
 
                 for (i in this) {
                     name = i;
                     !$.isPrototypeProperty(this, name) && (this[name] = null) && delete this[name];
                 }
+
+                this.target.removeData(key);
             }
+            return this;
         },
         able: function() {
             this.options.disabled === false ? this.disable() : this.enable();
@@ -341,7 +368,7 @@
 
             var key = nameSpace + "." + name + $.now();
 
-            var ret = $.prototype[name] = function(a, b, c) {
+            var ret = function(a, b, c) {
                 /// <summary>对当前$的所有元素初始化某个UI控件或者修改属性或使用其方法</summary>
                 /// <para>返回option属性或returns方法时，只返回第一个对象的</para>
                 /// <param name="a" type="Object/String">初始化obj或属性名:option或方法名</param>
@@ -387,16 +414,29 @@
                 return Widget.inherit(tName, nameSpace + "." + name, prototype, statics, isExtendStatic);
             }
 
+            if (!$.prototype[name]) {
+                $.prototype[name] = ret;
+            }
+
+            $.prototype[$.util.camelCase(name, nameSpace)] = ret;
+
             return ret;
         },
-        is: function(item, thisName, name, nameSpace) {
+        is: function(item, name) {
             /// <summary>是否含某个widget实例</summary>
-            /// <param name="item" type="Object"></param>
+            /// <param name="item" type="$"></param>
             /// <param name="name" type="String">widget名字</param>
-            /// <param name="nameSpace" type="String/undefined">widget命名空间</param>
             /// <returns type="Boolean" />
-            nameSpace = nameSpace || "ui";
-            return $.is$(item) && item.attr("myquery-" + nameSpace + "-" + name) !== undefined;
+            var tName = name.split("."),
+                nameSpace = tName[0],
+                name = tName[1],
+                ret = false;
+
+            if ($.is$(item) && item.attr("myquery-" + nameSpace + "-" + name) != undefined) {
+                ret = true;
+            }
+
+            return ret;
         },
         get: function(name) {
             /// <summary>获得某个widget</summary>

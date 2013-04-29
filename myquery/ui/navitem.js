@@ -13,7 +13,10 @@ myQuery.define("ui/navitem", [
 function($, client, Widget, cls, event, dom, attr, src, animate) {
     "use strict"; //启用严格模式
 
-    var navitem = Widget.extend("ui.navitem", {
+    var complete = function(opt) {
+        dom.css(this, "height", "auto");
+    },
+    navitem = Widget.extend("ui.navitem", {
         container: null,
         event: function() {},
         _initHandler: function() {
@@ -63,7 +66,7 @@ function($, client, Widget, cls, event, dom, attr, src, animate) {
             if (!this.hasChild()) {
                 this.$arrow.removeClass("arrowRight").removeClass("arrowBottom");
             }
-           
+
             // if(client.browser.ie){
             //     //this.$title.width(this.$arrow.width() + this.$img.width() + this.$text.width());
             // }
@@ -79,16 +82,15 @@ function($, client, Widget, cls, event, dom, attr, src, animate) {
                 this.$board.slideDown({
                     duration: 200,
                     easing: "cubic.easeInOut",
-                    complete: function(opt) {
-                        dom.css(this, "height", "auto");
-                    }
+                    complete: complete
                 });
                 this.render();
 
                 var para = {
                     type: this.getEventName("open"),
                     container: this.container,
-                    target: this.target[0]
+                    target: this.target[0],
+                    html: opt.html
                 }
 
                 return this.target.trigger(para.type, this.target[0], para);
@@ -108,7 +110,8 @@ function($, client, Widget, cls, event, dom, attr, src, animate) {
                 var para = {
                     type: this.getEventName("close"),
                     container: this.container,
-                    target: this.target[0]
+                    target: this.target[0],
+                    html: opt.html
                 }
 
                 return this.target.trigger(para.type, this.target[0], para);
@@ -116,12 +119,15 @@ function($, client, Widget, cls, event, dom, attr, src, animate) {
             return this;
         },
         hasChild: function() {
-            return !!this.target.query("li[myquery-ui-navitem]").length;
+            return !!this.target.query("li[ui-navitem]").length;
         },
         init: function(opt, target) {
             this._super(opt, target);
             var opt = this.options;
+
             this.container = target;
+
+            this.parent = this.target
 
             target.css({
                 "display": "block",
@@ -199,7 +205,7 @@ function($, client, Widget, cls, event, dom, attr, src, animate) {
             img: 1,
             onfocus: 1
         },
-        setter:{
+        setter: {
             html: 1,
             img: 1,
             onfocus: 0

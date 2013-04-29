@@ -114,7 +114,7 @@ function($, NavItem, Widget, query, cls, event, dom, attr, src) {
             return ret;
         },
         getNavItemList: function() {
-            return this.target.query("li[myquery-ui-navitem]").reverse();
+            return this.target.query("li[ui-navitem]").reverse();
         },
         detectNavItemList: function() {
             this.navItemList = this.getNavItemList();

@@ -8,14 +8,15 @@
     <script type="text/javascript">
         
         window.attr = function  (argument) {
-            alert()
+            alert("")
         }
 
         $.require(["main/query", "main/attr", "ui/navmenu", "module/Widget"], function (query, attr, Navmenu, Widget) {
-            var $nav = $("#nav")
+            var $nav = $("#nav");
             $nav.on("navmenu.open", function(e){
                 
             });
+
         });
        
     </script>
@@ -26,45 +27,45 @@
             <tr>
                 <td style="width: 200px;">
 
-                    <div id="nav" myquery-ui="navmenu" >
+                    <div id="nav" myquery-widget="ui.navmenu" >
                         <ul>
-                            <li myquery-ui="navitem" navitem="html:main;img:module">
+                            <li myquery-widget="ui.navitem" ui-navitem="html:main;img:module">
                                 <ul>
-                                    <li myquery-ui="navitem" navitem="html:attr;img:class" navitem-open="window.attr"></li>
-                                    <li myquery-ui="navitem" navitem="html:class;img:class"></li> 
-                                    <li myquery-ui="navitem" navitem="html:communicate;img:class"></li> 
-                                    <li myquery-ui="navitem" navitem="html:CustomEvent;img:class"></li> 
-                                    <li myquery-ui="navitem" navitem="html:data;img:class"></li>
-                                    <li myquery-ui="navitem" navitem="html:dom;img:class"></li>
-                                    <li myquery-ui="navitem" navitem="html:event;img:class"></li> 
-                                    <li myquery-ui="navitem" navitem="html:query;img:class"></li>
+                                    <li myquery-widget="ui.navitem" ui-navitem="html:attr;img:class" ui-navitem-open="window.attr"></li>
+                                    <li myquery-widget="ui.navitem" ui-navitem="html:class;img:class"></li> 
+                                    <li myquery-widget="ui.navitem" ui-navitem="html:communicate;img:class"></li> 
+                                    <li myquery-widget="ui.navitem" ui-navitem="html:CustomEvent;img:class"></li> 
+                                    <li myquery-widget="ui.navitem" ui-navitem="html:data;img:class"></li>
+                                    <li myquery-widget="ui.navitem" ui-navitem="html:dom;img:class"></li>
+                                    <li myquery-widget="ui.navitem" ui-navitem="html:event;img:class"></li> 
+                                    <li myquery-widget="ui.navitem" ui-navitem="html:query;img:class"></li>
                                 </ul>
                             </li>
-                            <li myquery-ui="navitem" navitem="html:module;img:module">
+                            <li myquery-widget="ui.navitem" ui-navitem="html:module;img:module">
                                 <ul>
-                                    <li myquery-ui="navitem" navitem="html:animate;img:class">
+                                    <li myquery-widget="ui.navitem" ui-navitem="html:animate;img:class">
                                          <ul>
-                                            <li myquery-ui="navitem" navitem="html:animate;img:class"></li>
+                                            <li myquery-widget="ui.navitem" ui-navitem="html:animate;img:class"></li>
                                         </ul>
                                     </li>
-                                    <li myquery-ui="navitem" navitem="html:AnimateColor;img:class"></li> 
-                                    <li myquery-ui="navitem" navitem="html:color;img:class"></li> 
-                                    <li myquery-ui="navitem" navitem="html:date.prototype;img:class"></li> 
-                                    <li myquery-ui="navitem" navitem="html:effect;img:class"></li>
-                                    <li myquery-ui="navitem" navitem="html:FX;img:class"></li>
-                                    <li myquery-ui="navitem" navitem="html:Keyboard;img:class"></li> 
-                                    <li myquery-ui="navitem" navitem="html:math;img:class"></li>
-                                    <li myquery-ui="navitem" navitem="html:myEval;img:class"></li>
-                                    <li myquery-ui="navitem" navitem="html:object;img:class"></li>
-                                    <li myquery-ui="navitem" navitem="html:parse;img:class"></li> 
-                                    <li myquery-ui="navitem" navitem="html:serialize;img:class"></li>
+                                    <li myquery-widget="ui.navitem" ui-navitem="html:AnimateColor;img:class"></li> 
+                                    <li myquery-widget="ui.navitem" ui-navitem="html:color;img:class"></li> 
+                                    <li myquery-widget="ui.navitem" ui-navitem="html:date.prototype;img:class"></li> 
+                                    <li myquery-widget="ui.navitem" ui-navitem="html:effect;img:class"></li>
+                                    <li myquery-widget="ui.navitem" ui-navitem="html:FX;img:class"></li>
+                                    <li myquery-widget="ui.navitem" ui-navitem="html:Keyboard;img:class"></li> 
+                                    <li myquery-widget="ui.navitem" ui-navitem="html:math;img:class"></li>
+                                    <li myquery-widget="ui.navitem" ui-navitem="html:myEval;img:class"></li>
+                                    <li myquery-widget="ui.navitem" ui-navitem="html:object;img:class"></li>
+                                    <li myquery-widget="ui.navitem" ui-navitem="html:parse;img:class"></li> 
+                                    <li myquery-widget="ui.navitem" ui-navitem="html:serialize;img:class"></li>
 
-                                    <li myquery-ui="navitem" navitem="html:src;img:class"></li>
-                                    <li myquery-ui="navitem" navitem="html:Thread;img:class"></li>
-                                    <li myquery-ui="navitem" navitem="html:Threadpool;img:class"></li>
-                                    <li myquery-ui="navitem" navitem="html:tween.extend;img:class"></li>
-                                    <li myquery-ui="navitem" navitem="html:tween;img:class"></li>
-                                    <li myquery-ui="navitem" navitem="html:Widget;img:class"></li>
+                                    <li myquery-widget="ui.navitem" ui-navitem="html:src;img:class"></li>
+                                    <li myquery-widget="ui.navitem" ui-navitem="html:Thread;img:class"></li>
+                                    <li myquery-widget="ui.navitem" ui-navitem="html:Threadpool;img:class"></li>
+                                    <li myquery-widget="ui.navitem" ui-navitem="html:tween.extend;img:class"></li>
+                                    <li myquery-widget="ui.navitem" ui-navitem="html:tween;img:class"></li>
+                                    <li myquery-widget="ui.navitem" ui-navitem="html:Widget;img:class"></li>
 
                                 </ul>
                             </li>

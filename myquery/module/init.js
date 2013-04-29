@@ -15,29 +15,38 @@ myQuery.define("module/init", ["main/query", "main/dom", "main/attr", "module/Wi
 		}, "img").attr("src", $.getPath("ui/images/" + image[0], "." + image[1])).insertBeforeTo(body, body.child()),
 		widgetNames = [],
 		init,
-		widgetMap = {};
+		widgetMap = {},
+		fnNameReflect = {};
 
-	$("body *[myquery-ui]").reverse().each(function(ele) {
-		var value = attr.getAttr(ele, "myquery-ui"),
+	$("body *[myquery-widget]").reverse().each(function(ele) {
+		var value = attr.getAttr(ele, "myquery-widget"),
 			attrNames = $.isStr(value) && value != "" ? value.split(/;|,/) : [],
 			len = attrNames.length,
-			widgetName ,
-			widgetPath ,
+			widgetName,
+			widgetPath,
+			temp,
+			name,
+			nameSpace,
 			i = 0;
-		for(; i < len; i++) {
+		for (; i < len; i++) {
 			widgetName = attrNames[i]
-			if(widgetName && !widgetMap[widgetName]) {
-				if (widgetName.indexOf("/") < 0){
-					widgetPath = "ui/" + widgetName;
+			if (widgetName && !widgetMap[widgetName]) {
+				if (widgetName.indexOf(".") < 0) {
+					nameSpace = "ui";
+					name = widgetName;
+
+				} else {
+					temp = widgetName.split(".");
+					nameSpace = temp[0];
+					name = temp[1];
 				}
-				else{
-					widgetPath = widgetName;
-					widgetName = widgetName.split("/");
-					widgetName = widgetName[widgetName.length - 1];
-				}
+
+				widgetPath = nameSpace + "/" + name;
+				widgetName = nameSpace + "." + name;
 
 				widgetNames.push(widgetPath);
 				widgetMap[widgetName] = [];
+				fnNameReflect[widgetName] = $.util.camelCase(name, nameSpace);
 			}
 			widgetMap[widgetName].push(ele);
 		};
@@ -49,25 +58,25 @@ myQuery.define("module/init", ["main/query", "main/dom", "main/attr", "module/Wi
 		widgetMap: widgetMap,
 		renderWidget: function(callback) {
 			var self = this;
-			if(this.widgetNames.length){
-				require(this.widgetNames, function(){
-					var widgetName = 0 , eles;
-					for (widgetName in self.widgetMap){
+			if (this.widgetNames.length) {
+				require(this.widgetNames, function() {
+					var widgetName = 0,
+						eles;
+					for (widgetName in self.widgetMap) {
 						eles = self.widgetMap[widgetName];
 						self.initWidget(widgetName, eles);
 					}
 					self.showIndex();
 					callback();
 				});
-			}
-			else{
+			} else {
 				self.showIndex();
 				callback();
 			}
 			return this;
 		},
-		initWidget: function(widgetName, eles){
-			$(eles)[widgetName]();
+		initWidget: function(widgetName, eles) {
+			$(eles)[fnNameReflect[widgetName]]();
 			return this;
 		},
 		showIndex: function() {
