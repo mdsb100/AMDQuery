@@ -20,11 +20,9 @@
         //            test1.alert();
         //        });
 
-        myQuery.require(["test/c", "test/d", "test/test3", "module/math"], function (c, d, test3, math) {
+        myQuery.require(["test/test1", "module/math"], function (test1, math) {
             alert($.valueOf())
-            c.alert();
-            d.alert();
-            test3.alert();
+            test1.alert();
             var m1 = new math.martrix(2, 3, [1, 2, 3, 4, 5, 6]);
             var m2 = new math.martrix(3, 2, [1, 2, 3, 4, 5, 6]);
             var m3 = new math.martrix(2, 3, [1, 2, 3, 4, 5, 6]);

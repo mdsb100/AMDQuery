@@ -4,7 +4,7 @@
     <title></title>
     <link href="../../css/reset.css" rel="stylesheet" type="text/css" />
     <!-- <script src="http://192.168.1.102:8080/package/../../myquery/myquery.js" type="text/javascript" myquery="define:$;amd:false"></script>-->
-    <script src="../../myquery/myquery.js" type="text/javascript" myquery="define:$;package:0;"
+    <script src="../../myquery/myquery.js" type="text/javascript" myquery="define:$;package:json/package;packageNames:main;"
         amd="detectCR:1;" module="compatibleEvent:1;"></script>
     <script type="text/javascript">
         require([
@@ -16,8 +16,9 @@
                 , write = function (s) {
                     div[0].innerHTML = div[0].innerHTML += s + "<br>";
                 }
-                write("ready");
-                write(myQuery.CustomEvent);
+                write("");
+                write("");
+                write("ready 1");
             });
 
             ready(function () {
@@ -31,8 +32,8 @@
         });
 
         $.require([
-            "base/ready"
-            , "module/cssColors"
+            "base/ready",
+            "hash/cssColors"
         ], function (ready, cssColors) {
             var div = document.getElementsByTagName("div")
                 , write = function (s) {
@@ -40,7 +41,6 @@
                 }
             write("");
             write("$.ready work");
-            write(cssColors);
         });
     </script>
 </head>
