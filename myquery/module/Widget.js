@@ -10,6 +10,9 @@
 
         this.init(obj.target);
     }
+    Widget.FunctionPrivate = 0;
+    Widget.FunctionPublic = 1;
+    Widget.FunctionReturn = 2;
 
     var booleanExtend = function(a, b) {
         for (var i in b) {
@@ -17,13 +20,9 @@
                 a[i] = 0;
             } else {
                 if ($.isBol(a[i]) || $.isNum(a[i])) {
-                    if (a[i] == 1) {
-                        a[i] = 1;
-                    } else {
-                        a[i] = 0;
-                    }
+
                 } else {
-                    a[i] = 1;
+                    a[i] = b[i];
                 }
             }
         }
@@ -79,8 +78,8 @@
     object.extend(Widget, {
         addTag: function() {
             var tag = this.toString(),
-                optionAttr = "myquery-" + this.widgetNameSpace + "-" + this.widgetName,
-                optionTag = this.target.attr(optionTag),
+                optionAttr = this.widgetNameSpace + "-" + this.widgetName,
+                optionTag = this.target.attr(optionAttr),
                 widgetAttr = "myquery-widget",
                 widgetTag = this.target.attr(widgetAttr);
 
@@ -92,13 +91,32 @@
                     symbol = widgetTag.length ? ";" : "";
 
                 if (!result || !result[0]) {
-                    widgetTag = widgetTag.replace(/\W$/, "") + symbol + tag;
+                    widgetTag = widgetTag.replace(/\W$/, "") + symbol + tag + ";";
                     this.target.attr(widgetAttr, widgetTag);
                 }
             }
 
             if (!optionTag) {
-                this.target.attr(optionTag, "");
+                this.target.attr(optionAttr, "");
+            }
+
+            return this;
+        },
+        removeTag: function() {
+            var tag = this.toString(),
+                optionAttr = "myquery-" + this.widgetNameSpace + "-" + this.widgetName,
+                optionTag = this.target.attr(optionTag),
+                widgetAttr = "myquery-widget",
+                widgetTag = this.target.attr(widgetAttr);
+
+            if (widgetTag != undefined) {
+                var reg = new RegExp('(\\W|^)' + tag + '(\\W|$)', "g");
+                widgetTag = widgetTag.replace(reg, ";").replace(/^\W/, "");
+                this.target.attr(widgetAttr, widgetTag);
+            }
+
+            if (optionTag == "") {
+                this.target.removeAttr(optionAttr);
             }
 
             return this;
@@ -108,7 +126,7 @@
                 len = 0,
                 widgetName = this.widgetName,
                 eventNames = this.customEventName;
-
+            /*check event*/
             for (i = 0, len = eventNames.length; i < len; i++) {
                 item = eventNames[i];
                 key = this.widgetNameSpace + "-" + this.widgetName + "-" + item;
@@ -121,6 +139,7 @@
 
             attr = this.target.attr(this.widgetNameSpace + "-" + this.widgetName) || this.target.attr(this.widgetName);
 
+            /*check options*/
             if (attr !== undefined) {
                 attr = attr.split(/;|,/);
                 for (i = 0, len = attr.length; i < len; i++) {
@@ -143,17 +162,12 @@
         create: function() {},
         container: null,
         constructor: Widget,
-        destoryChildren: function() {
-            var children = this.target.query("*[myquery-widget]").reverse().each(function(ele) {
-
-            });
-
-            return this;
-        },
         destory: function(key) {
+            /*应当返回原先的状态*/
             if (key) {
-                this.destoryChildren();
+                //this.destoryChildren();
                 this.disable();
+                this.removeTag();
                 var i = 0,
                     name;
                 for (i = this.customEventName.length - 1; i >= 0; i--) {
@@ -235,22 +249,14 @@
             disabled: 0
         },
         publics: {
-            disable: 1,
-            enable: 1,
-            toString: 1,
-            getSelf: 1,
-            instanceofWidget: 1,
-            equals: 1,
-            beSetter: 1,
-            beGetter: 1
-        },
-        returns: {
-            toString: 1,
-            getSelf: 1,
-            instanceofWidget: 1,
-            equals: 1,
-            beSetter: 1,
-            beGetter: 1
+            disable: Widget.FunctionPublic,
+            enable: Widget.FunctionPublic,
+            toString: Widget.FunctionReturn,
+            getSelf: Widget.FunctionReturn,
+            instanceofWidget: Widget.FunctionReturn,
+            equals: Widget.FunctionReturn,
+            beSetter: Widget.FunctionReturn,
+            beGetter: Widget.FunctionReturn
         },
         getEventName: function(name) {
             return this.widgetEventPrefix + "." + name;
@@ -397,9 +403,9 @@
                                 }
                             } else if (a === "destory") {
                                 data[a].call(data, key);
-                            } else if (data.publics[a]) {
+                            } else if (!!data.publics[a]) {
                                 var temp = data[a].apply(data, $.util.argToArray(arg, 1));
-                                if (data.returns[a]) {
+                                if (data.publics[a] == Widget.FunctionReturn) {
                                     result = temp;
                                     return false;
                                 }
@@ -410,8 +416,12 @@
                 return result;
             }
 
-            ret.extend = function(tName, prototype, statics, isExtendStatic) {
-                return Widget.inherit(tName, nameSpace + "." + name, prototype, statics, isExtendStatic);
+            ret.extend = function(tName, prototype, statics) {
+                if ($.isObj(statics)) {
+                    return Widget.extend(tName, prototype, statics, this);
+                } else {
+                    return Widget.extend(tName, prototype, this);
+                }
             }
 
             if (!$.prototype[name]) {
@@ -422,21 +432,13 @@
 
             return ret;
         },
-        is: function(item, name) {
+        is: function(item, widgetName) {
             /// <summary>是否含某个widget实例</summary>
             /// <param name="item" type="$"></param>
-            /// <param name="name" type="String">widget名字</param>
+            /// <param name="name" type="String">widget名字 如ui.navmenu</param>
             /// <returns type="Boolean" />
-            var tName = name.split("."),
-                nameSpace = tName[0],
-                name = tName[1],
-                ret = false;
-
-            if ($.is$(item) && item.attr("myquery-" + nameSpace + "-" + name) != undefined) {
-                ret = true;
-            }
-
-            return ret;
+            var widgetTag = item.attr("myquery-widget");
+            return $.is$(item) && item.attr(widgetName.replace(".", "-")) != undefined && widgetTag != undefined && widgetTag.indexOf(widgetName) > -1;
         },
         get: function(name) {
             /// <summary>获得某个widget</summary>
@@ -446,52 +448,6 @@
                 tNameSpace = tName[0],
                 tName = tName[1];
             return Widget[tNameSpace][tName];
-        },
-        inherit: function(name, SuperName, prototype, statics, isExtendStatic) {
-            /// <summary>继承某个widget实例</summary>
-            /// <param name="constructor" type="Function"></param>
-            /// <param name="name" type="String">widget名字</param>
-            /// <param name="SuperName" type="String">基类widget名字</param>
-            /// <param name="prototype" type="Object">类的prototype 或者是基widget的name</param>
-            /// <param name="statics" type="Object">类的静态方法</param>
-            /// <param name="isExtendStatic" type="Bolean">是否扩展静态publics customeEventName option 默认true</param>
-            /// <returns type="Function" />
-
-            var Super = Widget.get(SuperName),
-                arg;
-            if (!Super) {
-                $.console.error({
-                    fn: "Widget.inherit",
-                    msg: "Super undefined"
-                }, true);
-            }
-            var len = arguments.length;
-
-            if (isExtendStatic !== undefined) {
-                len - 1;
-            }
-
-            if (isExtendStatic !== false) {
-                var options = {}, pub = {};
-                if ($.isObj(prototype.options)) {
-                    prototype.options = $.extend(options, Super.prototype.options, prototype.options);
-                }
-
-                if ($.isArr(prototype.customEventName)) {
-                    prototype.customEventName = prototype.customEventName.concat(Super.prototype.customEventName);
-                }
-
-                if ($.isObj(prototype.publics)) {
-                    prototype.publics = $.extend(pub, Super.prototype.publics, prototype.publics);
-                }
-            }
-
-            arg = [name];
-            arg = arg.concat($.util.argToArray(arguments, 2, len));
-            arg.push(Super);
-
-            return Widget.extend.apply(null, arg);
-
         }
     });
 
