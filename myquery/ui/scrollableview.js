@@ -108,7 +108,8 @@ myQuery.define("ui/scrollableview", ["main/query", "main/dom", "main/class", "ht
 
                             break;
                         case "drag.start":
-                            self.refreshPosition()
+                            self.showStatusBar();
+                            self.refreshPosition();
                             break;
                         case "DomNodeInserted":
                         case "DomNodeRemoved":
@@ -126,6 +127,7 @@ myQuery.define("ui/scrollableview", ["main/query", "main/dom", "main/class", "ht
                         case "mousewheel":
                         case "DOMMouseScroll":
                             clearTimeout(self.wheelTimeId);
+                            self.refreshPosition();
                             var x = null,
                                 y = null;
                             if (e.direction == "x") {
@@ -135,7 +137,7 @@ myQuery.define("ui/scrollableview", ["main/query", "main/dom", "main/class", "ht
                             };
                             self.showStatusBar();
 
-                            self.wheelTimeId = setTimeout(check, 50);
+                            self.wheelTimeId = setTimeout(check, 500);
 
                             self.render(x, y, true, opt.boundary);
                             break;
