@@ -59,7 +59,8 @@ myQuery.define("module/src", ["base/client"], function ($, client, undefined) {
             if (!$.isEle(ele) || (!hasOwnProperty.call(ele, property) && ele[property] === undefined)) {
                 return this;
             }
-            ele[property] = ele.onload = ele.onreadystatechange = null;
+            ele.onload = ele.onreadystatechange = null;
+            ele.setAttribute(property, "");
             var o = $.extend({}, $.srcSetting, options), completeReadyStateChanges = 0, timeId;
             ele.onload = ele.onreadystatechange = function () {
                 if (!client.browser.ie || ++(completeReadyStateChanges) == 3) {
@@ -80,7 +81,7 @@ myQuery.define("module/src", ["base/client"], function ($, client, undefined) {
                     ele = completeReadyStateChanges = o = timeId = null;
                 }, o.timeout);
             }
-            ele[property] = o[property];
+            ele.setAttribute(property, o[property]);
 
             return this;
 
