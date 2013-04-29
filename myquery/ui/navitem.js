@@ -66,7 +66,7 @@ function($, client, Widget, cls, event, dom, attr, src, animate) {
             if (!this.hasChild()) {
                 this.$arrow.removeClass("arrowRight").removeClass("arrowBottom");
             }
-
+            this.detectParent();
             // if(client.browser.ie){
             //     //this.$title.width(this.$arrow.width() + this.$img.width() + this.$text.width());
             // }
@@ -121,13 +121,45 @@ function($, client, Widget, cls, event, dom, attr, src, animate) {
         hasChild: function() {
             return !!this.target.query("li[ui-navitem]").length;
         },
+        detectParent: function() {
+            var parentNavitem = this.target.parent().parent(),
+                opt = this.options;
+            if (Widget.is(parentNavitem, "ui.navitem")) {
+                opt.parent = parentNavitem;
+            }
+            return this;
+        },
+        getOptionToRoot: function(optionName) {
+            var name = optionName || "html",
+                opt = this.options,
+                parent = opt.parent,
+                ret = [opt[name]];
+            while ( !! parent) {
+                ret.push(parent.uiNavitem("option", name));
+                parent.uiNavitem("detectParent");
+                parent = parent.uiNavitem("option", "parent");
+            }
+            return ret;
+        },
+        getAttrToRoot: function(attrName) {
+            if(!$.isStr(attrName)){
+                return [];
+            }
+            var opt = this.options,
+                parent = opt.parent,
+                ret = [this.target.attr(attrName)];
+            while ( !! parent) {
+                ret.push(parent.target.attr(attrName));
+                parent.uiNavitem("detectParent");
+                parent = parent.uiNavitem("option", "parent");
+            }
+            return ret;
+        },
         init: function(opt, target) {
             this._super(opt, target);
             var opt = this.options;
 
             this.container = target;
-
-            this.parent = this.target
 
             target.css({
                 "display": "block",
@@ -191,24 +223,30 @@ function($, client, Widget, cls, event, dom, attr, src, animate) {
         options: {
             html: "",
             img: "",
-            onfocus: false
+            onfocus: false,
+            parent: null
         },
         publics: {
             render: Widget.AllowPublic,
             getBorad: Widget.AllowPublic,
             open: Widget.AllowPublic,
             close: Widget.AllowPublic,
-            isOnFocus: Widget.AllowReturn
+            detectParent: Widget.AllowPublic,
+            isOnFocus: Widget.AllowReturn,
+            getAttrToRoot: Widget.AllowReturn,
+            getOptionToRoot: Widget.AllowReturn
         },
         getter: {
             html: 1,
             img: 1,
-            onfocus: 1
+            onfocus: 1,
+            parent: 1
         },
         setter: {
             html: 1,
             img: 1,
-            onfocus: 0
+            onfocus: 0,
+            parent: 0
         },
         target: null,
         toString: function() {

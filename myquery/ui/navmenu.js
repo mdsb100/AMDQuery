@@ -124,6 +124,7 @@ function($, NavItem, Widget, query, cls, event, dom, attr, src) {
             target.addClass("navmenu");
 
             this.navItemList = [];
+            this.$parent = null;
             this.detectNavItemList();
 
             this._initHandler().enable().render();
@@ -132,7 +133,8 @@ function($, NavItem, Widget, query, cls, event, dom, attr, src) {
         },
         publics: {
             getNavItemsByHtml: Widget.AllowReturn,
-            getNavItem: Widget.AllowReturn
+            getNavItem: Widget.AllowReturn,
+            detectNavItemList: Widget.AllowPublic
         },
         customEventName: ["open", "close"],
         target: null,
