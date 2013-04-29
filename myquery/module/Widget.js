@@ -288,7 +288,7 @@
         },
         doSpecialGetter: function(key) {
             var fn = this[$.util.camelCase(key, "_get")];
-            $.isFun(fn) ? fn.call(this) : this.options[key];
+            return $.isFun(fn) ? fn.call(this) : this.options[key];
         },
         doSpecialSetter: function(key, value) {
             var fn = this[$.util.camelCase(key, "_set")];
