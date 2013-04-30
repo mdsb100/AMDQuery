@@ -40,23 +40,24 @@ myQuery.define("module/init", ["main/query", "main/dom", "main/attr", "module/Wi
 			i = 0;
 		for (; i < len; i++) {
 			widgetName = attrNames[i]
-			if (widgetName && !widgetMap[widgetName]) {
+			if (widgetName) {
 				if (widgetName.indexOf(".") < 0) {
 					nameSpace = "ui";
 					name = widgetName;
-
 				} else {
 					temp = widgetName.split(".");
 					nameSpace = temp[0];
 					name = temp[1];
 				}
-
 				widgetPath = nameSpace + "/" + name;
 				widgetName = nameSpace + "." + name;
 
-				widgetNames.push(widgetPath);
-				widgetMap[widgetName] = [];
-				fnNameReflect[widgetName] = $.util.camelCase(name, nameSpace);
+				if(!widgetMap[widgetName]){
+					widgetNames.push(widgetPath);
+
+					widgetMap[widgetName] = [];
+					fnNameReflect[widgetName] = $.util.camelCase(name, nameSpace);
+				}		
 			}
 			widgetMap[widgetName].push(ele);
 		};
@@ -90,8 +91,10 @@ myQuery.define("module/init", ["main/query", "main/dom", "main/attr", "module/Wi
 			return this;
 		},
 		showIndex: function() {
-			$cover.remove();
-			$cover = null;
+			//setTimeout(function (argument) {
+				$cover.remove();
+				$cover = null;
+			//}, 1000);
 			return this;
 		}
 	};

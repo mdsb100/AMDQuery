@@ -281,7 +281,7 @@
                 if (this.options[key] !== undefined) {
                     $.console.error("widget:" + this.toString() + " can not get option " + key + "; please check getter");
                 } else {
-                    $.console.error("widget:" + this.toString() + " option " + key + "is undefined; please check options");
+                    $.console.error("widget:" + this.toString() + " option " + key + " is undefined; please check options");
                 }
                 return undefined;
             }
