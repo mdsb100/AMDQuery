@@ -17,6 +17,10 @@
     /*position: absolute;*/
 }
 
+.navmenu ul{
+    float: left;
+}
+
 .navmenu .img{
     width: 16px;
     height: 28px;
