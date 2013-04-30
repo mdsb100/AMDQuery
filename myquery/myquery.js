@@ -1474,7 +1474,7 @@
                     name = "todo"
                 }
 
-                return result && "callee" in result ? this[name].apply(this, result) : this[name](result);
+                return result && typeof result == "function" ? this[name].apply(this, result) : this[name](result);
             },
             get: function(propertyName) {
                 /// <summary>获得某个属性</summary>
