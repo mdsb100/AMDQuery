@@ -192,7 +192,7 @@
         },
         ui: {
             init: false,
-            image: "welcome.png"
+            image: "welcome.gif"
         },
         module: {
 

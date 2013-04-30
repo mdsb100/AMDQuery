@@ -3,8 +3,13 @@ myQuery.define("module/init", ["main/query", "main/dom", "main/attr", "module/Wi
 	"use strict"; //启用严格模式
 
 	var body = $("body"),
-		image = $.config.ui.image.split("."),
-		cover = $({
+		image = $.config.ui.image,
+		$image = $({
+			position: "absolute",
+			top: "50%",
+			left: "50%"
+		}, "img").attr("src", $.getPath("ui/images/", image)),
+		$cover = $({
 			width: "100%",
 			height: "100%",
 			position: "absolute",
@@ -12,11 +17,16 @@ myQuery.define("module/init", ["main/query", "main/dom", "main/attr", "module/Wi
 			left: 0,
 			zIndex: 10001,
 			backgroundColor: "white"
-		}, "img").attr("src", $.getPath("ui/images/" + image[0], "." + image[1])).insertBeforeTo(body, body.child()),
+		}, "div").append($image).insertBeforeTo(body, body.child()),
 		widgetNames = [],
 		init,
 		widgetMap = {},
 		fnNameReflect = {};
+
+	$image.css({
+		marginTop: -$image.width() + "px",
+		marginLeft: -$image.height() + "px"
+	});
 
 	$("body *[myquery-widget]").reverse().each(function(ele) {
 		var value = attr.getAttr(ele, "myquery-widget"),
@@ -80,7 +90,8 @@ myQuery.define("module/init", ["main/query", "main/dom", "main/attr", "module/Wi
 			return this;
 		},
 		showIndex: function() {
-			cover.remove();
+			$cover.remove();
+			$cover = null;
 			return this;
 		}
 	};
