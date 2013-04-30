@@ -58,15 +58,6 @@
     font-size: 14px;
     color: #6B573B;
 }
-.navmenu .title_select
-{
-    /*background: url(../images/navmenu_typeSelect.jpg) repeat-x;*/
-    color: #d30000;
-}
-.navmenu .title_unselect
-{
-    /*background: url(../images/navmenu_typeUnselect.jpg) repeat-x;*/
-}
 
 .navmenu .arrow{
     width: 16px;
@@ -95,6 +86,17 @@
     font-size:14px;
     cursor: pointer;
 }
+
+.navmenu .text_select
+{
+    /*background: url(../images/navmenu_typeSelect.jpg) repeat-x;*/
+    color: #d30000;
+}
+.navmenu .text_unselect
+{
+    /*background: url(../images/navmenu_typeUnselect.jpg) repeat-x;*/
+}
+
 
 .navmenu .board
 {

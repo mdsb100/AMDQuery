@@ -36,6 +36,10 @@ function($, NavItem, Widget, query, cls, event, dom, attr, src) {
                     case "navitem.close":
                         type = para.type = self.getEventName("close");
                         self.target.trigger(type, target[0], para);
+                    case "navitem.select":
+                        type = para.type = self.getEventName("select");
+                        self.changeSelectedNavItem(e.target);
+                        self.target.trigger(type, target[0], para);
                         break;
                 }
             }
@@ -47,9 +51,10 @@ function($, NavItem, Widget, query, cls, event, dom, attr, src) {
                 len = this.navItemList.length,
                 ele;
             for (i = 0; i < len; i++) {
-                ele = this.navItemList[i];
-                $(ele).on("navitem.open", fun);
-                $(ele).on("navitem.close", fun);
+                ele = $(this.navItemList[i]);
+                ele.on("navitem.open", fun);
+                ele.on("navitem.close", fun);
+                ele.on("navitem.select", fun);
             }
             this.options.disabled = true;
             return this;
@@ -60,9 +65,10 @@ function($, NavItem, Widget, query, cls, event, dom, attr, src) {
                 len = this.navItemList.length,
                 ele;
             for (i = 0; i < len; i++) {
-                ele = this.navItemList[i];
-                $(ele).off("navitem.open", fun);
-                $(ele).off("navitem.close", fun);
+                ele = $(this.navItemList[i]);
+                ele.off("navitem.open", fun);
+                ele.off("navitem.close", fun);
+                ele.on("navitem.select", fun);
             }
             this.options.disabled = false;
             return this;
@@ -119,6 +125,27 @@ function($, NavItem, Widget, query, cls, event, dom, attr, src) {
         detectNavItemList: function() {
             this.navItemList = this.getNavItemList();
         },
+        selectedNavItem: function(target) {
+            var $target = $(target),
+                opt = this.options;
+            if (Widget.is($target, "ui.navitem")) {
+                if (opt.selectedNavItem) {
+                    $(opt.selectedNavItem).uiNavitem("cancel");
+                }
+                $target.uiNavitem("select");
+                opt.selectedNavItem = target;
+            }
+        },
+        changeSelectedNavItem: function(target) {
+            var $target = $(target),
+                opt = this.options;
+            if (Widget.is($target, "ui.navitem")) {
+                if (opt.selectedNavItem) {
+                    $(opt.selectedNavItem).uiNavitem("cancel");
+                }
+                opt.selectedNavItem = target;
+            }
+        },
         init: function(opt, target) {
             this._super(opt, target);
             target.addClass("navmenu");
@@ -131,10 +158,18 @@ function($, NavItem, Widget, query, cls, event, dom, attr, src) {
 
             return this;
         },
+        options: {
+            selectedNavItem: null
+        },
+        setter: {
+            selectedNavItem: 0
+        },
         publics: {
             getNavItemsByHtml: Widget.AllowReturn,
             getNavItem: Widget.AllowReturn,
-            detectNavItemList: Widget.AllowPublic
+            detectNavItemList: Widget.AllowPublic,
+            selectedNavItem: Widget.AllowPublic,
+            changeSelectedNavItem: Widget.AllowPublic
         },
         customEventName: ["open", "close"],
         target: null,

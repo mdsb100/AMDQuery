@@ -26,7 +26,11 @@ function($, client, Widget, cls, event, dom, attr, src, animate) {
             this.event = function(e) {
                 switch (e.type) {
                     case "click":
-                        self.toggle();
+                        if (e.target == self.$arrow[0]) {
+                            self.toggle();
+                        } else {
+                            self.select();
+                        }
                         break;
                 }
 
@@ -55,12 +59,17 @@ function($, client, Widget, cls, event, dom, attr, src, animate) {
             var opt = this.options;
             this.$text.html(opt.html);
             this.$img.addClass(opt.img);
-            if (opt.onfocus) {
-                this.$title.addClass("title_select").removeClass("title_unselect");
+
+            if (opt.isOpen) {
                 this.$arrow.addClass("arrowBottom").removeClass("arrowRight");
             } else {
-                this.$title.addClass("title_unselect").removeClass("title_select");
                 this.$arrow.addClass("arrowRight").removeClass("arrowBottom");
+            }
+
+            if (opt.selected) {
+                this.$text.addClass("text_select").removeClass("text_unselect");
+            } else {
+                this.$text.addClass("text_unselect").removeClass("text_select");
             }
 
             if (!this.hasChild()) {
@@ -73,19 +82,18 @@ function($, client, Widget, cls, event, dom, attr, src, animate) {
             return this;
         },
         toggle: function() {
-            return this.options.onfocus ? this.close() : this.open();
+            return this.options.isOpen ? this.close() : this.open();
         },
         open: function() {
             var opt = this.options;
-            if (opt.onfocus == false) {
-                opt.onfocus = true;
+            if (opt.isOpen == false) {
+                opt.isOpen = true;
                 this.$board.slideDown({
                     duration: 200,
                     easing: "cubic.easeInOut",
                     complete: complete
                 });
                 this.render();
-
                 var para = {
                     type: this.getEventName("open"),
                     container: this.container,
@@ -99,14 +107,13 @@ function($, client, Widget, cls, event, dom, attr, src, animate) {
         },
         close: function() {
             var opt = this.options;
-            if (opt.onfocus == true) {
-                opt.onfocus = false;
+            if (opt.isOpen == true) {
+                opt.isOpen = false;
                 this.$board.slideUp({
                     duration: 200,
                     easing: "cubic.easeInOut"
                 });
                 this.render();
-
                 var para = {
                     type: this.getEventName("close"),
                     container: this.container,
@@ -117,6 +124,34 @@ function($, client, Widget, cls, event, dom, attr, src, animate) {
                 return this.target.trigger(para.type, this.target[0], para);
             }
             return this;
+        },
+        select: function() {
+            var opt = this.options;
+            opt.selected = true;
+            this.open();
+
+            var para = {
+                type: this.getEventName("select"),
+                container: this.container,
+                target: this.target[0],
+                html: opt.html
+            }
+
+            return this.target.trigger(para.type, this.target[0], para);
+        },
+        cancel: function() {
+            var opt = this.options;
+            opt.selected = false;
+            this.render();
+
+            var para = {
+                type: this.getEventName("cancel"),
+                container: this.container,
+                target: this.target[0],
+                html: opt.html
+            }
+
+            return this.target.trigger(para.type, this.target[0], para);
         },
         hasChild: function() {
             return !!this.target.query("li[ui-navitem]").length;
@@ -142,7 +177,7 @@ function($, client, Widget, cls, event, dom, attr, src, animate) {
             return ret;
         },
         getAttrToRoot: function(attrName) {
-            if(!$.isStr(attrName)){
+            if (!$.isStr(attrName)) {
                 return [];
             }
             var opt = this.options,
@@ -216,14 +251,24 @@ function($, client, Widget, cls, event, dom, attr, src, animate) {
 
             return this;
         },
-        isOnFocus: function() {
-            return this.options.onfocus;
+        _setSelected: function(selected) {
+            if (selected !== undefined) {
+                this.options.selected = selected;
+                this.options.selected ? this.selected() : this.cancel()
+            }
         },
-        customEventName: ["open", "close"],
+        _setIsOpen: function(isOpen) {
+            if (isOpen !== undefined) {
+                this.options.isOpen = isOpen;
+                this.options.isOpen ? this.open() : this.close();
+            }
+        },
+        customEventName: ["open", "close", "select", "cancel"],
         options: {
             html: "",
             img: "",
-            onfocus: false,
+            selected: false,
+            isOpen: false,
             parent: null
         },
         publics: {
@@ -231,21 +276,24 @@ function($, client, Widget, cls, event, dom, attr, src, animate) {
             getBorad: Widget.AllowPublic,
             open: Widget.AllowPublic,
             close: Widget.AllowPublic,
+            select: Widget.AllowPublic,
+            cancel: Widget.AllowPublic,
             detectParent: Widget.AllowPublic,
-            isOnFocus: Widget.AllowReturn,
             getAttrToRoot: Widget.AllowReturn,
             getOptionToRoot: Widget.AllowReturn
         },
         getter: {
             html: 1,
             img: 1,
-            onfocus: 1,
+            selected: 1,
+            isOpen: 1,
             parent: 1
         },
         setter: {
             html: 1,
             img: 1,
-            onfocus: 0,
+            selected: 1,
+            isOpen: 1,
             parent: 0
         },
         target: null,
