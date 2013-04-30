@@ -22,78 +22,71 @@
                 }
             });
 
-            $("#td").on("dblclick", function () {
-                window.open($content.attr("src"));
-            });
+            // $("#td").on("dblclick", function () {
+            //     window.open($content.attr("src"));
+            // });
 
         });
        
     </script>
 </head>
 <body style="width: 100%; height: 100%;">
-    <table style="width: 100%; height: 100%;border-spacing: 0;">
-        <tbody>
-            <tr>
-                <td id="td" style="width: 200px; height: 100%;border:1px solid black">
-                    <div myquery-widget="ui.scrollableview" ui-scrollableview="overflow:y"; style="width:200px;height:100%;position:absolute;">
-                        <div id="nav" myquery-widget="ui.navmenu">
-                            <ul>
-                                <li myquery-widget="ui.navitem" ui-navitem="html:base;img:module">
-                                    <ul>
-                                        <li myquery-widget="ui.navitem" ui-navitem="html:MyQuery;img:class"></li>
-                                        <li myquery-widget="ui.navitem" ui-navitem="html:Ready;img:class"></li> 
-                                        <li myquery-widget="ui.navitem" ui-navitem="html:Require;img:class"></li> 
-                                    </ul>
-                                </li>
-                                <li myquery-widget="ui.navitem" ui-navitem="html:html5;img:module">
-                                    <ul>
-                                        <li myquery-widget="ui.navitem" ui-navitem="html:html5;img:class"></li>
-                                    </ul>
-                                </li>
-                                <li myquery-widget="ui.navitem" ui-navitem="html:main;img:module">
-                                    <ul>
-                                        <li myquery-widget="ui.navitem" ui-navitem="html:Communicate;img:class"></li>
-                                        <li myquery-widget="ui.navitem" ui-navitem="html:Css;img:class"></li>
-                                        <li myquery-widget="ui.navitem" ui-navitem="html:Dom;img:class"></li>
-                                    </ul>
-                                </li>
-                                <li myquery-widget="ui.navitem" ui-navitem="html:module;img:module">
-                                    <ul>
-                                        <li myquery-widget="ui.navitem" ui-navitem="html:Animate;img:class"></li>
-                                        <li myquery-widget="ui.navitem" ui-navitem="html:Color;img:class"></li>
-                                        <li myquery-widget="ui.navitem" ui-navitem="html:Event;img:class"></li>
-                                        <li myquery-widget="ui.navitem" ui-navitem="html:Object;img:class"></li>
-                                        <li myquery-widget="ui.navitem" ui-navitem="html:Promise;img:class"></li>
-                                        <li myquery-widget="ui.navitem" ui-navitem="html:Thread;img:class"></li>
-                                    </ul>
-                                </li>
-                                <li myquery-widget="ui.navitem" ui-navitem="html:other;img:module">
-                                    <ul>
-                                        <li myquery-widget="ui.navitem" ui-navitem="html:Manifest;img:class"></li>
-                                    </ul>
-                                </li>
-                                <li myquery-widget="ui.navitem" ui-navitem="html:ui;img:module">
-                                    <ul>
-                                        <li myquery-widget="ui.navitem" ui-navitem="html:Accordion;img:class"></li>
-                                        <li myquery-widget="ui.navitem" ui-navitem="html:Book;img:class"></li>
-                                        <li myquery-widget="ui.navitem" ui-navitem="html:Button;img:class"></li>
-                                        <li myquery-widget="ui.navitem" ui-navitem="html:Drag;img:class"></li>
-                                        <li myquery-widget="ui.navitem" ui-navitem="html:Keyboard;img:class"></li>
-                                        <li myquery-widget="ui.navitem" ui-navitem="html:ScrollableView;img:class"></li>
-                                        <li myquery-widget="ui.navitem" ui-navitem="html:Widget;img:class"></li>
-                                    </ul>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </td>
-                <td style="height:100%;position:relative">
-                    <iframe style="width:100%;height:100%;" id="content" width="100%" height="100%">
-
-                    </iframe>
-                </td>
-            </tr>
-        </tbody>
-    </table>
+    <div style="width: 100%; height: 100%;">
+        <div myquery-widget="ui.scrollableview" ui-scrollableview="overflow:y"; style="width:200px;height:100%;">
+            <div id="nav" myquery-widget="ui.navmenu">
+                <ul>
+                    <li myquery-widget="ui.navitem" ui-navitem="html:base;img:module">
+                        <ul>
+                            <li myquery-widget="ui.navitem" ui-navitem="html:MyQuery;img:class"></li>
+                            <li myquery-widget="ui.navitem" ui-navitem="html:Ready;img:class"></li> 
+                            <li myquery-widget="ui.navitem" ui-navitem="html:Require;img:class"></li> 
+                        </ul>
+                    </li>
+                    <li myquery-widget="ui.navitem" ui-navitem="html:html5;img:module">
+                        <ul>
+                            <li myquery-widget="ui.navitem" ui-navitem="html:html5;img:class">
+                                <ul>
+                            <li myquery-widget="ui.navitem" ui-navitem="html:html5;img:class"></li>
+                        </ul>
+                            </li>
+                        </ul>
+                    </li>
+                    <li myquery-widget="ui.navitem" ui-navitem="html:main;img:module">
+                        <ul>
+                            <li myquery-widget="ui.navitem" ui-navitem="html:Communicate;img:class"></li>
+                            <li myquery-widget="ui.navitem" ui-navitem="html:Css;img:class"></li>
+                            <li myquery-widget="ui.navitem" ui-navitem="html:Dom;img:class"></li>
+                        </ul>
+                    </li>
+                    <li myquery-widget="ui.navitem" ui-navitem="html:module;img:module">
+                        <ul>
+                            <li myquery-widget="ui.navitem" ui-navitem="html:Animate;img:class"></li>
+                            <li myquery-widget="ui.navitem" ui-navitem="html:Color;img:class"></li>
+                            <li myquery-widget="ui.navitem" ui-navitem="html:Event;img:class"></li>
+                            <li myquery-widget="ui.navitem" ui-navitem="html:Object;img:class"></li>
+                            <li myquery-widget="ui.navitem" ui-navitem="html:Promise;img:class"></li>
+                            <li myquery-widget="ui.navitem" ui-navitem="html:Thread;img:class"></li>
+                        </ul>
+                    </li>
+                    <li myquery-widget="ui.navitem" ui-navitem="html:other;img:module">
+                        <ul>
+                            <li myquery-widget="ui.navitem" ui-navitem="html:Manifest;img:class"></li>
+                        </ul>
+                    </li>
+                    <li myquery-widget="ui.navitem" ui-navitem="html:ui;img:module">
+                        <ul>
+                            <li myquery-widget="ui.navitem" ui-navitem="html:Accordion;img:class"></li>
+                            <li myquery-widget="ui.navitem" ui-navitem="html:Book;img:class"></li>
+                            <li myquery-widget="ui.navitem" ui-navitem="html:Button;img:class"></li>
+                            <li myquery-widget="ui.navitem" ui-navitem="html:Drag;img:class"></li>
+                            <li myquery-widget="ui.navitem" ui-navitem="html:Keyboard;img:class"></li>
+                            <li myquery-widget="ui.navitem" ui-navitem="html:ScrollableView;img:class"></li>
+                            <li myquery-widget="ui.navitem" ui-navitem="html:Widget;img:class"></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
