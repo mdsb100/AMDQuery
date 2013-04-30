@@ -6,7 +6,7 @@ myQuery.define("json/package", function($, undefinded) {
 
 	return {
 		main: main,
-		html5: html5,
+		html5: html5
 	}
 
 });
