@@ -14,7 +14,7 @@
     <script src="../../myquery/myquery.js" type="text/javascript" myquery="define:$;"
         amd="detectCR:1;"></script>
     <script type="text/javascript">
-        $.require(["main/dom"], function (dom) {
+        $.require(["main/query", "main/dom"], function (query, dom) {
             $.ready(function () {
                 var test = $("#test");
                 //                alert(test.outerH(true));
@@ -28,7 +28,8 @@
                 //                alert(test.innerW());
                 alert(test.outerH(true));
                 test.outerH(120, true);
-                alert(test.outerH()); //会带margin
+                alert(test.outerH()); 
+                //会带margin
                 //                alert(test.css("background-color"));
                 //                alert(test.css("color"));
                 //                alert(test.style("margin-top"));
