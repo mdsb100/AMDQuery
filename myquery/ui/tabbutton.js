@@ -105,7 +105,7 @@ function($, Widget, Button, query, cls, event, dom, src) {
     });
 
     //提供注释
-    $.fn.tabbutton = function(a, b, c, args) {
+    $.fn.uiTabbutton = function(a, b, c, args) {
         return tabbutton.apply(this, arguments);
     }
 

@@ -278,7 +278,7 @@ myQuery.define("ui/turnBook", ["main/class", "html5/css3", "ui/swappable", "modu
             showPages: Widget.AllowPublic,
             isInLeft: Widget.AllowReturn,
             isInRight: Widget.AllowReturn
-        }
+        },
         _initHandler: function() {
             var self = this,
                 target = self.target,
@@ -689,7 +689,7 @@ myQuery.define("ui/turnBook", ["main/class", "html5/css3", "ui/swappable", "modu
     });
 
     //提供注释
-    $.fn.turnBook = function(a, b, c, args) {
+    $.fn.uiTurnBook = function(a, b, c, args) {
         /// <summary>翻书
         /// <para>大小位置关系初始化后不得修改</para>
         /// <para>str obj.bookName:书名 缺省"default"</para>

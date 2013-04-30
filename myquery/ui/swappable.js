@@ -214,7 +214,7 @@
     });
 
     //提供注释
-    $.fn.swappable = function (a, b, c, args) {
+    $.fn.uiSwappable = function (a, b, c, args) {
         /// <summary>使其滑动
         /// <para>bol obj.disabled:事件是否可用</para>
         /// <para>num obj.pauseSensitivity:捕捉的灵敏度 缺省500毫秒</para>

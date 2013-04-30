@@ -569,7 +569,7 @@ myQuery.define("ui/scrollableview", ["main/query", "main/dom", "main/class", "ht
         });
 
     //提供注释
-    $.fn.scrollableview = function(a, b, c, args) {
+    $.fn.uiScrollableview = function(a, b, c, args) {
         /// <summary>使对象的第一元素可以拖动
         /// <para>bol obj.disabled:事件是否可用</para>
         /// <para>num obj.axis:"x"表示横轴移动;"y"表示纵轴移动;缺省或其他值为2轴</para>

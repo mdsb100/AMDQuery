@@ -61,7 +61,7 @@ function($, Widget, Button, query, cls, event, dom, attr, src) {
     });
 
     //提供注释
-    $.fn.tabbar = function(a, b, c, args) {
+    $.fn.uiTabbar = function(a, b, c, args) {
         return tabbar.apply(this, arguments);
     }
 

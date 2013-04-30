@@ -539,7 +539,7 @@
     });
 
     //提供注释
-    $.fn.accordion = function(a, b, c, args) {
+    $.fn.uiAccordion = function(a, b, c, args) {
         /// <summary>可以参考charcode列表绑定快捷键
         /// <para>arr obj.keylist:快捷键列表</para>
         /// <para>{ type: "keyup", keyCode: "Enter" </para>

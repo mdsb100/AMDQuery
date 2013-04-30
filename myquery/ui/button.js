@@ -52,7 +52,7 @@ function($, client, Widget, query, cls, event, dom, attr, src) {
                 ie = client.browser.ie < 9;
             ie && this.$text.remove();
             this.$text.html(opt.text);
-            ie this.$text.appendTo(this.container);
+            ie && this.$text.appendTo(this.container);
             this.container.attr("title", opt.title);
             return this;
         },
@@ -111,11 +111,6 @@ function($, client, Widget, query, cls, event, dom, attr, src) {
         },
         widgetEventPrefix: "button"
     });
-
-    //提供注释
-    $.fn.button = function(a, b, c, args) {
-        return button.apply(this, arguments);
-    }
 
     return button;
 });
