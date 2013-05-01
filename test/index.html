@@ -9,7 +9,7 @@
         $.require(["main/query", "main/attr", "ui/navmenu", "module/Widget", "module/src"], function (query, attr, Navmenu, Widget, src) {
             var $nav = $("#nav"), $content = $("#content");
 
-            $nav.on("navmenu.open", function(e){
+            $nav.on("navmenu.select", function(e){
                 var target = $(e.navitem),
                 ret = target.uiNavitem("getOptionToRoot"),
                 path;
@@ -22,16 +22,17 @@
                 }
             });
 
-            // $("#td").on("dblclick", function () {
-            //     window.open($content.attr("src"));
-            // });
+            $("#td").on("dblclick", function () {
+                var src = $content.attr("src");
+                src && window.open(src);
+            });
 
         });
        
     </script>
 </head>
 <body style="width: 100%; height: 100%;">
-    <div style="width: 100%; height: 100%;">
+    <div style="width: 100%; height: 100%;" myquery-widget="ui.splitterpane">
         <div myquery-widget="ui.scrollableview" ui-scrollableview="overflow:y"; style="width:200px;height:100%;">
             <div id="nav" myquery-widget="ui.navmenu">
                 <ul>
@@ -86,6 +87,9 @@
                     </li>
                 </ul>
             </div>
+        </div>
+        <div style="height:100%" myquery-widget="ui.splitter" ui-splitter="flex:1">
+            <iframe id="content" style="height:100%;width:100%;border:1px solid black;"></iframe>
         </div>
     </div>
 </body>
