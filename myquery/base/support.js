@@ -33,11 +33,7 @@ myQuery.define("base/support", function ($) {
 
         classList: !! div.classList
     };
-    //            div.setAttribute("b", "bb");
-    //            div.c = "cc";
-    //            alert(div.getAttributeNode("b").nodeValue)
-    //            alert(support.getSetAttribute)
-    //            alert(div.getAttribute("b"))
+
     script.type = "text/javascript";
 
     try {
