@@ -129,7 +129,7 @@ function($, NavItem, Widget, query, cls, event, dom, attr, src) {
             var $target = $(target),
                 opt = this.options;
             if (Widget.is($target, "ui.navitem")) {
-                if (opt.selectedNavItem) {
+                if (opt.selectedNavItem && opt.selectedNavItem !== target) {
                     $(opt.selectedNavItem).uiNavitem("cancel");
                 }
                 $target.uiNavitem("select");
@@ -140,7 +140,7 @@ function($, NavItem, Widget, query, cls, event, dom, attr, src) {
             var $target = $(target),
                 opt = this.options;
             if (Widget.is($target, "ui.navitem")) {
-                if (opt.selectedNavItem) {
+                if (opt.selectedNavItem && opt.selectedNavItem !== target) {
                     $(opt.selectedNavItem).uiNavitem("cancel");
                 }
                 opt.selectedNavItem = target;
