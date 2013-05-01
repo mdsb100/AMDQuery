@@ -353,22 +353,22 @@
             if (!$.isObj(statics)) {
                 statics = {};
             }
+            
+            var ctor = object.extend(name, prototype, Super);
+            ctor.prototype.widgetName = name;
+            ctor.prototype.widgetNameSpace = nameSpace;
 
-            var constructor = object.extend(name, prototype, statics, Super);
-            constructor.prototype.widgetName = name;
-            constructor.prototype.widgetNameSpace = nameSpace;
-
-            Widget[nameSpace][name] = constructor;
+            Widget[nameSpace][name] = ctor;
 
             /*如果当前prototype没有定义setter和getter将自动生成*/
-            _initOptionsPurview(constructor);
+            _initOptionsPurview(ctor);
 
-            _extendAttr("publics", constructor, prototype, true);
-            _extendAttr("options", constructor);
+            _extendAttr("publics", ctor, prototype, true);
+            _extendAttr("options", ctor);
 
             /*遵从父级为false 子集就算设为ture 最后也会为false*/
-            _extendAttr("getter", constructor, true);
-            _extendAttr("setter", constructor, true);
+            _extendAttr("getter", ctor, true);
+            _extendAttr("setter", ctor, true);
 
 
             var key = nameSpace + "." + name + $.now();
@@ -384,7 +384,7 @@
                     arg = arguments;
                 this.each(function(ele) {
                     var data = $.data(ele, key); //key = nameSpace + "." + name,
-                    if (data == undefined) data = $.data(ele, key, new constructor(a, $(ele))); //完全调用基类的构造函数 不应当在构造函数 create render
+                    if (data == undefined) data = $.data(ele, key, new ctor(a, $(ele))); //完全调用基类的构造函数 不应当在构造函数 create render
                     else {
                         if ($.isObj(a)) {
                             data.option(a);
@@ -422,6 +422,12 @@
                     return Widget.extend(tName, prototype, this);
                 }
             }
+
+            widget.invoke = function () {
+                ctor.invoke.apply(ctor, arguments);
+            }
+
+            $.easyExtend(widget, statics);
 
             if (!$.prototype[name]) {
                 $.prototype[name] = widget;
