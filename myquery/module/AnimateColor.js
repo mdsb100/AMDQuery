@@ -7,7 +7,7 @@ myQuery.define("module/AnimateColor", ["module/object", "module/color", "main/do
         if (this instanceof AnimateColor) {
             this.type = type;
             /*this.type一定要放在前面*/
-            this._super(ele, options, value, name, type);
+            this._super(ele, options, value, name);
             
             //this.color = color(css.style(ele, name));
             // this.originColor = color(css.style(ele, name));
