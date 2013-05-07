@@ -6,11 +6,14 @@ myQuery.define("module/AnimateColor", ["module/object", "module/color", "main/do
     var AnimateColor = object.extend(function AnimateColor(ele, options, value, name, type) {
         if (this instanceof AnimateColor) {
             this.type = type;
+            /*this.type一定要放在前面*/
+            this._super(ele, options, value, name, type);
+            
             //this.color = color(css.style(ele, name));
             // this.originColor = color(css.style(ele, name));
             //this.color.clone();
             //this._originCss = transformCss;
-            AnimateColor._SupperConstructor(this, ele, options, value, name, type);
+            
         }
         else {
             var _color = color(value);
