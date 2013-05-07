@@ -87,6 +87,9 @@ myQuery.define("module/object", ["base/extend"], function($, utilExtend) {
         }
         return ret;
     },
+    _createGetterSetter = function(object){
+        object.providePropertyGetSet(this, object);
+    },
     defaultValidate = function() {
         return 1;
     },
@@ -157,6 +160,7 @@ myQuery.define("module/object", ["base/extend"], function($, utilExtend) {
             anonymous.extend = _extendTemplate;
             anonymous.joinPrototype = _joinPrototypeTemplate;
             anonymous.instance = _instance;
+            anonymous.createGetterSetter = _createGetterSetter;
             anonymous.fn = anonymous.prototype;
 
             $.easyExtend(anonymous, statics);
