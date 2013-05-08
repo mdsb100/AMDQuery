@@ -1,5 +1,4 @@
-﻿/// <reference path="../myquery.js" />
-// quote from colo.js by Andrew Brehaut, Tim Baumann
+﻿// quote from colo.js by Andrew Brehaut, Tim Baumann
 
 myQuery.define('module/color', ['main/object', 'hash/cssColors'], function ($, object, cssColors, undefined) {
     "use strict"; //启用严格模式
