@@ -14,7 +14,7 @@
         href: $.getPath("ui/css/accordion", ".css")
     });
 
-    var Key = object.extend("Key", {
+    var Key = CustomEvent.extend("Key", {
         init: function(key, parent) {
             this._super();
             this.parent = parent;
@@ -88,7 +88,7 @@
         routing: function(widgetId) {
             return this.widgetId == widgetId;
         }
-    }, CustomEvent);
+    });
 
     var KeyCollection = object.Collection("KeyCollection", {
         init: function(keys, parent) {
@@ -159,7 +159,7 @@
         }
     }, CustomEvent);
 
-    var Shell = object.extend("Shell", {
+    var Shell = CustomEvent.extend("Shell", {
         init: function(shell, parent) {
             this._super();
             this.parent = parent;
@@ -292,7 +292,7 @@
         routing: function(widgetId) {
             return this.widgetId == widgetId;
         }
-    }, CustomEvent);
+    });
 
     var ShellCollection = object.Collection("ShellCollection", {
         init: function(shells, parent) {
@@ -407,7 +407,7 @@
         }
     }, CustomEvent);
 
-    var Accordion = object.extend("Accordion", {
+    var Accordion = CustomEvent.extend("Accordion", {
         init: function(target, option) { //, keyId, isDittoShellSelect
             this._super();
             this.target = $(target);
@@ -468,7 +468,7 @@
             this.shellCollection.selectShell(shell);
             return this;
         }
-    }, CustomEvent);
+    });
 
     var accordion = Widget.extend("ui.accordion", {
         container: null,

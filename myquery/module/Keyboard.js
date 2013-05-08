@@ -1,7 +1,7 @@
 ﻿myQuery.define("module/Keyboard", ["main/event", "main/CustomEvent", "main/object", "hash/charcode"]
 , function ($, event, CustomEvent, object, charcode) {
     "use strict"; //启用严格模式
-    var Keyboard = object.extend("Keyboard", {
+    var Keyboard = CustomEvent.extend("Keyboard", {
         constructor: Keyboard
         , init: function (container, keyList) {
             this._super();
@@ -13,16 +13,6 @@
             this._initHandler().enable().addKeys(keyList);
         }
         , _initHandler: function () {
-            //            if (!this.container) {
-            //                return this;
-            //            }
-            //            var container = this.container, self = this, fun = function (e) {
-            //                //console.log(e.keyCode);
-            //                self.routing(this, e);
-            //            }
-            //            event.on(container, "keydown", fun)
-            //            .on(container, "keypress", fun)
-            //            .on(container, "keyup", fun);
             var self = this;
             this.event = function (e) {
                 self.routing(this, e);
@@ -211,7 +201,7 @@
             }
             return keyboard;
         }
-    }, CustomEvent);
+    });
 
     return Keyboard;
 });

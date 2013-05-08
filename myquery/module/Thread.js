@@ -1,7 +1,4 @@
-﻿/// <reference path="../myquery.js" />
-/// <reference path="object.js" />
-
-myQuery.define('module/Thread', ["main/CustomEvent", "base/extend", "main/object"], function ($, CustomEvent, extend, object) {
+﻿myQuery.define('module/Thread', ["main/CustomEvent", "base/extend", "main/object"], function ($, CustomEvent, extend, object) {
     "use strict"; //启用严格模式
     /// <summary>创造一个新进程
     /// <para>num obj.delay:延迟多少毫秒</para>
@@ -33,7 +30,7 @@ myQuery.define('module/Thread', ["main/CustomEvent", "base/extend", "main/object
             window.msCancelRequestAnimationFrame ||
             clearTimeout;
 
-    var Thread = object.extend("Thread", {
+    var Thread = CustomEvent.extend("Thread", {
         init: function (obj, paras) {
             /// <summary>初始化参数 初始化参数会停止进程</summary>
             /// <param name="obj" type="Object">进程参数</param>
@@ -83,6 +80,7 @@ myQuery.define('module/Thread', ["main/CustomEvent", "base/extend", "main/object
             var self = this
             , every = function () {
                 if (self.runFlag === false || (self.tick >= self.duration && !self.forever)) {
+                    every = null;
                     return self.stop();
                 }
                 if (self.sleepFlag) {
@@ -317,7 +315,7 @@ myQuery.define('module/Thread', ["main/CustomEvent", "base/extend", "main/object
             duration: NaN,
             id: ""
         }
-    }, CustomEvent);
+    });
 
     object.providePropertyGetSet(Thread, {
         args: "-pu -r -w",
