@@ -1,9 +1,6 @@
-﻿/// <reference path="../myquery.js" />
-/*include JQuery animate*/
-
-myQuery.define("module/AnimateColor", ["module/object", "module/color", "main/dom", "module/FX"], function ($, object, color, dom, FX) {
+﻿myQuery.define("module/AnimateColor", ["module/object", "module/color", "main/dom", "module/FX"], function ($, object, color, dom, FX) {
     "use strict"; //启用严格模式
-    var AnimateColor = object.extend(function AnimateColor(ele, options, value, name, type) {
+    var AnimateColor = FX.extend(function AnimateColor(ele, options, value, name, type) {
         if (this instanceof AnimateColor) {
             this.type = type;
             /*this.type一定要放在前面*/
@@ -40,7 +37,7 @@ myQuery.define("module/AnimateColor", ["module/object", "module/color", "main/do
             this.ele.style[this.name] = _color.toString();
         }
 
-    }, FX);
+    });
 
     if (!($.config.module.transitionToAnimation && $.support.transition)) {
         $.easyExtend(FX.custom, {

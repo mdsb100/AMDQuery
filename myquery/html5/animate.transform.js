@@ -10,7 +10,7 @@ myQuery.define("html5/animate.transform", ["module/object", "module/FX", "html5/
     , transformCss = "-" + css3.css3Head + "-transform";
     //给动画类添加一个自定义方法
     if ($.support.transform3d) {
-        var Transfrom3dForFX = object.extend(function Transfrom3dForFX(ele, options, value, name, type) {
+        var Transfrom3dForFX = FX.extend(function Transfrom3dForFX(ele, options, value, name, type) {
             if (this instanceof Transfrom3dForFX) {
                 this._super(ele, options, value, name);
                 this.type = type;
@@ -35,7 +35,7 @@ myQuery.define("html5/animate.transform", ["module/object", "module/FX", "html5/
             }
             , update: function (transform, value) {
                 transform = transform || $.getTransform3d(this.ele);
-                value = value != undefined ? value : parseInt(this.nowPos);
+                value = value != undefined ? value : parseFloat(this.nowPos);
                 if (value != undefined) {
                     transform[this.type] = value + this.unit;
                     $[this.name](this.ele, transform);
@@ -50,7 +50,7 @@ myQuery.define("html5/animate.transform", ["module/object", "module/FX", "html5/
 
                 return start;
             }
-        }, FX);
+        });
 
         $.easyExtend($.fx.custom, {
             setRotate3d: Transfrom3dForFX,
@@ -60,12 +60,12 @@ myQuery.define("html5/animate.transform", ["module/object", "module/FX", "html5/
         });
     }
     if ($.support.transform) {
-        var TransfromForFX = object.extend(function TransfromForFX(ele, options, value, name, type, index) {
+        var TransfromForFX = FX.extend(function TransfromForFX(ele, options, value, name, type, index) {
             if (this instanceof TransfromForFX) {
-                this._super(ele, options, value, name);
                 this.type = type;
                 this.index = index;
                 this._originCss = transformCss;
+                this._super(ele, options, value, name);
                 this.name = name.indexOf("set") < 0 ? $.util.camelCase(name, "set") : name; 
             }
             else {
@@ -88,7 +88,7 @@ myQuery.define("html5/animate.transform", ["module/object", "module/FX", "html5/
             }
             , update: function (transform, value) {
                 transform = transform || $.getTransform(this.ele, this.type[0])[0] || [];
-                value = value != undefined ? value : parseInt(this.nowPos);
+                value = value != undefined ? value : parseFloat(this.nowPos);
                 if (value != undefined) {
                     transform[0] = this.type[0];
 
@@ -97,7 +97,6 @@ myQuery.define("html5/animate.transform", ["module/object", "module/FX", "html5/
                     }
 
                     transform[this.index] = value + this.unit;
-
                     // this.index ==i?(   transform[this.index] = value + this.unit):;
                     $.setTransformByCurrent(this.ele, [transform]);
                 }
@@ -112,7 +111,7 @@ myQuery.define("html5/animate.transform", ["module/object", "module/FX", "html5/
                 return start;
             }
 
-        }, FX);
+        });
 
         $.easyExtend($.fx.custom, {
             transform: TransfromForFX

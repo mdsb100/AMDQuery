@@ -57,11 +57,13 @@ myQuery.define("module/object", ["base/extend"], function($, utilExtend) {
         inerit(this, Super);
         return this;
     },
-    _extendTemplate = function(prototype, statics) {
+    _extendTemplate = function(name, prototype, statics) {
         var arg = $.util.argToArray(arguments);
-        arg.splice(0, 0, null);
+        if($.isObj(name) && this.name){
+            arg.splice(0, 0, this.name);
+        }
         arg.push(this);
-        /*arg = [null, prototype, statics, constructor]*/
+        /*arg = [name, prototype, statics, constructor]*/
         return object.extend.apply(object, arg);;
     },
     _joinPrototypeTemplate = function() {

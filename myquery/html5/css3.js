@@ -686,14 +686,16 @@ myQuery.define("html5/css3", ["base/client", "main/dom"], function ($, client, d
             /// <returns type="self" />
             if (hasTransform && style) {
                 var transform = $.getTransform(ele)
-                , len1 = style.length || 0
-                , len2 = transform.length || 0
+                , pushList = []
+                , len1 = style.length
+                , len2 = transform.length
                 , len3 = 0
                 , item1 = null
                 , item2 = null
                 , item3 = null
                 , i = len1 - 1, j = len2 - 1
-                , z = 1;
+                , z = 0;
+
                 for (; i > -1; i--) {
                     item1 = style[i]
                     if (transformReg[item1[0]]) {
@@ -710,11 +712,19 @@ myQuery.define("html5/css3", ["base/client", "main/dom"], function ($, client, d
                                 break;
                             }
                         }
+                        if(z == 0){
+                            pushList.push(item1);
+                        }
+                        z = 0; //初始化是否找到
                     }
                     else {
                         style.splice(i, 1);
                     }
                 }
+
+                
+                transform = transform.concat(pushList);
+
                 // $.each(style, function (value) {
                 //     transform.push(value)
                 // });
