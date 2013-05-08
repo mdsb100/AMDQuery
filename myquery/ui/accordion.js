@@ -149,7 +149,7 @@
             }
             return this;
         },
-        offChild: function() {
+        offChild: function(type, fn) {
             var list = this.models,
                 i;
             for (i in list) {
