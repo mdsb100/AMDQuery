@@ -58,6 +58,7 @@ myQuery.define("module/FX", ["main/dom", "module/object"], function($, dom, obje
                 //this.tick = opt.duration;
                 this.nowPos = this.end;
                 //opt.curCount -= 1;
+                this.update();
                 if (--opt.curCount <= 0) {
                     if (this.options.display != null) {
                         // Reset the overflow
@@ -69,7 +70,6 @@ myQuery.define("module/FX", ["main/dom", "module/object"], function($, dom, obje
                             this.ele.style.display = "block";
                         }
                     }
-                    this.update();
                     FX.invokeCompelete(opt.complete, this.ele, opt);
                 }
                 this.stop();
