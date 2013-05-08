@@ -1,7 +1,7 @@
 ﻿/// <reference path="../myquery.js" />
 /// <reference path="object.js" />
 
-myQuery.define('module/Thread', ["main/CustomEvent", "base/extend", "module/object"], function ($, CustomEvent, extend, object) {
+myQuery.define('module/Thread', ["main/CustomEvent", "base/extend", "main/object"], function ($, CustomEvent, extend, object) {
     "use strict"; //启用严格模式
     /// <summary>创造一个新进程
     /// <para>num obj.delay:延迟多少毫秒</para>

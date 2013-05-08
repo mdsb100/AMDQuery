@@ -1,7 +1,7 @@
 ﻿/// <reference path="../myquery.js" />
 /*include JQuery animate*/
 
-myQuery.define("module/FX", ["main/dom", "module/object"], function($, dom, object, undefined) {
+myQuery.define("module/FX", ["main/dom", "main/object"], function($, dom, object, undefined) {
     "use strict"; //启用严格模式
     var rfxnum = /^([+-]=)?([\d+-.]+)(.*)$/;
 

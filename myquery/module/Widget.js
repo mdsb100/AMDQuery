@@ -1,4 +1,4 @@
-﻿myQuery.define("module/Widget", ["main/data", "main/query", "main/event", "main/attr", "module/object", "module/myEval"], function($, data, query, event, attr, object, myEval, undefined) {
+﻿myQuery.define("module/Widget", ["main/data", "main/query", "main/event", "main/attr", "main/object", "module/myEval"], function($, data, query, event, attr, object, myEval, undefined) {
     "use strict"; //启用严格模式
 
     function Widget(obj, target) {

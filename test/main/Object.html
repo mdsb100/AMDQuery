@@ -15,7 +15,7 @@
     <script type="text/javascript">
         //变成异步的了
         //alert(document.getElementById("pre"));
-        require(["module/object", "base/ready"], function (object, ready) {
+        require(["main/object", "base/ready"], function (object, ready) {
             //alert(document.getElementById("pre"));
             ready(function () {
                 //alert(document.getElementById("pre"));
@@ -91,7 +91,7 @@
     <div>
     </div>
     <pre id="pre">
-         $.require(["module/object", "base/ready"], function (object, ready) {
+         $.require(["main/object", "base/ready"], function (object, ready) {
             ready(function () {
                 var div = document.getElementsByTagName("div")
                 , write = function (s) {

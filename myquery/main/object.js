@@ -1,6 +1,4 @@
-﻿/// <reference path="../myquery.js" />
-
-myQuery.define("module/object", ["base/extend"], function($, utilExtend) {
+﻿myQuery.define("main/object", ["base/extend"], function($, utilExtend) {
     //依赖extend
     "use strict"; //启用严格模式
 

@@ -1,5 +1,5 @@
 ﻿myQuery.define("ui/accordion", [
-    "module/object",
+    "main/object",
     "module/Widget",
     "main/class",
     "main/event",

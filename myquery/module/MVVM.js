@@ -1,4 +1,4 @@
-define("module/MVVM", ["main/query", "main/attr", "main/CustomEvent", "module/object"], function(query, attr, object, CustomEvent) {
+define("module/MVVM", ["main/query", "main/attr", "main/CustomEvent", "main/object"], function(query, attr, object, CustomEvent) {
 	var _tempMVVMData = null;
 
 	var util = {
