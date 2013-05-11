@@ -1816,6 +1816,12 @@
                     /// <returns type="Boolean" />
                     return $.isType(a, '[object Function]');
                 },
+                isNativeJSON: function (a) {
+                    /// <summary>是否为本地JSON</summary>
+                    /// <param name="a" type="any">任意对象</param>
+                    /// <returns type="Boolean" />
+                    return window.json && $.isType(a, 'object JSON');
+                }
                 isNaN: function(a) {
                     /// <summary>是否为NaN</summary>
                     /// <param name="a" type="any">任意对象</param>
