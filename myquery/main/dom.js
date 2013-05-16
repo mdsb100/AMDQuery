@@ -817,7 +817,7 @@ myQuery.define("main/dom", ["base/support", "base/client", "main/data", "main/ev
         , height: function (height) {
             /// <summary>返回或设置第一个元素的高度
             /// </summary>
-            /// <param name="height" type="Number">高度</param>
+            /// <param name="height" type="Number/String">高度</param>
             /// <returns type="Number" />
             return $.isNul(height)
             ? parseFloat($.getHeight(this[0]))
@@ -1220,7 +1220,7 @@ myQuery.define("main/dom", ["base/support", "base/client", "main/data", "main/ev
         , width: function (width) {
             /// <summary>返回或设置第一个元素的宽度
             /// </summary>
-            /// <param name="width" type="Number">宽度</param>
+            /// <param name="width" type="Number/String">宽度</param>
             /// <returns type="Number" />
             return $.isNul(width)
             ? parseFloat($.getWidth(this[0]))
