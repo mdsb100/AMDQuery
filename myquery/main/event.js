@@ -259,6 +259,7 @@ myQuery.define("main/event", ["base/client", "main/CustomEvent", "main/data"], f
                     //     /// <summary>移除dom元素的所有事件</summary>
                     //     /// <param name="ele" type="Element">元素</param>
                     // }
+
                     createEvent: function(type) {
                         /// <summary>创建原生事件对象</summary>
                         /// <param name="type" type="String">事件类型</param>
@@ -559,14 +560,15 @@ myQuery.define("main/event", ["base/client", "main/CustomEvent", "main/data"], f
             },
 
             toggle: function(ele, funParas) {
-                /// <summary>切换点击</summary>
+                /// <summary>切换点击或解除绑定</summary>
+                /// <para>若只有ele 就解除绑定</para>
                 /// <param name="ele" type="Element">element元素</param>
-                /// <param name="funParas" type="Function:[]">方法组</param>
+                /// <param name="funParas" type="Function:[]/undefined">方法组</param>
                 /// <returns type="self" />
                 var arg = $.util.argToArray(arguments, 1),
                     index = 0,
                     data;
-                if(arg.length) {
+                if(arg.length > 1) {
                     if(data = $.data(ele, "_toggle_")) {
                         arg = data.arg.concat(arg);
                         index = data.index;
@@ -577,60 +579,66 @@ myQuery.define("main/event", ["base/client", "main/CustomEvent", "main/data"], f
                         arg: arg
                     });
 
-                    $.addHandler(ele, 'click', function(e) {
-                        var self = $.event.document.getTarget(e),
-                            data = $.data(self, "_toggle_"),
-                            index = data.index,
-                            arg = data.arg,
-                            len = arg.length;
-
-                        arg[index % len].call(self, e);
-                        $.data(self, "_toggle_", {
-                            index: index + 1,
-                            arg: arg
-                        });
-                    });
+                    $.addHandler(ele, 'click', this._toggle);
+                }
+                else{
+                    $.removeHandler(ele, 'click', this._toggle);
+                    $.removeData(ele, "_toggle_");
                 }
                 //移除事件 添加至event 移除 arg len
                 return this;
             },
-            toggleClass: function(ele, classParas) {
-                /// <summary>切换样式</summary>
-                /// <param name="ele" type="Element">element元素</param>
-                /// <param name="classParas" type="String:[]">样式名</param>
-                /// <returns type="self" />
-                var arg = $.util.argToArray(arguments, 1),
-                    index = 0,
-                    data;
-                if(arg.length) {
-                    if(data = $.data(ele, "_toggleClass_")) {
-                        arg = data.arg.concat(arg);
-                        index = data.index;
-                    }
+            _toggle: function(e) {
+                var self = $.event.document.getTarget(e),
+                    data = $.data(self, "_toggle_"),
+                    arg = data.arg,
+                    len = arg.length,
+                    index = data.index % len;
 
-                    $.data(ele, "_toggleClass_", {
-                        index: index,
-                        arg: arg
-                    });
-
-                    $.addHandler(ele, 'click', function(e) {
-                        var self = $.event.document.getTarget(e),
-                            data = $.data(self, "_toggleClass_"),
-                            index = data.index,
-                            arg = data.arg,
-                            len = arg.length;
-
-                        $.addClass(self, arg[index % len]);
-                        $.removeClass(self, arg[index % len - 1] || arg[index % len + 1]);
-                        $.data(self, "_toggleClass_", {
-                            index: index + 1,
-                            arg: arg
-                        });
-                    });
-                }
-                //移除事件 添加至event 移除arg len
-                return this;
+                arg[index].call(self, e);
+                $.data(self, "_toggle_", {
+                    index: index + 1,
+                    arg: arg
+                });
             },
+
+            // toggleClass: function(ele, classParas) {
+            //     /// <summary>切换样式</summary>
+            //     /// <param name="ele" type="Element">element元素</param>
+            //     /// <param name="classParas" type="String:[]">样式名</param>
+            //     /// <returns type="self" />
+            //     var arg = $.util.argToArray(arguments, 1),
+            //         index = 0,
+            //         data;
+            //     if(arg.length) {
+            //         if(data = $.data(ele, "_toggleClass_")) {
+            //             arg = data.arg.concat(arg);
+            //             index = data.index;
+            //         }
+
+            //         $.data(ele, "_toggleClass_", {
+            //             index: index,
+            //             arg: arg
+            //         });
+
+            //         $.addHandler(ele, 'click', function(e) {
+            //             var self = $.event.document.getTarget(e),
+            //                 data = $.data(self, "_toggleClass_"),
+            //                 index = data.index,
+            //                 arg = data.arg,
+            //                 len = arg.length;
+
+            //             $.addClass(self, arg[index % len]);
+            //             $.removeClass(self, arg[index % len - 1] || arg[index % len + 1]);
+            //             $.data(self, "_toggleClass_", {
+            //                 index: index + 1,
+            //                 arg: arg
+            //             });
+            //         });
+            //     }
+            //     //移除事件 添加至event 移除arg len
+            //     return this;
+            // },
             trigger: function(ele, type, context, paras) {
                 /// <summary>
                 /// 触发自定义或者原生事件
@@ -746,7 +754,8 @@ myQuery.define("main/event", ["base/client", "main/CustomEvent", "main/data"], f
         },
 
         toggle: function(funParas) {
-            /// <summary>切换点击</summary>
+            /// <summary>切换点击或解除绑定</summary>
+            /// <para>若没有funParas 就解除绑定</para>
             /// <param name="funParas" type="Function:[]/Array[Function]">方法组</param>
             /// <returns type="self" />
             var arg = $.isArr(funParas) ? funParas : $.util.argToArray(arguments, 0),
@@ -757,34 +766,28 @@ myQuery.define("main/event", ["base/client", "main/CustomEvent", "main/data"], f
                 temp.splice(0, 0, ele);
                 $.toggle.apply($, temp);
             }
-            //            return this.each(function (ele) {
-            //                temp = arg.concat();
-            //                temp.splice(0, 0, ele);
-            //                $.toggle.apply($, temp);
-            //            });
             return this;
-            //移除事件 添加至event 移除arg len
         },
-        toggleClass: function(ele, classParas) {
-            /// <summary>切换样式</summary>
-            /// <param name="ele" type="Element">element元素</param>
-            /// <param name="classParas" type="String:[]">样式名</param>
-            /// <returns type="self" />
-            var arg = $.isArr(classParas) ? classParas : $.util.argToArray(arguments, 0),
-                temp;
-            for(; ele = this.eles[i++];) {
-                temp = arg.concat();
-                temp.splice(0, 0, ele);
-                $.toggleClass.apply($, temp);
-            }
-            return this;
-            //            return this.each(function (ele) {
-            //                temp = arg.concat();
-            //                temp.splice(0, 0, ele)
-            //                $.toggleClass.apply($, temp);
-            //            });
-            //移除事件 添加至event 移除arg len
-        },
+        // toggleClass: function(ele, classParas) {
+        //     /// <summary>切换样式</summary>
+        //     /// <param name="ele" type="Element">element元素</param>
+        //     /// <param name="classParas" type="String:[]">样式名</param>
+        //     /// <returns type="self" />
+        //     var arg = $.isArr(classParas) ? classParas : $.util.argToArray(arguments, 0),
+        //         temp;
+        //     for(; ele = this.eles[i++];) {
+        //         temp = arg.concat();
+        //         temp.splice(0, 0, ele);
+        //         $.toggleClass.apply($, temp);
+        //     }
+        //     return this;
+        //     //            return this.each(function (ele) {
+        //     //                temp = arg.concat();
+        //     //                temp.splice(0, 0, ele)
+        //     //                $.toggleClass.apply($, temp);
+        //     //            });
+        //     //移除事件 添加至event 移除arg len
+        // },
         trigger: function(type, a, b, c) {
             /// <summary>
             /// 触发自定义或者原生事件

@@ -68,6 +68,14 @@
 
                 //test1.off("mousedown mouseup", fn2);
 
+                test1.toggle(function(){
+                    alert(1)
+                }, function(){
+                    alert(2)
+                });
+
+                test1.toggle();
+
                 test1.clearHandlers("mousedown mouseup")
 
                 test1.trigger("mousedown", {
