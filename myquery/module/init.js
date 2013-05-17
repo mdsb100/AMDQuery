@@ -28,7 +28,7 @@ myQuery.define("module/init", ["main/query", "main/dom", "main/attr", "module/Wi
 		marginLeft: -$image.height() + "px"
 	});
 
-	$("body *[myquery-widget]").reverse().each(function(ele) {
+	$("body *[myquery-widget]").each(function(ele) {
 		var value = attr.getAttr(ele, "myquery-widget"),
 			attrNames = $.isStr(value) && value != "" ? value.split(/;|,/) : [],
 			len = attrNames.length,
@@ -59,7 +59,7 @@ myQuery.define("module/init", ["main/query", "main/dom", "main/attr", "module/Wi
 					fnNameReflect[widgetName] = $.util.camelCase(name, nameSpace);
 				}		
 			}
-			widgetMap[widgetName].push(ele);
+			widgetMap[widgetName] && widgetMap[widgetName].push(ele);
 		};
 
 	})
