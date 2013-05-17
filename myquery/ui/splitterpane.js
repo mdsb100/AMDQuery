@@ -60,11 +60,18 @@ function($, support, Widget, query, cls, event, dom, attr, src, css3) {
                 this.options.disabled = false;
                 return this;
             },
-            render: function() {
+            render: function(width, height) {
                 var opt = this.options;
                 this.target.css(boxOrientName, opt.orient);
                 this.target.css(boxAlignName, opt.align);
                 this.target.css(boxPackName, opt.pack);
+                this.resize(width, height);
+                return this;
+            },
+            resize: function(width, height){
+                $.isNul(width) || this.target.width(width);
+                $.isNul(height) || this.target.height(height);
+                
                 return this;
             },
             init: function(opt, target) {
@@ -131,18 +138,61 @@ function($, support, Widget, query, cls, event, dom, attr, src, css3) {
                 this.options.disabled = false;
                 return this;
             },
-            render: function() {
+            render: function(width, height){
+                return this.resize(width, height);
+            },
+            resize: function(width, height) {
+                var opt = this.options;
+                if(!$.isNul(width)){
+                    this.target.width(width);
+                }
+                if(!$.isNul(height)){
+                    this.target.height(height);
+                }
+                this.width =  this.target.width();
+                this.height = this.target.height();
 
+                switch(opt.orient){
+                    case "horizontal":
+                    this.toHorizontal();
+                    break;
+                    case "vertical":
+                    this.toVertical();
+                    break;
+                }
                 return this;
+            },
+            _setOrient: function(orient) {
+                var opt = this.options;
+                switch (orient) {
+                    case "horizontal":
+                        opt.orient = orient;
+                        break;
+                    case "vertical":
+                        opt.orient = orient;
+                        break;
+                }
+                this.resize();
+            },
+            toHorizontal: function(){
+                var child = this.target.child();
+                
+
+            },
+            toVertical: function(){
+                var child = this.target.child();
+
             },
             init: function(opt, target) {
                 this._super(opt, target);
-
+                this.render();
                 return this;
             },
             customEventName: [],
             options: {
-
+                orient: "horizontal",
+                pack: "start",
+                align: "start"
             },
             getter: {
 
@@ -151,7 +201,7 @@ function($, support, Widget, query, cls, event, dom, attr, src, css3) {
 
             },
             publics: {
-
+                resize:Widget.AllowPublic
             },
             target: null,
             toString: function() {
