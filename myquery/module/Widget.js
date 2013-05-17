@@ -442,8 +442,12 @@
             /// <param name="item" type="$"></param>
             /// <param name="name" type="String">widget名字 如ui.navmenu</param>
             /// <returns type="Boolean" />
-            var widgetTag = item.attr("myquery-widget");
-            return $.is$(item) && item.attr(widgetName.replace(".", "-")) != undefined && widgetTag != undefined && widgetTag.indexOf(widgetName) > -1;
+            if($.is$(item)){
+                var widgetTag = item.attr("myquery-widget");
+                return item.attr(widgetName.replace(".", "-")) != undefined && widgetTag != undefined && widgetTag.indexOf(widgetName) > -1;
+            }
+            
+            return false;
         },
         get: function(name) {
             /// <summary>获得某个widget</summary>
