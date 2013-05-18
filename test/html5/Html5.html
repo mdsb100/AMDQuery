@@ -149,7 +149,7 @@
 
         $.require(["html5/Worker"], function (Worker) {
             new Worker().onMessage(function (e) {
-                alert(e.data);
+                //alert(e.data);
             }).postMessage(function (a) {
                 return this.name + a;
             }, { name: "abc" }, "d");
@@ -168,6 +168,11 @@
     </script>
 </head>
 <body style="overflow: auto">
+    <div style="display: -webkit-box;-webkit-box-pack: end; -webkit-box-orient: horizontal; width:500px;height:200px;border:1px solid black">
+        <div style="width:200px;height:100px;border:1px solid black;"></div>
+        <div style="width:100px;height:100px;border:1px solid black;"></div>
+        
+    </div>
     <div style="width: 100%; height: 500px; border-bottom: 1px solid black; background-color: rgb(0, 0, 255);"
         id="test1" class="abc">
         <div style="width: 300px; height: 300px; background-color: Green; border-radius: 150px 150px 150px 150px;

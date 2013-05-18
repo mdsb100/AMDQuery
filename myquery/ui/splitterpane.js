@@ -68,10 +68,10 @@ function($, support, Widget, query, cls, event, dom, attr, src, css3) {
                 this.resize(width, height);
                 return this;
             },
-            resize: function(width, height){
+            resize: function(width, height) {
                 $.isNul(width) || this.target.width(width);
                 $.isNul(height) || this.target.height(height);
-                
+
                 return this;
             },
             init: function(opt, target) {
@@ -104,7 +104,7 @@ function($, support, Widget, query, cls, event, dom, attr, src, css3) {
 
             },
             publics: {
-
+                resize: Widget.AllowPublic
             },
             target: null,
             toString: function() {
@@ -138,27 +138,27 @@ function($, support, Widget, query, cls, event, dom, attr, src, css3) {
                 this.options.disabled = false;
                 return this;
             },
-            render: function(width, height){
+            render: function(width, height) {
                 return this.resize(width, height);
             },
             resize: function(width, height) {
                 var opt = this.options;
-                if(!$.isNul(width)){
+                if (!$.isNul(width)) {
                     this.target.width(width);
                 }
-                if(!$.isNul(height)){
+                if (!$.isNul(height)) {
                     this.target.height(height);
                 }
-                this.width =  this.target.width();
+                this.width = this.target.width();
                 this.height = this.target.height();
 
-                switch(opt.orient){
+                switch (opt.orient) {
                     case "horizontal":
-                    this.toHorizontal();
-                    break;
+                        this.toHorizontal();
+                        break;
                     case "vertical":
-                    this.toVertical();
-                    break;
+                        this.toVertical();
+                        break;
                 }
                 return this;
             },
@@ -174,17 +174,79 @@ function($, support, Widget, query, cls, event, dom, attr, src, css3) {
                 }
                 this.resize();
             },
-            toHorizontal: function(){
-                var child = this.target.child();
-                
+            filterSplitter: function() {
+                var child = this.target.child(),
+                    $item,
+                    splitter = [],
+                    flex = 0,
+                    $lastItem = null
+                    traceWidth = this.width,
+                    traceHeight = this.height;
+
+                child.each(function(ele) {
+                    $item = $(ele);
+                    if (Widget.is($item, "ui.splitter")) {
+                        $item.isSplitter = true;
+                        flex += $item.splitter("flex");
+                        $lastItem = $item;
+                    } else {
+                        traceWidth -= $item.width();
+                        traceHeight -= $item.height();
+                    }
+                    splitter.push($item);
+                });
+
+                traceWidth = Math.max(traceWidth, 0);
+                traceHeight = Math.max(traceHeight, 0);
+                if($lastItem){
+                    $lastItem.isLastItem = true;
+                }
+                return {
+                    splitter: spliter,
+                    flex: flex,
+                    traceWidth: traceWidth,
+                    traceHeight: traceHeight
+                };
+            },
+            toHorizontal: function() {
+                var ret = this.filterSplitter(),
+                    splitter = ret.splitter,
+                    flex = ret.flex,
+                    traceWidth = ret.traceWidth,
+                    traceHeight = ret.traceHeight,
+                    $item, i = 0,
+                    len = splitter.length,
+                    trace = 0,
+                    tempWidth = 0;
+
+                for (; i < len; i++) {
+                    $item = splitter[i];
+                    $item.css("float", "left");
+                    if($item.isSplitter && traceWidth > 0){
+                        tempWidth = Math.round($item.splitter("flex") / flex * traceWidth);
+                        $.item.splitter("setWidth", tempWidth);
+                    }
+                }
 
             },
-            toVertical: function(){
-                var child = this.target.child();
+            toVertical: function() {
+                var ret = this.filterSplitter(),
+                    splitter = ret.splitter,
+                    flex = ret.flex,
+                    traceWidth = ret.traceWidth,
+                    traceHeight = ret.traceHeight,
+                    $item, i = 0,
+                    len = splitter.length,
+                    trace = 0;
+                    tempHeight = 0;
 
             },
             init: function(opt, target) {
                 this._super(opt, target);
+                this.width = 0;
+                this.height = 0;
+                this.traceWidth = 0;
+                this.traceHeight = 0;
                 this.render();
                 return this;
             },
@@ -201,7 +263,7 @@ function($, support, Widget, query, cls, event, dom, attr, src, css3) {
 
             },
             publics: {
-                resize:Widget.AllowPublic
+                resize: Widget.AllowPublic
             },
             target: null,
             toString: function() {

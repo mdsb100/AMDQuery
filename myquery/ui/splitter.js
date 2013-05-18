@@ -15,7 +15,7 @@ function($, support, Widget, query, cls, event, dom, attr, src, css3, splitterpa
     var proto, splitter;
     if (support.box) {
         var boxFlexName = splitterpane.boxFlexName,
-        originBoxFlexValue = document.documentElement.style[boxFlexName];
+            originBoxFlexValue = document.documentElement.style[boxFlexName];
 
         proto = {
             container: null,
@@ -39,10 +39,16 @@ function($, support, Widget, query, cls, event, dom, attr, src, css3, splitterpa
             },
             render: function() {
                 var opt = this.options;
-                if(opt.flex !== originBoxFlexValue){
+                if (opt.flex !== originBoxFlexValue) {
                     this.target.css(boxFlexName, opt.flex);
                 }
                 return this;
+            },
+            resize: function() {},
+            setWidth: function() {},
+            setHeight: function() {},
+            _setFlex: function(flex) {
+                this.options.flex = flex;
             },
             init: function(opt, target) {
                 this._super(opt, target);
@@ -60,7 +66,9 @@ function($, support, Widget, query, cls, event, dom, attr, src, css3, splitterpa
 
             },
             publics: {
-
+                setWidth: Widget.AllowPublic,
+                setHeight: Widget.AllowPublic,
+                resize: Widget.AllowPublic
             },
             target: null,
             toString: function() {
@@ -98,6 +106,14 @@ function($, support, Widget, query, cls, event, dom, attr, src, css3, splitterpa
 
                 return this;
             },
+            resize: function() {},
+            setWidth: function() {},
+            setHeight: function() {},
+            _setFlex: function(flex) {
+                if ($.isNum(flex) && flex >= 0) {
+                    this.options.flex = flex;
+                }
+            },
             init: function(opt, target) {
                 this._super(opt, target);
 
@@ -105,7 +121,7 @@ function($, support, Widget, query, cls, event, dom, attr, src, css3, splitterpa
             },
             customEventName: [],
             options: {
-
+                flex: ""
             },
             getter: {
 
@@ -114,7 +130,9 @@ function($, support, Widget, query, cls, event, dom, attr, src, css3, splitterpa
 
             },
             publics: {
-
+                setWidth: Widget.AllowPublic,
+                setHeight: Widget.AllowPublic,
+                resize: Widget.AllowPublic
             },
             target: null,
             toString: function() {
