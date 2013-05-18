@@ -18,21 +18,21 @@ function($, support, Widget, query, cls, event, dom, attr, src, css3) {
 
     var domStyle = document.documentElement.style,
         boxFlexName = "",
-        boxPackName = "",
-        boxOrientName = "",
-        boxAlignName = "";
+        boxOrientName = "";
+        //boxPackName = "",
+        //boxAlignName = "";
 
     if ("boxFlex" in domStyle) {
         boxFlexName = "boxFlex";
-        boxPackName = "boxPack";
         boxOrientName = "boxOrient";
-        boxAlignName = "boxAlign";
+        //boxPackName = "boxPack";
+        //boxAlignName = "boxAlign";
 
     } else if (($.css3Head + "BoxFlex") in domStyle) {
         boxFlexName = $.css3Head + "BoxFlex";
-        boxPackName = $.css3Head + "BoxPack";
         boxOrientName = $.css3Head + "BoxOrient";
-        boxAlignName = $.css3Head + "BoxAlign";
+        //boxPackName = $.css3Head + "BoxPack";
+        //boxAlignName = $.css3Head + "BoxAlign";
     }
 
     support.box = !! boxFlexName;
@@ -63,8 +63,8 @@ function($, support, Widget, query, cls, event, dom, attr, src, css3) {
             render: function(width, height) {
                 var opt = this.options;
                 this.target.css(boxOrientName, opt.orient);
-                this.target.css(boxAlignName, opt.align);
-                this.target.css(boxPackName, opt.pack);
+                //this.target.css(boxAlignName, opt.align);
+                //this.target.css(boxPackName, opt.pack);
                 this.resize(width, height);
                 return this;
             },
@@ -93,9 +93,9 @@ function($, support, Widget, query, cls, event, dom, attr, src, css3) {
             },
             customEventName: [],
             options: {
-                orient: "horizontal",
-                pack: "start",
-                align: "start"
+                orient: "horizontal"
+                //pack: "start",
+                //align: "start"
             },
             getter: {
 
@@ -252,9 +252,9 @@ function($, support, Widget, query, cls, event, dom, attr, src, css3) {
             },
             customEventName: [],
             options: {
-                orient: "horizontal",
-                pack: "start",
-                align: "start"
+                orient: "horizontal"
+                //pack: "start",
+                //align: "start"
             },
             getter: {
 
