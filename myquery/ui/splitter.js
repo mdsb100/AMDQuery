@@ -44,9 +44,16 @@ function($, support, Widget, query, cls, event, dom, attr, src, css3, splitterpa
                 }
                 return this;
             },
-            resize: function() {},
-            setWidth: function() {},
-            setHeight: function() {},
+            resize: function(width, height) {
+                $.isNul(width) && this.setWidth(width);
+                $.isNul(height) && this.setHeight(height);
+            },
+            setWidth: function(width) {
+                this.target.width(width);
+            },
+            setHeight: function() {
+                this.target.height(height);
+            },
             _setFlex: function(flex) {
                 this.options.flex = flex;
             },
@@ -106,9 +113,16 @@ function($, support, Widget, query, cls, event, dom, attr, src, css3, splitterpa
 
                 return this;
             },
-            resize: function() {},
-            setWidth: function() {},
-            setHeight: function() {},
+            resize: function(width, height) {
+                $.isNul(width) && this.setWidth(width);
+                $.isNul(height) && this.setHeight(height);
+            },
+            setWidth: function(width) {
+                this.target.width(width);
+            },
+            setHeight: function() {
+                this.target.height(height);
+            },
             _setFlex: function(flex) {
                 if ($.isNum(flex) && flex >= 0) {
                     this.options.flex = flex;

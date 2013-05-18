@@ -19,8 +19,8 @@ function($, support, Widget, query, cls, event, dom, attr, src, css3) {
     var domStyle = document.documentElement.style,
         boxFlexName = "",
         boxOrientName = "";
-        //boxPackName = "",
-        //boxAlignName = "";
+    //boxPackName = "",
+    //boxAlignName = "";
 
     if ("boxFlex" in domStyle) {
         boxFlexName = "boxFlex";
@@ -39,7 +39,7 @@ function($, support, Widget, query, cls, event, dom, attr, src, css3) {
 
     var splitterpane, proto;
 
-    if (boxFlexName) {
+    if (support.box) {
         proto = {
             container: null,
             event: function() {},
@@ -179,7 +179,7 @@ function($, support, Widget, query, cls, event, dom, attr, src, css3) {
                     $item,
                     splitter = [],
                     flex = 0,
-                    $lastItem = null
+                    $lastItem = null,
                     traceWidth = this.width,
                     traceHeight = this.height;
 
@@ -187,7 +187,8 @@ function($, support, Widget, query, cls, event, dom, attr, src, css3) {
                     $item = $(ele);
                     if (Widget.is($item, "ui.splitter")) {
                         $item.isSplitter = true;
-                        flex += $item.splitter("flex");
+                        $item.uiSplitter();
+                        flex += $item.splitter("option", "flex");
                         $lastItem = $item;
                     } else {
                         traceWidth -= $item.width();
@@ -198,11 +199,11 @@ function($, support, Widget, query, cls, event, dom, attr, src, css3) {
 
                 traceWidth = Math.max(traceWidth, 0);
                 traceHeight = Math.max(traceHeight, 0);
-                if($lastItem){
+                if ($lastItem) {
                     $lastItem.isLastItem = true;
                 }
                 return {
-                    splitter: spliter,
+                    splitter: splitter,
                     flex: flex,
                     traceWidth: traceWidth,
                     traceHeight: traceHeight
@@ -216,15 +217,21 @@ function($, support, Widget, query, cls, event, dom, attr, src, css3) {
                     traceHeight = ret.traceHeight,
                     $item, i = 0,
                     len = splitter.length,
-                    trace = 0,
+                    sumWidth = 0,
                     tempWidth = 0;
 
                 for (; i < len; i++) {
                     $item = splitter[i];
                     $item.css("float", "left");
-                    if($item.isSplitter && traceWidth > 0){
-                        tempWidth = Math.round($item.splitter("flex") / flex * traceWidth);
-                        $.item.splitter("setWidth", tempWidth);
+                    if ($item.isSplitter && traceWidth > 0) {
+
+                        tempWidth = Math.round($item.uiSplitter("option", "flex") / flex * traceWidth);
+                        if ($item.isLastItem) {
+                            tempWidth = traceWidth - sumWidth;
+                        } else {
+                            sumWidth += tempWidth;
+                        }
+                        $item.uiSplitter("setWidth", tempWidth);
                     }
                 }
 
@@ -238,7 +245,7 @@ function($, support, Widget, query, cls, event, dom, attr, src, css3) {
                     $item, i = 0,
                     len = splitter.length,
                     trace = 0;
-                    tempHeight = 0;
+                tempHeight = 0;
 
             },
             init: function(opt, target) {
