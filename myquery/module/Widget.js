@@ -140,7 +140,7 @@
             attr = this.target.attr(this.widgetNameSpace + "-" + this.widgetName) || this.target.attr(this.widgetName);
 
             /*check options*/
-            if (attr !== undefined) {
+            if ($.isStr(attr)) {
                 attr = attr.split(/;|,/);
                 for (i = 0, len = attr.length; i < len; i++) {
                     item = attr[i].split(":");
@@ -206,7 +206,7 @@
             target._initHandler();
             this.target = target;
             this.addTag();
-            obj = obj || {};
+            obj = $.isPlainObj(obj) ? obj : {};
             $.extend(obj, this.checkAttr());
             this.option(obj);
             return this;
