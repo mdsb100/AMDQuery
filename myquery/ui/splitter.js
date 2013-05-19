@@ -51,7 +51,7 @@ function($, support, Widget, query, cls, event, dom, attr, src, css3, splitterpa
             setWidth: function(width) {
                 this.target.width(width);
             },
-            setHeight: function() {
+            setHeight: function(height) {
                 this.target.height(height);
             },
             _setFlex: function(flex) {
@@ -120,12 +120,13 @@ function($, support, Widget, query, cls, event, dom, attr, src, css3, splitterpa
             setWidth: function(width) {
                 this.target.width(width);
             },
-            setHeight: function() {
+            setHeight: function(height) {
                 this.target.height(height);
             },
             _setFlex: function(flex) {
                 if ($.isNum(flex) && flex >= 0) {
                     this.options.flex = flex;
+                    //要通知父元素更改
                 }
             },
             init: function(opt, target) {

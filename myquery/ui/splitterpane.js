@@ -172,7 +172,6 @@ function($, support, Widget, query, cls, event, dom, attr, src, css3) {
                         opt.orient = orient;
                         break;
                 }
-                this.resize();
             },
             filterSplitter: function() {
                 var child = this.target.child(),
@@ -234,7 +233,7 @@ function($, support, Widget, query, cls, event, dom, attr, src, css3) {
                         $item.uiSplitter("setWidth", tempWidth);
                     }
                 }
-
+                return this;
             },
             toVertical: function() {
                 var ret = this.filterSplitter(),
@@ -244,9 +243,25 @@ function($, support, Widget, query, cls, event, dom, attr, src, css3) {
                     traceHeight = ret.traceHeight,
                     $item, i = 0,
                     len = splitter.length,
-                    trace = 0;
-                tempHeight = 0;
+                    sumHeight = 0,
+                    tempHeight = 0;
 
+                for (; i < len; i++) {
+                    $item = splitter[i];
+                    $item.css("clear", "both");
+                    if ($item.isSplitter && traceHeight > 0) {
+
+                        tempHeight = Math.round($item.uiSplitter("option", "flex") / flex * traceHeight);
+                        if ($item.isLastItem) {
+                            tempHeight = traceHeight - sumHeight;
+                        } else {
+                            sumHeight += tempHeight;
+                        }
+                        $item.uiSplitter("setHeight", tempHeight);
+                    }
+                }
+
+                return this;
             },
             init: function(opt, target) {
                 this._super(opt, target);
