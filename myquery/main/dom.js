@@ -976,6 +976,31 @@ myQuery.define("main/dom", ["base/support", "base/client", "main/data", "main/ev
                 $.setInnerW(ele, width);
             }) : $.getInnerW(this[0]);
         },
+        //Deprecated
+        insertAfter: function(newChild, refChild) {
+            /// <summary>为$的某个元素后面加入子元素
+            /// <para>字符串是标签名:div</para>
+            /// <para>DOM元素</para>
+            /// <para>若为$，则为此$第一个元素添加另一个$的所有元素</para>
+            /// <para>也可以为这种形式：<span><span/><input /></para>
+            /// <para>select去append("<option></option>")存在问题</para>
+            /// <para>$({ i:"abc" }, "option")可以以这样方式实现</para>
+            /// </summary>
+            /// <param name="newChild" type="String/Element/$">新元素</param>
+            /// <param name="refChild" type="String/Element/$">已有元素,若为$则以第一个为准</param>
+            /// <returns type="self" />
+            return $.insertBefore(newChild, refChild.nextSibling);
+        },
+        after: function(refChild) {
+            /// <summary>添加当前的$元素到添加到某个元素后面
+            /// <para>father为$添加的目标为第一个子元素</para>
+            /// <para>father为ele则目标就是father</para>
+            /// </summary>
+            /// <param name="refChild" type="String/Element/$">已有元素</param>
+            /// <returns type="self" />
+            return $.before(refChild.nextSibling);
+        },
+        //Deprecated
         insertBefore: function(newChild, refChild) {
             /// <summary>为$的某个元素前面加入子元素
             /// <para>字符串是标签名:div</para>
@@ -1008,15 +1033,16 @@ myQuery.define("main/dom", ["base/support", "base/client", "main/data", "main/ev
                         //delete div;
                     });
                 }
-            } else if ($.isEle(newChild) || newChild.nodeType === 3 || newChild.nodeType === 8) ele.insertBefore(newChild, refChild);
-            else if ($.is$(newChild)) {
+            } else if ($.isEle(newChild) || newChild.nodeType === 3 || newChild.nodeType === 8) {
+                ele.insertBefore(newChild, refChild);
+            } else if ($.is$(newChild)) {
                 newChild.each(function(newChild) {
                     ele.insertBefore(newChild, refChild);
                 });
             }
             return this;
         },
-        insertBeforeTo: function(father, refChild) {
+        before: function(refChild) {
             /// <summary>添加当前的$元素到添加到某个元素前面
             /// <para>father为$添加的目标为第一个子元素</para>
             /// <para>father为ele则目标就是father</para>
@@ -1024,20 +1050,20 @@ myQuery.define("main/dom", ["base/support", "base/client", "main/data", "main/ev
             /// <param name="father" type="Element/$">父元素</param>
             /// <param name="refChild" type="String/Element/$">已有元素</param>
             /// <returns type="self" />
-            var f = father;
-            if ($.isEle(f)) {} else if ($.is$(f)) {
-                f = f[0];
-            } else {
-                f = null;
-            }
+            //var f = father;
+            // if ($.isEle(f)) {} else if ($.is$(f)) {
+            //     f = f[0];
+            // } else {
+            //     f = null;
+            // }
             if ($.is$(refChild)) {
                 refChild = refChild[0];
             }
-            if (f) {
-                this.each(function(ele) {
-                    f.insertBefore(ele, refChild);
-                });
-            }
+            // if (f) {
+            this.each(function(ele) {
+                ele.parentNode && ele.parentNode.insertBefore(ele, refChild);
+            });
+            // }
 
             return this;
         },
