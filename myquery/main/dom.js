@@ -166,12 +166,12 @@ myQuery.define("main/dom", ["base/support", "base/client", "main/data", "main/ev
 
                 // Remember the original values
                 left = style.left;
-                rs = elem.runtimeStyle;
+                rs = ele.runtimeStyle;
                 rsLeft = rs && rs.left;
 
                 // Put in the new values to get a computed value out
                 if (rsLeft) {
-                    rs.left = elem.currentStyle.left;
+                    rs.left = ele.currentStyle.left;
                 }
                 style.left = name === "fontSize" ? "1em" : ret;
                 ret = style.pixelLeft + "px";
@@ -1061,7 +1061,7 @@ myQuery.define("main/dom", ["base/support", "base/client", "main/data", "main/ev
             }
             // if (f) {
             this.each(function(ele) {
-                ele.parentNode && ele.parentNode.insertBefore(ele, refChild);
+                refChild.parentNode && refChild.parentNode.insertBefore(ele, refChild);
             });
             // }
 
