@@ -423,29 +423,28 @@
             className: function(className) {
                 return reg = new RegExp('(\\s|^)' + className + '(\\s|$)')
             },
-            id: /^#((?:[\w\u00c0-\uFFFF-]|\\.)+)/
+            id: /^#((?:[\w\u00c0-\uFFFF-]|\\.)+)/,
             ///^#[\w\d]+/
-            ,
-            tagName: /^((?:[\w\u00c0-\uFFFF\*-]|\\.)+)/
+            tagName: /^((?:[\w\u00c0-\uFFFF\*-]|\\.)+)/,
             ///^[a-zA-Z]+|\*/
-            ,
             search: /^>/,
             find: /^\s/,
             filter: /^:/,
             int: /(\+|\-)?\d+/g,
             eq: /^eq\(([\+\-]?\d+),\+?(\d+)?\)/,
             than: /^(gt|lt)\(([\-\+]?\d+)\)/,
-            css: /^\.((?:[\w\u00c0-\uFFFF-]|\\.)+)/
+            css: /^\.((?:[\w\u00c0-\uFFFF-]|\\.)+)/,
             ///^\.[\w\d]+/
-            ,
+
             valueAndUnit: /[+-]?\d+\.?\d*\w+/g,
             property: /^\[\s*((?:[\w\u00c0-\uFFFF-]|\\.)+)\s*(?:(\S?=)\s*(['"]*)(.*?)\3|)\s*\]/,
             numAndEng: /[A-Za-z0-9]+/,
-            pEqual: /[!\^\*\$]?=?/
+            pEqual: /[!\^\*\$]?=?/,
 
-            ,
             rupper: /([A-Z]|^ms)/g,
-            rnumnonpx: /^-?(?:\d*\.)?\d+(?!px)[^\d\s]+$/i
+            rnumnonpx: /^-?(?:\d*\.)?\d+(?!px)[^\d\s]+$/i,
+            rmargin: /^margin/,
+            rposition: /^(top|right|bottom|left)$/
         },
         rootPath: rootPath,
 
