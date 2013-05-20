@@ -26,9 +26,9 @@
                         /// <param name="info" type="String/Object">方法名</param>
                         /// <returns />
                         var a = arguments[2] || "log";
-                        if(window.console && window.console[a]) {
+                        if (window.console && window.console[a]) {
                             var s = "";
-                            if(info.fn && info.msg) {
+                            if (info.fn && info.msg) {
                                 s = ["call ", info.fn, "()", " error: ", info.msg].join("");
                             } else {
                                 s = info.toString();
@@ -60,12 +60,12 @@
                         /// <param name="isThrow" type="Boolean">是否强制曝出错误</param>
                         /// <returns />
                         var s = "";
-                        if(info.fn && info.msg) {
+                        if (info.fn && info.msg) {
                             s = ["call ", info.fn, "()", " error: ", info.msg].join("");
                         } else {
                             s = info.toString();
                         }
-                        if(window.console.error || !isThrow) {
+                        if (window.console.error || !isThrow) {
                             window.console.error(s);
                         } else {
                             throw new window[isThrow](s);
@@ -77,7 +77,7 @@
 
             error: function(info, type) {
                 var s = "";
-                if(info.fn && info.msg) {
+                if (info.fn && info.msg) {
                     s = ["call ", info.fn, "()", " error: ", info.msg].join("");
                 } else {
                     s = info.toString();
@@ -89,7 +89,7 @@
                 /// <param name="a" type="Object">对象</param>
                 /// <param name="b" type="Object">对象</param>
                 /// <returns type="a" />
-                for(var i in b)
+                for (var i in b)
                 a[i] = b[i];
                 return a;
             },
@@ -104,17 +104,17 @@
                     i = 0,
                     j = 0,
                     item, attrs, attr, result = {};
-                for(; item = list[i++];) {
+                for (; item = list[i++];) {
                     attrs = (_script.getAttribute(item) || "").split(/;/);
-                    if(item == "src") {
+                    if (item == "src") {
                         result[item] = attrs[0];
                         break;
                     }
                     j = 0;
                     result[item] = {};
-                    for(; attr = attrs[j++];) {
+                    for (; attr = attrs[j++];) {
                         attr = attr.split(/:|=/);
-                        if(attr[1]) {
+                        if (attr[1]) {
                             attr[1].match(/false|true|1|0/) && (attr[1] = eval(attr[1]));
                             result[item][attr[0]] = attr[1];
                         } else {
@@ -133,20 +133,20 @@
                 var _key = key,
                     _suffix = suffix,
                     _aKey, _url, ma;
-                if(!_suffix) {
+                if (!_suffix) {
                     _suffix = '.js';
                 }
-                if(ma = _key.match(/\.[^\/\.]*$/g)) {
+                if (ma = _key.match(/\.[^\/\.]*$/g)) {
                     _url = _key;
-                    if(ma[ma.length - 1] != _suffix) {
+                    if (ma[ma.length - 1] != _suffix) {
                         _url += _suffix
                     }
                 } else {
                     _url = basePath + '/' + _key + (_suffix || ".js");
                 }
-                if(/^\//.test(_url)) {
+                if (/^\//.test(_url)) {
                     _url = rootPath + _url.replace(/\//, '');
-                } else if(!/^[a-z]+?:\/\//.test(_url)) {
+                } else if (!/^[a-z]+?:\/\//.test(_url)) {
                     _url = basePath + '/' + _url;
                 }
                 return _url;
@@ -155,16 +155,16 @@
             now: function() {
                 /// <summary>返回当前时间的字符串形式</summary>
                 /// <returns type="String" />
-                return(new Date()).getTime();
+                return (new Date()).getTime();
             }
         },
         count = 0,
         reg = RegExp,
         basePath = (function() {
             var ret = util.getJScriptConfig(["src"]).src.replace(/\/[^\/]+$/, '');
-            if(!/^[a-z]+?:\/\//.test(ret)) {
+            if (!/^[a-z]+?:\/\//.test(ret)) {
                 var sl = document.location.toString();
-                if(/^\//.test(ret)) {
+                if (/^\//.test(ret)) {
                     ret = sl.replace(/((.*?\/){3}).*$/, '$1') + ret.substr(1);
                 } else {
                     ret = sl.replace(/[^\/]+$/, '') + ret;
@@ -199,7 +199,7 @@
         }
     };
 
-    if(typeof myQueryConfig != "undefined") {
+    if (typeof myQueryConfig != "undefined") {
         _config = myQueryConfig;
     } else {
         var temp = util.getJScriptConfig(["myquery", "amd", "ui", "module"]);
@@ -211,48 +211,48 @@
 
     //$("<div></div>") 需要自己先parseXML 这样就不用依赖 parseXML
     var myQuery = function(a, b, c) {
-            /// <summary>创造一个新$对象
-            /// <para>例:$(function(){将会在window.onload时执行})</para>
-            /// <para>例:$('div')</para>
-            /// <para>例:$([ele,ele,ele])</para>
-            /// <para>以下依赖main/query</para>
-            /// <para>例:$($('#A'))</para>
-            /// <para>以下依赖main/dom</para>
-            /// <para>例:$({h:100,w:100},'div')</para>
-            /// <para>例:$(null,'div',document.body)</para>
-            /// <para>例:$({h:100,w:100},'div',document.body)</para>
-            /// <para>对于table的appendChild,removeChild可能不兼容低版本IE浏览器,table必须插入tbody</para>
-            /// </summary>
-            /// <param name="a" type="Object/String/Element/fun/$">可重载</param>
-            /// <param name="b" type="String">标签名 可选</param>
-            /// <param name="c" type="ele $">父元素 可选</param>
-            /// <returns type="$" />
-            if($.is$(this)) {
-                if(!a && !b) return;
-                if((typeof a == "object" || a == undefined || a == null) && typeof b == "string") {
-                    //if ($.css) {
+        /// <summary>创造一个新$对象
+        /// <para>例:$(function(){将会在window.onload时执行})</para>
+        /// <para>例:$('div')</para>
+        /// <para>例:$([ele,ele,ele])</para>
+        /// <para>以下依赖main/query</para>
+        /// <para>例:$($('#A'))</para>
+        /// <para>以下依赖main/dom</para>
+        /// <para>例:$({h:100,w:100},'div')</para>
+        /// <para>例:$(null,'div',document.body)</para>
+        /// <para>例:$({h:100,w:100},'div',document.body)</para>
+        /// <para>对于table的appendChild,removeChild可能不兼容低版本IE浏览器,table必须插入tbody</para>
+        /// </summary>
+        /// <param name="a" type="Object/String/Element/fun/$">可重载</param>
+        /// <param name="b" type="String">标签名 可选</param>
+        /// <param name="c" type="ele $">父元素 可选</param>
+        /// <returns type="$" />
+        if ($.is$(this)) {
+            if (!a && !b) return;
+            if ((typeof a == "object" || a == undefined || a == null) && typeof b == "string") {
+                //if ($.css) {
+                count++;
+                if (b == undefined || b == null) b = 'div';
+                var obj = document.createElement(b);
+                this.init([obj]);
+
+                $.interfaces.trigger("constructorDom", this, a, b, c);
+
+                obj = null;
+
+            } else if (a) {
+                var result;
+                if (result = $.interfaces.trigger("constructorQuery", a, b)) {
                     count++;
-                    if(b == undefined || b == null) b = 'div';
-                    var obj = document.createElement(b);
-                    this.init([obj]);
+                    this.init(result);
 
-                    $.interfaces.trigger("constructorDom", this, a, b, c);
-
-                    obj = null;
-
-                } else if(a) {
-                    var result;
-                    if(result = $.interfaces.trigger("constructorQuery", a, b)) {
-                        count++;
-                        this.init(result);
-
-                    }
                 }
-            } else if(typeof a == "function") {
-                $.ready(a);
-            } else return new $(a, b, c);
-        },
-        $ = myQuery;
+            }
+        } else if (typeof a == "function") {
+            $.ready(a);
+        } else return new $(a, b, c);
+    },
+    $ = myQuery;
 
     util.extend($, {
         cabinet: {},
@@ -308,10 +308,12 @@
         valueOf: function() {
             /// <summary>返回模块信息</summary>
             /// <returns type="String" />
-            var info = [version, "\n"];
-            myQuery.each($.module, function(value, key) {
+            var info = [version, "\n"],
+                value, key;
+            for (key in $.module) {
+                value = $.module[key];
                 info.push(key, " : ", value, "\n");
-            });
+            }
             return info.join("");
         },
         version: version,
@@ -345,7 +347,7 @@
             /// <param name="tag" type="String">标签名</param>
             /// <returns type="Element" />
             var ele, div;
-            if(/^<.*>$/.test(tag)) {
+            if (/^<.*>$/.test(tag)) {
                 div = document.createElement("div");
                 div.innerHTML = tag;
                 ele = div.childNodes
@@ -363,14 +365,14 @@
             /// <param name="context" type="Object">作用域</param>
             /// <returns type="self" />
             //consult from jQuery-1.4.1 
-            if(!obj) return this;
+            if (!obj) return this;
             var i = 0,
                 item, len = obj.length,
                 isObj = typeof len != "number" || typeof obj == "function"; //$.isNul(len) || $.isFun(obj);
-            if(isObj) {
-                for(item in obj)
-                if(callback.call(context || obj[item], obj[item], item) === false) break;
-            } else for(var value = obj[0]; i < len && callback.call(context || value, value, i) !== false; value = obj[++i]) {}
+            if (isObj) {
+                for (item in obj)
+                if (callback.call(context || obj[item], obj[item], item) === false) break;
+            } else for (var value = obj[0]; i < len && callback.call(context || value, value, i) !== false; value = obj[++i]) {}
             return this;
         },
 
@@ -381,7 +383,7 @@
             /// <param name="unit" type="Boolean">默认为秒,true为毫秒</param>
             /// <returns type="self" />
             var now = new Date();
-            if(runTime && msg) {
+            if (runTime && msg) {
                 msg += ":" + (now - runTime);
             } else {
                 runTime = now;
@@ -401,13 +403,13 @@
                 value: value,
                 unit: ""
             };
-            if(typeof value == "number") {
+            if (typeof value == "number") {
                 result.value = value
-            } else if(typeof value == "string") {
+            } else if (typeof value == "string") {
                 value = value.match($.reg.valueAndUnit);
-                if(value) {
+                if (value) {
                     var num = parseFloat(value[0]);
-                    if(num != undefined) {
+                    if (num != undefined) {
                         result.value = num;
                         result.unit = value[0].replace(num.toString(), "") || "";
                     }
@@ -454,8 +456,8 @@
             /// <param name="bool" type="Boolean">为true的话使用div显示否则在title显示</param>
             /// <returns type="self" />
             str = str.toString();
-            if(bool) {
-                if(msgDiv) {
+            if (bool) {
+                if (msgDiv) {
                     msgDiv.innerHTML = str;
                     msgDiv.style.display = "block";
                 } else {
@@ -492,7 +494,7 @@
 
                 head && name.splice(0, 0, head);
 
-                for(var i = 1, item; i < name.length; i++) {
+                for (var i = 1, item; i < name.length; i++) {
                     item = name[i]
                     name[i] = item.substr(0, 1).toUpperCase() + item.slice(1);
                 }
@@ -553,7 +555,7 @@
             /// <summary>返回序号的元素</summary>
             /// <param name="index" type="Number">序号</param>
             /// <returns type="Element" />
-            if($.isNum(index) && index != 0) return this[index];
+            if ($.isNum(index) && index != 0) return this[index];
             else return this[0];
         },
         getLast: function() {
@@ -578,10 +580,10 @@
             this.first = null;
             this.last = null;
             this.context = null;
-            if(!eles.length) {
+            if (!eles.length) {
                 //util.console.warn({ fn: "myQuery.init", msg: "has not query any element" });
             }
-            if(this.eles) this.each(function(ele, index) {
+            if (this.eles) this.each(function(ele, index) {
                 delete this[index];
             });
             this.eles = eles;
@@ -645,23 +647,23 @@
     Queue.prototype = {
         constructor: Queue,
         queue: function(fn, context, args) {
-            if(typeof fn == "function") {
+            if (typeof fn == "function") {
                 this.list.push(fn);
-                if(this.list[0] != "inprogress") {
+                if (this.list[0] != "inprogress") {
                     this.dequeue(context, args);
                 }
-            } else if(fn && fn.constructor == Array) {
+            } else if (fn && fn.constructor == Array) {
                 this.list = fn;
             }
             return this;
         },
         dequeue: function(context, args) {
             var fn = this.list.shift()
-            if(fn && fn === "inprogress") {
+            if (fn && fn === "inprogress") {
                 fn = this.list.shift();
             }
 
-            if(fn) {
+            if (fn) {
                 this.list.splice(0, 0, "inprogress");
                 fn.apply(context || null, args || []);
             }
@@ -678,11 +680,11 @@
         $.module.require = "1.0.0";
 
         var _define, _require;
-        if(window.define) {
+        if (window.define) {
             util.console.warn("window.define has defined");
             _define = window.define;
         }
-        if(window.require) {
+        if (window.require) {
             util.console.warn("window.require has defined");
             _require = window.require;
         }
@@ -690,7 +692,7 @@
         var requireQueue = new Queue();
 
         function ClassModule(module, dependencies, factory, status, container, fail) {
-            if(!module) {
+            if (!module) {
                 return;
             }
             this.handlers = {};
@@ -709,7 +711,7 @@
             container: {},
             dependenciesMap: {},
             checkNamed: function(id) {
-                if(this.anonymousID != null && id.indexOf("tempDefine") < 0) {
+                if (this.anonymousID != null && id.indexOf("tempDefine") < 0) {
                     id !== this.anonymousID && util.error({
                         fn: 'define',
                         msg: 'the named ' + id + ' is not equal require'
@@ -721,65 +723,65 @@
                 /// <param name="md" type="String">要检测的模块名</param>
                 /// <param name="dp" type="Array:[String]">该模块的依赖模块</param>
                 /// <returns type="String" />
-                if(!md) {
+                if (!md) {
                     return;
                 }
-                if(dp && dp.constructor != Array) {
+                if (dp && dp.constructor != Array) {
                     return;
                 }
                 var i, DM, dm, result, l = dp.length,
                     dpm = ClassModule.dependenciesMap,
                     mdp = ClassModule.mapDependencies;
-                for(i = 0; i < l; i++) {
+                for (i = 0; i < l; i++) {
                     dm = dp[i];
-                    if(dm === md) {
+                    if (dm === md) {
                         return dm;
                     } //发现循环引用
-                    if(!dpm[md]) {
+                    if (!dpm[md]) {
                         dpm[md] = {};
                     }
-                    if(!mdp[dm]) {
+                    if (!mdp[dm]) {
                         mdp[dm] = {};
                     }
                     dpm[md][dm] = 1;
                     mdp[dm][md] = 1; //建表
                 }
-                for(DM in mdp[md]) {
+                for (DM in mdp[md]) {
                     result = ClassModule.detectCR(DM, dp); //反向寻找
-                    if(result) {
+                    if (result) {
                         return result;
                     }
                 }
             },
             funBody: function(md) {
                 //将factory强制转换为function类型，供ClassModule使用
-                if(!md) {
+                if (!md) {
                     md = '';
                 }
-                switch(typeof md) {
-                case 'function':
-                    return md;
-                case 'string':
-                    return function() {
-                        return new String(md);
-                    };
-                case 'number':
-                    return function() {
-                        return new Number(md);
-                    };
-                case 'boolean':
-                    return function() {
-                        return new Boolean(md);
-                    };
-                default:
-                    return function() {
+                switch (typeof md) {
+                    case 'function':
                         return md;
-                    };
+                    case 'string':
+                        return function() {
+                            return new String(md);
+                        };
+                    case 'number':
+                        return function() {
+                            return new Number(md);
+                        };
+                    case 'boolean':
+                        return function() {
+                            return new Boolean(md);
+                        };
+                    default:
+                        return function() {
+                            return md;
+                        };
                 }
             },
             getContainer: function(id, a) {
                 var src;
-                if(ClassModule.container[id]) {
+                if (ClassModule.container[id]) {
                     src = ClassModule.container[id];
                 } else {
                     src = util.getJScriptConfig(["src"], typeof a == "boolean" ? a : true).src || "it is local"; //或者改成某个字段是 config里的
@@ -789,14 +791,14 @@
             },
             getPath: function(key, suffix) {
                 var ret, path, ma;
-                if(path = ClassModule.maps[key]) {} //不需要匹配前部分
+                if (path = ClassModule.maps[key]) {} //不需要匹配前部分
                 else {
                     path = key
                 }
 
-                if(_config.amd.rootPath) {
+                if (_config.amd.rootPath) {
                     ma = key.match(/\.[^\/\.]*$/g)
-                    if(!ma || ma[ma.length - 1] != suffix) {
+                    if (!ma || ma[ma.length - 1] != suffix) {
                         key += suffix;
                     }
                     ret = _config.amd.rootPath + key;
@@ -813,16 +815,16 @@
                 var dep = dependencies,
                     i = 0,
                     len, item, module;
-                if(!dep || dep.constructor == Array || dep.length) {
+                if (!dep || dep.constructor == Array || dep.length) {
                     return this;
                 }
                 setTimeout(function() {
-                    for(len = dep.length; i < length; i++) { //是否要用function 而不是for
+                    for (len = dep.length; i < length; i++) { //是否要用function 而不是for
                         item = dep[i];
                         module = ClassModule.getModule(item);
-                        if(!module) {
+                        if (!module) {
                             require(item);
-                        } else if(module.getStatus() == 2) {
+                        } else if (module.getStatus() == 2) {
                             ClassModule.loadDependencies(module.dependencies);
                         }
                     }
@@ -832,7 +834,7 @@
             loadJs: function(url, id, error) {
                 var module = ClassModule.getModule(id);
                 //该模块已经载入过，不再继续加载，主要用于require与define在同一文件
-                if(ClassModule.resource[url] || (module && (module.getStatus() > 2))) { //_module && (_module._ready || !_module._fromRequire
+                if (ClassModule.resource[url] || (module && (module.getStatus() > 2))) { //_module && (_module._ready || !_module._fromRequire
                     return this;
                 }
 
@@ -885,7 +887,7 @@
 
         ClassModule.prototype = {
             addHandler: function(fn) {
-                if(typeof fn == "function") {
+                if (typeof fn == "function") {
                     var h = this.handlers[this.id];
                     h == undefined && (h = this.handlers[this.id] = []);
                     h.push(fn);
@@ -895,65 +897,65 @@
             check: function() {
                 var status = this.getStatus(),
                     dps = this.dependencies;
-                switch(status) {
-                case 4:
-                    this.holdReady().trigger();
-                    break;
-                case 3:
-                    if(!dps || !dps.length) {
-                        this.getReady();
+                switch (status) {
+                    case 4:
+                        this.holdReady().trigger();
                         break;
-                    }
-                case 2:
-                case 1:
-                case 0:
-                    if(dps.length == 1 && dps[0] === this.id) {
-                        break;
-                    }
-                default:
-                    var aDP = [],
-                        hd = ClassModule.holdon,
-                        i = 0,
-                        sMD, sDP, mDP;
-                    if(status > 0 && _config.amd.detectCR == true) {
-                        if(sMD = ClassModule.detectCR(this.id, dps)) {
-                            util.error({
-                                fn: 'define',
-                                msg: 'There is a circular reference between "' + sMD + '" and "' + module + '"'
-                            }, "ReferenceError");
-                            return;
+                    case 3:
+                        if (!dps || !dps.length) {
+                            this.getReady();
+                            break;
                         }
-                    }
-                    //加入holdon
-                    for(; sDP = dps[i++];) { //有依赖自己的情况
-                        mDP = ClassModule.getModule(sDP);
-                        if(!mDP || mDP.getStatus() != 4) {
-                            aDP.push(sDP);
-                            if(hd[sDP]) {
-                                hd[sDP].push(this.id);
-                            } else {
-                                hd[sDP] = [this.id];
+                    case 2:
+                    case 1:
+                    case 0:
+                        if (dps.length == 1 && dps[0] === this.id) {
+                            break;
+                        }
+                    default:
+                        var aDP = [],
+                            hd = ClassModule.holdon,
+                            i = 0,
+                            sMD, sDP, mDP;
+                        if (status > 0 && _config.amd.detectCR == true) {
+                            if (sMD = ClassModule.detectCR(this.id, dps)) {
+                                util.error({
+                                    fn: 'define',
+                                    msg: 'There is a circular reference between "' + sMD + '" and "' + module + '"'
+                                }, "ReferenceError");
+                                return;
                             }
                         }
-                    }
-                    //}
-                    if(!aDP.length) {
-                        //依赖貌似都准备好，尝试转正
-                        this.getReady();
-                    } else {
-                        //ClassModule.setModule(this);
-                        if(status >= 2) { //深入加载依赖模块 <=1？
-                            this.loadDependencies();
+                        //加入holdon
+                        for (; sDP = dps[i++];) { //有依赖自己的情况
+                            mDP = ClassModule.getModule(sDP);
+                            if (!mDP || mDP.getStatus() != 4) {
+                                aDP.push(sDP);
+                                if (hd[sDP]) {
+                                    hd[sDP].push(this.id);
+                                } else {
+                                    hd[sDP] = [this.id];
+                                }
+                            }
                         }
-                    }
-                    break;
+                        //}
+                        if (!aDP.length) {
+                            //依赖貌似都准备好，尝试转正
+                            this.getReady();
+                        } else {
+                            //ClassModule.setModule(this);
+                            if (status >= 2) { //深入加载依赖模块 <=1？
+                                this.loadDependencies();
+                            }
+                        }
+                        break;
                 }
                 return this;
             },
             constructor: ClassModule,
             getDependenciesMap: function() {
                 var ret = [];
-                if(_config.amd.detectCR) {
+                if (_config.amd.detectCR) {
                     var id = this.id,
                         MD = ClassModule.dependenciesMap[id],
                         DM, module = ClassModule.getModule(id);
@@ -963,7 +965,7 @@
                         status: module.getStatus(1),
                         container: module.container
                     });
-                    for(DM in MD) {
+                    for (DM in MD) {
                         module = ClassModule.getModule(DM);
                         ret.push({
                             name: DM,
@@ -980,7 +982,7 @@
                 return ret;
             },
             getReady: function() {
-                if(this.status == 4) {
+                if (this.status == 4) {
                     return;
                 }
                 var dps = this.dependencies,
@@ -990,21 +992,21 @@
                     id = this.id,
                     sdp, md, map, F;
 
-                for(; i < l; i++) {
+                for (; i < l; i++) {
                     md = ClassModule.getModule(dps[i]);
                     //如果依赖模块未准备好，或依赖模块中还有待转正的模块，则当前模块也不能被转正
-                    if(!md || md.status != 4) {
+                    if (!md || md.status != 4) {
                         return false;
                     }
                     dplist = dplist.concat(md.module);
                 }
                 this.setStatus(4);
-                if(_config.amd.debug) {
+                if (_config.amd.debug) {
                     F = this.factory.apply(null, dplist) || {};
                 } else {
                     try {
                         F = this.factory.apply(null, dplist) || {};
-                    } catch(e) {}
+                    } catch (e) {}
                 }
 
                 F._AMD = {
@@ -1016,7 +1018,7 @@
                     getDependenciesMap: this.getDependenciesMap
                 };
 
-                if(F && F.constructor != Array) {
+                if (F && F.constructor != Array) {
                     F = [F]
                 };
                 this.module = F;
@@ -1033,8 +1035,8 @@
             holdReady: function() {
                 var md, hd = ClassModule.holdon[this.id],
                     MD = ClassModule.modules;
-                if(hd && hd.length) {
-                    for(; md = MD[hd.shift()];) {
+                if (hd && hd.length) {
+                    for (; md = MD[hd.shift()];) {
                         md.getReady();
                     }
                 }
@@ -1054,11 +1056,11 @@
                     status = this.getStatus(),
                     url;
 
-                if(status == 2) {
+                if (status == 2) {
                     this.loadDependencies();
                     return this;
                 }
-                if(status > 1) {
+                if (status > 1) {
                     return this;
                 }
 
@@ -1069,11 +1071,11 @@
                 //如果当前模块不是已知的具名模块，则设定它为正在处理中的模块，直到它的定义体出现
                 //if (!namedModule) { ClassModule.anonymousID = id; } //这边赋值的时候应当是影射的
                 this.setStatus(2);
-                if(!ClassModule.container[id]) {
+                if (!ClassModule.container[id]) {
                     ClassModule.container[id] = url;
                 }
 
-                if(ClassModule.cache[id]) {
+                if (ClassModule.cache[id]) {
                     ClassModule.cache[id]();
                 } else {
                     _config.amd.async == true ? window.setTimeout(function() {
@@ -1086,13 +1088,13 @@
                 var dep = this.dependencies,
                     i = 0,
                     len, item, module;
-                if(!(dep && dep.constructor == Array && dep.length)) {
+                if (!(dep && dep.constructor == Array && dep.length)) {
                     return this;
                 }
-                for(len = dep.length; i < len; i++) { //是否要用function 而不是for
+                for (len = dep.length; i < len; i++) { //是否要用function 而不是for
                     item = dep[i];
                     module = ClassModule.getModule(item);
-                    if(!module) {
+                    if (!module) {
                         require(item);
                     }
                     //                        else if (module.getStatus() == 2) {//?
@@ -1103,28 +1105,28 @@
             },
             request: function(success) {
                 this.addHandler(success);
-                switch(this.status) {
-                case 0:
-                    this.check();
-                    var namedModule = ClassModule.namedModules[this.id],
-                        self = this;
-                    if(this.status == 0) {
-                        if(namedModule) {
-                            this.load();
-                        } else {
-                            this.setStatus(1);
-                            requireQueue.queue(function() {
-                                if(!ClassModule.anonymousID) {
-                                    ClassModule.anonymousID = self.id;
-                                }
-                                self.load();
-                            });
+                switch (this.status) {
+                    case 0:
+                        this.check();
+                        var namedModule = ClassModule.namedModules[this.id],
+                            self = this;
+                        if (this.status == 0) {
+                            if (namedModule) {
+                                this.load();
+                            } else {
+                                this.setStatus(1);
+                                requireQueue.queue(function() {
+                                    if (!ClassModule.anonymousID) {
+                                        ClassModule.anonymousID = self.id;
+                                    }
+                                    self.load();
+                                });
+                            }
                         }
-                    }
-                    break;
-                case 4:
-                    this.check();
-                    break;
+                        break;
+                    case 4:
+                        this.check();
+                        break;
 
                 }
 
@@ -1137,9 +1139,9 @@
             trigger: function() {
                 var h = this.handlers[this.id],
                     item;
-                if(h && h.constructor == Array && this.getStatus() == 4 && this.module) {
+                if (h && h.constructor == Array && this.getStatus() == 4 && this.module) {
 
-                    for(; h.length && (item = h.splice(0, 1));) {
+                    for (; h.length && (item = h.splice(0, 1));) {
                         item[0].apply(this, this.module);
                     }
 
@@ -1152,50 +1154,50 @@
             var arg = arguments,
                 ret, deep, body, container, status;
 
-            switch(arg.length) {
-            case 0:
-                util.error({
-                    fn: "window.define",
-                    msg: id + ":define something that cannot be null"
-                }, "TypeError");
-                break
-            case 1:
-                body = id;
-                id = ClassModule.anonymousID; //_resource[container]; 
-                dependencies = [];
-                factory = ClassModule.funBody(body);
-                break;
-            case 2:
-                if(typeof arg[0] == "string") {
-                    ClassModule.checkNamed(id);
-                    id = id; //util.getJScriptConfig(["src"], true).src; //_tempId();_amdAnonymousID
-                    body = dependencies;
+            switch (arg.length) {
+                case 0:
+                    util.error({
+                        fn: "window.define",
+                        msg: id + ":define something that cannot be null"
+                    }, "TypeError");
+                    break
+                case 1:
+                    body = id;
+                    id = ClassModule.anonymousID; //_resource[container]; 
                     dependencies = [];
-                } else if(arg[0] && arg[0].constructor == Array) {
-                    var temp = id;
-                    id = ClassModule.anonymousID; //_resource[container]; // ; //_tempId();
-                    body = dependencies;
-                    dependencies = temp;
-                } else {
-                    util.error({
-                        fn: 'define',
-                        msg: id + ':The first arguments should be String or Array'
-                    }, "TypeError");
-                }
-                factory = ClassModule.funBody(body);
-                break;
-            default:
-                if(!(typeof arg[0] == "string" && arg[1] && arg[1].constructor == Array)) {
-                    util.error({
-                        fn: 'define',
-                        msg: id + ':two arguments ahead should be String and Array'
-                    }, "TypeError");
-                }
-                ClassModule.checkNamed(id);
-                factory = ClassModule.funBody(arg[2]);
+                    factory = ClassModule.funBody(body);
+                    break;
+                case 2:
+                    if (typeof arg[0] == "string") {
+                        ClassModule.checkNamed(id);
+                        id = id; //util.getJScriptConfig(["src"], true).src; //_tempId();_amdAnonymousID
+                        body = dependencies;
+                        dependencies = [];
+                    } else if (arg[0] && arg[0].constructor == Array) {
+                        var temp = id;
+                        id = ClassModule.anonymousID; //_resource[container]; // ; //_tempId();
+                        body = dependencies;
+                        dependencies = temp;
+                    } else {
+                        util.error({
+                            fn: 'define',
+                            msg: id + ':The first arguments should be String or Array'
+                        }, "TypeError");
+                    }
+                    factory = ClassModule.funBody(body);
+                    break;
+                default:
+                    if (!(typeof arg[0] == "string" && arg[1] && arg[1].constructor == Array)) {
+                        util.error({
+                            fn: 'define',
+                            msg: id + ':two arguments ahead should be String and Array'
+                        }, "TypeError");
+                    }
+                    ClassModule.checkNamed(id);
+                    factory = ClassModule.funBody(arg[2]);
             }
             container = ClassModule.getContainer(id);
-            if(ret = ClassModule.getModule(id)) {
+            if (ret = ClassModule.getModule(id)) {
                 deep = ret.getStatus();
                 //container = deep != 0 ? ClassModule.getContainer(id) : null;
                 ret.init(dependencies, factory, 3, container);
@@ -1207,7 +1209,7 @@
             ret.check(); //最后设为2？
             //if (!/_temp_/.test(id)) (container = ClassModule.getContainer(id)); //如果不是require定义的临时
             //执行请求队列
-            if(!ClassModule.namedModules[id] && deep == 2) {
+            if (!ClassModule.namedModules[id] && deep == 2) {
                 ClassModule.anonymousID = null;
                 requireQueue.dequeue();
             }
@@ -1221,21 +1223,21 @@
                 window.define = _define;
                 return define;
             },
-            getModuleId: function(){
+            getModuleId: function() {
                 return ClassModule.anonymousID;
             }
         });
 
         window.require = function(module, success, fail) {
-            if(!module) {
+            if (!module) {
                 return;
             }
             //如果请求一组模块则转换为对一个临时模块的定义与请求处理
             var ret
-            if(module.constructor == Array) {
-                if(!module.length) {
+            if (module.constructor == Array) {
+                if (!module.length) {
                     return;
-                } else if(module.length == 1) {
+                } else if (module.length == 1) {
                     module = module.join("");
                 } else {
                     var de = module;
@@ -1250,7 +1252,7 @@
                 msg: module + ':success should be a Function'
             }, "TypeError");
 
-            if(typeof fail != "function") {
+            if (typeof fail != "function") {
                 fail = function() {
                     util.error({
                         fn: 'require',
@@ -1274,7 +1276,7 @@
             cache: function(cache) {
                 var container = ClassModule.getContainer(null, ClassModule.amdAnonymousID ? true : false);
                 //util.extend(ClassModule.cache, a.cache);
-                for(var i in cache) {
+                for (var i in cache) {
                     require.named(i);
                     ClassModule.cache[i] = cache[i];
                     ClassModule.container[i] = container;
@@ -1287,15 +1289,15 @@
                 /// <param name="name" type="Array/Object/String">具名名单</param>
                 /// <returns type="self" />
                 var i, b, n = name;
-                if(n && n.constructor == Array) {
-                    for(i = 0; b = n[i++];) {
+                if (n && n.constructor == Array) {
+                    for (i = 0; b = n[i++];) {
                         ClassModule.namedModules[b] = 1;
                     }
-                } else if(typeof n == "object") {
-                    for(var b in n) {
+                } else if (typeof n == "object") {
+                    for (var b in n) {
                         ClassModule.namedModules[b] = 1;
                     }
-                } else if(typeof n == "string") {
+                } else if (typeof n == "string") {
                     ClassModule.namedModules[n] = 1;
                 }
                 return this;
@@ -1306,11 +1308,11 @@
                 /// <param name="name" type="Object/String">映射名</param>
                 /// <param name="path" type="String/undefined">路径名</param>
                 /// <returns type="self" />
-                if(typeof name == "object") {
-                    for(var i in name) {
+                if (typeof name == "object") {
+                    for (var i in name) {
                         ClassModule.maps[i] = name[i];
                     }
-                } else if(typeof name == "string" && typeof path == "string") {
+                } else if (typeof name == "string" && typeof path == "string") {
                     ClassModule.maps[name] = path;
                 }
 
@@ -1319,21 +1321,21 @@
 
             config: function(a, b, c) { //name, path, named
                 var len = arguments.length;
-                switch(len) {
-                case 1:
-                    if(typeof a == "string" || a && a.constructor == Array) {
-                        require.named(a);
-                    } else if(typeof a == "object") {
-                        a.reflect && require.reflect(a.reflect);
-                        a.named && a.named == true ? require.named(a.reflect) : require.named(a.named);
-                        //如果named=true其实就是映射a.reflect 
-                        a.amd && util.extend(_config.amd, a.amd);
-                        a.cache && require.cache(a.cache);
-                    }
-                    break;
-                case 2:
-                    require.reflect(a, b);
-                    break;
+                switch (len) {
+                    case 1:
+                        if (typeof a == "string" || a && a.constructor == Array) {
+                            require.named(a);
+                        } else if (typeof a == "object") {
+                            a.reflect && require.reflect(a.reflect);
+                            a.named && a.named == true ? require.named(a.reflect) : require.named(a.named);
+                            //如果named=true其实就是映射a.reflect 
+                            a.amd && util.extend(_config.amd, a.amd);
+                            a.cache && require.cache(a.cache);
+                        }
+                        break;
+                    case 2:
+                        require.reflect(a, b);
+                        break;
 
                 }
                 return this;
@@ -1355,7 +1357,7 @@
                     len = arg.length,
                     fn = arg[len - 1],
                     version = "no signing version";
-                if(typeof fn == "string") {
+                if (typeof fn == "string") {
                     version = fn;
                     fn = arg[len - 2];
                     arg.pop();
@@ -1364,11 +1366,11 @@
                 //                if (arg[1] && arg[1].constructor == Array) {
                 //                    require.named(dependencies);
                 //                }
-                if(typeof fn == "function") {
+                if (typeof fn == "function") {
                     arg[arg.length - 1] = function() {
                         var arg = util.argToArray(arguments, 0);
                         arg.splice(0, 0, myQuery);
-                        if(_config.amd.debug) {
+                        if (_config.amd.debug) {
                             return fn.apply(null, arg);
                         } else {
                             try {
@@ -1412,20 +1414,20 @@
     myQuery.define("base/promise", function($) {
         "use strict"; //启用严格模式
         var checkArg = function(todo, fail, progress, name) {
-                var arg = util.argToArray(arguments),
-                    len = arg.length,
-                    last = arg[len - 1],
-                    hasName = typeof last == "string",
-                    result, i = len,
-                    begin;
+            var arg = util.argToArray(arguments),
+                len = arg.length,
+                last = arg[len - 1],
+                hasName = typeof last == "string",
+                result, i = len,
+                begin;
 
-                begin = hasName ? len - 1 : len;
-                for(; i < 4; i++) {
-                    arg.splice(begin, 0, null);
-                }
-                return arg;
-            },
-            random = 0,
+            begin = hasName ? len - 1 : len;
+            for (; i < 4; i++) {
+                arg.splice(begin, 0, null);
+            }
+            return arg;
+        },
+        random = 0,
             count = 0;
 
         function Promise(todo, fail, progress, name) {
@@ -1446,7 +1448,7 @@
             _next: function(result) {
                 /// <summary>inner</summary>
                 /// <returns type="self" />
-                for(var i = 0, len = this.thens.length, promise; i < len; i++) {
+                for (var i = 0, len = this.thens.length, promise; i < len; i++) {
                     // 依次调用该任务的后续任务
                     promise = this.thens[i];
                     promise.resolve(result);
@@ -1464,13 +1466,13 @@
                 /// <param name="name" type="Function">成功</param>
                 /// <param name="result" type="any/arguments">参数，如果参数是argument则会使用apply</param>
                 /// <returns type="any" />
-                switch(name) {
-                case "fail":
-                case "progress":
-                    break
-                case "todo":
-                default:
-                    name = "todo"
+                switch (name) {
+                    case "fail":
+                    case "progress":
+                        break
+                    case "todo":
+                    default:
+                        name = "todo"
                 }
 
                 return result && typeof result == "function" ? this[name].apply(this, result) : this[name](result);
@@ -1490,7 +1492,7 @@
                 /// <returns type="Promise" />
                 var promise = new Promise(nextToDo, nextFail, nextProgress, arguments[3] || this.path);
                 promise.parent = this; //相互应用是否有问题
-                if(this.state != 'todo') {
+                if (this.state != 'todo') {
                     // 如果当前状态是已完成，则nextOK会被立即调用
                     promise.resolve(this.result);
                 } else {
@@ -1511,8 +1513,7 @@
                 this.state = 'todo';
                 this.result = null;
                 this.thens = [];
-                this.todo = arg[0] ||
-                function(obj) {
+                this.todo = arg[0] || function(obj) {
                     return obj;
                 };
                 this.fail = arg[1];
@@ -1556,8 +1557,8 @@
                     i, len = thens.length,
                     result = 0,
                     then;
-                if(thens.length) {
-                    for(i = len - 1; i >= 0; i--) {
+                if (thens.length) {
+                    for (i = len - 1; i >= 0; i--) {
                         then = thens[i];
                         then.removeChildren();
                         then = thens.pop();
@@ -1576,7 +1577,7 @@
                 /// <summary>执行</summary>
                 /// <param name="obj" type="any/arguments">参数，如果参数是argument则会使用apply</param>
                 /// <returns type="self" />
-                if(this.state != 'todo') {
+                if (this.state != 'todo') {
                     util.error({
                         fn: "Promise.resolve",
                         msg: "already resolved"
@@ -1584,11 +1585,11 @@
                     return this;
                 };
                 //arguments 应当 apply
-                if(this.fail) {
+                if (this.fail) {
                     try {
                         this.result = this.call("todo", obj);
                         this.state = 'done';
-                    } catch(e) {
+                    } catch (e) {
                         this.result = this.call("fail", obj);
                         this.state = 'fail';
                     }
@@ -1597,7 +1598,7 @@
                     this.state = 'done';
                 }
 
-                if(this.result instanceof Promise) {
+                if (this.result instanceof Promise) {
                     // 异步的情况，返回值是一个Promise，则当其resolve的时候，nextPromise才会被resolve
                     //所以状态改回todo
                     var self = this,
@@ -1633,15 +1634,15 @@
                     len = thens.length,
                     then;
                 parent.asyncCount = Math.max(--parent.asyncCount, 0);
-                for(i = 0; i < len; i++) {
+                for (i = 0; i < len; i++) {
                     then = thens[i];
-                    if(then.friend) {
-                        if(parent.asyncCount > 0) {
+                    if (then.friend) {
+                        if (parent.asyncCount > 0) {
                             return this;
                         }
                     }
                 }
-                for(i = 0; i < len; i++) {
+                for (i = 0; i < len; i++) {
                     then = thens[i];
                     then.result instanceof Promise && then.result.resolve(obj);
                 }
@@ -1663,7 +1664,7 @@
                     branch: name,
                     promise: this
                 });
-                if(self = this.root()._branch[name]) {} else {
+                if (self = this.root()._branch[name]) {} else {
                     this.root()._branch[name] = self = this;
                 }
 
@@ -1678,7 +1679,7 @@
                 /// <summary>打上一标签便于管理</summary>
                 /// <returns type="self/Promise" />
                 var self;
-                if(self = this.root()._tag[str]) {
+                if (self = this.root()._tag[str]) {
 
                 } else {
                     this.root()._tag[str] = self = this;
@@ -1697,7 +1698,7 @@
                 /// <summary>返回根</summary>
                 /// <returns type="Promise" />
                 var parent = this;
-                while(parent.parent) {
+                while (parent.parent) {
                     parent = parent.parent
                 }
                 return parent;
@@ -1734,7 +1735,7 @@
                     /// <summary>是否为DOM元素的集合</summary>
                     /// <param name="a" type="any">任意对象</param>
                     /// <returns type="Boolean" />
-                    if($.isType(a, '[object NodeList]') || $.isType(a, '[object HTMLCollection]') || ($.client.browser.ie678 && $.isNum(a.length) && !$.isArr(a.length) && ($.isObj(a.item) || $.isStr(a.item)))) return true;
+                    if ($.isType(a, '[object NodeList]') || $.isType(a, '[object HTMLCollection]') || ($.client.browser.ie678 && $.isNum(a.length) && !$.isArr(a.length) && ($.isObj(a.item) || $.isStr(a.item)))) return true;
                     return false;
                 },
                 isArguments: function(a) {
@@ -1752,9 +1753,9 @@
                     /// <param name="type" type="Function">检查的方法 可以是$.isStr</param>
                     /// <returns type="Boolean" />
                     var result = true;
-                    if($.isArr(a)) {
+                    if ($.isArr(a)) {
                         $.each(a, function(item) {
-                            if(!(result = type(item))) {
+                            if (!(result = type(item))) {
                                 return false;
                             }
                         });
@@ -1779,9 +1780,9 @@
                     /// <summary>是否为DOM元素</summary>
                     /// <param name="a" type="any">任意对象</param>
                     /// <returns type="Boolean" />
-                    if(!a || a === document) return false;
+                    if (!a || a === document) return false;
                     var str = (a.constructor && a.constructor.toString()) + Object.prototype.toString.call(a)
-                    if((str.indexOf('HTML') > -1 && str.indexOf('Collection') == -1) || ($.client.browser.ie678 && a.nodeType === 1)) {
+                    if ((str.indexOf('HTML') > -1 && str.indexOf('Collection') == -1) || ($.client.browser.ie678 && a.nodeType === 1)) {
                         return true; //可能nodeType有问题
                     }
                     return false;
@@ -1790,20 +1791,20 @@
                     /// <summary>是否为空</summary>
                     /// <param name="a" type="any">任意对象</param>
                     /// <returns type="Boolean" />
-                    if(a == null) return true;
-                    if($.isArr(a) || $.isStr(a)) return a.length == 0;
+                    if (a == null) return true;
+                    if ($.isArr(a) || $.isStr(a)) return a.length == 0;
                     return $.isEmptyObj(a);
                 },
                 isEmptyObj: function(obj) {
                     /// <summary>是否为空的Object</summary>
                     /// <param name="a" type="any">任意对象</param>
                     /// <returns type="Boolean" />
-                    for(var name in obj) {
+                    for (var name in obj) {
                         return false;
                     }
                     return true;
                 },
-                isFinite: function(a){
+                isFinite: function(a) {
                     /// <summary>是否为Finite</summary>
                     /// <param name="a" type="any">任意对象</param>
                     /// <returns type="Boolean" />
@@ -1815,7 +1816,7 @@
                     /// <returns type="Boolean" />
                     return $.isType(a, '[object Function]');
                 },
-                isNativeJSON: function (a) {
+                isNativeJSON: function(a) {
                     /// <summary>是否为本地JSON</summary>
                     /// <param name="a" type="any">任意对象</param>
                     /// <returns type="Boolean" />
@@ -1856,25 +1857,25 @@
                     /// <summary>是否为纯obj</summary>
                     /// <param name="obj" type="any">任意对象</param>
                     /// <returns type="Boolean" />
-                    if(!obj || !$.isObj(obj) || obj.nodeType || obj.setInterval) {
+                    if (!obj || !$.isObj(obj) || obj.nodeType || obj.setInterval) {
                         return false;
                     }
 
                     // Not own constructor property must be Object
-                    if(obj.constructor && !hasOwnProperty.call(obj, "constructor") && !hasOwnProperty.call(obj.constructor.prototype, "isPrototypeOf")) {
+                    if (obj.constructor && !hasOwnProperty.call(obj, "constructor") && !hasOwnProperty.call(obj.constructor.prototype, "isPrototypeOf")) {
                         return false;
                     }
 
                     // Own properties are enumerated firstly, so to speed up,
                     // if last one is own, then all properties are own.
                     var key;
-                    for(key in obj) {
+                    for (key in obj) {
                         break;
                     }
 
                     return key === undefined || hasOwnProperty.call(obj, key);
                 },
-                isRegExp: function(){
+                isRegExp: function() {
                     /// <summary>是否为字符产</summary>
                     /// <param name="a" type="any">任意对象</param>
                     /// <returns type="Boolean" />
@@ -1924,7 +1925,7 @@
                 /// <param name="a" type="Object">对象</param>
                 /// <param name="b" type="Object">对象</param>
                 /// <returns type="self" />
-                for(var i in obj2)
+                for (var i in obj2)
                 obj1[i] = obj2[i];
                 return this;
             },
@@ -1938,47 +1939,47 @@
                 /// <returns type="Object" />
                 //quote from jQuery-1.4.1 
                 var target = arguments[0] || {},
-                    i = 1,
+                i = 1,
                     length = arguments.length,
                     deep = false,
                     options, name, src, copy;
 
-                if(length == 1 && $.isObj(target)) {
+                if (length == 1 && $.isObj(target)) {
                     util.extend($, target);
                     return this;
                 }
 
-                if($.isBol(target)) {
+                if ($.isBol(target)) {
                     deep = target;
                     target = arguments[1] || {};
                     i = 2;
                 }
 
-                if(!$.isObj(target) && !$.isFun(target) && !$.isArr(target)) { //加了个array
+                if (!$.isObj(target) && !$.isFun(target) && !$.isArr(target)) { //加了个array
                     target = {};
                 }
 
-                if(length === i) {
+                if (length === i) {
                     target = this;
                     --i;
                 }
 
-                for(; i < length; i++) {
-                    if((options = arguments[i]) != null) {
-                        for(name in options) {
+                for (; i < length; i++) {
+                    if ((options = arguments[i]) != null) {
+                        for (name in options) {
                             src = target[name];
                             copy = options[name];
 
-                            if(target === copy) {
+                            if (target === copy) {
                                 continue;
                             }
 
-                            if(deep && copy && ($.isPlainObj(copy) || $.isArr(copy))) {
+                            if (deep && copy && ($.isPlainObj(copy) || $.isArr(copy))) {
                                 var clone = src && ($.isPlainObj(src) || $.isArr(src)) ? src : $.isArr(copy) ? [] : {};
 
                                 target[name] = $.extend(deep, clone, copy);
 
-                            } else if(copy !== undefined) {
+                            } else if (copy !== undefined) {
                                 target[name] = copy;
                             }
                         }
@@ -1996,7 +1997,7 @@
             /// <summary>把对象属性复制$.prototype上</summary>
             /// <param name="params" type="params:obj">params形式的纯Object对象</param>
             /// <returns type="self" />
-            for(var i = 0, len = arguments.length, obj; i < len; i++) {
+            for (var i = 0, len = arguments.length, obj; i < len; i++) {
                 obj = arguments[i];
                 $.isPlainObj(obj) && util.extend($.prototype, obj);
             }
@@ -2009,100 +2010,99 @@
     myQuery.define("base/array", function($) {
         "use strict"; //启用严格模式
         var
-        indexOf = Array.prototype.indexOf ||
-        function(item, i) {
-            var len = this.length;
-            i = i || 0;
-            if(i < 0) i += len;
-            for(; i < len; i++)
-            if(i in this && this[i] === item) return i;
-            return -1;
-        }, lastIndexOf = Array.prototype.lastIndexOf ||
-        function(item, i) {
-            var len = this.length - 1;
-            i = i || len;
-            if(i < 0) i += len;
-            for(; i > -1; i--)
-            if(i in this && this[i] === item) break;
-            return i;
-        }, push = Array.prototype.push, array = {
-            filterArray: function(arr, fun, context) {
-                /// <summary>返回数组中于此对象相同的序号</summary>
-                /// <param name="arr" type="Array">数组</param>
-                /// <param name="item" type="any">任意对象</param>
-                /// <param name="i" type="Number/null">序号 可选</param>
-                /// <returns type="Number" />
-                var ret = [];
-                for(var i = 0, len = arr.length, item; i < len; i++) {
-                    item = arr[i];
-                    fun.call(context, item, i, arr) == true && ret.push(item);
-                }
-                return ret;
-            },
-
-            inArray: function(arr, item, i) {
-                /// <summary>返回数组中于此对象相同的序号</summary>
-                /// <param name="arr" type="Array">数组</param>
-                /// <param name="item" type="any">任意对象</param>
-                /// <param name="i" type="Number/null">序号 可选</param>
-                /// <returns type="Number" />
-                return indexOf.call(arr, item, i);
-            },
-
-            lastInArray: function(arr, item, i) {
-                /// <summary>从后开始遍历返回数组中于此对象相同的序号</summary>
-                /// <param name="arr" type="Array">数组</param>
-                /// <param name="item" type="any">任意对象</param>
-                /// <param name="i" type="Number/null">序号 可选</param>
-                /// <returns type="Number" />
-                return lastIndexOf.call(arr, item, i);
-            },
-
-            makeArray: function(array, results) {
-                /// <summary>制造一个数组</summary>
-                /// <param name="array" type="any">任意</param>
-                /// <param name="results" type="Array">数组 可缺省</param>
-                /// <returns type="Array" />
-                //quote from jQuery-1.4.1 
-                var result = results || [];
-
-                if(array != null) {
-                    if(array.length == null || $.isStr(array) || $.isFun(array) || array.setInterval) {
-                        push.call(result, array);
-                    } else {
-                        result = $.toArray(array);
+        indexOf = Array.prototype.indexOf || function(item, i) {
+                var len = this.length;
+                i = i || 0;
+                if (i < 0) i += len;
+                for (; i < len; i++)
+                if (i in this && this[i] === item) return i;
+                return -1;
+            }, lastIndexOf = Array.prototype.lastIndexOf || function(item, i) {
+                var len = this.length - 1;
+                i = i || len;
+                if (i < 0) i += len;
+                for (; i > -1; i--)
+                if (i in this && this[i] === item) break;
+                return i;
+            }, push = Array.prototype.push,
+            array = {
+                filterArray: function(arr, fun, context) {
+                    /// <summary>返回数组中于此对象相同的序号</summary>
+                    /// <param name="arr" type="Array">数组</param>
+                    /// <param name="item" type="any">任意对象</param>
+                    /// <param name="i" type="Number/null">序号 可选</param>
+                    /// <returns type="Number" />
+                    var ret = [];
+                    for (var i = 0, len = arr.length, item; i < len; i++) {
+                        item = arr[i];
+                        fun.call(context, item, i, arr) == true && ret.push(item);
                     }
-                }
+                    return ret;
+                },
 
-                return result;
-            },
+                inArray: function(arr, item, i) {
+                    /// <summary>返回数组中于此对象相同的序号</summary>
+                    /// <param name="arr" type="Array">数组</param>
+                    /// <param name="item" type="any">任意对象</param>
+                    /// <param name="i" type="Number/null">序号 可选</param>
+                    /// <returns type="Number" />
+                    return indexOf.call(arr, item, i);
+                },
 
-            slice: function(list, num, len) {
-                /// <summary>数组的slice方法</summary>
-                /// <param name="list" type="Array">数组</param>
-                /// <param name="num" type="Number/null">序号 缺省返回第一个</param>
-                /// <param name="len" type="Number/null">长度 返回当前序号后几个元素 缺省返回当前序号</param>
-                /// <returns type="Array" />
-                return list.slice($.isNum(num) ? num : 0, $.isNum(len) ? len + num : 1 + num);
-            },
+                lastInArray: function(arr, item, i) {
+                    /// <summary>从后开始遍历返回数组中于此对象相同的序号</summary>
+                    /// <param name="arr" type="Array">数组</param>
+                    /// <param name="item" type="any">任意对象</param>
+                    /// <param name="i" type="Number/null">序号 可选</param>
+                    /// <returns type="Number" />
+                    return lastIndexOf.call(arr, item, i);
+                },
 
-            toArray: function(obj, num1, num2) {
-                /// <summary>转换成数组</summary>
-                /// <param name="num1" type="Number/null">序号 缺省从零开始</param>
-                /// <param name="num2" type="Number/null">长度 缺省为整个长度</param>
-                /// <returns type="Array" />
-                var i = 0,
-                    list = [],
-                    len = obj.length;
-                if(!($.isNum(len) && $.isFun(obj))) {
-                    for(var value = obj[0]; i < len; value = obj[++i]) {
-                        list.push(value);
+                makeArray: function(array, results) {
+                    /// <summary>制造一个数组</summary>
+                    /// <param name="array" type="any">任意</param>
+                    /// <param name="results" type="Array">数组 可缺省</param>
+                    /// <returns type="Array" />
+                    //quote from jQuery-1.4.1 
+                    var result = results || [];
+
+                    if (array != null) {
+                        if (array.length == null || $.isStr(array) || $.isFun(array) || array.setInterval) {
+                            push.call(result, array);
+                        } else {
+                            result = $.toArray(array);
+                        }
                     }
-                }
-                return list.slice(num1 || 0, num2 || len);
 
-            }
-        };
+                    return result;
+                },
+
+                slice: function(list, num, len) {
+                    /// <summary>数组的slice方法</summary>
+                    /// <param name="list" type="Array">数组</param>
+                    /// <param name="num" type="Number/null">序号 缺省返回第一个</param>
+                    /// <param name="len" type="Number/null">长度 返回当前序号后几个元素 缺省返回当前序号</param>
+                    /// <returns type="Array" />
+                    return list.slice($.isNum(num) ? num : 0, $.isNum(len) ? len + num : 1 + num);
+                },
+
+                toArray: function(obj, num1, num2) {
+                    /// <summary>转换成数组</summary>
+                    /// <param name="num1" type="Number/null">序号 缺省从零开始</param>
+                    /// <param name="num2" type="Number/null">长度 缺省为整个长度</param>
+                    /// <returns type="Array" />
+                    var i = 0,
+                        list = [],
+                        len = obj.length;
+                    if (!($.isNum(len) && $.isFun(obj))) {
+                        for (var value = obj[0]; i < len; value = obj[++i]) {
+                            list.push(value);
+                        }
+                    }
+                    return list.slice(num1 || 0, num2 || len);
+
+                }
+            };
 
         $.extend(array);
 
@@ -2112,11 +2112,11 @@
     myQuery.define("base/ready", ["base/promise"], function($, Promise) {
         "use strict"; //启用严格模式
         var ready = function(fn) {
-                setTimeout(function(){
-                    rootPromise.and(fn);
-                }, 0);
-            },
-            rootPromise;
+            setTimeout(function() {
+                rootPromise.and(fn);
+            }, 0);
+        },
+        rootPromise;
 
         rootPromise = new Promise(function() { //window.ready first to fix ie
             document.documentElement.style.position = "absolute";
@@ -2125,11 +2125,11 @@
                 ready = function(e) {
                     promise.resolve(e);
                 }
-            if(document.addEventListener) {
+            if (document.addEventListener) {
                 document.addEventListener("DOMContentLoaded", ready, false);
-            } else if(document.attachEvent) {
+            } else if (document.attachEvent) {
                 document.attachEvent("onreadystatechange", function(e) {
-                    if(document.readyState === "complete") {
+                    if (document.readyState === "complete") {
                         ready(e);
                     };
                 });
@@ -2139,7 +2139,7 @@
 
             return promise;
         }).then(function() {
-            if(_config.myquery.packageNames) {
+            if (_config.myquery.packageNames) {
                 var promise = new Promise();
                 require(_config.myquery.package, function(_package) {
                     promise.resolve(_package);
@@ -2147,7 +2147,7 @@
                 return promise;
             }
         }).then(function(_package) {
-            if(_package) {
+            if (_package) {
                 var promise = new Promise(),
                     packageNames = _config.myquery.packageNames.split(","),
                     i = 0,
@@ -2155,9 +2155,9 @@
                     len = packageNames.length,
                     result = [];
 
-                for(; i < len; i++) {
+                for (; i < len; i++) {
                     item = _package[packageNames[i]];
-                    if($.isArr(item)) {
+                    if ($.isArr(item)) {
                         result = result.concat(item)
                     }
                 }
@@ -2168,10 +2168,10 @@
                 return promise;
             }
         }).then(function() {
-            if(_config.ui.init) {
+            if (_config.ui.init) {
                 var promise = new Promise();
                 require("module/init", function(init) {
-                    init.renderWidget(function(){
+                    init.renderWidget(function() {
                         promise.resolve();
                     });
                 });
@@ -2188,7 +2188,7 @@
 
     window.myQuery = $;
 
-    if(!window[_config.myquery.define]) {
+    if (!window[_config.myquery.define]) {
         window[_config.myquery.define] = $;
     } else {
         util.error(_config.myquery.define + " is defined");
