@@ -3,7 +3,8 @@
 myQuery.define("html5/canvas", ["module/color"], function ($, color, undefined) {
     "use strict"; //启用严格模式
     var canvas = null;
-    if (canvas = CanvasRenderingContext2D) {
+    if (typeof CanvasRenderingContext2D != "undefined") {
+    	canvas = CanvasRenderingContext2D;
         var R = Math.round;
         $.easyExtend(canvas.prototype, {
             a: function (a, b, c, d, e, f) { this.arc(a, b, c, d, e, f); return this; }
