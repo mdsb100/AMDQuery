@@ -116,7 +116,7 @@ myQuery.define("main/attr", ["base/support"], function ($, support, undefined) {
             if ($.isNode(ele, "select")) {
                 if ($.isStr(value) || $.isNum(value))
                     value = [value];
-                $(ele).find("option").each(function (ele) {
+                $(ele).query("option").each(function (ele) {
                     ele.selected = false;
                 }).each(function (ele, index) {
                     $.each(value, function (val) {

@@ -713,7 +713,7 @@ myQuery.define("main/event", ["base/client", "main/CustomEvent", "main/data"], f
             return this.each(function(parentNode) {
                 $.addHandler(parentNode, type, function(e) {
                     var
-                    eleCollection = $.query(selector, parentNode),
+                    eleCollection = $.find(selector, parentNode),
                         target = event.event.document.getTarget(e),
                         ret = $.inArray(eleCollection || [], target);
 

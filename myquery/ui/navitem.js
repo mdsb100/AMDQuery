@@ -154,7 +154,7 @@ function($, client, Widget, cls, event, dom, attr, src, animate) {
             return this.target.trigger(para.type, this.target[0], para);
         },
         hasChild: function() {
-            return !!this.target.query("li[ui-navitem]").length;
+            return !!this.target.find("li[ui-navitem]").length;
         },
         detectParent: function() {
             var parentNavitem = this.target.parent().parent(),

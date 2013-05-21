@@ -65,6 +65,66 @@ myQuery.define("main/query", ["main/attr"], function ($, attr, undefined) {
                 return list;
             }
 
+            , find: function (str, eles) {
+                /// <summary>查询命令
+                /// <para>arr返回元素数组</para>
+                /// </summary>
+                /// <param name="str" type="String">字符串query</param>
+                /// <param name="eles" type="Element/ElementCollection/Array[Element]">查询范围</param>
+                /// <returns type="Array" />
+                if (!eles || (eles.length != undefined && eles.length < 1)) return [];
+                if (!str) {
+                    return $.filter("same", eles);
+                }
+                var list;
+                // 严格模式 无法调用 arguments.callee
+                if (/,/.test(str)) {
+                    list = [];
+                    for (var i = 0, querys = str.split(","); i < querys.length; i++) {
+                        querys[i] && (list = list.concat($.query(querys[i], eles)));
+                    }
+                    return $.find("", list);
+                }
+                else if ($.reg.id.test(str)) {
+                    var result = $.getEleById(reg.$1, eles.ownerDocument || eles[0].ownerDocument || document);
+                    result && (list = [result]);
+                }
+                else if ($.reg.tagName.test(str)) {
+                    list = $.getEleByTag(reg.$1, eles);
+                }
+                else if ($.reg.css.test(str)) {
+                    list = $.getEleByClass(reg.$1, eles);
+                }
+                else if ($.reg.search.test(str)) {
+                    list = $.search(reg.rightContext, eles, true);
+                }
+                else if ($.reg.query.test(str)) {
+                    list = $.query(reg.rightContext, eles, true);
+                }
+                else if ($.reg.filter.test(str)) {
+                    list = $.filter(reg.rightContext, eles, true);
+                }
+                else if ($.reg.property.test(str)) {
+                    list = $.property(str, eles);
+                }
+                else if (/^(\+\%)/.test(str)) {
+                    list = $.nextAll(eles);
+                }
+                else if (/^(\~\%)/.test(str)) {
+                    list = $.preAll(eles);
+                }
+                else if (/^\+/.test(str)) {
+                    list = $.next(eles);
+                }
+                else if (/^\~/.test(str)) {
+                    list = $.pre(eles);
+                }
+                //                else if (/^,/.test(str)) {
+                //                    !$.isArr(eles) && (eles = [eles])
+                //                    return eles.concat(this.query(reg.rightContext, (eles[0].ownerDocument && eles[0].ownerDocument.documentElement) || document.documentElement));
+                //                }
+                return $.find(reg.rightContext, list);
+            }
             , filter: function (str, eles) {
                 /// <summary>筛选Element；也可以用来筛选一般数组
                 /// <para>返回ele数组</para>
@@ -170,44 +230,21 @@ myQuery.define("main/query", ["main/attr"], function ($, attr, undefined) {
                , this);
                 }
                 else if (/input/.test(str)) {
-                    list = $.query("input,select,button", eles);
+                    list = $.find("input,select,button", eles);
                 }
                 else if (/button/.test(str)) {
-                    $.each($.query("input", eles), function (ele) {
+                    $.each($.find("input", eles), function (ele) {
                         ele["type"] == "button" && list.push(ele)
                     }, this);
-                    list.concat($.query("button", eles));
+                    list.concat($.find("button", eles));
                 }
                 else if (/(input|button|text|password|radio|checkbox|submit|image|reset|file|tel)/.test(str)) {
-                    $.each($.query("input", eles), function (ele) {
+                    $.each($.find("input", eles), function (ele) {
                         num = ele["type"];
                         $.isStr(num) && num.toLowerCase() == reg.$1 && list.push(ele);
                     }, this);
                 }
 
-                return list;
-            }
-            , find: function (str, eles) {
-                /// <summary>筛选命令 所有后代元素
-                /// <para>返回ele数组</para>
-                /// </summary>
-                /// <param name="str" type="String">字符串query</param>
-                /// <param name="eles" type="Array/Element/ElementCollection">查询范围</param>
-                /// <returns type="Array" />
-                var list = [];
-                if (!str || !eles) {
-
-                }
-                else if ($.reg.id.test(str)) {
-                    var result = $.getEleById(reg.$1, eles.ownerDocument || eles[0].ownerDocument || document);
-                    result && (list = [result]);
-                }
-                else if ($.reg.tagName.test(str)) {
-                    list = $.getEleByTag(reg.$1, eles);
-                }
-                else if ($.reg.css.test(str)) {
-                    list = $.getEleByClass(reg.$1, eles);
-                }
                 return list;
             }
 
@@ -223,7 +260,7 @@ myQuery.define("main/query", ["main/attr"], function ($, attr, undefined) {
                         list = $.elementCollectionToArray($.createEle(ele), false);
                     } else {
                         tmp = context || document;
-                        list = $.query(ele, tmp.documentElement || context);
+                        list = $.find(ele, tmp.documentElement || context);
                     }
                 }
                 else if ($.isEle(ele))
@@ -450,24 +487,15 @@ myQuery.define("main/query", ["main/attr"], function ($, attr, undefined) {
             }
 
             , query: function (str, eles) {
-                /// <summary>查询命令
-                /// <para>arr返回元素数组</para>
+                /// <summary>筛选命令 所有后代元素
+                /// <para>返回ele数组</para>
                 /// </summary>
                 /// <param name="str" type="String">字符串query</param>
-                /// <param name="eles" type="Element/ElementCollection/Array[Element]">查询范围</param>
+                /// <param name="eles" type="Array/Element/ElementCollection">查询范围</param>
                 /// <returns type="Array" />
-                if (!eles || (eles.length != undefined && eles.length < 1)) return [];
-                if (!str) {
-                    return $.filter("same", eles);
-                }
-                var list;
-                // 严格模式 无法调用 arguments.callee
-                if (/,/.test(str)) {
-                    list = [];
-                    for (var i = 0, querys = str.split(","); i < querys.length; i++) {
-                        querys[i] && (list = list.concat($.query(querys[i], eles)));
-                    }
-                    return $.query("", list);
+                var list = [];
+                if (!str || !eles) {
+
                 }
                 else if ($.reg.id.test(str)) {
                     var result = $.getEleById(reg.$1, eles.ownerDocument || eles[0].ownerDocument || document);
@@ -479,35 +507,7 @@ myQuery.define("main/query", ["main/attr"], function ($, attr, undefined) {
                 else if ($.reg.css.test(str)) {
                     list = $.getEleByClass(reg.$1, eles);
                 }
-                else if ($.reg.search.test(str)) {
-                    list = $.search(reg.rightContext, eles, true);
-                }
-                else if ($.reg.find.test(str)) {
-                    list = $.find(reg.rightContext, eles, true);
-                }
-                else if ($.reg.filter.test(str)) {
-                    list = $.filter(reg.rightContext, eles, true);
-                }
-                else if ($.reg.property.test(str)) {
-                    list = $.property(str, eles);
-                }
-                else if (/^(\+\%)/.test(str)) {
-                    list = $.nextAll(eles);
-                }
-                else if (/^(\~\%)/.test(str)) {
-                    list = $.preAll(eles);
-                }
-                else if (/^\+/.test(str)) {
-                    list = $.next(eles);
-                }
-                else if (/^\~/.test(str)) {
-                    list = $.pre(eles);
-                }
-                //                else if (/^,/.test(str)) {
-                //                    !$.isArr(eles) && (eles = [eles])
-                //                    return eles.concat(this.query(reg.rightContext, (eles[0].ownerDocument && eles[0].ownerDocument.documentElement) || document.documentElement));
-                //                }
-                return $.query(reg.rightContext, list);
+                return list;
             }
 
             , search: function (str, eles) {
@@ -564,7 +564,7 @@ myQuery.define("main/query", ["main/attr"], function ($, attr, undefined) {
                 }
             });
             list = $.filter('same', list);
-            return $($.query(str, list));
+            return $($.find(str, list));
         }
 
         , child: function (query, real) {
@@ -574,7 +574,7 @@ myQuery.define("main/query", ["main/attr"], function ($, attr, undefined) {
             /// <returns type="self" />
             var child = $.child(this.eles, real === undefined ? true : real);
             if ($.isStr(query)) {
-                child = $.query(query, child);
+                child = $.find(query, child);
             }
             return $(child);
         }
@@ -584,7 +584,7 @@ myQuery.define("main/query", ["main/attr"], function ($, attr, undefined) {
             /// <param name="real" type="Boolean/Null">是否获得真元素，默认为真</param>
             /// <returns type="self" />
             var children = $.children(this.eles);
-            if ($.isStr(query)) children = $.query(query, children);
+            if ($.isStr(query)) children = $.find(query, children);
             return $(children);
         }
 
@@ -600,7 +600,7 @@ myQuery.define("main/query", ["main/attr"], function ($, attr, undefined) {
 
         }
         , find: function (str) {
-            /// <summary>通过字符串寻找所有后代节点</summary>
+            /// <summary>查询命令</summary>
             /// <param name="str" type="String">查询字符串</param>
             /// <returns type="$" />
             return new $($.find(str, this.eles));
@@ -650,7 +650,7 @@ myQuery.define("main/query", ["main/attr"], function ($, attr, undefined) {
                 cur && cur != document && list.push(ele.parentNode);
             });
             list = $.filter('same', list);
-            return $($.query(str, list));
+            return $($.find(str, list));
         }
         , pre: function (eles) {
             /// <summary>返回所有元素的上一个同辈元素</summary>
@@ -679,10 +679,10 @@ myQuery.define("main/query", ["main/attr"], function ($, attr, undefined) {
         }
 
         , query: function (str) {
-            /// <summary>查询命令</summary>
+            /// <summary>通过字符串寻找所有后代节点</summary>
             /// <param name="str" type="String">查询字符串</param>
             /// <returns type="$" />
-            return new $($.query(str, this.eles));
+            return new $($.find(str, this.eles));
         }
 
         , search: function (str) {
