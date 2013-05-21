@@ -39,7 +39,6 @@
             },
             init: function(opt, target) {
                 this._super(opt, target);
-                target.attr("myquery-ui", "draggable");
                 this.container = $(this.options.container || document.body);
                 return this.create().render();
             },
