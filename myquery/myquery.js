@@ -443,10 +443,7 @@
             numAndEng: /[A-Za-z0-9]+/,
             pEqual: /[!\^\*\$]?=?/,
 
-            rupper: /([A-Z]|^ms)/g,
-            rnumnonpx: /^-?(?:\d*\.)?\d+(?!px)[^\d\s]+$/i,
-            rmargin: /^margin/,
-            rposition: /^(top|right|bottom|left)$/
+            rupper: /([A-Z]|^ms)/g
         },
         rootPath: rootPath,
 

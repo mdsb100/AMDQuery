@@ -95,6 +95,10 @@ myQuery.define("main/dom", ["base/support", "base/client", "main/data", "main/ev
         return result;
     }, getStyles, curCSS, cssHooks = {};
 
+    var rnumnonpx = /^-?(?:\d*\.)?\d+(?!px)[^\d\s]+$/i,
+        rmargin = /^margin/,
+        rposition = /^(top|right|bottom|left)$/;
+
     if (window.getComputedStyle) {
         //quote from jquery1.9.0
         getStyles = function(elem) {
@@ -118,7 +122,7 @@ myQuery.define("main/dom", ["base/support", "base/client", "main/data", "main/ev
                 // Chrome < 17 and Safari 5.0 uses "computed value" instead of "used value" for margin-right
                 // Safari 5.1.7 (at least) returns percentage for a larger set of values, but width seems to be reliably pixels
                 // this is against the CSSOM draft spec: http://dev.w3.org/csswg/cssom/#resolved-values
-                if ($.reg.rnumnonpx.test(ret) && $.reg.rmargin.test(name)) {
+                if (rnumnonpx.test(ret) && rmargin.test(name)) {
 
                     // Remember the original values
                     width = style.width;
@@ -162,7 +166,7 @@ myQuery.define("main/dom", ["base/support", "base/client", "main/data", "main/ev
             // but a number that has a weird ending, we need to convert it to pixels
             // but not position css attributes, as those are proportional to the parent element instead
             // and we can't measure the parent instead because it might trigger a "stacking dolls" problem
-            if ($.reg.rnumnonpx.test(ret) && !$.reg.rposition.test(name)) {
+            if (rnumnonpx.test(ret) && !rposition.test(name)) {
 
                 // Remember the original values
                 left = style.left;
