@@ -1901,7 +1901,14 @@
 
                     return documentElement ? documentElement.nodeName !== "HTML" : false;
                 },
+                isWindow: function( a ) {
+                    /// <summary>是否为window对象</summary>
+                    /// <param name="a" type="any">任意对象</param>
+                    /// <returns type="Boolean" />
+                    return a != null && a == a.window;
+                },
                 is$: function(a) {
+                   
                     /// <summary>是否为$对象</summary>
                     /// <param name="a" type="any">任意对象</param>
                     /// <returns type="Boolean" />
