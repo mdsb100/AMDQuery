@@ -1,6 +1,4 @@
-﻿/// <reference path="../myquery.js" />
-
-myQuery.define("html5/canvas.extend", ["html5/canvas"], function ($, canvas, undefined) {
+﻿myQuery.define("html5/canvas.extend", ["html5/canvas"], function ($, canvas, undefined) {
     "use strict"; //启用严格模式
     if (canvas) {
         var R = Math.round

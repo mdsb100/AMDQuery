@@ -1,6 +1,4 @@
-﻿/// <reference path="../myquery.js" />
-
-define("test/a", function () {
+﻿define("test/a", function () {
     return {
         alert: function () { console.log("a"); }
     }

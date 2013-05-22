@@ -1,6 +1,4 @@
-﻿/// <reference path="../myquery.js" />
-
-define("ecma5/objcet.compati", function () {
+﻿define("ecma5/objcet.compati", function () {
     "use strict"; //启用严格模式
     var fun = function () { }, obj = {
         getPrototypeOf: fun

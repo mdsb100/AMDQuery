@@ -1,6 +1,4 @@
-﻿/// <reference path="../myquery.js" />
-
-require.config({ cache: {
+﻿require.config({ cache: {
     "test/a": function () {
         define("test/a", function () {
             return {

@@ -1,6 +1,4 @@
-﻿/// <reference path="../myquery.js" />
-
-myQuery.define("main/communicate"
+﻿myQuery.define("main/communicate"
 , ["base/is", "base/extend", "main/event", "module/parse"]
 , function ($, is, extend, parse, undefined) {
     "use strict"; //启用严格模式

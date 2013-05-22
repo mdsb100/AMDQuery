@@ -1,6 +1,4 @@
-﻿/// <reference path="../myquery.js" />
-
-myQuery.define("html5/canvas", ["module/color"], function ($, color, undefined) {
+﻿myQuery.define("html5/canvas", ["module/color"], function ($, color, undefined) {
     "use strict"; //启用严格模式
     var canvas = null;
     if (typeof CanvasRenderingContext2D != "undefined") {

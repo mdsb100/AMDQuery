@@ -1,6 +1,4 @@
-﻿/// <reference path="../myquery.js" />
-
-myQuery.define("main/attr", ["base/support"], function ($, support, undefined) {
+﻿myQuery.define("main/attr", ["base/support"], function ($, support, undefined) {
     "use strict"; //启用严格模式
     //暂不要那么多hooks 
     var fixSpecified = {

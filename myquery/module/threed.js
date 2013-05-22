@@ -1,6 +1,4 @@
-﻿/// <reference path="../myquery.js" />
-
-myQuery.define('module/threed', ["main/event", "module/math"], function ($, event, math) {
+﻿myQuery.define('module/threed', ["main/event", "module/math"], function ($, event, math) {
     "use strict"; //启用严格模式
 
     var 

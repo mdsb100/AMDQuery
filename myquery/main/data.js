@@ -1,6 +1,4 @@
-﻿/// <reference path="../myquery.js" />
-
-myQuery.define("main/data", function ($, undefined) {
+﻿myQuery.define("main/data", function ($, undefined) {
     "use strict"; //启用严格模式
     var 
     expando = "MyQuery" + $.now(), uuid = 0, windowData = {}, emptyObject = {},

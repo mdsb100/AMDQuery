@@ -1,6 +1,4 @@
-﻿/// <reference path="../myquery.js" />
-
-myQuery.define("html5/Storage",function ($, undefined) {
+﻿myQuery.define("html5/Storage",function ($, undefined) {
     "use strict"; //启用严格模式
     var localStorage = window.localStorage || globalStorage[location.host]
     , sessionStorage = window.sessionStorage;

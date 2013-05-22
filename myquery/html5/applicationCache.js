@@ -1,6 +1,4 @@
-﻿/// <reference path="../myquery.js" />
-
-myQuery.define("html5/applicationCache", function ($, undefined) {
+﻿myQuery.define("html5/applicationCache", function ($, undefined) {
     "use strict"; //启用严格模式
     if (window.applicationCache) {
         var aCache = applicationCache;

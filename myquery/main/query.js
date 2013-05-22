@@ -1,6 +1,4 @@
-﻿/// <reference path="../myquery.js" />
-
-myQuery.define("main/query", ["main/attr"], function ($, attr, undefined) {
+﻿myQuery.define("main/query", ["main/attr"], function ($, attr, undefined) {
     "use strict"; //启用严格模式
     var reg = RegExp,
         propertyFun = {

@@ -1,5 +1,4 @@
-﻿/// <reference path="../myquery.js" />
-myQuery.define("main/class", ["base/support"], function($, support, undefined) {
+﻿myQuery.define("main/class", ["base/support"], function($, support, undefined) {
     "use strict"; //启用严格模式
     var cls, replaceClass = function(ele, oldClassName, newClassName) {
         /// <summary>清空所有样式表</summary>

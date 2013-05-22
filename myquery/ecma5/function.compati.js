@@ -1,6 +1,4 @@
-﻿/// <reference path="../myquery.js" />
-
-define("ecma5/function.compati", function () {
+﻿define("ecma5/function.compati", function () {
     "use strict"; //启用严格模式
     if (!Function.prototype.bind) {
         Function.prototype.bind = function (context) {

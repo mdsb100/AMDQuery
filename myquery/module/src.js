@@ -1,6 +1,4 @@
-﻿/// <reference path="../myquery.js" />
-
-myQuery.define("module/src", ["base/client"], function ($, client, undefined) {
+﻿myQuery.define("module/src", ["base/client"], function ($, client, undefined) {
     "use strict"; //启用严格模式
     var 
     hasOwnProperty = Object.prototype.hasOwnProperty

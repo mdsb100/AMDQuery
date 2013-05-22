@@ -1,6 +1,4 @@
-﻿/// <reference path="../myquery.js" />
-
-define("test/test3", ["test/test2", "test/test1", "test/test7"], function () {
+﻿define("test/test3", ["test/test2", "test/test1", "test/test7"], function () {
     return {
         alert: function () { console.log("pp test3"); }
     }

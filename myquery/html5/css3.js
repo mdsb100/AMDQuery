@@ -1,6 +1,4 @@
-﻿/// <reference path="../myquery.js" />
-
-myQuery.define("html5/css3", ["base/client", "main/dom"], function ($, client, dom, undefined) {
+﻿myQuery.define("html5/css3", ["base/client", "main/dom"], function ($, client, dom, undefined) {
     "use strict"; //启用严格模式
     var css3Head = (function () {
         var head = "";

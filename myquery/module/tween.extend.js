@@ -1,6 +1,4 @@
-﻿/// <reference path="../myquery.js" />
-
-myQuery.define("module/tween.extend", ["module/tween"], function ($, tween, undefined) {
+﻿myQuery.define("module/tween.extend", ["module/tween"], function ($, tween, undefined) {
     "use strict"; //启用严格模式
     var math = Math;
     $.easyExtend(tween,

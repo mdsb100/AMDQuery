@@ -1,6 +1,4 @@
-﻿/// <reference path="../myquery.js" />
-
-myQuery.define("html5/Worker", function ($, undefined) {
+﻿myQuery.define("html5/Worker", function ($, undefined) {
     "use strict"; //启用严格模式
 
     function MyWorker(path) {

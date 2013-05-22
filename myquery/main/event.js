@@ -1,5 +1,4 @@
-﻿/// <reference path="../myquery.js" />
-myQuery.define("main/event", ["base/client", "main/CustomEvent", "main/data"], function($, client, CustomEvent, data, undefined) {
+﻿myQuery.define("main/event", ["base/client", "main/CustomEvent", "main/data"], function($, client, CustomEvent, data, undefined) {
     "use strict"; //启用严格模式
     var mouse = "contextmenu click dblclick mousedown mouseup mousemove mouseover mouseout mouseenter mouseleave mousewheel DOMMouseScroll".split(" "),
         /*DOMMouseScroll firefox*/

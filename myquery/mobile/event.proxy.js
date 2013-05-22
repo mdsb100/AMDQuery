@@ -1,6 +1,4 @@
-﻿/// <reference path="../myquery.js" />
-
-myQuery.define("mobile/event.proxy", ["base/client", "main.event"], function ($, client, event, undefined) {
+﻿myQuery.define("mobile/event.proxy", ["base/client", "main.event"], function ($, client, event, undefined) {
     "use strict"; //启用严格模式
     if (client.system.mobile) {
         $.interfaces.achieve("editEventType", function (name, type) {

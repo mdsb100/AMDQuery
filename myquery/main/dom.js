@@ -1,6 +1,4 @@
-﻿/// <reference path="../myquery.js" />
-
-myQuery.define("main/dom", ["base/support", "base/client", "main/data", "main/event"], function($, support, client, data, event, undefined) {
+﻿myQuery.define("main/dom", ["base/support", "base/client", "main/data", "main/event"], function($, support, client, data, event, undefined) {
     "use strict"; //启用严格模式
     //和jquery做个测试
     var

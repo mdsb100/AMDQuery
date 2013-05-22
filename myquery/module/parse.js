@@ -1,6 +1,4 @@
-﻿/// <reference path="../myquery.js" />
-
-myQuery.define("module/parse", ["base/is"], function ($, is) {
+﻿myQuery.define("module/parse", ["base/is"], function ($, is) {
     "use strict"; //启用严格模式
     var 
         createDocument = function () {

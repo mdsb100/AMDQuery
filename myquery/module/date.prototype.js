@@ -1,6 +1,4 @@
-﻿/// <reference path="../myquery.js" />
-
-myQuery.define(function ($, undefined) {
+﻿myQuery.define(function ($, undefined) {
     "use strict"; //启用严格模式
     var date = {
         pattern: function (date, fmt) {
