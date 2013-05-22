@@ -429,7 +429,7 @@
             var shells = this.target.child();
             this.container.append(shells).appendTo(this.target);
 
-            this.container.outerW(this.width);
+            this.container.outerWidth(this.width);
 
             this.shellCollection = new ShellCollection(shells, this);
             return this;

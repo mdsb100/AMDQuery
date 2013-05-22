@@ -238,9 +238,9 @@ myQuery.define("ui/scrollableview", ["main/query", "main/dom", "main/class", "ht
                 return this;
             },
             _renderByDefault: function(x1, x2, y1, y2) {
-                x1 !== null && this._isAllowedDirection("x") && this.container.offsetL(parseInt(x1)) && this.statusBarX.offsetL(parseInt(x2));
+                x1 !== null && this._isAllowedDirection("x") && this.container.offsetLeft(parseInt(x1)) && this.statusBarX.offsetLeft(parseInt(x2));
 
-                y1 !== null && this._isAllowedDirection("y") && this.container.offsetT(parseInt(y1)) && this.statusBarY.offsetT(parseInt(y2));
+                y1 !== null && this._isAllowedDirection("y") && this.container.offsetTop(parseInt(y1)) && this.statusBarY.offsetTop(parseInt(y2));
                 return this;
             },
             renderStatusBar: function(x, y) {
@@ -248,11 +248,11 @@ myQuery.define("ui/scrollableview", ["main/query", "main/dom", "main/class", "ht
 
                 this._isAllowedDirection("x") && isTransform3d ? this.statusBarX.setTranslate3d({
                     tx: parseInt(x)
-                }) : this.statusBarX.offsetL(parseInt(x));
+                }) : this.statusBarX.offsetLeft(parseInt(x));
 
                 this._isAllowedDirection("y") && isTransform3d ? this.statusBarY.setTranslate3d({
                     ty: parseInt(y)
-                }) : this.statusBarY.offsetT(parseInt(y));
+                }) : this.statusBarY.offsetTop(parseInt(y));
 
                 return this;
             },
@@ -262,8 +262,8 @@ myQuery.define("ui/scrollableview", ["main/query", "main/dom", "main/class", "ht
                     x = this.container.transform3d("translateX", true);
                     y = this.container.transform3d("translateY", true);
                 } else {
-                    x = this.container.offsetL();
-                    y = this.container.offsetT();
+                    x = this.container.offsetLeft();
+                    y = this.container.offsetTop();
                 }
                 return {
                     x: x,
@@ -322,10 +322,10 @@ myQuery.define("ui/scrollableview", ["main/query", "main/dom", "main/class", "ht
                 return this.options.overflow.indexOf(direction) > -1;
             },
             getTop: function() {
-                return this.isTransform3d() ? this.container.transform3d("translateY", true) : this.container.offsetT();
+                return this.isTransform3d() ? this.container.transform3d("translateY", true) : this.container.offsetTop();
             },
             getLeft: function() {
-                return this.isTransform3d() ? this.container.transform3d("translateX", true) : this.container.offsetL();
+                return this.isTransform3d() ? this.container.transform3d("translateX", true) : this.container.offsetLeft();
             },
             pause: function() {
 

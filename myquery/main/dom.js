@@ -236,9 +236,8 @@ myQuery.define("main/dom", ["base/support", "base/client", "main/data", "main/ev
 
             }
             return style;
-        }
+        },
 
-        ,
         clone: function(ele) {
             /// <summary>clone一个新ele</summary>
             /// <param name="ele" type="Element">ele元素</param>
@@ -259,9 +258,8 @@ myQuery.define("main/dom", ["base/support", "base/client", "main/data", "main/ev
             } else {
                 return false;
             }
-        }
+        },
 
-        ,
         getHeight: function(ele) {
             /// <summary>获得元素的高度
             /// </summary>
@@ -459,9 +457,8 @@ myQuery.define("main/dom", ["base/support", "base/client", "main/data", "main/ev
             //  <param name="ele" type="Element">element元素</param>
             /// <returns type="Number" />
             return parseFloat($.curCss(ele, "width")) || getPos(ele, "clientWidth");
-        }
+        },
 
-        ,
         hide: function(ele, visible) {
             /// <summary>隐藏元素</summary>
             /// <param name="ele" type="Element">element元素</param>
@@ -476,9 +473,8 @@ myQuery.define("main/dom", ["base/support", "base/client", "main/data", "main/ev
 
             //a ? this.css({ vi: 'hidden' }) : this.css({ d: 'none' })
             return this;
-        }
+        },
 
-        ,
         isVisible: function(ele) {
             /// <summary>返回元素是否可见</summary>
             /// <param name="ele" type="Element">element元素</param>
@@ -491,9 +487,8 @@ myQuery.define("main/dom", ["base/support", "base/client", "main/data", "main/ev
                 return false;
             }
             return true;
-        }
+        },
 
-        ,
         position: function(ele) {
             /// <summary>返回元素的位置及大小;值都是offset
             /// <para>top:相对于父级</para>
@@ -519,9 +514,8 @@ myQuery.define("main/dom", ["base/support", "base/client", "main/data", "main/ev
                 pageTop: $.getTop(ele)
             }
 
-        }
+        },
 
-        ,
         remove: function(ele) {
             /// <summary>把元素从文档流里移除</summary>
             /// <param name="ele" type="Object">对象</param>
@@ -819,9 +813,8 @@ myQuery.define("main/dom", ["base/support", "base/client", "main/data", "main/ev
             /// <param name="ele" type="Element">dom元素</param>
             /// <returns type="Object" />
             return $.styleTable(this[0]);
-        }
+        },
 
-        ,
         antonymVisible: function(a) {
             /// <summary>添加兼容滚轮事件</summary>
             /// <param name="a" type="Boolean">如果隐藏，隐藏的种类，true表示任然占据文档流</param>
@@ -888,9 +881,8 @@ myQuery.define("main/dom", ["base/support", "base/client", "main/data", "main/ev
             }
 
             return this;
-        }
+        },
 
-        ,
         clone: function() {
             /// <summary>clone一个新$</summary>
             /// <returns type="self" />
@@ -899,9 +891,8 @@ myQuery.define("main/dom", ["base/support", "base/client", "main/data", "main/ev
                 eles.push($.clone(ele));
             });
             return $(eles);
-        }
+        },
 
-        ,
         getLeft: function() {
             /// <summary>获得第一个元素离左边框的总长度
             /// <para>left:相对于父级</para>
@@ -915,9 +906,8 @@ myQuery.define("main/dom", ["base/support", "base/client", "main/data", "main/ev
             /// </summary>
             /// <returns type="Number" />
             return $.getTop(this[0]);
-        }
+        },
 
-        ,
         height: function(height) {
             /// <summary>返回或设置第一个元素的高度
             /// </summary>
@@ -959,10 +949,9 @@ myQuery.define("main/dom", ["base/support", "base/client", "main/data", "main/ev
             return this.each(function(ele) {
                 $.hide(ele, visible);
             })
-        }
+        },
 
-        ,
-        innerH: function(height) {
+        innerHeight: function(height) {
             /// <summary>返回或设置第一个元素内高度
             /// </summary>
             /// <param name="height" type="Number">高度</param>
@@ -971,7 +960,7 @@ myQuery.define("main/dom", ["base/support", "base/client", "main/data", "main/ev
                 $.setInnerH(ele, height);
             }) : $.getInnerH(this[0]);
         },
-        innerW: function(width) {
+        innerWidth: function(width) {
             /// <summary>返回第一个元素内宽度
             /// </summary>
             /// <param name="height" type="Number">宽度</param>
@@ -1093,10 +1082,9 @@ myQuery.define("main/dom", ["base/support", "base/client", "main/data", "main/ev
             //                return false;
             // return true;
             return $.isVisible(this[0]);
-        }
+        },
 
-        ,
-        offsetL: function(left) {
+        offsetLeft: function(left) {
             /// <summary>获得或设置元素left
             /// <para>为数字时则返回this 设置left</para>
             /// <para>单位默认为px</para>
@@ -1107,7 +1095,7 @@ myQuery.define("main/dom", ["base/support", "base/client", "main/data", "main/ev
                 $.setOffsetL(ele, left);
             }) : $.getOffsetL(this[0]);
         },
-        offsetT: function(top) {
+        offsetTop: function(top) {
             /// <summary>获得或设置元素top
             /// <para>为数字时则返回this 设置top</para>
             /// <para>单位默认为px</para>
@@ -1128,7 +1116,7 @@ myQuery.define("main/dom", ["base/support", "base/client", "main/data", "main/ev
                 $.setOpacity(ele, alpha)
             }) : $.getOpacity(this[0]);
         },
-        outerH: function(height, bol) {
+        outerHeight: function(height, bol) {
             /// <summary>返回或设置第一个元素的外高度
             /// </summary>
             /// <param name="height" type="Number">高度</param>
@@ -1142,7 +1130,7 @@ myQuery.define("main/dom", ["base/support", "base/client", "main/data", "main/ev
                 $.setOuterH(ele, height, bol);
             })
         },
-        outerW: function(width, bol) {
+        outerWidth: function(width, bol) {
             /// <summary>返回或设置第一个元素的外宽度
             /// </summary>
             /// <param name="width" type="Number">宽度</param>
@@ -1154,9 +1142,8 @@ myQuery.define("main/dom", ["base/support", "base/client", "main/data", "main/ev
             return $.isNul(width) ? $.getOuterW(this[0], bol) : this.each(function(ele) {
                 $.setOuterW(ele, width, bol);
             });
-        }
+        },
 
-        ,
         position: function() {
             /// <summary>返回第一个元素的位置及大小;值都是offset
             /// <para>top:相对于父级</para>
@@ -1170,9 +1157,8 @@ myQuery.define("main/dom", ["base/support", "base/client", "main/data", "main/ev
             /// </summary>
             /// <returns type="Object" />
             return $.position(this[0]);
-        }
+        },
 
-        ,
         remove: function() {
             /// <summary>把所有元素从文档流里移除并且移除所有子元素</summary>
             /// <returns type="self" />
@@ -1294,9 +1280,8 @@ myQuery.define("main/dom", ["base/support", "base/client", "main/data", "main/ev
                 });
             }, this);
             return this;
-        }
+        },
 
-        ,
         scrollHeight: function() {
             /// <summary>返回第一个元素的高度
             /// <para>Height:相对于整个大小</para>
@@ -1319,9 +1304,8 @@ myQuery.define("main/dom", ["base/support", "base/client", "main/data", "main/ev
             /// </summary>
             /// <returns type="Number" />
             return this[0].scrollWidth || 0;
-        }
+        },
 
-        ,
         show: function() {
             /// <summary>显示所有元素</summary>
             /// <returns type="self" />
@@ -1333,9 +1317,8 @@ myQuery.define("main/dom", ["base/support", "base/client", "main/data", "main/ev
             return this.each(function(ele) {
                 $.show(ele);
             });
-        }
+        },
 
-        ,
         width: function(width) {
             /// <summary>返回或设置第一个元素的宽度
             /// </summary>

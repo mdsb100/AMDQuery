@@ -18,8 +18,8 @@ myQuery.define("ui/turnBook", ["main/class", "html5/css3", "ui/swappable", "modu
                 size;
 
             this.cache = {};
-            this.bookHeight = Math.round(this.target.innerH());
-            this.bookWidth = Math.round(this.target.innerW());
+            this.bookHeight = Math.round(this.target.innerHeight());
+            this.bookWidth = Math.round(this.target.innerWidth());
             this.pageHeight = this.bookHeight;
             if (opt.positionType == "half") {
                 this.pageWidth = this.bookWidth;
