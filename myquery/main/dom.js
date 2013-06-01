@@ -135,9 +135,9 @@
             name = hooks.name || name;
 
             if (value == undefined) {
-                return hooks["get"] ? hooks["get"].call($, ele, name): ele.style[name];
+                return hooks["get"] ? hooks["get"].call($, ele): ele.style[name];
             } else {
-                hooks["set"] ? hooks["set"].call($, ele, name, value): (ele.style[name] = value);
+                hooks["set"] ? hooks["set"].call($, ele, value): (ele.style[name] = value);
                 return this;
             }
         },

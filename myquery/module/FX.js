@@ -92,13 +92,7 @@ myQuery.define("module/FX", ["main/dom", "main/object"], function($, dom, object
         ,
         update: function(nowPos) {
             nowPos = nowPos == undefined ? this.nowPos.toFixed(2) : nowPos;
-            switch (this.name) {
-                case "opacity":
-                    return $.setOpacity(this.ele, nowPos);
-                    break;
-                default:
-                    this.ele.style[this.name] = nowPos + this.unit;
-            }
+            $.css(this.ele, this.name, nowPos + this.unit);
         }
 
         ,
@@ -142,7 +136,7 @@ myQuery.define("module/FX", ["main/dom", "main/object"], function($, dom, object
             } else {
                 r = parseFloat($.css(ele, name));
             }
-            r = r && r > -10000 ? r : parseFloat($.curCss(ele, name)) || 0;
+            r = r !== undefined && r > -10000 ? r : parseFloat($.curCss(ele, name)) || 0;
             return r !== "auto" ? r : 0;
         },
 
