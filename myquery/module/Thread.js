@@ -194,7 +194,6 @@
         }
         , setFps: function () {
             /// <summary>设置帧值</summary>
-            /// <param name="o" type="Object">数值</param>
             /// <returns type="Number" />
             var status = this.getStatus();
             this.stop();
