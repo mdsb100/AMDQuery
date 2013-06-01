@@ -25,8 +25,8 @@ myQuery.define("ui/turnBook", ["main/class", "html5/css3", "ui/swappable", "modu
                 this.pageWidth = this.bookWidth;
                 opt.inductionCorner = false;
                 this.backgound = $({
-                    a: "absolute",
-                    b: opt.pageBackgroundColor
+                    position: "absolute",
+                    backgroundColor: opt.pageBackgroundColor
                 }, "div") //.initTransform3d()
                 //$({ b: opt.pageBackgroundColor, w: this.pageWidth, h: this.pageHeight }, "div", this.backgound);
             } else {
@@ -37,19 +37,19 @@ myQuery.define("ui/turnBook", ["main/class", "html5/css3", "ui/swappable", "modu
             opt.contentHeight = opt.contentHeight || this.pageHeight;
 
             this.container = $({
-                h: this.bookHeight,
-                w: this.bookWidth,
+                height: this.bookHeight + "px",
+                width: this.bookWidth + "px",
                 overflow: "hidden",
-                a: "absolute"
+                position: "absolute"
             }, "div").appendTo(this.target.swappable());
             this.container.initTransform3d && this.container.initTransform3d();
 
             this.message = $({
-                a: "absolute",
-                t: this.bookHeight / 4,
-                l: this.bookWidth / 4,
-                w: this.bookWidth / 2,
-                h: this.bookHeight / 2
+                position: "absolute",
+                top: this.bookHeight / 4 + "px",
+                left: this.bookWidth / 4 + "px",
+                width: this.bookWidth / 2 + "px",
+                height: this.bookHeight / 2 + "px"
             }, "div").replaceClass(opt.messageClass).addHandler("mousedown", function() {
                 $(this).hide();
             }).hide();
@@ -69,16 +69,16 @@ myQuery.define("ui/turnBook", ["main/class", "html5/css3", "ui/swappable", "modu
         createPage: function() {
             var opt = this.options,
                 box = $({
-                    w: this.pageWidth,
-                    h: this.pageHeight,
-                    a: "absolute",
+                    width: this.pageWidth + "px",
+                    height: this.pageHeight + "px",
+                    position: "absolute",
                     overflow: "hidden"
                 }, "div"),
                 page = $({
-                    w: this.pageWidth,
-                    h: this.pageHeight,
-                    a: "absolute",
-                    b: opt.pageBackgroundColor,
+                    width: this.pageWidth + "px",
+                    height: this.pageHeight + "px",
+                    position: "absolute",
+                    backgroundColor: opt.pageBackgroundColor + "px",
                     overflow: "hidden"
                 }, "div", box);
             //box.initTransform3d && box.initTransform3d();
@@ -91,18 +91,17 @@ myQuery.define("ui/turnBook", ["main/class", "html5/css3", "ui/swappable", "modu
             switch (opt.bookType) {
                 case "Array:Image":
                     content = $({
-                        t: opt.contentTop,
-                        l: opt.contentLeft,
-                        w: opt.contentWidth || this.pageWidth,
-                        h: opt.contentHeight || this.pageHeight,
-                        a: "absolute",
+                        top: opt.contentTop + "px",
+                        left: opt.contentLeft + "px",
+                        width: (opt.contentWidth || this.pageWidth) + "px",
+                        height: (opt.contentHeight || this.pageHeight) + "px",
+                        position: "absolute",
                         border: "0px",
-                        overflow: "hidden"
+                        overflow: "hidden",
                         //, color: opt.contentFontColor
                         //, font: opt.contentFont
-                        //, b: opt.contentBackgroundColor
-                        ,
-                        p: "0",
+                        //, backgroundColor: opt.contentBackgroundColor
+                        padding: "0",
                         cursor: "pointer"
                     }, "img").addHandler("mousedown", function(e) {
                         $.event.document.preventDefault(e);
@@ -112,18 +111,18 @@ myQuery.define("ui/turnBook", ["main/class", "html5/css3", "ui/swappable", "modu
                 case "Array:String":
                 default:
                     content = $({
-                        t: opt.contentTop,
-                        l: opt.contentLeft,
-                        w: opt.contentWidth || this.pageWidth,
-                        h: opt.contentHeight || this.pageHeight,
-                        a: "absolute",
+                        top: opt.contentTop + "px",
+                        left: opt.contentLeft + "px",
+                        width: (opt.contentWidth || this.pageWidth) + "px",
+                        height: (opt.contentHeight || this.pageHeight) + "px",
+                        position: "absolute",
                         resize: "none",
                         border: "0px",
                         overflow: "hidden",
                         color: opt.contentFontColor,
                         font: opt.contentFont,
-                        b: opt.contentBackgroundColor,
-                        p: "0",
+                        backgroundColor: opt.contentBackgroundColor,
+                        padding: "0",
                         pointerEvents: "auto",
                         cursor: "pointer"
                     }, "textArea").addHandler("mousedown", function(e) {
@@ -132,11 +131,11 @@ myQuery.define("ui/turnBook", ["main/class", "html5/css3", "ui/swappable", "modu
                     content[0].setAttribute("readonly", "readonly");
                     if ($.isIpad) {
                         var clip = $({
-                            t: opt.contentTop,
-                            l: opt.contentLeft,
-                            w: opt.contentWidth || this.pageWidth,
-                            h: opt.contentHeight || this.pageHeight,
-                            a: "absolute"
+                            top: opt.contentTop + "px",
+                            left: opt.contentLeft + "px",
+                            width: (opt.contentWidth || this.pageWidth) + "px",
+                            height: (opt.contentHeight || this.pageHeight) + "px",
+                            position: "absolute"
                         }, "div");
                         content = $([content[0], clip[0]]);
                     }
@@ -288,11 +287,11 @@ myQuery.define("ui/turnBook", ["main/class", "html5/css3", "ui/swappable", "modu
                 shadow = "10px 4px 2px rgba(0,0,0,.6),-5px 4px 2px rgba(0,0,0,.6)",
                 mouseshow, turnNextHalf = function(index, offsetX) {
                     self.setBoxCss(index, {
-                        w: $.between(0, pageWidth, pageWidth + offsetX - bookWidth)
+                        width: $.between(0, pageWidth, pageWidth + offsetX - bookWidth) + "px"
                     })
                     self.setCss(self.backgound, {
-                        w: $.between(0, pageWidth, (bookWidth - offsetX) / 2),
-                        l: offsetX,
+                        width: $.between(0, pageWidth, (bookWidth - offsetX) / 2) + "px",
+                        left: offsetX + "px",
                         boxShadow: shadow
                     }, {
                         tx: offsetX
@@ -300,8 +299,8 @@ myQuery.define("ui/turnBook", ["main/class", "html5/css3", "ui/swappable", "modu
                 },
                 turnPreHalf = function(index, offsetX) {
                     index && self.setCss(self.backgound, {
-                        w: $.between(0, pageWidth, (bookWidth - offsetX) / 2),
-                        l: offsetX,
+                        width: $.between(0, pageWidth, (bookWidth - offsetX) / 2) + "px",
+                        left: offsetX + "px",
                         boxShadow: shadow
                     }, {
                         tx: offsetX
@@ -309,10 +308,10 @@ myQuery.define("ui/turnBook", ["main/class", "html5/css3", "ui/swappable", "modu
                 },
                 turnNextWhole = function(index, offsetX) {
                     self.setBoxCss(index, {
-                        w: $.between(0, pageWidth, pageWidth + offsetX - bookWidth)
+                        width: $.between(0, pageWidth, pageWidth + offsetX - bookWidth) + "px"
                     }).setBoxCss(index + 1, {
-                        w: $.between(0, pageWidth, (bookWidth - offsetX) / 2),
-                        l: offsetX,
+                        width: $.between(0, pageWidth, (bookWidth - offsetX) / 2) + "px",
+                        left: offsetX + "px",
                         boxShadow: shadow
                     }, {
                         tx: offsetX
@@ -320,20 +319,20 @@ myQuery.define("ui/turnBook", ["main/class", "html5/css3", "ui/swappable", "modu
                 },
                 turnPreWhole = function(index, offsetX) {
                     self.setBoxCss(index - 1, {
-                        w: $.between(0, pageWidth, pageWidth - offsetX),
-                        l: offsetX
+                        width: $.between(0, pageWidth, pageWidth - offsetX) + "px",
+                        left: offsetX + "px"
                     }, {
                         tx: offsetX
                     }).setPageCss(index - 1, {
-                        l: -offsetX
+                        left: (-offsetX) + "px"
                     }).setBoxCss(index - 2, {
-                        w: Math.ceil($.between(0, pageWidth, offsetX / 2)),
-                        l: offsetX / 2,
+                        width: Math.ceil($.between(0, pageWidth, offsetX / 2)) + "px",
+                        left: (offsetX / 2) + "px",
                         boxShadow: shadow
                     }, {
                         tx: offsetX / 2
                     }).setPageCss(index - 2, {
-                        l: $.between(-pageWidth, 0, offsetX / 2 - pageWidth)
+                        left: $.between(-pageWidth, 0, offsetX / 2 - pageWidth) + "px"
                     });
                 };
             this.event = function(e) {
@@ -535,9 +534,7 @@ myQuery.define("ui/turnBook", ["main/class", "html5/css3", "ui/swappable", "modu
         },
         setCss: function(item, css, css3d) {
             if (css3d && $.support.transform3d) {
-                delete css.l;
                 delete css.left;
-                delete css.t;
                 delete css.top;
                 item.transform3d(css3d);
             }
@@ -574,27 +571,27 @@ myQuery.define("ui/turnBook", ["main/class", "html5/css3", "ui/swappable", "modu
             if (opt.positionType == "half") {
                 for (var i = index + 2; i >= index; i--) {
                     this.setContextCss(i).setBoxCss(i, {
-                        l: 0,
-                        w: pageWidth
+                        left: "0px",
+                        width: pageWidth + "px"
                     }, {
                         tx: 0
                     }).setPageCss(i, {
-                        l: 0
+                        left: "0px"
                     }).appendTo(i);
                 }
                 this.setContextCss(i - 1).setBoxCss(i - 1, {
-                    l: -pageWidth,
-                    w: pageWidth
+                    left: (-pageWidth) + "px",
+                    width: pageWidth + "px"
                 }, {
                     tx: -pageWidth
                 }).setPageCss(i - 1, {
-                    l: 0
+                    left: "0px"
                 }).appendTo(i - 1);
 
                 this.setCss(this.backgound, {
-                    l: 0,
-                    w: this.pageWidth,
-                    h: this.pageHeight,
+                    left: "0px",
+                    width: this.pageWidth + "px",
+                    height: this.pageHeight + "px",
                     boxShadow: ""
                 }, {
                     tx: this.pageWidth
@@ -604,62 +601,62 @@ myQuery.define("ui/turnBook", ["main/class", "html5/css3", "ui/swappable", "modu
                 if (index % 2) index += 1;
 
                 this.setContextCss(index - 3).setBoxCss(index - 3, {
-                    l: 0,
-                    w: pageWidth,
+                    left: "0px",
+                    width: pageWidth + "px",
                     boxShadow: ""
                 }, {
                     tx: 0
                 }).setPageCss(index - 3, {
-                    l: 0
+                    left: "0px"
                 }).appendTo(index - 3);
 
                 this.setContextCss(index - 1).setBoxCss(index - 1, {
-                    l: 0,
-                    w: pageWidth,
+                    left: "0px",
+                    width: pageWidth + "px",
                     boxShadow: ""
                 }, {
                     tx: 0
                 }).setPageCss(index - 1, {
-                    l: 0
+                    left: "0px"
                 }).appendTo(index - 1);
 
                 this.setContextCss(index + 2).setBoxCss(index + 2, {
-                    l: pageWidth,
-                    w: pageWidth,
+                    left: pageWidth + "px",
+                    width: pageWidth + "px",
                     boxShadow: ""
                 }, {
                     tx: pageWidth
                 }).setPageCss(index + 2, {
-                    l: 0
+                    left: "0px"
                 }).appendTo(index + 2);
 
                 this.setContextCss(index).setBoxCss(index, {
-                    l: pageWidth,
-                    w: pageWidth,
+                    left: pageWidth + "px",
+                    width: pageWidth + "px",
                     boxShadow: ""
                 }, {
                     tx: pageWidth
                 }).setPageCss(index, {
-                    l: 0
+                    left: "0px"
                 }).appendTo(index);
 
                 this.setContextCss(index + 1).setBoxCss(index + 1, {
-                    l: bookWidth,
-                    w: pageWidth,
+                    left: bookWidth + "px",
+                    width: pageWidth + "px",
                     boxShadow: ""
                 }, {
                     tx: bookWidth
                 }).setPageCss(index + 1, {
-                    l: 0
+                    left: "0px"
                 }).appendTo(index + 1)
                 this.setContextCss(index - 2).setBoxCss(index - 2, {
-                    l: -pageWidth,
-                    w: pageWidth,
+                    left: (-pageWidth) + "px",
+                    width: pageWidth + "px",
                     boxShadow: ""
                 }, {
                     tx: -pageWidth
                 }).setPageCss(index - 2, {
-                    l: 0
+                    left: "0px"
                 }).appendTo(index - 2)
             }
             this.cache[opt.bookName].bookIndex = opt.bookIndex = index;

@@ -288,7 +288,6 @@
                 return item && item.apply(this, arguments);
             },
             handlers: {
-                editCssType: null,
                 editEventType: null,
                 proxy: null,
                 constructorDom: null,

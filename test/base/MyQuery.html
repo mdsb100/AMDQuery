@@ -169,7 +169,7 @@
                 document.title = detal;
             })
 
-            .append($({ w: 50, h: 50, b: 'blue' }, 'div'));
+            .append($({ width: 50 + "px", height: 50 + "px", backgroundColor: 'blue' }, 'div'));
                 di.append('<span>内容</span>');
                 di.css("b");
                 //di.append('<input type="radio" />');
@@ -183,7 +183,7 @@
                 var tmp = $("#A,#B,#C");
                 var tmpB = tmp.eq(1);
 
-                var son = $({ w: 100, h: 100, b: 'yellow', d: 'inline-table', float: 'left' }, 'div', document.body)
+                var son = $({ width: 100 + "px", height: 100 + "px", background-color: 'yellow', display: 'inline-table', float: 'left' }, 'div', document.body)
                         .addClass('css2')
                         .addHandler('click', function () {
                             di.antonymVisible();

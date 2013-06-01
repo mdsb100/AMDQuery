@@ -2,78 +2,10 @@
     "use strict"; //启用严格模式
     //和jquery做个测试
     var
-    tools = {
-        editCssType: function(name) {
-            /// <summary>把简写转为真正语义</summary>
-            /// <param name="name" type="String"></param>
-            /// <returns type="Object" />
-            var temp, unit = '';
-            switch (name) {
-                case 'a':
-                    name = 'position';
-                    break;
-                case 'b':
-                    name = 'backgroundColor';
-                    break;
-                case 'd':
-                    name = 'display';
-                    break;
-                case 'cssFloat':
-                case 'float':
-                    name = support.cssFloat ? 'cssFloat' : 'styleFloat';
-                    break;
-                case 'h':
-                    unit = 'px';
-                    name = 'height';
-                    break;
-                case 'innerHtml':
-                case 'i':
-                    name = this.html;
-                    break;
-                case 'l':
-                    unit = 'px';
-                    name = 'left';
-                    break;
-                case 'm':
-                    name = 'margin';
-                    break;
-                case 'opacity':
-                case 'o':
-                    name = this.opacity;
-                    break;
-                case 'p':
-                    name = 'padding';
-                    break;
-                case 't':
-                    unit = 'px';
-                    name = 'top';
-                    break;
-                case 'v':
-                    name = 'value';
-                    break;
-                case 'vi':
-                    name = 'visibility';
-                    break;
-                case 'w':
-                    unit = 'px';
-                    name = 'width';
-                    break;
-                case 'z':
-                    name = 'zIndex';
-                    break;
-            }
-            if ((temp = $.interfaces.trigger.call(this, "editCssType", name))) {
-                name = temp.name;
-                unit = temp.unit;
-            }
-            return {
-                name: name,
-                unit: unit
-            };
-        }
-    }, getPosValue = function(ele, type) {
+    getPosValue = function(ele, type) {
         return parseFloat(dom.curCss(ele, type) || 0);
-    }, getPos = function(ele, type) {
+    },
+    getPos = function(ele, type) {
         type = type || "clientHeight";
         var result = ele[type],
             display;
@@ -91,7 +23,10 @@
             ele.style.display = display;
         }
         return result;
-    }, getStyles, curCSS, cssHooks = {};
+    },
+    getStyles,
+    curCSS,
+    floatName = support.cssFloat ? 'cssFloat' : 'styleFloat';
 
     var rnumnonpx = /^-?(?:\d*\.)?\d+(?!px)[^\d\s]+$/i,
         rmargin = /^margin/,
@@ -105,7 +40,7 @@
 
         curCSS = function(ele, name, _computed) {
             var width, minWidth, maxWidth,
-            computed = _computed || getStyles(ele),
+                computed = _computed || getStyles(ele),
                 // getPropertyValue is only needed for .css('filter') in IE9, see #12537
                 ret = computed ? computed.getPropertyValue(name) || computed[name] : undefined,
                 style = ele.style;
@@ -147,7 +82,7 @@
 
         curCSS = function(ele, name, _computed) {
             var left, rs, rsLeft,
-            computed = _computed || getStyles(ele),
+                computed = _computed || getStyles(ele),
                 ret = computed ? computed[name] : undefined,
                 style = ele.style;
 
@@ -196,10 +131,13 @@
             /// <param name="name" type="String">样式名</param>
             /// <param name="value" type="str/num">值</param>
             /// <returns type="self" />
+            var hooks = cssHooks[name] || {};
+            name = hooks.name || name;
+
             if (value == undefined) {
-                return ele.style[name]
+                return hooks["get"] ? hooks["get"].call($, ele, name): ele.style[name];
             } else {
-                ele.style[name] = value;
+                hooks["set"] ? hooks["set"].call($, ele, name, value): (ele.style[name] = value);
                 return this;
             }
         },
@@ -740,7 +678,7 @@
         },
         swap: function(ele, options, callback, args) {
             var ret, name,
-            old = {};
+                old = {};
 
             // Remember the old values, and insert the new ones
             $.easyExtend(old, options);
@@ -754,6 +692,21 @@
         }
     };
 
+    var cssHooks = {
+        'cssFloat':{
+            name: floatName
+        },
+        'float':{
+            name: floatName  
+        },            
+        'opacity':{
+            "get": dom.getOpacity,
+            "set": dom.setOpacity
+        } 
+    };
+
+    dom.cssHooks = cssHooks;
+
     $.extend(dom);
 
     $.fn.extend({
@@ -761,32 +714,23 @@
             /// <summary>添加或获得样式
             /// <para>如果要获得样式 返回为String</para>
             /// <para>fireFox10有个问题，请不要写成带-的形式</para>
-            /// <para>$().css({b:"yellow"});$().css("b","yellow")</para>
             /// </summary>
             /// <param name="style" type="Object/String">obj为赋样式 str为获得一个样式</param>
             /// <param name="value" type="String/Number/undefined">当style是字符串，并且value存在</param>
             /// <returns type="self" />
-            var b = style,
-                result, tmp; //, isEdit = arguments[1] === false ? false : true;
-            //if (!style) { }
-            if ($.isObj(b)) {
-                for (var i in b) {
-                    result = tools.editCssType.call(this, i);
+            var result, tmp;
+            if ($.isObj(style)) {
+                for (var key in style) {
                     this.each(function(ele) {
-                        if ($.isFun(result.name)) result.name.call(this, b[i]);
-                        else result.name && (ele.style[result.name] = b[i] + result.unit);
+                        $.css(ele, key, style[key]);
                     });
                 }
-            } else if ($.isStr(b)) {
-                result = tools.editCssType.call(this, b);
+            } else if ($.isStr(style)) {
                 if (value === undefined) {
-                    if ($.isFun(result.name)) return result.name.call(this);
-                    else return this[0].style[result.name];
-
+                    return $.css(this[0], style);
                 } else {
-                    this.each(function(ele) {
-                        if ($.isFun(result.name)) result.name.call(this, value);
-                        else result.name && (ele.style[result.name] = value + result.unit);
+                    this.each(function (ele) {
+                        $.css(ele, style, value);
                     });
                 }
             }
@@ -1176,12 +1120,12 @@
             /// <returns type="self" />
             var temp;
             if ($.isNum(child)) this.each(function(ele) {
-                temp = $.getRealChild(ele, child);
-                event.clearHandlers(temp);
-                $.removeData(temp);
-                ele.removeChild(temp);
+                    temp = $.getRealChild(ele, child);
+                    event.clearHandlers(temp);
+                    $.removeData(temp);
+                    ele.removeChild(temp);
 
-            });
+                });
             else if ($.isEle(child)) {
                 try {
                     event.clearHandlers(child);
@@ -1189,14 +1133,14 @@
                     this.eles[0].removeChild(child);
                 } catch (e) {}
             } else if ($.is$(child)) this.each(function(ele) {
-                child.each(function(son) {
-                    try {
-                        event.clearHandlers(son);
-                        $.removeData(son);
-                        ele.removeChild(son);
-                    } catch (e) {}
+                    child.each(function(son) {
+                        try {
+                            event.clearHandlers(son);
+                            $.removeData(son);
+                            ele.removeChild(son);
+                        } catch (e) {}
+                    });
                 });
-            });
             return this;
         },
         removeChildren: function() {
@@ -1250,32 +1194,32 @@
             var temp;
             $.each(newChild, function(newNode) {
                 if ($.isNum(child)) this.each(function(ele) {
-                    try {
-                        temp = $.getRealChild(ele, child);
-                        ele.replaceChild(newNode, temp);
-                        $.removeData(temp);
-                        //移除事件
-                        return false;
-                    } catch (e) {}
-                });
-                else if ($.isEle(child)) this.each(function(ele) {
-                    try {
-                        ele.replaceChild(newNode, child);
-                        $.removeData(child);
-                        //移除事件
-                        return false;
-                    } catch (e) {}
-                });
-                else if ($.is$(child)) this.each(function(ele) {
-                    child.each(function(son) {
                         try {
-                            ele.replaceChild(newNode, son);
-                            $.removeData(son);
+                            temp = $.getRealChild(ele, child);
+                            ele.replaceChild(newNode, temp);
+                            $.removeData(temp);
                             //移除事件
                             return false;
                         } catch (e) {}
                     });
-                });
+                else if ($.isEle(child)) this.each(function(ele) {
+                        try {
+                            ele.replaceChild(newNode, child);
+                            $.removeData(child);
+                            //移除事件
+                            return false;
+                        } catch (e) {}
+                    });
+                else if ($.is$(child)) this.each(function(ele) {
+                        child.each(function(son) {
+                            try {
+                                ele.replaceChild(newNode, son);
+                                $.removeData(son);
+                                //移除事件
+                                return false;
+                            } catch (e) {}
+                        });
+                    });
             }, this);
             return this;
         },
