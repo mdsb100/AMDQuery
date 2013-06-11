@@ -1,5 +1,10 @@
 ﻿myQuery.define("main/query", ["main/attr"], function ($, attr, undefined) {
     "use strict"; //启用严格模式
+    var rId = $.reg.id,
+        rTagName = /^((?:[\w\u00c0-\uFFFF\*-]|\\.)+)/,
+        rCss = /^\.((?:[\w\u00c0-\uFFFF-]|\\.)+)/,
+        rProperty = /^\[\s*((?:[\w\u00c0-\uFFFF-]|\\.)+)\s*(?:(\S?=)\s*(['"]*)(.*?)\3|)\s*\]/
+
     var reg = RegExp,
         propertyFun = {
             "default": function (item, value) { return item !== undefined; }
@@ -83,26 +88,26 @@
                     }
                     return $.find("", list);
                 }
-                else if ($.reg.id.test(str)) {
+                else if (rId.test(str)) {
                     var result = $.getEleById(reg.$1, eles.ownerDocument || eles[0].ownerDocument || document);
                     result && (list = [result]);
                 }
-                else if ($.reg.tagName.test(str)) {
+                else if (rTagName.test(str)) {
                     list = $.getEleByTag(reg.$1, eles);
                 }
-                else if ($.reg.css.test(str)) {
+                else if (rCss.test(str)) {
                     list = $.getEleByClass(reg.$1, eles);
                 }
-                else if ($.reg.search.test(str)) {
+                else if (/^>/.test(str)) {
                     list = $.search(reg.rightContext, eles, true);
                 }
-                else if ($.reg.query.test(str)) {
+                else if (/^\s/.test(str)) {
                     list = $.query(reg.rightContext, eles, true);
                 }
-                else if ($.reg.filter.test(str)) {
+                else if (/^:/.test(str)) {
                     list = $.filter(reg.rightContext, eles, true);
                 }
-                else if ($.reg.property.test(str)) {
+                else if (rProperty.test(str)) {
                     list = $.property(str, eles);
                 }
                 else if (/^(\+\%)/.test(str)) {
@@ -173,14 +178,14 @@
                 //                    }
                 //                }
                 //            }
-                else if ($.reg.eq.test(str)) {
+                else if (/^eq\(([\+\-]?\d+),\+?(\d+)?\)/.test(str)) {
                     list = $.slice(eles, reg.$1, reg.$2 || 1);
                 }
                 else if (/first/.test(str))
                     list = eles.slice(0, 1);
                 else if (/last/.test(str))
                     list = eles.slice(-1);
-                else if ($.reg.than.test(str)) {
+                else if (/^(gt|lt)\(([\-\+]?\d+)\)/.test(str)) {
                     num = parseInt(reg.$2);
                     num = num < 0 ? eles.length + num : num;
                     list = str.indexOf("gt") > -1 ? eles.slice(num + 1) : eles.slice(0, num - 1)
@@ -468,7 +473,7 @@
                 if (!str || !eles) {
                     return list;
                 }
-                var match = str.match($.reg.property)
+                var match = str.match(rProperty)
                 , name = match[1]
                 , type = match[2]
                 , value = match[4]
@@ -495,14 +500,14 @@
                 if (!str || !eles) {
 
                 }
-                else if ($.reg.id.test(str)) {
+                else if (rId.test(str)) {
                     var result = $.getEleById(reg.$1, eles.ownerDocument || eles[0].ownerDocument || document);
                     result && (list = [result]);
                 }
-                else if ($.reg.tagName.test(str)) {
+                else if (rTagName.test(str)) {
                     list = $.getEleByTag(reg.$1, eles);
                 }
-                else if ($.reg.css.test(str)) {
+                else if (rCss.test(str)) {
                     list = $.getEleByClass(reg.$1, eles);
                 }
                 return list;
@@ -520,15 +525,15 @@
                     return list;
                 }
                 var child = $.child(eles);
-                if ($.reg.id.test(str))
+                if (rId.test(str))
                     list = $.property("[id=" + reg.$1 + "]", child);
-                else if ($.reg.tagName.test(str)) {
+                else if (rTagName.test(str)) {
                     var result = reg.$1 == "*" ? true : false;
                     list = $.filter(function (ele) {
                         return result || $.isNode(ele, reg.$1); //ele.tagName.toLowerCase() === reg.$1.toLowerCase();
                     }, child);
                 }
-                else if ($.reg.css.test(str)) {
+                else if (rCss.test(str)) {
                     var temp = reg.$1;
                     list = $.filter(function (ele) {
                         return $.containsClass(ele, temp) && true;

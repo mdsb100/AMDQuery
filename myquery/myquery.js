@@ -405,7 +405,7 @@
             if (typeof value == "number") {
                 result.value = value
             } else if (typeof value == "string") {
-                value = value.match($.reg.valueAndUnit);
+                value = value.match(/[+-]?\d+\.?\d*\w+/g);
                 if (value) {
                     var num = parseFloat(value[0]);
                     if (num != undefined) {
@@ -422,29 +422,14 @@
         reg: {
             // Used for matching numbers
             core_pnum : /[+-]?(?:\d*\.|)\d+(?:[eE][+-]?\d+|)/.source,
-            num: /^(-?\\d+)(\\.\\d+)?$/,
-            className: function(className) {
-                return reg = new RegExp('(\\s|^)' + className + '(\\s|$)')
-            },
-            id: /^#((?:[\w\u00c0-\uFFFF-]|\\.)+)/,
-            ///^#[\w\d]+/
-            tagName: /^((?:[\w\u00c0-\uFFFF\*-]|\\.)+)/,
-            ///^[a-zA-Z]+|\*/
-            search: /^>/,
-            query: /^\s/,
-            filter: /^:/,
-            int: /(\+|\-)?\d+/g,
-            eq: /^eq\(([\+\-]?\d+),\+?(\d+)?\)/,
-            than: /^(gt|lt)\(([\-\+]?\d+)\)/,
-            css: /^\.((?:[\w\u00c0-\uFFFF-]|\\.)+)/,
-            ///^\.[\w\d]+/
-
-            valueAndUnit: /[+-]?\d+\.?\d*\w+/g,
-            property: /^\[\s*((?:[\w\u00c0-\uFFFF-]|\\.)+)\s*(?:(\S?=)\s*(['"]*)(.*?)\3|)\s*\]/,
-            numAndEng: /[A-Za-z0-9]+/,
-            pEqual: /[!\^\*\$]?=?/,
-
-            rupper: /([A-Z]|^ms)/g
+            id: /^#((?:[\w\u00c0-\uFFFF-]|\\.)+)/
+            //num: /^(-?\\d+)(\\.\\d+)?$/,
+            // className: function(className) {
+            //     return reg = new RegExp('(\\s|^)' + className + '(\\s|$)')
+            // },
+            //int: /(\+|\-)?\d+/g,
+            //numAndEng: /[A-Za-z0-9]+/,
+            //pEqual: /[!\^\*\$]?=?/,
         },
         rootPath: rootPath,
 
@@ -512,7 +497,7 @@
                 /// <param name="name" type="String">字符串</param>
                 /// <param name="head" type="String">字符串头</param>
                 /// <returns type="String" />
-                name = name.replace($.reg.rupper, "-$1").toLowerCase();
+                name = name.replace(/([A-Z]|^ms)/g, "-$1").toLowerCase();
                 head && (name = head + "-" + name);
                 return name;
             }
