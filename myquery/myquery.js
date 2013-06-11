@@ -1817,6 +1817,9 @@
                     /// <returns type="Boolean" />
                     return $.isType(a, '[object Number]');
                 },
+                isNumeric: function(a){
+                    return !isNaN(parseFloat(a)) && isFinite(a);
+                },
                 isNul: function(a) {
                     /// <summary>是否为不存在</summary>
                     /// <param name="a" type="any">任意对象</param>

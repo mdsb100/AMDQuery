@@ -1,47 +1,126 @@
 ﻿myQuery.define("main/dom", ["base/support", "base/client", "main/data", "main/event"], function($, support, client, data, event, undefined) {
     "use strict"; //启用严格模式
     //和jquery做个测试
-    var
-    getPosValue = function(ele, type) {
-        return parseFloat(dom.curCss(ele, type) || 0);
-    },
-    getPos = function(ele, type) {
-        type = type || "clientHeight";
-        var result = ele[type],
-            display;
-        if (!result) {
-            display = $.curCss(ele, "display");
-            if (display == "none" || display.indexOf("inline") > -1) {
-                ele.style.display = "block";
-                result = ele[type];
-            }
-            if (!ele.parentNode) {
-                document.body.appendChild(ele);
-                result = ele[type];
-                document.body.removeChild(ele);
-            }
-            ele.style.display = display;
-        }
-        return result;
-    },
-    getStyles,
-    curCSS,
-    cssProps = {
-        float: support.cssFloat ? 'cssFloat' : 'styleFloat'
-
-    }
-
     var rnumnonpx = /^-?(?:\d*\.)?\d+(?!px)[^\d\s]+$/i,
         rmargin = /^margin/,
         rposition = /^(top|right|bottom|left)$/,
-        rnumsplit = new RegExp( "^(" + $.reg.core_pnum + ")(.*)$", "i" );
+        rdisplayswap = /^(none|table(?!-c[ea]).+)/,
+        rnumsplit = new RegExp("^(" + $.reg.core_pnum + ")(.*)$", "i"),
+        cssExpand = [ "Top", "Right", "Bottom", "Left" ],
+        cssShow = {
+            position: "absolute",
+            visibility: "hidden",
+            display: "block"
+        };
 
-    function setPositiveNumber( elem, value, subtract ) {
-        var matches = rnumsplit.exec( value );
+    var getPosValue = function(ele, type) {
+            return parseFloat(dom.curCss(ele, type) || 0);
+        },
+        getPos = function(ele, type) {
+            type = type || "clientHeight";
+            var result = ele[type],
+                display;
+            if (!result) {
+                display = $.curCss(ele, "display");
+                if (display == "none" || display.indexOf("inline") > -1) {
+                    ele.style.display = "block";
+                    result = ele[type];
+                }
+                if (!ele.parentNode) {
+                    document.body.appendChild(ele);
+                    result = ele[type];
+                    document.body.removeChild(ele);
+                }
+                ele.style.display = display;
+            }
+            return result;
+        },
+        getStyles,
+        curCSS,
+        cssProps = {
+            float: support.cssFloat ? 'cssFloat' : 'styleFloat'
+        };
+
+    function getWidthOrHeight(ele, name, extra) {
+        var valueIsBorderBox = true,
+            val = name === "width" ? ele.offsetWidth : ele.offsetHeight,
+            styles = getStyles(ele),
+            isBorderBox = support.boxSizing && $.css(ele, "boxSizing", undefined, styles, false) === "border-box";
+
+        if (val <= 0 || val == null) {
+            val = curCSS(ele, name, styles);
+            if (val < 0 || val == null) {
+                val = ele.style[name];
+            }
+
+            // Computed unit is not pixels. Stop here and return.
+            if (rnumnonpx.test(val)) {
+                return val;
+            }
+
+            // we need the check for style in case a browser which returns unreliable values
+            // for getComputedStyle silently falls back to the reliable ele.style
+            valueIsBorderBox = isBorderBox && (support.boxSizingReliable || val === elem.style[name]);
+
+            // Normalize "", auto, and prepare for extra
+            val = parseFloat(val) || 0;
+        }
+
+        return ( val +
+        augmentWidthOrHeight(
+          ele,
+          name,
+          extra || ( isBorderBox ? "border" : "content" ),
+          valueIsBorderBox,
+          styles)
+        ) + "px";
+    }
+
+    function setPositiveNumber(elem, value, subtract) {
+        var matches = rnumsplit.exec(value);
         return matches ?
         // Guard against undefined "subtract", e.g., when used as in cssHooks
-        Math.max( 0, matches[ 1 ] - ( subtract || 0 ) ) + ( matches[ 2 ] || "px" ) :
-        value;
+        Math.max(0, matches[1] - (subtract || 0)) + (matches[2] || "px") :
+            value;
+    }
+
+    function augmentWidthOrHeight(elem, name, extra, isBorderBox, styles) {
+        var i = extra === (isBorderBox ? "border" : "content") ?
+        // If we already have the right measurement, avoid augmentation
+        4 :
+        // Otherwise initialize for horizontal or vertical properties
+        name === "width" ? 1 : 0,
+
+            val = 0;
+
+        for (; i < 4; i += 2) {
+            // both box models exclude margin, so add it if we want it
+            if (extra === "margin") {
+                val += $.css(elem, extra + cssExpand[i], undefined, styles, true);
+            }
+
+            if (isBorderBox) {
+                // border-box includes padding, so remove it if we want content
+                if (extra === "content") {
+                    val -= $.css(elem, "padding" + cssExpand[i], undefined, styles, true);
+                }
+
+                // at this point, extra isn't border nor margin, so remove border
+                if (extra !== "margin") {
+                    val -= $.css(elem, "border" + cssExpand[i] + "Width", undefined, styles, true);
+                }
+            } else {
+                // at this point, extra isn't content, so add padding
+                val += $.css(elem, "padding" + cssExpand[i], undefined, styles, true);
+
+                // at this point, extra isn't content nor padding, so add border
+                if (extra !== "padding") {
+                    val += $.css(elem, "border" + cssExpand[i] + "Width", undefined, styles, true);
+                }
+            }
+        }
+
+        return val;
     }
 
     if (window.getComputedStyle) {
@@ -137,12 +216,13 @@
     }
 
     var dom = {
-        css: function(ele, name, value, style) {
+        css: function(ele, name, value, style, extra) {
             /// <summary>为元素添加样式</summary>
             /// <param name="ele" type="Element">元素</param>
             /// <param name="name" type="String">样式名</param>
             /// <param name="value" type="str/num">值</param>
             /// <param name="style" type="Object">样式表</param>
+            /// <param name="extra" type="Boolean">是否返回num</param>
             /// <returns type="self" />
 
             style = style || ele.style;
@@ -150,12 +230,18 @@
             var originName = $.util.camelCase(name);
 
             var hooks = cssHooks[name] || {};
-            name = $.cssProps[ originName ] || ( $.cssProps[ originName ] = dom.vendorPropName( style, originName ) );
+            name = $.cssProps[originName] || ($.cssProps[originName] = dom.vendorPropName(style, originName));
 
             if (value == undefined) {
-                return hooks["get"] ? hooks["get"].call($, ele): style[name];
+                var val = hooks["get"] ? hooks["get"].call($, ele) : curCSS( ele, name, style );
+                if ( extra === "" || extra ) {
+                    var num = parseFloat( val );
+                    return extra === true || $.isNumeric( num ) ? num || 0 : val;
+                }
+                return val;
+
             } else {
-                hooks["set"] ? hooks["set"].call($, ele, value): (style[name] = value);
+                hooks["set"] ? hooks["set"].call($, ele, value) : (style[name] = value);
                 return this;
             }
         },
@@ -220,7 +306,7 @@
             /// </summary>
             //  <param name="ele" type="Element">element元素</param>
             /// <returns type="Number" />
-            return parseFloat($.curCss(ele, "height")) || getPos(ele, "clientHeight");
+            return dom.getWidth(ele, "height");
         },
         getHtml: function(ele) {
             /// <summary>获得元素的innerHTML</summary>
@@ -411,7 +497,29 @@
             /// </summary>
             //  <param name="ele" type="Element">element元素</param>
             /// <returns type="Number" />
-            return parseFloat($.curCss(ele, "width")) || getPos(ele, "clientWidth");
+            var name = arguments[1] ? "height" : "width",
+                bName = name == "width" ? "Width" : "Height";
+            if ($.isWindow(ele)) {
+                return ele.document.documentElement["client" + bName];
+            }
+
+            // Get document width or height
+            if (ele.nodeType === 9) {
+                var doc = ele.documentElement;
+
+                // Either scroll[Width/Height] or offset[Width/Height] or client[Width/Height], whichever is greatest
+                // unfortunately, this causes bug #3838 in IE6/8 only, but there is currently no good, small way to fix it.
+                return Math.max(
+                    ele.body["scroll" + bName], doc["scroll" + bName],
+                    ele.body["offset" + bName], doc["offset" + bName],
+                    doc["client" + bName]);
+            }
+            return ele.offsetWidth === 0 && rdisplayswap.test($.css(ele, "display")) ?
+                $.swap(ele, cssShow, function() {
+                return getWidthOrHeight(ele, name, "content");
+            }) :
+                getWidthOrHeight(ele, name, "content");
+            //parseFloat($.curCss(ele, "width")) || getPos(ele, "clientWidth");
         },
 
         hide: function(ele, visible) {
@@ -711,21 +819,47 @@
         }
     };
 
-    var cssHooks = {   
-        'opacity':{
+    var cssHooks = {
+        'opacity': {
             "get": dom.getOpacity,
             "set": dom.setOpacity
+        },
+        "width": {
+            "get": dom.getWidth,
+            "set": dom.setWidth
+        },
+        "height": {
+            "get": dom.getHeight,
+            "set": dom.setHeight
+        },
+        "innerWidth": {
+            "get": dom.getInnerW,
+            "set": dom.setIneerW
+        },
+        "innerHeight": {
+            "get": dom.getInnerH,
+            "set": dom.setInnerH
+        },
+        "outerWidth": {
+            "get": dom.getOuterW,
+            "set": dom.setOuterW
+        },
+        "outerHeight": {
+            "get": dom.getOuterH,
+            "set": dom.setOuterH
         }
     };
 
-    if ( !support.reliableMarginRight ) {
+    if (!support.reliableMarginRight) {
         cssHooks.marginRight = {
-          get: function( elem) {
-              // WebKit Bug 13343 - getComputedStyle returns wrong value for margin-right
-              // Work around by temporarily setting element display to inline-block
-            return dom.swap( elem, { "display": "inline-block" },
-                curCSS, [ elem, "marginRight" ] );
-          }
+            get: function(elem) {
+                // WebKit Bug 13343 - getComputedStyle returns wrong value for margin-right
+                // Work around by temporarily setting element display to inline-block
+                return dom.swap(elem, {
+                    "display": "inline-block"
+                },
+                    curCSS, [elem, "marginRight"]);
+            }
         };
     }
 
@@ -753,7 +887,7 @@
                 if (value === undefined) {
                     return $.css(this[0], style);
                 } else {
-                    this.each(function (ele) {
+                    this.each(function(ele) {
                         $.css(ele, style, value);
                     });
                 }
@@ -1254,13 +1388,9 @@
             /// </summary>
             /// <returns type="Number" />
             if (client.browser.ie < 8) {
-                var ele = this[0],
-                    origin = $.style(ele, "overflow"),
-                    ret;
-                $.css(ele, "overflow", "scroll");
-                ret = ele.scrollHeight || 0;
-                $.css(ele, "overflow", origin);
-                return ret;
+                return dom.swap(this[0], {"overflow": "scroll"}, function(){
+                    return this.scrollHeight || 0;
+                });
             }
             return this[0].scrollHeight || 0;
         },
@@ -1297,7 +1427,7 @@
     });
 
     // do not extend $
-    dom.vendorPropName = function ( style, name ) {
+    dom.vendorPropName = function(style, name) {
         return name;
     };
 
