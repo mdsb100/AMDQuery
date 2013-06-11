@@ -167,6 +167,25 @@
     }
 
     $.interfaces.handlers.editCss3Type = null;
+
+    dom.vendorPropName = function ( style, name ) {
+
+      // shortcut for names that are not vendor prefixed
+      if ( name in style ) {
+        return name;
+      }
+
+      // check for vendor prefixed names
+      var capName = name.charAt(0).toUpperCase() + name.slice(1),
+        origName = name;
+        name = css3Head + capName;
+        if(name in style){
+            return name;
+        }
+
+      return origName;
+    };
+
     var css3 = {
         addTransition: function (ele, style) {
             /// <summary>添加transition属性

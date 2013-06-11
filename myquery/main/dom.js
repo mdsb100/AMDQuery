@@ -26,7 +26,11 @@
     },
     getStyles,
     curCSS,
-    floatName = support.cssFloat ? 'cssFloat' : 'styleFloat';
+    cssProps = {
+        float: support.cssFloat ? 'cssFloat' : 'styleFloat'
+
+    }
+
 
     var rnumnonpx = /^-?(?:\d*\.)?\d+(?!px)[^\d\s]+$/i,
         rmargin = /^margin/,
@@ -125,23 +129,30 @@
     }
 
     var dom = {
-        css: function(ele, name, value) {
+        css: function(ele, name, value, style) {
             /// <summary>为元素添加样式</summary>
             /// <param name="ele" type="Element">元素</param>
             /// <param name="name" type="String">样式名</param>
             /// <param name="value" type="str/num">值</param>
+            /// <param name="style" type="Object">样式表</param>
             /// <returns type="self" />
+
+            style = style || ele.style;
+
+            var originName = $.util.camelCase(name);
+
             var hooks = cssHooks[name] || {};
-            name = hooks.name || name;
+            name = $.cssProps[ originName ] || ( $.cssProps[ originName ] = dom.vendorPropName( style, originName ) );
 
             if (value == undefined) {
-                return hooks["get"] ? hooks["get"].call($, ele): ele.style[name];
+                return hooks["get"] ? hooks["get"].call($, ele): style[name];
             } else {
-                hooks["set"] ? hooks["set"].call($, ele, value): (ele.style[name] = value);
+                hooks["set"] ? hooks["set"].call($, ele, value): (style[name] = value);
                 return this;
             }
         },
         curCss: curCSS,
+        cssProps: cssProps,
         style: function(ele, type, head) {
             /// <summary>返回元素样式表中的某个样式</summary>
             /// <param name="ele" type="Element">element元素</param>
@@ -692,13 +703,7 @@
         }
     };
 
-    var cssHooks = {
-        'cssFloat':{
-            name: floatName
-        },
-        'float':{
-            name: floatName  
-        },            
+    var cssHooks = {   
         'opacity':{
             "get": dom.getOpacity,
             "set": dom.setOpacity
@@ -1271,6 +1276,11 @@
             });
         }
     });
+
+    // do not extend $
+    dom.vendorPropName = function ( style, name ) {
+        return name;
+    };
 
     $.interfaces.achieve("constructorDom", function(type, dollar, cssObj, ele, parentNode) {
         cssObj && dollar.css(cssObj);

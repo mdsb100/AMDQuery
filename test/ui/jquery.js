@@ -7276,7 +7276,7 @@ jQuery.each({
     expand: function( value ) {
       var i = 0,
         expanded = {},
-
+        // borderWidth
         // assumes a single number if not a string
         parts = typeof value === "string" ? value.split(" ") : [ value ];
 

@@ -4,19 +4,18 @@
     <title></title>
     <link href="../../css/reset.css" rel="stylesheet" type="text/css" />
     <style>
-        #test
-        {
-            background: #0000FF;
-            width: 100px;
-            height: 100px;
+        #test{
+            background-color: red;
         }
     </style>
     <script src="../../myquery/myquery.js" type="text/javascript" myquery="define:$;"
         amd="detectCR:1;"></script>
     <script type="text/javascript">
-        $.require(["main/query", "main/dom"], function (query, dom) {
+        $.require(["main/query", "main/dom", "html5/css3"], function (query, dom) {
             $.ready(function () {
                 var test = $("#test");
+                var color = test.css("background-color");
+                test.css("animation");
                 //                alert(test.outerHeight(true));
                 //                alert(test.innerHeight(true));
                 //                alert(test.outerWidth());
@@ -26,9 +25,9 @@
                 //                alert(test.innerWidth());
                 //                test.innerWidth(120);
                 //                alert(test.innerWidth());
-                alert(test.outerHeight(true));
-                test.outerHeight(120, true);
-                alert(test.outerHeight()); 
+                // alert(test.outerHeight(true));
+                // test.outerHeight(120, true);
+                // alert(test.outerHeight()); 
                 //会带margin
                 //                alert(test.css("background-color"));
                 //                alert(test.css("color"));
@@ -40,8 +39,8 @@
     </script>
 </head>
 <body style="overflow: auto">
-    <div style="margin-top: 20px; margin-bottom: 20px; border: 10px solid black; width: 150px;
-        height: 150px; color: Green; display: none;" id="test">
+    <div id="test" style="dispaly:block;float:left;border:10px solid green;width:100px;height:100px;padding-left:20px;margin-right:40px;background-color: red;" >
+
     </div>
 </body>
 </html>
