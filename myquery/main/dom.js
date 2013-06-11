@@ -34,7 +34,16 @@
 
     var rnumnonpx = /^-?(?:\d*\.)?\d+(?!px)[^\d\s]+$/i,
         rmargin = /^margin/,
-        rposition = /^(top|right|bottom|left)$/;
+        rposition = /^(top|right|bottom|left)$/,
+        rnumsplit = new RegExp( "^(" + $.reg.core_pnum + ")(.*)$", "i" );
+        
+    function setPositiveNumber( elem, value, subtract ) {
+        var matches = rnumsplit.exec( value );
+        return matches ?
+        // Guard against undefined "subtract", e.g., when used as in cssHooks
+        Math.max( 0, matches[ 1 ] - ( subtract || 0 ) ) + ( matches[ 2 ] || "px" ) :
+        value;
+    }
 
     if (window.getComputedStyle) {
         //quote from jquery1.9.0

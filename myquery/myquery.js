@@ -420,6 +420,8 @@
         now: util.now,
 
         reg: {
+            // Used for matching numbers
+            core_pnum : /[+-]?(?:\d*\.|)\d+(?:[eE][+-]?\d+|)/.source,
             num: /^(-?\\d+)(\\.\\d+)?$/,
             className: function(className) {
                 return reg = new RegExp('(\\s|^)' + className + '(\\s|$)')
