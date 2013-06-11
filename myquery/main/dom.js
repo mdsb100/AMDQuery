@@ -31,12 +31,11 @@
 
     }
 
-
     var rnumnonpx = /^-?(?:\d*\.)?\d+(?!px)[^\d\s]+$/i,
         rmargin = /^margin/,
         rposition = /^(top|right|bottom|left)$/,
         rnumsplit = new RegExp( "^(" + $.reg.core_pnum + ")(.*)$", "i" );
-        
+
     function setPositiveNumber( elem, value, subtract ) {
         var matches = rnumsplit.exec( value );
         return matches ?
@@ -716,8 +715,19 @@
         'opacity':{
             "get": dom.getOpacity,
             "set": dom.setOpacity
-        } 
+        }
     };
+
+    if ( !support.reliableMarginRight ) {
+        cssHooks.marginRight = {
+          get: function( elem) {
+              // WebKit Bug 13343 - getComputedStyle returns wrong value for margin-right
+              // Work around by temporarily setting element display to inline-block
+            return dom.swap( elem, { "display": "inline-block" },
+                curCSS, [ elem, "marginRight" ] );
+          }
+        };
+    }
 
     dom.cssHooks = cssHooks;
 
