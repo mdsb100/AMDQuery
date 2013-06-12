@@ -33,9 +33,8 @@ myQuery.define("module/FX", ["main/dom", "main/object"], function($, dom, object
         cur: function() {
             return FX.cur(this.ele, this.name);
         },
-        constructor: FX
+        constructor: FX,
 
-        ,
         getPercent: function() {
             return parseInt((this.percent || 0) * 100) / 100;
         },
@@ -87,18 +86,16 @@ myQuery.define("module/FX", ["main/dom", "main/object"], function($, dom, object
         stop: function() {
             var index = $.inArray(FX.timers, this);
             index > -1 && FX.timers.splice(index, 1);
-        }
+        },
 
-        ,
         update: function(nowPos) {
             nowPos = nowPos == undefined ? this.nowPos.toFixed(2) : nowPos;
             $.css(this.ele, this.name, nowPos + this.unit);
-        }
+        },
 
-        ,
         isInDelay: function() {
             return new Date() - this.startTime < this.delay;
-        }
+        },
     }, {
         invokeCompelete: function(completes, context, opt) {
             for (var i = completes.length-1; i >= 0; i--) {
