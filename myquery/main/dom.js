@@ -24,29 +24,7 @@
             "zoom": true
         };
 
-    var getPosValue = function(ele, type) {
-        return parseFloat(dom.curCss(ele, type) || 0);
-    },
-        getPos = function(ele, type) {
-            type = type || "clientHeight";
-            var result = ele[type],
-                display;
-            if (!result) {
-                display = $.curCss(ele, "display");
-                if (display == "none" || display.indexOf("inline") > -1) {
-                    ele.style.display = "block";
-                    result = ele[type];
-                }
-                if (!ele.parentNode) {
-                    document.body.appendChild(ele);
-                    result = ele[type];
-                    document.body.removeChild(ele);
-                }
-                ele.style.display = display;
-            }
-            return result;
-        },
-        getStyles,
+    var getStyles,
         curCSS,
         cssProps = {
             float: support.cssFloat ? 'cssFloat' : 'styleFloat'
@@ -273,7 +251,8 @@
                 return val;
 
             } else {
-                var type = typeof value, ret;
+                var type = typeof value,
+                    ret;
 
                 // convert relative number strings (+= or -=) to relative numbers. #7345
                 if (type === "string" && (ret = rrelNum.exec(value))) {
@@ -314,18 +293,7 @@
             /// <param name="type" type="String">样式名 缺省返回""</param>
             /// <param name="head" type="String">样式名的头 缺省则无</param>
             /// <returns type="String" />
-            var style = ""
-            if (type) {
-                switch (type) {
-                    case "opacity":
-                        style = $.getOpacity(ele);
-                        break;
-                    default:
-                        style = dom.styleTable(ele)[$.util.camelCase(type, head)];
-
-                }
-            }
-            return style;
+            return dom.styleTable(ele)[$.util.camelCase(type, head)];
         },
         styleTable: function(ele) {
             /// <summary>返回元素样式表</summary>
@@ -544,7 +512,6 @@
                     doc["client" + bName]);
             }
             return $.css(ele, name);
-            //parseFloat($.curCss(ele, "width")) || getPos(ele, "clientWidth");
         },
 
         hide: function(ele, visible) {
@@ -795,14 +762,14 @@
         },
         swap: function(ele, options, callback, args) {
             var ret, name,
-                old = {}, 
+                old = {},
                 style = ele.style;
 
             // Remember the old values, and insert the new ones
 
-            for ( name in options ) {
-                old[ name ] = style[ name ];
-                style[ name ] = options[ name ];
+            for (name in options) {
+                old[name] = style[name];
+                style[name] = options[name];
             }
 
             ret = callback.apply(ele, args || []);
@@ -1378,7 +1345,9 @@
     var cssHooks = {
         'opacity': {
             "get": dom.getOpacity,
-            "set": dom.setOpacity
+            "set": function(ele, name, value) {
+                dom.setOpacity(ele, value);
+            }
         },
         "width": {
             "get": getSize,
