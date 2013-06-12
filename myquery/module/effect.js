@@ -7,7 +7,7 @@ myQuery.define('module/effect', ['module/animate'], function($, animate, undefin
         $.data(this, "slideOriginHeight", null);
     },
     slideUpComplete = function(opt) {
-        $._hide(this, opt.visible).setOuterH(this, $.data(this, "slideOriginHeight"));
+        $._hide(this, opt.visible).css(this, "height", $.data(this, "slideOriginHeight"));
         $.data(this, "slideOriginHeight", null);
     },
     fadeInComplete = function(opt) {
@@ -105,13 +105,13 @@ myQuery.define('module/effect', ['module/animate'], function($, animate, undefin
                 return this;
             }
 
-            var h = $.data(ele, "slideOriginHeight") || $.getOuterH(ele),
+            var h = $.data(ele, "slideOriginHeight") || $.css(ele, "height"),
                 opt = $._getAnimateOpt(option);
             $.data(ele, "slideOriginHeight", h);
-            $.setOuterH(ele, 0);
+            $.css(ele, "height", 0);
             opt.complete.push(slideDownComplete);
             return $.css(ele, "height", 0)._show(ele).animate(ele, {
-                height: h + "px"
+                height: h
             }, opt);
         },
         slideUp: function(ele, option) {
@@ -123,9 +123,9 @@ myQuery.define('module/effect', ['module/animate'], function($, animate, undefin
                 return this;
             }
 
-            var h = $.data(ele, "slideOriginHeight") || $.getOuterH(ele),
+            var h = $.data(ele, "slideOriginHeight") || $.css(ele, "height"),
                 opt = $._getAnimateOpt(option);
-            $.setOuterH(ele, h + "px");
+            $.css(ele, "height", h);
             $.data(ele, "slideOriginHeight", h);
             opt.complete.push(slideUpComplete);
             return $._show(ele).animate(ele, {
