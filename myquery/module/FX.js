@@ -129,13 +129,7 @@ myQuery.define("module/FX", ["main/dom", "main/object"], function($, dom, object
                 return ele[name];
             }
             var r;
-            if (name == "width" || name == "height") {
-                r = name == "width" ? $.getInnerW(ele) : $.getInnerH(ele);
-            } else if (name == "opacity") {
-                r = $.getOpacity(ele);
-            } else {
-                r = parseFloat($.css(ele, name));
-            }
+            r = parseFloat($.css(ele, name));
             r = r !== undefined && r > -10000 ? r : parseFloat($.curCss(ele, name)) || 0;
             return r !== "auto" ? r : 0;
         },
