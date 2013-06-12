@@ -273,7 +273,7 @@
                 return val;
 
             } else {
-                var type = typeof value;
+                var type = typeof value, ret;
 
                 // convert relative number strings (+= or -=) to relative numbers. #7345
                 if (type === "string" && (ret = rrelNum.exec(value))) {
@@ -380,15 +380,14 @@
             /// </summary>
             /// <param name="ele" type="Element">dom元素</param>
             /// <returns type="Number" />
-            return getPos(ele, "clientHeight");
+            return parseFloat(getSize(ele, "height", "padding"));
         },
         getInnerW: function(ele) {
             /// <summary>返回元素的内宽度
             /// </summary>
             /// <param name="ele" type="Element">dom元素</param>
             /// <returns type="Number" />
-            return getPos(ele, "clientWidth");
-
+            return parseFloat(getSize(ele, "width", "padding"));
         },
         getLastChild: function(ele) {
             /// <summary>获得当前DOM元素的最后个真DOM元素</summary>
@@ -512,20 +511,7 @@
             /// <param name="ele" type="Element">dom元素</param>
             /// <param name="bol" type="bol">margin是否计算在内</param>
             /// <returns type="Number" />
-            var height = ele.offsetHeight,
-                top, bottom, ret;
-            if (!height) {
-                height = $.getInnerH(ele);
-                top = getPosValue(ele, "borderTopWidth");
-                bottom = getPosValue(ele, "borderBottomWidth");
-                height += top + bottom;
-            }
-            if (bol) {
-                top = getPosValue(ele, "marginTop");
-                bottom = getPosValue(ele, "marginBottom");
-                height += top + bottom;
-            }
-            return height;
+            return parseFloat(getSize(ele, "height", bol === true ? "margin" : "border"));
         },
         getOuterW: function(ele, bol) {
             /// <summary>返回元素的外宽度
@@ -533,25 +519,7 @@
             /// <param name="ele" type="Element">dom元素</param>
             /// <param name="bol" type="bol">margin是否计算在内</param>
             /// <returns type="Number" />
-            var width = ele.offsetWidth,
-                left, right, ret;
-            if (!width) {
-                width = $.getInnerW(ele);
-                left = getPosValue(ele, "borderLeftWidth");
-                right = getPosValue(ele, "borderRightWidth");
-                width += left + right;
-            }
-            if (bol) {
-                left = getPosValue(ele, "marginLeft");
-                right = getPosValue(ele, "marginRight");
-                if (!left) {
-                    ret = $.curCss(ele, "margin").split(" ");
-                    left = parseFloat(ret[0] || 0);
-                    right = parseFloat(ret[2] || 0);
-                }
-                width += left + right;
-            }
-            return width;
+            return parseFloat(getSize(ele, "width", bol === true ? "margin" : "border"));
         },
         getWidth: function(ele) {
             /// <summary>获得元素的宽度
@@ -719,14 +687,7 @@
             /// <param name="ele" type="Element">element元素</param>
             /// <param name="height" type="Number/String">值</param>
             /// <returns type="self" />
-            var diffH = getPosValue(ele, "paddingTop") + getPosValue(ele, "paddingBottom"),
-                e = $.getValueAndUnit(height),
-                clientH;
-
-            ele.style.height = e.value + (e.unit || "px");
-            clientH = getPos(ele, "clientHeight");
-
-            ele.style.height = Math.max(clientH - diffH - diffH, 0) + "px";
+            ele.style["height"] = setSize(ele, "height", height, "padding");
             return this;
         },
         setInnerW: function(ele, width) {
@@ -736,14 +697,7 @@
             /// <param name="ele" type="Element">element元素</param>
             /// <param name="width" type="Number/String">值</param>
             /// <returns type="self" />
-            var diffW = getPosValue(ele, "paddingLeft") + getPosValue(ele, "paddingRight"),
-                e = $.getValueAndUnit(width),
-                clientW;
-
-            ele.style.width = e.value + (e.unit || "px");
-            clientW = getPos(ele, "clientWidth");
-
-            ele.style.width = Math.max(clientW - diffW - diffW, 0) + "px";
+            ele.style["width"] = setSize(ele, "width", width, "padding");
             return this;
         },
         setOffsetL: function(ele, left) {
@@ -786,17 +740,7 @@
             /// <param name="height" type="Number/String">值</param>
             /// <param name="bol" type="Boolean">是否包括margin</param>
             /// <returns type="self" />
-            var diffH = getPosValue(ele, "borderTopWidth") + getPosValue(ele, "borderBottomWidth"),
-                marginH = 0,
-                e = $.getValueAndUnit(height),
-                offsetH;
-            if (bol) {
-                marginH = getPosValue(ele, "marginTop") + getPosValue(ele, "marginBottom");
-            }
-            ele.style.height = e.value + (e.unit || "px");
-            offsetH = getPos(ele, "offsetHeight");
-
-            ele.style.height = Math.max(offsetH - diffH - diffH - marginH, 0) + "px";
+            ele.style["height"] = setSize(ele, "height", height, bol === true ? "margin" : "border");
             return this;
         },
         setOuterW: function(ele, width, bol) {
@@ -806,17 +750,7 @@
             /// <param name="width" type="Number/String">值</param>
             /// <param name="bol" type="Boolean">是否包括margin</param>
             /// <returns type="self" />
-            var diffW = getPosValue(ele, "borderLeftWidth") + getPosValue(ele, "borderRightWidth"),
-                marginW = 0,
-                e = $.getValueAndUnit(width),
-                offsetW;
-            if (bol) {
-                diffW += getPosValue(ele, "marginLeft") + getPosValue(ele, "marginRight");
-            }
-            ele.style.width = e.value + (e.unit || "px");
-            offsetW = getPos(ele, "offsetWidth");
-
-            ele.style.width = Math.max(offsetW - diffW - diffW - marginW, 0) + "px";
+            ele.style["width"] = setSize(ele, "width", width, bol === true ? "margin" : "border");
             return this;
         },
         show: function(ele) {

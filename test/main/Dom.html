@@ -17,28 +17,18 @@
                 var color = test.css("background-color");
                 test.css("animation");
                 $("div").css("margin-right");
-                var width = test.width();
-                var height = test.height();
-                test.height(150);
-                height = test.height();
-                //                alert(test.outerHeight(true));
-                //                alert(test.innerHeight(true));
-                //                alert(test.outerWidth());
-                //                alert(test.innerHeight());
-                //                test.innerHeight(100);
-                //                alert(test.innerHeight());
-                //                alert(test.innerWidth());
-                //                test.innerWidth(120);
-                //                alert(test.innerWidth());
-                // alert(test.outerHeight(true));
-                // test.outerHeight(120, true);
-                // alert(test.outerHeight()); 
-                //会带margin
-                //                alert(test.css("background-color"));
-                //                alert(test.css("color"));
-                //                alert(test.style("margin-top"));
-                //                alert(test.css("width"));
-                //
+                // var innerWidth = test.innerWidth();
+                // test.innerWidth(150);
+                // innerWidth = test.innerWidth();
+
+                var outerWidth = test.outerWidth();
+                var marginWidth = test.outerWidth(true);
+                test.outerWidth(200);
+                outterWidth1 = test.outerWidth();
+                outterWidth2 = test.outerWidth(true);
+                test.outerWidth(200, true);
+                outterWidth2 = test.outerWidth(true);
+                outterWidth1 = test.outerWidth();
             });
         })
     </script>
