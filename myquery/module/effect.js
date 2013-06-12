@@ -7,7 +7,7 @@ myQuery.define('module/effect', ['module/animate'], function($, animate, undefin
         $.data(this, "slideOriginHeight", null);
     },
     slideUpComplete = function(opt) {
-        $._hide(this, opt.visible).setInnerH(this, $.data(this, "slideOriginHeight"));
+        $._hide(this, opt.visible).setOuterH(this, $.data(this, "slideOriginHeight"));
         $.data(this, "slideOriginHeight", null);
     },
     fadeInComplete = function(opt) {
@@ -33,7 +33,7 @@ myQuery.define('module/effect', ['module/animate'], function($, animate, undefin
 
             var o, opt = $._getAnimateOpt(option);
             o = $.data(ele, "slideOriginOpacity");
-            o = o != null ? o : ($.style(ele, "opacity") || 1);
+            o = o != null ? o : ($.css(ele, "opacity") || 1);
 
             $.data(ele, "slideOriginOpacity", o);
             opt.complete = fadeInComplete;
@@ -55,7 +55,7 @@ myQuery.define('module/effect', ['module/animate'], function($, animate, undefin
 
             var o, opt = $._getAnimateOpt(option);
             o = $.data(ele, "slideOriginOpacity");
-            o = o != null ? o : $.style(ele, "opacity");
+            o = o != null ? o : $.css(ele, "opacity");
 
             $.data(ele, "slideOriginOpacity", o);
             opt.complete = fadeOutComplete;
@@ -105,10 +105,10 @@ myQuery.define('module/effect', ['module/animate'], function($, animate, undefin
                 return this;
             }
 
-            var h = $.data(ele, "slideOriginHeight") || $.getInnerH(ele),
+            var h = $.data(ele, "slideOriginHeight") || $.getOuterH(ele),
                 opt = $._getAnimateOpt(option);
             $.data(ele, "slideOriginHeight", h);
-            $.setInnerH(ele, 0);
+            $.setOuterH(ele, 0);
             opt.complete.push(slideDownComplete);
             return $.css(ele, "height", 0)._show(ele).animate(ele, {
                 height: h + "px"
@@ -123,9 +123,9 @@ myQuery.define('module/effect', ['module/animate'], function($, animate, undefin
                 return this;
             }
 
-            var h = $.data(ele, "slideOriginHeight") || $.getInnerH(ele),
+            var h = $.data(ele, "slideOriginHeight") || $.getOuterH(ele),
                 opt = $._getAnimateOpt(option);
-            $.setInnerH(ele, h + "px");
+            $.setOuterH(ele, h + "px");
             $.data(ele, "slideOriginHeight", h);
             opt.complete.push(slideUpComplete);
             return $._show(ele).animate(ele, {
