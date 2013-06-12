@@ -286,7 +286,7 @@
                     return;
                 }
 
-                // If a number was passed in, add 'px' to the (except for certain CSS properties)
+                //If a number was passed in, add 'px' to the (except for certain CSS properties)
                 if (type === "number" && !cssNumber[originName]) {
                     value += "px";
                 }
@@ -795,15 +795,20 @@
         },
         swap: function(ele, options, callback, args) {
             var ret, name,
-                old = {};
+                old = {}, 
+                style = ele.style;
 
             // Remember the old values, and insert the new ones
-            $.easyExtend(old, options);
+
+            for ( name in options ) {
+                old[ name ] = style[ name ];
+                style[ name ] = options[ name ];
+            }
 
             ret = callback.apply(ele, args || []);
 
             // Revert the old values
-            $.easyExtend(ele.style, old);
+            $.easyExtend(style, old);
 
             return ret;
         }

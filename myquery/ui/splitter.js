@@ -40,7 +40,8 @@ function($, support, Widget, query, cls, event, dom, attr, src, css3, splitterpa
             render: function() {
                 var opt = this.options;
                 if (opt.flex !== originBoxFlexValue) {
-                    this.target.css(boxFlexName, opt.flex);
+                    //fix css + px because this is original string
+                    this.target.css(boxFlexName, opt.flex+"");
                 }
                 return this;
             },
