@@ -1,21 +1,32 @@
 ﻿myQuery.define("main/dom", ["base/support", "base/client", "main/data", "main/event"], function($, support, client, data, event, undefined) {
     "use strict"; //启用严格模式
-    //和jquery做个测试
     var rnumnonpx = /^-?(?:\d*\.)?\d+(?!px)[^\d\s]+$/i,
         rmargin = /^margin/,
         rposition = /^(top|right|bottom|left)$/,
         rdisplayswap = /^(none|table(?!-c[ea]).+)/,
         rnumsplit = new RegExp("^(" + $.reg.core_pnum + ")(.*)$", "i"),
-        cssExpand = [ "Top", "Right", "Bottom", "Left" ],
+        rrelNum = new RegExp("^([+-])=(" + $.reg.core_pnum + ")", "i"),
+        cssExpand = ["Top", "Right", "Bottom", "Left"],
         cssShow = {
             position: "absolute",
             visibility: "hidden",
             display: "block"
+        },
+        cssNumber = {
+            "columnCount": true,
+            "fillOpacity": true,
+            "fontWeight": true,
+            "lineHeight": true,
+            "opacity": true,
+            "orphans": true,
+            "widows": true,
+            "zIndex": true,
+            "zoom": true
         };
 
     var getPosValue = function(ele, type) {
-            return parseFloat(dom.curCss(ele, type) || 0);
-        },
+        return parseFloat(dom.curCss(ele, type) || 0);
+    },
         getPos = function(ele, type) {
             type = type || "clientHeight";
             var result = ele[type],
@@ -66,14 +77,13 @@
             val = parseFloat(val) || 0;
         }
 
-        return ( val +
-        augmentWidthOrHeight(
-          ele,
-          name,
-          extra || ( isBorderBox ? "border" : "content" ),
-          valueIsBorderBox,
-          styles)
-        ) + "px";
+        return (val +
+            augmentWidthOrHeight(
+            ele,
+            name,
+            extra || (isBorderBox ? "border" : "content"),
+            valueIsBorderBox,
+            styles)) + "px";
     }
 
     function setPositiveNumber(elem, value, subtract) {
@@ -121,6 +131,26 @@
         }
 
         return val;
+    }
+
+    function getSize(ele, name, extra) {
+        extra = extra || "content";
+        return ele.offsetWidth === 0 && rdisplayswap.test($.css(ele, "display")) ?
+            $.swap(ele, cssShow, function() {
+            return getWidthOrHeight(ele, name, extra);
+        }) : getWidthOrHeight(ele, name, extra);
+    }
+
+    function setSize(ele, name, value, extra) {
+        extra = extra || "content";
+        var style = getStyles(ele);
+        return setPositiveNumber(ele, value, extra ?
+            augmentWidthOrHeight(
+            ele,
+            name,
+            extra,
+            support.boxSizing && $.css(ele, "boxSizing", undefined, style, false) === "border-box",
+            style) : 0);
     }
 
     if (window.getComputedStyle) {
@@ -224,7 +254,9 @@
             /// <param name="style" type="Object">样式表</param>
             /// <param name="extra" type="Boolean">是否返回num</param>
             /// <returns type="self" />
-
+            if (!ele || ele.nodeType === 3 || ele.nodeType === 8 || !ele.style) {
+                return;
+            }
             style = style || ele.style;
 
             var originName = $.util.camelCase(name);
@@ -233,15 +265,44 @@
             name = $.cssProps[originName] || ($.cssProps[originName] = dom.vendorPropName(style, originName));
 
             if (value == undefined) {
-                var val = hooks["get"] ? hooks["get"].call($, ele) : curCSS( ele, name, style );
-                if ( extra === "" || extra ) {
-                    var num = parseFloat( val );
-                    return extra === true || $.isNumeric( num ) ? num || 0 : val;
+                var val = hooks["get"] ? hooks.get(ele, name) : curCSS(ele, name, style);
+                if (extra === "" || extra) {
+                    var num = parseFloat(val);
+                    return extra === true || $.isNumeric(num) ? num || 0 : val;
                 }
                 return val;
 
             } else {
-                hooks["set"] ? hooks["set"].call($, ele, value) : (style[name] = value);
+                var type = typeof value;
+
+                // convert relative number strings (+= or -=) to relative numbers. #7345
+                if (type === "string" && (ret = rrelNum.exec(value))) {
+                    value = (ret[1] + 1) * ret[2] + parseFloat($.css(elem, name));
+                    type = "number";
+                }
+
+                // Make sure that NaN and null values aren't set. See: #7116
+                if (value == null || type === "number" && isNaN(value)) {
+                    return;
+                }
+
+                // If a number was passed in, add 'px' to the (except for certain CSS properties)
+                if (type === "number" && !cssNumber[originName]) {
+                    value += "px";
+                }
+
+                if (!support.clearCloneStyle && value === "" && name.indexOf("background") === 0) {
+                    style[name] = "inherit";
+                }
+
+                if (!hooks || !("set" in hooks) || (value = hooks.set(ele, name, value)) !== undefined) {
+                    try {
+                        style[name] = value;
+                    } catch (e) {};
+                }
+
+                // hooks["set"] ? hooks["set"].call($, ele, value) : (style[name] = value);
+
                 return this;
             }
         },
@@ -514,11 +575,7 @@
                     ele.body["offset" + bName], doc["offset" + bName],
                     doc["client" + bName]);
             }
-            return ele.offsetWidth === 0 && rdisplayswap.test($.css(ele, "display")) ?
-                $.swap(ele, cssShow, function() {
-                return getWidthOrHeight(ele, name, "content");
-            }) :
-                getWidthOrHeight(ele, name, "content");
+            return $.css(ele, name);
             //parseFloat($.curCss(ele, "width")) || getPos(ele, "clientWidth");
         },
 
@@ -609,18 +666,15 @@
                 $.removeChild(ele, ele.childNodes[i]);
             }
             return this;
-        }
+        },
 
-        ,
         setHeight: function(ele, value) {
             /// <summary>设置元素的高度
             /// </summary>
             /// <param name="ele" type="Element">element元素</param>
             /// <param name="value" type="Number/String">值</param>
             /// <returns type="self" />
-            var e = $.getValueAndUnit(value);
-            ele.style.height = e.value + (e.unit || "px");
-            return this;
+            return $.setWidth(ele, value, "height");
         },
         setHtml: function(ele, str, bool) {
             /// <summary>设置元素的innerHTML
@@ -799,8 +853,10 @@
             /// <param name="ele" type="Element">element元素</param>
             /// <param name="value" type="Number/String">值</param>
             /// <returns type="self" />
-            var e = $.getValueAndUnit(value);
-            ele.style.width = e.value + (e.unit || "px");
+            var name = arguments[2] ? "height" : "width";
+
+            $.css(ele, name, value);
+
             return this;
         },
         swap: function(ele, options, callback, args) {
@@ -818,54 +874,6 @@
             return ret;
         }
     };
-
-    var cssHooks = {
-        'opacity': {
-            "get": dom.getOpacity,
-            "set": dom.setOpacity
-        },
-        "width": {
-            "get": dom.getWidth,
-            "set": dom.setWidth
-        },
-        "height": {
-            "get": dom.getHeight,
-            "set": dom.setHeight
-        },
-        "innerWidth": {
-            "get": dom.getInnerW,
-            "set": dom.setIneerW
-        },
-        "innerHeight": {
-            "get": dom.getInnerH,
-            "set": dom.setInnerH
-        },
-        "outerWidth": {
-            "get": dom.getOuterW,
-            "set": dom.setOuterW
-        },
-        "outerHeight": {
-            "get": dom.getOuterH,
-            "set": dom.setOuterH
-        }
-    };
-
-    if (!support.reliableMarginRight) {
-        cssHooks.marginRight = {
-            get: function(elem) {
-                // WebKit Bug 13343 - getComputedStyle returns wrong value for margin-right
-                // Work around by temporarily setting element display to inline-block
-                return dom.swap(elem, {
-                    "display": "inline-block"
-                },
-                    curCSS, [elem, "marginRight"]);
-            }
-        };
-    }
-
-    dom.cssHooks = cssHooks;
-
-    $.extend(dom);
 
     $.fn.extend({
         css: function(style, value) {
@@ -1388,7 +1396,9 @@
             /// </summary>
             /// <returns type="Number" />
             if (client.browser.ie < 8) {
-                return dom.swap(this[0], {"overflow": "scroll"}, function(){
+                return dom.swap(this[0], {
+                    "overflow": "scroll"
+                }, function() {
                     return this.scrollHeight || 0;
                 });
             }
@@ -1425,6 +1435,38 @@
             });
         }
     });
+
+    var cssHooks = {
+        'opacity': {
+            "get": dom.getOpacity,
+            "set": dom.setOpacity
+        },
+        "width": {
+            "get": getSize,
+            "set": setSize
+        },
+        "height": {
+            "get": getSize,
+            "set": setSize
+        },
+    };
+
+    if (!support.reliableMarginRight) {
+        cssHooks.marginRight = {
+            get: function(elem) {
+                // WebKit Bug 13343 - getComputedStyle returns wrong value for margin-right
+                // Work around by temporarily setting element display to inline-block
+                return dom.swap(elem, {
+                    "display": "inline-block"
+                },
+                    curCSS, [elem, "marginRight"]);
+            }
+        };
+    }
+
+    dom.cssHooks = cssHooks;
+
+    $.extend(dom);
 
     // do not extend $
     dom.vendorPropName = function(style, name) {
