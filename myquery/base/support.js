@@ -1,5 +1,4 @@
-﻿/// <reference path="../myquery.js" />
-myQuery.define("base/support", function($) {
+﻿myQuery.define("base/support", function($) {
     //consult from jquery-1.9.1
     "use strict"; //启用严格模式
     
@@ -242,6 +241,8 @@ myQuery.define("base/support", function($) {
         }
 
         body.removeChild(container);
+
+        $.easyExtend($.support, support);
 
         // Null elements to avoid leaks in IE
         container = div = tds = marginDiv = null;
