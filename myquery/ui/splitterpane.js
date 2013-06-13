@@ -190,8 +190,8 @@ function($, support, Widget, query, cls, event, dom, attr, src, css3) {
                         flex += $item.splitter("option", "flex");
                         $lastItem = $item;
                     } else {
-                        traceWidth -= $item.width();
-                        traceHeight -= $item.height();
+                        traceWidth -= $item.outerWidth();
+                        traceHeight -= $item.outerHeight();
                     }
                     splitter.push($item);
                 });
