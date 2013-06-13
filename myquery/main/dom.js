@@ -1356,7 +1356,7 @@
         "height": {
             "get": getSize,
             "set": setSize
-        },
+        }
     };
 
     if (!support.reliableMarginRight) {

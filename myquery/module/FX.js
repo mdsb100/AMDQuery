@@ -1,7 +1,4 @@
-﻿/// <reference path="../myquery.js" />
-/*include JQuery animate*/
-
-myQuery.define("module/FX", ["main/dom", "main/object"], function($, dom, object, undefined) {
+﻿myQuery.define("module/FX", ["main/dom", "main/object"], function($, dom, object, undefined) {
     "use strict"; //启用严格模式
     var rfxnum = /^([+-]=)?([\d+-.]+)(.*)$/;
 
@@ -95,7 +92,7 @@ myQuery.define("module/FX", ["main/dom", "main/object"], function($, dom, object
 
         isInDelay: function() {
             return new Date() - this.startTime < this.delay;
-        },
+        }
     }, {
         invokeCompelete: function(completes, context, opt) {
             for (var i = completes.length-1; i >= 0; i--) {
