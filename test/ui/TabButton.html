@@ -1,0 +1,22 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>按钮</title>
+    <meta charset="utf-8" />
+    <link href="../../css/reset.css" rel="stylesheet" type="text/css" />
+    <script src="../../myquery/myquery.js" type="text/javascript" amd="detectCR=1" module="transitionToAnimation:1" ui="init:1"></script>
+    <script type="text/javascript">
+        $.require(["ui/tabbutton", "main/query"], function (tabbutton, query) {
+            $.ready(function() {
+                $("#button").on("tabbutton.click", function (argument) {
+                    alert()
+                });
+            });
+        });
+       
+    </script>
+</head>
+<body style="width: 100%; height: 100%;">
+    <div id="button" myquery-widget="ui.tabbutton" ui-tabbutton="text:click me;title:test" ></div>
+</body>
+</html>

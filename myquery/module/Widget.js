@@ -72,6 +72,16 @@
             }
         }
 
+    },
+    extendTemplate = function(tName, prototype, statics) {
+        if ($.isObj(statics)) {
+            return Widget.extend(tName, prototype, statics, this.ctor);
+        } else {
+            return Widget.extend(tName, prototype, this.ctor);
+        }
+    },
+    invokeTemplate = function () {
+        this.ctor.invoke.apply(this.ctor, arguments);
     };
 
 
@@ -415,17 +425,11 @@
                 return result;
             }
 
-            widget.extend = function(tName, prototype, statics) {
-                if ($.isObj(statics)) {
-                    return Widget.extend(tName, prototype, statics, this);
-                } else {
-                    return Widget.extend(tName, prototype, this);
-                }
-            }
+            widget.ctor = ctor;
 
-            widget.invoke = function () {
-                ctor.invoke.apply(ctor, arguments);
-            }
+            widget.extend = extendTemplate;
+
+            widget.invoke = invokeTemplate;
 
             $.easyExtend(widget, statics);
 

@@ -79,12 +79,12 @@ function($, Widget, Button, query, cls, event, dom, src) {
         },
         render: function() {
             Button.invoke("render", this);
-
+            var opt = this.options;
             if (this.defualtCssName != opt.defualtCssName) {
                 this.target.removeClass(this.defualtCssName);
                 this.defualtCssName = opt.defualtCssName;
             }
-            if (this.selectCssName != opt.selectCssName;) {
+            if (this.selectCssName != opt.selectCssName) {
                 this.target.removeClass(this.selectCssName);
                 this.selectCssName = opt.selectCssName;
             }
@@ -94,10 +94,11 @@ function($, Widget, Button, query, cls, event, dom, src) {
         },
         init: function(opt, target) {
             this._super(opt, target);
+            opt = this.options;
             this.defualtCssName = opt.defualtCssName;
             this.selectCssName = opt.selectCssName;
             return this;
-        }
+        },
         toString: function() {
             return "ui.tabbutton";
         },
