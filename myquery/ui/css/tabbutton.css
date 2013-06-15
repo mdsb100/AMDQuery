@@ -1,3 +1,8 @@
+.tabButton
+{
+	border-left: 1px solid black;
+}
+
 .defaultTabButton
 {
     
@@ -5,9 +10,11 @@
 
 .defaultTabButton .back{
 	background: url(../images/tabs.png) 0px -173px repeat-x;
-	-moz-border-radius: 8px;
-  -webkit-border-radius: 8px;
-  border-radius:8px;  
+	/*-moz-border-radius: 8px;
+	-webkit-border-radius: 8px;
+	-o-border-radius: 8px;
+	-ms-border-radius: 8px;
+	border-radius:8px;  */
 }
 .defaultTabButton .back:link {}
 .defaultTabButton .back:visited {}
@@ -28,9 +35,9 @@
 	text-align: center;
 	vertical-align: middle;
 	font-family: 宋体;
-  font-weight: bold;
-  font-size: 14px;
-  color: #6B573B;
+	font-weight: bold;
+	font-size: 14px;
+	color: #6B573B;
 }
 .defaultTabButton .text:link {}
 .defaultTabButton .text:visited {}
@@ -50,9 +57,11 @@
 
 .selectTabButton .back{
 	background: url(../images/tabs.png) 0px -173px repeat-x;
-	-moz-border-radius: 8px;
-  -webkit-border-radius: 8px;
-  border-radius:8px;  
+	/*-moz-border-radius: 8px;
+	-webkit-border-radius: 8px;
+	-o-border-radius: 8px;
+	-ms-border-radius: 8px;
+	border-radius:8px;  */
 }
 .selectTabButton .back:link {}
 .selectTabButton .back:visited {}
@@ -73,9 +82,9 @@
 	text-align: center;
 	vertical-align: middle;
 	font-family: 宋体;
-  font-weight: bold;
-  font-size: 14px;
-  color: #6B573B;
+	font-weight: bold;
+	font-size: 14px;
+	color: #6B573B;
 }
 .selectTabButton .text:link {}
 .selectTabButton .text:visited {}

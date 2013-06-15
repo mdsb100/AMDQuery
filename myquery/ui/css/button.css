@@ -1,16 +1,18 @@
 .button
 {
 	float: left;
-  cursor: pointer;
-  background-color: White;
-  overflow:hidden;
+	cursor: pointer;
+	background-color: White;
+	overflow:hidden;
 }
 
 .button .back{
 	background: url(../images/tabs.png) 0px -173px repeat-x;
 	-moz-border-radius: 8px;
-  -webkit-border-radius: 8px;
-  border-radius:8px;  
+	-webkit-border-radius: 8px;
+	-o-border-radius: 8px;
+	-ms-border-radius: 8px;
+	border-radius:8px;  
 }
 .button .back:link {}
 .button .back:visited {}
@@ -31,9 +33,9 @@
 	text-align: center;
 	vertical-align: middle;
 	font-family: 宋体;
-  font-weight: bold;
-  font-size: 14px;
-  color: #6B573B;
+	font-weight: bold;
+	font-size: 14px;
+	color: #6B573B;
 }
 .button .text:link {}
 .button .text:visited {}

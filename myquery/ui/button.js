@@ -82,6 +82,13 @@ function($, client, Widget, query, cls, event, dom, attr, src) {
 
             target.append(this.container);
 
+            target.css({
+                "float": "left",
+                "cursor": "pointer"
+            });
+            
+            this.$text.css3("user-select", "none");
+
             this._initHandler().enable().render();
 
             return this;

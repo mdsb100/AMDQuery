@@ -5,9 +5,10 @@ myQuery.define("ui/tabbutton", [
     "main/class",
     "main/event",
     "main/dom",
+    "html5/css3",
     "module/src"],
 
-function($, Widget, Button, query, cls, event, dom, src) {
+function($, Widget, Button, query, cls, event, dom, css3, src) {
     "use strict"; //启用严格模式
 
     src.link({
@@ -95,6 +96,9 @@ function($, Widget, Button, query, cls, event, dom, src) {
         init: function(opt, target) {
             this._super(opt, target);
             opt = this.options;
+            
+            target.addClass("tabButton");
+
             this.defualtCssName = opt.defualtCssName;
             this.selectCssName = opt.selectCssName;
             return this;
