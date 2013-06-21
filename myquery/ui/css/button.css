@@ -22,10 +22,6 @@
 .button .img{
 	background: url(../images/tabs.png) 0px -173px repeat-x;
 }
-.button .img:link {}
-.button .img:visited {}
-.button .img:hover {}
-.button .img:active {}
 
 .button .text{
 	font: 12px Arial, "\5FAE\8F6F\96C5\9ED1";

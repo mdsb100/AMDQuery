@@ -22,12 +22,8 @@
 .defaultTabButton .back:active {}
 
 .defaultTabButton .img{
-	background: url(../images/tabs.png) 0px -173px repeat-x;
+	/*background: url(../images/tabs.png) 0px -173px repeat-x;*/
 }
-.defaultTabButton .img:link {}
-.defaultTabButton .img:visited {}
-.defaultTabButton .img:hover {}
-.defaultTabButton .img:active {}
 
 .defaultTabButton .text{
 	font: 12px Arial, "\5FAE\8F6F\96C5\9ED1";
@@ -56,7 +52,8 @@
 }
 
 .selectTabButton .back{
-	background: url(../images/tabs.png) 0px -173px repeat-x;
+	background: red;
+	/*background: url(../images/tabs.png) 0px -173px repeat-x;*/
 	/*-moz-border-radius: 8px;
 	-webkit-border-radius: 8px;
 	-o-border-radius: 8px;

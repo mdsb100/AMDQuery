@@ -6,11 +6,6 @@
     <link href="../css/reset.css" rel="stylesheet" type="text/css" />
     <script src="../myquery/myquery.js" type="text/javascript" module="transitionToAnimation:1" ui="init:1"></script>
     <script type="text/javascript">
-        
-        window.attr = function  (argument) {
-            alert("")
-        }
-
         $.require(["main/query", "main/attr", "ui/navmenu", "module/Widget"], function (query, attr, Navmenu, Widget) {
             var $nav = $("#nav");
             $nav.on("navmenu.select", function(e){
@@ -31,7 +26,7 @@
                         <ul>
                             <li myquery-widget="ui.navitem" ui-navitem="html:main;img:module">
                                 <ul>
-                                    <li myquery-widget="ui.navitem" ui-navitem="html:attr;img:class" ui-navitem-open="window.attr"></li>
+                                    <li myquery-widget="ui.navitem" ui-navitem="html:attr;img:class" ></li>
                                     <li myquery-widget="ui.navitem" ui-navitem="html:class;img:class"></li> 
                                     <li myquery-widget="ui.navitem" ui-navitem="html:communicate;img:class"></li> 
                                     <li myquery-widget="ui.navitem" ui-navitem="html:CustomEvent;img:class"></li> 
@@ -44,11 +39,7 @@
                             </li>
                             <li myquery-widget="ui.navitem" ui-navitem="html:module;img:module">
                                 <ul>
-                                    <li myquery-widget="ui.navitem" ui-navitem="html:animate;img:class">
-                                         <ul>
-                                            <li myquery-widget="ui.navitem" ui-navitem="html:animate;img:class"></li>
-                                        </ul>
-                                    </li>
+                                    <li myquery-widget="ui.navitem" ui-navitem="html:animate;img:class"></li>
                                     <li myquery-widget="ui.navitem" ui-navitem="html:AnimateColor;img:class"></li> 
                                     <li myquery-widget="ui.navitem" ui-navitem="html:color;img:class"></li> 
                                     <li myquery-widget="ui.navitem" ui-navitem="html:date.prototype;img:class"></li> 
@@ -67,6 +58,12 @@
                                     <li myquery-widget="ui.navitem" ui-navitem="html:tween;img:class"></li>
                                     <li myquery-widget="ui.navitem" ui-navitem="html:Widget;img:class"></li>
 
+                                </ul>
+                            </li>
+                            <li myquery-widget="ui.navitem" ui-navitem="html:base;img:module">
+                                <ul>
+                                    <li myquery-widget="ui.navitem" ui-navitem="html:client;img:class"></li>
+                                    <li myquery-widget="ui.navitem" ui-navitem="html:support;img:class"></li> 
                                 </ul>
                             </li>
                         </ul>

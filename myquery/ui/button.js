@@ -66,11 +66,11 @@ function($, client, Widget, query, cls, event, dom, attr, src) {
                 "text-decoration": "none"
             }).addClass("back");
 
-            this.$img = $($.createEle("a")).css({
+            this.$img = $($.createEle("img")).css({
                 "display": "block",
                 "text-decoration": "none",
-                "float": "left"
-            }).addClass("img");
+                "position": "relative"
+            }).addClass("img").addClass(this.options.icon);
 
             this.$text = $($.createEle("a")).css({
                 "display": "block",
@@ -97,17 +97,20 @@ function($, client, Widget, query, cls, event, dom, attr, src) {
         options: {
             defualtCssName: "button",
             text: "clickme",
-            title: ""
+            title: "",
+            icon: "icon"
         },
         getter:{
             defualtCssName: 1,
             text: 1,
-            title: 1
+            title: 1,
+            icon: 0
         },
         setter:{
             defualtCssName: 0,
             text: 1,
-            title: 1
+            title: 1,
+            icon: 0
         },
         publics: {
 
