@@ -1739,8 +1739,13 @@
         var 
             class2type = {},
             hasOwnProperty = class2type.hasOwnProperty,
-            toString = class2type.toString,
-            is = {
+            toString = class2type.toString;
+        
+        $.each("Boolean Number String Function Array Date RegExp Object Error".split(" "), function(name, i) {
+            class2type[ "[object " + name + "]" ] = name.toLowerCase();
+        });
+
+        var is = {
                 isEleConllection: function(a) {
                     /// <summary>是否为DOM元素的集合</summary>
                     /// <param name="a" type="any">任意对象</param>
@@ -1800,6 +1805,12 @@
                     /// <returns type="Boolean" />
                     return $.isType(a, '[object Boolean]');
                 },
+                isDate: function(a){
+                    /// <summary>是否为日期</summary>
+                    /// <param name="a" type="any">任意对象</param>
+                    /// <returns type="Boolean" />
+                    return $.isType(a, '[object Date]');
+                },
                 isDoc: function(a) {
                     /// <summary>是否为Document</summary>
                     /// <param name="a" type="any">任意对象</param>
@@ -1833,6 +1844,12 @@
                         return false;
                     }
                     return true;
+                },
+                isError: function(a){
+                    /// <summary>是否为日期</summary>
+                    /// <param name="a" type="any">任意对象</param>
+                    /// <returns type="Boolean" />
+                    return $.isType(a, '[object Error]');
                 },
                 isFinite: function(a) {
                     /// <summary>是否为Finite</summary>
