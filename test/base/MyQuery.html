@@ -42,14 +42,14 @@
                 //                alert(a.getAttribute("id"))
                 var a = $.getEle("<div><input id='bbb' /><input id='ccc' /></div>");
 
-                var bbb = $.query("input", a[0]);
+                var bbb = $.find("input", a[0]);
 
                 var div = $.createEle("div"), divChild = $.createEle("span");
                 divChild.id = "bspan"
                 div.appendChild(divChild);
                 $(div).append("<div><input id='bbb' /><input id='ccc' /></div>");
 
-                var result = $.query("input", div);
+                var result = $.find("input", div);
 
 
                 //var h = $.parseHTML("<div id='bc' style='height:100px;background:green;'><span id='htmlTest' ></span></div>");
@@ -216,7 +216,7 @@
                 $("div").filter(function (ele) {
                     return ele.id == "A"
                 });
-                $.filter("same", [1, 1, 2, 3, 4, 5, 5, 6, 7, 8, 8]);
+                //$.filter("same", [1, 1, 2, 3, 4, 5, 5, 6, 7, 8, 8]);
 
                 $("#A").is(":visible");
                 $("#A,#B").toggle(function () {

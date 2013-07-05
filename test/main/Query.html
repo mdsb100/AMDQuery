@@ -9,6 +9,8 @@
     <script type="text/javascript">
             $.require(["main/query", "lib/sizzle"], function(query, sizzle){
                 //var a = sizzle("#a");
+                var div = $("div[attrText]");
+                var find = div.find("div[attrText]");
                 var c = $("div").eq(-1);
                 var a = $("div").eq(0);
                 var b = a.next();
@@ -25,7 +27,8 @@
     </script>
 </head>
 <body style="overflow: auto">
-    <div id="a" style="width: 100px; height: 100px; background-color: Red;">
+    <div id="a" attrText="1" style="width: 100px; height: 100px; background-color: Red;">
+        <div id="d" attrText="1"></div>
     </div>
     <div id="b" style="width: 100px; height: 100px; background-color: Green;">
     </div>

@@ -6,9 +6,10 @@ myQuery.define("ui/button", [
     "main/event",
     "main/dom",
     "main/attr",
-    "module/src"],
+    "module/src",
+    "html5/css3"],
 
-function($, client, Widget, query, cls, event, dom, attr, src) {
+function($, client, Widget, query, cls, event, dom, attr, src, css3) {
     "use strict"; //启用严格模式
 
     src.link({

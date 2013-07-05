@@ -244,7 +244,7 @@
                 var result;
                 if (result = $.interfaces.trigger("constructorQuery", a, b)) {
                     count++;
-                    this.init(result);
+                    this.init(result, a);
 
                 }
             }
@@ -580,14 +580,16 @@
             return this;
         },
 
-        init: function(eles) {
+        init: function(eles, selector) {
             /// <summary>初始化$</summary>
             /// <param name="eles" type="Array">内容为元素的数组</param>
+            /// <param name="selector" type="any"></param>
             /// <returns type="self" />
             this.eles = null;
             this.firstEle = null;
             this.lastEle = null;
             this.context = null;
+            this.selector = "";
             if (!eles.length) {
                 //util.console.warn({ fn: "myQuery.init", msg: "has not query any element" });
             }
@@ -602,6 +604,10 @@
             this.length = eles.length;
             this.firstEle = this[0];
             this.lastEle = this[this.length - 1];
+
+            if(typeof selector == "string"){
+                this.selector = selector;
+            }
 
             this.context = this[0] ? this[0].ownerDocument : document;
             return this;
@@ -622,6 +628,8 @@
             this.eles.reverse();
             return this;
         },
+
+        selector: "",
 
         setElement: function(eles) {
             /// <summary>设置元素组</summary>
@@ -2091,18 +2099,62 @@
                 return i;
             }, push = Array.prototype.push,
             array = {
+                grep: function( arr, callback, inv ) {
+                    var retVal,
+                      ret = [],
+                      i = 0,
+                      length = arr.length;
+                    inv = !!inv;
+
+                    // Go through the array, only saving the items
+                    // that pass the validator function
+                    for ( ; i < length; i++ ) {
+                      retVal = !!callback( arr[ i ], i );
+                      if ( inv !== retVal ) {
+                        ret.push( arr[ i ] );
+                      }
+                    }
+
+                    return ret;
+                },
+
                 filterArray: function(arr, fun, context) {
-                    /// <summary>返回数组中于此对象相同的序号</summary>
+                    /// <summary>删选数组</summary>
                     /// <param name="arr" type="Array">数组</param>
-                    /// <param name="item" type="any">任意对象</param>
-                    /// <param name="i" type="Number/null">序号 可选</param>
-                    /// <returns type="Number" />
+                    /// <param name="fun" type="Function">回调函数</param>
+                    /// <param name="context" type="Object">作用域</param>
+                    /// <returns type="Array" />
                     var ret = [];
                     for (var i = 0, len = arr.length, item; i < len; i++) {
                         item = arr[i];
                         fun.call(context, item, i, arr) == true && ret.push(item);
                     }
                     return ret;
+                },
+
+                filterSame: function(arr){
+                    /// <summary>剔除数组中相同的对象</summary>
+                    /// <param name="arr" type="Array">数组</param>
+                    /// <param name="item" type="any">任意对象</param>
+                    /// <param name="i" type="Number/null">序号 可选</param>
+                    /// <returns type="Array" />
+                    if (arr.length > 1) {
+                        for (var len = arr.length, list = [arr[0]], result = true, i = 1, j = 0; i < len; i++) {
+                            j = 0;
+                            for (; j < list.length; j++) {
+                                if (arr[i] === list[j]) {
+                                    result = false;
+                                    break;
+                                }
+                            }
+                            result && list.push(arr[i]);
+                            result = true;
+                        }
+                        return list;
+                    }
+                    else {
+                        return arr;
+                    }
                 },
 
                 inArray: function(arr, item, i) {

@@ -114,7 +114,7 @@
             if ($.isNode(ele, "select")) {
                 if ($.isStr(value) || $.isNum(value))
                     value = [value];
-                $(ele).query("option").each(function (ele) {
+                $(ele).find("option").each(function (ele) {
                     ele.selected = false;
                 }).each(function (ele, index) {
                     $.each(value, function (val) {
