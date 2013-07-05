@@ -51,10 +51,10 @@ myQuery.define("util/function.extend", [], function($) {
             };
         },
 
-        throttle: funtion(fun, wait) {
+        throttle: function(fun, wait) {
             var context, args, timeout, result;
             var previous = 0;
-            var later = funtion() {
+            var later = function() {
                 previous = new Date;
                 timeout = null;
                 result = fun.apply(context, args);
@@ -78,4 +78,4 @@ myQuery.define("util/function.extend", [], function($) {
         }
     });
     return $.util;
-});
+}, "consult underscore");
