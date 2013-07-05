@@ -10,6 +10,8 @@
             $.require(["main/query", "lib/sizzle"], function(query, sizzle){
                 //var a = sizzle("#a");
                 var c = $("div").eq(-1);
+                var a = $("div").eq(0);
+                var b = a.next();
                 var index0 = c.index();
                 var index1 = c.index("div");
                 var index2 = c.index($("#c"));
