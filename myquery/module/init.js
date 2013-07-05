@@ -91,10 +91,10 @@ myQuery.define("module/init", ["main/query", "main/dom", "main/attr", "module/Wi
 			return this;
 		},
 		showIndex: function() {
-			//setTimeout(function (argument) {
+			setTimeout(function (argument) {
 				$cover.remove();
 				$cover = null;
-			//}, 1000);
+			}, 200);
 			return this;
 		}
 	};
