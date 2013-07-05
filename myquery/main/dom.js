@@ -1,4 +1,4 @@
-﻿myQuery.define("main/dom", ["base/support", "base/client", "main/data", "main/event"], function($, support, client, data, event, undefined) {
+﻿myQuery.define("main/dom", ["base/support", "base/client", "lib/sizzle", "main/data", "main/event"], function($, support, client, sizzle, data, event, undefined) {
     "use strict"; //启用严格模式
     var rnumnonpx = /^-?(?:\d*\.)?\d+(?!px)[^\d\s]+$/i,
         rmargin = /^margin/,
@@ -314,21 +314,22 @@
             /// <returns type="Element" />
             return ele.cloneNode(true);
         },
-        contains: function(a, b) {
-            /// <summary>quote from jQuery1.7.2</summary>
-            /// <param name="a" type="Element">元素a</param>
-            /// <param name="b" type="Element">元素b</param>
-            /// <returns type="Boolean" />
-            /// <private />
-            if (document.documentElement.contains) {
-                return a !== b && (a.contains ? a.contains(b) : true);
+        contains: sizzle.contains,
+        // contains: function(a, b) {
+        //     /// <summary>quote from jQuery1.7.2</summary>
+        //     /// <param name="a" type="Element">元素a</param>
+        //     /// <param name="b" type="Element">元素b</param>
+        //     /// <returns type="Boolean" />
+        //     /// <private />
+        //     if (document.documentElement.contains) {
+        //         return a !== b && (a.contains ? a.contains(b) : true);
 
-            } else if (document.documentElement.compareDocumentPosition) {
-                return !!(a.compareDocumentPosition(b) & 16);
-            } else {
-                return false;
-            }
-        },
+        //     } else if (document.documentElement.compareDocumentPosition) {
+        //         return !!(a.compareDocumentPosition(b) & 16);
+        //     } else {
+        //         return false;
+        //     }
+        // },
 
         getHeight: function(ele) {
             /// <summary>获得元素的高度

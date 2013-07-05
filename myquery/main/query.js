@@ -3,6 +3,8 @@
 
     $.module["lib/sizzle"] = "sizzle1.10.3";
 
+
+
     var rId = $.reg.id,
         rTagName = /^((?:[\w\u00c0-\uFFFF\*-]|\\.)+)/,
         rCss = /^\.((?:[\w\u00c0-\uFFFF-]|\\.)+)/,
@@ -42,8 +44,22 @@
                     list = list.concat($.elementCollectionToArray(ele.childNodes, real));
                 }, this);
                 return list;
-            }
-            , posterity: function (eles) {
+            },
+
+            dir: function( ele, dir, until ) {
+                var matched = [],
+                  cur = ele[ dir ];
+
+                while ( cur && cur.nodeType !== 9 && (until === undefined || cur.nodeType !== 1 || !$( cur ).is( until )) ) {
+                  if ( cur.nodeType === 1 ) {
+                    matched.push( cur );
+                  }
+                  cur = cur[dir];
+                }
+                return matched;
+            },
+
+            posterity: function (eles) {
                 /// <summary>获得所有的子元素</summary>
                 /// <param name="eles" type="Element/ElementCollection/arr">从元素或元素数组或元素集合中获取</param>
                 /// <param name="real" type="Boolean/Null">是否获得真元素，默认为真</param>
@@ -51,9 +67,9 @@
                 if ($.isEle(eles))
                     eles = [eles];
                 return $.getEleByTag("*", eles); ;
-            }
+            },
 
-            , elementCollectionToArray: function (eles, real) {
+            elementCollectionToArray: function (eles, real) {
                 /// <summary>把ElementCollection转换成arr[ele]</summary>
                 /// <param name="eles" type="ElementCollection">元素集合</param>
                 /// <param name="real" type="Boolean/undefined">是否获得真元素，默认为真</param>
@@ -69,9 +85,9 @@
                     }, this);
                 }
                 return list;
-            }
+            },
 
-            , find: function (str, eles) {
+            find: function (str, eles) {
                 /// <summary>查询命令
                 /// <para>arr返回元素数组</para>
                 /// </summary>
@@ -130,8 +146,8 @@
                 //                    return eles.concat(this.query(reg.rightContext, (eles[0].ownerDocument && eles[0].ownerDocument.documentElement) || document.documentElement));
                 //                }
                 return $.find(reg.rightContext, list);
-            }
-            , filter: function (str, eles) {
+            },
+            filter: function (str, eles) {
                 /// <summary>筛选Element；也可以用来筛选一般数组
                 /// <para>返回ele数组</para>
                 /// </summary>
@@ -252,9 +268,9 @@
                 }
 
                 return list;
-            }
+            },
 
-            , getEle: function (ele, context) {
+            getEle: function (ele, context) {
                 /// <summary>通过各种筛选获得包含DOM元素的数组</summary>
                 /// <param name="ele" type="Element/$/document/str">各种筛选</param>
                 /// <param name="ele" type="Element/document/undefined">各种筛选</param>
@@ -291,8 +307,8 @@
                 }
 
                 return list;
-            }
-            , getEleByClass: function (className, eles) {
+            },
+            getEleByClass: function (className, eles) {
                 /// <summary>通过样式名获得DOM元素
                 /// <para>返回为ele的arr集合</para>
                 /// </summary>
@@ -314,16 +330,16 @@
                         }));
                     }, this);
                 return list;
-            }
-            , getEleById: function (id, doc) {
+            },
+            getEleById: function (id, doc) {
                 /// <summary>通过ID获得一个DOM元素</summary>
                 /// <param name="id" type="String">id</param>
                 /// <param name="doc" type="Document">document</param>
                 /// <returns type="Element" />
 
                 return $.isStr(id) ? (doc || document).getElementById(id) : null;
-            }
-            , getEleByTag: function (tag, eles) {
+            },
+            getEleByTag: function (tag, eles) {
                 /// <summary>通过标签名获得DOM元素</summary>
                 /// <param name="tag" type="String">标签名</param>
                 /// <param name="eles" type="Element/ElementCollection/Array[Element]">从元素或元素集合中获取</param>
@@ -343,8 +359,8 @@
                     }
                 }
                 return null;
-            }
-            , getFirstChild: function (ele) {
+            },
+            getFirstChild: function (ele) {
                 /// <summary>获得当前DOM元素的第一个真DOM元素</summary>
                 /// <param name="ele" type="Element">dom元素</param>
                 /// <returns type="Element" />
@@ -353,8 +369,8 @@
                     x = x.nextSibling;
                 }
                 return x;
-            }
-            , getSelfIndex: function (ele) {
+            },
+            getSelfIndex: function (ele) {
                 /// <summary>通过序号获得当前DOM元素某个真子DOM元素 从0开始</summary>
                 /// <param name="ele" type="Element">dom元素</param>
                 /// <returns type="Number" />
@@ -366,9 +382,8 @@
                     node = node.nextSibling;
                 }
                 return i;
-            }
-
-            , iterationPosterity: function (ele, fun) {
+            },
+            iterationPosterity: function (ele, fun) {
                 /// <summary>遍历当前元素的所有子元素并返回符合function条件的DOM元素集合</summary>
                 /// <param name="ele" type="Element">DOM元素</param>
                 /// <param name="fun" type="Function">筛选的方法</param>
@@ -377,9 +392,9 @@
                     return fun(child);
                 }, $.posterity(ele));
                 //return list.length > 0 ? list : null;
-            }
+            },
 
-            , next: function (eles) {
+            next: function (eles) {
                 /// <summary>获得数组中所有元素的下一个同辈元素</summary>
                 /// <param name="eles" type="Array:[ele]/ElementCollection">dom元素</param>
                 /// <returns type="Array" />
@@ -390,8 +405,8 @@
                 });
                 list = $.filter("same", list);
                 return list;
-            }
-            , nextAll: function (eles) {
+            },
+            nextAll: function (eles) {
                 /// <summary>获得数组中所有元素后面的所有同辈元素</summary>
                 /// <param name="eles" type="Array:[ele]/ElementCollection">dom元素</param>
                 /// <returns type="Element/null" />
@@ -401,8 +416,8 @@
                 });
                 list = $.filter("same", list);
                 return list;
-            }
-            , nextSibling: function (ele) {
+            },
+            nextSibling: function (ele) {
                 /// <summary>获得当前DOM元素的下一个真DOM元素</summary>
                 /// <param name="ele" type="Element">dom元素</param>
                 /// <returns type="Element/null" />
@@ -411,8 +426,8 @@
                     x = x.nextSibling;
                 }
                 return x;
-            }
-            , nextSiblings: function (ele) {
+            },
+            nextSiblings: function (ele) {
                 /// <summary>获得当前DOM元素的后面的所有真DOM元素</summary>
                 /// <param name="ele" type="Element">dom元素</param>
                 /// <returns type="Element/null" />
@@ -423,21 +438,21 @@
                     x = x.nextSibling;
                 }
                 return list;
-            }
+            },
 
-            , pre: function (eles) {
+            pre: function (eles) {
                 /// <summary>获得数组中所有元素的上一个同辈元素</summary>
                 /// <param name="eles" type="Array:[ele]/ElementCollection">dom元素</param>
                 /// <returns type="Array" />
                 return $.next(eles, "previousSibling");
-            }
-            , preAll: function (eles) {
+            },
+            preAll: function (eles) {
                 /// <summary>获得数组中所有元素前面的所有同辈元素</summary>
                 /// <param name="eles" type="Array:[ele]/ElementCollection">dom元素</param>
                 /// <returns type="Element/null" />
                 return $.nextAll(eles, "previousSiblings");
-            }
-            , previousSibling: function (ele) {
+            },
+            previousSibling: function (ele) {
                 /// <summary>获得当前DOM元素的上一个真DOM元素</summary>
                 /// <param name="ele" type="Element">dom元素</param>
                 /// <returns type="Element/null" />
@@ -446,8 +461,8 @@
                     x = x.previousSibling;
                 }
                 return x;
-            }
-            , previousSiblings: function (ele) {
+            },
+            previousSiblings: function (ele) {
                 /// <summary>获得当前DOM元素的前面的所有真DOM元素</summary>
                 /// <param name="ele" type="Element">dom元素</param>
                 /// <returns type="Element/null" />
@@ -458,8 +473,8 @@
                     x = x.previousSibling;
                 }
                 return list;
-            }
-            , property: function (str, eles) {
+            },
+            property: function (str, eles) {
                 /// <summary>属性筛选器
                 /// <para>arr返回元素数组</para>
                 /// <para>[id]</para>
@@ -490,9 +505,9 @@
                     return fun(attr.getAttr(item, name), value); //是否该这样拿属性 存疑
                 }, eles);
                 return list;
-            }
+            },
 
-            , query: function (str, eles) {
+            query: function (str, eles) {
                 /// <summary>筛选命令 所有后代元素
                 /// <para>返回ele数组</para>
                 /// </summary>
@@ -514,9 +529,9 @@
                     list = $.getEleByClass(reg.$1, eles);
                 }
                 return list;
-            }
+            },
 
-            , search: function (str, eles) {
+            search: function (str, eles) {
                 /// <summary>筛选命令 所有后代元素
                 /// <para>返回ele数组</para>
                 /// </summary>
@@ -543,9 +558,9 @@
                     }, children);
                 }
                 return list;
-            }
+            },
 
-            , siblings: function (ele) {
+            siblings: function (ele) {
                 /// <summary>获得同辈元素的数组</summary>
                 /// <param name="ele" type="Element">ele元素</param>
                 /// <returns type="Array" />
@@ -571,9 +586,9 @@
             });
             list = $.filter('same', list);
             return $($.find(str, list));
-        }
+        },
 
-        , children: function (query, real) {
+        children: function (query, real) {
             /// <summary>返回当前对象的所有一级子元素</summary>
             /// <param name="str" type="String">字符串query</param>
             /// <param name="real" type="Boolean/Null">是否获得真元素，默认为真</param>
@@ -583,8 +598,8 @@
                 children = $.find(query, children);
             }
             return $(children);
-        }
-        , posterity: function (query) {
+        },
+        posterity: function (query) {
             /// <summary>返回当前对象的所有子元素</summary>
             /// <param name="str" type="String">字符串query</param>
             /// <param name="real" type="Boolean/Null">是否获得真元素，默认为真</param>
@@ -592,9 +607,9 @@
             var posterity = $.posterity(this.eles);
             if ($.isStr(query)) posterity = $.find(query, posterity);
             return $(posterity);
-        }
+        },
 
-        , filter: function (str) {
+        filter: function (str) {
             /// <summary>筛选Element
             /// <para>返回arr第一项为查询语句</para>
             /// <para>返回arr第二项为元素数组</para>
@@ -604,48 +619,48 @@
 
             return new $($.filter(str, this.eles));
 
-        }
-        , find: function (str) {
+        },
+        find: function (str) {
             /// <summary>查询命令</summary>
             /// <param name="str" type="String">查询字符串</param>
             /// <returns type="$" />
             return new $($.find(str, this.eles));
-        }
+        },
 
-        , eq: function (num, len) {
+        eq: function (num, len) {
             /// <summary>返回元素序号的新$</summary>
             /// <param name="num1" type="Number/null">序号 缺省返回第一个</param>
             /// <param name="num2" type="Number/null">长度 返回当前序号后几个元素 缺省返回当前序号</param>
             /// <returns type="self" />
             return $($.slice(this.eles, num, len));
-        }
+        },
 
-        , index: function (real) {
+        index: function (real) {
             /// <summary>返回当前对象的第一个元素在同辈元素中的index顺序</summary>
             /// <param name="real" type="Boolean/Null">是否获得真元素，默认为真</param>
             /// <returns type="Number" />
             return $.getSelfIndex(this.eles[0], real);
-        }
-        , is: function (str) {
+        },
+        is: function (str) {
             /// <summary>返回筛选后的数组是否存在</summary>
             /// <param name="str" type="String">查询字符串</param>
             /// <returns type="Boolean" />
             return !!str && $.filter(str, this).length > 0;
-        }
+        },
 
-        , next: function () {
+        next: function () {
             /// <summary>返回所有元素的下一个同辈元素</summary>
             /// <returns type="self" />
             return $($.next(this.eles));
-        }
-        , nextAll: function (eles) {
+        },
+        nextAll: function (eles) {
             /// <summary>返回所有元素后面的所有同辈元素</summary>
             /// <param name="eles" type="Array:[ele]">dom元素</param>
             /// <returns type="Element/null" />
             return $($.nextAll(this.eles));
-        }
+        },
 
-        , parent: function (str, type) {
+        parent: function (str, type) {
             /// <summary>返回所有元素的父级元素</summary>
             /// <param name="str" type="String">查询字符串</param>
             /// <param name="type" type="String">parentNode表示所有祖先元素，offsetParent表示有大小的祖先元素</param>
@@ -657,19 +672,19 @@
             });
             list = $.filter('same', list);
             return $($.find(str, list));
-        }
-        , pre: function (eles) {
+        },
+        pre: function (eles) {
             /// <summary>返回所有元素的上一个同辈元素</summary>
             /// <returns type="self" />
             return $($.pre(this.eles));
-        }
-        , preAll: function (eles) {
+        },
+        preAll: function (eles) {
             /// <summary>返回所有元素前面的所有同辈元素</summary>
             /// <param name="eles" type="Array:[ele]/ElementCollection">dom元素</param>
             /// <returns type="self" />
             return $($.preAll(this.eles));
-        }
-        , property: function (str, eles) {
+        },
+        property: function (str, eles) {
             /// <summary>属性筛选器
             /// <para>arr返回元素数组</para>
             /// <para>[id]</para>
@@ -682,16 +697,16 @@
             /// <param name="str" type="String">筛选字符产</param>
             /// <returns type="self" />
             return new $($.property(str, this.eles));
-        }
+        },
 
-        , query: function (str) {
+        query: function (str) {
             /// <summary>通过字符串寻找所有后代节点</summary>
             /// <param name="str" type="String">查询字符串</param>
             /// <returns type="$" />
             return new $($.find(str, this.eles));
-        }
+        },
 
-        , search: function (str) {
+        search: function (str) {
             /// <summary>通过字符串寻找子节点</summary>
             /// <param name="str" type="String">查询字符串</param>
             /// <returns type="$" />
@@ -704,4 +719,4 @@
     });
 
     return query;
-}, "1.0.0");
+}, "reference Sizzle1.10.3");
