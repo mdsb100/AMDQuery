@@ -28,7 +28,7 @@
             }
         },
         query = {
-            child: function (eles, real) {
+            children: function (eles, real) {
                 /// <summary>获得一级子元素</summary>
                 /// <param name="eles" type="Element/ElementCollection/arr">从元素或元素数组或元素集合中获取</param>
                 /// <param name="real" type="Boolean/Null">是否获得真元素，默认为真</param>
@@ -198,8 +198,8 @@
                     $.each(eles, function (ele, index) {
                         index % 2 == 0 && list.push(ele)
                     }, this);
-                else if (/child/.test(str))
-                    list = $.child(eles, true);
+                else if (/children/.test(str))
+                    list = $.children(eles, true);
                 else if (/posterity/.test(str))
                     list = $.posterity(eles);
                 else if (/(selected|checked)/.test(str))//checked
@@ -524,20 +524,20 @@
                 if (!str || !eles) {
                     return list;
                 }
-                var child = $.child(eles);
+                var children = $.children(eles);
                 if (rId.test(str))
-                    list = $.property("[id=" + reg.$1 + "]", child);
+                    list = $.property("[id=" + reg.$1 + "]", children);
                 else if (rTagName.test(str)) {
                     var result = reg.$1 == "*" ? true : false;
                     list = $.filter(function (ele) {
                         return result || $.isNode(ele, reg.$1); //ele.tagName.toLowerCase() === reg.$1.toLowerCase();
-                    }, child);
+                    }, children);
                 }
                 else if (rCss.test(str)) {
                     var temp = reg.$1;
                     list = $.filter(function (ele) {
                         return $.containsClass(ele, temp) && true;
-                    }, child);
+                    }, children);
                 }
                 return list;
             }
@@ -570,16 +570,16 @@
             return $($.find(str, list));
         }
 
-        , child: function (query, real) {
+        , children: function (query, real) {
             /// <summary>返回当前对象的所有一级子元素</summary>
             /// <param name="str" type="String">字符串query</param>
             /// <param name="real" type="Boolean/Null">是否获得真元素，默认为真</param>
             /// <returns type="self" />
-            var child = $.child(this.eles, real === undefined ? true : real);
+            var children = $.children(this.eles, real === undefined ? true : real);
             if ($.isStr(query)) {
-                child = $.find(query, child);
+                children = $.find(query, children);
             }
-            return $(child);
+            return $(children);
         }
         , posterity: function (query) {
             /// <summary>返回当前对象的所有子元素</summary>

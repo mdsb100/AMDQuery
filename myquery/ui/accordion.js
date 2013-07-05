@@ -220,7 +220,7 @@
 
             this.$text.width(this.$board.width() - this.$arrow.width());
 
-            this.keyCollection = new KeyCollection(this.$board.child(), this);
+            this.keyCollection = new KeyCollection(this.$board.children(), this);
             return this;
         },
         event: {
@@ -426,7 +426,7 @@
             this.container = $($.createEle("div"))
                 .css("position", "relative")
                 .addClass("accordion");
-            var shells = this.target.child();
+            var shells = this.target.children();
             this.container.append(shells).appendTo(this.target);
 
             this.container.outerWidth(this.width);

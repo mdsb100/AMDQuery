@@ -17,7 +17,7 @@ myQuery.define("module/init", ["main/query", "main/dom", "main/attr", "module/Wi
 			left: 0,
 			zIndex: 10001,
 			backgroundColor: "white"
-		}, "div").append($image).before(body.child()),
+		}, "div").append($image).before(body.children()),
 		widgetNames = [],
 		init,
 		widgetMap = {},

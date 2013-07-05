@@ -10,7 +10,7 @@ myQuery.define("ui/scrollableview", ["main/query", "main/dom", "main/class", "ht
                 var opt = this.options;
                 this.positionParent = $({
                     "overflow": "visible"
-                }, "div").width(this.target.width()).height(this.target.height()).append(this.target.child());
+                }, "div").width(this.target.width()).height(this.target.height()).append(this.target.children());
 
                 this.container = $({
                     "position": "absolute"
@@ -149,8 +149,8 @@ myQuery.define("ui/scrollableview", ["main/query", "main/dom", "main/class", "ht
                 if (key) {
                     this.target.swappable("destory");
                     this.container.draggable("destory");
-                    this.target.child().remove();
-                    this.positionParent.child().appendTo(this.target);
+                    this.target.children().remove();
+                    this.positionParent.children().appendTo(this.target);
                     Widget.invoke("destory", this, key);
                 }
             },

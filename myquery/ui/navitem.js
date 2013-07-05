@@ -201,7 +201,7 @@ function($, client, Widget, cls, event, dom, attr, src, animate) {
                 "clear": "both"
             });
 
-            this.$board = target.child().css({
+            this.$board = target.children().css({
                 "display": "block",
                 "clear": "both"
             }).addClass("board").hide();

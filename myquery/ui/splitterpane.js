@@ -174,7 +174,7 @@ function($, support, Widget, query, cls, event, dom, attr, src, css3) {
                 }
             },
             filterSplitter: function() {
-                var child = this.target.child(),
+                var children = this.target.children(),
                     $item,
                     splitter = [],
                     flex = 0,
@@ -182,7 +182,7 @@ function($, support, Widget, query, cls, event, dom, attr, src, css3) {
                     traceWidth = this.width,
                     traceHeight = this.height;
 
-                child.each(function(ele) {
+                children.each(function(ele) {
                     $item = $(ele);
                     if (Widget.is($item, "ui.splitter")) {
                         $item.isSplitter = true;
