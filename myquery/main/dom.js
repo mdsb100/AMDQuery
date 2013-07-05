@@ -1387,4 +1387,4 @@
     });
 
     return dom;
-});
+}, "consult JQuery1.9.1");

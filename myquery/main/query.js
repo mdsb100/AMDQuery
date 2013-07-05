@@ -1,5 +1,8 @@
 ﻿myQuery.define("main/query", ["lib/sizzle", "main/attr"], function ($, sizzle, attr, undefined) {
     "use strict"; //启用严格模式
+
+    $.module["lib/sizzle"] = "sizzle1.10.3";
+
     var rId = $.reg.id,
         rTagName = /^((?:[\w\u00c0-\uFFFF\*-]|\\.)+)/,
         rCss = /^\.((?:[\w\u00c0-\uFFFF-]|\\.)+)/,
