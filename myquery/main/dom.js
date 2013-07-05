@@ -944,7 +944,7 @@
             return $.isStr(str) ?
 
             this.each(function(ele, bool) {
-                $.each($.children(ele), function(child) {
+                $.each($.posterity(ele), function(child) {
                     $.removeData(child);
                     $.remove(child);
                     //移除事件
@@ -1177,7 +1177,7 @@
             /// <summary>把所有元素从文档流里移除并且移除所有子元素</summary>
             /// <returns type="self" />
             return this.each(function(ele) {
-                $.each($.children(ele), function(child) {
+                $.each($.posterity(ele), function(child) {
                     event.clearHandlers(child);
                     $.removeData(child);
                 });
@@ -1219,7 +1219,7 @@
             /// <summary>删除所有子元素</summary>
             /// <param name="child" type="Number/Element/$"></param>
             /// <returns type="self" />
-            $.each($.children(this.eles), function(ele) {
+            $.each($.posterity(this.eles), function(ele) {
                 event.clearHandlers(ele);
                 $.removeData(ele);
             });

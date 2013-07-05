@@ -78,8 +78,8 @@
                     //alert(str);
                 });
 
-                var value = $(".parent").children();
-                var offset = $("#offset").children();
+                var value = $(".parent").posterity();
+                var offset = $("#offset").posterity();
                 return
                 var ele = $.createEle("div");
                 ele.style.width = "100px";
@@ -183,7 +183,7 @@
                 var tmp = $("#A,#B,#C");
                 var tmpB = tmp.eq(1);
 
-                var son = $({ width: 100 + "px", height: 100 + "px", background-color: 'yellow', display: 'inline-table', float: 'left' }, 'div', document.body)
+                var son = $({ width: 100 + "px", height: 100 + "px", "background-color": 'yellow', display: 'inline-table', float: 'left' }, 'div', document.body)
                         .addClass('css2')
                         .addHandler('click', function () {
                             di.antonymVisible();
@@ -196,7 +196,7 @@
                 var left = di.eq(2).offsetLeft();
                 var top = di.eq(1).getTop();
                 var ol = $("ol");
-                var child = ol.children();
+                var child = ol.posterity();
                 ol.eq(0).removeChild($('li'));
                 son.remove();
                 $('#D').replace(son);
@@ -245,7 +245,7 @@
     <ol class="parent">
         <li>1</li>
         <li id='li2'>2</li>
-        <li>3</li>
+        <li>3<span></span></li>
         123
     </ol>
     <ol>

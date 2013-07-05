@@ -1,4 +1,4 @@
-﻿myQuery.define("main/query", ["main/attr"], function ($, attr, undefined) {
+﻿myQuery.define("main/query", ["lib/sizzle", "main/attr"], function ($, sizzle, attr, undefined) {
     "use strict"; //启用严格模式
     var rId = $.reg.id,
         rTagName = /^((?:[\w\u00c0-\uFFFF\*-]|\\.)+)/,
@@ -40,7 +40,7 @@
                 }, this);
                 return list;
             }
-            , children: function (eles) {
+            , posterity: function (eles) {
                 /// <summary>获得所有的子元素</summary>
                 /// <param name="eles" type="Element/ElementCollection/arr">从元素或元素数组或元素集合中获取</param>
                 /// <param name="real" type="Boolean/Null">是否获得真元素，默认为真</param>
@@ -200,8 +200,8 @@
                     }, this);
                 else if (/child/.test(str))
                     list = $.child(eles, true);
-                else if (/children/.test(str))
-                    list = $.children(eles);
+                else if (/posterity/.test(str))
+                    list = $.posterity(eles);
                 else if (/(selected|checked)/.test(str))//checked
                     $.each(eles, function (ele) {
                         if ($.isNode(ele, "input") || $.isNode(ele, "option")) {
@@ -305,7 +305,7 @@
                     }, this);
                 else
                     $.each(eles, function (ele) {
-                        list = list.concat($.iterationChild(ele, function (child, arr) {
+                        list = list.concat($.iterationPosterity(ele, function (child, arr) {
                             if ($.isEle(child) && $.containsClass(child, className))
                                 return true
                         }));
@@ -365,14 +365,14 @@
                 return i;
             }
 
-            , iterationChild: function (ele, fun) {
+            , iterationPosterity: function (ele, fun) {
                 /// <summary>遍历当前元素的所有子元素并返回符合function条件的DOM元素集合</summary>
                 /// <param name="ele" type="Element">DOM元素</param>
                 /// <param name="fun" type="Function">筛选的方法</param>
                 /// <returns type="Array" />
                 return $.filter(function (child) {
                     return fun(child);
-                }, $.children(ele));
+                }, $.posterity(ele));
                 //return list.length > 0 ? list : null;
             }
 
@@ -581,14 +581,14 @@
             }
             return $(child);
         }
-        , children: function (query) {
+        , posterity: function (query) {
             /// <summary>返回当前对象的所有子元素</summary>
             /// <param name="str" type="String">字符串query</param>
             /// <param name="real" type="Boolean/Null">是否获得真元素，默认为真</param>
             /// <returns type="self" />
-            var children = $.children(this.eles);
-            if ($.isStr(query)) children = $.find(query, children);
-            return $(children);
+            var posterity = $.posterity(this.eles);
+            if ($.isStr(query)) posterity = $.find(query, posterity);
+            return $(posterity);
         }
 
         , filter: function (str) {

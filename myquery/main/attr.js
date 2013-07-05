@@ -44,7 +44,7 @@
                 result = ele.value;
                 if ($.isNul(result) || ele.multiple == true) {
                     result = [];
-                    $(ele).children(":selected").each(function (ele) {
+                    $(ele).posterity(":selected").each(function (ele) {
                         result.push(ele.innerHTML);
                     });
                     result = result.join("|");
