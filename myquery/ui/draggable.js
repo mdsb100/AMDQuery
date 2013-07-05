@@ -52,7 +52,7 @@
                         this.positionParent = this.target.parent();
                     }
                 } else {
-                    this.target.ancestors().each(function(ele) {
+                    this.target.parents().each(function(ele) {
                         switch ($.style(ele, "position")) {
                             case "absolute":
                             case "relative":

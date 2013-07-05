@@ -375,6 +375,31 @@
             return this;
         },
 
+        merge: function( first, second ) {
+            /// <summary>把对象2 合并到 对象1</summary>
+            /// <param name="first" type="Array">对象</param>
+            /// <param name="second" type="Array">对象</param>
+            /// <returns type="Array" />
+            //consult from jQuery-1.9.1 
+            var l = second.length,
+              i = first.length,
+              j = 0;
+
+            if ( typeof l === "number" ) {
+              for ( ; j < l; j++ ) {
+                first[ i++ ] = second[ j ];
+              }
+            } else {
+              while ( second[j] !== undefined ) {
+                first[ i++ ] = second[ j++ ];
+              }
+            }
+
+            first.length = i;
+
+            return first;
+        },
+
         getJScriptConfig: util.getJScriptConfig,
         getPath: util.getPath,
         getRunTime: function(msg) {
@@ -527,12 +552,12 @@
         },
         eles: null,
 
-        first: null,
+        firstEle: null,
 
-        getFirst: function() {
+        first: function() {
             /// <summary>返回第一个元素</summary>
             /// <returns type="Element" />
-            return $(this.eles[0]);
+            return $(this.eles[0] || this.eles);
         },
         getElement: function(index) {
             /// <summary>返回序号的元素</summary>
@@ -541,10 +566,10 @@
             if ($.isNum(index) && index != 0) return this[index];
             else return this[0];
         },
-        getLast: function() {
+        last: function() {
             /// <summary>返回最后个元素</summary>
             /// <returns type="Element" />
-            return $(this.eles[this.eles.length - 1]);
+            return $(this.eles[this.eles.length - 1] || this.eles);
         },
 
         sort: function(fun) {
@@ -560,8 +585,8 @@
             /// <param name="eles" type="Array">内容为元素的数组</param>
             /// <returns type="self" />
             this.eles = null;
-            this.first = null;
-            this.last = null;
+            this.firstEle = null;
+            this.lastEle = null;
             this.context = null;
             if (!eles.length) {
                 //util.console.warn({ fn: "myQuery.init", msg: "has not query any element" });
@@ -575,8 +600,8 @@
                 this[index] = ele;
             });
             this.length = eles.length;
-            this.first = this[0];
-            this.last = this[this.length - 1];
+            this.firstEle = this[0];
+            this.lastEle = this[this.length - 1];
 
             this.context = this[0] ? this[0].ownerDocument : document;
             return this;
@@ -588,7 +613,7 @@
             return $.inArray(this.eles, ele);
         },
 
-        last: null,
+        lastEle: null,
         length: 0,
 
         reverse: function() {
@@ -1711,8 +1736,10 @@
 
     myQuery.define("base/is", function($) {
         "use strict"; //启用严格模式
-        var hasOwnProperty = Object.prototype.hasOwnProperty,
-            toString = Object.prototype.toString,
+        var 
+            class2type = {},
+            hasOwnProperty = class2type.hasOwnProperty,
+            toString = class2type.toString,
             is = {
                 isEleConllection: function(a) {
                     /// <summary>是否为DOM元素的集合</summary>
@@ -1730,6 +1757,26 @@
                     /// <returns type="Boolean" />
                     return $.isType(a, '[object Array]');
                 },
+                isArrlike: function ( obj ) {
+                    /// <summary>是否像一个数组</summary>
+                    /// <param name="obj" type="any">任意对象</param>
+                    /// <returns type="Boolean" />
+                    var length = obj.length,
+                    type = $.type( obj );
+
+                    if ( $.isWindow( obj ) ) {
+                        return false;
+                    }
+
+                    if ( obj.nodeType === 1 && length ) {
+                        return true;
+                    }
+
+                    return type === "array" || type !== "function" &&
+                    ( length === 0 ||
+                    typeof length === "number" && length > 0 && ( length - 1 ) in obj );
+                },
+
                 isArrOf: function(a, type) {
                     /// <summary>是否为某种特定类型数组</summary>
                     /// <param name="a" type="any">任意对象</param>
@@ -1902,6 +1949,14 @@
                     /// <param name="a" type="any">任意对象</param>
                     /// <returns type="Boolean" />
                     return a instanceof $;
+                },
+                type: function( obj ) {
+                    if ( obj == null ) {
+                      return String( obj );
+                    }
+                    return typeof obj === "object" || typeof obj === "function" ?
+                      class2type[ toString.call(obj) ] || "object" :
+                      typeof obj;
                 }
             };
 

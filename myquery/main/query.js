@@ -1,9 +1,22 @@
-﻿myQuery.define("main/query", ["lib/sizzle", "main/attr"], function ($, sizzle, attr, undefined) {
+﻿myQuery.define("main/query", ["lib/sizzle", "main/attr"], function ($, Sizzle, attr, undefined) {
     "use strict"; //启用严格模式
 
-    $.module["lib/sizzle"] = "sizzle1.10.3";
+    $.module["lib/sizzle"] = "Sizzle1.10.3";
 
+    var core_deletedIds = [],
+    core_concat = core_deletedIds.concat;
 
+    var runtil = /Until$/,
+        rparentsprev = /^(?:parents|prev(?:Until|All))/,
+        isSimple = /^.[^:#\[\.,]*$/,
+        rneedsContext = Sizzle.selectors.match.needsContext,
+        // methods guaranteed to produce a unique set when starting from a unique set
+        guaranteedUnique = {
+            children: true,
+            contents: true,
+            next: true,
+            prev: true
+        };
 
     var rId = $.reg.id,
         rTagName = /^((?:[\w\u00c0-\uFFFF\*-]|\\.)+)/,
@@ -33,18 +46,9 @@
             }
         },
         query = {
-            children: function (eles, real) {
-                /// <summary>获得一级子元素</summary>
-                /// <param name="eles" type="Element/ElementCollection/arr">从元素或元素数组或元素集合中获取</param>
-                /// <param name="real" type="Boolean/Null">是否获得真元素，默认为真</param>
-                /// <returns type="Array" />
-                var list = [], real = real === undefined ? true : real;
-                if ($.isEle(eles)) eles = [eles];
-                $.each(eles, function (ele) {
-                    list = list.concat($.elementCollectionToArray(ele.childNodes, real));
-                }, this);
-                return list;
-            },
+            expr : Sizzle.selectors,
+            unique : Sizzle.uniqueSort,
+            text : Sizzle.getText,
 
             dir: function( ele, dir, until ) {
                 var matched = [],
@@ -218,7 +222,7 @@
                         index % 2 == 0 && list.push(ele)
                     }, this);
                 else if (/children/.test(str))
-                    list = $.children(eles, true);
+                    list = $.children(eles);
                 else if (/posterity/.test(str))
                     list = $.posterity(eles);
                 else if (/(selected|checked)/.test(str))//checked
@@ -394,86 +398,38 @@
                 //return list.length > 0 ? list : null;
             },
 
-            next: function (eles) {
-                /// <summary>获得数组中所有元素的下一个同辈元素</summary>
-                /// <param name="eles" type="Array:[ele]/ElementCollection">dom元素</param>
-                /// <returns type="Array" />
-                var temp = null, list = [], fun = arguments[1] == "previousSibling" ? $.previousSibling : $.nextSibling;
-                $.each(eles, function (ele) {
-                    temp = fun(ele);
-                    temp && list.push(temp);
-                });
-                list = $.filter("same", list);
-                return list;
-            },
-            nextAll: function (eles) {
-                /// <summary>获得数组中所有元素后面的所有同辈元素</summary>
-                /// <param name="eles" type="Array:[ele]/ElementCollection">dom元素</param>
-                /// <returns type="Element/null" />
-                var temp = null, list = [], fun = arguments[1] == "previousSiblings" ? $.previousSiblings : $.nextSiblings;
-                $.each(eles, function (ele) {
-                    list = list.concat(fun(ele));
-                });
-                list = $.filter("same", list);
-                return list;
-            },
-            nextSibling: function (ele) {
-                /// <summary>获得当前DOM元素的下一个真DOM元素</summary>
-                /// <param name="ele" type="Element">dom元素</param>
-                /// <returns type="Element/null" />
-                var x = ele.nextSibling;
-                while (x && !$.isEle(x)) {
-                    x = x.nextSibling;
-                }
-                return x;
-            },
-            nextSiblings: function (ele) {
-                /// <summary>获得当前DOM元素的后面的所有真DOM元素</summary>
-                /// <param name="ele" type="Element">dom元素</param>
-                /// <returns type="Element/null" />
-                var x = ele.nextSibling
-             , list = [];
-                while (x) {
-                    $.isEle(x) && list.push(x);
-                    x = x.nextSibling;
-                }
-                return list;
-            },
+            map: function( eles, callback, arg ) {
+                var value,
+                  i = 0,
+                  length = eles.length,
+                  isArray = $.isArrlike( eles ),
+                  ret = [];
 
-            pre: function (eles) {
-                /// <summary>获得数组中所有元素的上一个同辈元素</summary>
-                /// <param name="eles" type="Array:[ele]/ElementCollection">dom元素</param>
-                /// <returns type="Array" />
-                return $.next(eles, "previousSibling");
-            },
-            preAll: function (eles) {
-                /// <summary>获得数组中所有元素前面的所有同辈元素</summary>
-                /// <param name="eles" type="Array:[ele]/ElementCollection">dom元素</param>
-                /// <returns type="Element/null" />
-                return $.nextAll(eles, "previousSiblings");
-            },
-            previousSibling: function (ele) {
-                /// <summary>获得当前DOM元素的上一个真DOM元素</summary>
-                /// <param name="ele" type="Element">dom元素</param>
-                /// <returns type="Element/null" />
-                var x = ele.previousSibling;
-                while (x && !$.isEle(x)) {
-                    x = x.previousSibling;
+                // Go through the array, translating each of the items to their
+                if ( isArray ) {
+                  for ( ; i < length; i++ ) {
+                    value = callback( eles[ i ], i, arg );
+
+                    if ( value != null ) {
+                      ret[ ret.length ] = value;
+                    }
+                  }
+
+                // Go through every key on the object,
+                } else {
+                  for ( i in eles ) {
+                    value = callback( eles[ i ], i, arg );
+
+                    if ( value != null ) {
+                      ret[ ret.length ] = value;
+                    }
+                  }
                 }
-                return x;
-            },
-            previousSiblings: function (ele) {
-                /// <summary>获得当前DOM元素的前面的所有真DOM元素</summary>
-                /// <param name="ele" type="Element">dom元素</param>
-                /// <returns type="Element/null" />
-                var x = ele.previousSibling
-                , list = [];
-                while (x) {
-                    $.isEle(x) && list.push(x);
-                    x = x.previousSibling;
-                }
-                return list;
-            },
+
+                // Flatten any nested arrays
+                return core_concat.apply([], ret);
+            },    
+
             property: function (str, eles) {
                 /// <summary>属性筛选器
                 /// <para>arr返回元素数组</para>
@@ -559,46 +515,23 @@
                 }
                 return list;
             },
+            sibling: function( n, ele ) {
+                var r = [];
 
-            siblings: function (ele) {
-                /// <summary>获得同辈元素的数组</summary>
-                /// <param name="ele" type="Element">ele元素</param>
-                /// <returns type="Array" />
-                return ele.parentNode ? $.elementCollectionToArray(ele.parentNode.childNodes) : [];
+                for ( ; n; n = n.nextSibling ) {
+                  if ( n.nodeType === 1 && n !== ele ) {
+                    r.push( n );
+                  }
+                }
+
+                return r;
             }
         };
 
     $.extend(query);
+    $.expr[":"] = $.expr.pseudos;
 
     $.fn.extend({
-        ancestors: function (str, type) {
-            /// <summary>返回所有元素的所有祖先元素</summary>
-            /// <param name="str" type="String">查询字符串</param>
-            /// <param name="type" type="String">parentNode表示所有祖先元素，offsetParent表示有大小的祖先元素</param>
-            /// <returns type="self" />
-            var list = [], cur, type = type == null || !$.isStr(type) || type.match(/parentNode|offsetParent/) ? "parentNode" : type;
-            this.each(function (ele) {
-                cur = ele[type];
-                while (cur != null) {
-                    cur != document && list.push(cur);
-                    cur = cur[type];
-                }
-            });
-            list = $.filter('same', list);
-            return $($.find(str, list));
-        },
-
-        children: function (query, real) {
-            /// <summary>返回当前对象的所有一级子元素</summary>
-            /// <param name="str" type="String">字符串query</param>
-            /// <param name="real" type="Boolean/Null">是否获得真元素，默认为真</param>
-            /// <returns type="self" />
-            var children = $.children(this.eles, real === undefined ? true : real);
-            if ($.isStr(query)) {
-                children = $.find(query, children);
-            }
-            return $(children);
-        },
         posterity: function (query) {
             /// <summary>返回当前对象的所有子元素</summary>
             /// <param name="str" type="String">字符串query</param>
@@ -607,6 +540,16 @@
             var posterity = $.posterity(this.eles);
             if ($.isStr(query)) posterity = $.find(query, posterity);
             return $(posterity);
+        },
+
+        eq: function (i) {
+            /// <summary>返回元素序号的新$</summary>
+            /// <param name="num1" type="Number/null">序号 缺省返回第一个</param>
+            /// <param name="num2" type="Number/null">长度 返回当前序号后几个元素 缺省返回当前序号</param>
+            /// <returns type="$" />
+            var len = this.length,
+            j = +i + ( i < 0 ? len : 0 );
+            return j >= 0 && j < len ? $(this[j]) : $([]);
         },
 
         filter: function (str) {
@@ -627,63 +570,43 @@
             return new $($.find(str, this.eles));
         },
 
-        eq: function (num, len) {
-            /// <summary>返回元素序号的新$</summary>
-            /// <param name="num1" type="Number/null">序号 缺省返回第一个</param>
-            /// <param name="num2" type="Number/null">长度 返回当前序号后几个元素 缺省返回当前序号</param>
-            /// <returns type="self" />
-            return $($.slice(this.eles, num, len));
-        },
-
-        index: function (real) {
+        index: function (ele) {
             /// <summary>返回当前对象的第一个元素在同辈元素中的index顺序</summary>
             /// <param name="real" type="Boolean/Null">是否获得真元素，默认为真</param>
             /// <returns type="Number" />
-            return $.getSelfIndex(this.eles[0], real);
+            if ( !ele ) {
+              return ( this[0] && this[0].parentNode ) ? this.first().prevAll().length : -1;
+            }
+
+            // index in selector
+            if ( $.isStr(ele) ) {
+              return $.inArray( $( ele ), this[0] );
+            }
+
+            // Locate the position of the desired element
+            return $.inArray(
+              // If it receives a jQuery object, the first element is used
+              this, $.is$(ele) ? ele[0] : ele );
         },
         is: function (str) {
             /// <summary>返回筛选后的数组是否存在</summary>
             /// <param name="str" type="String">查询字符串</param>
             /// <returns type="Boolean" />
-            return !!str && $.filter(str, this).length > 0;
+            return !!str && (
+                $.isStr(str) ?
+                    rneedsContext.test( selector ) ?
+                    $.find( str, this.context ).index( this[0] ) >= 0 :
+                    $.filter( str, this.eles ).length > 0 :
+                this.filter(str).length > 0
+            );
         },
 
-        next: function () {
-            /// <summary>返回所有元素的下一个同辈元素</summary>
-            /// <returns type="self" />
-            return $($.next(this.eles));
+        map: function( callback ) {
+            return $( $.map(this, function( ele, i ) {
+              return callback.call( ele, i, ele );
+            }));
         },
-        nextAll: function (eles) {
-            /// <summary>返回所有元素后面的所有同辈元素</summary>
-            /// <param name="eles" type="Array:[ele]">dom元素</param>
-            /// <returns type="Element/null" />
-            return $($.nextAll(this.eles));
-        },
-
-        parent: function (str, type) {
-            /// <summary>返回所有元素的父级元素</summary>
-            /// <param name="str" type="String">查询字符串</param>
-            /// <param name="type" type="String">parentNode表示所有祖先元素，offsetParent表示有大小的祖先元素</param>
-            /// <returns type="self" />
-            var list = [], cur, result = false, type = type == null || !$.isStr(type) || type.match(/parentNode|offsetParent/) ? "parentNode" : type;
-            this.each(function (ele) {
-                cur = ele[type];
-                cur && cur != document && list.push(ele.parentNode);
-            });
-            list = $.filter('same', list);
-            return $($.find(str, list));
-        },
-        pre: function (eles) {
-            /// <summary>返回所有元素的上一个同辈元素</summary>
-            /// <returns type="self" />
-            return $($.pre(this.eles));
-        },
-        preAll: function (eles) {
-            /// <summary>返回所有元素前面的所有同辈元素</summary>
-            /// <param name="eles" type="Array:[ele]/ElementCollection">dom元素</param>
-            /// <returns type="self" />
-            return $($.preAll(this.eles));
-        },
+        
         property: function (str, eles) {
             /// <summary>属性筛选器
             /// <para>arr返回元素数组</para>
@@ -711,7 +634,85 @@
             /// <param name="str" type="String">查询字符串</param>
             /// <returns type="$" />
             return new $($.search(str, this.eles));
+        },
+
+        slice: function(num, len){
+            /// <summary>返回元素序号的新$</summary>
+            /// <param name="num1" type="Number/null">序号 缺省返回第一个</param>
+            /// <param name="num2" type="Number/null">长度 返回当前序号后几个元素 缺省返回当前序号</param>
+            /// <returns type="$" />
+            return $($.slice(this, num, len));
         }
+    });
+
+    function sibling( cur, dir ) {
+      do {
+        cur = cur[ dir ];
+      } while ( cur && cur.nodeType !== 1 );
+
+      return cur;
+    }
+
+    $.each({
+      parent: function( ele ) {
+        var parent = ele.parentNode;
+        return parent && parent.nodeType !== 11 ? parent : null;
+      },
+      parents: function( ele ) {
+        return $.dir( ele, "parentNode" );
+      },
+      parentsUntil: function( ele, i, until ) {
+        return $.dir( ele, "parentNode", until );
+      },
+      next: function( ele ) {
+        return sibling( ele, "nextSibling" );
+      },
+      prev: function( ele ) {
+        return sibling( ele, "previousSibling" );
+      },
+      nextAll: function( ele ) {
+        return $.dir( ele, "nextSibling" );
+      },
+      prevAll: function( ele ) {
+        return $.dir( ele, "previousSibling" );
+      },
+      nextUntil: function( ele, i, until ) {
+        return $.dir( ele, "nextSibling", until );
+      },
+      prevUntil: function( ele, i, until ) {
+        return $.dir( ele, "previousSibling", until );
+      },
+      siblings: function( ele ) {
+        return $.sibling( ( ele.parentNode || {} ).firstChild, ele );
+      },
+      children: function( ele ) {
+        return $.sibling( ele.firstChild );
+      },
+      contents: function( ele ) {
+        return $.nodeName( ele, "iframe" ) ?
+          ele.contentDocument || ele.contentWindow.document :
+          $.merge( [], ele.childNodes );
+      }
+    }, function(fn, name) {
+      $.fn[ name ] = function( until, selector ) {
+        var ret = $.map( this, fn, until );
+
+        if ( !runtil.test( name ) ) {
+          selector = until;
+        }
+
+        if ( selector && typeof selector === "string" ) {
+          ret = $.filter( selector, ret );
+        }
+
+        ret = this.length > 1 && !guaranteedUnique[ name ] ? $.unique( ret ) : ret;
+
+        if ( this.length > 1 && rparentsprev.test( name ) ) {
+          ret = ret.reverse();
+        }
+
+        return $(ret);
+      };
     });
 
     $.interfaces.achieve("constructorQuery", function (type, a, b) {
@@ -719,4 +720,4 @@
     });
 
     return query;
-}, "reference Sizzle1.10.3");
+}, "reference JQuery1.9.1");

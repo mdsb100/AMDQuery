@@ -566,7 +566,7 @@ myQuery.define("ui/turnBook", ["main/class", "html5/css3", "ui/swappable", "modu
                 begin, close, len = opt.pages.length - 1,
                 pageWidth = this.pageWidth,
                 bookWidth = this.bookWidth;
-            this.container.children(null, false).remove();
+            this.container.children().remove();
             index = $.isNum(index) ? parseInt($.between(0, len, index)) : opt.bookIndex;
             if (opt.positionType == "half") {
                 for (var i = index + 2; i >= index; i--) {
