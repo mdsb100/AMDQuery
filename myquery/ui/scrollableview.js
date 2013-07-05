@@ -85,6 +85,7 @@ myQuery.define("ui/scrollableview", ["main/query", "main/dom", "main/class", "ht
                             var x = self.checkXBoundary(e.offsetX, opt.boundary),
                                 y = self.checkYBoundary(e.offsetY, opt.boundary);
                             self.renderStatusBar(self.checkXStatusBar(x), self.checkYStatusBar(y));
+                            self.showStatusBar();
                             break;
                         case "drag.pause":
                             var left = self.getLeft(),
@@ -108,7 +109,6 @@ myQuery.define("ui/scrollableview", ["main/query", "main/dom", "main/class", "ht
 
                             break;
                         case "drag.start":
-                            self.showStatusBar();
                             self.refreshPosition();
                             break;
                         case "DomNodeInserted":
