@@ -1,4 +1,4 @@
-﻿myQuery.define("main/query", ["lib/sizzle", "main/attr"], function($, Sizzle, attr, undefined) {
+﻿myQuery.define("main/query", ["lib/sizzle"], function($, Sizzle, undefined) {
     "use strict"; //启用严格模式
 
     $.module["lib/sizzle"] = "Sizzle1.10.3";
@@ -145,59 +145,28 @@
 
                 return list;
             },
-            getEleByClass: function(className, eles) {
+            getEleByClass: function(className, context) {
                 /// <summary>通过样式名获得DOM元素
                 /// <para>返回为ele的arr集合</para>
                 /// </summary>
                 /// <param name="className" type="String">样式名</param>
-                /// <param name="eles" type="Element/ElementCollection/Array[Element]">从元素中获取</param>
+                /// <param name="context" type="Element">从元素中获取</param>
                 /// <returns type="Array" />
-                if ($.isEle(eles))
-                    eles = [eles];
-                var list = [];
-                if (eles[0].getElementsByClassName)
-                    $.each(eles, function(ele) {
-                        list = list.concat($.elementCollectionToArray(ele.getElementsByClassName(className)));
-                    }, this);
-                else
-                    $.each(eles, function(ele) {
-                        list = list.concat($.iterationPosterity(ele, function(child, arr) {
-                            if ($.isEle(child) && $.containsClass(child, className))
-                                return true
-                        }));
-                    }, this);
-                return list;
+                return $.expr.find["CLASS"](className, context || document);
             },
-            getEleById: function(id, doc) {
+            getEleById: function(id, context) {
                 /// <summary>通过ID获得一个DOM元素</summary>
                 /// <param name="id" type="String">id</param>
-                /// <param name="doc" type="Document">document</param>
+                /// <param name="context" type="Document">document</param>
                 /// <returns type="Element" />
-
-                return $.isStr(id) ? (doc || document).getElementById(id) : null;
+                return $.expr.find["ID"](id, context || document); 
             },
-            getEleByTag: function(tag, eles) {
+            getEleByTag: function(tag, context) {
                 /// <summary>通过标签名获得DOM元素</summary>
                 /// <param name="tag" type="String">标签名</param>
-                /// <param name="eles" type="Element/ElementCollection/Array[Element]">从元素或元素集合中获取</param>
+                /// <param name="context" type="Element/ElementCollection/Array[Element]">从元素或元素集合中获取</param>
                 /// <returns type="Array" />
-                if (eles) {
-                    var str = 'getElementsByTagName',
-                        list = [],
-                        temp;
-                    if ($.isEle(eles))
-                        return $.elementCollectionToArray(eles[str](tag));
-                    if ($.isEleConllection(eles) || $.isArr(eles)) {
-                        $.each(eles, function(ele) {
-                            temp = ele[str](tag)
-                            if (temp.length > 0)
-                                list = list.concat($.elementCollectionToArray(temp));
-                            //list = list.concat(temp);
-                        }, this);
-                        return list;
-                    }
-                }
-                return null;
+                return $.expr.find["TAG"](tag, context || document); 
             },
 
             getSelfIndex: function(ele) {
@@ -457,4 +426,4 @@
     });
 
     return query;
-}, "reference JQuery1.9.1");
+}, "JQuery1.9.1");

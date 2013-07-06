@@ -7,7 +7,7 @@
         amd="detectCR:1;async:1"></script>
     
     <script type="text/javascript">
-            $.require(["main/query", "lib/sizzle"], function(query, sizzle){
+            $.require(["main/query"], function(query){
                 //var a = sizzle("#a");
                 var div = $("div[attrText]");
                 var find = div.find("div[attrText]");
@@ -18,6 +18,12 @@
                 var index1 = c.index("div");
                 var index2 = c.index($("#c"));
                 var parents = c.parents();
+
+                var testUntil = a.nextUntil("#c");
+
+                var testGetId = $.getEleById("a");
+                var testGetTag = $.getEleByTag("div");
+                var testGetClass = $.getEleByClass("cls");
             });
             // $(function(){
             //     var c = $("div").eq(-1);
@@ -27,7 +33,7 @@
     </script>
 </head>
 <body style="overflow: auto">
-    <div id="a" attrText="1" style="width: 100px; height: 100px; background-color: Red;">
+    <div class="cls" id="a" attrText="1" style="width: 100px; height: 100px; background-color: Red;">
         <div id="d" attrText="1"></div>
     </div>
     <div id="b" style="width: 100px; height: 100px; background-color: Green;">
