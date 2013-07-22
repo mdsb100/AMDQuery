@@ -4,7 +4,6 @@ myQuery.define("app/app", ["base/promise", "main/query", "app/View", "app/Contro
     var models = [];
     //var controller = [];
     var defaultViewSrc = "app/View";
-    var ready;
 
     var getControllerSrcByViewSrc = function(viewSrc){
         var controllerSrc = viewSrc;
@@ -24,9 +23,7 @@ myQuery.define("app/app", ["base/promise", "main/query", "app/View", "app/Contro
     }
 
     var app = {
-        __launch: function(appSrc, promise){
-            ready = promise;
-
+        __launch: function(appSrc, ready){
             MVCReady = new Promise();
 
             var eles = query.find("View").reserve(),
@@ -84,7 +81,7 @@ myQuery.define("app/app", ["base/promise", "main/query", "app/View", "app/Contro
                 setTimeout(function(){
                     MVCReady.removeTree();
                     MVCReady = null;
-                });
+                }, 0);
             });
 
             MVCReady.rootResolve();
