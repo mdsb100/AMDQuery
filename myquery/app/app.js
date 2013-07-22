@@ -52,17 +52,22 @@ myQuery.define("app/app", ["base/promise", "main/query", "app/View", "app/Contro
                     return promise;
                 }).then(function(view){
                     var promise = new Promise();
+                    var modelsSrc = view.getModelsSrc();
+                    if(modelsSrc.length){
+                        require(modelsSrc, function(){
+                            var models = $.util.argToArray(arguments).map(function(Model){
+                                return new Model();
+                            });
+                            view.addModels(models);
 
-                    require(view.getModelsSrc(), function(){
-                        var models = $.util.argToArray(arguments).map(function(Model){
-                            return new Model();
+                            promise.resolve(view)
                         });
-                        view.addModels(models);
 
-                        promise.resolve(view)
-                    });
-
-                    return promise;
+                        return promise;
+                    }
+                    else{
+                        return view;
+                    }
                 }).then(function(view){
                     var promise = new Promise();
                     require(controllerSrc, function(Controller){
