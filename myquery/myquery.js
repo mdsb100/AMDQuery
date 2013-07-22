@@ -198,7 +198,7 @@
 
         },
         app: {
-            name: ""
+            src: ""
         }
     };
 
@@ -1530,6 +1530,7 @@
                 /// <returns type="self" />
                 var arg = checkArg.apply(this, arguments);
 
+                this.__promiseFlag = true;
                 this.state = 'todo';
                 this.result = null;
                 this.thens = [];
@@ -1618,7 +1619,7 @@
                     this.state = 'done';
                 }
 
-                if (this.result instanceof Promise) {
+                if (Promise.instance(this.result)) {
                     // 异步的情况，返回值是一个Promise，则当其resolve的时候，nextPromise才会被resolve
                     //所以状态改回todo
                     var self = this,
@@ -1664,7 +1665,7 @@
                 }
                 for (i = 0; i < len; i++) {
                     then = thens[i];
-                    then.result instanceof Promise && then.result.resolve(obj);
+                    Promise.instance(this.result) && then.result.resolve(obj);
                 }
                 return this;
             },
@@ -1742,6 +1743,10 @@
                 //}
             }
         };
+
+        Promise.instance = function(promise){
+            return promise instanceof Promise || promise.__promiseFlag === true;
+        }
 
         return Promise;
     }, "1.0.0");
@@ -2298,10 +2303,10 @@
                 return promise;
             }
         }).then(function() {
-            if (_config.app.name) {
+            if (_config.app.src) {
                 var promise = new Promise();
                 require("app/app", function(app) {
-                    app.__launch(promise);
+                    app.__launch(_config.app.src, promise);
                 });
                 return promise;
             }

@@ -1,8 +1,17 @@
-myQuery.define("app/Controller", ["module/Widget"], function($, Widget, undefined) {
+myQuery.define("app/Controller", ["main/object", "main/CustomeEvent", "app/View"], function($, object, CustomeEvent, View, undefined) {
     "use strict"; //启用严格模式
-    function Widget(){
+    var Controller = object.extend("Controller", {
+        init: function(view){
+            this.view = view;
+            this.models = view.getModels();        }
+    }, {
 
-    }
+    }, CustomeEvent);
 
-    return Widget;
+    object.providePropertyGetSet(Controller, {
+        view: "-pu -r",
+        models: "-pu -r"
+    });
+
+    return Controller;
 });
