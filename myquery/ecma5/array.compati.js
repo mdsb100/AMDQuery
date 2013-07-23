@@ -1,121 +1,124 @@
 ﻿/// <reference path="../myquery.js" />
-myQuery.define("ecma5/array.compati", function($, undefinded) {
+myQuery.define( "ecma5/array.compati", function( $ ) {
     "use strict"; //启用严格模式
     var name, obj = {
-        every: function(fun, context) {
-            var t = this,
-                ret = true,
-                i = 0;
-            this.forEach(function(item, index) {
-                if(fun.call(context, item, index, this) !== true) {
-                    ret = false;
-                    return false;
-                }
-            }, t);
-            return ret;
-        },
+        every: function( fun, context ) {
+          var t = this,
+            ret = true;
 
-        forEach: function(fun, context) {
-            for(var i = 0, len = this.length; i < len; i++) {
-                if(i in this && fun.call(context, this[i], i, this) === false) {
-                    break;
-                }
-
+          this.forEach( function( item, index ) {
+            if ( fun.call( context, item, index, this ) !== true ) {
+              ret = false;
+              return false;
             }
-            return this;
-        },
-        filter: function(fun, context) {
-            return $.filterArray(this, fun, context);
+          }, t );
+          return ret;
         },
 
-        indexOf: function(item, index) {
-            return $.inArray(this, item, index);
-        },
-
-
-        lastIndexOf: function(item, index) {
-            return $.lastInArray(this, item, index);
-        },
-
-        map: function(fun, context) {
-            var t = this,
-                len = t.length;
-            ret = new Array(len); //区别在于这里，forEach不会生成新的数组  
-            for(var i = 0; i < len; i++) {
-                if(i in t) {
-                    ret[i] = fun.call(context, t[i], i, t);
-                }
-            }
-            return ret;
-        },
-
-        reduce: function(fun, initialValue) {
-            var t = this,
-                len = t.length,
-                i = 0,
-                rv;
-            if(initialValue) {
-                rv = initialValue;
-            } else {
-                do {
-                    if(i in t) {
-                        rv = t[i++];
-                        break;
-                    }
-                    if(++i >= len) throw new Error("array contains no values, no initial value to return");
-                }
-                while (true);
+        forEach: function( fun, context ) {
+          for ( var i = 0, len = this.length; i < len; i++ ) {
+            if ( i in this && fun.call( context, this[ i ], i, this ) === false ) {
+              break;
             }
 
-            for(; i < len; i++) {
-                if(i in t) rv = fun.call(null, rv, t[i], i, t);
-            }
-
-            return rv;
+          }
+          return this;
+        },
+        filter: function( fun, context ) {
+          return $.filterArray( this, fun, context );
         },
 
-        reduceRight: function(fun, initialValue) {
-            var
-            t = thits,
-                len = t.length,
-                i = len - 1,
-                rv;
-            if(initialValue) {
-                rv = initialValue;
-            } else {
-                do {
-                    if(i in t) {
-                        rv = t[i--];
-                        break;
-                    }
-                    if(--i < 0) throw new Error("array contains no values, no initial value to return");
-                }
-                while (true);
-            }
-
-            while(i >= 0) {
-                if(i in t) rv = fun.call(null, rv, t[i], i, t);
-                i--;
-            }
-
-            return rv;
+        indexOf: function( item, index ) {
+          return $.inArray( this, item, index );
         },
 
-        some: function(fun, context) {
-            var ret = false;
-            this.forEach(function(item, index) {
-                if(fun.call(context, item, index, this) === true) {
-                    ret = true;
-                    return false;
-                }
-            }, this);
-            return ret;
+
+        lastIndexOf: function( item, index ) {
+          return $.lastInArray( this, item, index );
+        },
+
+        map: function( fun, context ) {
+          var t = this,
+            len = t.length;
+          var ret = new Array( len ); //区别在于这里，forEach不会生成新的数组  
+          for ( var i = 0; i < len; i++ ) {
+            if ( i in t ) {
+              ret[ i ] = fun.call( context, t[ i ], i, t );
+            }
+          }
+          return ret;
+        },
+
+        reduce: function( fun, initialValue ) {
+          var t = this,
+            len = t.length,
+            i = 0,
+            rv;
+          if ( initialValue ) {
+            rv = initialValue;
+          } else {
+            do {
+              if ( i in t ) {
+                rv = t[ i++ ];
+                break;
+              }
+              if ( ++i >= len ) throw new Error( "array contains no values, no initial value to return" );
+            }
+            while ( true );
+          }
+
+          for ( ; i < len; i++ ) {
+            if ( i in t ) rv = fun.call( null, rv, t[ i ], i, t );
+          }
+
+          return rv;
+        },
+
+        reduceRight: function( fun, initialValue ) {
+          var
+          t = this,
+            len = t.length,
+            i = len - 1,
+            rv;
+          if ( initialValue ) {
+            rv = initialValue;
+          } else {
+            do {
+              if ( i in t ) {
+                rv = t[ i-- ];
+                break;
+              }
+              if ( --i < 0 ) throw new Error( "array contains no values, no initial value to return" );
+            }
+            while ( true );
+          }
+
+          while ( i >= 0 ) {
+            if ( i in t ) rv = fun.call( null, rv, t[ i ], i, t );
+            i--;
+          }
+
+          return rv;
+        },
+
+        some: function( fun, context ) {
+          var ret = false;
+          this.forEach( function( item, index ) {
+            if ( fun.call( context, item, index, this ) === true ) {
+              ret = true;
+              return false;
+            }
+          }, this );
+          return ret;
         }
-    };
-    for(name in obj) {
-        Array.prototype[name] || (Array.prototype[name] = obj[name]);
+      };
+
+    for ( name in obj ) {
+      if ( Array.prototype[ name ] ) {
+        Array.prototype[ name ] = obj[ name ];
+      }
     }
+    
+  return Array;
 
-    return Array;
-
-});
+} );
