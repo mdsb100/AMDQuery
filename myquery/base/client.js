@@ -50,10 +50,10 @@ myQuery.define( "base/client", function( $ ) {
             _system.win = "NT";
             break;
         }
-      } else if ( reg.$1 ] ) {
+      } else if ( reg.$1 ) {
         _system.win = "ME";
       } else {
-        _system.win = reg.$1 ];
+        _system.win = reg.$1 ;
       }
     }
   }
