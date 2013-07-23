@@ -5,9 +5,8 @@
     <link href="../../css/reset.css" rel="stylesheet" type="text/css" />
     <!-- <script src="http://192.168.1.102:8080/package/../../myquery/myquery.js" type="text/javascript" myquery="define:$;amd:false"></script>-->
     <script src="../../myquery/myquery.js" type="text/javascript" myquery="define:$;amd:0;"
-        amd="detectCR:1;async:1"></script>
+        amd="detectCR:1;async:1;console:1"></script>
     <!--<script src="../../myquery/oye.js" type="text/javascript"></script>-->
-    <script src="../../myquery/test/test5.js" type="text/javascript"></script>
     <script type="text/javascript">
         //        require.config("test/a", "/package/../../myquery/test/test4.js");
         //      
@@ -20,17 +19,22 @@
         //            test1.alert();
         //        });
 
-        myQuery.require(["test/test1", "module/math"], function (test1, math) {
-            alert($.valueOf())
-            test1.alert();
-            var m1 = new math.martrix(2, 3, [1, 2, 3, 4, 5, 6]);
-            var m2 = new math.martrix(3, 2, [1, 2, 3, 4, 5, 6]);
-            var m3 = new math.martrix(2, 3, [1, 2, 3, 4, 5, 6]);
+        // myQuery.require(["test/test1", "module/math"], function (test1, math) {
+        //     alert($.valueOf())
+        //     test1.alert();
+        //     var m1 = new math.martrix(2, 3, [1, 2, 3, 4, 5, 6]);
+        //     var m2 = new math.martrix(3, 2, [1, 2, 3, 4, 5, 6]);
+        //     var m3 = new math.martrix(2, 3, [1, 2, 3, 4, 5, 6]);
 
-            m1.addition(m3);
-            m1.multiply(m2);
-            var ret = m1.multiply(m2);
+        //     m1.addition(m3);
+        //     m1.multiply(m2);
+        //     var ret = m1.multiply(m2);
+        // });
 
+        require.variable("$variable", "../test");
+
+        myQuery.require(["$variable/base/requireTest1"], function(){
+            alert("variable is work");
         });
 
 //        $.require(["main/attr"], function (query, main) {

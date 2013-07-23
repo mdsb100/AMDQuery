@@ -717,9 +717,9 @@
             }
             this.handlers = {};
             this.module = null;
-            this.id = module;
+            this.id = ClassModule.variable(module);
             this.init(dependencies, factory, status, container, fail);
-            ClassModule.setModule(module, this);
+            ClassModule.setModule(this.id, this);
 
             //this.check();
         }
@@ -825,6 +825,7 @@
                 } else {
                     ret = util.getPath(path, suffix);
                 }
+
                 return ret;
             },
             getModule: function(k) {
@@ -892,6 +893,8 @@
             requireQueue: [],
             resource: {},
             rootPath: null,
+            variableMap: {},
+            variablePrefix: "$",
             setModule: function(k, v) {
                 !this.getModule(k) && (this.modules[k] = v);
                 return this;
@@ -902,6 +905,21 @@
                 2: "require",
                 3: "define",
                 4: "ready"
+            },
+            variable: function(ret){
+                var variableReg = new RegExp( "\\"+ClassModule.variablePrefix+"[^\\/]+", "g"),
+                variables = ret.match(variableReg);
+
+                if(variables && variables.length){
+                    for (var i = variables.length - 1, path; i >= 0; i--) {
+                        path = require.variable(variables[i]);
+                        if(path){
+                            ret = ret.replace(variables[i], path)
+                        }
+                    };
+                }
+
+                return ret;
             }
         });
 
@@ -1045,7 +1063,6 @@
                 _config.amd.console && $.console.log("module " + id + " ready");
                 //_getMoudule(id, F);
                 //当传入的模块是已准备好的，开启转正机会
-                //setTimeout?
                 this.holdReady().trigger();
             },
             getStatus: function(isStr) {
@@ -1063,6 +1080,9 @@
                 return this;
             },
             init: function(dependencies, factory, status, container, fail) {
+                for (var i = dependencies.length - 1; i >= 0; i--) {
+                    dependencies[i] = ClassModule.variable(dependencies[i]);
+                };
                 this.dependencies = dependencies;
                 this.factory = factory;
                 this.status = status || 0;
@@ -1104,7 +1124,7 @@
                 }
                 return this;
             },
-            loadDependencies: function() { //要改
+            loadDependencies: function() {
                 var dep = this.dependencies,
                     i = 0,
                     len, item, module;
@@ -1189,7 +1209,6 @@
                     break;
                 case 2:
                     if (typeof arg[0] == "string") {
-                        ClassModule.checkNamed(id);
                         id = id; //util.getJScriptConfig(["src"], true).src; //_tempId();_amdAnonymousID
                         body = dependencies;
                         dependencies = [];
@@ -1213,9 +1232,10 @@
                             msg: id + ':two arguments ahead should be String and Array'
                         }, "TypeError");
                     }
-                    ClassModule.checkNamed(id);
                     factory = ClassModule.funBody(arg[2]);
             }
+            id = ClassModule.variable(id);
+            ClassModule.checkNamed(id);
             container = ClassModule.getContainer(id);
             if (ret = ClassModule.getModule(id)) {
                 deep = ret.getStatus();
@@ -1267,6 +1287,7 @@
                     });
                 }
             }
+            
             success && typeof success != "function" && util.error({
                 fn: 'require',
                 msg: module + ':success should be a Function'
@@ -1360,6 +1381,18 @@
                 }
                 return this;
 
+            },
+
+            variable: function(name, path){
+                if(name.indexOf(ClassModule.variablePrefix) != 0){
+                    name = ClassModule.variablePrefix+name;
+                }
+                if(path){
+                    ClassModule.variableMap[name] = path;
+                }
+                else{
+                    return ClassModule.variableMap[name];
+                }
             }
         });
 
@@ -1665,7 +1698,7 @@
                 }
                 for (i = 0; i < len; i++) {
                     then = thens[i];
-                    Promise.instance(this.result) && then.result.resolve(obj);
+                    Promise.instance(then.result) && then.result.resolve(obj);
                 }
                 return this;
             },
@@ -1745,7 +1778,7 @@
         };
 
         Promise.instance = function(promise){
-            return promise instanceof Promise || promise.__promiseFlag === true;
+            return promise instanceof Promise || (promise ? promise.__promiseFlag === true : false);
         }
 
         return Promise;
