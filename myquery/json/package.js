@@ -6,6 +6,6 @@
   return {
     main: main,
     html5: html5
-  }
+  };
 
 } );
