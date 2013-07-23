@@ -2,6 +2,7 @@ myQuery.define("app/Controller", ["main/object", "main/CustomEvent"], function($
     "use strict"; //启用严格模式
     var Controller = object.extend("Controller", {
         init: function(view){
+            this._super();
             this.view = view;
             this.models = view.getModels();        }
     }, {

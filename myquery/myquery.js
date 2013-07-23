@@ -2337,9 +2337,20 @@
             }
         }).then(function() {
             if (_config.app.src) {
+                var src = _config.app.src;
+
+                if (/^\//.test(src)) {
+                    src = src.replace(/((.*?\/){3}).*$/, '$1');
+                    src = src.substr(1)
+                } else {
+                    src = src.replace(/[^\/]+$/, '');
+                }
+
+                require.variable("$app", src);
+
                 var promise = new Promise();
                 require("app/app", function(app) {
-                    app.__launch(_config.app.src, promise);
+                    app.__initApp(_config.app.src, promise);
                 });
                 return promise;
             }
