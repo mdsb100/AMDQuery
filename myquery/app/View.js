@@ -1,4 +1,4 @@
-myQuery.define("app/View", ["main/object", "main/attr", "main/CustomeEvent", "module/Widget"], function($, object, attr, CustomeEvent, Widget, undefined) {
+myQuery.define("app/View", ["main/object", "main/attr", "main/CustomEvent", "module/Widget"], function($, object, attr, CustomEvent, Widget, undefined) {
     "use strict"; //启用严格模式
     var View = object.extend("View", {
         init: function(ViewElement, models){
@@ -22,12 +22,12 @@ myQuery.define("app/View", ["main/object", "main/attr", "main/CustomeEvent", "mo
         }
     }, {
 
-    }, CustomeEvent);
+    }, CustomEvent);
 
     object.providePropertyGetSet(View, {
         element: "-pu -r",
         src: "-pu -r",
-        modelsSrc: "-pu -r"
+        modelsSrc: "-pu -r",
         models: "-pu -r"
     });
 

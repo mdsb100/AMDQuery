@@ -1,4 +1,4 @@
-myQuery.define("app/Model", ["main/object", "main/CustomeEvent"], function($, object, CustomeEvent, undefined) {
+myQuery.define("app/Model", ["main/object", "main/CustomEvent"], function($, object, CustomEvent, undefined) {
     "use strict"; //启用严格模式
     var Model = object.extend("Model", {
         init: function(){
@@ -6,7 +6,7 @@ myQuery.define("app/Model", ["main/object", "main/CustomeEvent"], function($, ob
         }
     }, {
 
-    }, CustomeEvent);
+    }, CustomEvent);
 
     return Model;
 });
