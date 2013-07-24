@@ -62,8 +62,8 @@
       }, this );
       return this;
     }
-  }
-
+  };
+  
   localStorage && ( $.Storage.local = new Storage( localStorage ) );
   sessionStorage && ( $.Storage.session = new Storage( sessionStorage ) );
 
