@@ -30,7 +30,7 @@ myQuery.define( "ui/tabbar", [
             target: self.target[ 0 ],
             tabButton: this,
             event: e
-          }
+          };
 
           self.target.trigger( para.type, self.target[ 0 ], para );
         };
