@@ -648,7 +648,7 @@ myQuery.define( "ui/turnBook", [ "main/class", "html5/css3", "ui/swappable", "mo
           tx: bookWidth
         } ).setPageCss( index + 1, {
           left: "0px"
-        } ).appendTo( index + 1 )
+        } ).appendTo( index + 1 );
         this.setContextCss( index - 2 ).setBoxCss( index - 2, {
           left: ( -pageWidth ) + "px",
           width: pageWidth + "px",
