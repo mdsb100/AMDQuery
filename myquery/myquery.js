@@ -134,20 +134,20 @@
                     _suffix = suffix,
                     _aKey, _url, ma;
                 if (!_suffix) {
-                    _suffix = '.js';
+                    _suffix = ".js";
                 }
                 if (ma = _key.match(/\.[^\/\.]*$/g)) {
                     _url = _key;
                     if (ma[ma.length - 1] != _suffix) {
-                        _url += _suffix
+                        _url += _suffix;
                     }
                 } else {
-                    _url = basePath + '/' + _key + (_suffix || ".js");
+                    _url = basePath + "/" + _key + (_suffix || ".js");
                 }
                 if (/^\//.test(_url)) {
-                    _url = rootPath + _url.replace(/\//, '');
+                    _url = rootPath + _url.replace(/\//, "");
                 } else if (!/^[a-z]+?:\/\//.test(_url)) {
-                    _url = basePath + '/' + _url;
+                    _url = basePath + "/" + _url;
                 }
                 return _url;
             },
@@ -161,18 +161,18 @@
         count = 0,
         reg = RegExp,
         basePath = (function() {
-            var ret = util.getJScriptConfig(["src"]).src.replace(/\/[^\/]+$/, '');
+            var ret = util.getJScriptConfig(["src"]).src.replace(/\/[^\/]+$/, "");
             if (!/^[a-z]+?:\/\//.test(ret)) {
                 var sl = document.location.toString();
                 if (/^\//.test(ret)) {
-                    ret = sl.replace(/((.*?\/){3}).*$/, '$1') + ret.substr(1);
+                    ret = sl.replace(/((.*?\/){3}).*$/, "$1") + ret.substr(1);
                 } else {
-                    ret = sl.replace(/[^\/]+$/, '') + ret;
+                    ret = sl.replace(/[^\/]+$/, "") + ret;
                 }
             }
             return ret;
         }()),
-        rootPath = basePath.replace(/((.*?\/){3}).*$/, '$1'),
+        rootPath = basePath.replace(/((.*?\/){3}).*$/, "$1"),
         msgDiv, runTime, ie678 = "v" == "/v";
 
     var _config = {
@@ -217,14 +217,14 @@
     var myQuery = function(a, b, c) {
         /// <summary>创造一个新$对象
         /// <para>例:$(function(){将会在window.onload时执行})</para>
-        /// <para>例:$('div')</para>
+        /// <para>例:$("div")</para>
         /// <para>例:$([ele,ele,ele])</para>
         /// <para>以下依赖main/query</para>
-        /// <para>例:$($('#A'))</para>
+        /// <para>例:$($("#A"))</para>
         /// <para>以下依赖main/dom</para>
-        /// <para>例:$({h:100,w:100},'div')</para>
-        /// <para>例:$(null,'div',document.body)</para>
-        /// <para>例:$({h:100,w:100},'div',document.body)</para>
+        /// <para>例:$({h:100,w:100},"div")</para>
+        /// <para>例:$(null,"div",document.body)</para>
+        /// <para>例:$({h:100,w:100},"div",document.body)</para>
         /// <para>对于table的appendChild,removeChild可能不兼容低版本IE浏览器,table必须插入tbody</para>
         /// </summary>
         /// <param name="a" type="Object/String/Element/fun/$">可重载</param>
@@ -236,7 +236,7 @@
             if ((typeof a == "object" || a == undefined || a == null) && typeof b == "string") {
                 //if ($.css) {
                 count++;
-                if (b == undefined || b == null) b = 'div';
+                if (b == undefined || b == null) b = "div";
                 var obj = document.createElement(b);
                 this.init([obj]);
 
@@ -340,8 +340,7 @@
             /// <returns type="Function" />
             return function() {
                 return fun.apply(context || window, arguments);
-            }
-
+            };
         },
 
         console: util.console,
@@ -353,7 +352,7 @@
             if (/^<.*>$/.test(tag)) {
                 div = document.createElement("div");
                 div.innerHTML = tag;
-                ele = div.childNodes
+                ele = div.childNodes;
                 div = null;
             } else {
                 ele = document.createElement(tag);
@@ -416,7 +415,7 @@
             } else {
                 runTime = now;
                 msg = "root:0";
-            };
+            }
             console.log(msg);
         },
         getValueAndUnit: function(value) {
@@ -432,7 +431,7 @@
                 unit: ""
             };
             if (typeof value == "number") {
-                result.value = value
+                result.value = value;
             } else if (typeof value == "string") {
                 value = value.match(/[+-]?\d+\.?\d*\w+/g);
                 if (value) {
@@ -454,7 +453,7 @@
             id: /^#((?:[\w\u00c0-\uFFFF-]|\\.)+)/
             //num: /^(-?\\d+)(\\.\\d+)?$/,
             // className: function(className) {
-            //     return reg = new RegExp('(\\s|^)' + className + '(\\s|$)')
+            //     return reg = new RegExp("(\\s|^)" + className + "(\\s|$)")
             // },
             //int: /(\+|\-)?\d+/g,
             //numAndEng: /[A-Za-z0-9]+/,
@@ -507,7 +506,7 @@
                 head && name.splice(0, 0, head);
 
                 for (var i = 1, item; i < name.length; i++) {
-                    item = name[i]
+                    item = name[i];
                     name[i] = item.substr(0, 1).toUpperCase() + item.slice(1);
                 }
                 return name.join("");
@@ -542,7 +541,7 @@
             $.isArr(eles) && $.each(eles, function(ele) {
                 $.isEle(ele) && this.eles.push(ele);
             }, this);
-            return this
+            return this;
         },
 
         constructor: $,
@@ -678,7 +677,7 @@
             return this;
         },
         dequeue: function(context, args) {
-            var fn = this.list.shift()
+            var fn = this.list.shift();
             if (fn && fn === "inprogress") {
                 fn = this.list.shift();
             }
@@ -733,8 +732,8 @@
             checkNamed: function(id) {
                 if (this.anonymousID != null && id.indexOf("tempDefine") < 0) {
                     id !== this.anonymousID && util.error({
-                        fn: 'define',
-                        msg: 'the named ' + id + ' is not equal require'
+                        fn: "define",
+                        msg: "the named " + id + " is not equal require"
                     });
                 }
             },
@@ -776,20 +775,20 @@
             funBody: function(md) {
                 //将factory强制转换为function类型，供ClassModule使用
                 if (!md) {
-                    md = '';
+                    md = "";
                 }
                 switch (typeof md) {
-                    case 'function':
+                    case "function":
                         return md;
-                    case 'string':
+                    case "string":
                         return function() {
                             return new String(md);
                         };
-                    case 'number':
+                    case "number":
                         return function() {
                             return new Number(md);
                         };
-                    case 'boolean':
+                    case "boolean":
                         return function() {
                             return new Boolean(md);
                         };
@@ -813,11 +812,11 @@
                 var ret, path, ma;
                 if (path = ClassModule.maps[key]) {} //不需要匹配前部分
                 else {
-                    path = key
+                    path = key;
                 }
 
                 if (_config.amd.rootPath) {
-                    ma = key.match(/\.[^\/\.]*$/g)
+                    ma = key.match(/\.[^\/\.]*$/g);
                     if (!ma || ma[ma.length - 1] != suffix) {
                         key += suffix;
                     }
@@ -862,7 +861,7 @@
                 ClassModule.resource[url] = id;
 
                 var scripts = document.createElement("script"),
-                    head = document.getElementsByTagName('HEAD')[0],
+                    head = document.getElementsByTagName("HEAD")[0],
                     timeId;
 
                 error && (scripts.onerror = function() {
@@ -871,12 +870,12 @@
                 });
 
                 scripts.onload = scripts.onreadystatechange = function() {
-                    (!this.readyState || this.readyState == "loaded" || this.readyState == 'complete') && clearTimeout(timeId);
-                }
+                    (!this.readyState || this.readyState == "loaded" || this.readyState == "complete") && clearTimeout(timeId);
+                };
 
                 scripts.setAttribute("src", url);
-                scripts.setAttribute('type', 'text/javascript');
-                scripts.setAttribute('language', 'javascript');
+                scripts.setAttribute("type", "text/javascript");
+                scripts.setAttribute("language", "javascript");
 
                 timeId = setTimeout(function() {
                     error && error();
@@ -890,7 +889,6 @@
             maps: {},
             modules: {},
             namedModules: {},
-            requireQueue: [],
             resource: {},
             rootPath: null,
             variableMap: {},
@@ -914,9 +912,9 @@
                     for (var i = variables.length - 1, path; i >= 0; i--) {
                         path = require.variable(variables[i]);
                         if(path){
-                            ret = ret.replace(variables[i], path)
+                            ret = ret.replace(variables[i], path);
                         }
-                    };
+                    }
                 }
 
                 return ret;
@@ -958,8 +956,8 @@
                         if (status > 0 && _config.amd.detectCR == true) {
                             if (sMD = ClassModule.detectCR(this.id, dps)) {
                                 util.error({
-                                    fn: 'define',
-                                    msg: 'There is a circular reference between "' + sMD + '" and "' + module + '"'
+                                    fn: "define",
+                                    msg: "There is a circular reference between '" + sMD + "' and '" + module + "'"
                                 }, "ReferenceError");
                                 return;
                             }
@@ -1057,7 +1055,7 @@
                 };
 
                 if (F && F.constructor != Array) {
-                    F = [F]
+                    F = [F];
                 };
                 this.module = F;
                 _config.amd.console && $.console.log("module " + id + " ready");
@@ -1082,7 +1080,7 @@
             init: function(dependencies, factory, status, container, fail) {
                 for (var i = dependencies.length - 1; i >= 0; i--) {
                     dependencies[i] = ClassModule.variable(dependencies[i]);
-                };
+                }
                 this.dependencies = dependencies;
                 this.factory = factory;
                 this.status = status || 0;
@@ -1105,8 +1103,8 @@
                 }
 
                 (url = ClassModule.getPath(id, ".js")) || util.error({
-                    fn: 'require',
-                    msg: 'Could not load module: ' + id + ', Cannot match its URL'
+                    fn: "require",
+                    msg: "Could not load module: " + id + ", Cannot match its URL"
                 });
                 //如果当前模块不是已知的具名模块，则设定它为正在处理中的模块，直到它的定义体出现
                 //if (!namedModule) { ClassModule.anonymousID = id; } //这边赋值的时候应当是影射的
@@ -1219,8 +1217,8 @@
                         dependencies = temp;
                     } else {
                         util.error({
-                            fn: 'define',
-                            msg: id + ':The first arguments should be String or Array'
+                            fn: "define",
+                            msg: id + ":The first arguments should be String or Array"
                         }, "TypeError");
                     }
                     factory = ClassModule.funBody(body);
@@ -1228,8 +1226,8 @@
                 default:
                     if (!(typeof arg[0] == "string" && arg[1] && arg[1].constructor == Array)) {
                         util.error({
-                            fn: 'define',
-                            msg: id + ':two arguments ahead should be String and Array'
+                            fn: "define",
+                            msg: id + ":two arguments ahead should be String and Array"
                         }, "TypeError");
                     }
                     factory = ClassModule.funBody(arg[2]);
@@ -1289,15 +1287,15 @@
             }
             
             success && typeof success != "function" && util.error({
-                fn: 'require',
-                msg: module + ':success should be a Function'
+                fn: "require",
+                msg: module + ":success should be a Function"
             }, "TypeError");
 
             if (typeof fail != "function") {
                 fail = function() {
                     util.error({
-                        fn: 'require',
-                        msg: module + ':Could not load , Cannot fetch the file'
+                        fn: "require",
+                        msg: module + ":Could not load , Cannot fetch the file"
                     });
                 };
             }
@@ -1545,7 +1543,7 @@
                 /// <returns type="Promise" />
                 var promise = new Promise(nextToDo, nextFail, nextProgress, arguments[3] || this.path);
                 promise.parent = this; //相互应用是否有问题
-                if (this.state != 'todo') {
+                if (this.state != "todo") {
                     // 如果当前状态是已完成，则nextOK会被立即调用
                     promise.resolve(this.result);
                 } else {
@@ -1564,7 +1562,7 @@
                 var arg = checkArg.apply(this, arguments);
 
                 this.__promiseFlag = true;
-                this.state = 'todo';
+                this.state = "todo";
                 this.result = null;
                 this.thens = [];
                 this.todo = arg[0] || function(obj) {
@@ -1631,7 +1629,7 @@
                 /// <summary>执行</summary>
                 /// <param name="obj" type="any/arguments">参数，如果参数是argument则会使用apply</param>
                 /// <returns type="self" />
-                if (this.state != 'todo') {
+                if (this.state != "todo") {
                     util.error({
                         fn: "Promise.resolve",
                         msg: "already resolved"
@@ -1642,14 +1640,14 @@
                 if (this.fail) {
                     try {
                         this.result = this.call("todo", obj);
-                        this.state = 'done';
+                        this.state = "done";
                     } catch (e) {
                         this.result = this.call("fail", obj);
-                        this.state = 'fail';
+                        this.state = "fail";
                     }
                 } else {
                     this.result = this.call("todo", obj);
-                    this.state = 'done';
+                    this.state = "done";
                 }
 
                 if (Promise.instance(this.result)) {
@@ -1800,7 +1798,7 @@
                 /// <summary>是否为DOM元素的集合</summary>
                 /// <param name="a" type="any">任意对象</param>
                 /// <returns type="Boolean" />
-                if ($.isType(a, '[object NodeList]') || $.isType(a, '[object HTMLCollection]') || ($.client.browser.ie678 && $.isNum(a.length) && !$.isArr(a.length) && ($.isObj(a.item) || $.isStr(a.item)))) return true;
+                if ($.isType(a, "[object NodeList]") || $.isType(a, "[object HTMLCollection]") || ($.client.browser.ie678 && $.isNum(a.length) && !$.isArr(a.length) && ($.isObj(a.item) || $.isStr(a.item)))) return true;
                 return false;
             },
             isArguments: function(a) {
@@ -1810,7 +1808,7 @@
                 /// <summary>是否为数组</summary>
                 /// <param name="a" type="any">任意对象</param>
                 /// <returns type="Boolean" />
-                return $.isType(a, '[object Array]');
+                return $.isType(a, "[object Array]");
             },
             isArrlike: function(obj) {
                 /// <summary>是否像一个数组</summary>
@@ -1853,13 +1851,13 @@
                 /// <summary>是否为数组</summary>
                 /// <param name="a" type="any">任意对象</param>
                 /// <returns type="Boolean" />
-                return $.isType(a, '[object Boolean]');
+                return $.isType(a, "[object Boolean]");
             },
             isDate: function(a) {
                 /// <summary>是否为日期</summary>
                 /// <param name="a" type="any">任意对象</param>
                 /// <returns type="Boolean" />
-                return $.isType(a, '[object Date]');
+                return $.isType(a, "[object Date]");
             },
             isDoc: function(a) {
                 /// <summary>是否为Document</summary>
@@ -1873,7 +1871,7 @@
                 /// <returns type="Boolean" />
                 if (!a || a === document) return false;
                 var str = (a.constructor && a.constructor.toString()) + Object.prototype.toString.call(a)
-                if ((str.indexOf('HTML') > -1 && str.indexOf('Collection') == -1) || ($.client.browser.ie678 && a.nodeType === 1)) {
+                if ((str.indexOf("HTML") > -1 && str.indexOf("Collection") == -1) || ($.client.browser.ie678 && a.nodeType === 1)) {
                     return true; //可能nodeType有问题
                 }
                 return false;
@@ -1899,7 +1897,7 @@
                 /// <summary>是否为日期</summary>
                 /// <param name="a" type="any">任意对象</param>
                 /// <returns type="Boolean" />
-                return $.isType(a, '[object Error]');
+                return $.isType(a, "[object Error]");
             },
             isFinite: function(a) {
                 /// <summary>是否为Finite</summary>
@@ -1911,13 +1909,13 @@
                 /// <summary>是否为方法</summary>
                 /// <param name="a" type="any">任意对象</param>
                 /// <returns type="Boolean" />
-                return $.isType(a, '[object Function]');
+                return $.isType(a, "[object Function]");
             },
             isNativeJSON: function(a) {
                 /// <summary>是否为本地JSON</summary>
                 /// <param name="a" type="any">任意对象</param>
                 /// <returns type="Boolean" />
-                return window.json && $.isType(a, 'object JSON');
+                return window.json && $.isType(a, "object JSON");
             },
             isNaN: function(a) {
                 /// <summary>是否为NaN</summary>
@@ -1929,7 +1927,7 @@
                 /// <summary>是否为数字</summary>
                 /// <param name="a" type="any">任意对象</param>
                 /// <returns type="Boolean" />
-                return $.isType(a, '[object Number]');
+                return $.isType(a, "[object Number]");
             },
             isNumeric: function(a) {
                 return !isNaN(parseFloat(a)) && isFinite(a);
@@ -1951,7 +1949,7 @@
                 /// <summary>是否为对象</summary>
                 /// <param name="a" type="any">任意对象</param>
                 /// <returns type="Boolean" />
-                return $.isType(a, '[object Object]');
+                return $.isType(a, "[object Object]");
             },
             isPlainObj: function(obj) {
                 /// <summary>是否为纯obj</summary>
@@ -1979,18 +1977,18 @@
                 /// <summary>是否为字符产</summary>
                 /// <param name="a" type="any">任意对象</param>
                 /// <returns type="Boolean" />
-                return $.isType(a, '[object RegExp]');
+                return $.isType(a, "[object RegExp]");
             },
             isStr: function(a) {
                 /// <summary>是否为字符产</summary>
                 /// <param name="a" type="any">任意对象</param>
                 /// <returns type="Boolean" />
-                return $.isType(a, '[object String]');
+                return $.isType(a, "[object String]");
             },
             isType: function(a, b) {
                 /// <summary>判断对象类型</summary>
                 /// <param name="a" type="any">任意对象</param>
-                /// <param name="b" type="String">例:'[object Function]'</param>
+                /// <param name="b" type="String">例:"[object Function]"</param>
                 /// <returns type="Boolean" />
                 return toString.call(a) == b;
             },
@@ -2340,17 +2338,18 @@
                 var src = _config.app.src;
 
                 if (/^\//.test(src)) {
-                    src = src.replace(/((.*?\/){3}).*$/, '$1');
+                    src = src.replace(/((.*?\/){3}).*$/, "$1");
                     src = src.substr(1)
                 } else {
-                    src = src.replace(/[^\/]+$/, '');
+                    src = src.replace(/[^\/]+$/, "");
                 }
 
                 require.variable("$app", src);
 
                 var promise = new Promise();
-                require("app/app", function(app) {
-                    app.__initApp(_config.app.src, promise);
+                require(src, function(Application) {
+                    $.application = new Application(promise);
+                    //Application.__initApp(_config.app.src, promise);
                 });
                 return promise;
             }
