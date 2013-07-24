@@ -14,16 +14,16 @@
         enable: function () {
             var fun = this.event;
             this.disable();
-            this.target.on('mousemove', fun).on('mousedown', fun);
-            $(document).on('mouseup', fun);
+            this.target.on("mousemove", fun).on("mousedown", fun);
+            $(document).on("mouseup", fun);
             this.options.disabled = true;
             return this;
         },
         disable: function () {
             var fun = this.event;
-            this.target.off('mousemove', fun).off('mousedown', fun);
-            //event.document.off(window, 'scroll', fun);
-            $(document).off('mouseup', fun);
+            this.target.off("mousemove", fun).off("mousedown", fun);
+            //event.document.off(window, "scroll", fun);
+            $(document).off("mouseup", fun);
             this.options.disabled = false;
             return this;
         },
@@ -34,7 +34,7 @@
             ///先用简单实现
             ///这里去计算path 最后返回如: "LeftToRight","Linear","Cicrle" 多元线性回归;
             return swaptype;
-        },  
+        },
         getPara: function (para, time, range, x1, y1, x2, y2) {
             var diff = (new Date()) - time;
             para.distance = Math.round(math.distance(x1, y1, x2, y2));
@@ -57,14 +57,14 @@
             if (index === undefined) {
                 return this.path;
             }
-            index *= 2
+            index *= 2;
             return [this.path[index], this.path[index + 1]];
         },
         getPathLast: function () {
             return this.getPath(this.path.length / 2 - 1);
         },
         isInPath: function (x, y) {
-            for (var path = this.path, i = this.path.length - 1, item; i >= 0; i -= 2)
+            for (var path = this.path, i = this.path.length - 1; i >= 0; i -= 2)
                 if (path[i] === x && path[i + 1] === y) return i;
             return -1;
         },
@@ -167,9 +167,9 @@
                             clearTimeout(timeout);
                             timeout = setTimeout(function () {
                                 para.type = self.getEventName("pause");
-                                para.swapType = self.computeSwapType()
+                                para.swapType = self.computeSwapType();
                                 target.trigger(para.type, target[0], para);
-                            }, opt.pauseSensitivity)
+                            }, opt.pauseSensitivity);
                             //}
                             lastEvent = e;
                         }
@@ -200,7 +200,7 @@
             };
         },
         render: function () {
-            var opt = this.options
+            var opt = this.options;
             this.target.css({
                 cursor: opt.cursor
             });
@@ -224,7 +224,7 @@
         /// <para>fun obj.swappause:滑动暂停</para>
         /// <para>fun obj.swapstop:滑动结束</para>
         /// <para>返回的event:</para>
-        /// <para>{ type: 'swapstart', offsetX: x, offsetY: y, event: e</para>
+        /// <para>{ type: "swapstart", offsetX: x, offsetY: y, event: e</para>
         /// <para>, speed: 0, target: this, startX: self.startX, startY: self.startY</para>
         /// <para>, path: self.path, swapType: undefined</para>
         /// <para>, angle: undefined,direction: undefined, distance: undefined</para>
@@ -237,7 +237,7 @@
         /// <param name="args" type="any">在调用方法的时候，后面是方法的参数</param>
         /// <returns type="$" />
         return swappable.apply(this, arguments);
-    }
+    };
 
     return swappable;
 });
