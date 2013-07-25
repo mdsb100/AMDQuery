@@ -65,7 +65,7 @@
           //_ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
           //type == "post" && _ajax.setRequestHeader("Content-type", "");
           _ajax.onreadystatechange = function( ) {
-            if ( _ajax.readyState == 4 && _ajax.status == 200 ) {
+            if ( (_ajax.readyState == 4 || _ajax.readyState == 0)  &&  ((_ajax.status >= 200 && _ajax.status <300) || _ajax.status == 304) ) {
               var response;
               clearTimeout( _timeId );
               $.trigger( "ajaxStop", _ajax, o );
