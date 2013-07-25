@@ -33,7 +33,7 @@
 
         require.variable("$variable", "../test");
 
-        myQuery.require(["$variable/base/requireTest1"], function(){
+        myQuery.require(["$variable/base/requireTest1", "main/attr", "main/attr"], function(){
             alert("variable is work");
         });
 
