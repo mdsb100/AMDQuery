@@ -1,4 +1,4 @@
-myQuery.define( "app/Application", [ "base/promise", "main/attr", "main/CustomEvent", "main/query", "main/object", "app/View", "app/Controller", "ecma5/array.compati" ], function( $, Promise, attr, CustomEvent, query, object, View, Controller, Array, undefined ) {
+myQuery.define( "app/Application", [ "base/promise", "main/attr", "main/CustomEvent", "main/query", "main/object", "ecma5/array.compati" ], function( $, Promise, attr, CustomEvent, query, object, Array, undefined ) {
   "use strict"; //启用严格模式
   //var views = [];
   var models = [ ];
@@ -25,21 +25,25 @@ myQuery.define( "app/Application", [ "base/promise", "main/attr", "main/CustomEv
   var Application = object.extend( "Application", {
     init: function( promiseCallback ) {
       this._super( );
-      var self = this;
-
-      var ready = new Promise( );
-
-      var eles = query.find( "View" ),
-        viewSrc = "",
-        controllerSrc = "";
 
       this.views = [ ];
       this.controllers = [ ];
-      this.models = [];
+      this.models = [ ];
+      this.ready = new Promise( );
+      this.__promiseCallback = promiseCallback;
+
+    },
+    load: function( ) {
+      var self = this;
+
+      var
+      ready = this.ready,
+      eles = query.find( "View" ),
+      viewSrc = "",
+      controllerSrc = "";
 
       eles.each( function( element ) {
         //注意销毁
-
         viewSrc = attr.getAttr( element, "src" ) || defaultViewSrc;
         controllerSrc = attr.getAttr( element, "controller" ) || getControllerSrcByViewSrc( viewSrc );
 
@@ -47,34 +51,29 @@ myQuery.define( "app/Application", [ "base/promise", "main/attr", "main/CustomEv
           var promise = new Promise( );
           require( viewSrc, function( View ) {
             var view = new View( element );
-            self.views.push(view);
             promise.resolve( view );
           } );
           return promise;
-        } )
-        .then(function(view){
-            var promise = new Promise();
-            var modelsSrc = view.getModelsSrc();
-            if(modelsSrc.length){
-                require(modelsSrc, function(){
-                    var models = $.util.argToArray(arguments).map(function(Model){
-                        return new Model();
-                    });
-                    view.addModels(models);
-                    self.models = this.models.concat(models);
-                    promise.resolve(view)
-                });
-                return promise;
-            }
-            else{
-                return view;
-            }
-        })
-        .then( function( view ) {
+        } ).then( function( view ) {
+          var promise = new Promise( );
+          var modelsSrc = view._getModelsSrc( );
+          var modelsElement = view._getModelsElement( );
+
+          if ( modelsSrc.length ) {
+            require( modelsSrc, function( ) {
+              var models = $.util.argToArray( arguments ).map( function( Model, index ) {
+                return new Model( modelsElement[index] );
+              } );
+              promise.resolve( view )
+            } );
+            return promise;
+          } else {
+            return view;
+          }
+        } ).then( function( view ) {
           var promise = new Promise( );
           require( controllerSrc, function( Controller ) {
             var controller = new Controller( view );
-            self.controllers.push(controller);
             promise.resolve( controller );
           } );
           return promise;
@@ -85,12 +84,74 @@ myQuery.define( "app/Application", [ "base/promise", "main/attr", "main/CustomEv
 
       ready.then( function( ) {
         self.launch( );
-        promiseCallback.resolve( );
+        self.trigger( "launch", self );
+        self.__promiseCallback.resolve( );
+        delete self.__promiseCallback;
       } );
 
       ready.rootResolve( );
+    },
+    _getView: function( id ) {
+      var result;
+      this.views.forEach( function( view, index ) {
+        if ( view.getId( ) === id ) {
+          result = view;
+        }
+      } );
+      return result;
+    },
+    addView: function( view ) {
+      if ( this.views.indexOf( ) === -1 ) {
+        this.views.push( view )
+      }
+    },
+    removeView: function( ) {
+      var index = this.views.indexOf( );
+      if ( index > -1 ) {
+        this.views.splice( index, 1 );
+      }
+    },
 
-      this.ready = ready;
+    _getController: function( id ) {
+      var result;
+      this.controllers.forEach( function( controller, index ) {
+        if ( controller.getId( ) === id ) {
+          result = controller;
+        }
+      } );
+      return result;
+    },
+    addController: function( ) {
+      if ( this.controllers.indexOf( ) === -1 ) {
+        this.controllers.push( view )
+      }
+    },
+    removeController: function( ) {
+      var index = this.controllers.indexOf( );
+      if ( index > -1 ) {
+        this.controllers.splice( index, 1 );
+      }
+    },
+
+    _getModel: function( id ) {
+      var result;
+      this.models.forEach( function( models, index ) {
+        if ( models.getId( ) === id ) {
+          result = models;
+        }
+      } );
+      return result;
+    },
+    addModel: function( ) {
+      if ( this.models.indexOf( ) === -1 ) {
+        this.models.push( view )
+      }
+    },
+    removeModel: function( ) {
+      var index = this.models.indexOf( );
+      if ( index > -1 ) {
+        this.models.splice( index, 1 );
+      }
     },
     launch: function( ) {
 

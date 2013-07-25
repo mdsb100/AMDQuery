@@ -1255,6 +1255,7 @@
             return ret;
 
         };
+
         util.extend(define, {
             amd: ClassModule.maps,
             noConflict: function() {
@@ -1306,6 +1307,7 @@
 
             return ret.request(success);
         };
+
         util.extend(require, {
             noConflict: function() {
                 window.require = _require;
@@ -2349,6 +2351,7 @@
                 var promise = new Promise();
                 require(src, function(Application) {
                     $.application = new Application(promise);
+                    $.application.load();
                     //Application.__initApp(_config.app.src, promise);
                 });
                 return promise;
