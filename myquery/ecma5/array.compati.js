@@ -114,7 +114,7 @@ myQuery.define( "ecma5/array.compati", function( $ ) {
       };
 
     for ( name in obj ) {
-      if ( Array.prototype[ name ] ) {
+      if ( !Array.prototype[ name ] ) {
         Array.prototype[ name ] = obj[ name ];
       }
     }
