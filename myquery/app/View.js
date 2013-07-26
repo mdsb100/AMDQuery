@@ -1,4 +1,4 @@
-myQuery.define( "app/View", [ "main/object", "main/attr", "main/CustomEvent", "module/Widget", "app/Application" ], function( $, object, attr, CustomEvent, Widget, Application, undefined ) {
+myQuery.define( "app/View", [ "main/query", "main/object", "main/attr", "main/CustomEvent", "module/Widget", "app/Application" ], function( $, query, object, attr, CustomEvent, Widget, Application, undefined ) {
   "use strict"; //启用严格模式
   var View = object.extend( "View", {
     init: function( ViewElement ) {
@@ -15,8 +15,12 @@ myQuery.define( "app/View", [ "main/object", "main/attr", "main/CustomEvent", "m
       return query.find( ">Model", this.element );
     },
     _getModelsSrc: function( ) {
-      return this.getModelsElement( ).eles.map( function( ele, arr ) {
-        return attr.getAttr( ele, "src" );
+      return this._getModelsElement( ).map( function( ele, arr ) {
+        var src = attr.getAttr( ele, "src" );
+        if(!src){
+          $.console.error({fn: "require model", msg: "src must exist"}, true);
+        }
+        return src;
       } );
     },
     destory: function( ) {

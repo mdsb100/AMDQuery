@@ -1,8 +1,5 @@
 myQuery.define( "app/Application", [ "base/promise", "main/attr", "main/CustomEvent", "main/query", "main/object", "ecma5/array.compati" ], function( $, Promise, attr, CustomEvent, query, object, Array, undefined ) {
   "use strict"; //启用严格模式
-  //var views = [];
-  var models = [ ];
-  //var controller = [];
   var defaultViewSrc = "app/View";
 
   var getControllerSrcByViewSrc = function( viewSrc ) {
@@ -20,7 +17,7 @@ myQuery.define( "app/Application", [ "base/promise", "main/attr", "main/CustomEv
     }
 
     return "app/Controller";
-  }
+  };
 
   var Application = object.extend( "Application", {
     init: function( promiseCallback ) {
@@ -33,19 +30,26 @@ myQuery.define( "app/Application", [ "base/promise", "main/attr", "main/CustomEv
       this.__promiseCallback = promiseCallback;
 
     },
+    getAppRelativePath: function( path ) {
+      if( path ){
+        path = path.indexOf("/") == 0 ? "" : "/" + path;
+        return require.variable( "app" ) + path;
+      }
+      else{
+        return "";
+      }
+    },
     load: function( ) {
       var self = this;
 
       var
       ready = this.ready,
-      eles = query.find( "View" ),
-      viewSrc = "",
-      controllerSrc = "";
+      eles = query.find( "View" );
 
-      eles.each( function( element ) {
+      eles.forEach( function( element ) {
         //注意销毁
-        viewSrc = attr.getAttr( element, "src" ) || defaultViewSrc;
-        controllerSrc = attr.getAttr( element, "controller" ) || getControllerSrcByViewSrc( viewSrc );
+        var viewSrc = self.getAppRelativePath( attr.getAttr( element, "src" ) ) || defaultViewSrc;
+        var controllerSrc = self.getAppRelativePath( attr.getAttr( element, "controller" ) || getControllerSrcByViewSrc( viewSrc ) );
 
         ready = ready.then( function( ) {
           var promise = new Promise( );
@@ -56,15 +60,20 @@ myQuery.define( "app/Application", [ "base/promise", "main/attr", "main/CustomEv
           return promise;
         } ).then( function( view ) {
           var promise = new Promise( );
-          var modelsSrc = view._getModelsSrc( );
+
+          var modelsSrc = view._getModelsSrc( ).map(function(src){
+            return self.getAppRelativePath( src );
+          });
+
           var modelsElement = view._getModelsElement( );
 
           if ( modelsSrc.length ) {
             require( modelsSrc, function( ) {
               var models = $.util.argToArray( arguments ).map( function( Model, index ) {
-                return new Model( modelsElement[index] );
+                // 都调用self的方法
+                return new Model( modelsElement[ index ] );
               } );
-              promise.resolve( view )
+              promise.resolve( view );
             } );
             return promise;
           } else {
@@ -102,7 +111,7 @@ myQuery.define( "app/Application", [ "base/promise", "main/attr", "main/CustomEv
     },
     addView: function( view ) {
       if ( this.views.indexOf( ) === -1 ) {
-        this.views.push( view )
+        this.views.push( view );
       }
     },
     removeView: function( ) {
@@ -123,7 +132,7 @@ myQuery.define( "app/Application", [ "base/promise", "main/attr", "main/CustomEv
     },
     addController: function( ) {
       if ( this.controllers.indexOf( ) === -1 ) {
-        this.controllers.push( view )
+        this.controllers.push( view );
       }
     },
     removeController: function( ) {
@@ -144,7 +153,7 @@ myQuery.define( "app/Application", [ "base/promise", "main/attr", "main/CustomEv
     },
     addModel: function( ) {
       if ( this.models.indexOf( ) === -1 ) {
-        this.models.push( view )
+        this.models.push( view );
       }
     },
     removeModel: function( ) {
@@ -161,4 +170,4 @@ myQuery.define( "app/Application", [ "base/promise", "main/attr", "main/CustomEv
   }, CustomEvent );
 
   return Application;
-} );
+}, "1.0.0" );
