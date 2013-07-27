@@ -31,9 +31,9 @@
         //     var ret = m1.multiply(m2);
         // });
 
-        require.variable("$variable", "../test");
+        require.variable("@variable", "../test");
 
-        myQuery.require(["$variable/base/requireTest1", "main/attr", "main/attr"], function(){
+        myQuery.require(["@variable/base/requireTest1", "main/attr", "main/attr"], function(){
             alert("variable is work");
         });
 
