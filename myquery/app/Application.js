@@ -52,14 +52,14 @@ myQuery.define( "app/Application", [ "base/promise", "main/attr", "main/CustomEv
         var controllerSrc = self.getAppRelativePath( attr.getAttr( element, "controller" ) || getControllerSrcByViewSrc( viewSrc ) );
 
         ready = ready.then( function( ) {
-          var promise = new Promise( );
+          var promise = this;
           require( viewSrc, function( View ) {
             var view = new View( element );
             promise.resolve( view );
           } );
           return promise;
         } ).then( function( view ) {
-          var promise = new Promise( );
+          var promise = this;
 
           var modelsSrc = view._getModelsSrc( ).map(function(src){
             return self.getAppRelativePath( src );
@@ -80,7 +80,7 @@ myQuery.define( "app/Application", [ "base/promise", "main/attr", "main/CustomEv
             return view;
           }
         } ).then( function( view ) {
-          var promise = new Promise( );
+          var promise = this;
           require( controllerSrc, function( Controller ) {
             var controller = new Controller( view );
             promise.resolve( controller );

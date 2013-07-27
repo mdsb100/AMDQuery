@@ -2363,7 +2363,6 @@
         require( _config.app.src, function( Application ) {
           $.application = new Application( self );
           $.application.load( );
-          //Application.__initApp(_config.app.src, self);
         } );
         return this;
       }
