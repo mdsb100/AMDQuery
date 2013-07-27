@@ -1,4 +1,4 @@
-myQuery.define( "app/View", [ "main/query", "main/object", "main/attr", "main/CustomEvent", "module/Widget", "app/Application" ], function( $, query, object, attr, CustomEvent, Widget, Application, undefined ) {
+myQuery.define( "app/View", [ "main/query", "main/object", "main/attr", "main/CustomEvent", "module/Widget", ], function( $, query, object, attr, CustomEvent, Widget, undefined ) {
   "use strict"; //启用严格模式
   var View = object.extend( "View", {
     init: function( ViewElement ) {
@@ -8,7 +8,7 @@ myQuery.define( "app/View", [ "main/query", "main/object", "main/attr", "main/Cu
       this.id = attr.getAttr( ViewElement, "id" ) || null;
       //不能有相同的两个src
 
-      $.application.addView( this );
+      View.addView( this );
     },
     _getModelsElement: function( ) {
       //可能会错 找直接子元素
@@ -17,17 +17,43 @@ myQuery.define( "app/View", [ "main/query", "main/object", "main/attr", "main/Cu
     _getModelsSrc: function( ) {
       return this._getModelsElement( ).map( function( ele, arr ) {
         var src = attr.getAttr( ele, "src" );
-        if(!src){
-          $.console.error({fn: "require model", msg: "src must exist"}, true);
+        if ( !src ) {
+          $.console.error( {
+            fn: "require model",
+            msg: "src must exist"
+          }, true );
         }
         return src;
       } );
     },
     destory: function( ) {
-      $.application.removeView( this );
+      View.removeView( this );
     }
   }, {
-
+    views: [ ],
+    getInstance: function( viewElement, ViewObject ) {
+      return ViewObject ? new ViewObject( viewElement ) : new View( viewElement );
+    },
+    getView: function( id ) {
+      var result;
+      this.views.forEach( function( view, index ) {
+        if ( view.getId( ) === id ) {
+          result = view;
+        }
+      } );
+      return result;
+    },
+    addView: function( view ) {
+      if ( this.views.indexOf( ) === -1 ) {
+        this.views.push( view );
+      }
+    },
+    removeView: function( ) {
+      var index = this.views.indexOf( );
+      if ( index > -1 ) {
+        this.views.splice( index, 1 );
+      }
+    }
   }, CustomEvent );
 
   object.providePropertyGetSet( View, {

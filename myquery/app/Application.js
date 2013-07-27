@@ -1,4 +1,4 @@
-myQuery.define( "app/Application", [ "base/promise", "main/attr", "main/CustomEvent", "main/query", "main/object", "ecma5/array.compati" ], function( $, Promise, attr, CustomEvent, query, object, Array, undefined ) {
+myQuery.define( "app/Application", [ "base/promise", "main/attr", "main/CustomEvent", "main/query", "main/object", "app/Model", "app/View", "app/Controller", "ecma5/array.compati" ], function( $, Promise, attr, CustomEvent, query, object, BaseModel, BaseView, BaseController, Array, undefined ) {
   "use strict"; //启用严格模式
   var defaultViewSrc = "app/View";
 
@@ -22,13 +22,8 @@ myQuery.define( "app/Application", [ "base/promise", "main/attr", "main/CustomEv
   var Application = object.extend( "Application", {
     init: function( promiseCallback ) {
       this._super( );
-
-      this.views = [ ];
-      this.controllers = [ ];
-      this.models = [ ];
       this.ready = new Promise( );
       this.__promiseCallback = promiseCallback;
-
     },
     getAppRelativePath: function( path ) {
       if( path ){
@@ -54,8 +49,7 @@ myQuery.define( "app/Application", [ "base/promise", "main/attr", "main/CustomEv
         ready = ready.then( function( ) {
           var promise = this;
           require( viewSrc, function( View ) {
-            var view = new View( element );
-            promise.resolve( view );
+            promise.resolve( BaseView.getInstance( element, View ) );
           } );
           return promise;
         } ).then( function( view ) {
@@ -70,8 +64,7 @@ myQuery.define( "app/Application", [ "base/promise", "main/attr", "main/CustomEv
           if ( modelsSrc.length ) {
             require( modelsSrc, function( ) {
               var models = $.util.argToArray( arguments ).map( function( Model, index ) {
-                // 都调用self的方法
-                return new Model( modelsElement[ index ] );
+                return BaseModel.getInstance( modelsElement[ index ], Model );
               } );
               promise.resolve( view );
             } );
@@ -82,14 +75,12 @@ myQuery.define( "app/Application", [ "base/promise", "main/attr", "main/CustomEv
         } ).then( function( view ) {
           var promise = this;
           require( controllerSrc, function( Controller ) {
-            var controller = new Controller( view );
-            promise.resolve( controller );
+            promise.resolve( BaseController.getInstance( element, Controller ) );
           } );
           return promise;
         } );
 
       } );
-
 
       ready.then( function( ) {
         self.launch( );
@@ -100,68 +91,7 @@ myQuery.define( "app/Application", [ "base/promise", "main/attr", "main/CustomEv
 
       ready.rootResolve( );
     },
-    _getView: function( id ) {
-      var result;
-      this.views.forEach( function( view, index ) {
-        if ( view.getId( ) === id ) {
-          result = view;
-        }
-      } );
-      return result;
-    },
-    addView: function( view ) {
-      if ( this.views.indexOf( ) === -1 ) {
-        this.views.push( view );
-      }
-    },
-    removeView: function( ) {
-      var index = this.views.indexOf( );
-      if ( index > -1 ) {
-        this.views.splice( index, 1 );
-      }
-    },
 
-    _getController: function( id ) {
-      var result;
-      this.controllers.forEach( function( controller, index ) {
-        if ( controller.getId( ) === id ) {
-          result = controller;
-        }
-      } );
-      return result;
-    },
-    addController: function( ) {
-      if ( this.controllers.indexOf( ) === -1 ) {
-        this.controllers.push( view );
-      }
-    },
-    removeController: function( ) {
-      var index = this.controllers.indexOf( );
-      if ( index > -1 ) {
-        this.controllers.splice( index, 1 );
-      }
-    },
-
-    _getModel: function( id ) {
-      var result;
-      this.models.forEach( function( models, index ) {
-        if ( models.getId( ) === id ) {
-          result = models;
-        }
-      } );
-      return result;
-    },
-    addModel: function( ) {
-      if ( this.models.indexOf( ) === -1 ) {
-        this.models.push( view );
-      }
-    },
-    removeModel: function( ) {
-      var index = this.models.indexOf( );
-      if ( index > -1 ) {
-        this.models.splice( index, 1 );
-      }
-    },
     launch: function( ) {
 
     }
