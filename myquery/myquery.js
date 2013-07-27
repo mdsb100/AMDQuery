@@ -1583,30 +1583,25 @@
 
         return this;
       },
-      destructor: function( ) {
-        delete this.state;
+      destory: function( ) {
         delete this.result;
         delete this.thens;
         delete this.todo;
         delete this.fail;
         delete this.progress;
-        delete this.path;
         delete this.parent;
         delete this.friend;
-        delete this.id;
         delete this._branch;
         delete this._back;
         delete this._tag;
-
         return this;
       },
 
-      removeChildren: function( unDestructor ) {
+      removeChildren: function( parent ) {
         /// <summary>删除节点下的promise</summary>
-        /// <param name="unDestructor" type="Boolean">是否析构</param>
+        /// <param name="parent" type="Promise">undefined/Promise</param>
         /// <returns type="self" />
-        var ancester = arguments[ 0 ] || this,
-          fn = arguments[ 1 ],
+        var ancester = parent || this,
           thens = ancester.thens,
           i, len = thens.length,
           result = 0,
@@ -1617,7 +1612,7 @@
             then.removeChildren( );
             then = thens.pop( );
             //then.parent = null;
-            unDestructor === false && then.destructor( );
+            then.destory( );
           }
         }
         return this;
@@ -1638,8 +1633,12 @@
           } )
           return this;
         };
-        //arguments 应当 apply
-        if ( this.fail ) {
+
+        if ( Promise.instance( this.result ) ) {
+          this.result.resolve( obj );
+          return this;
+        }
+        else if ( this.fail ) {
           try {
             this.result = this.call( "todo", obj );
             this.state = "done";
@@ -1652,18 +1651,29 @@
           this.state = "done";
         }
 
-        if ( Promise.instance( this.result ) ) {
+         
+
+        var  
+        self = this,
+        state = this.state,
+        callback = function( result ) {
+          self.state = state;
+          self.result = result;
+          self._next( result );
+          self = null;
+        };
+
+        if ( this === this.result ) {
           // 异步的情况，返回值是一个Promise，则当其resolve的时候，nextPromise才会被resolve
           //所以状态改回todo
-          var self = this,
-            state = this.state;
           this.state = "todo";
-          this.result.then( function( result ) {
-            self.state = state;
-            self._next( result );
-            self = null;
-          } );
-        } else {
+          this.result = new Promise( callback );
+        } 
+        else if ( Promise.instance( this.result ) ){
+          this.state = "todo";
+          this.result.then( callback );
+        }
+        else {
           this._next( this.result );
         }
         return this;
@@ -2278,9 +2288,9 @@
     rootPromise = new Promise( function( ) { //window.ready first to fix ie
       document.documentElement.style.position = "absolute";
       document.documentElement.style.left = "100000px";
-      var promise = new Promise( ),
+      var self = this,
       ready = function( e ) {
-          promise.resolve( e );
+          self.resolve( e );
       }
       if ( document.addEventListener ) {
         document.addEventListener( "DOMContentLoaded", ready, false );
@@ -2294,18 +2304,18 @@
         document.onload = ready;
       }
 
-      return promise;
+      return this;
     } ).then( function( ) {
       if ( _config.myquery.packageNames ) {
-        var promise = new Promise( );
+        var self = this;
         require( _config.myquery.package, function( _package ) {
-          promise.resolve( _package );
+          self.resolve( _package );
         } );
-        return promise;
+        return this;
       }
     } ).then( function( _package ) {
       if ( _package ) {
-        var promise = new Promise( ),
+        var self = this,
           packageNames = _config.myquery.packageNames.split( "," ),
           i = 0,
           item = null,
@@ -2320,19 +2330,19 @@
         }
 
         result.length && require( result, function( ) {
-          promise.resolve( );
+          self.resolve( );
         } );
-        return promise;
+        return this;
       }
     } ).then( function( ) {
       if ( _config.ui.init ) {
-        var promise = new Promise( );
+        var self = this;
         require( "module/init", function( init ) {
           init.renderWidget( function( ) {
-            promise.resolve( );
+            self.resolve( );
           } );
         } );
-        return promise;
+        return this;
       }
     } ).then( function( ) {
       if ( _config.app.src ) {
@@ -2349,13 +2359,13 @@
 
         require.variable( "app", src );
 
-        var promise = new Promise( );
+        var self = this;
         require( _config.app.src, function( Application ) {
-          $.application = new Application( promise );
+          $.application = new Application( self );
           $.application.load( );
-          //Application.__initApp(_config.app.src, promise);
+          //Application.__initApp(_config.app.src, self);
         } );
-        return promise;
+        return this;
       }
     } ).then( function( ) {
       document.documentElement.style.left = "0px";

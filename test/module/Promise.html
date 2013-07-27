@@ -34,14 +34,14 @@
                 return function (obj) {
                     write("");
                     write("delay " + ms + " begin");
-                    var promise = new Promise(), self = this;
+                    var self = this;
                     setTimeout(function () {
                         write("delay " + ms + " stop");
                         write("do together");
                         //promise.resolve(obj);
-                        promise.together(self, obj);
+                        self.together(self, obj);
                     }, ms);
-                    return promise;
+                    return self;
                 };
             }
 
@@ -58,6 +58,7 @@
             })
             .and(delay(1000))
             .and(delay(2000))
+            .and(delay(2500))
             .then(delay(3000))
             //promise.resolve(0);
             //.tag()获得是新promise
@@ -129,6 +130,8 @@
 
             var promiseDelete = new Promise(add1, add);
             promiseDelete.then(add)
+            .and(add)
+            .and(add)
             .then(add)
             .branch(add, "test1")
                 .then(add)
