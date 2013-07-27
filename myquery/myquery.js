@@ -191,7 +191,7 @@
       console: false
     },
     ui: {
-      init: false,
+      initWidget: false,
       image: "welcome.gif"
     },
     module: {
@@ -2335,18 +2335,9 @@
         return this;
       }
     } ).then( function( ) {
-      if ( _config.ui.init ) {
-        var self = this;
-        require( "module/init", function( init ) {
-          init.renderWidget( function( ) {
-            self.resolve( );
-          } );
-        } );
-        return this;
-      }
-    } ).then( function( ) {
       if ( _config.app.src ) {
         var src = _config.app.src;
+        _config.ui.initWidget = true;
 
         if ( /^\//.test( src ) ) {
           src = src.replace( /((.*?\/){3}).*$/, "$1" );
@@ -2363,6 +2354,14 @@
         require( _config.app.src, function( Application ) {
           $.application = new Application( self );
           $.application.load( );
+        } );
+        return this;
+      }
+    } ).then( function( ) {
+      if ( _config.ui.initWidget ) {
+        var self = this;
+        require( "module/initWidget", function( initWidget ) {
+          initWidget.renderWidget( self );
         } );
         return this;
       }
