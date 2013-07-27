@@ -30,7 +30,7 @@ myQuery.define( "app/Model", [ "main/attr", "main/object", "main/CustomEvent" ],
         return undefined;
       }
       var result;
-      this.models.forEach( function( model, index ) {
+      this.models.forEach( function( model ) {
         if ( model.getId( ) === id || model.getSrc( ) === id ) {
           result = model;
         }

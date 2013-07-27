@@ -37,8 +37,7 @@ myQuery.define( "app/Application", [ "base/promise", "main/attr", "main/CustomEv
     load: function( ) {
       var self = this;
 
-      var
-      ready = this.ready,
+      var ready = this.ready,
       eles = query.find( "View" );
 
       eles.forEach( function( element ) {

@@ -12,10 +12,11 @@ myQuery.define( "app/View", [ "main/query", "main/object", "main/attr", "main/Cu
     },
     _getModelsElement: function( ) {
       //可能会错 找直接子元素
+      //Collection
       return query.find( ">Model", this.element );
     },
     _getModelsSrc: function( ) {
-      return this._getModelsElement( ).map( function( ele, arr ) {
+      return this._getModelsElement( ).map( function( ele ) {
         var src = attr.getAttr( ele, "src" );
         if ( !src ) {
           $.console.error( {
@@ -36,7 +37,7 @@ myQuery.define( "app/View", [ "main/query", "main/object", "main/attr", "main/Cu
     },
     getView: function( id ) {
       var result;
-      this.views.forEach( function( view, index ) {
+      this.views.forEach( function( view ) {
         if ( view.getId( ) === id ) {
           result = view;
         }

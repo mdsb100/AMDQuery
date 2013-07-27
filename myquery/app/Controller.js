@@ -24,7 +24,7 @@ myQuery.define( "app/Controller", [ "main/object", "main/CustomEvent" ], functio
     },
     getController: function( id ) {
       var result;
-      this.controllers.forEach( function( controller, index ) {
+      this.controllers.forEach( function( controller ) {
         if ( controller.getId( ) === id ) {
           result = controller;
         }
