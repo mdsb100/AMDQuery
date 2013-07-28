@@ -861,29 +861,35 @@
 
         ClassModule.resource[ url ] = id;
 
-        var scripts = document.createElement( "script" ),
+        var script = document.createElement( "script" ),
           head = document.getElementsByTagName( "HEAD" )[ 0 ],
           timeId;
 
-        error && ( scripts.onerror = function( ) {
+        error && ( script.onerror = function( ) {
           clearTimeout( timeId );
           error( );
         } );
 
-        scripts.onload = scripts.onreadystatechange = function( ) {
-          ( !this.readyState || this.readyState == "loaded" || this.readyState == "complete" ) && clearTimeout( timeId );
+        script.onload = script.onreadystatechange = function( ) {
+          if ( !this.readyState || this.readyState == "loaded" || this.readyState == "complete" ) {
+            clearTimeout( timeId );
+            head.removeChild( script );
+            head = null;
+            script = null;
+          }
         };
 
-        scripts.setAttribute( "src", url );
-        scripts.setAttribute( "type", "text/javascript" );
-        scripts.setAttribute( "language", "javascript" );
+        script.setAttribute( "src", url );
+        script.setAttribute( "type", "text/javascript" );
+        script.setAttribute( "language", "javascript" );
 
         timeId = setTimeout( function( ) {
           error && error( );
-          scripts = scripts.onerror = scripts.onload = error = head = null;
+          head.removeChild( script );
+          script = script.onerror = script.onload = error = head = null;
         }, _config.amd.timeout );
 
-        head.insertBefore( scripts, head.firstChild );
+        head.insertBefore( script, head.firstChild );
         return this;
       },
       mapDependencies: {},
