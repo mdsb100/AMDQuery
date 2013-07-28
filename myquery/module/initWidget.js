@@ -29,7 +29,7 @@ myQuery.define( "module/initWidget", [ "main/query", "main/dom", "main/attr", "m
     widgetMap = {},
     fnNameReflect = {};
 
-    $( parent + " *[myquery-widget]" ).each( function( ele ) {
+    $( parent ).find( "*[myquery-widget]" ).each( function( ele ) {
       var value = attr.getAttr( ele, "myquery-widget" ),
       attrNames = $.isStr( value ) && value != "" ? value.split( /;|,/ ) : [ ],
       len = attrNames.length,
@@ -73,9 +73,9 @@ myQuery.define( "module/initWidget", [ "main/query", "main/dom", "main/attr", "m
   }
 
   var initWidget = {
-    renderWidget: function( promise ) {
+    renderWidget: function( promise, parent ) {
       var self = this;
-      var widgetInfo = getWidgetsName( "body" );
+      var widgetInfo = getWidgetsName( parent );
 
       if ( widgetInfo.widgetNames.length ) {
         require( widgetInfo.widgetNames, function( ) {

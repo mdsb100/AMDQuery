@@ -2361,7 +2361,7 @@
       if ( _config.ui.initWidget ) {
         var self = this;
         require( "module/initWidget", function( initWidget ) {
-          initWidget.renderWidget( self );
+          initWidget.renderWidget( self, document.body );
         } );
         return this;
       }
