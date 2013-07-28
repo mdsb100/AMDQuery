@@ -26,19 +26,42 @@ myQuery.define( "app/Application", [ "base/promise", "main/attr", "main/CustomEv
       this.__promiseCallback = promiseCallback;
     },
     getAppRelativePath: function( path ) {
-      if( path ){
-        path = path.indexOf("/") == 0 ? "" : "/" + path;
+      if ( path ) {
+        path = path.indexOf( "/" ) == 0 ? "" : "/" + path;
         return require.variable( "app" ) + path;
-      }
-      else{
+      } else {
         return "";
       }
+    },
+    _findViewElement: function( parent ) {
+      var children = query.find( ">*", parent ),
+        viewElements = [ ],
+        lave = [ ],
+        ele,
+        i = 0;
+
+      for ( i = children.length - 1; i >= 0; i-- ) {
+        ele = children[ i ];
+        if ( $.isNode( ele, "View" ) ) {
+          viewElements.push( ele );
+        } else {
+          lave.push( ele );
+        }
+      }
+
+
+      for ( i = lave.length - 1; i >= 0; i-- ) {
+        ele = lave[ i ];
+        viewElements = viewElements.concat( this._findViewElement( ele ) );
+      }
+
+      return viewElements;
     },
     load: function( ) {
       var self = this;
 
       var ready = this.ready,
-      eles = query.find( "View" );
+        eles = this._findViewElement( document.body );
 
       eles.forEach( function( element ) {
         //注意销毁
@@ -46,44 +69,47 @@ myQuery.define( "app/Application", [ "base/promise", "main/attr", "main/CustomEv
         var controllerSrc = self.getAppRelativePath( attr.getAttr( element, "controller" ) || getControllerSrcByViewSrc( viewSrc ) );
 
         ready = ready.then( function( ) {
-          var promise = this;
-          require( viewSrc, function( View ) {
-            promise.resolve( BaseView.getInstance( element, View ) );
-          } );
-          return promise;
-        } ).then( function( view ) {
-          var promise = this;
 
-          var modelsSrc = view._getModelsSrc( ).map(function(src){
-            return self.getAppRelativePath( src );
-          });
-
-          var modelsElement = view._getModelsElement( );
-
-          if ( modelsSrc.length ) {
-            require( modelsSrc, function( ) {
-              var models = $.util.argToArray( arguments ).map( function( Model, index ) {
-                return BaseModel.getInstance( modelsElement[ index ], Model );
-              } );
-              promise.resolve( view );
-            } );
-            return promise;
-          } else {
-            return view;
-          }
-        } ).then( function( view ) {
-          var promise = this;
-          require( controllerSrc, function( Controller ) {
-            promise.resolve( BaseController.getInstance( element, Controller ) );
-          } );
-          return promise;
         } );
+
+        // ready = ready.then( function( ) {
+        //   var promise = this;
+        //   require( viewSrc, function( View ) {
+        //     promise.resolve( BaseView.getInstance( element, View ) );
+        //   } );
+        //   return promise;
+        // } ).then( function( view ) {
+        //   var promise = this;
+
+        //   var modelsSrc = view._getModelsSrc( ).map( function( src ) {
+        //     return self.getAppRelativePath( src );
+        //   } );
+
+        //   var modelsElement = view._getModelsElement( );
+
+        //   if ( modelsSrc.length ) {
+        //     require( modelsSrc, function( ) {
+        //       var models = $.util.argToArray( arguments ).map( function( Model, index ) {
+        //         return BaseModel.getInstance( modelsElement[ index ], Model );
+        //       } );
+        //       promise.resolve( view );
+        //     } );
+        //     return promise;
+        //   } else {
+        //     return view;
+        //   }
+        // } ).then( function( view ) {
+        //   var promise = this;
+        //   require( controllerSrc, function( Controller ) {
+        //     promise.resolve( BaseController.getInstance( element, Controller ) );
+        //   } );
+        //   return promise;
+        // } );
 
       } );
 
       ready.then( function( ) {
         self.launch( );
-        self.trigger( "launch", self );
         self.__promiseCallback.resolve( );
         delete self.__promiseCallback;
       } );
@@ -93,6 +119,7 @@ myQuery.define( "app/Application", [ "base/promise", "main/attr", "main/CustomEv
 
     launch: function( ) {
 
+      return self.trigger( "launch", self );
     }
   }, {
 
