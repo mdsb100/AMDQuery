@@ -33,7 +33,10 @@
 
         require.variable("@variable", "../test");
 
-        myQuery.require(["@variable/base/requireTest1", "main/attr", "main/attr"], function(){
+        myQuery.require(["@variable/base/requireTest1", "main/attr", "main/attr", "module/utilEval"], function(test1, attr, attr, utilEval){
+            utilEval.globalEval("window.bbc = function(){ var a = 1; }");
+            window.bbc();
+            console.log("variable is work")
             alert("variable is work");
         });
 

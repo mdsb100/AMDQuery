@@ -1,4 +1,4 @@
-﻿myQuery.define( "module/Widget", [ "main/data", "main/query", "main/event", "main/attr", "main/object", "module/myEval" ], function( $, data, query, event, attr, object, myEval, undefined ) {
+﻿myQuery.define( "module/Widget", [ "main/data", "main/query", "main/event", "main/attr", "main/object", "module/utilEval" ], function( $, data, query, event, attr, object, utilEval, undefined ) {
   "use strict"; //启用严格模式
 
   function Widget( obj, target ) {
@@ -143,7 +143,7 @@
         attr = this.target.attr( key );
         if ( attr !== undefined ) {
           value = attr.split( ":" );
-          result[ item ] = myEval.functionEval( value[ 0 ], value[ 1 ] || window );
+          result[ item ] = utilEval.functionEval( value[ 0 ], value[ 1 ] || window );
         }
       }
 
@@ -159,9 +159,9 @@
             if ( $.reg.id.test( item[ 1 ] ) ) {
               result[ key ] = $( item[ 1 ] )[ 0 ];
             } else if ( this.options[ key ] !== undefined ) {
-              result[ key ] = myEval.evalBasicDataType( item[ 1 ] );
+              result[ key ] = utilEval.evalBasicDataType( item[ 1 ] );
             } else if ( $.inArray( this.customEventName, key ) > -1 ) {
-              result[ key ] = myEval.functionEval( item[ 1 ], $ );
+              result[ key ] = utilEval.functionEval( item[ 1 ], $ );
             }
           }
         }

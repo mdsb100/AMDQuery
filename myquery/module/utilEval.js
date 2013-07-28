@@ -1,7 +1,4 @@
-﻿/// <reference path="../myquery.js" />
-// quote from colo.js by Andrew Brehaut, Tim Baumann
-
-myQuery.define( "module/myEval", [ "base/support" ], function( $, support ) {
+﻿myQuery.define( "module/utilEval", [ "base/support" ], function( $, support ) {
   return {
     evalBasicDataType: function( str ) {
       /// <summary>如果是基本数据类型就eval</summary>
@@ -21,7 +18,7 @@ myQuery.define( "module/myEval", [ "base/support" ], function( $, support ) {
       return ( new Function( "return " + s ) ).call( context );
     },
 
-    globalEval: function( data, remove ) {
+    globalEval: function( data, notRemove ) {
       ///	<summary>
       ///	把一段String用js的方式声明为全局的
       ///	</summary>
@@ -33,7 +30,7 @@ myQuery.define( "module/myEval", [ "base/support" ], function( $, support ) {
         // Inspired by code by Andrea Giammarchi
         // http://webreflection.blogspot.com/2007/08/global-scope-evaluation-and-dom.html
         var head = document.getElementsByTagName( "head" )[ 0 ] || document.documentElement,
-        script = document.createElement( "script" );
+          script = document.createElement( "script" );
 
         script.type = "text/javascript";
 
@@ -46,7 +43,7 @@ myQuery.define( "module/myEval", [ "base/support" ], function( $, support ) {
         // Use insertBefore instead of appendChild to circumvent an IE6 bug.
         // This arises when a base node is used (#2709).
         head.insertBefore( script, head.firstChild );
-        remove || head.removeChild( script );
+        notRemove || head.removeChild( script );
       }
       return this;
     }
