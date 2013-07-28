@@ -958,7 +958,7 @@
               if ( sMD = ClassModule.detectCR( this.id, dps ) ) {
                 util.error( {
                   fn: "define",
-                  msg: "There is a circular reference between '" + sMD + "' and '" + module + "'"
+                  msg: "There is a circular reference between '" + sMD + "' and '" + dps + "'"
                 }, "ReferenceError" );
                 return;
               }
