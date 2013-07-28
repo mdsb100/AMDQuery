@@ -183,7 +183,7 @@
     },
     amd: {
       //异步
-      async: false,
+      out: false,
       //检查循环依赖
       detectCR: false,
       "debug": true,
@@ -1123,7 +1123,7 @@
         if ( ClassModule.cache[ id ] ) {
           ClassModule.cache[ id ]( );
         } else {
-          _config.amd.async == true ? window.setTimeout( function( ) {
+          _config.amd.out == true ? window.setTimeout( function( ) {
             ClassModule.loadJs( url, id, fail );
           }, 0 ) : ClassModule.loadJs( url, id, fail );
         }
