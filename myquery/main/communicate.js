@@ -43,9 +43,7 @@
             case "post":
               break;
           }
-          if ( true ) {
 
-          }
           if ( o.username ) {
             _ajax.open( o.type, o.url, o.async, o.username, o.password );
           } else {
