@@ -21,11 +21,12 @@ myQuery.define( "module/myEval", [ "base/support" ], function( $, support ) {
       return ( new Function( "return " + s ) ).call( context );
     },
 
-    globalEval: function( data ) {
+    globalEval: function( data, remove ) {
       ///	<summary>
       ///	把一段String用js的方式声明为全局的
       ///	</summary>
       /// <param name="data" type="String">数据</param>
+      /// <param name="remove" type="Boolean">是否移除</param>
       /// <returns type="XMLHttpRequest" />
 
       if ( data && /\S/.test( data ) ) {
@@ -45,7 +46,7 @@ myQuery.define( "module/myEval", [ "base/support" ], function( $, support ) {
         // Use insertBefore instead of appendChild to circumvent an IE6 bug.
         // This arises when a base node is used (#2709).
         head.insertBefore( script, head.firstChild );
-        head.removeChild( script );
+        remove || head.removeChild( script );
       }
       return this;
     }
