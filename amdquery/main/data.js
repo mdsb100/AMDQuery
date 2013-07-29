@@ -1,7 +1,7 @@
 ﻿myQuery.define( "main/data", ["base/extend", "base/typed"], function( $, utilExtend, typed, undefined ) {
   "use strict"; //启用严格模式
   var
-  expando = "MyQuery" + $.now( ),
+  expando = "AMDQuery" + $.now( ),
   uuid = 0,
   windowData = {}, emptyObject = {},
   data = {

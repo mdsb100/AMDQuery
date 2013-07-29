@@ -245,7 +245,7 @@ myQuery.define( "ui/turnBook", [ "base/typed", "main/class", "html5/css3", "ui/s
       contentWidth: 0,
       contentFontColor: "black",
       contentBackgroundColor: "white",
-      contentClass: "myquery_turnbook_content",
+      contentClass: "amdquery_turnbook_content",
       contentFont: "12px",
       cursor: "pointer",
 
@@ -257,7 +257,7 @@ myQuery.define( "ui/turnBook", [ "base/typed", "main/class", "html5/css3", "ui/s
       disabled: true,
 
       messageHideTime: 1500,
-      messageClass: "myquery_turnbook_message",
+      messageClass: "amdquery_turnbook_message",
 
       pages: [ ],
       pageBackgroundColor: "white",
@@ -699,7 +699,7 @@ myQuery.define( "ui/turnBook", [ "base/typed", "main/class", "html5/css3", "ui/s
     /// <para>num obj.contentWidth: 内容的宽度 缺省0</para>
     /// <para>str obj.contentFontColor:内容字体颜色 缺省"black"</para>
     /// <para>str obj.contentBackgroundColor:内容背景色 缺省"白色"</para>
-    /// <para>str obj.contentClass:内容样式名 缺省"myquery_turnbook_content"</para>
+    /// <para>str obj.contentClass:内容样式名 缺省"amdquery_turnbook_content"</para>
     /// <para>str obj.contentFont:内容字体大小 缺省12px</para>
     /// <para>str obj.cursor:鼠标样式 缺省"pointer"</para>
     /// <para>num obj.inductionWidth:边缘捕捉范围 缺省20</para>
@@ -708,7 +708,7 @@ myQuery.define( "ui/turnBook", [ "base/typed", "main/class", "html5/css3", "ui/s
     /// <para>num obj.directionRange:swappable的相关属性 缺省22.5</para>
     /// <para>bol obj.disabled:是否启用 缺省true</para>
     /// <para>num obj.messageHideTime:信息框隐藏时间 单位毫秒 缺省1500</para>
-    /// <para>str obj.messageClass:信息框样式名 缺省myquery_turnbook_message</para>
+    /// <para>str obj.messageClass:信息框样式名 缺省amdquery_turnbook_message</para>
     /// <para>str obj.pageBackgroundColor:背景层颜色 缺省"white"</para>
     /// <para>str obj.positionType: 书的形态 半本为"half" 整本为"whole" 缺省"whole"</para>
     /// <para>fun obj.trunbookstart:滑动开始</para>

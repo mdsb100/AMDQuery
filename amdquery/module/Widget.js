@@ -100,7 +100,7 @@
       var tag = this.toString( ),
         optionAttr = this.widgetNameSpace + "-" + this.widgetName,
         optionTag = this.target.attr( optionAttr ),
-        widgetAttr = "myquery-widget",
+        widgetAttr = "amdquery-widget",
         widgetTag = this.target.attr( widgetAttr );
 
       if ( widgetTag == undefined ) {
@@ -124,9 +124,9 @@
     },
     removeTag: function( ) {
       var tag = this.toString( ),
-        optionAttr = "myquery-" + this.widgetNameSpace + "-" + this.widgetName,
+        optionAttr = "amdquery-" + this.widgetNameSpace + "-" + this.widgetName,
         optionTag = this.target.attr( optionTag ),
-        widgetAttr = "myquery-widget",
+        widgetAttr = "amdquery-widget",
         widgetTag = this.target.attr( widgetAttr );
 
       if ( widgetTag != undefined ) {
@@ -457,7 +457,7 @@
       /// <param name="name" type="String">widget名字 如ui.navmenu</param>
       /// <returns type="Boolean" />
       if ( typed.is$( item ) ) {
-        var widgetTag = item.attr( "myquery-widget" );
+        var widgetTag = item.attr( "amdquery-widget" );
         return item.attr( widgetName.replace( ".", "-" ) ) != undefined && widgetTag != undefined && widgetTag.indexOf( widgetName ) > -1;
       }
 

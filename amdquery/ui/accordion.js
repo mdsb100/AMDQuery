@@ -498,7 +498,7 @@
     },
     init: function( opt, target ) {
       this._super( opt, target );
-      target.attr( "myquery-ui", "accordion" );
+      target.attr( "amdquery-ui", "accordion" );
       this.accordion = new Accordion( target[ 0 ], this.options );
       this.options = this.accordion.option;
       this._initHandler( );

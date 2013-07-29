@@ -1,4 +1,4 @@
-﻿/// <reference path="../myquery.js" />
+﻿/// <reference path="../amdquery.js" />
 // quote from colo.js by Andrew Brehaut, Tim Baumann
 
 myQuery.define( "base/client", ["base/extend"], function( $, extend ) {

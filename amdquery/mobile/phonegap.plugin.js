@@ -1,4 +1,4 @@
-﻿/// <reference path="myquery.js" />
+﻿/// <reference path="amdquery.js" />
 define( "my/common/phonegap.plugin", [ "my/common/tools" ], function( tools ) {
   "use strict"; //启用严格模式
   //$.error(true);

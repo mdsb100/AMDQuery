@@ -6,7 +6,7 @@
 ( function( window, undefined ) {
   "use strict"; //启用严格模式
   var
-  version = "MyQuery 1.0.0",
+  version = "AMDQuery 1.0.0",
     util = {
       argToArray: function( arg, start, end ) {
         /// <summary>把arguments变成数组</summary>
@@ -176,7 +176,7 @@
     msgDiv, runTime, ie678 = "v" == "/v";
 
   var _config = {
-    myquery: {
+    amdquery: {
       define: "$",
       package: "json/package",
       packageNames: ""
@@ -205,8 +205,8 @@
   if ( typeof myQueryConfig != "undefined" ) {
     _config = myQueryConfig;
   } else {
-    var temp = util.getJScriptConfig( [ "myquery", "amd", "ui", "module", "app" ] );
-    util.extend( _config.myquery, temp.myquery );
+    var temp = util.getJScriptConfig( [ "amdquery", "amd", "ui", "module", "app" ] );
+    util.extend( _config.amdquery, temp.amdquery );
     util.extend( _config.amd, temp.amd );
     util.extend( _config.ui, temp.ui );
     util.extend( _config.module, temp.module );
@@ -304,7 +304,7 @@
     toString: function( ) {
       /// <summary></summary>
       /// <returns type="String" />
-      return "MyQuery";
+      return "AMDQuery";
     },
     support: {},
     ui: {},
@@ -383,7 +383,7 @@
       /// <summary>是否为$对象</summary>
       /// <param name="a" type="any">任意对象</param>
       /// <returns type="Boolean" />
-      return obj instanceof $ || ( obj && obj.toString( ) == "MyQuery" )
+      return obj instanceof $ || ( obj && obj.toString( ) == "AMDQuery" )
     },
 
     merge: function( first, second ) {
@@ -1842,9 +1842,9 @@
 
       return this;
     } ).then( function( ) {
-      if ( _config.myquery.packageNames ) {
+      if ( _config.amdquery.packageNames ) {
         var self = this;
-        require( _config.myquery.package, function( _package ) {
+        require( _config.amdquery.package, function( _package ) {
           self.resolve( _package );
         } );
         return this;
@@ -1852,7 +1852,7 @@
     } ).then( function( _package ) {
       if ( _package ) {
         var self = this,
-          packageNames = _config.myquery.packageNames.split( "," ),
+          packageNames = _config.amdquery.packageNames.split( "," ),
           i = 0,
           item = null,
           len = packageNames.length,
@@ -1911,10 +1911,10 @@
 
   window.myQuery = $;
 
-  if ( !window[ _config.myquery.define ] ) {
-    window[ _config.myquery.define ] = $;
+  if ( !window[ _config.amdquery.define ] ) {
+    window[ _config.amdquery.define ] = $;
   } else {
-    util.error( _config.myquery.define + " is defined" );
+    util.error( _config.amdquery.define + " is defined" );
   }
 
 } )( window );

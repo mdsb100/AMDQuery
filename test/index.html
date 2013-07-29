@@ -4,7 +4,7 @@
     <title>Test</title>
     <meta charset="utf-8" />
     <link href="../css/reset.css" rel="stylesheet" type="text/css" />
-    <script src="../myquery/myquery.js" type="text/javascript" module="transitionToAnimation:0" ui="initWidget:1"></script>
+    <script src="../amdquery/amdquery.js" type="text/javascript" module="transitionToAnimation:0" ui="initWidget:1"></script>
     <script type="text/javascript">
         $.require(["base/client", "main/query", "main/attr", "ui/navmenu", "module/Widget", "module/src"], function (client, query, attr, Navmenu, Widget, src) {
             var $nav = $("#nav"), $content = $("#content");
@@ -37,62 +37,62 @@
     </script>
 </head>
 <body style="width: 100%; height: 100%;">
-    <div style="width: 100%; height: 100%; position:relative;" myquery-widget="ui.splitterpane">
-        <div myquery-widget="ui.scrollableview" ui-scrollableview="overflow:y"; style="width:200px;height:100%;border-right:1px solid black;">
-            <div id="nav" myquery-widget="ui.navmenu">
+    <div style="width: 100%; height: 100%; position:relative;" amdquery-widget="ui.splitterpane">
+        <div amdquery-widget="ui.scrollableview" ui-scrollableview="overflow:y"; style="width:200px;height:100%;border-right:1px solid black;">
+            <div id="nav" amdquery-widget="ui.navmenu">
                 <ul>
-                    <li myquery-widget="ui.navitem" ui-navitem="html:app;img:module">
+                    <li amdquery-widget="ui.navitem" ui-navitem="html:app;img:module">
                         <ul>
-                            <li myquery-widget="ui.navitem" ui-navitem="html:index;img:class"></li>
+                            <li amdquery-widget="ui.navitem" ui-navitem="html:index;img:class"></li>
                         </ul>
                     </li>
-                    <li myquery-widget="ui.navitem" ui-navitem="html:base;img:module">
+                    <li amdquery-widget="ui.navitem" ui-navitem="html:base;img:module">
                         <ul>
-                            <li myquery-widget="ui.navitem" ui-navitem="html:MyQuery;img:class"></li>
-                            <li myquery-widget="ui.navitem" ui-navitem="html:Ready;img:class"></li> 
-                            <li myquery-widget="ui.navitem" ui-navitem="html:Require;img:class"></li> 
+                            <li amdquery-widget="ui.navitem" ui-navitem="html:AMDQuery;img:class"></li>
+                            <li amdquery-widget="ui.navitem" ui-navitem="html:Ready;img:class"></li> 
+                            <li amdquery-widget="ui.navitem" ui-navitem="html:Require;img:class"></li> 
                         </ul>
                     </li>
-                    <li myquery-widget="ui.navitem" ui-navitem="html:html5;img:module">
+                    <li amdquery-widget="ui.navitem" ui-navitem="html:html5;img:module">
                         <ul>
-                            <li myquery-widget="ui.navitem" ui-navitem="html:html5;img:class"></li>
+                            <li amdquery-widget="ui.navitem" ui-navitem="html:html5;img:class"></li>
                         </ul>
                     </li>
-                    <li myquery-widget="ui.navitem" ui-navitem="html:main;img:module">
+                    <li amdquery-widget="ui.navitem" ui-navitem="html:main;img:module">
                         <ul>
-                            <li myquery-widget="ui.navitem" ui-navitem="html:Query;img:class"></li>
-                            <li myquery-widget="ui.navitem" ui-navitem="html:Communicate;img:class"></li>
-                            <li myquery-widget="ui.navitem" ui-navitem="html:Css;img:class"></li>
-                            <li myquery-widget="ui.navitem" ui-navitem="html:Dom;img:class"></li>
-                            <li myquery-widget="ui.navitem" ui-navitem="html:Event;img:class"></li>
-                            <li myquery-widget="ui.navitem" ui-navitem="html:Object;img:class"></li>
+                            <li amdquery-widget="ui.navitem" ui-navitem="html:Query;img:class"></li>
+                            <li amdquery-widget="ui.navitem" ui-navitem="html:Communicate;img:class"></li>
+                            <li amdquery-widget="ui.navitem" ui-navitem="html:Css;img:class"></li>
+                            <li amdquery-widget="ui.navitem" ui-navitem="html:Dom;img:class"></li>
+                            <li amdquery-widget="ui.navitem" ui-navitem="html:Event;img:class"></li>
+                            <li amdquery-widget="ui.navitem" ui-navitem="html:Object;img:class"></li>
                         </ul>
                     </li>
-                    <li myquery-widget="ui.navitem" ui-navitem="html:module;img:module">
+                    <li amdquery-widget="ui.navitem" ui-navitem="html:module;img:module">
                         <ul>
-                            <li myquery-widget="ui.navitem" ui-navitem="html:Animate;img:class"></li>
-                            <li myquery-widget="ui.navitem" ui-navitem="html:Color;img:class"></li>
-                            <li myquery-widget="ui.navitem" ui-navitem="html:Promise;img:class"></li>
-                            <li myquery-widget="ui.navitem" ui-navitem="html:Thread;img:class"></li>
+                            <li amdquery-widget="ui.navitem" ui-navitem="html:Animate;img:class"></li>
+                            <li amdquery-widget="ui.navitem" ui-navitem="html:Color;img:class"></li>
+                            <li amdquery-widget="ui.navitem" ui-navitem="html:Promise;img:class"></li>
+                            <li amdquery-widget="ui.navitem" ui-navitem="html:Thread;img:class"></li>
                         </ul>
                     </li>
-                    <li myquery-widget="ui.navitem" ui-navitem="html:ui;img:module">
+                    <li amdquery-widget="ui.navitem" ui-navitem="html:ui;img:module">
                         <ul>
-                            <li myquery-widget="ui.navitem" ui-navitem="html:Accordion;img:class"></li>
-                            <li myquery-widget="ui.navitem" ui-navitem="html:Book;img:class"></li>
-                            <li myquery-widget="ui.navitem" ui-navitem="html:TabBar;img:class"></li>
-                            <li myquery-widget="ui.navitem" ui-navitem="html:Button;img:class"></li>
-                            <li myquery-widget="ui.navitem" ui-navitem="html:Drag;img:class"></li>
-                            <li myquery-widget="ui.navitem" ui-navitem="html:Keyboard;img:class"></li>
-                            <li myquery-widget="ui.navitem" ui-navitem="html:ScrollableView;img:class"></li>
-                            <li myquery-widget="ui.navitem" ui-navitem="html:SplitterPane;img:class"></li>
-                            <li myquery-widget="ui.navitem" ui-navitem="html:Widget;img:class"></li>
+                            <li amdquery-widget="ui.navitem" ui-navitem="html:Accordion;img:class"></li>
+                            <li amdquery-widget="ui.navitem" ui-navitem="html:Book;img:class"></li>
+                            <li amdquery-widget="ui.navitem" ui-navitem="html:TabBar;img:class"></li>
+                            <li amdquery-widget="ui.navitem" ui-navitem="html:Button;img:class"></li>
+                            <li amdquery-widget="ui.navitem" ui-navitem="html:Drag;img:class"></li>
+                            <li amdquery-widget="ui.navitem" ui-navitem="html:Keyboard;img:class"></li>
+                            <li amdquery-widget="ui.navitem" ui-navitem="html:ScrollableView;img:class"></li>
+                            <li amdquery-widget="ui.navitem" ui-navitem="html:SplitterPane;img:class"></li>
+                            <li amdquery-widget="ui.navitem" ui-navitem="html:Widget;img:class"></li>
                         </ul>
                     </li>
                 </ul>
             </div>
         </div>
-        <div style="height:100%" myquery-widget="ui.splitter" ui-splitter="flex:1">
+        <div style="height:100%" amdquery-widget="ui.splitter" ui-splitter="flex:1">
             <iframe id="content" style="height:100%;width:100%;"></iframe>
         </div>
     </div>

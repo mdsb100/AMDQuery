@@ -18,7 +18,7 @@
     },
     init: function( opt, target ) {
       this._super( opt, target );
-      target.attr( "myquery-ui", "keyboard" );
+      target.attr( "amdquery-ui", "keyboard" );
       this.keyboard = new Keyboard( target[ 0 ], this.options.keyList );
       this.options.keyList = this.keyboard.keyList;
 

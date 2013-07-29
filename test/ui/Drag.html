@@ -4,7 +4,7 @@
     <title>拖放</title>
     <meta charset="utf-8" />
     <link href="../../css/reset.css" rel="stylesheet" type="text/css" />
-    <script src="../../myquery/myquery.js" type="text/javascript" ui="initWidget:1"></script>
+    <script src="../../amdquery/amdquery.js" type="text/javascript" ui="initWidget:1"></script>
     <script type="text/javascript">
         myQuery.cabinet.start = function(){
             $.showMsg("3");
@@ -44,7 +44,7 @@
         position: relative" id="container">
         <div>
             <div style="position: inherit">
-                <div id="drag" myquery-widget="ui.draggable" ui-draggable-pause="myQuery.cabinet.pause" ui-draggable="axis:x;keepinner:true;container:#container;isTransform3d:true" style="width: 100px; height: 100px; background-color: Red;">
+                <div id="drag" amdquery-widget="ui.draggable" ui-draggable-pause="myQuery.cabinet.pause" ui-draggable="axis:x;keepinner:true;container:#container;isTransform3d:true" style="width: 100px; height: 100px; background-color: Red;">
                     拖动我
                 </div>
             </div>
@@ -54,7 +54,7 @@
         position: relative" id="container1">
         <div>
             <div style="position: inherit">
-                <div id="drag1" myquery-widget="draggable" ui-draggable="keepinner:false;container:#container1" style="width: 500px; height: 500px; background-color: Red; position: absolute">
+                <div id="drag1" amdquery-widget="draggable" ui-draggable="keepinner:false;container:#container1" style="width: 500px; height: 500px; background-color: Red; position: absolute">
                     拖动我
                 </div>
             </div>

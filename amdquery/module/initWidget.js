@@ -1,4 +1,4 @@
-/// <reference path="../myquery.js" />
+/// <reference path="../amdquery.js" />
 myQuery.define( "module/initWidget", [ "base/typed", "main/query", "main/dom", "main/attr", "module/Widget" ], function( $, typed, query, dom, attr, Widget, undefinded ) {
   "use strict"; //启用严格模式
 
@@ -29,8 +29,8 @@ myQuery.define( "module/initWidget", [ "base/typed", "main/query", "main/dom", "
     widgetMap = {},
     fnNameReflect = {};
 
-    $( parent ).find( "*[myquery-widget]" ).each( function( ele ) {
-      var value = attr.getAttr( ele, "myquery-widget" ),
+    $( parent ).find( "*[amdquery-widget]" ).each( function( ele ) {
+      var value = attr.getAttr( ele, "amdquery-widget" ),
       attrNames = typed.isStr( value ) && value != "" ? value.split( /;|,/ ) : [ ],
       len = attrNames.length,
       widgetName,
