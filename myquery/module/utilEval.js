@@ -1,10 +1,10 @@
-﻿myQuery.define( "module/utilEval", [ "base/support" ], function( $, support ) {
+﻿myQuery.define( "module/utilEval", [ "base/typed", "base/support" ], function( $, typed, support ) {
   return {
     evalBasicDataType: function( str ) {
       /// <summary>如果是基本数据类型就eval</summary>
       /// <param name="s" type="String"></param>
       /// <returns type="any" />
-      if ( $.isStr( str ) && /^\d+(.[\d]*)?$|true|false|undefined|null|NaN|Infinite/.test( str ) ) {
+      if ( typed.isStr( str ) && /^\d+(.[\d]*)?$|true|false|undefined|null|NaN|Infinite/.test( str ) ) {
         return eval( str );
       }
       return str;

@@ -1,4 +1,4 @@
-﻿myQuery.define( "module/Keyboard", [ "main/event", "main/CustomEvent", "main/object", "hash/charcode" ], function( $, event, CustomEvent, object, charcode ) {
+﻿myQuery.define( "module/Keyboard", [ "base/typed", "base/extend", "base/array", "main/event", "main/CustomEvent", "main/object", "hash/charcode" ], function( $, typed, utilExtend, array, event, CustomEvent, object, charcode ) {
   "use strict"; //启用严格模式
   var Keyboard = CustomEvent.extend( "Keyboard", {
     constructor: Keyboard,
@@ -41,9 +41,9 @@
     addKey: function( obj ) {
       var keyCode = obj.keyCode,
         ret;
-      if ( $.isArr( keyCode ) ) {
+      if ( typed.isArr( keyCode ) ) {
         for ( var i = 0, len = keyCode.length, nObj; i < len; i++ ) {
-          $.easyExtend( {}, obj );
+          utilExtend.easyExtend( {}, obj );
           nObj = obj;
           nObj.keyCode = keyCode[ i ];
           //                    ret = Keyboard.createOpt(nObj);
@@ -52,10 +52,10 @@
           this.addKey( nObj );
         }
         return this;
-      } else if ( $.isStr( keyCode ) ) {
+      } else if ( typed.isStr( keyCode ) ) {
         ret = Keyboard.createOpt( obj );
         this._push( ret );
-      } else if ( $.isNum( keyCode ) ) {
+      } else if ( typed.isNum( keyCode ) ) {
         ret = obj;
         this._push( ret );
       }
@@ -69,7 +69,7 @@
       }
       var i = 0,
         len;
-      if ( !$.isArr( keyList ) ) {
+      if ( !typed.isArr( keyList ) ) {
         keyList = [ keyList ];
       }
       for ( len = keyList.length; i < len; i++ ) {
@@ -81,14 +81,14 @@
       origin = Keyboard.createOpt( origin );
       var item;
       if ( item = this.iterationKeyList( origin ) ) {
-        $.extend( item, evolution );
+        utilExtend.extend( item, evolution );
       }
       return this;
     },
     removeKey: function( obj ) {
       var item, ret = Keyboard.createOpt( obj );
       if ( item = this.iterationKeyList( ret ) ) {
-        this.keyList.splice( $.inArray( this.keyList, item ), 1 );
+        this.keyList.splice( array.inArray( this.keyList, item ), 1 );
       }
       return this;
     },
@@ -125,25 +125,25 @@
     createOpt: function( obj ) {
       var keyCode = obj.keyCode;
       if ( obj.combinationKey && obj.combinationKey.length ) {
-        if ( $.isStr( keyCode ) ) {
+        if ( typed.isStr( keyCode ) ) {
           keyCode = keyCode.length > 1 ? keyCode : keyCode.toUpperCase( );
         }
         obj.type = "keyup";
       }
-      if ( $.isStr( keyCode ) ) {
+      if ( typed.isStr( keyCode ) ) {
         obj.keyCode = Keyboard.stringToCode( keyCode );
       }
 
       return obj;
     },
     codeToChar: function( code ) {
-      return $.isNum( code ) ? String.fromCharCode( code ) : code;
+      return typed.isNum( code ) ? String.fromCharCode( code ) : code;
     },
     codeToString: function( code ) {
       return Keyboard.codeToStringReflect[ code ] || Keyboard.codeToChar( code );
     },
     charToCode: function( c ) {
-      return $.isStr( c ) ? c.charCodeAt( 0 ) : c;
+      return typed.isStr( c ) ? c.charCodeAt( 0 ) : c;
     },
     stringToCode: function( s ) {
       return Keyboard.stringToCodeReflect[ s ] || Keyboard.charToCode( s );

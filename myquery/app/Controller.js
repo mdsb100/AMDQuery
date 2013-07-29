@@ -1,4 +1,4 @@
-myQuery.define( "app/Controller", [ "main/object", "main/CustomEvent", "app/View", "app/Model" ], function( $, object, CustomEvent, View, Model, undefined ) {
+myQuery.define( "app/Controller", [ "base/typed", "main/object", "main/CustomEvent", "app/View", "app/Model" ], function( $, typed, object, CustomEvent, View, Model, undefined ) {
   "use strict"; //启用严格模式
   var Controller = object.extend( "Controller", {
     init: function( view, models ) {
@@ -9,7 +9,7 @@ myQuery.define( "app/Controller", [ "main/object", "main/CustomEvent", "app/View
       Controller.addController( this );
     },
     addModels: function( models ) {
-      if ( !$.isArr( models ) ) {
+      if ( !typed.isArr( models ) ) {
         models = $.util.argToArray( arguments );
       }
       this.models = this.models.concat( models );

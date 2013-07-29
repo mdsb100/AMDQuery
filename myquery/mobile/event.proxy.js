@@ -1,4 +1,4 @@
-﻿myQuery.define( "mobile/event.proxy", [ "base/client", "main.event" ], function( $, client, event, undefined ) {
+﻿myQuery.define( "mobile/event.proxy", [ "base/extend", "base/client", "main.event" ], function( $, utilExtend, client, event, undefined ) {
   "use strict"; //启用严格模式
   if ( client.system.mobile ) {
     $.interfaces.achieve( "editEventType", function( name, type ) {
@@ -73,7 +73,7 @@
       /// <returns type="null" />
       var eventF = event.event.document,
         createEvent = eventF.createEvent,
-        settings = $.extend( {}, _touchSettings, paras ),
+        settings = utilExtend.extend( {}, _touchSettings, paras ),
         e, i;
 
         i = settings;

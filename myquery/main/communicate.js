@@ -1,4 +1,4 @@
-﻿myQuery.define( "main/communicate", [ "base/is", "base/extend", "main/event", "module/parse" ], function( $, is, extend, parse, undefined ) {
+﻿myQuery.define( "main/communicate", [ "base/typed", "base/extend", "main/event", "module/parse" ], function( $, typed, extend, parse, undefined ) {
   "use strict"; //启用严格模式
   var communicate = {
     ajax: function( options ) {
@@ -187,13 +187,13 @@
       if ( o.JSONP ) {
         random = ( "myQuery" + $.now( ) ) + parseInt( Math.random( ) * 10 );
         window[ random ] = function( ) {
-          $.isFun( o.complete ) && o.complete.apply( o.context || window, arguments );
+          typed.isFun( o.complete ) && o.complete.apply( o.context || window, arguments );
         };
         //o.JSONP = random;
         _data += "&" + ( o.JSONP ) + "=" + random;
         //_data += "&complete=" + random;
       }
-      //            if ($.isStr(o.JSONP)) {
+      //            if (typed.isStr(o.JSONP)) {
       //                _data += "&" + (o.JSONPKey) + "=" + o.JSONP;
       //            }
 
@@ -208,8 +208,8 @@
           clearTimeout( _timeId );
           $.trigger( "getJSStop", _scripts, o );
           var js = typeof window[ o.checkString ] != "undefined" ? window[ o.checkString ] : undefined;
-          !o.JSONP && $.isFun( o.complete ) && o.complete.call( o.context || this, js );
-          //$.isFun(o.complete) && o.complete.call(o.context || this, js);
+          !o.JSONP && typed.isFun( o.complete ) && o.complete.call( o.context || this, js );
+          //typed.isFun(o.complete) && o.complete.call(o.context || this, js);
           this.nodeName.toLowerCase( ) == "script" && o.isDelete == true && _head.removeChild( this );
           this.onerror = this.onload = o = _head = null;
           if ( window[ random ] ) {
@@ -292,18 +292,18 @@
       /// <param name="content" type="String/Object/$/Array[element]">内容可以是Object键值对，也可以是数组形式的element，也可以是myQuery对象</param>
       /// <returns type="String" />
       var list = [ ];
-      if ( $.isObj( content ) ) {
+      if ( typed.isObj( content ) ) {
         $.each( content, function( value, name ) {
-          value = $.isFun( value ) ? value( ) : value;
-          !$.isNul( value ) && list.push( encodeURIComponent( name ) + "=" + encodeURIComponent( value ) );
+          value = typed.isFun( value ) ? value( ) : value;
+          !typed.isNul( value ) && list.push( encodeURIComponent( name ) + "=" + encodeURIComponent( value ) );
         } );
         content = list.join( "&" );
-      } else if ( $.is$( content ) || ( $.isArr( content ) && $.isEle( content[ 0 ] ) ) ) {
+      } else if ( typed.is$( content ) || ( typed.isArr( content ) && typed.isEle( content[ 0 ] ) ) ) {
         $.each( content, function( item ) {
-          !$.isNul( item.value ) && list.push( encodeURIComponent( item.name ) + "=" + encodeURIComponent( item.value ) );
+          !typed.isNul( item.value ) && list.push( encodeURIComponent( item.name ) + "=" + encodeURIComponent( item.value ) );
         } );
         content = list.join( "&" );
-      } else if ( !$.isStr( content ) ) {
+      } else if ( !typed.isStr( content ) ) {
         content = "";
       }
       return content; //encodeURIComponent(content); //转第二次码

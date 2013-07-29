@@ -1,4 +1,4 @@
-﻿myQuery.define( "base/support", function( $ ) {
+﻿myQuery.define( "base/support", ["base/extend"], function( $, utilExtend ) {
   //consult from jquery-1.9.1
   "use strict"; //启用严格模式
 
@@ -242,7 +242,7 @@
 
     body.removeChild( container );
 
-    $.easyExtend( $.support, support );
+    utilExtend.easyExtend( $.support, support );
 
     // Null elements to avoid leaks in IE
     container = div = tds = marginDiv = null;
@@ -270,7 +270,7 @@
 
   root = script = null;
 
-  $.easyExtend( $.support, support );
+  utilExtend.easyExtend( $.support, support );
 
   return $.support;
 }, "JQuery1.9.1" );

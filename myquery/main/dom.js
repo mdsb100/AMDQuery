@@ -1,4 +1,4 @@
-﻿myQuery.define( "main/dom", [ "base/support", "base/client", "lib/sizzle", "main/data", "main/event" ], function( $, support, client, sizzle, data, event, undefined ) {
+﻿myQuery.define( "main/dom", [ "base/typed", "base/extend", "base/support", "base/client", "lib/sizzle", "main/data", "main/event" ], function( $, typed, utilExtend, support, client, sizzle, data, event, undefined ) {
   "use strict"; //启用严格模式
   var rnumnonpx = /^-?(?:\d*\.)?\d+(?!px)[^\d\s]+$/i,
   rmargin = /^margin/,
@@ -246,7 +246,7 @@
         var val = hooks.get ? hooks.get( ele, name ) : curCSS( ele, name, style );
         if ( extra === "" || extra ) {
           var num = parseFloat( val );
-          return extra === true || $.isNumeric( num ) ? num || 0 : val;
+          return extra === true || typed.isNumeric( num ) ? num || 0 : val;
         }
         return val;
 
@@ -363,7 +363,7 @@
       /// <param name="ele" type="Element">dom元素</param>
       /// <returns type="Element" />
       var x = ele.lastChild;
-      while ( x && !$.isEle( x ) ) {
+      while ( x && !typed.isEle( x ) ) {
         x = x.previousSibling;
       }
       return x;
@@ -426,7 +426,7 @@
       /// <returns type="Object" />
       var pageH = window.innerHeight,
         pageW = window.innerWidth;
-      if ( !$.isNum( pageW ) ) {
+      if ( !typed.isNum( pageW ) ) {
         if ( document.compatMode == "CSS1Compat" ) {
           pageH = document.documentElement.clientHeight;
           pageW = document.documentElement.clientWidth;
@@ -453,7 +453,7 @@
         child;
       var ele = father.firstChild;
       while ( ele ) {
-        if ( $.isEle( ele ) && ++i == index ) {
+        if ( typed.isEle( ele ) && ++i == index ) {
           child = ele;
           break;
         }
@@ -497,7 +497,7 @@
       /// <returns type="Number" />
       var name = arguments[ 1 ] ? "height" : "width",
         bName = name == "width" ? "Width" : "Height";
-      if ( $.isWindow( ele ) ) {
+      if ( typed.isWindow( ele ) ) {
         return ele.document.documentElement[ "client" + bName ];
       }
 
@@ -781,7 +781,7 @@
       ret = callback.apply( ele, args || [ ] );
 
       // Revert the old values
-      $.easyExtend( style, old );
+      utilExtend.easyExtend( style, old );
 
       return ret;
     }
@@ -797,13 +797,13 @@
       /// <param name="value" type="String/Number/undefined">当style是字符串，并且value存在</param>
       /// <returns type="self" />
       // var result, tmp;
-      if ( $.isObj( style ) ) {
+      if ( typed.isObj( style ) ) {
         for ( var key in style ) {
           this.each( function( ele ) {
             $.css( ele, key, style[ key ] );
           } );
         }
-      } else if ( $.isStr( style ) ) {
+      } else if ( typed.isStr( style ) ) {
         if ( value === undefined ) {
           return $.css( this[ 0 ], style );
         } else {
@@ -856,7 +856,7 @@
       var c = child,
       ele = this.eles[ 0 ];
       if ( !c ) return this;
-      if ( $.isStr( c ) ) {
+      if ( typed.isStr( c ) ) {
         var str, childNodes, i = 0,
           len;
         str = c.match( /^<\w.+[\/>|<\/\w.>]$/ );
@@ -871,8 +871,8 @@
             //delete div;
           } );
         }
-      } else if ( $.isEle( c ) || c.nodeType === 3 || c.nodeType === 8 ) ele.appendChild( c );
-      else if ( $.is$( c ) ) {
+      } else if ( typed.isEle( c ) || c.nodeType === 3 || c.nodeType === 8 ) ele.appendChild( c );
+      else if ( typed.is$( c ) ) {
         c.each( function( son ) {
           ele.appendChild( son );
         } );
@@ -887,7 +887,7 @@
       /// <param name="father" type="Element/$">父元素类型</param>
       /// <returns type="self" />
       var f = father;
-      if ( $.isEle( f ) ) {} else if ( $.is$( f ) ) {
+      if ( typed.isEle( f ) ) {} else if ( typed.is$( f ) ) {
         f = f[ 0 ];
       } else {
         f = null;
@@ -931,7 +931,7 @@
       /// </summary>
       /// <param name="height" type="Number/String">高度</param>
       /// <returns type="Number" />
-      return $.isNul( height ) ? parseFloat( $.getHeight( this[ 0 ] ) ) : this.each( function( ele ) {
+      return typed.isNul( height ) ? parseFloat( $.getHeight( this[ 0 ] ) ) : this.each( function( ele ) {
         $.setHeight( ele, height );
       } );
     },
@@ -945,7 +945,7 @@
       /// <param name="str" type="String">缺省 则返回innerHTML</param>
       /// <param name="bool" type="Boolean">true添加 false覆盖</param>
       /// <returns type="self" />
-      return $.isStr( str ) ?
+      return typed.isStr( str ) ?
 
       this.each( function( ele ) {
         $.each( $.posterity( ele ), function( child ) {
@@ -974,7 +974,7 @@
       /// </summary>
       /// <param name="height" type="Number">高度</param>
       /// <returns type="Number" />
-      return !$.isNul( height ) ? this.each( function( ele ) {
+      return !typed.isNul( height ) ? this.each( function( ele ) {
         $.setInnerH( ele, height );
       } ) : $.getInnerH( this[ 0 ] );
     },
@@ -983,7 +983,7 @@
       /// </summary>
       /// <param name="height" type="Number">宽度</param>
       /// <returns type="Number" />
-      return !$.isNul( width ) ? this.each( function( ele ) {
+      return !typed.isNul( width ) ? this.each( function( ele ) {
         $.setInnerW( ele, width );
       } ) : $.getInnerW( this[ 0 ] );
     },
@@ -1026,10 +1026,10 @@
       /// <returns type="self" />
       var ele = this.eles[ 0 ];
       if ( !newChild ) return this;
-      if ( $.is$( refChild ) ) {
+      if ( typed.is$( refChild ) ) {
         refChild = refChild[ 0 ];
       }
-      if ( $.isStr( newChild ) ) {
+      if ( typed.isStr( newChild ) ) {
         var str, childNodes, i = 0,
           len;
         str = newChild.match( /^<\w.+[\/>|<\/\w.>]$/ );
@@ -1044,9 +1044,9 @@
             //delete div;
           } );
         }
-      } else if ( $.isEle( newChild ) || newChild.nodeType === 3 || newChild.nodeType === 8 ) {
+      } else if ( typed.isEle( newChild ) || newChild.nodeType === 3 || newChild.nodeType === 8 ) {
         ele.insertBefore( newChild, refChild );
-      } else if ( $.is$( newChild ) ) {
+      } else if ( typed.is$( newChild ) ) {
         newChild.each( function( newChild ) {
           ele.insertBefore( newChild, refChild );
         } );
@@ -1062,7 +1062,7 @@
       /// <param name="refChild" type="String/Element/$">已有元素</param>
       /// <returns type="self" />
 
-      if ( $.is$( refChild ) ) {
+      if ( typed.is$( refChild ) ) {
         refChild = refChild[ 0 ];
       }
 
@@ -1076,7 +1076,7 @@
       /// <summary>给当前对象的所有ele插入TextNode</summary>
       /// <param name="str" type="String">字符串</param>
       /// <returns type="self" />
-      if ( $.isStr( str ) && str.length > 0 ) {
+      if ( typed.isStr( str ) && str.length > 0 ) {
         var nodeText;
         this.each( function( ele ) {
           nodeText = document.createTextNode( str );
@@ -1103,7 +1103,7 @@
       /// </summary>
       /// <param name="left" type="num/any">宽度</param>
       /// <returns type="self" />
-      return $.isNum( left ) ? this.each( function( ele ) {
+      return typed.isNum( left ) ? this.each( function( ele ) {
         $.setOffsetL( ele, left );
       } ) : $.getOffsetL( this[ 0 ] );
     },
@@ -1114,7 +1114,7 @@
       /// </summary>
       /// <param name="top" type="num/any">宽度</param>
       /// <returns type="self" />
-      return $.isNum( top ) ? this.each( function( ele ) {
+      return typed.isNum( top ) ? this.each( function( ele ) {
         $.setOffsetT( ele, top );
       } ) : $.getOffsetT( this[ 0 ] );
     },
@@ -1124,7 +1124,7 @@
       /// </summary>
       /// <param name="alpha" type="Number/null">透明度（0~1）可选，为空为获取透明度</param>
       /// <returns type="self" />
-      return $.isNum( alpha ) ? this.each( function( ele ) {
+      return typed.isNum( alpha ) ? this.each( function( ele ) {
         $.setOpacity( ele, alpha );
       } ) : $.getOpacity( this[ 0 ] );
     },
@@ -1134,11 +1134,11 @@
       /// <param name="height" type="Number">高度</param>
       /// <param name="bol" type="bol">margin是否计算在内</param>
       /// <returns type="Number" />
-      if ( arguments.length == 1 && $.isBol( height ) ) {
+      if ( arguments.length == 1 && typed.isBol( height ) ) {
         bol = height;
         height = null;
       }
-      return $.isNul( height ) ? $.getOuterH( this[ 0 ], bol ) : this.each( function( ele ) {
+      return typed.isNul( height ) ? $.getOuterH( this[ 0 ], bol ) : this.each( function( ele ) {
         $.setOuterH( ele, height, bol );
       } );
     },
@@ -1147,11 +1147,11 @@
       /// </summary>
       /// <param name="width" type="Number">宽度</param>
       /// <returns type="Number" />
-      if ( arguments.length == 1 && $.isBol( width ) ) {
+      if ( arguments.length == 1 && typed.isBol( width ) ) {
         bol = width;
         width = null;
       }
-      return $.isNul( width ) ? $.getOuterW( this[ 0 ], bol ) : this.each( function( ele ) {
+      return typed.isNul( width ) ? $.getOuterW( this[ 0 ], bol ) : this.each( function( ele ) {
         $.setOuterW( ele, width, bol );
       } );
     },
@@ -1189,20 +1189,20 @@
       /// <param name="child" type="Number/Element/$"></param>
       /// <returns type="self" />
       var temp;
-      if ( $.isNum( child ) ) this.each( function( ele ) {
+      if ( typed.isNum( child ) ) this.each( function( ele ) {
         temp = $.getRealChild( ele, child );
         event.clearHandlers( temp );
         $.removeData( temp );
         ele.removeChild( temp );
 
       } );
-      else if ( $.isEle( child ) ) {
+      else if ( typed.isEle( child ) ) {
         try {
           event.clearHandlers( child );
           $.removeData( child );
           this.eles[ 0 ].removeChild( child );
         } catch ( e ) {}
-      } else if ( $.is$( child ) ) this.each( function( ele ) {
+      } else if ( typed.is$( child ) ) this.each( function( ele ) {
         child.each( function( son ) {
           try {
             event.clearHandlers( son );
@@ -1230,7 +1230,7 @@
       /// <param name="newChild" type="Element/$">要替换的元素</param>
       /// <returns type="self" />
       var father;
-      if ( $.isEle( newChild ) ) {
+      if ( typed.isEle( newChild ) ) {
         this.each( function( ele ) {
           father = ele.parentNode;
           try {
@@ -1240,7 +1240,7 @@
             return false;
           } catch ( e ) {}
         } );
-      } else if ( $.is$( newChild ) ) {
+      } else if ( typed.is$( newChild ) ) {
         this.each( function( ele1 ) {
           father = ele1.parentNode;
           newChild.each( function( ele2 ) {
@@ -1263,7 +1263,7 @@
       newChild = $.getEle( newChild );
       var temp;
       $.each( newChild, function( newNode ) {
-        if ( $.isNum( child ) ) this.each( function( ele ) {
+        if ( typed.isNum( child ) ) this.each( function( ele ) {
           try {
             temp = $.getRealChild( ele, child );
             ele.replaceChild( newNode, temp );
@@ -1272,7 +1272,7 @@
             return false;
           } catch ( e ) {}
         } );
-        else if ( $.isEle( child ) ) this.each( function( ele ) {
+        else if ( typed.isEle( child ) ) this.each( function( ele ) {
           try {
             ele.replaceChild( newNode, child );
             $.removeData( child );
@@ -1280,7 +1280,7 @@
             return false;
           } catch ( e ) {}
         } );
-        else if ( $.is$( child ) ) this.each( function( ele ) {
+        else if ( typed.is$( child ) ) this.each( function( ele ) {
           child.each( function( son ) {
             try {
               ele.replaceChild( newNode, son );
@@ -1334,7 +1334,7 @@
       /// </summary>
       /// <param name="width" type="Number/String">宽度</param>
       /// <returns type="Number" />
-      return $.isNul( width ) ? parseFloat( $.getWidth( this[ 0 ] ) ) : this.each( function( ele ) {
+      return typed.isNul( width ) ? parseFloat( $.getWidth( this[ 0 ] ) ) : this.each( function( ele ) {
         $.setWidth( ele, width );
       } );
     }
@@ -1381,7 +1381,7 @@
 
   $.interfaces.achieve( "constructorDom", function( type, dollar, cssObj, ele, parentNode ) {
     cssObj && dollar.css( cssObj );
-    parentNode && ( $.isEle( parentNode ) || $.is$( parentNode ) ) && dollar.appendTo( parentNode );
+    parentNode && ( typed.isEle( parentNode ) || typed.is$( parentNode ) ) && dollar.appendTo( parentNode );
   } );
 
   return dom;

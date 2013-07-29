@@ -1,4 +1,4 @@
-﻿myQuery.define( "module/FX", [ "main/dom", "main/object" ], function( $, dom, object, undefined ) {
+﻿myQuery.define( "module/FX", [ "base/typed", "base/array", "main/dom", "main/object" ], function( $, typed, array, dom, object, undefined ) {
   "use strict"; //启用严格模式
   var rfxnum = /^([+-]=)?([\d+-.]+)(.*)$/;
 
@@ -44,7 +44,7 @@
     },
     step: function( goToEnd ) {
       var pauseTime;
-      if ( !$.isBol( goToEnd ) ) {
+      if ( !typed.isBol( goToEnd ) ) {
         pauseTime = goToEnd || 0;
       }
       var t = $.now( ) - pauseTime,
@@ -81,7 +81,7 @@
       }
     },
     stop: function( ) {
-      var index = $.inArray( FX.timers, this );
+      var index = array.inArray( FX.timers, this );
       index > -1 && FX.timers.splice( index, 1 );
     },
 
@@ -129,15 +129,15 @@
     },
 
     getDelay: function( d ) {
-      if ( $.isStr( d ) ) {
+      if ( typed.isStr( d ) ) {
         d = FX.speeds( d );
-      } else if ( $.isNul( d ) || !$.isNum( d ) ) {
+      } else if ( typed.isNul( d ) || !typed.isNum( d ) ) {
         d = 0;
       }
       return d;
     },
     getDuration: function( d ) {
-      if ( $.isNul( d ) || !$.isNum( d ) ) {
+      if ( typed.isNul( d ) || !typed.isNum( d ) ) {
         d = FX.speeds( d );
       }
       return d;

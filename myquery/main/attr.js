@@ -1,4 +1,4 @@
-﻿myQuery.define( "main/attr", [ "base/support" ], function( $, support, undefined ) {
+﻿myQuery.define( "main/attr", [ "base/typed", "base/extend", "base/support" ], function( $, typed, utilExtend, support, undefined ) {
   "use strict"; //启用严格模式
   //暂不要那么多hooks 
   var fixSpecified = {
@@ -40,9 +40,9 @@
       /// <returns type="String" />
       var type = ele.type.toUpperCase( ),
         result;
-      if ( $.isNode( ele, "select" ) ) {
+      if ( typed.isNode( ele, "select" ) ) {
         result = ele.value;
-        if ( $.isNul( result ) || ele.multiple == true ) {
+        if ( typed.isNul( result ) || ele.multiple == true ) {
           result = [ ];
           $( ele ).posterity( ":selected" ).each( function( ele ) {
             result.push( ele.innerHTML );
@@ -50,7 +50,7 @@
           result = result.join( "|" );
         }
         return result;
-      } else if ( $.isNode( ele, "select" ) && ( type == "CHECKBOX" || type == "RADIO" ) )
+      } else if ( typed.isNode( ele, "select" ) && ( type == "CHECKBOX" || type == "RADIO" ) )
         return ele.checked.toString( );
       else
         return ele.value.toString( );
@@ -110,8 +110,8 @@
       /// </summary>
       /// <returns type="self" />
       var type = ele.type.toUpperCase( );
-      if ( $.isNode( ele, "select" ) ) {
-        if ( $.isStr( value ) || $.isNum( value ) )
+      if ( typed.isNode( ele, "select" ) ) {
+        if ( typed.isStr( value ) || typed.isNum( value ) )
           value = [ value ];
         $( ele ).find( "option" ).each( function( ele ) {
           ele.selected = false;
@@ -121,7 +121,7 @@
               ele.selected = true;
           }, this );
         } );
-      } else if ( $.isNode( ele, "input" ) && ( type == "CHECKBOX" || type == "RADIO" ) ) { //将来可能用$.setAttr()
+      } else if ( typed.isNode( ele, "input" ) && ( type == "CHECKBOX" || type == "RADIO" ) ) { //将来可能用$.setAttr()
         if ( value === "checked" || value === "true" || value === true )
           ele.checked = true;
         else
@@ -142,13 +142,13 @@
       /// <param name="attr" type="Object/String">obj为赋属性 str为获得一个属性</param>
       /// <param name="value" type="String/Number/undefined">当style是字符串，并且value存在</param>
       /// <returns type="self" />
-      if ( $.isObj( attr ) ) {
+      if ( typed.isObj( attr ) ) {
         for ( var i in attr ) {
           this.each( function( ele ) {
             $.setAttr( ele, i, attr[ i ] );
           } );
         }
-      } else if ( $.isStr( attr ) ) {
+      } else if ( typed.isStr( attr ) ) {
         if ( value == undefined ) {
           return $.getAttr( this[ 0 ], attr );
         } else {

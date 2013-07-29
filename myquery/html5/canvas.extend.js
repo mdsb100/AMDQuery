@@ -1,4 +1,4 @@
-﻿myQuery.define( "html5/canvas.extend", [ "html5/canvas" ], function( $, canvas, undefined ) {
+﻿myQuery.define( "html5/canvas.extend", [ "base/extend", "html5/canvas" ], function( $, utilExtend, canvas, undefined ) {
   "use strict"; //启用严格模式
   if ( canvas ) {
     var R = Math.round,
@@ -15,7 +15,7 @@
         return c.replace( "rgb", "rgba" ).replace( ")", "," + a + ")" );
     };
 
-    $.easyExtend( canvas.prototype, {
+    utilExtend.easyExtend( canvas.prototype, {
       borderRedius: function( b, c, d, e, f ) { //x, y, w, h, curv//1,2 // curvBorder
         var a = this;
         b = R( b ) + 0.5;

@@ -1,4 +1,5 @@
 myQuery.define( "ui/splitterpane", [
+    "base/typed", 
     "base/support",
     "module/Widget",
     "main/query",
@@ -9,7 +10,7 @@ myQuery.define( "ui/splitterpane", [
     "module/src",
     "html5/css3"
   ],
-  function( $, support, Widget, query, cls, event, dom, attr, src, css3 ) {
+  function( $, typed, support, Widget, query, cls, event, dom, attr, src, css3 ) {
     "use strict"; //启用严格模式
 
     src.link( {
@@ -69,8 +70,8 @@ myQuery.define( "ui/splitterpane", [
           return this;
         },
         resize: function( width, height ) {
-          $.isNul( width ) || this.target.width( width );
-          $.isNul( height ) || this.target.height( height );
+          typed.isNul( width ) || this.target.width( width );
+          typed.isNul( height ) || this.target.height( height );
 
           return this;
         },
@@ -143,10 +144,10 @@ myQuery.define( "ui/splitterpane", [
         },
         resize: function( width, height ) {
           var opt = this.options;
-          if ( !$.isNul( width ) ) {
+          if ( !typed.isNul( width ) ) {
             this.target.width( width );
           }
-          if ( !$.isNul( height ) ) {
+          if ( !typed.isNul( height ) ) {
             this.target.height( height );
           }
           this.width = this.target.width( );

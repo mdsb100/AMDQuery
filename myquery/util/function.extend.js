@@ -1,6 +1,6 @@
-myQuery.define( "util/function.extend", [ ], function( $ ) {
+myQuery.define( "util/function.extend", [ "base/extend" ], function( $, utilExtend ) {
   "use strict"; //启用严格模式 
-  $.easyExtend( $.util, {
+  utilExtend.easyExtend( $.util, {
     compose: function( ) {
       var funcs = arguments;
       return function( ) {

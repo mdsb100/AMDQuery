@@ -1,4 +1,6 @@
 myQuery.define( "ui/navmenu", [
+    "base/typed", 
+    "base/extend",
     "ui/navitem",
     "module/Widget",
     "main/query",
@@ -8,7 +10,7 @@ myQuery.define( "ui/navmenu", [
     "main/attr",
     "module/src"
   ],
-  function( $, NavItem, Widget, query, cls, event, dom, attr, src ) {
+  function( $, typed, utilExtend, NavItem, Widget, query, cls, event, dom, attr, src ) {
     "use strict"; //启用严格模式
 
     src.link( {
@@ -21,7 +23,7 @@ myQuery.define( "ui/navmenu", [
       _initHandler: function( ) {
         var self = this;
         this.event = function( e ) {
-          var para = $.extend( {}, e ),
+          var para = utilExtend.extend( {}, e ),
             type,
             target;
           target = para.target = self.target[ 0 ];
@@ -48,9 +50,9 @@ myQuery.define( "ui/navmenu", [
       },
       enable: function( ) {
         var fun = this.event,
-        i = 0,
-        len = this.navItemList.length,
-        ele;
+          i = 0,
+          len = this.navItemList.length,
+          ele;
         for ( i = 0; i < len; i++ ) {
           ele = $( this.navItemList[ i ] );
           ele.on( "navitem.open", fun );
@@ -62,9 +64,9 @@ myQuery.define( "ui/navmenu", [
       },
       disable: function( ) {
         var fun = this.event,
-        i = 0,
-        len = this.navItemList.length,
-        ele;
+          i = 0,
+          len = this.navItemList.length,
+          ele;
         for ( i = 0; i < len; i++ ) {
           ele = $( this.navItemList[ i ] );
           ele.off( "navitem.open", fun );
@@ -93,7 +95,7 @@ myQuery.define( "ui/navmenu", [
         var ret, i = 0,
           len = this.navItemList.length,
           ele;
-        if ( $.isStr( item ) ) {
+        if ( typed.isStr( item ) ) {
           for ( i = 0; i < len; i++ ) {
             ele = this.navItemList[ i ];
             if ( $.attr( ele, "id" ) === item ) {
@@ -109,7 +111,7 @@ myQuery.define( "ui/navmenu", [
               break;
             }
           }
-        } else if ( $.isEle( item ) ) {
+        } else if ( typed.isEle( item ) ) {
           for ( i = 0; i < len; i++ ) {
             ele = this.navItemList[ i ];
             if ( ele === item ) {

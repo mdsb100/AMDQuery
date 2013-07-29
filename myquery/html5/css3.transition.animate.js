@@ -1,5 +1,4 @@
-﻿/// <reference path="../myquery.js" />
-myQuery.define( "html5/css3.transition.animate", [ "base/client", "main/event", "html5/css3", "module/FX", "html5/animate.transform", "hash/cubicBezier.tween" ], function( $, client, event, css3, FX, transform, cubicBezierTween, undefined ) {
+﻿myQuery.define( "html5/css3.transition.animate", [ "base/typed", "base/extend", "base/client", "main/event", "html5/css3", "module/FX", "html5/animate.transform", "hash/cubicBezier.tween" ], function( $, typed, utilExtend, client, event, css3, FX, transform, cubicBezierTween, undefined ) {
   "use strict"; //启用严格模式
   //无法识别em这种
   if ( $.support.transition ) {
@@ -37,7 +36,7 @@ myQuery.define( "html5/css3.transition.animate", [ "base/client", "main/event", 
           transitionList = {};
         }
 
-        $.easyExtend( opt, option );
+        utilExtend.easyExtend( opt, option );
         //opt._transitionList = [];
         opt._transitionEnd = function( event ) {
           var i, ele = this,
@@ -90,7 +89,7 @@ myQuery.define( "html5/css3.transition.animate", [ "base/client", "main/event", 
           //para肯定要在这里用
           easing = opt.specialEasing && opt.specialEasing[ key ] ? $.getTransitionEasing( opt.specialEasing[ key ] ) : defaultEasing;
           opt.easing = opt.originEasing;
-          if ( $.isFun( $.fx.custom[ key ] ) ) {
+          if ( typed.isFun( $.fx.custom[ key ] ) ) {
             ret = $.fx.custom[ key ]( ele, opt, value, key );
             temp = ret[ 0 ]._originCss;
             //opt._transitionList.push(temp);
@@ -139,7 +138,7 @@ myQuery.define( "html5/css3.transition.animate", [ "base/client", "main/event", 
       animateByTransition: function( ele, property, option ) {
         option = $._getAnimateByTransitionOpt( option );
 
-        if ( $.isEmptyObj( property ) ) {
+        if ( typed.isEmptyObj( property ) ) {
           return option.complete( ele );
         } else {
           if ( option.queue === false ) {
@@ -160,7 +159,7 @@ myQuery.define( "html5/css3.transition.animate", [ "base/client", "main/event", 
           type, fx, i, item;
         for ( type in transitionList ) {
           fx = transitionList[ type ];
-          if ( $.isArr( fx ) ) {
+          if ( typed.isArr( fx ) ) {
             for ( i = fx.length - 1; i >= 0; i-- ) {
               item = fx[ i ];
               item.isInDelay( ) ? item.update( null, fx.from ) : item.step( );
@@ -180,12 +179,12 @@ myQuery.define( "html5/css3.transition.animate", [ "base/client", "main/event", 
         var duration = FX.getDuration( opt.duration ),
           delay = FX.getDelay( opt.delay ),
           tCompelete;
-        if ( $.isArr( opt.complete ) ) {
+        if ( typed.isArr( opt.complete ) ) {
           tCompelete = opt.complete;
           if ( tCompelete[ 0 ] !== originComplete ) {
             tCompelete.splice( 0, 0, originComplete );
           }
-        } else if ( $.isFun( opt.complete ) ) {
+        } else if ( typed.isFun( opt.complete ) ) {
           tCompelete = [ originComplete, opt.complete ];
         } else {
           tCompelete = [ originComplete ];
@@ -205,10 +204,10 @@ myQuery.define( "html5/css3.transition.animate", [ "base/client", "main/event", 
       },
       getTransitionEasing: function( easing ) {
         var name = easing;
-        // if ($.isArr(easing)) {
+        // if (typed.isArr(easing)) {
         //     name = easing.splice(0, 1)[0];
         // }
-        if ( easing && $.isStr( easing ) ) {
+        if ( easing && typed.isStr( easing ) ) {
           if ( name.indexOf( "cubic-bezier" ) > -1 ) {
             return name;
           }
@@ -248,7 +247,7 @@ myQuery.define( "html5/css3.transition.animate", [ "base/client", "main/event", 
         /// <param name="option" type="Object">参数</param>
         /// <returns type="self" />
         option = $._getAnimateByTransitionOpt( option );
-        if ( $.isEmptyObj( property ) ) {
+        if ( typed.isEmptyObj( property ) ) {
           return this.each( option.complete );
         } else {
           return this[ option.queue === false ? "each" : "queue" ]( function( ele ) {

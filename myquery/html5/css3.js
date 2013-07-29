@@ -1,4 +1,4 @@
-﻿myQuery.define( "html5/css3", [ "base/client", "main/dom" ], function( $, client, dom, undefined ) {
+﻿myQuery.define( "html5/css3", [ "base/extend", "base/typed", "base/client", "base/array", "main/dom" ], function( $, utilExtend, typed, client, array, dom, undefined ) {
   "use strict"; //启用严格模式
   var css3Head = ( function( ) {
     var head = "";
@@ -223,7 +223,7 @@
       /// <param name="style" type="Array/Object">值得数组或值</param>
       /// <returns type="self" />
       var eleObj = $( ele );
-      if ( !$.isArr( style ) ) {
+      if ( !typed.isArr( style ) ) {
         style = [ style ];
       }
       $.each( style, function( item ) {
@@ -289,7 +289,7 @@
         var transform = dom.css( ele, transformCssName ),
           temp, index = -1;
         if ( isFullCss( transform ) ) {
-          if ( $.isStr( name ) ) {
+          if ( typed.isStr( name ) ) {
             temp = getTransformValue( transform, name );
             result.push( temp );
           } else {
@@ -429,7 +429,7 @@
         var transition = dom.css( ele, transitionCssName ),
           temp, index = -1;
         if ( isFullCss( transition ) ) {
-          if ( $.isStr( name ) ) {
+          if ( typed.isStr( name ) ) {
             temp = getTransitionValue( transition, name );
 
             result.push( temp );
@@ -586,11 +586,11 @@
         match, n = arguments[ 2 ] || "";
       if ( style == undefined ) {
         transition = "";
-      } else if ( $.isStr( style ) ) {
+      } else if ( typed.isStr( style ) ) {
         list = [ style ];
-      } else if ( $.inArray( style ) ) {
+      } else if ( array.inArray( style ) ) {
         list = style;
-      } else if ( $.isObj( style ) ) {
+      } else if ( typed.isObj( style ) ) {
         list = style.name && [ style.name ];
       }
 
@@ -637,7 +637,7 @@
           rotateY: origin.rotateY,
           rotateZ: origin.rotateZ
         };
-      $.easyExtend( obj, temp );
+      utilExtend.easyExtend( obj, temp );
 
       ele.style[ transformCssName ] = editRotate3d( obj ).join( "" );
     },
@@ -655,7 +655,7 @@
           scaleX: origin.scaleX,
           scaleY: origin.scaleY
         };
-      $.easyExtend( obj, temp );
+      utilExtend.easyExtend( obj, temp );
 
       dom.css( ele, transformCssName, editScale( obj ).join( "" ) );
       return this;
@@ -668,7 +668,7 @@
       /// <param name="ele" type="Element">元素</param>
       /// <param name="style" type="Array">样式名数组或样式名</param>
       /// <returns type="self" />
-      if ( hasTransform && $.isArr( style ) ) {
+      if ( hasTransform && typed.isArr( style ) ) {
         var result = [ ];
 
         $.each( style, function( value, index ) {
@@ -706,7 +706,7 @@
       /// <param name="obj" type="Object">参数</param>
       /// <returns type="self" />
       if ( !obj || !hasTransform3d ) return this;
-      obj = $.extend( $.getTransform3d( ele ), obj );
+      obj = utilExtend.extend( $.getTransform3d( ele ), obj );
       dom.css( ele, transformCssName, editTranslate3d( obj ).concat( editRotate3d( obj ) ).concat( editScale( obj ) ).join( "" ) );
       return this;
     },
@@ -741,7 +741,7 @@
                 len3 = item1.length;
                 for ( ; z < len3; z++ ) {
                   item3 = item1[ z ];
-                  if ( !$.isEmpty( item3 ) )
+                  if ( !typed.isEmpty( item3 ) )
                     item2[ z ] = item3;
                 }
                 break;
@@ -798,18 +798,18 @@
       if ( hasTransition ) {
         var result = "",
           origin = arguments[ 2 ] ? arguments[ 2 ] : ""; //原始origin一样的 替换掉 或许不应该改由浏览器自己控制
-        if ( $.isStr( style ) ) {
+        if ( typed.isStr( style ) ) {
           result = style;
-        } else if ( $.isObj( style ) ) {
+        } else if ( typed.isObj( style ) ) {
           style.name && ( result = [ $.util.unCamelCase( value.name, value.head ), style.duration || "1s", style.
             function || "linear", style.delay || ""
           ].join( " " ) );
-        } else if ( $.isArr( style ) ) {
+        } else if ( typed.isArr( style ) ) {
           var list = [ ];
           $.each( style, function( value ) {
-            if ( $.isStr( value ) ) {
+            if ( typed.isStr( value ) ) {
               list.push( value );
-            } else if ( $.isObj( value ) ) {
+            } else if ( typed.isObj( value ) ) {
               value.name && list.push( [ $.util.unCamelCase( value.name, value.head ), value.duration || "1s", value.
                 function || "linear", value.delay || ""
               ].join( " " ) );
@@ -842,13 +842,13 @@
           translateY: origin.translateY,
           translateZ: origin.translateZ
         };
-      $.easyExtend( obj, temp );
+      utilExtend.easyExtend( obj, temp );
 
       dom.css( ele, transformCssName, editTranslate3d( obj ).join( "" ) );
       return this;
     }
   };
-  $.easyExtend( $.support, css3Support );
+  utilExtend.easyExtend( $.support, css3Support );
   $.extend( css3 );
   $.fn.extend( {
     addTransition: function( style ) {
@@ -896,26 +896,26 @@
       }
       var b = style,
         result, tmp;
-      if ( $.isObj( b ) ) {
+      if ( typed.isObj( b ) ) {
         for ( var i in b ) {
           result = editCss3Type.call( this, i );
           this.each( function( ele ) {
-            if ( $.isFun( result.name ) )
+            if ( typed.isFun( result.name ) )
               result.name.call( this, b[ i ] );
             else
               result.name && $.css3( ele, result.name, b[ i ] + result.unit );
           } )
         }
-      } else if ( $.isStr( b ) ) {
+      } else if ( typed.isStr( b ) ) {
         result = editCss3Type.call( this, b );
         if ( value === undefined ) {
-          if ( $.isFun( result.name ) )
+          if ( typed.isFun( result.name ) )
             return result.name.call( this );
           else
             return $.css3( this[ 0 ], result.name );
         } else {
           this.each( function( ele ) {
-            if ( $.isFun( result.name ) )
+            if ( typed.isFun( result.name ) )
               result.name.call( this, value );
             else
               result.name && $.css3( ele, result.name, value + result.unit );
@@ -1078,7 +1078,7 @@
       /// </summary>
       /// <param name="style" type="Array/String/undefined">样式名数组或样式名或不输入</param>
       /// <returns type="self" />
-      return $.isArr( style ) ? this.each( function( ele ) {
+      return typed.isArr( style ) ? this.each( function( ele ) {
         $.setTransform( ele, style );
       } ) : $.getTransform( this[ 0 ], style );
     },
@@ -1147,9 +1147,9 @@
       /// </summary>
       /// <param name="style" type="String/Array/Object/undefined">为Array Object为设置;String看情况获得或设置;undefined为获得</param>
       /// <returns type="self" />
-      if ( style == undefined || $.isStr( style ) && style.indexOf( " " ) < 0 ) {
+      if ( style == undefined || typed.isStr( style ) && style.indexOf( " " ) < 0 ) {
         return $.getTransition( this[ 0 ], style );
-      } else if ( $.isArr( style ) || $.isObj( style ) || $.isStr( style ) ) {
+      } else if ( typed.isArr( style ) || typed.isObj( style ) || typed.isStr( style ) ) {
         return this.bindTransition( style );
       }
     }

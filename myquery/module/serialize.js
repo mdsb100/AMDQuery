@@ -1,4 +1,4 @@
-﻿myQuery.define( "module/parse", [ "base/is" ], function( $, is ) {
+﻿myQuery.define( "module/parse", [ "base/typed"], function( $, typed) {
   "use strict"; //启用严格模式
   var
   createDocument = function( ) {
@@ -35,18 +35,18 @@
       /// <param name="content" type="String/Object/$/Array[element]">内容可以是Object键值对，也可以是数组形式的element，也可以是myQuery对象</param>
       /// <returns type="String" />
       var list = [ ];
-      if ( $.isObj( content ) ) {
+      if ( typed.isObj( content ) ) {
         $.each( content, function( value, name ) {
-          value = $.isFun( value ) ? value( ) : value;
-          !$.isNul( value ) && list.push( encodeURIComponent( name ) + "=" + encodeURIComponent( value ) );
+          value = typed.isFun( value ) ? value( ) : value;
+          !typed.isNul( value ) && list.push( encodeURIComponent( name ) + "=" + encodeURIComponent( value ) );
         } );
         content = list.join( "&" );
-      } else if ( $.is$( content ) || ( $.isArr( content ) && $.isEle( content[ 0 ] ) ) ) {
+      } else if ( typed.is$( content ) || ( typed.isArr( content ) && typed.isEle( content[ 0 ] ) ) ) {
         $.each( content, function( item ) {
-          !$.isNul( item.value ) && list.push( encodeURIComponent( item.name ) + "=" + encodeURIComponent( item.value ) );
+          !typed.isNul( item.value ) && list.push( encodeURIComponent( item.name ) + "=" + encodeURIComponent( item.value ) );
         } );
         content = list.join( "&" );
-      } else if ( !$.isStr( content ) ) {
+      } else if ( !typed.isStr( content ) ) {
         content = "";
       }
       return content;

@@ -1,4 +1,4 @@
-﻿myQuery.define("ui/swappable", ["base/client", "main/event", "module/math", "module/Widget"], function ($, client, event, math, Widget, undefined) {
+﻿myQuery.define("ui/swappable", ["base/typed", "base/client", "main/event", "module/math", "module/Widget"], function ($, typed, client, event, math, Widget, undefined) {
     "use strict"; //启用严格模式 
     var swappable = Widget.extend("ui.swappable", {
         container: null,
@@ -163,7 +163,7 @@
                             self.getPara(para, time, opt.directionRange, self.startX, self.startY, x, y);
                             para.type = self.getEventName("move");
                             target.trigger(para.type, target[0], para);
-                            //if (!$.isMobile) {
+                            //if (!typed.isMobile) {
                             clearTimeout(timeout);
                             timeout = setTimeout(function () {
                                 para.type = self.getEventName("pause");

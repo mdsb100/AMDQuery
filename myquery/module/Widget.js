@@ -1,4 +1,14 @@
-﻿myQuery.define( "module/Widget", [ "main/data", "main/query", "main/event", "main/attr", "main/object", "module/utilEval" ], function( $, data, query, event, attr, object, utilEval, undefined ) {
+﻿myQuery.define( "module/Widget", [
+  "base/typed",
+  "base/extend",
+  "base/array", 
+  "main/data", 
+  "main/query", 
+  "main/event", 
+  "main/attr", 
+  "main/object", 
+  "module/utilEval"
+], function( $, typed, utilExtend, array, data, query, event, attr, object, utilEval, undefined ) {
   "use strict"; //启用严格模式
 
   function Widget( obj, target ) {
@@ -19,7 +29,7 @@
       if ( b[ i ] == 0 ) {
         a[ i ] = 0;
       } else {
-        if ( $.isBol( a[ i ] ) || $.isNum( a[ i ] ) ) {
+        if ( typed.isBol( a[ i ] ) || typed.isNum( a[ i ] ) ) {
 
         } else {
           a[ i ] = b[ i ];
@@ -27,62 +37,62 @@
       }
     }
   },
-  _extendAttr = function( key, constructor, booleanCheck ) {
-    /*出了option 其他应该扩展到prototype上*/
-    var subValue = constructor.prototype[ key ],
-      superConstructor = constructor.prototype.__superConstructor,
-      superValue = superConstructor.prototype[ key ],
-      newValue = {};
+    _extendAttr = function( key, constructor, booleanCheck ) {
+      /*出了option 其他应该扩展到prototype上*/
+      var subValue = constructor.prototype[ key ],
+        superConstructor = constructor.prototype.__superConstructor,
+        superValue = superConstructor.prototype[ key ],
+        newValue = {};
 
-    var extend;
+      var extend;
 
-    $.easyExtend( newValue, superValue );
+      utilExtend.easyExtend( newValue, superValue );
 
-    if ( subValue != undefined ) {
-      if ( booleanCheck ) {
-        extend = booleanExtend;
+      if ( subValue != undefined ) {
+        if ( booleanCheck ) {
+          extend = booleanExtend;
+        } else {
+          extend = $.easyExtend;
+        }
+        extend( newValue, subValue );
+      }
+
+      constructor.prototype[ key ] = newValue;
+    },
+    _initOptionsPurview = function( constructor ) {
+      var proto = constructor.prototype,
+        getter = proto.getter,
+        setter = proto.setter,
+        options = proto.options || {},
+        i;
+
+      if ( !typed.isObj( getter ) ) {
+        getter = proto.getter = {};
+      }
+      if ( !typed.isObj( setter ) ) {
+        setter = proto.setter = {};
+      }
+
+      for ( i in options ) {
+        if ( getter[ i ] === undefined ) {
+          getter[ i ] = 1;
+        }
+        if ( setter[ i ] === undefined ) {
+          setter[ i ] = 1;
+        }
+      }
+
+    },
+    extendTemplate = function( tName, prototype, statics ) {
+      if ( typed.isObj( statics ) ) {
+        return Widget.extend( tName, prototype, statics, this.ctor );
       } else {
-        extend = $.easyExtend;
+        return Widget.extend( tName, prototype, this.ctor );
       }
-      extend( newValue, subValue );
-    }
-
-    constructor.prototype[ key ] = newValue;
-  },
-  _initOptionsPurview = function( constructor ) {
-    var proto = constructor.prototype,
-      getter = proto.getter,
-      setter = proto.setter,
-      options = proto.options || {},
-      i;
-
-    if ( !$.isObj( getter ) ) {
-      getter = proto.getter = {};
-    }
-    if ( !$.isObj( setter ) ) {
-      setter = proto.setter = {};
-    }
-
-    for ( i in options ) {
-      if ( getter[ i ] === undefined ) {
-        getter[ i ] = 1;
-      }
-      if ( setter[ i ] === undefined ) {
-        setter[ i ] = 1;
-      }
-    }
-
-  },
-  extendTemplate = function( tName, prototype, statics ) {
-    if ( $.isObj( statics ) ) {
-      return Widget.extend( tName, prototype, statics, this.ctor );
-    } else {
-      return Widget.extend( tName, prototype, this.ctor );
-    }
-  },
-  invokeTemplate = function( ) {
-    this.ctor.invoke.apply( this.ctor, arguments );
-  };
+    },
+    invokeTemplate = function( ) {
+      this.ctor.invoke.apply( this.ctor, arguments );
+    };
 
 
   object.extend( Widget, {
@@ -133,9 +143,9 @@
     },
     checkAttr: function( ) {
       var key, attr, value, item, result = {}, i = 0,
-      len = 0,
-      widgetName = this.widgetName,
-      eventNames = this.customEventName;
+        len = 0,
+        widgetName = this.widgetName,
+        eventNames = this.customEventName;
       /*check event*/
       for ( i = 0, len = eventNames.length; i < len; i++ ) {
         item = eventNames[ i ];
@@ -150,7 +160,7 @@
       attr = this.target.attr( this.widgetNameSpace + "-" + widgetName ) || this.target.attr( this.widgetName );
 
       /*check options*/
-      if ( $.isStr( attr ) ) {
+      if ( typed.isStr( attr ) ) {
         attr = attr.split( /;|,/ );
         for ( i = 0, len = attr.length; i < len; i++ ) {
           item = attr[ i ].split( ":" );
@@ -160,7 +170,7 @@
               result[ key ] = $( item[ 1 ] )[ 0 ];
             } else if ( this.options[ key ] !== undefined ) {
               result[ key ] = utilEval.evalBasicDataType( item[ 1 ] );
-            } else if ( $.inArray( this.customEventName, key ) > -1 ) {
+            } else if ( array.inArray( this.customEventName, key ) > -1 ) {
               result[ key ] = utilEval.functionEval( item[ 1 ], $ );
             }
           }
@@ -188,7 +198,7 @@
 
         for ( i in this ) {
           name = i;
-          !$.isPrototypeProperty( this, name ) && ( this[ name ] = null ) && delete this[ name ];
+          !typed.isPrototypeProperty( this, name ) && ( this[ name ] = null ) && delete this[ name ];
         }
 
         this.target.removeData( key );
@@ -211,22 +221,22 @@
     init: function( obj, target ) {
       //元素本身属性高于obj
       this.options = {};
-      $.easyExtend( this.options, this.constructor.prototype.options );
+      utilExtend.easyExtend( this.options, this.constructor.prototype.options );
 
       target._initHandler( );
       this.target = target;
       this.addTag( );
-      obj = $.isPlainObj( obj ) ? obj : {};
-      $.extend( obj, this.checkAttr( ) );
+      obj = typed.isPlainObj( obj ) ? obj : {};
+      utilExtend.extend( obj, this.checkAttr( ) );
       this.option( obj );
       return this;
     },
     instanceofWidget: function( item ) {
       var constructor = item;
-      if ( $.isStr( item ) ) {
+      if ( typed.isStr( item ) ) {
         constructor = Widget.get( item );
       }
-      if ( $.isFun( constructor ) ) {
+      if ( typed.isFun( constructor ) ) {
         return constructor.instance ? constructor.instance( this ) : ( this instanceof constructor );
       }
       return false;
@@ -238,13 +248,13 @@
       return false;
     },
     option: function( key, value ) {
-      if ( $.isObj( key ) ) {
+      if ( typed.isObj( key ) ) {
         for ( var name in key ) {
           this.setOption( name, key[ name ] );
         }
       } else if ( value === undefined ) {
         return this.getOption( key );
-      } else if ( $.isStr( key ) ) {
+      } else if ( typed.isStr( key ) ) {
         this.setOption( key, value );
       }
     },
@@ -275,12 +285,12 @@
     _initHandler: function( ) {},
 
     _isEventName: function( name ) {
-      return $.inArray( this.customEventName, name ) > -1;
+      return array.inArray( this.customEventName, name ) > -1;
     },
     setOption: function( key, value ) {
       if ( this.beSetter( key ) && this.options[ key ] !== undefined ) {
         this.doSpecialSetter( key, value );
-      } else if ( $.isFun( value ) && this._isEventName( key ) ) {
+      } else if ( typed.isFun( value ) && this._isEventName( key ) ) {
         this.target.addHandler( this.widgetEventPrefix + "." + key, value );
       }
     },
@@ -298,11 +308,11 @@
     },
     doSpecialGetter: function( key ) {
       var fn = this[ $.util.camelCase( key, "_get" ) ];
-      return $.isFun( fn ) ? fn.call( this ) : this.options[ key ];
+      return typed.isFun( fn ) ? fn.call( this ) : this.options[ key ];
     },
     doSpecialSetter: function( key, value ) {
       var fn = this[ $.util.camelCase( key, "_set" ) ];
-      $.isFun( fn ) ? fn.call( this, value ) : ( this.options[ key ] = value );
+      typed.isFun( fn ) ? fn.call( this, value ) : ( this.options[ key ] = value );
     },
     beGetter: function( key ) {
       return !!this.getter[ key ];
@@ -345,7 +355,7 @@
       /// <param name="Super" type="Function/undefined">基类</param>
       /// <returns type="Function" />
       //consult from jQuery.ui
-      if ( !$.isStr( name ) ) return null;
+      if ( !typed.isStr( name ) ) return null;
       name = name.split( "." );
       var nameSpace = name[ 0 ];
       name = name[ 1 ];
@@ -354,13 +364,13 @@
       if ( !nameSpace || !name ) return;
       if ( !Widget[ nameSpace ] ) Widget[ nameSpace ] = {};
 
-      if ( $.isFun( arguments[ arguments.length - 1 ] ) ) {
+      if ( typed.isFun( arguments[ arguments.length - 1 ] ) ) {
         Super = arguments[ arguments.length - 1 ];
       } else {
         Super = Widget;
       }
 
-      if ( !$.isObj( statics ) ) {
+      if ( !typed.isObj( statics ) ) {
         statics = {};
       }
 
@@ -391,15 +401,15 @@
         /// <param name="c" type="any">属性option子属性名的值</param>
         /// <returns type="self" />
         var result = this,
-        arg = arguments;
+          arg = arguments;
         this.each( function( ele ) {
           var data = $.data( ele, key ); //key = nameSpace + "." + name,
           if ( data == undefined ) data = $.data( ele, key, new ctor( a, $( ele ) ) ); //完全调用基类的构造函数 不应当在构造函数 create render
           else {
-            if ( $.isObj( a ) ) {
+            if ( typed.isObj( a ) ) {
               data.option( a );
               data.render( );
-            } else if ( $.isStr( a ) ) {
+            } else if ( typed.isStr( a ) ) {
               if ( a === "option" ) {
                 if ( c !== undefined ) {
                   /*若可set 则全部set*/
@@ -431,7 +441,7 @@
 
       widget.invoke = invokeTemplate;
 
-      $.easyExtend( widget, statics );
+      utilExtend.easyExtend( widget, statics );
 
       if ( !$.prototype[ name ] ) {
         $.prototype[ name ] = widget;
@@ -446,7 +456,7 @@
       /// <param name="item" type="$"></param>
       /// <param name="name" type="String">widget名字 如ui.navmenu</param>
       /// <returns type="Boolean" />
-      if ( $.is$( item ) ) {
+      if ( typed.is$( item ) ) {
         var widgetTag = item.attr( "myquery-widget" );
         return item.attr( widgetName.replace( ".", "-" ) ) != undefined && widgetTag != undefined && widgetTag.indexOf( widgetName ) > -1;
       }
@@ -458,7 +468,7 @@
       /// <param name="name" type="String">widget名字</param>
       /// <returns type="Function" />
       var tName = name.split( "." ),
-      tNameSpace = tName[ 0 ];
+        tNameSpace = tName[ 0 ];
       tName = tName[ 1 ];
       return Widget[ tNameSpace ][ tName ];
     }

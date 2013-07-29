@@ -1,4 +1,4 @@
-myQuery.define( "app/Application", [ "base/promise", "main/attr", "main/CustomEvent", "main/query", "main/object", "app/Model", "app/View", "app/Controller", "ecma5/array.compati" ], function( $, Promise, attr, CustomEvent, query, object, BaseModel, BaseView, BaseController, Array, undefined ) {
+myQuery.define( "app/Application", [ "base/promise", "base/typed", "main/attr", "main/CustomEvent", "main/query", "main/object", "app/Model", "app/View", "app/Controller", "ecma5/array.compati" ], function( $, Promise, typed, attr, CustomEvent, query, object, BaseModel, BaseView, BaseController, Array, undefined ) {
   "use strict"; //启用严格模式
   var defaultViewSrc = "app/View";
 
@@ -42,7 +42,7 @@ myQuery.define( "app/Application", [ "base/promise", "main/attr", "main/CustomEv
 
       for ( i = children.length - 1; i >= 0; i-- ) {
         ele = children[ i ];
-        if ( $.isNode( ele, "View" ) ) {
+        if ( typed.isNode( ele, "View" ) ) {
           viewElements.push( ele );
         } else {
           lave.push( ele );

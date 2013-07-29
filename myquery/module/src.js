@@ -1,4 +1,4 @@
-﻿myQuery.define( "module/src", [ "base/client" ], function( $, client, undefined ) {
+﻿myQuery.define( "module/src", [ "base/typed", "base/extend", "base/client" ], function( $, typed, utilExtend, client, undefined ) {
   "use strict"; //启用严格模式
   var
   hasOwnProperty = Object.prototype.hasOwnProperty,
@@ -14,7 +14,7 @@
         /// <param name="ele" type="Element">元素</param>
         /// <param name="options" type="Object">参数</param>
         /// <returns type="self" />
-        var opt = $.extend( {}, src.hrefSetting, options );
+        var opt = utilExtend.extend( {}, src.hrefSetting, options );
         return src.src( ele, opt, "href" );
       },
       hrefSetting: {
@@ -29,7 +29,7 @@
         /// <returns type="self" />
         var _link = document.createElement( "link" ),
           _head = document.getElementsByTagName( "HEAD" ).item( 0 ),
-          opt = $.extend( {}, src.linkSetting, options );
+          opt = utilExtend.extend( {}, src.linkSetting, options );
         _link.rel = opt.rel;
         _link.type = opt.type;
         src.href( _link, opt );
@@ -54,12 +54,12 @@
         /// <param name="options" type="Object">参数</param>
         /// <returns type="self" />
         var property = arguments[ 2 ] || "src";
-        if ( !$.isEle( ele ) || ( !hasOwnProperty.call( ele, property ) && ele[ property ] === undefined ) ) {
+        if ( !typed.isEle( ele ) || ( !hasOwnProperty.call( ele, property ) && ele[ property ] === undefined ) ) {
           return this;
         }
         ele.onload = ele.onreadystatechange = null;
         ele.setAttribute( property, "" );
-        var o = $.extend( {}, $.srcSetting, options ),
+        var o = utilExtend.extend( {}, $.srcSetting, options ),
           completeReadyStateChanges = 0,
           timeId;
         ele.onload = ele.onreadystatechange = function( ) {

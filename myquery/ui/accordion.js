@@ -1,4 +1,6 @@
 ﻿myQuery.define( "ui/accordion", [
+  "base/typed", 
+  "base/extend",
   "main/object",
   "module/Widget",
   "main/class",
@@ -9,7 +11,7 @@
   "module/animate",
   "html5/css3.transition.animate",
   "module/effect"
-], function( $, object, Widget, css, event, CustomEvent, dom, src ) {
+], function( $, typed, utilExtend, object, Widget, css, event, CustomEvent, dom, src ) {
   "use strict"; //启用严格模式
   src.link( {
     href: $.getPath( "ui/css/accordion", ".css" )
@@ -378,7 +380,7 @@
     getShell: function( shell ) {
       var ret = null,
         item, i, list = this.models;
-      if ( $.isStr( shell ) ) {
+      if ( typed.isStr( shell ) ) {
         for ( i in list ) {
           item = list[ i ];
           if ( item.widgetId == shell ) {
@@ -386,7 +388,7 @@
             break
           }
         }
-      } else if ( $.isEle( shell ) ) {
+      } else if ( typed.isEle( shell ) ) {
         for ( i in list ) {
           item = list[ i ];
           if ( item.originShell == shell ) {
@@ -418,7 +420,7 @@
       this.container = null;
       this.shellCollection = null;
       this._selectShell = null;
-      this.option = $.extend( {}, this.defaultSetting, option );
+      this.option = utilExtend.extend( {}, this.defaultSetting, option );
       this.create( )._initHandler( ).enable( );
 
       return this;

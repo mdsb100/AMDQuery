@@ -1,6 +1,5 @@
 ﻿// quote from colo.js by Andrew Brehaut, Tim Baumann
-
-myQuery.define( "module/color", [ "main/object", "hash/cssColors" ], function( $, object, cssColors, undefined ) {
+myQuery.define( "module/color", [ "base/extend", "main/object", "hash/cssColors" ], function( $, utilExtend, object, cssColors, undefined ) {
   "use strict"; //启用严格模式
 
   var css_integer = "(?:\\+|-)?\\d+",
@@ -78,7 +77,7 @@ myQuery.define( "module/color", [ "main/object", "hash/cssColors" ], function( $
     }
   };
 
-  $.easyExtend( color, {
+  utilExtend.easyExtend( color, {
     toRGBA: function( c, a ) {
       if ( c.indexOf( "#" ) == 0 ) {
         var
@@ -104,7 +103,7 @@ myQuery.define( "module/color", [ "main/object", "hash/cssColors" ], function( $
   }
 
   object.inheritProtypeWidthCombination( RGB, color );
-  $.easyExtend( RGB.prototype, {
+  utilExtend.easyExtend( RGB.prototype, {
     red: 0,
     green: 0,
     blue: 0,
@@ -264,7 +263,7 @@ myQuery.define( "module/color", [ "main/object", "hash/cssColors" ], function( $
   }
 
   object.inheritProtypeWidthCombination( HSV, color );
-  $.easyExtend( HSV.prototype, {
+  utilExtend.easyExtend( HSV.prototype, {
     hue: 0,
     saturation: 0,
     value: 1,
@@ -505,7 +504,7 @@ myQuery.define( "module/color", [ "main/object", "hash/cssColors" ], function( $
   }
 
   object.inheritProtypeWidthCombination( HSL, color );
-  $.easyExtend( HSL.prototype, {
+  utilExtend.easyExtend( HSL.prototype, {
     hue: 0,
     saturation: 0,
     lightness: 0,

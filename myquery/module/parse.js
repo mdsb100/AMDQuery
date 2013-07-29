@@ -1,4 +1,4 @@
-﻿myQuery.define( "module/parse", [ "base/is" ], function( $, is ) {
+﻿myQuery.define( "module/parse", function( $ ) {
   "use strict"; //启用严格模式
   var
   createDocument = function( ) {

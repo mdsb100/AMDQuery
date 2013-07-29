@@ -7,173 +7,173 @@
   "use strict"; //启用严格模式
   var
   version = "MyQuery 1.0.0",
-  util = {
-    argToArray: function( arg, start, end ) {
-      /// <summary>把arguments变成数组</summary>
-      /// <param name="arg" type="arguments]">arguments</param>
-      /// <param name="start" type="Number">开始</param>
-      /// <param name="end" type="Number">结束</param>
-      /// <returns type="Array" />
-      return [ ].slice.call( arg, start || 0, end || arg.length );
-    },
+    util = {
+      argToArray: function( arg, start, end ) {
+        /// <summary>把arguments变成数组</summary>
+        /// <param name="arg" type="arguments]">arguments</param>
+        /// <param name="start" type="Number">开始</param>
+        /// <param name="end" type="Number">结束</param>
+        /// <returns type="Array" />
+        return [ ].slice.call( arg, start || 0, end || arg.length );
+      },
 
-    console: ( function( ) {
-      var console = {
-        log: function( info ) {
-          /// <summary>控制台记录</summary>
-          /// <para>info.fn</para>
-          /// <para>info.msg</para>
-          /// <param name="info" type="String/Object">方法名</param>
-          /// <returns />
-          var a = arguments[ 2 ] || "log";
-          if ( window.console && window.console[ a ] ) {
+      console: ( function( ) {
+        var console = {
+          log: function( info ) {
+            /// <summary>控制台记录</summary>
+            /// <para>info.fn</para>
+            /// <para>info.msg</para>
+            /// <param name="info" type="String/Object">方法名</param>
+            /// <returns />
+            var a = arguments[ 2 ] || "log";
+            if ( window.console && window.console[ a ] ) {
+              var s = "";
+              if ( info.fn && info.msg ) {
+                s = [ "call ", info.fn, "()", " error: ", info.msg ].join( "" );
+              } else {
+                s = info.toString( );
+              }
+              window.console[ a ]( s );
+            }
+          },
+          warn: function( info ) {
+            /// <summary>控制台警告</summary>
+            /// <para>info.fn</para>
+            /// <para>info.msg</para>
+            /// <param name="info" type="String/Object">方法名</param>
+            /// <returns />
+            this.log( info, "warn" );
+          },
+          info: function( info ) {
+            /// <summary>控制台信息</summary>
+            /// <para>info.fn</para>
+            /// <para>info.msg</para>
+            /// <param name="info" type="String/Object">方法名</param>
+            /// <returns />
+            this.log( info, "info" );
+          },
+          error: function( info, isThrow ) {
+            /// <summary>控制台错误</summary>
+            /// <para>info.fn</para>
+            /// <para>info.msg</para>
+            /// <param name="info" type="String/Object">方法名</param>
+            /// <param name="isThrow" type="Boolean">是否强制曝出错误</param>
+            /// <returns />
             var s = "";
             if ( info.fn && info.msg ) {
               s = [ "call ", info.fn, "()", " error: ", info.msg ].join( "" );
             } else {
               s = info.toString( );
             }
-            window.console[ a ]( s );
+            if ( window.console.error || !isThrow ) {
+              window.console.error( s );
+            } else {
+              throw new window[ isThrow ]( s );
+            }
           }
-        },
-        warn: function( info ) {
-          /// <summary>控制台警告</summary>
-          /// <para>info.fn</para>
-          /// <para>info.msg</para>
-          /// <param name="info" type="String/Object">方法名</param>
-          /// <returns />
-          this.log( info, "warn" );
-        },
-        info: function( info ) {
-          /// <summary>控制台信息</summary>
-          /// <para>info.fn</para>
-          /// <para>info.msg</para>
-          /// <param name="info" type="String/Object">方法名</param>
-          /// <returns />
-          this.log( info, "info" );
-        },
-        error: function( info, isThrow ) {
-          /// <summary>控制台错误</summary>
-          /// <para>info.fn</para>
-          /// <para>info.msg</para>
-          /// <param name="info" type="String/Object">方法名</param>
-          /// <param name="isThrow" type="Boolean">是否强制曝出错误</param>
-          /// <returns />
-          var s = "";
-          if ( info.fn && info.msg ) {
-            s = [ "call ", info.fn, "()", " error: ", info.msg ].join( "" );
-          } else {
-            s = info.toString( );
-          }
-          if ( window.console.error || !isThrow ) {
-            window.console.error( s );
-          } else {
-            throw new window[ isThrow ]( s );
-          }
-        }
-      };
-      return console;
-    } )( ),
+        };
+        return console;
+      } )( ),
 
-    error: function( info, type ) {
-      var s = "";
-      if ( info.fn && info.msg ) {
-        s = [ "call ", info.fn, "()", " error: ", info.msg ].join( "" );
-      } else {
-        s = info.toString( );
-      }
-      throw new window[ type || "Error" ]( s );
-    },
-    extend: function( a, b ) {
-      /// <summary>把对象的属性复制到对象一</summary>
-      /// <param name="a" type="Object">对象</param>
-      /// <param name="b" type="Object">对象</param>
-      /// <returns type="a" />
-      for ( var i in b )
-        a[ i ] = b[ i ];
-      return a;
-    },
-
-    getJScriptConfig: function( list, asc ) {
-      /// <summary>获得脚本配置属性</summary>
-      /// <param name="list" type="Array:[String]">参数名列表</param>
-      /// <param name="asc" type="Boolean">true为正序，兼容IE，意味着JS总是插入到第一个</param>
-      /// <returns type="Object" />
-      var _scripts = document.getElementsByTagName( "script" ),
-        _script = _scripts[ asc === true ? 0 : _scripts.length - 1 ],
-        i = 0,
-        j = 0,
-        item, attrs, attr, result = {};
-      for ( ; item = list[ i++ ]; ) {
-        attrs = ( _script.getAttribute( item ) || "" ).split( /;/ );
-        if ( item == "src" ) {
-          result[ item ] = attrs[ 0 ];
-          break;
+      error: function( info, type ) {
+        var s = "";
+        if ( info.fn && info.msg ) {
+          s = [ "call ", info.fn, "()", " error: ", info.msg ].join( "" );
+        } else {
+          s = info.toString( );
         }
-        j = 0;
-        result[ item ] = {};
-        for ( ; attr = attrs[ j++ ]; ) {
-          attr = attr.split( /:|=/ );
-          if ( attr[ 1 ] ) {
-            attr[ 1 ].match( /false|true|1|0/ ) && ( attr[ 1 ] = eval( attr[ 1 ] ) );
-            result[ item ][ attr[ 0 ] ] = attr[ 1 ];
-          } else {
-            attr[ 1 ].match( /false|true|1|0/ ) && ( attr[ 0 ] = eval( attr[ 1 ] ) );
-            result[ item ] = attr[ 0 ];
+        throw new window[ type || "Error" ]( s );
+      },
+      extend: function( a, b ) {
+        /// <summary>把对象的属性复制到对象一</summary>
+        /// <param name="a" type="Object">对象</param>
+        /// <param name="b" type="Object">对象</param>
+        /// <returns type="a" />
+        for ( var i in b )
+          a[ i ] = b[ i ];
+        return a;
+      },
+
+      getJScriptConfig: function( list, asc ) {
+        /// <summary>获得脚本配置属性</summary>
+        /// <param name="list" type="Array:[String]">参数名列表</param>
+        /// <param name="asc" type="Boolean">true为正序，兼容IE，意味着JS总是插入到第一个</param>
+        /// <returns type="Object" />
+        var _scripts = document.getElementsByTagName( "script" ),
+          _script = _scripts[ asc === true ? 0 : _scripts.length - 1 ],
+          i = 0,
+          j = 0,
+          item, attrs, attr, result = {};
+        for ( ; item = list[ i++ ]; ) {
+          attrs = ( _script.getAttribute( item ) || "" ).split( /;/ );
+          if ( item == "src" ) {
+            result[ item ] = attrs[ 0 ];
+            break;
+          }
+          j = 0;
+          result[ item ] = {};
+          for ( ; attr = attrs[ j++ ]; ) {
+            attr = attr.split( /:|=/ );
+            if ( attr[ 1 ] ) {
+              attr[ 1 ].match( /false|true|1|0/ ) && ( attr[ 1 ] = eval( attr[ 1 ] ) );
+              result[ item ][ attr[ 0 ] ] = attr[ 1 ];
+            } else {
+              attr[ 1 ].match( /false|true|1|0/ ) && ( attr[ 0 ] = eval( attr[ 1 ] ) );
+              result[ item ] = attr[ 0 ];
+            }
           }
         }
-      }
-      return result;
-    },
-    getPath: function( key, suffix ) {
-      /// <summary>获的路径</summary>
-      /// <param name="list" type="Array:[String]">参数名列表</param>
-      /// <param name="asc" type="Boolean">true为正序，兼容IE，意味着JS总是插入到第一个</param>
-      /// <returns type="Object" />
-      var _key = key,
-        _suffix = suffix,
-        _aKey, _url, ma;
-      if ( !_suffix ) {
-        _suffix = ".js";
-      }
-      if ( ma = _key.match( /\.[^\/\.]*$/g ) ) {
-        _url = _key;
-        if ( ma[ ma.length - 1 ] != _suffix ) {
-          _url += _suffix;
+        return result;
+      },
+      getPath: function( key, suffix ) {
+        /// <summary>获的路径</summary>
+        /// <param name="list" type="Array:[String]">参数名列表</param>
+        /// <param name="asc" type="Boolean">true为正序，兼容IE，意味着JS总是插入到第一个</param>
+        /// <returns type="Object" />
+        var _key = key,
+          _suffix = suffix,
+          _aKey, _url, ma;
+        if ( !_suffix ) {
+          _suffix = ".js";
         }
-      } else {
-        _url = basePath + "/" + _key + ( _suffix || ".js" );
-      }
-      if ( /^\//.test( _url ) ) {
-        _url = rootPath + _url.replace( /\//, "" );
-      } else if ( !/^[a-z]+?:\/\//.test( _url ) ) {
-        _url = basePath + "/" + _url;
-      }
-      return _url;
-    },
+        if ( ma = _key.match( /\.[^\/\.]*$/g ) ) {
+          _url = _key;
+          if ( ma[ ma.length - 1 ] != _suffix ) {
+            _url += _suffix;
+          }
+        } else {
+          _url = basePath + "/" + _key + ( _suffix || ".js" );
+        }
+        if ( /^\//.test( _url ) ) {
+          _url = rootPath + _url.replace( /\//, "" );
+        } else if ( !/^[a-z]+?:\/\//.test( _url ) ) {
+          _url = basePath + "/" + _url;
+        }
+        return _url;
+      },
 
-    now: function( ) {
-      /// <summary>返回当前时间的字符串形式</summary>
-      /// <returns type="String" />
-      return ( new Date( ) ).getTime( );
-    }
-  },
-  count = 0,
-  reg = RegExp,
-  basePath = ( function( ) {
-    var ret = util.getJScriptConfig( [ "src" ] ).src.replace( /\/[^\/]+$/, "" );
-    if ( !/^[a-z]+?:\/\//.test( ret ) ) {
-      var sl = document.location.toString( );
-      if ( /^\//.test( ret ) ) {
-        ret = sl.replace( /((.*?\/){3}).*$/, "$1" ) + ret.substr( 1 );
-      } else {
-        ret = sl.replace( /[^\/]+$/, "" ) + ret;
+      now: function( ) {
+        /// <summary>返回当前时间的字符串形式</summary>
+        /// <returns type="String" />
+        return ( new Date( ) ).getTime( );
       }
-    }
-    return ret;
-  }( ) ),
-  rootPath = basePath.replace( /((.*?\/){3}).*$/, "$1" ),
-  msgDiv, runTime, ie678 = "v" == "/v";
+    },
+    count = 0,
+    reg = RegExp,
+    basePath = ( function( ) {
+      var ret = util.getJScriptConfig( [ "src" ] ).src.replace( /\/[^\/]+$/, "" );
+      if ( !/^[a-z]+?:\/\//.test( ret ) ) {
+        var sl = document.location.toString( );
+        if ( /^\//.test( ret ) ) {
+          ret = sl.replace( /((.*?\/){3}).*$/, "$1" ) + ret.substr( 1 );
+        } else {
+          ret = sl.replace( /[^\/]+$/, "" ) + ret;
+        }
+      }
+      return ret;
+    }( ) ),
+    rootPath = basePath.replace( /((.*?\/){3}).*$/, "$1" ),
+    msgDiv, runTime, ie678 = "v" == "/v";
 
   var _config = {
     myquery: {
@@ -231,7 +231,7 @@
     /// <param name="b" type="String">标签名 可选</param>
     /// <param name="c" type="ele $">父元素 可选</param>
     /// <returns type="$" />
-    if ( $.is$( this ) ) {
+    if ( $.instance( this ) ) {
       if ( !a && !b ) return;
       if ( ( typeof a == "object" || a == undefined || a == null ) && typeof b == "string" ) {
         //if ($.css) {
@@ -370,13 +370,20 @@
       if ( !obj ) return this;
       var i = 0,
         item, len = obj.length,
-        isObj = typeof len != "number" || typeof obj == "function"; //$.isNul(len) || $.isFun(obj);
+        isObj = typeof len != "number" || typeof obj == "function";
       if ( isObj ) {
         for ( item in obj )
           if ( callback.call( context || obj[ item ], obj[ item ], item ) === false ) break;
       } else
         for ( var value = obj[ 0 ]; i < len && callback.call( context || value, value, i ) !== false; value = obj[ ++i ] ) {}
       return this;
+    },
+
+    instance: function( obj ) {
+      /// <summary>是否为$对象</summary>
+      /// <param name="a" type="any">任意对象</param>
+      /// <returns type="Boolean" />
+      return obj instanceof $ || ( obj && obj.toString( ) == "MyQuery" )
     },
 
     merge: function( first, second ) {
@@ -537,11 +544,15 @@
     addElement: function( ele ) {
       /// <summary>添加元素或元素组</summary>
       /// <param name="ele" type="Element/arr">内容为元素的数组或元素</param>
-      /// <returns type="self" />
-      $.isEle( ele ) && this.eles.push( ele );
-      $.isArr( eles ) && $.each( eles, function( ele ) {
-        $.isEle( ele ) && this.eles.push( ele );
-      }, this );
+      /// <returns type="self" />    
+      if ( eles.constructor == Array ) {
+        $.each( eles, function( ele ) {
+          this.eles.push( ele );
+        }, this );
+      }
+      else{
+         this.eles.push( ele );
+      }
       return this;
     },
 
@@ -567,7 +578,7 @@
       /// <summary>返回序号的元素</summary>
       /// <param name="index" type="Number">序号</param>
       /// <returns type="Element" />
-      if ( $.isNum( index ) && index != 0 ) return this[ index ];
+      if ( typeof index == "number" && index != 0 ) return this[ index ];
       else return this[ 0 ];
     },
     last: function( ) {
@@ -620,7 +631,15 @@
       /// <summary>返回序号</summary>
       /// <param name="ele" type="Element">dom元素</param>
       /// <returns type="Number" />
-      return $.inArray( this.eles, ele );
+      var len;
+
+      for(len = this.eles.length - 1; len >= 0; len--){
+        if(ele === this.eles[len]){
+          break;
+        }
+      }
+
+      return len;
     },
 
     lastEle: null,
@@ -639,10 +658,7 @@
       /// <summary>设置元素组</summary>
       /// <param name="eles" type="Array">内容为元素的数组</param>
       /// <returns type="self" />
-      this.eles = [ ];
-      $.isArr( eles ) && $.each( eles, function( ele ) {
-        $.isEle( ele ) && this.eles.push( ele );
-      }, this );
+      this.eles = eles;
     },
 
     toString: function( ) {
@@ -1643,8 +1659,7 @@
         if ( Promise.instance( this.result ) ) {
           this.result.resolve( obj );
           return this;
-        }
-        else if ( this.fail ) {
+        } else if ( this.fail ) {
           try {
             this.result = this.call( "todo", obj );
             this.state = "done";
@@ -1657,29 +1672,27 @@
           this.state = "done";
         }
 
-         
 
-        var  
+
+        var
         self = this,
-        state = this.state,
-        callback = function( result ) {
-          self.state = state;
-          self.result = result;
-          self._next( result );
-          self = null;
-        };
+          state = this.state,
+          callback = function( result ) {
+            self.state = state;
+            self.result = result;
+            self._next( result );
+            self = null;
+          };
 
         if ( this === this.result ) {
           // 异步的情况，返回值是一个Promise，则当其resolve的时候，nextPromise才会被resolve
           //所以状态改回todo
           this.state = "todo";
           this.result = new Promise( callback );
-        } 
-        else if ( Promise.instance( this.result ) ){
+        } else if ( Promise.instance( this.result ) ) {
           this.state = "todo";
           this.result.then( callback );
-        }
-        else {
+        } else {
           this._next( this.result );
         }
         return this;
@@ -1800,489 +1813,6 @@
     return Promise;
   }, "1.0.0" );
 
-  myQuery.define( "base/is", function( $ ) {
-    "use strict"; //启用严格模式
-    var
-    class2type = {},
-      hasOwnProperty = class2type.hasOwnProperty,
-      toString = class2type.toString;
-
-    $.each( "Boolean Number String Function Array Date RegExp Object Error".split( " " ), function( name, i ) {
-      class2type[ "[object " + name + "]" ] = name.toLowerCase( );
-    } );
-
-    var is = {
-      isEleConllection: function( a ) {
-        /// <summary>是否为DOM元素的集合</summary>
-        /// <param name="a" type="any">任意对象</param>
-        /// <returns type="Boolean" />
-        if ( $.isType( a, "[object NodeList]" ) || $.isType( a, "[object HTMLCollection]" ) || ( $.client.browser.ie678 && $.isNum( a.length ) && !$.isArr( a.length ) && ( $.isObj( a.item ) || $.isStr( a.item ) ) ) ) return true;
-        return false;
-      },
-      isArguments: function( a ) {
-        return !!a && "callee" in arguments;
-      },
-      isArr: function( a ) {
-        /// <summary>是否为数组</summary>
-        /// <param name="a" type="any">任意对象</param>
-        /// <returns type="Boolean" />
-        return $.isType( a, "[object Array]" );
-      },
-      isArrlike: function( obj ) {
-        /// <summary>是否像一个数组</summary>
-        /// <param name="obj" type="any">任意对象</param>
-        /// <returns type="Boolean" />
-        var length = obj.length,
-          type = $.type( obj );
-
-        if ( $.isWindow( obj ) ) {
-          return false;
-        }
-
-        if ( obj.nodeType === 1 && length ) {
-          return true;
-        }
-
-        return type === "array" || type !== "function" &&
-          ( length === 0 ||
-          typeof length === "number" && length > 0 && ( length - 1 ) in obj );
-      },
-
-      isArrOf: function( a, type ) {
-        /// <summary>是否为某种特定类型数组</summary>
-        /// <param name="a" type="any">任意对象</param>
-        /// <param name="type" type="Function">检查的方法 可以是$.isStr</param>
-        /// <returns type="Boolean" />
-        var result = true;
-        if ( $.isArr( a ) ) {
-          $.each( a, function( item ) {
-            if ( !( result = type( item ) ) ) {
-              return false;
-            }
-          } );
-        } else {
-          result = false;
-        }
-        return result;
-      },
-      isBol: function( a ) {
-        /// <summary>是否为数组</summary>
-        /// <param name="a" type="any">任意对象</param>
-        /// <returns type="Boolean" />
-        return $.isType( a, "[object Boolean]" );
-      },
-      isDate: function( a ) {
-        /// <summary>是否为日期</summary>
-        /// <param name="a" type="any">任意对象</param>
-        /// <returns type="Boolean" />
-        return $.isType( a, "[object Date]" );
-      },
-      isDoc: function( a ) {
-        /// <summary>是否为Document</summary>
-        /// <param name="a" type="any">任意对象</param>
-        /// <returns type="Boolean" />
-        return !!toString.call( a ).match( /document/i );
-      },
-      isEle: function( a ) {
-        /// <summary>是否为DOM元素</summary>
-        /// <param name="a" type="any">任意对象</param>
-        /// <returns type="Boolean" />
-        if ( !a || a === document ) return false;
-        var str = ( a.constructor && a.constructor.toString( ) ) + Object.prototype.toString.call( a )
-        if ( ( str.indexOf( "HTML" ) > -1 && str.indexOf( "Collection" ) == -1 ) || ( $.client.browser.ie678 && a.nodeType === 1 ) ) {
-          return true; //可能nodeType有问题
-        }
-        return false;
-      },
-      isEmpty: function( a ) {
-        /// <summary>是否为空</summary>
-        /// <param name="a" type="any">任意对象</param>
-        /// <returns type="Boolean" />
-        if ( a == null ) return true;
-        if ( $.isArr( a ) || $.isStr( a ) ) return a.length == 0;
-        return $.isEmptyObj( a );
-      },
-      isEmptyObj: function( obj ) {
-        /// <summary>是否为空的Object</summary>
-        /// <param name="a" type="any">任意对象</param>
-        /// <returns type="Boolean" />
-        for ( var name in obj ) {
-          return false;
-        }
-        return true;
-      },
-      isError: function( a ) {
-        /// <summary>是否为日期</summary>
-        /// <param name="a" type="any">任意对象</param>
-        /// <returns type="Boolean" />
-        return $.isType( a, "[object Error]" );
-      },
-      isFinite: function( a ) {
-        /// <summary>是否为Finite</summary>
-        /// <param name="a" type="any">任意对象</param>
-        /// <returns type="Boolean" />
-        return isFinite( a ) && !isNaN( parseFloat( a ) );
-      },
-      isFun: function( a ) {
-        /// <summary>是否为方法</summary>
-        /// <param name="a" type="any">任意对象</param>
-        /// <returns type="Boolean" />
-        return $.isType( a, "[object Function]" );
-      },
-      isNativeJSON: function( a ) {
-        /// <summary>是否为本地JSON</summary>
-        /// <param name="a" type="any">任意对象</param>
-        /// <returns type="Boolean" />
-        return window.json && $.isType( a, "object JSON" );
-      },
-      isNaN: function( a ) {
-        /// <summary>是否为NaN</summary>
-        /// <param name="a" type="any">任意对象</param>
-        /// <returns type="Boolean" />
-        return $.isNum( a ) && a != +a;
-      },
-      isNum: function( a ) {
-        /// <summary>是否为数字</summary>
-        /// <param name="a" type="any">任意对象</param>
-        /// <returns type="Boolean" />
-        return $.isType( a, "[object Number]" );
-      },
-      isNumeric: function( a ) {
-        return !isNaN( parseFloat( a ) ) && isFinite( a );
-      },
-      isNul: function( a ) {
-        /// <summary>是否为不存在</summary>
-        /// <param name="a" type="any">任意对象</param>
-        /// <returns type="Boolean" />
-        return a === undefined || a === null || a === NaN;
-      },
-      isNode: function( ele, name ) {
-        /// <summary>判断是不是这个dom元素</summary>
-        /// <param name="ele" type="Element">dom元素</param>
-        /// <param name="name" type="String">名字</param>
-        /// <returns type="Boolean" />
-        return $.isEle( ele ) ? ( ele.nodeName && ele.nodeName.toUpperCase( ) === name.toUpperCase( ) ) : false;
-      },
-      isObj: function( a ) {
-        /// <summary>是否为对象</summary>
-        /// <param name="a" type="any">任意对象</param>
-        /// <returns type="Boolean" />
-        return $.isType( a, "[object Object]" );
-      },
-      isPlainObj: function( obj ) {
-        /// <summary>是否为纯obj</summary>
-        /// <param name="obj" type="any">任意对象</param>
-        /// <returns type="Boolean" />
-        if ( !obj || !$.isObj( obj ) || obj.nodeType || obj.setInterval ) {
-          return false;
-        }
-
-        // Not own constructor property must be Object
-        if ( obj.constructor && !hasOwnProperty.call( obj, "constructor" ) && !hasOwnProperty.call( obj.constructor.prototype, "isPrototypeOf" ) ) {
-          return false;
-        }
-
-        // Own properties are enumerated firstly, so to speed up,
-        // if last one is own, then all properties are own.
-        var key;
-        for ( key in obj ) {
-          break;
-        }
-
-        return key === undefined || hasOwnProperty.call( obj, key );
-      },
-      isRegExp: function( ) {
-        /// <summary>是否为字符产</summary>
-        /// <param name="a" type="any">任意对象</param>
-        /// <returns type="Boolean" />
-        return $.isType( a, "[object RegExp]" );
-      },
-      isStr: function( a ) {
-        /// <summary>是否为字符产</summary>
-        /// <param name="a" type="any">任意对象</param>
-        /// <returns type="Boolean" />
-        return $.isType( a, "[object String]" );
-      },
-      isType: function( a, b ) {
-        /// <summary>判断对象类型</summary>
-        /// <param name="a" type="any">任意对象</param>
-        /// <param name="b" type="String">例:"[object Function]"</param>
-        /// <returns type="Boolean" />
-        return toString.call( a ) == b;
-      },
-      isXML: function( ele ) {
-        /// <summary>是否是XML</summary>
-        /// <param name="ele" type="any">任意对象</param>
-        /// <returns type="Boolean" />
-        // documentElement is verified for cases where it doesn't yet exist
-        // (such as loading iframes in IE - #4833)
-        var documentElement = ( ele ? ele.ownerDocument || ele : 0 ).documentElement;
-
-        return documentElement ? documentElement.nodeName !== "HTML" : false;
-      },
-      isWindow: function( a ) {
-        /// <summary>是否为window对象</summary>
-        /// <param name="a" type="any">任意对象</param>
-        /// <returns type="Boolean" />
-        return a != null && a == a.window;
-      },
-      is$: function( a ) {
-
-        /// <summary>是否为$对象</summary>
-        /// <param name="a" type="any">任意对象</param>
-        /// <returns type="Boolean" />
-        return a instanceof $;
-      },
-      type: function( obj ) {
-        if ( obj == null ) {
-          return String( obj );
-        }
-        return typeof obj === "object" || typeof obj === "function" ?
-          class2type[ toString.call( obj ) ] || "object" :
-          typeof obj;
-      }
-    };
-
-    util.extend( $, is );
-
-    return is;
-  }, "1.0.0" );
-
-  myQuery.define( "base/extend", function( $ ) {
-    "use strict"; //启用严格模式
-    var extend = {
-      easyExtend: function( obj1, obj2 ) {
-        /// <summary>简单地把对象的属性复制到对象一</summary>
-        /// <param name="a" type="Object">对象</param>
-        /// <param name="b" type="Object">对象</param>
-        /// <returns type="self" />
-        for ( var i in obj2 )
-          obj1[ i ] = obj2[ i ];
-        return this;
-      },
-      extend: function( a ) {
-        /// <summary>制造一个Object元素
-        /// <para>第二个参数：待修改对象。如果deep为obj,则以后的参数都应该是纯obj。</para>
-        /// <para>第N+2个参数：待合并到target对象的对象。</para>
-        /// <para>返回最后被合并的目标Object</para>
-        /// </summary>
-        /// <param name="a" type="Boolean/Object">如果设为true，则递归合并。如果为纯obj则添加到$中</param>
-        /// <returns type="Object" />
-        //quote from jQuery-1.4.1 
-        var target = arguments[ 0 ] || {},
-          i = 1,
-          length = arguments.length,
-          deep = false,
-          options, name, src, copy;
-
-        if ( length == 1 && $.isObj( target ) ) {
-          util.extend( $, target );
-          return this;
-        }
-
-        if ( $.isBol( target ) ) {
-          deep = target;
-          target = arguments[ 1 ] || {};
-          i = 2;
-        }
-
-        if ( !$.isObj( target ) && !$.isFun( target ) && !$.isArr( target ) ) { //加了个array
-          target = {};
-        }
-
-        if ( length === i ) {
-          target = this;
-          --i;
-        }
-
-        for ( ; i < length; i++ ) {
-          if ( ( options = arguments[ i ] ) != null ) {
-            for ( name in options ) {
-              src = target[ name ];
-              copy = options[ name ];
-
-              if ( target === copy ) {
-                continue;
-              }
-
-              if ( deep && copy && ( $.isPlainObj( copy ) || $.isArr( copy ) ) ) {
-                var clone = src && ( $.isPlainObj( src ) || $.isArr( src ) ) ? src : $.isArr( copy ) ? [ ] : {};
-
-                target[ name ] = $.extend( deep, clone, copy );
-
-              } else if ( copy !== undefined ) {
-                target[ name ] = copy;
-              }
-            }
-          }
-        }
-
-        return target;
-
-      }
-    };
-
-    util.extend( $, extend );
-
-    $.fn.extend = function( params ) {
-      /// <summary>把对象属性复制$.prototype上</summary>
-      /// <param name="params" type="params:obj">params形式的纯Object对象</param>
-      /// <returns type="self" />
-      for ( var i = 0, len = arguments.length, obj; i < len; i++ ) {
-        obj = arguments[ i ];
-        $.isPlainObj( obj ) && util.extend( $.prototype, obj );
-      }
-      return $.fn;
-    };
-
-    return extend;
-  }, "1.0.0" );
-
-  myQuery.define( "base/array", function( $ ) {
-    "use strict"; //启用严格模式
-    var
-    indexOf = Array.prototype.indexOf || function( item, i ) {
-        var len = this.length;
-        i = i || 0;
-        if ( i < 0 ) i += len;
-        for ( ; i < len; i++ )
-          if ( i in this && this[ i ] === item ) return i;
-        return -1;
-      }, lastIndexOf = Array.prototype.lastIndexOf || function( item, i ) {
-        var len = this.length - 1;
-        i = i || len;
-        if ( i < 0 ) i += len;
-        for ( ; i > -1; i-- )
-          if ( i in this && this[ i ] === item ) break;
-        return i;
-      }, push = Array.prototype.push,
-      array = {
-        grep: function( arr, callback, inv ) {
-          var retVal,
-            ret = [ ],
-            i = 0,
-            length = arr.length;
-          inv = !! inv;
-
-          // Go through the array, only saving the items
-          // that pass the validator function
-          for ( ; i < length; i++ ) {
-            retVal = !! callback( arr[ i ], i );
-            if ( inv !== retVal ) {
-              ret.push( arr[ i ] );
-            }
-          }
-
-          return ret;
-        },
-
-        filterArray: function( arr, fun, context ) {
-          /// <summary>删选数组</summary>
-          /// <param name="arr" type="Array">数组</param>
-          /// <param name="fun" type="Function">回调函数</param>
-          /// <param name="context" type="Object">作用域</param>
-          /// <returns type="Array" />
-          var ret = [ ];
-          for ( var i = 0, len = arr.length, item; i < len; i++ ) {
-            item = arr[ i ];
-            fun.call( context, item, i, arr ) == true && ret.push( item );
-          }
-          return ret;
-        },
-
-        filterSame: function( arr ) {
-          /// <summary>剔除数组中相同的对象</summary>
-          /// <param name="arr" type="Array">数组</param>
-          /// <param name="item" type="any">任意对象</param>
-          /// <param name="i" type="Number/null">序号 可选</param>
-          /// <returns type="Array" />
-          if ( arr.length > 1 ) {
-            for ( var len = arr.length, list = [ arr[ 0 ] ], result = true, i = 1, j = 0; i < len; i++ ) {
-              j = 0;
-              for ( ; j < list.length; j++ ) {
-                if ( arr[ i ] === list[ j ] ) {
-                  result = false;
-                  break;
-                }
-              }
-              result && list.push( arr[ i ] );
-              result = true;
-            }
-            return list;
-          } else {
-            return arr;
-          }
-        },
-
-        inArray: function( arr, item, i ) {
-          /// <summary>返回数组中于此对象相同的序号</summary>
-          /// <param name="arr" type="Array">数组</param>
-          /// <param name="item" type="any">任意对象</param>
-          /// <param name="i" type="Number/null">序号 可选</param>
-          /// <returns type="Number" />
-          return indexOf.call( arr, item, i );
-        },
-
-        lastInArray: function( arr, item, i ) {
-          /// <summary>从后开始遍历返回数组中于此对象相同的序号</summary>
-          /// <param name="arr" type="Array">数组</param>
-          /// <param name="item" type="any">任意对象</param>
-          /// <param name="i" type="Number/null">序号 可选</param>
-          /// <returns type="Number" />
-          return lastIndexOf.call( arr, item, i );
-        },
-
-        makeArray: function( array, results ) {
-          /// <summary>制造一个数组</summary>
-          /// <param name="array" type="any">任意</param>
-          /// <param name="results" type="Array">数组 可缺省</param>
-          /// <returns type="Array" />
-          //quote from jQuery-1.4.1 
-          var result = results || [ ];
-
-          if ( array != null ) {
-            if ( array.length == null || $.isStr( array ) || $.isFun( array ) || array.setInterval ) {
-              push.call( result, array );
-            } else {
-              result = $.toArray( array );
-            }
-          }
-
-          return result;
-        },
-
-        slice: function( list, num, len ) {
-          /// <summary>数组的slice方法</summary>
-          /// <param name="list" type="Array">数组</param>
-          /// <param name="num" type="Number/null">序号 缺省返回第一个</param>
-          /// <param name="len" type="Number/null">长度 返回当前序号后几个元素 缺省返回当前序号</param>
-          /// <returns type="Array" />
-          return list.slice( $.isNum( num ) ? num : 0, $.isNum( len ) ? len + num : 1 + num );
-        },
-
-        toArray: function( obj, num1, num2 ) {
-          /// <summary>转换成数组</summary>
-          /// <param name="num1" type="Number/null">序号 缺省从零开始</param>
-          /// <param name="num2" type="Number/null">长度 缺省为整个长度</param>
-          /// <returns type="Array" />
-          var i = 0,
-            list = [ ],
-            len = obj.length;
-          if ( !( $.isNum( len ) && $.isFun( obj ) ) ) {
-            for ( var value = obj[ 0 ]; i < len; value = obj[ ++i ] ) {
-              list.push( value );
-            }
-          }
-          return list.slice( num1 || 0, num2 || len );
-
-        }
-      };
-
-    $.extend( array );
-
-    return array;
-  }, "1.0.0" );
-
   myQuery.define( "base/ready", [ "base/promise" ], function( $, Promise ) {
     "use strict"; //启用严格模式
     var ready = function( fn ) {
@@ -2295,9 +1825,9 @@
       document.documentElement.style.position = "absolute";
       document.documentElement.style.left = "100000px";
       var self = this,
-      ready = function( e ) {
+        ready = function( e ) {
           self.resolve( e );
-      }
+        }
       if ( document.addEventListener ) {
         document.addEventListener( "DOMContentLoaded", ready, false );
       } else if ( document.attachEvent ) {
@@ -2330,7 +1860,7 @@
 
         for ( ; i < len; i++ ) {
           item = _package[ packageNames[ i ] ];
-          if ( $.isArr( item ) ) {
+          if ( item.constructor == Array ) {
             result = result.concat( item )
           }
         }
@@ -2378,7 +1908,6 @@
 
     return $.ready = ready;
   }, "1.0.0" );
-
 
   window.myQuery = $;
 

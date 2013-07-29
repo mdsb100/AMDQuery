@@ -1,4 +1,4 @@
-﻿myQuery.define( "main/class", [ "base/support" ], function( $, support, undefined ) {
+﻿myQuery.define( "main/class", [ "base/extend", "base/support" ], function( $, utilExtend, support, undefined ) {
   "use strict"; //启用严格模式
   var cls,
   replaceClass = function( ele, oldClassName, newClassName ) {

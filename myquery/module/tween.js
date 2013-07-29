@@ -1,4 +1,4 @@
-﻿myQuery.define( "module/tween", function( $, undefined ) {
+﻿myQuery.define( "module/tween", ["base/typed"], function( $, typed, undefined ) {
   "use strict"; //启用严格模式
   var math = Math,
   // pi = math.PI,
@@ -10,9 +10,9 @@
   tween = {
     getFun: function( name ) {
       var fun;
-      if ( $.isFun( name ) ) {
+      if ( typed.isFun( name ) ) {
         fun = name;
-      } else if ( $.isStr( name ) ) {
+      } else if ( typed.isStr( name ) ) {
         name = name.split( "." );
         fun = this;
         $.each( name, function( str ) {

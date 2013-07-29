@@ -1,7 +1,7 @@
 ﻿/// <reference path="../myquery.js" />
 // quote from colo.js by Andrew Brehaut, Tim Baumann
 
-myQuery.define( "base/client", function( $ ) {
+myQuery.define( "base/client", ["base/extend"], function( $, extend ) {
   var reg = RegExp,
       client = {
         browser: {
@@ -147,7 +147,7 @@ myQuery.define( "base/client", function( $ ) {
     _engine.ie678 = _browser.ie678 = _browser.ie;
   }
 
-  $.extend( $.client, client );
+  extend.easyExtend( $.client, client );
 
   return $.client;
 }, "1.0.0" );

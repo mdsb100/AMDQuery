@@ -1,7 +1,5 @@
-﻿/// <reference path="../myquery.js" />
-// quote from colo.js by Andrew Brehaut, Tim Baumann
-
-myQuery.define( "module/effect", [ "module/animate" ], function( $, animate, undefined ) {
+﻿// quote from colo.js by Andrew Brehaut, Tim Baumann
+myQuery.define( "module/effect", [ "base/typed", "module/animate" ], function( $, typed, animate, undefined ) {
   "use strict"; //启用严格模式
   var slideDownComplete = function(  ) {
     $.data( this, "slideOriginHeight", null );
@@ -73,7 +71,7 @@ myQuery.define( "module/effect", [ "module/animate" ], function( $, animate, und
       /// <param name="option" type="Object">动画选项</param>
       /// <returns type="self" />
       ///  name="visible" type="Boolean/undefined">true:隐藏后任然占据文档流中
-      if ( $.isStr( type ) && $[ type ] ) {
+      if ( typed.isStr( type ) && $[ type ] ) {
         $[ type ]( ele, option );
       } else {
         $._hide( ele );
@@ -89,7 +87,7 @@ myQuery.define( "module/effect", [ "module/animate" ], function( $, animate, und
       /// <param name="type" type="String/undefined">动画类型</param>
       /// <param name="option" type="Object">动画选项</param>
       /// <returns type="self" />
-      if ( $.isStr( type ) && $[ type ] ) {
+      if ( typed.isStr( type ) && $[ type ] ) {
         $[ type ]( ele, option );
       } else {
         $._show( ele );

@@ -1,5 +1,4 @@
-﻿/// <reference path="../myquery.js" />
-myQuery.define( "ecma5/array.compati", function( $ ) {
+﻿myQuery.define( "ecma5/array.compati", ["base/array"], function( $, array ) {
     "use strict"; //启用严格模式
     var name, obj = {
         every: function( fun, context ) {
@@ -25,16 +24,16 @@ myQuery.define( "ecma5/array.compati", function( $ ) {
           return this;
         },
         filter: function( fun, context ) {
-          return $.filterArray( this, fun, context );
+          return array.filterArray( this, fun, context );
         },
 
         indexOf: function( item, index ) {
-          return $.inArray( this, item, index );
+          return array.inArray( this, item, index );
         },
 
 
         lastIndexOf: function( item, index ) {
-          return $.lastInArray( this, item, index );
+          return array.lastInArray( this, item, index );
         },
 
         map: function( fun, context ) {

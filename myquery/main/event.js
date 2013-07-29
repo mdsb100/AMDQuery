@@ -1,4 +1,4 @@
-﻿myQuery.define( "main/event", [ "base/client", "main/CustomEvent", "main/data" ], function( $, client, CustomEvent, data, undefined ) {
+﻿myQuery.define( "main/event", [ "base/typed", "base/extend", "base/client", "base/array", "main/CustomEvent", "main/data" ], function( $, typed, utilExtend, client, array, CustomEvent, data, undefined ) {
   "use strict"; //启用严格模式
   var mouse = "contextmenu click dblclick mousedown mouseup mousemove mouseover mouseout mouseenter mouseleave mousewheel DOMMouseScroll".split( " " ),
     /*DOMMouseScroll firefox*/
@@ -82,7 +82,7 @@
           return this.clearHandlers( ele, type );
         }
 
-        if ( $.isEle( ele ) ) {
+        if ( typed.isEle( ele ) ) {
           var data, proxy, item, types = type.split( " " ),
             i = types.length - 1;
 
@@ -133,7 +133,7 @@
         /// <param name="ele" type="Element/undefined">元素</param>
         /// <param name="type" type="String/undefinded">事件类型</param>
         /// <returns type="self" />
-        if ( $.isEle( ele ) ) {
+        if ( typed.isEle( ele ) ) {
           var data = $.data( ele, "_handlers_" );
           if ( !data ) {
             return this;
@@ -195,7 +195,7 @@
         /// <param name="type" type="String/Function">方法或类型</param>
         /// <param name="fun" type="Function/undefined">方法</param>
         /// <returns type="Number" />
-        if ( $.isEle( ele ) ) {
+        if ( typed.isEle( ele ) ) {
           var proxy;
           if ( _domEventList[ type ] ) {
             proxy = fun.__guid || fun;
@@ -334,7 +334,7 @@
               /// <returns type="null" />
               var eventF = event.event.document,
                 createEvent = eventF.createEvent,
-                settings = i = $.extend( {}, eventF.imitation._keySettings, paras ),
+                settings = i = utilExtend.extend( {}, eventF.imitation._keySettings, paras ),
                 e, i, name;
               eventF.imitation._editKeyCharCode( settings );
               if ( client.browser.firefox ) {
@@ -384,7 +384,7 @@
               /// <returns type="null" />
               var eventF = event.event.document,
                 createEvent = eventF.createEvent,
-                settings = $.extend( {}, eventF.imitation._mouseSettings, paras ),
+                settings = utilExtend.extend( {}, eventF.imitation._mouseSettings, paras ),
                 e, i = settings;
               if ( client.browser.safari && client.browser.safari < 3 ) {
                 e = createEvent( "UIEvents" );
@@ -418,7 +418,7 @@
               /// <returns type="null" />
               var eventF = event.event.document,
                 createEvent = eventF.createEvent,
-                settings = $.extend( {}, eventF.imitation._htmlSettings, paras ),
+                settings = utilExtend.extend( {}, eventF.imitation._htmlSettings, paras ),
                 e, i = settings;
 
               if ( client.browser.ie678 ) {
@@ -515,7 +515,7 @@
         /// <param name="type" type="String/Function">方法或类型</param>
         /// <param name="fun" type="Function/undefined">方法或空</param>
         /// <returns type="self" />
-        if ( $.isEle( ele ) ) {
+        if ( typed.isEle( ele ) ) {
           var data, proxy = fun.__guid || fun,
             types = type.split( " " ),
             i = types.length - 1,
@@ -644,11 +644,11 @@
         /// <param name="context" type="Object">当为自定义事件时 为作用域 否则为事件参数</param>
         /// <param name="paras" type="para:[any]">当为自定义事件时 为参数列表</param> 
         /// <returns type="self"></returns>
-        if ( $.isEle( ele ) ) {
+        if ( typed.isEle( ele ) ) {
           var data;
           if ( data = _domEventList[ type ] ) {
             type = tools.editEventType( type );
-            $.isFun( data ) ? data( ele, type, context ) : $.console.warn( {
+            typed.isFun( data ) ? data( ele, type, context ) : $.console.warn( {
               fn: "trigger",
               msg: "triggering" + type + " is not supported"
             } );
@@ -677,7 +677,7 @@
       /// <param name="type" type="String">事件类型</param>
       /// <param name="fun" type="Function">事件方法</param>
       /// <returns type="self" />
-      if ( !$.isStr( type ) || !( $.isFun( fun ) || fun === null ) ) return this;
+      if ( !typed.isStr( type ) || !( typed.isFun( fun ) || fun === null ) ) return this;
       return this.each( function( ele ) {
         //                    fun = tools.proxy(fun, this);
         //                    var key, result
@@ -711,7 +711,7 @@
           var
           eleCollection = $.find( selector, parentNode ),
             target = event.event.document.getTarget( e ),
-            ret = $.inArray( eleCollection || [ ], target );
+            ret = array.inArray( eleCollection || [ ], target );
 
           if ( ret > -1 ) {
             fun.call( target, e );
@@ -727,7 +727,7 @@
       /// <param name="type" type="String">事件类型</param>
       /// <param name="fun" type="Function">事件方法</param>
       /// <returns type="self" />
-      if ( !$.isStr( type ) || !$.isFun( fun ) ) return this;
+      if ( !typed.isStr( type ) || !typed.isFun( fun ) ) return this;
       return this.each( function( ele ) {
         //fun = fun.__guid || fun;
         //                var key, result
@@ -754,7 +754,7 @@
       /// <para>若没有funParas 就解除绑定</para>
       /// <param name="funParas" type="Function:[]/Array[Function]">方法组</param>
       /// <returns type="self" />
-      var arg = $.isArr( funParas ) ? funParas : $.util.argToArray( arguments, 0 ),
+      var arg = typed.isArr( funParas ) ? funParas : $.util.argToArray( arguments, 0 ),
         temp, i = 0,
         ele;
       for ( ; ele = this.eles[ i++ ]; ) {
@@ -769,7 +769,7 @@
     //     /// <param name="ele" type="Element">element元素</param>
     //     /// <param name="classParas" type="String:[]">样式名</param>
     //     /// <returns type="self" />
-    //     var arg = $.isArr(classParas) ? classParas : $.util.argToArray(arguments, 0),
+    //     var arg = typed.isArr(classParas) ? classParas : $.util.argToArray(arguments, 0),
     //         temp;
     //     for(; ele = this.eles[i++];) {
     //         temp = arg.concat();
@@ -804,7 +804,7 @@
       /// <param name="fun" type="Function/Object/undefined">不存在则触发</param>
       /// <returns type="self" />
       var type = arguments[ 1 ] || "blur";
-      return $.isFun( fun ) ? this.addHandler( type, fun ) : this.trigger( type, fun );
+      return typed.isFun( fun ) ? this.addHandler( type, fun ) : this.trigger( type, fun );
     },
 
     focus: function( fun ) {
@@ -931,7 +931,7 @@
       /// <summary>添加兼容滚轮事件或触发</summary>
       /// <param name="fun" type="Function/Object/undefined">事件方法</param>
       /// <returns type="self" />
-      return $.isFun( fun ) ? this.addHandler( "mousewheel", function( e ) {
+      return typed.isFun( fun ) ? this.addHandler( "mousewheel", function( e ) {
         e = $.event.document.getEvent( e );
         var delta = 0;
         if ( e.wheelDelta ) delta = e.wheelDelta / 120;
@@ -946,7 +946,7 @@
       /// <summary>触摸板事件或触发</summary>
       /// <param name="fun" type="Function/Object/undefined">事件方法</param>
       /// <returns type="self" />
-      return $.isFun( fun ) ? this.addHandler( "mousewheel", function( e ) {
+      return typed.isFun( fun ) ? this.addHandler( "mousewheel", function( e ) {
         e = $.event.document.getEvent( e );
         var delta = 0,
         direction = "y";
@@ -1002,7 +1002,7 @@
       /// <summary>绑定或触发keydown事件</summary>
       /// <param name="fun" type="Function/Object/undefined">不存在则触发</param>
       /// <returns type="self" />
-      return $.isFun( fun ) ? this.addHandler( "keydown", function( e ) {
+      return typed.isFun( fun ) ? this.addHandler( "keydown", function( e ) {
         client.browser.firefox && e.keyCode || ( e.keyCode = e.which );
         e.charCode == undefined && ( e.charCode = e.keyCode );
         fun.call( this, e );
@@ -1013,7 +1013,7 @@
       /// <summary>绑定或触发keypress事件</summary>
       /// <param name="fun" type="Function/Object/undefined">不存在则触发</param>
       /// <returns type="self" />
-      return $.isFun( fun ) ? this.addHandler( "keypress", function( e ) {
+      return typed.isFun( fun ) ? this.addHandler( "keypress", function( e ) {
         client.browser.firefox && e.keyCode || ( e.keyCode = e.which );
         e.charCode == undefined && ( e.charCode = e.keyCode );
         fun.call( this, e, String.fromCharCode( e.charCode ) );

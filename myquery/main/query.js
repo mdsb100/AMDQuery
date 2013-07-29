@@ -1,4 +1,4 @@
-﻿myQuery.define( "main/query", [ "lib/sizzle" ], function( $, Sizzle, undefined ) {
+﻿myQuery.define( "main/query", [ "lib/sizzle", "base/extend", "base/typed", "base/array" ], function( $, Sizzle, utilExtend, typed, array, undefined ) {
   "use strict"; //启用严格模式
 
   $.module[ "lib/sizzle" ] = "Sizzle1.10.3";
@@ -24,31 +24,31 @@
     // Set to 0 to skip string check
     qualifier = qualifier || 0;
 
-    if ( $.isFun( qualifier ) ) {
-      return $.grep( elements, function( ele, i ) {
+    if ( typed.isFun( qualifier ) ) {
+      return array.grep( elements, function( ele, i ) {
         var retVal = !! qualifier.call( ele, i, ele );
         return retVal === keep;
       } );
 
     } else if ( qualifier.nodeType ) {
-      return $.grep( elements, function( ele ) {
+      return array.grep( elements, function( ele ) {
         return ( ele === qualifier ) === keep;
       } );
 
-    } else if ( $.isStr( qualifier ) ) {
-      var filtered = $.grep( elements, function( ele ) {
+    } else if ( typed.isStr( qualifier ) ) {
+      var filtered = array.grep( elements, function( ele ) {
         return ele.nodeType === 1;
       } );
 
       if ( isSimple.test( qualifier ) ) {
-        return $.filter( qualifier, filtered, !keep );
+        return array.filter( qualifier, filtered, !keep );
       } else {
         qualifier = $.filter( qualifier, filtered );
       }
     }
 
-    return $.grep( elements, function( ele ) {
-      return ( $.inArray( ele, qualifier ) >= 0 ) === keep;
+    return array.grep( elements, function( ele ) {
+      return ( array.inArray( ele, qualifier ) >= 0 ) === keep;
     } );
   }
 
@@ -75,7 +75,7 @@
       /// <param name="eles" type="Element/ElementCollection/arr">从元素或元素数组或元素集合中获取</param>
       /// <param name="real" type="Boolean/Null">是否获得真元素，默认为真</param>
       /// <returns type="Array" />
-      if ( $.isEle( eles ) )
+      if ( typed.isEle( eles ) )
         eles = [ eles ];
       return $.getEleByTag( "*", eles );
     },
@@ -86,7 +86,7 @@
       /// <param name="real" type="Boolean/undefined">是否获得真元素，默认为真</param>
       /// <returns type="Array" />
       var list = [ ];
-      if ( $.isEleConllection( eles ) ) {
+      if ( typed.isEleConllection( eles ) ) {
         var real = real === undefined ? true : real;
         $.each( eles, function( ele ) {
           if ( real === false )
@@ -116,7 +116,7 @@
       /// <returns type="Array" />
       var list = [ ],
         tmp;
-      if ( $.isStr( ele ) ) {
+      if ( typed.isStr( ele ) ) {
         ele = $.util.trim( ele );
         if ( /^<.*>$/.test( ele ) ) {
           list = $.elementCollectionToArray( $.createEle( ele ), false );
@@ -124,22 +124,22 @@
           tmp = context || document;
           list = $.find( ele, tmp.documentElement || context );
         }
-      } else if ( $.isEle( ele ) )
+      } else if ( typed.isEle( ele ) )
         list = [ ele ];
-      else if ( $.isArr( ele ) ) {
+      else if ( typed.isArr( ele ) ) {
         $.each( ele, function( result ) {
-          $.isEle( result ) && list.push( result );
+          typed.isEle( result ) && list.push( result );
         }, this );
-        list = $.filterSame( list );
+        list = array.filterSame( list );
       } else if ( ele instanceof $ )
         list = ele.eles;
-      else if ( $.isEleConllection( ele ) ) {
+      else if ( typed.isEleConllection( ele ) ) {
         list = $.elementCollectionToArray( ele, true );
       } else if ( ele === document )
         list = [ ele.documentElement ];
       else if ( ele === window )
         list = [ window ];//有风险的
-      else if ( $.isDoc( ele ) ) {
+      else if ( typed.isDoc( ele ) ) {
         list = [ ele.documentElement ];
       }
 
@@ -176,7 +176,7 @@
       var i = -1,
         node = ele.parentNode.firstChild;
       while ( node ) {
-        if ( $.isEle( node ) && i++ != undefined && node === ele ) {
+        if ( typed.isEle( node ) && i++ != undefined && node === ele ) {
           break;
         }
         node = node.nextSibling;
@@ -188,7 +188,7 @@
       /// <param name="ele" type="Element">DOM元素</param>
       /// <param name="fun" type="Function">筛选的方法</param>
       /// <returns type="Array" />
-      return $.grep( $.posterity( ele ), function( child ) {
+      return array.grep( $.posterity( ele ), function( child ) {
         return fun( child );
       } );
     },
@@ -197,7 +197,7 @@
       var value,
         i = 0,
         length = eles.length,
-        isArray = $.isArrlike( eles ),
+        isArray = typed.isArrlike( eles ),
         ret = [ ];
 
       // Go through the array, translating each of the items to their
@@ -248,7 +248,7 @@
       /// <param name="real" type="Boolean/Null">是否获得真元素，默认为真</param>
       /// <returns type="self" />
       var posterity = $.posterity( this.eles );
-      if ( $.isStr( query ) ) posterity = $.find( query, posterity );
+      if ( typed.isStr( query ) ) posterity = $.find( query, posterity );
       return $( posterity );
     },
 
@@ -311,24 +311,24 @@
       }
 
       // index in selector
-      if ( $.isStr( ele ) ) {
-        return $.inArray( $( ele ), this[ 0 ] );
+      if ( typed.isStr( ele ) ) {
+        return array.inArray( $( ele ), this[ 0 ] );
       }
 
       // Locate the position of the desired element
-      return $.inArray(
+      return array.inArray(
         // If it receives a jQuery object, the first element is used
-        this, $.is$( ele ) ? ele[ 0 ] : ele );
+        this, typed.is$( ele ) ? ele[ 0 ] : ele );
     },
     is: function( str ) {
       /// <summary>返回筛选后的数组是否存在</summary>
       /// <param name="str" type="String">查询字符串</param>
       /// <returns type="Boolean" />
       return !!str && (
-        $.isStr( str ) ?
+        typed.isStr( str ) ?
         rneedsContext.test( str ) ?
         $.find( str, this.context ).index( this[ 0 ] ) >= 0 :
-        $.filter( str, this.eles ).length > 0 :
+        array.filter( str, this.eles ).length > 0 :
         this.filter( str ).length > 0 );
     },
 
@@ -347,7 +347,7 @@
       /// <param name="num1" type="Number/null">序号 缺省返回第一个</param>
       /// <param name="num2" type="Number/null">长度 返回当前序号后几个元素 缺省返回当前序号</param>
       /// <returns type="$" />
-      return $( $.slice( this, num, len ) );
+      return $( array.slice( this, num, len ) );
     }
   } );
 
@@ -408,7 +408,7 @@
       }
 
       if ( selector && typeof selector === "string" ) {
-        ret = $.filter( selector, ret );
+        ret = array.filter( selector, ret );
       }
 
       ret = this.length > 1 && !guaranteedUnique[ name ] ? $.unique( ret ) : ret;

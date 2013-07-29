@@ -1,7 +1,7 @@
-﻿myQuery.define( "module/tween.extend", [ "module/tween" ], function( $, tween, undefined ) {
+﻿myQuery.define( "module/tween.extend", [ "base/extend", "module/tween" ], function( $, utilExtend, tween, undefined ) {
   "use strict"; //启用严格模式
   var math = Math;
-  $.easyExtend( tween, {
+  utilExtend.easyExtend( tween, {
     quad: {
       easeIn: function( t, b, c, d ) {
         return c * ( t /= d ) * t + b;

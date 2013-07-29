@@ -1,4 +1,4 @@
-﻿myQuery.define( "main/data", function( $, undefined ) {
+﻿myQuery.define( "main/data", ["base/extend", "base/typed"], function( $, utilExtend, typed, undefined ) {
   "use strict"; //启用严格模式
   var
   expando = "MyQuery" + $.now( ),
@@ -37,7 +37,7 @@
 
       if ( typeof name === "object" ) {
         ele[ expando ] = id;
-        thisCache = cache[ id ] = $.extend( true, {}, name );
+        thisCache = cache[ id ] = utilExtend.extend( true, {}, name );
       } else if ( cache[ id ] ) {
         thisCache = cache[ id ];
       } else if ( data === undefined ) {
@@ -51,7 +51,7 @@
         thisCache[ name ] = data;
       }
 
-      return $.isStr( name ) ? thisCache[ name ] : thisCache;
+      return typed.isStr( name ) ? thisCache[ name ] : thisCache;
     },
 
     expando: expando,
@@ -83,7 +83,7 @@
         if ( thisCache ) {
           delete thisCache[ name ];
 
-          if ( $.isEmptyObj( thisCache ) )
+          if ( typed.isEmptyObj( thisCache ) )
             $.removeData( ele );
 
         }
@@ -115,7 +115,7 @@
       /// <returns type="thisCache/any/$" />
       if ( key === undefined && this.length ) {
         return $.data( this[ 0 ] );
-      } else if ( $.isObj( key ) ) {
+      } else if ( typed.isObj( key ) ) {
         return this.each( function( ele ) {
           $.data( ele, key );
         } );

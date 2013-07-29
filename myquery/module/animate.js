@@ -1,7 +1,4 @@
-﻿/// <reference path="../myquery.js" />
-/*include JQuery animate*/
-
-myQuery.define( "module/animate", [ "base/queue", "main/data", "module/FX", "module/Thread", "module/tween" ], function( $, Queue, data, FX, Thread, tween, undefined ) {
+﻿myQuery.define( "module/animate", [ "base/typed", "base/extend", "base/queue", "main/data", "module/FX", "module/Thread", "module/tween" ], function( $, typed, utilExtend, Queue, data, FX, Thread, tween, undefined ) {
   "use strict"; //启用严格模式
   FX.tick = function( ) {
     if ( thread.getStatus( ) === "run" ) return;
@@ -35,13 +32,13 @@ myQuery.define( "module/animate", [ "base/queue", "main/data", "module/FX", "mod
       }
     } ),
     animate = function( ele, property, option ) {
-      var opt = {}, p, isElement = $.isEle( ele ),
+      var opt = {}, p, isElement = typed.isEle( ele ),
         hidden = isElement && $( ele ).isVisible( ),
         //self = ele,
         count = 0,
         defaultEasing = option.easing;
 
-      $.easyExtend( opt, option );
+      utilExtend.easyExtend( opt, option );
 
       for ( p in property ) {
         var name = $.util.camelCase( p );
@@ -71,13 +68,13 @@ myQuery.define( "module/animate", [ "base/queue", "main/data", "module/FX", "mod
         ele.style.overflow = "hidden";
       }
 
-      opt.curAnim = $.extend( {}, property );
+      opt.curAnim = utilExtend.extend( {}, property );
       opt.curCount = count;
       opt.isStart = 1;
 
       $.each( property, function( value, key ) {
         opt.easing = opt.specialEasing && opt.specialEasing[ key ] ? $.getAnimationEasing( opt.specialEasing[ key ] ) : defaultEasing;
-        if ( $.isFun( $.fx.custom[ key ] ) ) {
+        if ( typed.isFun( $.fx.custom[ key ] ) ) {
           return $.fx.custom[ key ]( ele, opt, value, key );
         }
         new $.fx( ele, opt, value, key );
@@ -114,7 +111,7 @@ myQuery.define( "module/animate", [ "base/queue", "main/data", "module/FX", "mod
       /// <returns type="self" />
       option = $._getAnimateOpt( option );
 
-      if ( $.isEmptyObj( property ) ) {
+      if ( typed.isEmptyObj( property ) ) {
         return option.complete( ele );
       } else {
         if ( option.queue === false ) {
@@ -173,12 +170,12 @@ myQuery.define( "module/animate", [ "base/queue", "main/data", "module/FX", "mod
         delay = FX.getDelay( opt.delay ),
         ret,
         tCompelete;
-      if ( $.isArr( opt.complete ) ) {
+      if ( typed.isArr( opt.complete ) ) {
         tCompelete = opt.complete;
         if ( tCompelete[ 0 ] !== originComplete ) {
           tCompelete.splice( 0, 0, originComplete );
         }
-      } else if ( $.isFun( opt.complete ) ) {
+      } else if ( typed.isFun( opt.complete ) ) {
         tCompelete = [ originComplete, opt.complete ];
       } else {
         tCompelete = [ originComplete ];
@@ -213,17 +210,6 @@ myQuery.define( "module/animate", [ "base/queue", "main/data", "module/FX", "mod
       type = ( type || "fx" ) + "queue";
       var q = $.data( ele, type );
 
-      //            if (!data) {
-      //                return q || [];
-      //            }
-
-      //            if (!q || $.isArr(data)) {
-      //                q = $.data(ele, type, $.makeArray(data));
-
-      //            }
-      //            else {
-      //                q.push(data);
-      //            }
       if ( !q ) {
         q = $.data( ele, type, new Queue( ) );
       }
@@ -251,7 +237,7 @@ myQuery.define( "module/animate", [ "base/queue", "main/data", "module/FX", "mod
       /// <returns type="self" />
       option = $._getAnimateOpt( option );
 
-      if ( $.isEmptyObj( property ) ) {
+      if ( typed.isEmptyObj( property ) ) {
         return this.each( option.complete );
       } else {
         return this[ option.queue === false ? "each" : "queue" ]( function( ele ) {
@@ -279,7 +265,7 @@ myQuery.define( "module/animate", [ "base/queue", "main/data", "module/FX", "mod
 
     queue: function( type, data ) {
       //quote from jQuery-1.4.1 
-      if ( !$.isStr( type ) ) {
+      if ( !typed.isStr( type ) ) {
         data = type;
         type = "fx";
       }

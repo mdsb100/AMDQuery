@@ -1,5 +1,5 @@
 /// <reference path="../myquery.js" />
-myQuery.define( "module/initWidget", [ "main/query", "main/dom", "main/attr", "module/Widget" ], function( $, query, dom, attr, Widget, undefinded ) {
+myQuery.define( "module/initWidget", [ "base/typed", "main/query", "main/dom", "main/attr", "module/Widget" ], function( $, typed, query, dom, attr, Widget, undefinded ) {
   "use strict"; //启用严格模式
 
   var body = $( "body" ),
@@ -31,7 +31,7 @@ myQuery.define( "module/initWidget", [ "main/query", "main/dom", "main/attr", "m
 
     $( parent ).find( "*[myquery-widget]" ).each( function( ele ) {
       var value = attr.getAttr( ele, "myquery-widget" ),
-      attrNames = $.isStr( value ) && value != "" ? value.split( /;|,/ ) : [ ],
+      attrNames = typed.isStr( value ) && value != "" ? value.split( /;|,/ ) : [ ],
       len = attrNames.length,
       widgetName,
       widgetPath,

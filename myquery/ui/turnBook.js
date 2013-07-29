@@ -1,5 +1,5 @@
 ﻿/*deprecated*/
-myQuery.define( "ui/turnBook", [ "main/class", "html5/css3", "ui/swappable", "module/Widget" ], function( $, cls, css3, swappable, Widget, undefined ) {
+myQuery.define( "ui/turnBook", [ "base/typed", "main/class", "html5/css3", "ui/swappable", "module/Widget" ], function( $, typed, cls, css3, swappable, Widget, undefined ) {
   "use strict"; //启用严格模式
   var turnBook = Widget.extend( "ui.turnBook", {
     appendTo: function( index ) {
@@ -129,7 +129,7 @@ myQuery.define( "ui/turnBook", [ "main/class", "html5/css3", "ui/swappable", "mo
             $.event.document.preventDefault( e );
           } ).replaceClass( opt.contentClass ).html( html || "" );
           content[ 0 ].setAttribute( "readonly", "readonly" );
-          if ( $.isIpad ) {
+          if ( typed.isIpad ) {
             var clip = $( {
               top: opt.contentTop + "px",
               left: opt.contentLeft + "px",
@@ -470,7 +470,7 @@ myQuery.define( "ui/turnBook", [ "main/class", "html5/css3", "ui/swappable", "mo
                 page = this.createPage( );
                 opt.pages[ index ] = page;
                 content = this.createContext( value ).appendTo( page );
-                //opt.contents[index] = $.isIpad ? $(content[0]) : content;
+                //opt.contents[index] = typed.isIpad ? $(content[0]) : content;
               }, this );
               break;
             default:
@@ -483,7 +483,7 @@ myQuery.define( "ui/turnBook", [ "main/class", "html5/css3", "ui/swappable", "mo
                 page = this.createPage( );
                 opt.pages[ index ] = page;
                 content = this.createContext( value ).appendTo( page );
-                opt.contents[ index ] = $.isIpad ? $( content[ 0 ] ) : content;
+                opt.contents[ index ] = typed.isIpad ? $( content[ 0 ] ) : content;
               }, this );
 
               break;
@@ -567,7 +567,7 @@ myQuery.define( "ui/turnBook", [ "main/class", "html5/css3", "ui/swappable", "mo
       pageWidth = this.pageWidth,
       bookWidth = this.bookWidth;
       this.container.children( ).remove( );
-      index = $.isNum( index ) ? parseInt( $.between( 0, len, index ) ) : opt.bookIndex;
+      index = typed.isNum( index ) ? parseInt( $.between( 0, len, index ) ) : opt.bookIndex;
       if ( opt.positionType == "half" ) {
         for ( var i = index + 2; i >= index; i-- ) {
           this.setContextCss( i ).setBoxCss( i, {
@@ -664,7 +664,7 @@ myQuery.define( "ui/turnBook", [ "main/class", "html5/css3", "ui/swappable", "mo
     showMessage: function( msg, autoHide ) {
       if ( this.options.isShowMessage !== true ) return this.hideMessage( );
       this.message.appendTo( this.container ).show( );
-      if ( $.isStr( msg ) ) {
+      if ( typed.isStr( msg ) ) {
         this.message.html( msg );
       } else {
         this.message.append( msg );

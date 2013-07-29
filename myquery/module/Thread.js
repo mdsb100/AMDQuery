@@ -1,4 +1,4 @@
-﻿myQuery.define( "module/Thread", [ "main/CustomEvent", "base/extend", "main/object" ], function( $, CustomEvent, extend, object ) {
+﻿myQuery.define( "module/Thread", [ "main/CustomEvent", "base/extend", "main/object" ], function( $, CustomEvent, utilExtend, object ) {
   "use strict"; //启用严格模式
   /// <summary>创造一个新进程
   /// <para>num obj.delay:延迟多少毫秒</para>
@@ -38,7 +38,7 @@
       /// <returns type="self" />
       //this.stop();
       this._super( );
-      $.extend( this, Thread._defaultSetting, obj );
+      utilExtend.extend( this, Thread._defaultSetting, obj );
       this.id = this.id || $.now( );
       this.args = $.util.argToArray( arguments, 1 );
 

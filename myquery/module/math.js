@@ -1,4 +1,4 @@
-﻿myQuery.define( 'module/math', function( $, undefined ) {
+﻿myQuery.define( 'module/math', ["base/extend"], function( $, utilExtend, undefined ) {
   "use strict"; //启用严格模式
   var M = Math,
   pi = M.PI,
@@ -93,7 +93,7 @@
 
   };
 
-  $.easyExtend( martrix, {
+  utilExtend.easyExtend( martrix, {
     addition: function( m1, m2 ) {
       var
       r1 = m1.length,

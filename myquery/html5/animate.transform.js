@@ -1,4 +1,4 @@
-﻿myQuery.define( "html5/animate.transform", [ "main/object", "module/FX", "html5/css3", "module/animate" ], function( $, object, FX, css3, animate, undefined ) {
+﻿myQuery.define( "html5/animate.transform", [ "base/extend", "main/object", "module/FX", "html5/css3", "module/animate" ], function( $, utilExtend, object, FX, css3, animate, undefined ) {
   "use strict"; //启用严格模式
   var getScale = function( r ) {
     return r ? Math.max( r, 0 ) : 1;
@@ -46,7 +46,7 @@
       }
     } );
 
-    $.easyExtend( $.fx.custom, {
+    utilExtend.easyExtend( $.fx.custom, {
       setRotate3d: Transfrom3dForFX,
       setScale: Transfrom3dForFX,
       transform3d: Transfrom3dForFX,
@@ -107,7 +107,7 @@
 
     } );
 
-    $.easyExtend( $.fx.custom, {
+    utilExtend.easyExtend( $.fx.custom, {
       transform: TransfromForFX
     } );
   }

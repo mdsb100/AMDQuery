@@ -1,8 +1,8 @@
-﻿myQuery.define( "html5/threed.canvas.extend", [ "html5/canvas", "module/threed" ], function( $, canvas, threed, undefined ) {
+﻿myQuery.define( "html5/threed.canvas.extend", [ "base/extend", "html5/canvas", "module/threed" ], function( $, utilExtend, canvas, threed, undefined ) {
   "use strict"; //启用严格模式
   var Polygon = threed.Polygon;
 
-  $.easyExtend( Polygon, {
+  utilExtend.easyExtend( Polygon, {
     SOLID: 1,
     WIRE: 0,
     LINE: 1,
@@ -11,7 +11,7 @@
     RGBA: 4
   } );
 
-  $.easyExtend( Polygon.prototype, {
+  utilExtend.easyExtend( Polygon.prototype, {
     draw: function( ) {
       this.ctx.sv( ).b( ).m( this.points[ 0 ].fx, this.points[ 0 ].fy );
 

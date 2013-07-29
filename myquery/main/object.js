@@ -1,4 +1,4 @@
-﻿myQuery.define( "main/object", [ "base/extend" ], function( $, utilExtend ) {
+﻿myQuery.define( "main/object", [ "base/typed", "base/array", "base/extend" ], function( $, typed, array, utilExtend ) {
   //依赖extend
   "use strict"; //启用严格模式
 
@@ -57,7 +57,7 @@
   },
   _extendTemplate = function( name, prototype, statics ) {
     var arg = $.util.argToArray( arguments );
-    if ( $.isObj( name ) && this.name ) {
+    if ( typed.isObj( name ) && this.name ) {
       arg.splice( 0, 0, this.name );
     }
     arg.push( this );
@@ -67,7 +67,7 @@
   _joinPrototypeTemplate = function( ) {
     for ( var i = 0, len = arguments.length, obj; i < len; i++ ) {
       obj = arguments[ i ];
-      $.isPlainObj( obj ) && $.extend( this.prototype, obj );
+      typed.isPlainObj( obj ) && utilExtend.extend( this.prototype, obj );
     }
     return this;
   },
@@ -153,9 +153,9 @@
         inerit( anonymous, Super );
       }
 
-      prototype = $.extend( {}, $.object._defaultPrototype, prototype );
+      prototype = utilExtend.extend( {}, $.object._defaultPrototype, prototype );
       prototype.constructor = anonymous;
-      $.easyExtend( anonymous.prototype, prototype );
+      utilExtend.easyExtend( anonymous.prototype, prototype );
 
       anonymous.inherit = _inheritTemplate;
       anonymous.extend = _extendTemplate;
@@ -164,7 +164,7 @@
       anonymous.createGetterSetter = _createGetterSetter;
       anonymous.fn = anonymous.prototype;
 
-      $.easyExtend( anonymous, statics );
+      utilExtend.easyExtend( anonymous, statics );
 
       return anonymous;
     },
@@ -182,7 +182,7 @@
       }
 
       var _expendo = 0,
-        _prototype = $.extend( {}, prototype, {
+        _prototype = utilExtend.extend( {}, prototype, {
           init: function( ) {
             this.models = [ ];
             this.__map = {};
@@ -230,7 +230,7 @@
                 break;
             }
             if ( model ) {
-              this.models.splice( $.inArray( this.models, model ), 1 );
+              this.models.splice( array.inArray( this.models, model ), 1 );
               for ( i in this.__map ) {
                 if ( this.__map[ i ] == model ) {
                   delete this.__map[ i ];
@@ -271,7 +271,7 @@
             return this;
           }
         } ),
-        _statics = $.extend( {}, statics ),
+        _statics = utilExtend.extend( {}, statics ),
         name = typeof model == "string" ? model : model.name + "Collection";
 
       return object.extend( name, _prototype, _statics, Super );
@@ -284,7 +284,7 @@
       /// <returns type="Number" />
       var count = 0;
       for ( var i in obj ) {
-        bool == true ? $.isPrototypeProperty( obj, i ) || count++ : count++;
+        bool == true ? typed.isPrototypeProperty( obj, i ) || count++ : count++;
       }
       return count;
     },
@@ -297,7 +297,7 @@
       /// <param name="Super" type="Object">父类</param>
       /// <returns type="self" />
       var con = Sub.prototype.constructor;
-      $.easyExtend( Sub.prototype, Super.prototype );
+      utilExtend.easyExtend( Sub.prototype, Super.prototype );
       Sub.prototype.constructor = con || Super.prototype.constructor;
       return this;
     },
@@ -318,7 +318,7 @@
       Sub.prototype = new Parasitic( );
       //var prototype = Object(Super.prototype);
       //Sub.prototype = prototype;
-      $.easyExtend( Sub.prototype, originPrototype );
+      utilExtend.easyExtend( Sub.prototype, originPrototype );
       //Sub.prototype.constructor = Sub;
 
       return this;
@@ -345,7 +345,7 @@
       /// <param name="obj" type="Object">类</param>
       /// <param name="object" type="Object">属性名列表</param>
       /// <returns type="String" />
-      if ( !$.isPlainObj( object ) ) {
+      if ( !typed.isPlainObj( object ) ) {
         return this;
       }
       //这里加个验证a
@@ -359,13 +359,13 @@
             purview = value;
             break;
           case "object":
-            if ( $.isStr( value.purview ) ) {
+            if ( typed.isStr( value.purview ) ) {
               purview = value.purview;
             }
-            if ( $.isFun( value.validate ) ) {
+            if ( typed.isFun( value.validate ) ) {
               validate = value.validate;
             }
-            if ( $.isFun( value.edit ) ) {
+            if ( typed.isFun( value.edit ) ) {
               edit = value.edit;
             }
             defaultValue = value.defaultValue; //undefinded always undefinded

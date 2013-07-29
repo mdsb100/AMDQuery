@@ -1,4 +1,5 @@
 myQuery.define( "ui/splitter", [
+    "base/typed", 
     "base/support",
     "module/Widget",
     "main/query",
@@ -10,7 +11,7 @@ myQuery.define( "ui/splitter", [
     "html5/css3",
     "ui/splitterpane"
   ],
-  function( $, support, Widget, query, cls, event, dom, attr, src, css3, splitterpane ) {
+  function( $, typed, support, Widget, query, cls, event, dom, attr, src, css3, splitterpane ) {
     "use strict"; //启用严格模式
     var proto, splitter;
     if ( support.box ) {
@@ -46,8 +47,8 @@ myQuery.define( "ui/splitter", [
           return this;
         },
         resize: function( width, height ) {
-          $.isNul( width ) && this.setWidth( width );
-          $.isNul( height ) && this.setHeight( height );
+          typed.isNul( width ) && this.setWidth( width );
+          typed.isNul( height ) && this.setHeight( height );
         },
         setWidth: function( width ) {
           this.target.width( width );
@@ -115,8 +116,8 @@ myQuery.define( "ui/splitter", [
           return this;
         },
         resize: function( width, height ) {
-          $.isNul( width ) && this.setWidth( width );
-          $.isNul( height ) && this.setHeight( height );
+          typed.isNul( width ) && this.setWidth( width );
+          typed.isNul( height ) && this.setHeight( height );
         },
         setWidth: function( width ) {
           this.target.width( width );
@@ -125,7 +126,7 @@ myQuery.define( "ui/splitter", [
           this.target.height( height );
         },
         _setFlex: function( flex ) {
-          if ( $.isNum( flex ) && flex >= 0 ) {
+          if ( typed.isNum( flex ) && flex >= 0 ) {
             this.options.flex = flex;
             //要通知父元素更改
           }

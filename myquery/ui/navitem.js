@@ -1,4 +1,5 @@
 myQuery.define( "ui/navitem", [
+    "base/typed", 
     "base/client",
     "module/Widget",
     "main/class",
@@ -10,7 +11,7 @@ myQuery.define( "ui/navitem", [
     "module/tween.extend",
     "module/effect"
   ],
-  function( $, client, Widget, cls, event, dom, attr, src, animate ) {
+  function( $, typed, client, Widget, cls, event, dom, attr, src, animate ) {
     "use strict"; //启用严格模式
 
     var complete = function( ) {
@@ -177,7 +178,7 @@ myQuery.define( "ui/navitem", [
         return ret;
       },
       getAttrToRoot: function( attrName ) {
-        if ( !$.isStr( attrName ) ) {
+        if ( !typed.isStr( attrName ) ) {
           return [ ];
         }
         var opt = this.options,
