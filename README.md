@@ -1,4 +1,4 @@
-myquery
+AMDQuery
 =======
 
-myquery like JQuery.myquery provide AMD and decoupling
+AMDQuery like JQuery.AMDQuery provide AMD and decoupling
