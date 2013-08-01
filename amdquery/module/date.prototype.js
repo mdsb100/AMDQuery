@@ -1,4 +1,4 @@
-﻿myQuery.define( function( $, undefined ) {
+﻿aQuery.define( function( $, undefined ) {
   "use strict"; //启用严格模式
   var date = {
     pattern: function( date, fmt ) {

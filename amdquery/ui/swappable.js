@@ -1,4 +1,4 @@
-﻿myQuery.define("ui/swappable", ["base/typed", "base/client", "main/event", "module/math", "module/Widget"], function ($, typed, client, event, math, Widget, undefined) {
+﻿aQuery.define("ui/swappable", ["base/typed", "base/client", "main/event", "module/math", "module/Widget"], function ($, typed, client, event, math, Widget, undefined) {
     "use strict"; //启用严格模式 
     var swappable = Widget.extend("ui.swappable", {
         container: null,

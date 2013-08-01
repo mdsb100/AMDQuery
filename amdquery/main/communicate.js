@@ -1,4 +1,4 @@
-﻿myQuery.define( "main/communicate", [ "base/typed", "base/extend", "main/event", "module/parse" ], function( $, typed, extend, parse, undefined ) {
+﻿aQuery.define( "main/communicate", [ "base/typed", "base/extend", "main/event", "module/parse" ], function( $, typed, extend, parse, undefined ) {
   "use strict"; //启用严格模式
   var communicate = {
     ajax: function( options ) {
@@ -140,7 +140,7 @@
       timeout: false,
       timeoutFun: function( o ) {
         $.console.warn( {
-          fn: "myQuery.ajax",
+          fn: "aQuery.ajax",
           msg: o.url + "of ajax is timeout:" + ( o.timeout / 1000 ) + "second"
         } );
       },
@@ -167,7 +167,7 @@
       /// <para>str/obj options.checkString:检查变量结果</para>
       /// <para>obj options.isRandom:是否带随机数以获得最新数据</para>
       /// <para>str options.routing:路由 缺省为""</para>
-      /// <para>str/bol options.JSONP:true为myQuery形式、str为自定义JSONP</para>
+      /// <para>str/bol options.JSONP:true为aQuery形式、str为自定义JSONP</para>
       /// <para>str options.JSONPKey:有些时候后台不一定支持字段名为JSONP，可能叫Callback等，这提供了灵活定义</para>
       /// </summary>
       /// <param name="options" type="Object/String">参数或脚本内容</param>
@@ -185,7 +185,7 @@
 
 
       if ( o.JSONP ) {
-        random = ( "myQuery" + $.now( ) ) + parseInt( Math.random( ) * 10 );
+        random = ( "aQuery" + $.now( ) ) + parseInt( Math.random( ) * 10 );
         window[ random ] = function( ) {
           typed.isFun( o.complete ) && o.complete.apply( o.context || window, arguments );
         };
@@ -245,7 +245,7 @@
       checkString: "",
       error: function( ) {
         $.console.warn( {
-          fn: "myQuery.jsonp",
+          fn: "aQuery.jsonp",
           msg: ( this.src || "(empty)" ) + " of javascript getting error"
         } );
       },
@@ -257,7 +257,7 @@
       timeout: false,
       timeoutFun: function( o ) {
         $.console.warn( {
-          fn: "myQuery.jsonp",
+          fn: "aQuery.jsonp",
           msg: ( o.url || "(empty)" ) + "of ajax is timeout:" + ( o.timeout / 1000 ) + "second"
         } );
       },
@@ -289,7 +289,7 @@
     },
     getURLParam: function( content ) {
       /// <summary>返回url参数</summary>
-      /// <param name="content" type="String/Object/$/Array[element]">内容可以是Object键值对，也可以是数组形式的element，也可以是myQuery对象</param>
+      /// <param name="content" type="String/Object/$/Array[element]">内容可以是Object键值对，也可以是数组形式的element，也可以是aQuery对象</param>
       /// <returns type="String" />
       var list = [ ];
       if ( typed.isObj( content ) ) {

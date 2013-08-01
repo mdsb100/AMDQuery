@@ -1,7 +1,7 @@
 ﻿/// <reference path="../amdquery.js" />
 // quote from colo.js by Andrew Brehaut, Tim Baumann
 
-myQuery.define( "base/client", ["base/extend"], function( $, extend ) {
+aQuery.define( "base/client", ["base/extend"], function( $, extend ) {
   var reg = RegExp,
       client = {
         browser: {

@@ -1,5 +1,5 @@
 ﻿// quote from colo.js by Andrew Brehaut, Tim Baumann
-myQuery.define( "module/effect", [ "base/typed", "module/animate" ], function( $, typed, animate, undefined ) {
+aQuery.define( "module/effect", [ "base/typed", "module/animate" ], function( $, typed, animate, undefined ) {
   "use strict"; //启用严格模式
   var slideDownComplete = function(  ) {
     $.data( this, "slideOriginHeight", null );

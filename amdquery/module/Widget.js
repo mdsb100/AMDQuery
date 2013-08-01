@@ -1,4 +1,4 @@
-﻿myQuery.define( "module/Widget", [
+﻿aQuery.define( "module/Widget", [
   "base/typed",
   "base/extend",
   "base/array", 

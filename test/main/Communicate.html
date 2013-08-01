@@ -14,7 +14,7 @@
         //            c.alert(); d.alert();
         //        });
         //        require.config("html5/pp", "/package/../../amdquery/html5/test3.js"); //具名为了require不进列表 所以应该可以改掉
-        //        myQuery.require(["html5/pp", "html5/test1"], function (pp, test1) {
+        //        aQuery.require(["html5/pp", "html5/test1"], function (pp, test1) {
         //            //pp.alert();
         //            test1.alert();
         //        });
@@ -25,7 +25,7 @@
             , name: "test"
         }
 
-        myQuery.require(["main/communicate", "module/src"], function (communicate, src) {
+        aQuery.require(["main/communicate", "module/src"], function (communicate, src) {
             communicate.jsonp({
                 url: "http://192.168.26.89:8180/chart/hq/npdata.do"
                 , JSONP: true

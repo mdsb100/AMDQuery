@@ -1,4 +1,4 @@
-myQuery.define( "ui/navmenu", [
+aQuery.define( "ui/navmenu", [
     "base/typed", 
     "base/extend",
     "ui/navitem",

@@ -1,4 +1,4 @@
-myQuery.define( "app/View", [ "main/query", "main/object", "main/attr", "main/CustomEvent", "module/Widget", ], function( $, query, object, attr, CustomEvent, Widget, undefined ) {
+aQuery.define( "app/View", [ "main/query", "main/object", "main/attr", "main/CustomEvent", "module/Widget", ], function( $, query, object, attr, CustomEvent, Widget, undefined ) {
   "use strict"; //启用严格模式
   var View = object.extend( "View", {
     init: function( ViewElement ) {

@@ -1,4 +1,4 @@
-﻿myQuery.define( "module/Keyboard", [ "base/typed", "base/extend", "base/array", "main/event", "main/CustomEvent", "main/object", "hash/charcode" ], function( $, typed, utilExtend, array, event, CustomEvent, object, charcode ) {
+﻿aQuery.define( "module/Keyboard", [ "base/typed", "base/extend", "base/array", "main/event", "main/CustomEvent", "main/object", "hash/charcode" ], function( $, typed, utilExtend, array, event, CustomEvent, object, charcode ) {
   "use strict"; //启用严格模式
   var Keyboard = CustomEvent.extend( "Keyboard", {
     constructor: Keyboard,

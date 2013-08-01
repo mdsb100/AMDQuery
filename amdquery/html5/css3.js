@@ -1,4 +1,4 @@
-﻿myQuery.define( "html5/css3", [ "base/extend", "base/typed", "base/client", "base/array", "main/dom" ], function( $, utilExtend, typed, client, array, dom, undefined ) {
+﻿aQuery.define( "html5/css3", [ "base/extend", "base/typed", "base/client", "base/array", "main/dom" ], function( $, utilExtend, typed, client, array, dom, undefined ) {
   "use strict"; //启用严格模式
   var css3Head = ( function( ) {
     var head = "";

@@ -1,4 +1,4 @@
-﻿myQuery.define( "module/animate", [ "base/typed", "base/extend", "base/queue", "main/data", "module/FX", "module/Thread", "module/tween" ], function( $, typed, utilExtend, Queue, data, FX, Thread, tween, undefined ) {
+﻿aQuery.define( "module/animate", [ "base/typed", "base/extend", "base/queue", "main/data", "module/FX", "module/Thread", "module/tween" ], function( $, typed, utilExtend, Queue, data, FX, Thread, tween, undefined ) {
   "use strict"; //启用严格模式
   FX.tick = function( ) {
     if ( thread.getStatus( ) === "run" ) return;

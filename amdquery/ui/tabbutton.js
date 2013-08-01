@@ -1,4 +1,4 @@
-myQuery.define( "ui/tabbutton", [
+aQuery.define( "ui/tabbutton", [
     "module/Widget",
     "ui/button",
     "main/query",

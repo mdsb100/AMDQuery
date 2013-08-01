@@ -1,4 +1,4 @@
-﻿myQuery.define( "module/parse", [ "base/typed"], function( $, typed) {
+﻿aQuery.define( "module/parse", [ "base/typed"], function( $, typed) {
   "use strict"; //启用严格模式
   var
   createDocument = function( ) {
@@ -32,7 +32,7 @@
     },
     QueryString: function( content ) {
       /// <summary>序列化为查询字符串</summary>
-      /// <param name="content" type="String/Object/$/Array[element]">内容可以是Object键值对，也可以是数组形式的element，也可以是myQuery对象</param>
+      /// <param name="content" type="String/Object/$/Array[element]">内容可以是Object键值对，也可以是数组形式的element，也可以是aQuery对象</param>
       /// <returns type="String" />
       var list = [ ];
       if ( typed.isObj( content ) ) {

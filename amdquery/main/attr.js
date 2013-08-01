@@ -1,4 +1,4 @@
-﻿myQuery.define( "main/attr", [ "base/typed", "base/extend", "base/support" ], function( $, typed, utilExtend, support, undefined ) {
+﻿aQuery.define( "main/attr", [ "base/typed", "base/extend", "base/support" ], function( $, typed, utilExtend, support, undefined ) {
   "use strict"; //启用严格模式
   //暂不要那么多hooks 
   var fixSpecified = {

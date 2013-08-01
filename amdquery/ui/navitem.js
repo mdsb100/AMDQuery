@@ -1,4 +1,4 @@
-myQuery.define( "ui/navitem", [
+aQuery.define( "ui/navitem", [
     "base/typed", 
     "base/client",
     "module/Widget",

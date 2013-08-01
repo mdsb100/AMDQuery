@@ -1,5 +1,5 @@
 ﻿// quote from colo.js by Andrew Brehaut, Tim Baumann
-myQuery.define( "module/color", [ "base/extend", "main/object", "hash/cssColors" ], function( $, utilExtend, object, cssColors, undefined ) {
+aQuery.define( "module/color", [ "base/extend", "main/object", "hash/cssColors" ], function( $, utilExtend, object, cssColors, undefined ) {
   "use strict"; //启用严格模式
 
   var css_integer = "(?:\\+|-)?\\d+",

@@ -1,4 +1,4 @@
-﻿myQuery.define( "module/tween.extend", [ "base/extend", "module/tween" ], function( $, utilExtend, tween, undefined ) {
+﻿aQuery.define( "module/tween.extend", [ "base/extend", "module/tween" ], function( $, utilExtend, tween, undefined ) {
   "use strict"; //启用严格模式
   var math = Math;
   utilExtend.easyExtend( tween, {

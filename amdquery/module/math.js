@@ -1,4 +1,4 @@
-﻿myQuery.define( 'module/math', ["base/extend"], function( $, utilExtend, undefined ) {
+﻿aQuery.define( 'module/math', ["base/extend"], function( $, utilExtend, undefined ) {
   "use strict"; //启用严格模式
   var M = Math,
   pi = M.PI,

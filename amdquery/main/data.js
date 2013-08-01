@@ -1,4 +1,4 @@
-﻿myQuery.define( "main/data", ["base/extend", "base/typed"], function( $, utilExtend, typed, undefined ) {
+﻿aQuery.define( "main/data", ["base/extend", "base/typed"], function( $, utilExtend, typed, undefined ) {
   "use strict"; //启用严格模式
   var
   expando = "AMDQuery" + $.now( ),

@@ -1,4 +1,4 @@
-myQuery.define( "base/extend", [ "base/typed" ], function( $, typed ) {
+aQuery.define( "base/extend", [ "base/typed" ], function( $, typed ) {
   "use strict"; //启用严格模式
   var extend = {
     easyExtend: function( obj1, obj2 ) {

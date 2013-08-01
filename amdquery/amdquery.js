@@ -1,5 +1,5 @@
 /*!
- * myQuery JavaScript Library 1.0.0
+ * AMDQuery JavaScript Library 1.0.0
  * Copyright 2012, Cao Jun
  */
 
@@ -202,8 +202,8 @@
     }
   };
 
-  if ( typeof myQueryConfig != "undefined" ) {
-    _config = myQueryConfig;
+  if ( typeof aQueryConfig != "undefined" ) {
+    _config = aQueryConfig;
   } else {
     var temp = util.getJScriptConfig( [ "amdquery", "amd", "ui", "module", "app" ] );
     util.extend( _config.amdquery, temp.amdquery );
@@ -214,7 +214,7 @@
   }
 
   //$("<div></div>") 需要自己先parseXML 这样就不用依赖 parseXML
-  var myQuery = function( a, b, c ) {
+  var aQuery = function( a, b, c ) {
     /// <summary>创造一个新$对象
     /// <para>例:$(function(){将会在window.onload时执行})</para>
     /// <para>例:$("div")</para>
@@ -256,7 +256,7 @@
       $.ready( a );
     } else return new $( a, b, c );
   },
-    $ = myQuery;
+    $ = aQuery;
 
   util.extend( $, {
     cabinet: {},
@@ -606,7 +606,7 @@
       this.context = null;
       this.selector = "";
       if ( !eles.length ) {
-        //util.console.warn({ fn: "myQuery.init", msg: "has not query any element" });
+        //util.console.warn({ fn: "aQuery.init", msg: "has not query any element" });
       }
       if ( this.eles ) this.each( function( ele, index ) {
         delete this[ index ];
@@ -1420,9 +1420,9 @@
 
     util.extend( $, {
       define: function( id, dependencies, factory ) {
-        /// <summary>myQuery的define对象定义
+        /// <summary>aQuery的define对象定义
         /// <para>遵循AMD规范重载</para>
-        /// <para>只是myQuery.define默认会载入myQuery对象</para>
+        /// <para>只是aQuery.define默认会载入aQuery对象</para>
         /// </summary>
         /// <param name="id" type="String">对象名</param>
         /// <param name="dependencies" type="Array">依赖列表</param>
@@ -1444,7 +1444,7 @@
         if ( typeof fn == "function" ) {
           arg[ arg.length - 1 ] = function( ) {
             var arg = util.argToArray( arguments, 0 );
-            arg.splice( 0, 0, myQuery );
+            arg.splice( 0, 0, aQuery );
             if ( _config.amd.debug ) {
               return fn.apply( null, arg );
             } else {
@@ -1459,7 +1459,7 @@
         return this;
       },
       require: function( dependencies, success, fail ) {
-        /// <summary>myQuery的require对象定义
+        /// <summary>aQuery的require对象定义
         /// <para>遵循AMD规范重载</para>
         /// <para>会自动调用ready确定window和指定package准备完毕</para>
         /// </summary>
@@ -1481,12 +1481,12 @@
     } );
   } )( );
 
-  myQuery.define( "base/queue", function( $ ) {
+  aQuery.define( "base/queue", function( $ ) {
     $.Queue = Queue;
     return Queue
   }, "1.0.0" );
 
-  myQuery.define( "base/promise", function( $ ) {
+  aQuery.define( "base/promise", function( $ ) {
     "use strict"; //启用严格模式
     var checkArg = function( todo, fail, progress, name ) {
       var arg = util.argToArray( arguments ),
@@ -1813,7 +1813,7 @@
     return Promise;
   }, "1.0.0" );
 
-  myQuery.define( "base/ready", [ "base/promise" ], function( $, Promise ) {
+  aQuery.define( "base/ready", [ "base/promise" ], function( $, Promise ) {
     "use strict"; //启用严格模式
     var ready = function( fn ) {
       setTimeout( function( ) {
@@ -1909,7 +1909,7 @@
     return $.ready = ready;
   }, "1.0.0" );
 
-  window.myQuery = $;
+  window.aQuery = $;
 
   if ( !window[ _config.amdquery.define ] ) {
     window[ _config.amdquery.define ] = $;

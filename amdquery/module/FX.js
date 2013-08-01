@@ -1,4 +1,4 @@
-﻿myQuery.define( "module/FX", [ "base/typed", "base/array", "main/dom", "main/object" ], function( $, typed, array, dom, object, undefined ) {
+﻿aQuery.define( "module/FX", [ "base/typed", "base/array", "main/dom", "main/object" ], function( $, typed, array, dom, object, undefined ) {
   "use strict"; //启用严格模式
   var rfxnum = /^([+-]=)?([\d+-.]+)(.*)$/;
 

@@ -1,4 +1,4 @@
-myQuery.define( "app/Controller", [ "base/typed", "main/object", "main/CustomEvent", "app/View", "app/Model" ], function( $, typed, object, CustomEvent, View, Model, undefined ) {
+aQuery.define( "app/Controller", [ "base/typed", "main/object", "main/CustomEvent", "app/View", "app/Model" ], function( $, typed, object, CustomEvent, View, Model, undefined ) {
   "use strict"; //启用严格模式
   var Controller = object.extend( "Controller", {
     init: function( view, models ) {

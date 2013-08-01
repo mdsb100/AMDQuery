@@ -1,4 +1,4 @@
-myQuery.define( "base/typed", function( $ ) {
+aQuery.define( "base/typed", function( $ ) {
   "use strict"; //启用严格模式
   var
   class2type = {},

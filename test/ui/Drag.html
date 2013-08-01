@@ -6,11 +6,11 @@
     <link href="../../css/reset.css" rel="stylesheet" type="text/css" />
     <script src="../../amdquery/amdquery.js" type="text/javascript" ui="initWidget:1"></script>
     <script type="text/javascript">
-        myQuery.cabinet.start = function(){
+        aQuery.cabinet.start = function(){
             $.showMsg("3");
         }
 
-        myQuery.cabinet.pause = function(){
+        aQuery.cabinet.pause = function(){
             $.showMsg("4");
         }
         $.require(["ui/draggable", "main/query"], function (draggable, query) {
@@ -44,7 +44,7 @@
         position: relative" id="container">
         <div>
             <div style="position: inherit">
-                <div id="drag" amdquery-widget="ui.draggable" ui-draggable-pause="myQuery.cabinet.pause" ui-draggable="axis:x;keepinner:true;container:#container;isTransform3d:true" style="width: 100px; height: 100px; background-color: Red;">
+                <div id="drag" amdquery-widget="ui.draggable" ui-draggable-pause="aQuery.cabinet.pause" ui-draggable="axis:x;keepinner:true;container:#container;isTransform3d:true" style="width: 100px; height: 100px; background-color: Red;">
                     拖动我
                 </div>
             </div>

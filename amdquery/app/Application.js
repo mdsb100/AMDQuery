@@ -1,4 +1,4 @@
-myQuery.define( "app/Application", [ "base/promise", "base/typed", "main/attr", "main/CustomEvent", "main/query", "main/object", "app/Model", "app/View", "app/Controller", "ecma5/array.compati" ], function( $, Promise, typed, attr, CustomEvent, query, object, BaseModel, BaseView, BaseController, Array, undefined ) {
+aQuery.define( "app/Application", [ "base/promise", "base/typed", "main/attr", "main/CustomEvent", "main/query", "main/object", "app/Model", "app/View", "app/Controller", "ecma5/array.compati" ], function( $, Promise, typed, attr, CustomEvent, query, object, BaseModel, BaseView, BaseController, Array, undefined ) {
   "use strict"; //启用严格模式
   var defaultViewSrc = "app/View";
 

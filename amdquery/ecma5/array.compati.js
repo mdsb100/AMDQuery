@@ -1,4 +1,4 @@
-﻿myQuery.define( "ecma5/array.compati", ["base/array"], function( $, array ) {
+﻿aQuery.define( "ecma5/array.compati", ["base/array"], function( $, array ) {
     "use strict"; //启用严格模式
     var name, obj = {
         every: function( fun, context ) {

@@ -1,5 +1,5 @@
 ﻿/*deprecated*/
-myQuery.define( "ui/turnBook", [ "base/typed", "main/class", "html5/css3", "ui/swappable", "module/Widget" ], function( $, typed, cls, css3, swappable, Widget, undefined ) {
+aQuery.define( "ui/turnBook", [ "base/typed", "main/class", "html5/css3", "ui/swappable", "module/Widget" ], function( $, typed, cls, css3, swappable, Widget, undefined ) {
   "use strict"; //启用严格模式
   var turnBook = Widget.extend( "ui.turnBook", {
     appendTo: function( index ) {

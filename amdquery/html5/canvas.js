@@ -1,4 +1,4 @@
-﻿myQuery.define( "html5/canvas", [ "base/extend", "module/color" ], function( $, utilExtend, color, undefined ) {
+﻿aQuery.define( "html5/canvas", [ "base/extend", "module/color" ], function( $, utilExtend, color, undefined ) {
   "use strict"; //启用严格模式
   var canvas = null;
   if ( typeof CanvasRenderingContext2D != "undefined" ) {

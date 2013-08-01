@@ -1,4 +1,4 @@
-myQuery.define( "base/array", [ "base/typed", "base/extend" ], function( $, typed, extend) {
+aQuery.define( "base/array", [ "base/typed", "base/extend" ], function( $, typed, extend) {
   "use strict"; //启用严格模式
   var
   indexOf = Array.prototype.indexOf || function( item, i ) {

@@ -1,4 +1,4 @@
-﻿myQuery.define( "module/tween", ["base/typed"], function( $, typed, undefined ) {
+﻿aQuery.define( "module/tween", ["base/typed"], function( $, typed, undefined ) {
   "use strict"; //启用严格模式
   var math = Math,
   // pi = math.PI,

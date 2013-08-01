@@ -1,4 +1,4 @@
-﻿myQuery.define( "module/src", [ "base/typed", "base/extend", "base/client" ], function( $, typed, utilExtend, client, undefined ) {
+﻿aQuery.define( "module/src", [ "base/typed", "base/extend", "base/client" ], function( $, typed, utilExtend, client, undefined ) {
   "use strict"; //启用严格模式
   var
   hasOwnProperty = Object.prototype.hasOwnProperty,
@@ -89,14 +89,14 @@
       srcSetting: {
         error: function( e ) {
           $.console.warn( {
-            fn: "myQuery.src",
+            fn: "aQuery.src",
             msg: ( this.src || "(empty)" ) + "of " + this.tagName + " getting error:" + e.toString( )
           } );
         },
         timeout: false,
         timeoutFun: function( o ) {
           $.console.warn( {
-            fn: "myQuery.src",
+            fn: "aQuery.src",
             msg: ( o.url || "(empty)" ) + "of " + this.tagName + "is timeout:" + ( o.timeout / 1000 ) + "second"
           } );
         },

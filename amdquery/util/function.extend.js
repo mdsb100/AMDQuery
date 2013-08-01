@@ -1,4 +1,4 @@
-myQuery.define( "util/function.extend", [ "base/extend" ], function( $, utilExtend ) {
+aQuery.define( "util/function.extend", [ "base/extend" ], function( $, utilExtend ) {
   "use strict"; //启用严格模式 
   utilExtend.easyExtend( $.util, {
     compose: function( ) {

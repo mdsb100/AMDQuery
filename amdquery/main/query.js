@@ -1,4 +1,4 @@
-﻿myQuery.define( "main/query", [ "lib/sizzle", "base/extend", "base/typed", "base/array" ], function( $, Sizzle, utilExtend, typed, array, undefined ) {
+﻿aQuery.define( "main/query", [ "lib/sizzle", "base/extend", "base/typed", "base/array" ], function( $, Sizzle, utilExtend, typed, array, undefined ) {
   "use strict"; //启用严格模式
 
   $.module[ "lib/sizzle" ] = "Sizzle1.10.3";

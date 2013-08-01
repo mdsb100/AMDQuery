@@ -1,4 +1,4 @@
-﻿myQuery.define( "html5/css3.transition.animate", [ "base/typed", "base/extend", "base/client", "main/event", "html5/css3", "module/FX", "html5/animate.transform", "hash/cubicBezier.tween" ], function( $, typed, utilExtend, client, event, css3, FX, transform, cubicBezierTween, undefined ) {
+﻿aQuery.define( "html5/css3.transition.animate", [ "base/typed", "base/extend", "base/client", "main/event", "html5/css3", "module/FX", "html5/animate.transform", "hash/cubicBezier.tween" ], function( $, typed, utilExtend, client, event, css3, FX, transform, cubicBezierTween, undefined ) {
   "use strict"; //启用严格模式
   //无法识别em这种
   if ( $.support.transition ) {

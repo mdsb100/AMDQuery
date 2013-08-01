@@ -1,4 +1,4 @@
-﻿myQuery.define( "module/utilEval", [ "base/typed", "base/support" ], function( $, typed, support ) {
+﻿aQuery.define( "module/utilEval", [ "base/typed", "base/support" ], function( $, typed, support ) {
   return {
     evalBasicDataType: function( str ) {
       /// <summary>如果是基本数据类型就eval</summary>

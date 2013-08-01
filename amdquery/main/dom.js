@@ -1,4 +1,4 @@
-﻿myQuery.define( "main/dom", [ "base/typed", "base/extend", "base/support", "base/client", "lib/sizzle", "main/data", "main/event" ], function( $, typed, utilExtend, support, client, sizzle, data, event, undefined ) {
+﻿aQuery.define( "main/dom", [ "base/typed", "base/extend", "base/support", "base/client", "lib/sizzle", "main/data", "main/event" ], function( $, typed, utilExtend, support, client, sizzle, data, event, undefined ) {
   "use strict"; //启用严格模式
   var rnumnonpx = /^-?(?:\d*\.)?\d+(?!px)[^\d\s]+$/i,
   rmargin = /^margin/,

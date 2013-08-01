@@ -1,4 +1,4 @@
-﻿myQuery.define( "base/support", ["base/extend"], function( $, utilExtend ) {
+﻿aQuery.define( "base/support", ["base/extend"], function( $, utilExtend ) {
   //consult from jquery-1.9.1
   "use strict"; //启用严格模式
 

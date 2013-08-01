@@ -1,4 +1,4 @@
-﻿myQuery.define( "main/event", [ "base/typed", "base/extend", "base/client", "base/array", "main/CustomEvent", "main/data" ], function( $, typed, utilExtend, client, array, CustomEvent, data, undefined ) {
+﻿aQuery.define( "main/event", [ "base/typed", "base/extend", "base/client", "base/array", "main/CustomEvent", "main/data" ], function( $, typed, utilExtend, client, array, CustomEvent, data, undefined ) {
   "use strict"; //启用严格模式
   var mouse = "contextmenu click dblclick mousedown mouseup mousemove mouseover mouseout mouseenter mouseleave mousewheel DOMMouseScroll".split( " " ),
     /*DOMMouseScroll firefox*/
@@ -71,7 +71,7 @@
     },
     event = {
       addHandler: function( ele, type, fun ) {
-        /// <summary>给myQuery或元素添加事件</summary>
+        /// <summary>给aQuery或元素添加事件</summary>
         /// <para>$.addHandler(ele,"click",function(){})</para>
         /// <para>$.addHandler("ajaxStart",function(){})</para>
         /// <param name="ele" type="Element/String">元素或类型</param>
@@ -129,7 +129,7 @@
       bus: ( new CustomEvent( ) ),
 
       clearHandlers: function( ele, type ) {
-        /// <summary>移除dom元素的所有事件或所有myQuery提供的事件，如果类型存在则删除这种类型</summary>
+        /// <summary>移除dom元素的所有事件或所有aQuery提供的事件，如果类型存在则删除这种类型</summary>
         /// <param name="ele" type="Element/undefined">元素</param>
         /// <param name="type" type="String/undefinded">事件类型</param>
         /// <returns type="self" />
@@ -190,7 +190,7 @@
       },
 
       hasHandler: function( ele, type, fun ) {
-        /// <summary>查找myQuery或元素事件</summary>
+        /// <summary>查找aQuery或元素事件</summary>
         /// <param name="ele" type="Element/String">元素或类型</param>
         /// <param name="type" type="String/Function">方法或类型</param>
         /// <param name="fun" type="Function/undefined">方法</param>
@@ -484,7 +484,7 @@
         },
         domEventList: _domEventList
 
-        //myQuery的事件
+        //aQuery的事件
       },
       error: function( isMsgDiv ) {
         /// <summary>抛出异常</summary>
@@ -508,7 +508,7 @@
       },
 
       removeHandler: function( ele, type, fun ) {
-        /// <summary>给myQuery或元素添加事件</summary>
+        /// <summary>给aQuery或元素添加事件</summary>
         /// <para>$.removeHandler(ele,"click",fun)</para>
         /// <para>$.removeHandler("ajaxStart",fun)</para>
         /// <param name="ele" type="Element/String">元素或类型</param>

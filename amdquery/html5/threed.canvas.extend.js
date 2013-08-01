@@ -1,4 +1,4 @@
-﻿myQuery.define( "html5/threed.canvas.extend", [ "base/extend", "html5/canvas", "module/threed" ], function( $, utilExtend, canvas, threed, undefined ) {
+﻿aQuery.define( "html5/threed.canvas.extend", [ "base/extend", "html5/canvas", "module/threed" ], function( $, utilExtend, canvas, threed, undefined ) {
   "use strict"; //启用严格模式
   var Polygon = threed.Polygon;
 

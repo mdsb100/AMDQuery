@@ -1,4 +1,4 @@
-﻿myQuery.define( "main/CustomEvent", [ "main/object" ], function( $, object, undefined ) {
+﻿aQuery.define( "main/CustomEvent", [ "main/object" ], function( $, object, undefined ) {
   "use strict"; //启用严格模式
   var CustomEvent = object.extend( "CustomEvent", {
     constructor: CustomEvent,

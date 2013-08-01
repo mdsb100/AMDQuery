@@ -1,4 +1,4 @@
-﻿myQuery.define( "ui/accordion", [
+﻿aQuery.define( "ui/accordion", [
   "base/typed", 
   "base/extend",
   "main/object",

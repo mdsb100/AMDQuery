@@ -1,4 +1,4 @@
-myQuery.define( "ui/splitter", [
+aQuery.define( "ui/splitter", [
     "base/typed", 
     "base/support",
     "module/Widget",

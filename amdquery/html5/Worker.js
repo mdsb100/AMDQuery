@@ -1,4 +1,4 @@
-﻿myQuery.define( "html5/Worker", function( $, undefined ) {
+﻿aQuery.define( "html5/Worker", function( $, undefined ) {
   "use strict"; //启用严格模式
 
   function MyWorker( path ) {

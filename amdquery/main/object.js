@@ -1,4 +1,4 @@
-﻿myQuery.define( "main/object", [ "base/typed", "base/array", "base/extend" ], function( $, typed, array, utilExtend ) {
+﻿aQuery.define( "main/object", [ "base/typed", "base/array", "base/extend" ], function( $, typed, array, utilExtend ) {
   //依赖extend
   "use strict"; //启用严格模式
 

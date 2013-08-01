@@ -1,4 +1,4 @@
-myQuery.define( "app/Model", [ "main/attr", "main/object", "main/CustomEvent" ], function( $, attr, object, CustomEvent, undefined ) {
+aQuery.define( "app/Model", [ "main/attr", "main/object", "main/CustomEvent" ], function( $, attr, object, CustomEvent, undefined ) {
   "use strict"; //启用严格模式
   //有instance 则需要去查找
   var Model = object.extend( "Model", {
