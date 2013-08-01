@@ -183,7 +183,7 @@
     },
     amd: {
       //异步
-      out: false,
+      async: true,
       //检查循环依赖
       detectCR: false,
       "debug": true,
@@ -871,7 +871,7 @@
       loadJs: function( url, id, error ) {
         var module = ClassModule.getModule( id );
         //该模块已经载入过，不再继续加载，主要用于require与define在同一文件
-        if ( ClassModule.resource[ url ] || ( module && ( module.getStatus( ) > 2 ) ) ) { //_module && (_module._ready || !_module._fromRequire
+        if ( ClassModule.resource[ url ] || ( module && ( module.getStatus( ) > 2 ) ) ) {
           return this;
         }
 
@@ -1117,13 +1117,13 @@
           status = this.getStatus( ),
           url;
 
-        if ( status == 2 ) {
-          this.loadDependencies( );
-          return this;
-        }
-        if ( status > 1 ) {
-          return this;
-        }
+        // if ( status == 2 ) {
+        //   this.loadDependencies( );
+        //   return this;
+        // }
+        // if ( status > 1 ) {
+        //   return this;
+        // }
 
         ( url = ClassModule.getPath( id, ".js" ) ) || util.error( {
           fn: "require",
@@ -1138,10 +1138,8 @@
 
         if ( ClassModule.cache[ id ] ) {
           ClassModule.cache[ id ]( );
-        } else {
-          _config.amd.out == true ? window.setTimeout( function( ) {
-            ClassModule.loadJs( url, id, fail );
-          }, 0 ) : ClassModule.loadJs( url, id, fail );
+        } else { 
+          ClassModule.loadJs( url, id, fail );
         }
         return this;
       },
@@ -1152,15 +1150,12 @@
         if ( !( dep && dep.constructor == Array && dep.length ) ) {
           return this;
         }
-        for ( len = dep.length; i < len; i++ ) { //是否要用function 而不是for
+        for ( len = dep.length; i < len; i++ ) {
           item = dep[ i ];
           module = ClassModule.getModule( item );
           if ( !module ) {
             require( item );
           }
-          //                        else if (module.getStatus() == 2) {//?
-          //                            module.loadDependencies();
-          //                        }
         }
         return this;
       },
@@ -1168,21 +1163,19 @@
         this.addHandler( success );
         switch ( this.status ) {
           case 0:
-            this.check( );
+            // this.check( );
             var namedModule = ClassModule.namedModules[ this.id ],
               self = this;
-            if ( this.status == 0 ) {
-              if ( namedModule ) {
-                this.load( );
-              } else {
-                this.setStatus( 1 );
-                requireQueue.queue( function( ) {
-                  if ( !ClassModule.anonymousID ) {
-                    ClassModule.anonymousID = self.id;
-                  }
-                  self.load( );
-                } );
-              }
+            if ( namedModule ) {
+              this.load( );
+            } else {
+              this.setStatus( 1 );
+              requireQueue.queue( function( ) {
+                if ( !ClassModule.anonymousID ) {
+                  ClassModule.anonymousID = self.id;
+                }
+                self.load( );
+              } );
             }
             break;
           case 4:
@@ -1267,7 +1260,8 @@
         ret = new ClassModule( id, dependencies, factory, 3, container );
       }
 
-      ret.check( ); //最后设为2？
+      ret.check( );
+
       //if (!/_temp_/.test(id)) (container = ClassModule.getContainer(id)); //如果不是require定义的临时
       //执行请求队列
       if ( !ClassModule.namedModules[ id ] && deep == 2 ) {
