@@ -4,9 +4,11 @@
     <title>Test</title>
     <meta charset="utf-8" />
     <link href="../css/reset.css" rel="stylesheet" type="text/css" />
-    <script src="../amdquery/amdquery.js" type="text/javascript" module="transitionToAnimation:0" ui="initWidget:1"  amd="detectCR:1;console:1" ></script>
+    <script src="../amdquery/amdquery.js" type="text/javascript" module="transitionToAnimation:0" ui="initWidget:1"  amd="detectCR:1;console:1;sync:1" ></script>
     <script type="text/javascript">
         $.require(["base/client", "main/query", "main/attr", "ui/navmenu", "module/Widget", "module/src"], function (client, query, attr, Navmenu, Widget, src) {
+            var Worker = require("html5/Worker");
+            
             var $nav = $("#nav"), $content = $("#content");
 
             $nav.on("navmenu.select", function(e){
@@ -33,6 +35,10 @@
             }
 
         });
+        $.ready(function(){
+          var Storage = $.require("html5/Storage").first;
+        });
+        
        
     </script>
 </head>

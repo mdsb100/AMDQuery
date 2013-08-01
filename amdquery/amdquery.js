@@ -182,12 +182,12 @@
       packageNames: ""
     },
     amd: {
-      //异步
-      async: true,
+      //同步
+      sync: false,
       //检查循环依赖
       detectCR: false,
       "debug": true,
-      timeout: 10000,
+      timeout: 5000,
       console: false
     },
     ui: {
@@ -549,9 +549,8 @@
         $.each( eles, function( ele ) {
           this.eles.push( ele );
         }, this );
-      }
-      else{
-         this.eles.push( ele );
+      } else {
+        this.eles.push( ele );
       }
       return this;
     },
@@ -633,8 +632,8 @@
       /// <returns type="Number" />
       var len;
 
-      for(len = this.eles.length - 1; len >= 0; len--){
-        if(ele === this.eles[len]){
+      for ( len = this.eles.length - 1; len >= 0; len-- ) {
+        if ( ele === this.eles[ len ] ) {
           break;
         }
       }
@@ -733,6 +732,7 @@
       }
       this.handlers = {};
       this.module = null;
+      this.first = null;
       this.id = ClassModule.variable( module );
       this.init( dependencies, factory, status, container, fail );
       ClassModule.setModule( this.id, this );
@@ -1081,6 +1081,7 @@
           F = [ F ];
         };
         this.module = F;
+        this.first = F[ 0 ];
         _config.amd.console && $.console.log( "module " + id + " ready" );
         //_getMoudule(id, F);
         //当传入的模块是已准备好的，开启转正机会
@@ -1138,7 +1139,7 @@
 
         if ( ClassModule.cache[ id ] ) {
           ClassModule.cache[ id ]( );
-        } else { 
+        } else {
           ClassModule.loadJs( url, id, fail );
         }
         return this;
@@ -1214,7 +1215,7 @@
             fn: "window.define",
             msg: id + ":define something that cannot be null"
           }, "TypeError" );
-          break
+          break;
         case 1:
           body = id;
           id = ClassModule.anonymousID; //_resource[container]; 
@@ -1260,12 +1261,17 @@
         ret = new ClassModule( id, dependencies, factory, 3, container );
       }
 
+      var status = !ClassModule.namedModules[ id ] && deep == 2;
+
+      if ( status ) {
+        ClassModule.anonymousID = null;
+      }
+
       ret.check( );
 
       //if (!/_temp_/.test(id)) (container = ClassModule.getContainer(id)); //如果不是require定义的临时
       //执行请求队列
-      if ( !ClassModule.namedModules[ id ] && deep == 2 ) {
-        ClassModule.anonymousID = null;
+      if ( status ) {
         requireQueue.dequeue( );
       }
 
@@ -1289,7 +1295,7 @@
         return;
       }
       //如果请求一组模块则转换为对一个临时模块的定义与请求处理
-      var ret
+      var ret;
       if ( module.constructor == Array ) {
         if ( !module.length ) {
           return;
@@ -1460,7 +1466,7 @@
         /// <param name="dependencies" type="Array">依赖列表</param>
         /// <param name="success" type="Function">回调函数</param>
         /// <param name="fail" type="Function">失败的函数</param>
-        /// <returns type="self" />
+        /// <returns type="ClassModule" />
         var fn = success,
           success = function( ) {
             var arg = arguments;
@@ -1469,10 +1475,10 @@
             } );
           }
 
-        window.require && window.require( dependencies, success, fail );
-        return this;
+        return window.require && window.require( dependencies, success, fail );
       }
     } );
+    $.ClassModule = ClassModule;
   } )( );
 
   aQuery.define( "base/queue", function( $ ) {
@@ -1892,6 +1898,54 @@
         var self = this;
         require( "module/initWidget", function( initWidget ) {
           initWidget.renderWidget( self, document.body );
+        } );
+        return this;
+      }
+    } ).then( function( ) {
+      if ( _config.amd.sync ) {
+        var self = this;
+        require( [ "main/communicate", "module/utilEval" ], function( communicate, utilEval ) {
+          $.ClassModule.loadJs = function( url, id, error ) {
+            var module = $.ClassModule.getModule( id );
+
+            if ( $.ClassModule.resource[ url ] || ( module && ( module.getStatus( ) > 2 ) ) ) {
+              return this;
+            }
+
+            $.ClassModule.resource[ url ] = id;
+
+            communicate.ajax( {
+              url: url,
+              async: false,
+              dataType: "text",
+              complete: function( js ) {
+                utilEval.functionEval( js );
+              },
+              timeout: _config.amd.timeout,
+              timeoutFun: error
+            } );
+
+            return this;
+          };
+
+          $.ClassModule.prototype.request = function( success ) {
+            this.addHandler( success );
+            switch ( this.status ) {
+              case 0:
+                if ( !$.ClassModule.anonymousID ) {
+                  $.ClassModule.anonymousID = this.id;
+                }
+                this.load( );
+                break;
+              case 4:
+                this.check( );
+                break;
+
+            }
+            return this;
+          };
+
+          self.resolve( );
         } );
         return this;
       }

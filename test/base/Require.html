@@ -5,7 +5,7 @@
     <link href="../../css/reset.css" rel="stylesheet" type="text/css" />
     <!-- <script src="http://192.168.1.102:8080/package/../../amdquery/amdquery.js" type="text/javascript" amdquery="define:$;amd:false"></script>-->
     <script src="../../amdquery/amdquery.js" type="text/javascript" amdquery="define:$;amd:0;"
-        amd="detectCR:1;console:1"></script>
+        amd="detectCR:1;console:1;sync:1"></script>
     <!--<script src="../../amdquery/oye.js" type="text/javascript"></script>-->
     <script type="text/javascript">
       define("forTest", function(){
@@ -32,6 +32,11 @@
             require("module/animate", function(){
               console.log("~~~~~~~~~module/animate")
             })
+            
+
+            var KeyBoard = require("module/Keyboard").first;
+            debugger
+            $.getEleById("#a")
             //alert("variable is work");
         });
 
