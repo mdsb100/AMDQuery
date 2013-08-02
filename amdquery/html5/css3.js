@@ -74,7 +74,7 @@
       scale: /scale\([^\)]+\)/,
       scaleX: /scaleX\([^\)]+\)/,
       scaleY: /scaleY\([^\)]+\)/,
-      skew: /skew\([^\)]+\)/,
+      skew: /skew\([^\)]+\)/
     },
     transform3dNameMap = {
       translateX: 1,
@@ -801,8 +801,7 @@
         if ( typed.isStr( style ) ) {
           result = style;
         } else if ( typed.isObj( style ) ) {
-          style.name && ( result = [ $.util.unCamelCase( value.name, value.head ), style.duration || "1s", style.
-            function || "linear", style.delay || ""
+          style.name && ( result = [ $.util.unCamelCase( value.name, value.head ), style.duration || "1s", style["function"]  || "linear", style.delay || ""
           ].join( " " ) );
         } else if ( typed.isArr( style ) ) {
           var list = [ ];
@@ -810,8 +809,7 @@
             if ( typed.isStr( value ) ) {
               list.push( value );
             } else if ( typed.isObj( value ) ) {
-              value.name && list.push( [ $.util.unCamelCase( value.name, value.head ), value.duration || "1s", value.
-                function || "linear", value.delay || ""
+              value.name && list.push( [ $.util.unCamelCase( value.name, value.head ), value.duration || "1s", value["function"] || "linear", value.delay || ""
               ].join( " " ) );
             }
           } );

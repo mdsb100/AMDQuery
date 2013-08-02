@@ -75,8 +75,8 @@
       /// <param name="eles" type="Element/ElementCollection/arr">从元素或元素数组或元素集合中获取</param>
       /// <param name="real" type="Boolean/Null">是否获得真元素，默认为真</param>
       /// <returns type="Array" />
-      if ( typed.isEle( eles ) )
-        eles = [ eles ];
+      // if ( typed.isEle( eles ) )
+      //   eles = [ eles ];
       return $.getEleByTag( "*", eles );
     },
 

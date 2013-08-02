@@ -1903,7 +1903,7 @@
       }
     } ).then( function( ) {
       // if app, sync must be true
-      _config.amd.sync = _config.app.src;
+      _config.amd.sync = _config.amd.sync || !!_config.app.src;
       if ( _config.amd.sync ) {
         var self = this;
         require( [ "main/communicate", "module/utilEval" ], function( communicate, utilEval ) {
