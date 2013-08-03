@@ -71,7 +71,7 @@
     }
     return this;
   },
-  _instance = function( target ) {
+  _forinstance = function( target ) {
     var constructor = this,
       ret = target instanceof this;
 
@@ -160,7 +160,7 @@
       anonymous.inherit = _inheritTemplate;
       anonymous.extend = _extendTemplate;
       anonymous.joinPrototype = _joinPrototypeTemplate;
-      anonymous.instance = _instance;
+      anonymous.forinstance = _forinstance;
       anonymous.createGetterSetter = _createGetterSetter;
       anonymous.fn = anonymous.prototype;
 

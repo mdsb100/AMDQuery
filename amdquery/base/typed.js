@@ -224,7 +224,7 @@ aQuery.define( "base/typed", function( $ ) {
       /// <returns type="Boolean" />
       return a != null && a == a.window;
     },
-    is$: $.instance,
+    is$: $.forinstance,
     type: function( obj ) {
       if ( obj == null ) {
         return String( obj );

@@ -231,7 +231,7 @@
     /// <param name="b" type="String">标签名 可选</param>
     /// <param name="c" type="ele $">父元素 可选</param>
     /// <returns type="$" />
-    if ( $.instance( this ) ) {
+    if ( $.forinstance( this ) ) {
       if ( !a && !b ) return;
       if ( ( typeof a == "object" || a == undefined || a == null ) && typeof b == "string" ) {
         //if ($.css) {
@@ -366,7 +366,7 @@
       /// <param name="callback" type="Function">执行方法</param>
       /// <param name="context" type="Object">作用域</param>
       /// <returns type="self" />
-      //consult from jQuery-1.4.1 
+      //consult from jQuery-1.4.1
       if ( !obj ) return this;
       var i = 0,
         item, len = obj.length,
@@ -379,7 +379,7 @@
       return this;
     },
 
-    instance: function( obj ) {
+    forinstance: function( obj ) {
       /// <summary>是否为$对象</summary>
       /// <param name="a" type="any">任意对象</param>
       /// <returns type="Boolean" />
@@ -391,7 +391,7 @@
       /// <param name="first" type="Array">对象</param>
       /// <param name="second" type="Array">对象</param>
       /// <returns type="Array" />
-      //consult from jQuery-1.9.1 
+      //consult from jQuery-1.9.1
       var l = second.length,
         i = first.length,
         j = 0;
@@ -544,7 +544,7 @@
     addElement: function( ele ) {
       /// <summary>添加元素或元素组</summary>
       /// <param name="ele" type="Element/arr">内容为元素的数组或元素</param>
-      /// <returns type="self" />    
+      /// <returns type="self" />
       if ( eles.constructor == Array ) {
         $.each( eles, function( ele ) {
           this.eles.push( ele );
@@ -1218,7 +1218,7 @@
           break;
         case 1:
           body = id;
-          id = ClassModule.anonymousID; //_resource[container]; 
+          id = ClassModule.anonymousID; //_resource[container];
           dependencies = [ ];
           factory = ClassModule.funBody( body );
           break;
@@ -1392,7 +1392,7 @@
             } else if ( typeof a == "object" ) {
               a.reflect && require.reflect( a.reflect );
               a.named && a.named == true ? require.named( a.reflect ) : require.named( a.named );
-              //如果named=true其实就是映射a.reflect 
+              //如果named=true其实就是映射a.reflect
               a.amd && util.extend( _config.amd, a.amd );
               a.cache && require.cache( a.cache );
             }
@@ -1656,7 +1656,7 @@
           return this;
         };
 
-        if ( Promise.instance( this.result ) ) {
+        if ( Promise.forinstance( this.result ) ) {
           this.result.resolve( obj );
           return this;
         } else if ( this.fail ) {
@@ -1689,7 +1689,7 @@
           //所以状态改回todo
           this.state = "todo";
           this.result = new Promise( callback );
-        } else if ( Promise.instance( this.result ) ) {
+        } else if ( Promise.forinstance( this.result ) ) {
           this.state = "todo";
           this.result.then( callback );
         } else {
@@ -1727,7 +1727,7 @@
         }
         for ( i = 0; i < len; i++ ) {
           then = thens[ i ];
-          Promise.instance( then.result ) && then.result.resolve( obj );
+          Promise.forinstance( then.result ) && then.result.resolve( obj );
         }
         return this;
       },
@@ -1797,7 +1797,7 @@
         /// <returns type="Promise" />
         //                if (name) {
         //                    if (name == this.root().path) {
-        //                        return 
+        //                        return
         //                    }
         //                    this.root()._branch[name]
         //                } else {
@@ -1806,7 +1806,7 @@
       }
     };
 
-    Promise.instance = function( promise ) {
+    Promise.forinstance = function( promise ) {
       return promise instanceof Promise || ( promise ? promise.__promiseFlag === true : false );
     }
 
