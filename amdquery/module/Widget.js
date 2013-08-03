@@ -1,15 +1,46 @@
 ﻿aQuery.define( "module/Widget", [
   "base/typed",
   "base/extend",
-  "base/array", 
-  "main/data", 
-  "main/query", 
-  "main/event", 
-  "main/attr", 
-  "main/object", 
+  "base/array",
+  "main/data",
+  "main/query",
+  "main/event",
+  "main/attr",
+  "main/object",
   "module/utilEval"
 ], function( $, typed, utilExtend, array, data, query, event, attr, object, utilEval, undefined ) {
   "use strict"; //启用严格模式
+
+  function getWidgetsName( eles ) {
+    var widgetNames = [ ],
+      widgetMap = {};
+
+    eles.each( function( ele ) {
+      var attrNames = Widget.getAttrWidgets( ele ),
+        len = attrNames.length,
+        widgetName,
+        widgetPath,
+        temp,
+        i = 0;
+      for ( ; i < len; i++ ) {
+        widgetName = attrNames[ i ];
+        if ( widgetName ) {
+
+          widgetPath = widgetName.replace( ".", "/" );
+
+          if ( !widgetMap[ widgetName ] ) {
+            widgetNames.push( widgetPath );
+
+            widgetMap[ widgetName ] = true;
+          }
+        }
+      }
+
+    } );
+
+    return widgetNames;
+  }
+
 
   function Widget( obj, target ) {
     /// <summary>组件的默认基类</summary>
@@ -471,6 +502,70 @@
         tNameSpace = tName[ 0 ];
       tName = tName[ 1 ];
       return Widget[ tNameSpace ][ tName ];
+    },
+    findWidgets: function( parent ) {
+      return $( parent.parentNode || parent ).find( "*[amdquery-widget]" );
+    },
+    getAttrWidgets: function( ele ) {
+      var value = attr.getAttr( ele, "amdquery-widget" ),
+        attrNames = typed.isStr( value ) && value != "" ? value.split( /;|,/ ) : [ ],
+        widgetName = "",
+        i;
+      for ( i = attrNames.length - 1; i >= 0; i-- ) {
+        widgetName = attrNames[ i ];
+        if ( widgetName.indexOf( "." ) < 0 ) {
+          attrNames[ i ] = "ui." + widgetName;
+        }
+      }
+
+      return attrNames;
+    },
+    renderWidget: function( ele, funName ) {
+      var widgetNames = Widget.getAttrWidgets( ele ),
+        i, widgetName, key;
+
+      for ( i = widgetNames.length - 1; i >= 0; i-- ) {
+        widgetName = widgetNames[ i ];
+        widgetName = widgetName.split(".");
+        key = $.util.camelCase(widgetName[1] , widgetName[0]);
+        if ( $( ele )[ key ] ) {
+          $( ele )[ key ]( funName || "" );
+        }
+      }
+
+      return this;
+    },
+    initWidgets: function( parent, callback ) {
+      var eles = Widget.findWidgets( parent );
+      var widgetNames = getWidgetsName( eles );
+
+      if ( widgetNames.length ) {
+        require( widgetNames, function( ) {
+          for ( var i = 0, len = eles.length; i < len; i++ ) {
+            Widget.renderWidget( eles[ i ] );
+          }
+          callback && callback( );
+        } );
+      } else {
+        callback && callback( );
+      }
+      return this;
+    },
+    destoryWidgets: function( parent, callback ) {
+      var eles = Widget.findWidgets( parent ).reverse();
+      var widgetNames = getWidgetsName( eles );
+
+      if ( widgetNames.length ) {
+        require( widgetNames, function( ) {
+          for ( var i = 0, len = eles.length; i < len; i++ ) {
+            Widget.renderWidget( eles[ i ], "destory" );
+          }
+          callback && callback( );
+        } );
+      } else {
+        callback && callback( );
+      }
+      return this;
     }
   } );
 
