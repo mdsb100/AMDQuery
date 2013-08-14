@@ -743,6 +743,7 @@
     //0 init 1 require 2define 3ready
     util.extend( ClassModule, {
       anonymousID: null,
+      requireQueue: requireQueue,
       cache: {},
       container: {},
       dependenciesMap: {},
@@ -753,6 +754,10 @@
             msg: "the named " + id + " is not equal require"
           } );
         }
+      },
+      contains: function( id ) {
+        id = ClassModule.variable( id );
+        return !!ClassModule.modules[ id ];
       },
       detectCR: function( md, dp ) {
         /// <summary>检测模块是否存在循环引用,返回存在循环引用的模块名</summary>
@@ -1478,7 +1483,12 @@
         return window.require && window.require( dependencies, success, fail );
       }
     } );
-    $.ClassModule = ClassModule;
+
+    aQuery.define( "base/ClassModule", function( $ ) {
+      $.ClassModule = ClassModule;
+      return ClassModule
+    }, "1.0.0" );
+
   } )( );
 
   aQuery.define( "base/queue", function( $ ) {
@@ -1889,12 +1899,11 @@
         var self = this;
         require( _config.app.src, function( Application ) {
           $.application = new Application( self );
-          $.application.load( );
         } );
         return this;
       }
     } ).then( function( ) {
-      if ( _config.ui.initWidget ) {
+      if ( _config.ui.initWidget && !_config.app.src ) {
         var self = this;
         require( "module/initWidget", function( initWidget ) {
           initWidget.renderWidget( self, document.body );
@@ -1903,54 +1912,47 @@
       }
     } ).then( function( ) {
       // if app, sync must be true
-      _config.amd.sync = _config.amd.sync || !!_config.app.src;
-      if ( _config.amd.sync ) {
-        var self = this;
-        require( [ "main/communicate", "module/utilEval" ], function( communicate, utilEval ) {
-          $.ClassModule.loadJs = function( url, id, error ) {
-            var module = $.ClassModule.getModule( id );
+      // _config.amd.sync = _config.amd.sync || !!_config.app.src;
+      var self = this;
+      require( [ "base/ClassModule", "main/communicate", "module/utilEval" ], function( ClassModule, communicate, utilEval ) {
+        var syncLoadJs = function ( url, id, error ) {
+          var module = ClassModule.getModule( id );
 
-            if ( $.ClassModule.resource[ url ] || ( module && ( module.getStatus( ) > 2 ) ) ) {
-              return this;
-            }
-
-            $.ClassModule.resource[ url ] = id;
-
-            communicate.ajax( {
-              url: url,
-              async: false,
-              dataType: "text",
-              complete: function( js ) {
-                utilEval.functionEval( js );
-              },
-              timeout: _config.amd.timeout,
-              timeoutFun: error
-            } );
-
+          if ( ClassModule.resource[ url ] || ( module && ( module.getStatus( ) > 2 ) ) ) {
             return this;
-          };
+          }
 
-          $.ClassModule.prototype.request = function( success ) {
-            this.addHandler( success );
-            switch ( this.status ) {
-              case 0:
-                if ( !$.ClassModule.anonymousID ) {
-                  $.ClassModule.anonymousID = this.id;
-                }
-                this.load( );
-                break;
-              case 4:
-                this.check( );
-                break;
+          ClassModule.resource[ url ] = id;
 
-            }
-            return this;
-          };
+          communicate.ajax( {
+            url: url,
+            async: false,
+            dataType: "text",
+            complete: function( js ) {
+              utilEval.functionEval( js );
+            },
+            timeout: _config.amd.timeout,
+            timeoutFun: error
+          } );
 
-          self.resolve( );
-        } );
-        return this;
-      }
+          return this;
+        };
+
+        require.sync = function(){
+          ClassModule.loadJs = syncLoadJs;
+        }
+
+        require.async = function(){
+          ClassModule.loadJs = asyncLoadJs;
+        }
+
+        if ( _config.amd.sync ) {
+          require.sync();
+        }
+
+        self.resolve( );
+      } );
+      return this;
     } ).then( function( ) {
       document.documentElement.style.left = "0px";
       document.documentElement.style.position = "";
