@@ -14,8 +14,7 @@ aQuery.define( "base/typed", function( $ ) {
       /// <summary>是否为DOM元素的集合</summary>
       /// <param name="a" type="any">任意对象</param>
       /// <returns type="Boolean" />
-      if ( typed.isType( a, "[object NodeList]" ) || typed.isType( a, "[object HTMLCollection]" ) || ( $.client.browser.ie678 && typed.isNum( a.length ) && !typed.isArr( a.length ) && ( typed.isObj( a.item ) || typed.isStr( a.item ) ) ) ) return true;
-      return false;
+      return typed.isType( a, "[object NodeList]" ) || typed.isType( a, "[object HTMLCollection]" ) || ( $.client.browser.ie678 && typed.isNum( a.length ) && !typed.isArr( a.length ) && ( typed.isObj( a.item ) || typed.isStr( a.item ) ) );
     },
     isArguments: function( a ) {
       return !!a && "callee" in arguments;
