@@ -2,10 +2,23 @@ aQuery.define( "app/View", [ "base/ClassModule", "main/communicate", "main/query
   //View need require depend on Widget
   //get Style
   "use strict"; //启用严格模式
+
+  function getHtmlSrc( id ) {
+    var index = id.lastIndexOf( "view/" );
+
+    if ( index > -1 ) {
+      return id.substring( 0, index ) + id.substring( index, id.length ).replace( /view\//, "xml/" );
+    } else {
+      throw "View need htmlSrc or path need contains view/'";
+    }
+
+  }
+
   var View = object.extend( "View", {
     init: function( ) {
       this._super( );
       this.topElement = View.getHTML( );
+      this.htmlSrc = this.htmlSrc || getHtmlSrc( this.constructor._AMD.id );
       attr.setAttr( this.topElement, "html-src", this.htmlSrc );
       this._initDomFlag = false;
       this.id = attr.getAttr( this.topElement, "id" ) || null;
@@ -48,10 +61,7 @@ aQuery.define( "app/View", [ "base/ClassModule", "main/communicate", "main/query
       return this._getModelsElement( ).map( function( ele ) {
         var src = attr.getAttr( ele, "src" );
         if ( !src ) {
-          $.console.error( {
-            fn: "require model",
-            msg: "src must exist"
-          }, true );
+          throw "require model:src must exist";
         }
         return src;
       } );
