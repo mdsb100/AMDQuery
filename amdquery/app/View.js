@@ -1,21 +1,48 @@
 aQuery.define( "app/View", [ "base/ClassModule", "main/communicate", "main/query", "main/object", "main/attr", "main/CustomEvent", "module/Widget", ], function( $, ClassModule, communicate, query, object, attr, CustomEvent, Widget, undefined ) {
+  //View need require depend on Widget
   "use strict"; //启用严格模式
   var View = object.extend( "View", {
     init: function( ) {
       this._super( );
       this.topElement = View.getHTML( );
-      // this.src = viewSrc;
+      this._initDomFlag = false;
       this.id = attr.getAttr( this.topElement, "id" ) || null;
       //不能有相同的两个src
 
       View.addView( this );
+    },
+    appendTo: function( parent ) {
+      parent.appendChild( this.topElement );
+      initDom( );
+      return this;
+    },
+    replaceTo: function( parent, element ) {
+      parent.replaceChild( this.topElement, element );
+      initDom( );
+      return this;
+    },
+    removeTo: function( ) {
+      if ( this.topElement.parentNode ) {
+        this.topElement.parentNode.removeChild( this.topElement );
+      }
+      return this;
+    },
+    initDom: function( ) {
+      var self = this;
+      if ( !this._initDomFlag && this.topElement && this.topElement.parentNode ) {
+        Widget.initWidgets( this.topElement.parentNode, function( ) {
+          self._initDomFlag = true
+          self.onDomReady( );
+          self.trigger( "domReady" );
+        } );
+      }
     },
     _getModelsElement: function( ) {
       //可能会错 找直接子元素
       //Collection
       return query.find( ">Model", this.topElement );
     },
-    _getModelsSrc: function( ) {
+    getModelsSrc: function( ) {
       return this._getModelsElement( ).map( function( ele ) {
         var src = attr.getAttr( ele, "src" );
         if ( !src ) {
@@ -29,6 +56,12 @@ aQuery.define( "app/View", [ "base/ClassModule", "main/communicate", "main/query
     },
     destory: function( ) {
       View.removeView( this );
+      if ( this._initDomFlag && this.topElement && this.topElement.parentNode ) {
+        var self = this;
+        Widget.destoryWidgets( this.topElement.parentNode, function( ) {
+          self.removeTo( );
+        } );
+      }
     },
     htmlSrc: "",
     _timeout: 5000,
@@ -38,23 +71,24 @@ aQuery.define( "app/View", [ "base/ClassModule", "main/communicate", "main/query
     getHtml: function( ) {
       if ( !ClassModule.contains( this.htmlSrc ) ) {
         if ( this.htmlSrc === "" ) {
-          define( this.htmlSrc, function( ) {
-            return document.createElement( "div" );
-          } );
+          define( this.htmlSrc, document.createElement( "div" ) );
         } else {
-          var self = this,
-            element;
+          var self = this;
           communicate.ajax( {
             url: this.htmlSrc,
             async: false,
             dataType: "xml",
             complete: function( xml ) {
-              define( this.htmlSrc, xml );
+              define( self.htmlSrc, xml );
             },
             timeout: View.timeout,
             timeoutFun: View.error
           } );
         }
+      },
+
+      onDomReady: function( ) {
+
       }
       return require( this.htmlSrc ).first.cloneNode( );
     }
