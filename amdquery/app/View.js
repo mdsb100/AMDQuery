@@ -1,10 +1,12 @@
-aQuery.define( "app/View", [ "base/ClassModule", "main/communicate", "main/query", "main/object", "main/attr", "main/CustomEvent", "module/Widget" ], function( $, ClassModule, communicate, query, object, attr, CustomEvent, Widget, undefined ) {
+aQuery.define( "app/View", [ "base/ClassModule", "main/communicate", "main/query", "main/object", "main/attr", "main/CustomEvent", "module/Widget", "module/src" ], function( $, ClassModule, communicate, query, object, attr, CustomEvent, Widget, src, undefined ) {
   //View need require depend on Widget
+  //get Style
   "use strict"; //启用严格模式
   var View = object.extend( "View", {
     init: function( ) {
       this._super( );
       this.topElement = View.getHTML( );
+      attr.setAttr( this.topElement, "html-src", this.htmlSrc );
       this._initDomFlag = false;
       this.id = attr.getAttr( this.topElement, "id" ) || null;
       //不能有相同的两个src
@@ -92,10 +94,14 @@ aQuery.define( "app/View", [ "base/ClassModule", "main/communicate", "main/query
       return require( this.htmlSrc ).first.cloneNode( );
     }
   }, {
-
+    getStyle: function( path ) {
+      src.link( {
+        href: $.getPath( ClassModule.variable( path ), ".css" );
+      } );
+    }
   }, CustomEvent );
 
-  var ViewCollection = object.Collection(View);
+  var ViewCollection = object.Collection( View );
 
   View.collection = new ViewCollection;
 
