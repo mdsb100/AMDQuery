@@ -1,4 +1,4 @@
-aQuery.define( "app/View", [ "base/ClassModule", "main/communicate", "main/query", "main/object", "main/attr", "main/CustomEvent", "module/Widget", ], function( $, ClassModule, communicate, query, object, attr, CustomEvent, Widget, undefined ) {
+aQuery.define( "app/View", [ "base/ClassModule", "main/communicate", "main/query", "main/object", "main/attr", "main/CustomEvent", "module/Widget" ], function( $, ClassModule, communicate, query, object, attr, CustomEvent, Widget, undefined ) {
   //View need require depend on Widget
   "use strict"; //启用严格模式
   var View = object.extend( "View", {
@@ -9,7 +9,7 @@ aQuery.define( "app/View", [ "base/ClassModule", "main/communicate", "main/query
       this.id = attr.getAttr( this.topElement, "id" ) || null;
       //不能有相同的两个src
 
-      View.addView( this );
+      View.collection.add( this );
     },
     appendTo: function( parent ) {
       parent.appendChild( this.topElement );
@@ -55,12 +55,11 @@ aQuery.define( "app/View", [ "base/ClassModule", "main/communicate", "main/query
       } );
     },
     destory: function( ) {
-      View.removeView( this );
+      View.collection.remove( this );
       if ( this._initDomFlag && this.topElement && this.topElement.parentNode ) {
         var self = this;
-        Widget.destoryWidgets( this.topElement.parentNode, function( ) {
-          self.removeTo( );
-        } );
+        Widget.destoryWidgets( this.topElement.parentNode );
+        self.removeTo( );
       }
     },
     htmlSrc: "",
@@ -93,31 +92,12 @@ aQuery.define( "app/View", [ "base/ClassModule", "main/communicate", "main/query
       return require( this.htmlSrc ).first.cloneNode( );
     }
   }, {
-    views: [ ],
-    // getInstance: function( viewElement, ViewObject ) {
-    //   return ViewObject ? new ViewObject( viewElement ) : new View( viewElement );
-    // },
-    getView: function( id ) {
-      var result;
-      this.views.forEach( function( view ) {
-        if ( view.getId( ) === id ) {
-          result = view;
-        }
-      } );
-      return result;
-    },
-    addView: function( view ) {
-      if ( this.views.indexOf( ) === -1 ) {
-        this.views.push( view );
-      }
-    },
-    removeView: function( ) {
-      var index = this.views.indexOf( );
-      if ( index > -1 ) {
-        this.views.splice( index, 1 );
-      }
-    }
+
   }, CustomEvent );
+
+  var ViewCollection = object.Collection(View);
+
+  View.collection = new ViewCollection;
 
   object.providePropertyGetSet( View, {
     id: "-pu -r"

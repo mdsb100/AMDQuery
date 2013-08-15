@@ -7,48 +7,28 @@ aQuery.define( "app/Model", [ "main/attr", "main/object", "main/CustomEvent" ], 
       this.element = modelElement;
       this.id = attr.getAttr( modelElement, "id" ) || null;
       this.src = attr.getAttr( modelElement, "src" );
-      Model.addModel( this );
+      Model.collection.add( this );
     },
     destory: function( ) {
-      Model.removeModel( this );
+      Model.collection.remove( this );
     }
   }, {
-    models: [ ],
-    getInstance: function( modelElement, ModelObject ) {
-      var instance = attr.getAttr( modelElement, "instance" ),
-      src = attr.getAttr( modelElement, "src" ),
-      model = this.getModel( src );
+    // getInstance: function( modelElement, ModelObject ) {
+    //   var instance = attr.getAttr( modelElement, "instance" ),
+    //   src = attr.getAttr( modelElement, "src" ),
+    //   model = this.getModel( src );
 
-      if ( instance || !model) {
-        return ModelObject ? new ModelObject( modelElement ) : new Model( modelElement );
-      }
+    //   if ( instance || !model) {
+    //     return ModelObject ? new ModelObject( modelElement ) : new Model( modelElement );
+    //   }
 
-      return model;
-    },
-    getModel: function( id ) {
-      if ( !id ) {
-        return undefined;
-      }
-      var result;
-      this.models.forEach( function( model ) {
-        if ( model.getId( ) === id || model.getSrc( ) === id ) {
-          result = model;
-        }
-      } );
-      return result;
-    },
-    addModel: function( Model ) {
-      if ( this.models.indexOf( ) === -1 ) {
-        this.models.push( Model );
-      }
-    },
-    removeModel: function( ) {
-      var index = this.models.indexOf( );
-      if ( index > -1 ) {
-        this.models.splice( index, 1 );
-      }
-    }
+    //   return model;
+    // },
   }, CustomEvent );
+
+  var ModelCollection = object.Collection(Model);
+
+  Model.collection = new ModelCollection;
 
   object.providePropertyGetSet( Model, {
     element: "-pu -r",
