@@ -1192,6 +1192,14 @@
 
         return this;
       },
+      require: function( module, success ) {
+        var ret = getTempDefine( module )
+        this.addHandler( function( ) {
+          ret.request(success);
+          module = ret = null;
+        } );
+        return ret;
+      },
       setStatus: function( status ) {
         this.status = status;
         return this;
@@ -1295,10 +1303,7 @@
       }
     } );
 
-    window.require = function( module, success, fail ) {
-      if ( !module ) {
-        return;
-      }
+    function getTempDefine( module, fail ) {
       //如果请求一组模块则转换为对一个临时模块的定义与请求处理
       var ret;
       if ( module.constructor == Array ) {
@@ -1315,11 +1320,6 @@
         }
       }
 
-      success && typeof success != "function" && util.error( {
-        fn: "require",
-        msg: module + ":success should be a Function"
-      }, "TypeError" );
-
       if ( typeof fail != "function" ) {
         fail = function( ) {
           util.error( {
@@ -1332,6 +1332,21 @@
       ret = ret || ClassModule.getModule( module ) || new ClassModule( module, [ module ], function( ) {
         return new String( module );
       }, 0, null, fail );
+
+      return ret;
+    }
+
+    window.require = function( module, success, fail ) {
+      if ( !module ) {
+        return;
+      }
+
+      var ret = getTempDefine( module, fail );
+
+      success && typeof success != "function" && util.error( {
+        fn: "require",
+        msg: module + ":success should be a Function"
+      }, "TypeError" );
 
       return ret.request( success );
     };
