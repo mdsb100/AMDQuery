@@ -15,16 +15,38 @@ aQuery.define( "app/View", [ "base/ClassModule", "main/communicate", "main/query
   }
 
   var View = CustomEvent.extend( {
-    init: function( ) {
+    init: function( contollerElement ) {
       this._super( );
       this.htmlSrc = this.htmlSrc || getHtmlSrc( this.constructor._AMD.id );
       this.topElement = View.getHTML( this.htmlSrc );
       attr.setAttr( this.topElement, "html-src", this.htmlSrc );
-      this._initDomFlag = false;
       this.id = attr.getAttr( this.topElement, "id" ) || null;
-      //不能有相同的两个src
+
+      var self = this;
+      this.promise = new Promise( function( ) {
+        self.onDomReady( );
+        self.trigger( "domready", {
+          type: "domready"
+        } );
+        return this;
+      } );
+
+      this.replaceTo( contollerElement );
 
       View.collection.add( this );
+
+
+    },
+    destory: function( ) {
+      View.collection.remove( this );
+      if ( this.topElement && this.topElement.parentNode ) {
+        var self = this;
+        Widget.destoryWidgets( this.topElement.parentNode );
+        self.removeTo( );
+      }
+      this.promise.destoryFromRoot( );
+      this.promise = null;
+      this.topElement = null;
     },
     appendTo: function( parent ) {
       parent.appendChild( this.topElement );
@@ -44,13 +66,10 @@ aQuery.define( "app/View", [ "base/ClassModule", "main/communicate", "main/query
     },
     initDom: function( ) {
       var self = this;
-      if ( !this._initDomFlag && this.topElement && this.topElement.parentNode ) {
+
+      if ( this.promise.unfinished( ) && this.topElement && this.topElement.parentNode ) {
         Widget.initWidgets( this.topElement.parentNode, function( ) {
-          self._initDomFlag = true
-          self.onDomReady( );
-          self.trigger( "domready", {
-            type: "domready"
-          } );
+          self.promise.resolve( );
         } );
       }
     },
@@ -70,20 +89,17 @@ aQuery.define( "app/View", [ "base/ClassModule", "main/communicate", "main/query
     _getCtrollerElement: function( ) {
       return query.find( ">Controller", this.topElement );
     },
-    destory: function( ) {
-      View.collection.remove( this );
-      if ( this._initDomFlag && this.topElement && this.topElement.parentNode ) {
-        var self = this;
-        Widget.destoryWidgets( this.topElement.parentNode );
-        self.removeTo( );
-      }
-    },
     htmlSrc: "",
     _timeout: 5000,
     _error: function( ) {
       $.console.error( "get " + this.htmlSrc + " error" );
     },
-
+    domReady: function( fn ) {
+      // setTimeout( function( ) {
+      this.promise.and( fn );
+      // }, 0 );
+      return this;
+    },
     onDomReady: function( ) {
 
     }

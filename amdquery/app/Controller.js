@@ -1,45 +1,53 @@
-aQuery.define( "app/Controller", [ "base/typed", "base/Promise", "main/query", "main/attr", "main/object", "main/CustomEvent", "app/View", "app/Model" ], function( $, typed, Promise, query, attr, object, CustomEvent, View, Model, undefined ) {
+aQuery.define( "app/Controller", [ "base/ClassModule", "base/typed", "base/Promise", "main/query", "main/attr", "main/object", "main/CustomEvent", "app/View", "app/Model" ], function( $, ClassModule, typed, Promise, query, attr, object, CustomEvent, View, Model, undefined ) {
   "use strict"; //启用严格模式
   var Controller = CustomEvent.extend( "Controller", {
-    init: function( id, contollerElement, view, models ) {
+    init: function( id, contollerElement, View, Models ) {
       this._super( );
       this.id = id;
-      this.view = view;
-      this.models = models || [ ];
+      this.view = new View( contollerElement );
+      // 生成Models
+      //this.models = Models || [ ];
 
       Controller.collection.add( this );
 
-      var self = this;
-      this.promise = new Promise(function( ) {
+      var selfController = this;
+
+      this.promise = new Promise( function( ) {
         var promise = this;
-
-        var ready = function( ) {
-          self.view.off( "domready", ready );
-          ready = null;
+        selfController.view.domready( function( ) {
           promise.resolve( );
-          promise = null;
-        }
+        } );
+        return this;
+      } ).then( function( ) {
+        return Controller.loadController( selfController.view.topElement );
+      } ).then( function( controllers ) {
+        var self = this;
 
-        self.view.on( "domready", ready );
+        var promise = new Promise( function( ) {
+          self.resolve( );
+        } );
 
-        self.view.replaceTo( contollerElement );
-
-        contollerElement = null;
+        $.each( controllers, function( controller ) {
+          // id应当为后缀
+          selfController[controller.getId()] = controller;
+          promise.and( function( ) {
+            var self = this;
+            controller.ready( function( ) {
+              self.together(this);
+            } );
+          } );
+        } );
 
         return this;
-      });
-
-      // .then( function( ) {
-      //   // 加载controller
-
-      // } );
-
-
-      this.promise = this.promise.then( function( ) {
-        self.trigger( "ready", {
+      } ).then( function( ) {
+        selfController.onReady( );
+        selfController.trigger( "ready", {
           type: "ready"
-        } )
+        } );
+
       } );
+
+      this.promise.rootResolve( );
 
     },
     event: function( ) {
@@ -61,32 +69,43 @@ aQuery.define( "app/Controller", [ "base/typed", "base/Promise", "main/query", "
       this.models = this.models.concat( models );
     },
     destory: function( ) {
-      //this.view.off( "domReady", this.event );
-
       this.promise.destoryFromRoot( );
 
       this.promise = null;
 
       Controller.collection.removeController( this );
 
-
+      this.view.destory( );
+    },
+    ready: function( fn ) {
+      // var self;
+      // setTimeout( function( ) {
+      this.promise.and( fn );
+      // }, 0 );
+      return this;
     },
     onReady: function( ) {
 
     }
   }, {
     loadController: function( container, tagName ) {
-      var contollerElement = query.find( tagName || "Require" ),
-        self = this;
+      var contollersElement = query.find( tagName || "Require" ),
+        result = [ ]
 
-      if ( contollerElement[ 0 ] ) {
-        var src = attr.getAttr( contollerElement, "src" );
-        if ( ClassModule.contains( src ) ) {
-          require.sync( );
+      if ( contollersElement.length ) {
+        var src, i = 0,
+          len = contollersElement.length,
+
+        for ( ; i < len; i++ ) {
+          src = attr.getAttr( contollersElement[ i ], "src" );
+          if ( ClassModule.contains( src ) ) {
+            require.sync( );
+            result.push( new require( src, contollersElement ).first );
+          }
         }
-        return new require( src, contollerElement ).first;
+
       }
-      return null;
+      return result;
     }
   } );
 
