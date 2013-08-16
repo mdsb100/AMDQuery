@@ -1615,21 +1615,20 @@
 
         return this;
       },
-      destory: function( ) {
-        delete this.result;
-        delete this.thens;
-        delete this.todo;
-        delete this.fail;
-        delete this.progress;
-        delete this.parent;
-        delete this.friend;
-        delete this._branch;
-        delete this._back;
-        delete this._tag;
+      _clearProperty: function( ) {
+        this.result = null;
+        this.thens = [];
+        this.todo = null;
+        this.fail = null;
+        this.progress = null;
+        this.parent = null;
+        this._branch = {};
+        this._back = [];
+        this._tag = {};
         return this;
       },
 
-      removeChildren: function( parent ) {
+      destory: function( parent ) {
         /// <summary>删除节点下的promise</summary>
         /// <param name="parent" type="Promise">undefined/Promise</param>
         /// <returns type="self" />
@@ -1641,10 +1640,9 @@
         if ( thens.length ) {
           for ( i = len - 1; i >= 0; i-- ) {
             then = thens[ i ];
-            then.removeChildren( );
-            then = thens.pop( );
-            //then.parent = null;
             then.destory( );
+            then = thens.pop( );
+            then._clearProperty( );
           }
         }
         return this;
@@ -1652,7 +1650,7 @@
       removeTree: function( ) {
         /// <summary>删除根下的所有节点</summary>
         /// <returns type="self" />
-        return this.removeChildren( this.root( ) );
+        return this.destory( this.root( ) );
       },
       resolve: function( obj ) {
         /// <summary>执行</summary>
@@ -1915,7 +1913,7 @@
       // _config.amd.sync = _config.amd.sync || !!_config.app.src;
       var self = this;
       require( [ "base/ClassModule", "main/communicate", "module/utilEval" ], function( ClassModule, communicate, utilEval ) {
-        var syncLoadJs = function ( url, id, error ) {
+        var syncLoadJs = function( url, id, error ) {
           var module = ClassModule.getModule( id );
 
           if ( ClassModule.resource[ url ] || ( module && ( module.getStatus( ) > 2 ) ) ) {
@@ -1938,16 +1936,16 @@
           return this;
         };
 
-        require.sync = function(){
+        require.sync = function( ) {
           ClassModule.loadJs = syncLoadJs;
         }
 
-        require.async = function(){
+        require.async = function( ) {
           ClassModule.loadJs = asyncLoadJs;
         }
 
         if ( _config.amd.sync ) {
-          require.sync();
+          require.sync( );
         }
 
         self.resolve( );
