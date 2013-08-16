@@ -1617,13 +1617,13 @@
       },
       _clearProperty: function( ) {
         this.result = null;
-        this.thens = [];
+        this.thens = [ ];
         this.todo = null;
         this.fail = null;
         this.progress = null;
         this.parent = null;
         this._branch = {};
-        this._back = [];
+        this._back = [ ];
         this._tag = {};
         return this;
       },
@@ -1760,6 +1760,12 @@
         }
 
         return self.then( arg[ 0 ], arg[ 1 ], arg[ 2 ], name );
+      },
+      finished: function( ) {
+        return this.state === "done";
+      },
+      unfinished: function( ) {
+        return this.state === "todo";
       },
       reBranch: function( ) {
         /// <summary>回到上一个分支</summary>
