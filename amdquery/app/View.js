@@ -14,7 +14,7 @@ aQuery.define( "app/View", [ "base/ClassModule", "main/communicate", "main/query
 
   }
 
-  var View = object.extend( "View", {
+  var View = CustomEvent.extend( {
     init: function( ) {
       this._super( );
       this.htmlSrc = this.htmlSrc || getHtmlSrc( this.constructor._AMD.id );
@@ -31,8 +31,8 @@ aQuery.define( "app/View", [ "base/ClassModule", "main/communicate", "main/query
       initDom( );
       return this;
     },
-    replaceTo: function( parent, element ) {
-      parent.replaceChild( this.topElement, element );
+    replaceTo: function( element ) {
+      element.parentNode.replaceChild( this.topElement );
       initDom( );
       return this;
     },
@@ -48,7 +48,9 @@ aQuery.define( "app/View", [ "base/ClassModule", "main/communicate", "main/query
         Widget.initWidgets( this.topElement.parentNode, function( ) {
           self._initDomFlag = true
           self.onDomReady( );
-          self.trigger( "domReady" );
+          self.trigger( "domready", {
+            type: "domready"
+          } );
         } );
       }
     },
@@ -113,7 +115,7 @@ aQuery.define( "app/View", [ "base/ClassModule", "main/communicate", "main/query
       }
       return require( htmlSrc ).first.cloneNode( );
     }
-  }, CustomEvent );
+  } );
 
   var ViewCollection = object.Collection( View );
 

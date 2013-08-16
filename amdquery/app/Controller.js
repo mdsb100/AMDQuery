@@ -6,22 +6,52 @@ aQuery.define( "app/Controller", [ "base/typed", "base/Promise", "main/query", "
       this.id = id;
       this.view = view;
       this.models = models || [ ];
+
       Controller.collection.add( this );
+
       var self = this;
-      this.view.on( "domReady", function( ) {
+      this.promise = new Promise;
 
+      var temp = this.promise.then( function( ) {
+        var promise = this;
+
+        var ready = function( ) {
+          self.view.off( "domready", ready );
+          ready = null;
+          promise.resolve( );
+          promise = null;
+        }
+
+        self.view.on( "domready", ready );
+
+        self.view.replaceTo( contollerElement );
+
+        contollerElement = null;
+
+        return this;
       } );
-    },
-    event: function( e ) {
+      // .then( function( ) {
+      //   // 加载controller
+
+      // } );
+
+
+      temp = temp.then( function( ) {
+        self.trigger( "ready", {
+          type: "ready"
+        } )
+      } );
 
     },
+    event: function( ) {
+
+    },
+    /*super*/
     _initHandler: function( ) {
       var self = this;
       this.event = function( e ) {
         switch ( e.type ) {
-          case "domReady":
-            self.onReady( );
-            break;
+
         }
       };
     },
@@ -32,7 +62,18 @@ aQuery.define( "app/Controller", [ "base/typed", "base/Promise", "main/query", "
       this.models = this.models.concat( models );
     },
     destory: function( ) {
+      //this.view.off( "domReady", this.event );
+
+      this.promise.destory( );
+
+      this.promise = null;
+
       Controller.collection.removeController( this );
+
+
+    },
+    onReady: function( ) {
+
     }
   }, {
     loadController: function( container, tagName ) {
@@ -44,11 +85,11 @@ aQuery.define( "app/Controller", [ "base/typed", "base/Promise", "main/query", "
         if ( ClassModule.contains( src ) ) {
           require.sync( );
         }
-        return new require( src ).first;
+        return new require( src, contollerElement ).first;
       }
       return null;
     }
-  }, CustomEvent );
+  } );
 
   var ControllerCollection = object.Collection( Controller );
 

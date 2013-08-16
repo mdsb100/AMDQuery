@@ -56,7 +56,7 @@ aQuery.define( "app/Application", [ "base/ClassModule", "base/Promise", "base/ty
     }
   }, {
 
-  }, CustomEvent );
+  } );
 
   return Application;
 }, "1.0.0" );
