@@ -1,12 +1,29 @@
-aQuery.define( "app/Controller", [ "base/typed", "main/query", "main/attr", "main/object", "main/CustomEvent", "app/View", "app/Model" ], function( $, typed, query, attr, object, CustomEvent, View, Model, undefined ) {
+aQuery.define( "app/Controller", [ "base/typed", "base/Promise", "main/query", "main/attr", "main/object", "main/CustomEvent", "app/View", "app/Model" ], function( $, typed, Promise, query, attr, object, CustomEvent, View, Model, undefined ) {
   "use strict"; //启用严格模式
-  var Controller = object.extend( "Controller", {
-    init: function( view, models ) {
+  var Controller = CustomEvent.extend( "Controller", {
+    init: function( id, contollerElement, view, models ) {
       this._super( );
+      this.id = id;
       this.view = view;
       this.models = models || [ ];
-      this.id = view.getId( );
       Controller.collection.add( this );
+      var self = this;
+      this.view.on( "domReady", function( ) {
+
+      } );
+    },
+    event: function( e ) {
+
+    },
+    _initHandler: function( ) {
+      var self = this;
+      this.event = function( e ) {
+        switch ( e.type ) {
+          case "domReady":
+            self.onReady( );
+            break;
+        }
+      };
     },
     addModels: function( models ) {
       if ( !typed.isArr( models ) ) {

@@ -1496,7 +1496,7 @@
     return Queue
   }, "1.0.0" );
 
-  aQuery.define( "base/promise", function( $ ) {
+  aQuery.define( "base/Promise", function( $ ) {
     "use strict"; //启用严格模式
     var checkArg = function( todo, fail, progress, name ) {
       var arg = util.argToArray( arguments ),
@@ -1823,7 +1823,7 @@
     return Promise;
   }, "1.0.0" );
 
-  aQuery.define( "base/ready", [ "base/promise" ], function( $, Promise ) {
+  aQuery.define( "base/ready", [ "base/Promise" ], function( $, Promise ) {
     "use strict"; //启用严格模式
     var ready = function( fn ) {
       setTimeout( function( ) {

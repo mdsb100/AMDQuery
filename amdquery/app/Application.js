@@ -1,25 +1,25 @@
-aQuery.define( "app/Application", [ "base/ClassModule", "base/promise", "base/typed", "main/CustomEvent", "main/object", "app/Model", "app/View", "app/Controller", "ecma5/array.compati" ], function( $, ClassModule, Promise, typed, CustomEvent, object, BaseModel, BaseView, BaseController, Array, undefined ) {
+aQuery.define( "app/Application", [ "base/ClassModule", "base/Promise", "base/typed", "main/CustomEvent", "main/object", "app/Model", "app/View", "app/Controller", "ecma5/array.compati" ], function( $, ClassModule, Promise, typed, CustomEvent, object, BaseModel, BaseView, BaseController, Array, undefined ) {
   "use strict"; //启用严格模式
-  var defaultViewSrc = "app/View";
+  // var defaultViewSrc = "app/View";
 
-  var getControllerSrcByViewSrc = function( viewSrc ) {
-    var controllerSrc = viewSrc;
+  // var getControllerSrcByViewSrc = function( viewSrc ) {
+  //   var controllerSrc = viewSrc;
 
-    if ( viewSrc.indexOf( "View" ) > -1 ) {
-      controllerSrc.replace( "View", "Controller" );
-    }
-    if ( viewSrc.indexOf( "view" ) > -1 ) {
-      controllerSrc.replace( "view", "controller" );
-    }
+  //   if ( viewSrc.indexOf( "View" ) > -1 ) {
+  //     controllerSrc.replace( "View", "Controller" );
+  //   }
+  //   if ( viewSrc.indexOf( "view" ) > -1 ) {
+  //     controllerSrc.replace( "view", "controller" );
+  //   }
 
-    if ( viewSrc != controllerSrc ) {
-      return controllerSrc;
-    }
+  //   if ( viewSrc != controllerSrc ) {
+  //     return controllerSrc;
+  //   }
 
-    return "app/Controller";
-  };
+  //   return "app/Controller";
+  // };
 
-  var Application = object.extend( "Application", {
+  var Application = CustomEvent.extend( "Application", {
     init: function( promiseCallback ) {
       this._super( );
       // this.ready = new Promise( );

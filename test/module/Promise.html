@@ -13,7 +13,7 @@
     </style>
     <script src="../../amdquery/amdquery.js" type="text/javascript" amdquery="define:$;" amd="detectCR:1;"></script>
     <script type="text/javascript">
-        $.require("base/promise", function (Promise) {
+        $.require("base/Promise", function (Promise) {
             var div = document.getElementsByTagName("div")
                 , write = function (s) {
                     div[0].innerHTML = div[0].innerHTML += s + "<br>";
@@ -143,14 +143,14 @@
             write("promiseDelete.thens.length:" + promiseDelete.thens.length);
             write("");
         });
-               
+
     </script>
 </head>
 <body style="overflow: auto; width: 100%;">
     <div style="float: left; width: 29%;">
     </div>
     <pre style="float: left; width: 69%;display:block;">
-         $.require("base/promise", function (Promise) {
+         $.require("base/Promise", function (Promise) {
             var div = document.getElementsByTagName("div")
                 , write = function (s) {
                     div[0].innerHTML = div[0].innerHTML += s + "&ltbr&gt";
