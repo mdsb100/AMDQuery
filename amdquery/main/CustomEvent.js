@@ -5,7 +5,12 @@
     init: function( ) {
       this.handlers = {};
       this._handlerMap = {};
+      this._initHandler();
       return this;
+    },
+    _initHandler: function( ) {
+
+      return;
     },
     on: function( type, handler ) {
       return this.addHandler( type, handler );
@@ -61,9 +66,9 @@
       /// <param name="handlers" type="Array/undefinded">已有的事件集</param>
       /// <returns type="Number" />
       handlers = handlers || this._nameSpace( type );
-      var  i = 0,
-      j = -1,
-      len;
+      var i = 0,
+        j = -1,
+        len;
       if ( handlers instanceof Array && handlers.length ) {
         for ( len = handlers.length; i < len; i++ ) {
           if ( handlers[ i ] === handler ) {
@@ -142,6 +147,6 @@
     }
   } );
   $.CustomEvent = CustomEvent;
-  
+
   return CustomEvent;
 } );
