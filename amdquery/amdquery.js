@@ -1647,7 +1647,7 @@
         }
         return this;
       },
-      removeTree: function( ) {
+      destoryFromRoot: function( ) {
         /// <summary>删除根下的所有节点</summary>
         /// <returns type="self" />
         return this.destory( this.root( ) );

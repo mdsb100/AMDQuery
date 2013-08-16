@@ -10,9 +10,7 @@ aQuery.define( "app/Controller", [ "base/typed", "base/Promise", "main/query", "
       Controller.collection.add( this );
 
       var self = this;
-      this.promise = new Promise;
-
-      var temp = this.promise.then( function( ) {
+      this.promise = new Promise(function( ) {
         var promise = this;
 
         var ready = function( ) {
@@ -29,14 +27,15 @@ aQuery.define( "app/Controller", [ "base/typed", "base/Promise", "main/query", "
         contollerElement = null;
 
         return this;
-      } );
+      });
+
       // .then( function( ) {
       //   // 加载controller
 
       // } );
 
 
-      temp = temp.then( function( ) {
+      this.promise = this.promise.then( function( ) {
         self.trigger( "ready", {
           type: "ready"
         } )
@@ -64,7 +63,7 @@ aQuery.define( "app/Controller", [ "base/typed", "base/Promise", "main/query", "
     destory: function( ) {
       //this.view.off( "domReady", this.event );
 
-      this.promise.destory( );
+      this.promise.destoryFromRoot( );
 
       this.promise = null;
 
