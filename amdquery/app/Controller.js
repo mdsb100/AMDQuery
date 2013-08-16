@@ -1,4 +1,4 @@
-aQuery.define( "app/Controller", [ "base/typed", "main/object", "main/CustomEvent", "app/View", "app/Model" ], function( $, typed, object, CustomEvent, View, Model, undefined ) {
+aQuery.define( "app/Controller", [ "base/typed", "main/query", "main/attr", "main/object", "main/CustomEvent", "app/View", "app/Model" ], function( $, typed, query, attr, object, CustomEvent, View, Model, undefined ) {
   "use strict"; //启用严格模式
   var Controller = object.extend( "Controller", {
     init: function( view, models ) {
@@ -18,10 +18,22 @@ aQuery.define( "app/Controller", [ "base/typed", "main/object", "main/CustomEven
       Controller.collection.removeController( this );
     }
   }, {
+    loadController: function( container, tagName ) {
+      var contollerElement = query.find( tagName || "Require" ),
+        self = this;
 
+      if ( contollerElement[ 0 ] ) {
+        var src = attr.getAttr( contollerElement, "src" );
+        if ( ClassModule.contains( src ) ) {
+          require.sync( );
+        }
+        return new require( src ).first;
+      }
+      return null;
+    }
   }, CustomEvent );
 
-  var ControllerCollection = object.Collection(Controller);
+  var ControllerCollection = object.Collection( Controller );
 
   Controller.collection = new ControllerCollection;
 

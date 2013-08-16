@@ -17,8 +17,8 @@ aQuery.define( "app/View", [ "base/ClassModule", "main/communicate", "main/query
   var View = object.extend( "View", {
     init: function( ) {
       this._super( );
-      this.topElement = View.getHTML( );
       this.htmlSrc = this.htmlSrc || getHtmlSrc( this.constructor._AMD.id );
+      this.topElement = View.getHTML( this.htmlSrc );
       attr.setAttr( this.topElement, "html-src", this.htmlSrc );
       this._initDomFlag = false;
       this.id = attr.getAttr( this.topElement, "id" ) || null;
@@ -53,7 +53,6 @@ aQuery.define( "app/View", [ "base/ClassModule", "main/communicate", "main/query
       }
     },
     _getModelsElement: function( ) {
-      //可能会错 找直接子元素
       //Collection
       return query.find( ">Model", this.topElement );
     },
@@ -65,6 +64,9 @@ aQuery.define( "app/View", [ "base/ClassModule", "main/communicate", "main/query
         }
         return src;
       } );
+    },
+    _getCtrollerElement: function( ) {
+      return query.find( ">Controller", this.topElement );
     },
     destory: function( ) {
       View.collection.remove( this );
@@ -79,35 +81,37 @@ aQuery.define( "app/View", [ "base/ClassModule", "main/communicate", "main/query
     _error: function( ) {
       $.console.error( "get " + this.htmlSrc + " error" );
     },
-    getHtml: function( ) {
-      if ( !ClassModule.contains( this.htmlSrc ) ) {
-        if ( this.htmlSrc === "" ) {
-          define( this.htmlSrc, document.createElement( "div" ) );
-        } else {
-          var self = this;
-          communicate.ajax( {
-            url: this.htmlSrc,
-            async: false,
-            dataType: "xml",
-            complete: function( xml ) {
-              define( self.htmlSrc, xml );
-            },
-            timeout: View.timeout,
-            timeoutFun: View.error
-          } );
-        }
-      },
 
-      onDomReady: function( ) {
+    onDomReady: function( ) {
 
-      }
-      return require( this.htmlSrc ).first.cloneNode( );
     }
+
   }, {
     getStyle: function( path ) {
       src.link( {
         href: $.getPath( ClassModule.variable( path ), ".css" );
       } );
+    },
+    getHtml: function( htmlSrc ) {
+      htmlSrc = ClassModule.variable( htmlSrc );
+      if ( !ClassModule.contains( htmlSrc ) ) {
+        if ( htmlSrc === "" || !htmlSrc ) {
+          define( htmlSrc, document.createElement( "div" ) );
+        } else {
+          var self = this;
+          communicate.ajax( {
+            url: htmlSrc,
+            async: false,
+            dataType: "xml",
+            complete: function( xml ) {
+              define( htmlSrc, xml );
+            },
+            timeout: View.timeout,
+            timeoutFun: View.error
+          } );
+        }
+      }
+      return require( htmlSrc ).first.cloneNode( );
     }
   }, CustomEvent );
 
