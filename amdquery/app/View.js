@@ -107,7 +107,7 @@ aQuery.define( "app/View", [ "base/ClassModule", "main/communicate", "main/query
   }, {
     getStyle: function( path ) {
       src.link( {
-        href: $.getPath( ClassModule.variable( path ), ".css" );
+        href: $.getPath( ClassModule.variable( path ), ".css" )
       } );
     },
     getHtml: function( htmlSrc ) {
@@ -133,7 +133,7 @@ aQuery.define( "app/View", [ "base/ClassModule", "main/communicate", "main/query
     }
   } );
 
-  var ViewCollection = object.Collection( View );
+  var ViewCollection = object.Collection( View, {} );
 
   View.collection = new ViewCollection;
 

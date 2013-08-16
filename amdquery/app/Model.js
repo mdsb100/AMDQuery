@@ -26,7 +26,7 @@ aQuery.define( "app/Model", [ "main/attr", "main/object", "main/CustomEvent" ], 
     // },
   } );
 
-  var ModelCollection = object.Collection( Model );
+  var ModelCollection = object.Collection( Model, {} );
 
   Model.collection = new ModelCollection;
 

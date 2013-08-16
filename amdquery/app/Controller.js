@@ -1,9 +1,12 @@
 aQuery.define( "app/Controller", [ "base/ClassModule", "base/typed", "base/Promise", "main/query", "main/attr", "main/object", "main/CustomEvent", "app/View", "app/Model" ], function( $, ClassModule, typed, Promise, query, attr, object, CustomEvent, View, Model, undefined ) {
   "use strict"; //启用严格模式
   var Controller = CustomEvent.extend( "Controller", {
-    init: function( id, contollerElement, View, Models ) {
+    init: function( src, contollerElement, View, Models ) {
       this._super( );
-      this.id = id;
+      this.src = src;
+
+      this.id = attr.getAttr( contollerElement, "id" );
+
       this.view = new View( contollerElement );
       // 生成Models
       //this.models = Models || [ ];
@@ -19,7 +22,11 @@ aQuery.define( "app/Controller", [ "base/ClassModule", "base/typed", "base/Promi
         } );
         return this;
       } ).then( function( ) {
-        return Controller.loadController( selfController.view.topElement );
+        var promise = this;
+        Controller.loadController( selfController.view.topElement, function( controllers ) {
+          promise.resolve( controllers );
+        } );
+        return this;
       } ).then( function( controllers ) {
         var self = this;
 
@@ -28,12 +35,14 @@ aQuery.define( "app/Controller", [ "base/ClassModule", "base/typed", "base/Promi
         } );
 
         $.each( controllers, function( controller ) {
-          // id应当为后缀
-          selfController[controller.getId()] = controller;
+          if ( controller.getId( ) ) {
+            selfController[ controller.getId( ) ] = controller;
+          }
+
           promise.and( function( ) {
             var self = this;
             controller.ready( function( ) {
-              self.together(this);
+              self.together( this );
             } );
           } );
         } );
@@ -88,34 +97,62 @@ aQuery.define( "app/Controller", [ "base/ClassModule", "base/typed", "base/Promi
 
     }
   }, {
-    loadController: function( container, tagName ) {
-      var contollersElement = query.find( tagName || "Require" ),
-        result = [ ]
+    loadController: function( container, callback ) {
+      var contollersElement = query.find( "Require", container ),
+        controller = [ ];
 
       if ( contollersElement.length ) {
-        var src, i = 0,
+        var
+        element = contollersElement[ 0 ],
+          src = attr.getAttr( element, "src" ),
+          i = 1,
           len = contollersElement.length,
+          module = require( src );
+
+        controller.push( {
+          module: module,
+          element: element
+        } );
 
         for ( ; i < len; i++ ) {
-          src = attr.getAttr( contollersElement[ i ], "src" );
-          if ( ClassModule.contains( src ) ) {
-            require.sync( );
-            result.push( new require( src, contollersElement ).first );
-          }
+          element = contollersElement[ i ];
+          src = attr.getAttr( element, "src" );
+          module = module.require( src );
+          controller.push( {
+            module: module,
+            element: element,
+            src: src
+          } );
         }
 
+        module.addHandler( function( ) {
+          var i = 0,
+            len = controller.length,
+            item,
+            ret = [ ];
+
+          for ( ; i < len; i++ ) {
+            item = controller[ i ];
+            ret.push( new item.module( item.module.id, item.element ) );
+          }
+
+          callback( ret );
+          contollersElement = controller = null;
+
+        } );
+
+      } else {
+        callback && callback( [ ] );
       }
-      return result;
+
     }
   } );
 
-  var ControllerCollection = object.Collection( Controller );
+  var ControllerCollection = object.Collection( Controller, {} );
 
   Controller.collection = new ControllerCollection;
 
   object.providePropertyGetSet( Controller, {
-    view: "-pu -r",
-    models: "-pu -r",
     id: "-pu -r"
   } );
 
