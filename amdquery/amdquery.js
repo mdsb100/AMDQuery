@@ -952,13 +952,13 @@
     ClassModule.prototype = {
       addHandler: function( fn ) {
         if ( typeof fn == "function" ) {
-          if ( this.getStatus( ) == "4" ) {
+          if(this.status == 4){
             fn.apply( this, this.module );
-          } else {
-            var h = this.handlers[ this.id ];
-            h == undefined && ( h = this.handlers[ this.id ] = [ ] );
-            h.push( fn );
+            return this;
           }
+          var h = this.handlers[ this.id ];
+          h == undefined && ( h = this.handlers[ this.id ] = [ ] );
+          h.push( fn );
         }
         return this;
       },
@@ -1195,13 +1195,6 @@
         }
 
         return this;
-      },
-      require: function( module, success ) {
-        var ret = getTempDefine( module )
-        this.addHandler( function( ) {
-          ret.request( success );
-        } );
-        return ret;
       },
       setStatus: function( status ) {
         this.status = status;
