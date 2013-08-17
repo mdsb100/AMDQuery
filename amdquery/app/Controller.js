@@ -28,26 +28,28 @@ aQuery.define( "app/Controller", [ "base/ClassModule", "base/typed", "base/Promi
         } );
         return this;
       } ).then( function( controllers ) {
-        var self = this;
+        if ( controllers.length ) {
+          var self = this;
 
-        var promise = new Promise( function( ) {
-          self.resolve( );
-        } );
+          var promise = new Promise( function( ) {
+            self.resolve( );
+          } );
 
-        $.each( controllers, function( controller ) {
-          if ( controller.getId( ) ) {
-            selfController[ controller.getId( ) ] = controller;
-          }
+          $.each( controllers, function( controller ) {
+            if ( controller.getId( ) ) {
+              selfController[ controller.getId( ) ] = controller;
+            }
 
-          promise.and( function( ) {
-            var self = this;
-            controller.ready( function( ) {
-              self.together( this );
+            promise.and( function( ) {
+              var self = this;
+              controller.ready( function( ) {
+                self.together( this );
+              } );
             } );
           } );
-        } );
 
-        return this;
+          return this;
+        }
       } ).then( function( ) {
         selfController.onReady( );
         selfController.trigger( "ready", {
@@ -103,44 +105,29 @@ aQuery.define( "app/Controller", [ "base/ClassModule", "base/typed", "base/Promi
 
       if ( contollersElement.length ) {
         var
-        element = contollersElement[ 0 ],
-          src = attr.getAttr( element, "src" ),
-          i = 1,
+        i = 0,
           len = contollersElement.length,
-          module = require( src );
-
-        controller.push( {
-          module: module,
-          element: element
-        } );
+          depend = [ ];
 
         for ( ; i < len; i++ ) {
           element = contollersElement[ i ];
           src = attr.getAttr( element, "src" );
-          module = module.require( src );
-          controller.push( {
-            module: module,
-            element: element,
-            src: src
-          } );
+          depend.push( src );
         }
 
-        module.addHandler( function( ) {
-          var i = 0,
-            len = controller.length,
-            item,
-            ret = [ ];
+        require( depend, function( ) {
+          var Controllers = $.util.argToArray( ),
+            ret = [ ],
+            i = 0,
+            len = Controllers.length;
 
           for ( ; i < len; i++ ) {
-            item = controller[ i ];
-            ret.push( new item.module( item.module.id, item.element ) );
+            ret.push( new Controllers[ i ]( depend[ i ], contollersElement[ i ] ) );
           }
 
           callback( ret );
-          contollersElement = controller = null;
-
+          depend = contollersElement = null;
         } );
-
       } else {
         callback && callback( [ ] );
       }
