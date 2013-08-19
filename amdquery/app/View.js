@@ -107,7 +107,7 @@ aQuery.define( "app/View", [ "base/ClassModule", "main/communicate", "main/query
   }, {
     getStyle: function( path ) {
       src.link( {
-        href: $.getPath( ClassModule.variable( path ), ".css" )
+        href: ClassModule.getPath( path, ".css" )
       } );
     },
     getHtml: function( htmlSrc ) {

@@ -22,17 +22,17 @@ aQuery.define( "app/Controller", [ "base/ClassModule", "base/typed", "base/Promi
         } );
         return this;
       } ).then( function( ) {
-        var promise = this;
+        var promise = new Promise;
         Controller.loadController( selfController.view.topElement, function( controllers ) {
           promise.resolve( controllers );
         } );
         return this;
       } ).then( function( controllers ) {
         if ( controllers.length ) {
-          var self = this;
+          var callback = new Promise;
 
           var promise = new Promise( function( ) {
-            self.resolve( );
+            callback.resolve( );
           } );
 
           $.each( controllers, function( controller ) {
@@ -48,7 +48,7 @@ aQuery.define( "app/Controller", [ "base/ClassModule", "base/typed", "base/Promi
             } );
           } );
 
-          return this;
+          return callback;
         }
       } ).then( function( ) {
         selfController.onReady( );
@@ -100,7 +100,7 @@ aQuery.define( "app/Controller", [ "base/ClassModule", "base/typed", "base/Promi
     }
   }, {
     loadController: function( container, callback ) {
-      var contollersElement = query.find( "Require", container ),
+      var contollersElement = query.find( "Controller", container ),
         controller = [ ];
 
       if ( contollersElement.length ) {

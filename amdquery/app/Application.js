@@ -30,7 +30,7 @@ aQuery.define( "app/Application", [ "base/ClassModule", "base/Promise", "base/ty
           position: "absolute",
           top: "50%",
           left: "50%"
-        }, "img" ).attr( "src", $.getPath( "ui/images/", image ) ),
+        }, "img" ).attr( "src", ClassModule.getPath( "@app/asset/images/", image ) ),
         $cover = $( {
           width: "100%",
           height: "100%",
@@ -48,29 +48,32 @@ aQuery.define( "app/Application", [ "base/ClassModule", "base/Promise", "base/ty
 
       var app = this;
       this.promise = new Promise( function( ) {
-        var promise = this;
+        var promise = new Promise;
 
-        Controller.loadController( document.body, function( controllers ) {
+        BaseController.loadController( document.body, function( controllers ) {
           app.index = controllers[ 0 ];
           app.index.ready( function( ) {
             promise.resolve( );
           } );
         } );
 
-        return this;
+        return promise;
       } ).then( function( ) {
-        $cover.remove( );
+        // $cover.remove( );
         $cover = null;
         $image = null;
 
         app.launch( app.index );
+
         app.trigger( "ready", app, {
           type: "ready"
         } );
 
+        promiseCallback.resolve( );
+
       } );
 
-      this.promise.resolve( );
+      this.promise.rootResolve( );
 
     },
     getAppRelativePath: function( path ) {

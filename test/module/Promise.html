@@ -34,14 +34,14 @@
                 return function (obj) {
                     write("");
                     write("delay " + ms + " begin");
-                    var self = this;
+                    var promise = new Promise;
                     setTimeout(function () {
                         write("delay " + ms + " stop");
                         write("do together");
                         //promise.resolve(obj);
-                        self.together(self, obj);
+                        promise.together(self, obj);
                     }, ms);
-                    return self;
+                    return promise;
                 };
             }
 

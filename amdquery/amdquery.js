@@ -833,6 +833,7 @@
       },
       getPath: function( key, suffix ) {
         var ret, path, ma;
+        key = ClassModule.variable( key );
         if ( path = ClassModule.maps[ key ] ) {} //不需要匹配前部分
         else {
           path = key;
@@ -953,7 +954,7 @@
     ClassModule.prototype = {
       addHandler: function( fn ) {
         if ( typeof fn == "function" ) {
-          if(this.status == 4){
+          if ( this.status == 4 ) {
             fn.apply( this, this.module );
             return this;
           }
@@ -1692,24 +1693,17 @@
           this.state = "done";
         }
 
+        if ( Promise.forinstance( this.result ) ) {
+          var
+          self = this,
+            state = this.state,
+            callback = function( result ) {
+              self.state = state;
+              self.result = result;
+              self._next( result );
+              self = null;
+            };
 
-
-        var
-        self = this,
-          state = this.state,
-          callback = function( result ) {
-            self.state = state;
-            self.result = result;
-            self._next( result );
-            self = null;
-          };
-
-        if ( this === this.result ) {
-          // 异步的情况，返回值是一个Promise，则当其resolve的时候，nextPromise才会被resolve
-          //所以状态改回todo
-          this.state = "todo";
-          this.result = new Promise( callback );
-        } else if ( Promise.forinstance( this.result ) ) {
           this.state = "todo";
           this.result.then( callback );
         } else {
@@ -1850,9 +1844,9 @@
     rootPromise = new Promise( function( ) { //window.ready first to fix ie
       document.documentElement.style.position = "absolute";
       document.documentElement.style.left = "100000px";
-      var self = this,
+      var promise = new Promise,
         ready = function( e ) {
-          self.resolve( e );
+          promise.resolve( e );
         }
       if ( document.addEventListener ) {
         document.addEventListener( "DOMContentLoaded", ready, false );
@@ -1866,18 +1860,18 @@
         document.onload = ready;
       }
 
-      return this;
+      return promise;
     } ).then( function( ) {
       if ( _config.amdquery.packageNames ) {
-        var self = this;
+        var promise = new Promise;
         require( _config.amdquery.package, function( _package ) {
-          self.resolve( _package );
+          promise.resolve( _package );
         } );
-        return this;
+        return promise;
       }
     } ).then( function( _package ) {
       if ( _package ) {
-        var self = this,
+        var promise = new Promise,
           packageNames = _config.amdquery.packageNames.split( "," ),
           i = 0,
           item = null,
@@ -1892,14 +1886,14 @@
         }
 
         result.length && require( result, function( ) {
-          self.resolve( );
+          promise.resolve( );
         } );
-        return this;
+        return promise;
       }
     } ).then( function( ) {
       if ( _config.app.src ) {
         var src = _config.app.src;
-        _config.ui.initWidget = true;
+        // _config.ui.initWidget = true;
 
         if ( /^\//.test( src ) ) {
           src = src.replace( /((.*?\/){3}).*$/, "$1" );
@@ -1912,11 +1906,11 @@
 
         require.variable( "app", src );
 
-        var self = this;
+        var promise = new Promise;
         require( _config.app.src, function( Application ) {
-          $.application = new Application( self );
+          $.application = new Application( promise );
         } );
-        return this;
+        return promise;
       }
     } ).then( function( ) {
       if ( _config.ui.initWidget && !_config.app.src ) {
@@ -1929,7 +1923,7 @@
     } ).then( function( ) {
       // if app, sync must be true
       // _config.amd.sync = _config.amd.sync || !!_config.app.src;
-      var self = this;
+      var promise = new Promise;
       require( [ "base/ClassModule", "main/communicate", "module/utilEval" ], function( ClassModule, communicate, utilEval ) {
         var syncLoadJs = function( url, id, error ) {
           var module = ClassModule.getModule( id );
@@ -1966,9 +1960,10 @@
           require.sync( );
         }
 
-        self.resolve( );
+        promise.resolve( );
+
       } );
-      return this;
+      return promise;
     } ).then( function( ) {
       document.documentElement.style.left = "0px";
       document.documentElement.style.position = "";
