@@ -52,7 +52,7 @@ aQuery.define( "app/Controller", [ "base/ClassModule", "base/typed", "base/Promi
         }
       } ).then( function( ) {
         selfController.onReady( );
-        selfController.trigger( "ready", {
+        selfController.trigger( "ready", selfController, {
           type: "ready"
         } );
 

@@ -4,6 +4,9 @@ aQuery.define( "@app/controller/index", [ "app/Controller", "@app/view/index" ],
     init: function( id, contollerElement ) {
       this._super( id, contollerElement, IndexView );
 
+    },
+    onReady: function( ) {
+      console.log( "index load" );
     }
   }, {
 

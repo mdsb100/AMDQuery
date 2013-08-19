@@ -198,7 +198,8 @@
 
     },
     app: {
-      src: ""
+      src: "",
+      image: "welcome.gif"
     }
   };
 

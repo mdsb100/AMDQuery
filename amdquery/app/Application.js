@@ -24,10 +24,54 @@ aQuery.define( "app/Application", [ "base/ClassModule", "base/Promise", "base/ty
   var Application = CustomEvent.extend( "Application", {
     init: function( promiseCallback ) {
       this._super( );
-      // this.ready = new Promise( );
-      // this.__promiseCallback = promiseCallback;
-      this.index = null;
-      this.load( );
+
+      var image = $.config.app.image,
+        $image = $( {
+          position: "absolute",
+          top: "50%",
+          left: "50%"
+        }, "img" ).attr( "src", $.getPath( "ui/images/", image ) ),
+        $cover = $( {
+          width: "100%",
+          height: "100%",
+          position: "absolute",
+          top: 0,
+          left: 0,
+          zIndex: 10001,
+          backgroundColor: "white"
+        }, "div" ).append( $image ).before( $( "body" ).children( ) );
+
+      $image.css( {
+        marginTop: -$image.width( ) + "px",
+        marginLeft: -$image.height( ) + "px"
+      } );
+
+      var app = this;
+      this.promise = new Promise( function( ) {
+        var promise = this;
+
+        Controller.loadController( document.body, function( controllers ) {
+          app.index = controllers[ 0 ];
+          app.index.ready( function( ) {
+            promise.resolve( );
+          } );
+        } );
+
+        return this;
+      } ).then( function( ) {
+        $cover.remove( );
+        $cover = null;
+        $image = null;
+
+        app.launch( app.index );
+        app.trigger( "ready", app, {
+          type: "ready"
+        } );
+
+      } );
+
+      this.promise.resolve( );
+
     },
     getAppRelativePath: function( path ) {
       if ( path ) {
@@ -37,24 +81,12 @@ aQuery.define( "app/Application", [ "base/ClassModule", "base/Promise", "base/ty
         return "";
       }
     },
-    load: function( ) {
-      // var self = this;
-
-      // var ready = this.ready;
-      if ( !this.index ) {
-        this.index = Controller.loadController( document.body, "Index" );
-      }
-      // ready.then( function( ) {
-      //   self.launch( );
-      //   self.__promiseCallback.resolve( );
-      //   delete self.__promiseCallback;
-      // } );
-
-      // ready.rootResolve( );
-    },
-
     launch: function( ) {
 
+    },
+    ready: function( fn ) {
+      this.promise.and( fn );
+      return this;
     }
   }, {
 

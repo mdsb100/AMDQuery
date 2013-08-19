@@ -25,7 +25,7 @@ aQuery.define( "app/View", [ "base/ClassModule", "main/communicate", "main/query
       var self = this;
       this.promise = new Promise( function( ) {
         self.onDomReady( );
-        self.trigger( "domready", {
+        self.trigger( "domready", self, {
           type: "domready"
         } );
         return this;
