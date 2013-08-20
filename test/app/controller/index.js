@@ -7,6 +7,8 @@ aQuery.define( "@app/controller/index", [ "app/Controller", "@app/view/index" ],
     },
     onReady: function( ) {
       console.log( "index load" );
+      debugger
+      this.navmenu
     }
   }, {
 

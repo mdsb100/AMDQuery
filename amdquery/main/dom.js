@@ -863,6 +863,7 @@
         if ( str ) {
           c = str[ 0 ];
           this.each( function( ele ) {
+            //parseHTML
             childNodes = $.createEle( c );
             //div.innerHTML = c;
             for ( i = 0, len = childNodes.length; i < len; i++ ) {

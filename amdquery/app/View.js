@@ -18,7 +18,8 @@ aQuery.define( "app/View", [ "base/ClassModule", "base/Promise", "main/communica
     init: function( contollerElement ) {
       this._super( );
       this.htmlSrc = this.htmlSrc || ( getHtmlSrc( this.constructor._AMD.id ) + ".xml" );
-      this.topElement = View.getHtml( this.htmlSrc );
+      this.originElement = View.getHtml( this.htmlSrc );
+      this.topElement = this.originElement.cloneNode( true );
       console.log( this.topElement );
       attr.setAttr( this.topElement, "html-src", this.htmlSrc );
       this.id = attr.getAttr( this.topElement, "id" ) || null;
@@ -48,6 +49,7 @@ aQuery.define( "app/View", [ "base/ClassModule", "base/Promise", "main/communica
       this.promise.destoryFromRoot( );
       this.promise = null;
       this.topElement = null;
+      this.originElement = null;
     },
     appendTo: function( parent ) {
       parent.appendChild( this.topElement );
@@ -122,16 +124,16 @@ aQuery.define( "app/View", [ "base/ClassModule", "base/Promise", "main/communica
           communicate.ajax( {
             url: url,
             async: false,
-            dataType: "xml",
+            dataType: "string",
             complete: function( xml ) {
-              define( htmlSrc, xml.childNodes[ 0 ] );
+              define( htmlSrc, $.createEle(xml) );
             },
             timeout: View.timeout,
             timeoutFun: View.error
           } );
         }
       }
-      return require( htmlSrc ).first.cloneNode( );
+      return require( htmlSrc ).first;
     }
   } );
 

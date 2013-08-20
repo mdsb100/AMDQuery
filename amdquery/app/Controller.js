@@ -5,7 +5,7 @@ aQuery.define( "app/Controller", [ "base/ClassModule", "base/typed", "base/Promi
       this._super( );
       this.src = src;
 
-      this.id = attr.getAttr( contollerElement, "id" );
+      this.id = attr.getAttr( contollerElement, "id" ) || null;
 
       this.view = new View( contollerElement );
       // 生成Models
@@ -31,22 +31,26 @@ aQuery.define( "app/Controller", [ "base/ClassModule", "base/typed", "base/Promi
         if ( controllers.length ) {
           var callback = new Promise;
 
-          var promise = new Promise( function( ) {
-            callback.resolve( );
-          } );
+          var promise = new Promise;
 
           $.each( controllers, function( controller ) {
             if ( controller.getId( ) ) {
               selfController[ controller.getId( ) ] = controller;
             }
 
-            promise.and( function( ) {
+            promise = promise.and( function( ) {
               var self = this;
               controller.ready( function( ) {
                 self.together( this );
               } );
             } );
           } );
+
+          promise.then( function( ) {
+            callback.resolve( );
+          } )
+
+          promise.rootResolve( );
 
           return callback;
         }
