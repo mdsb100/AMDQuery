@@ -1704,7 +1704,7 @@
           this.state = "done";
         }
 
-        if ( Promise.forinstance( this.result ) ) {
+        if ( Promise.forinstance( this.result ) && this.result !== this) {
           var
           self = this,
             state = this.state,
@@ -1912,6 +1912,7 @@
         } else {
           src = src.replace( /[^\/]+$/, "" );
         }
+
         src = src.replace( /\/$/, "" );
         src = src.replace( ".js", "" );
 
