@@ -35,6 +35,7 @@
                     write("");
                     write("delay " + ms + " begin");
                     var promise = new Promise;
+                    var self = this;
                     setTimeout(function () {
                         write("delay " + ms + " stop");
                         write("do together");
@@ -59,7 +60,11 @@
             .and(delay(3000))
             .and(delay(2000))
             .and(delay(1000))
-            .then(delay(3000))
+            //.then(delay(3000))
+            .then(function(num){
+              write("ready!!!!!")
+              return num
+            })
             //promise.resolve(0);
             //.tag()获得是新promise
             .branch(function (num) {
