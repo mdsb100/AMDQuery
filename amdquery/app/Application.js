@@ -59,7 +59,7 @@ aQuery.define( "app/Application", [ "base/ClassModule", "base/Promise", "base/ty
 
         return promise;
       } ).then( function( ) {
-        // $cover.remove( );
+        $cover.remove( );
         $cover = null;
         $image = null;
 

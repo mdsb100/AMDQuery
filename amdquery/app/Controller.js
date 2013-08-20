@@ -16,17 +16,17 @@ aQuery.define( "app/Controller", [ "base/ClassModule", "base/typed", "base/Promi
       var selfController = this;
 
       this.promise = new Promise( function( ) {
-        var promise = this;
-        selfController.view.domready( function( ) {
+        var promise = new Promise;
+        selfController.view.domReady( function( ) {
           promise.resolve( );
         } );
-        return this;
+        return promise;
       } ).then( function( ) {
         var promise = new Promise;
         Controller.loadController( selfController.view.topElement, function( controllers ) {
           promise.resolve( controllers );
         } );
-        return this;
+        return promise;
       } ).then( function( controllers ) {
         if ( controllers.length ) {
           var callback = new Promise;
@@ -105,18 +105,21 @@ aQuery.define( "app/Controller", [ "base/ClassModule", "base/typed", "base/Promi
 
       if ( contollersElement.length ) {
         var
-        i = 0,
+        element,
+          src,
+          i = 0,
           len = contollersElement.length,
           depend = [ ];
 
         for ( ; i < len; i++ ) {
           element = contollersElement[ i ];
           src = attr.getAttr( element, "src" );
+          src = $.util.removeSuffix( src );
           depend.push( src );
         }
 
         require( depend, function( ) {
-          var Controllers = $.util.argToArray( ),
+          var Controllers = $.util.argToArray( arguments ),
             ret = [ ],
             i = 0,
             len = Controllers.length;

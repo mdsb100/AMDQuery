@@ -1,4 +1,4 @@
-aQuery.define( "app/View", [ "base/ClassModule", "main/communicate", "main/query", "main/object", "main/attr", "main/CustomEvent", "module/Widget", "module/src" ], function( $, ClassModule, communicate, query, object, attr, CustomEvent, Widget, src, undefined ) {
+aQuery.define( "app/View", [ "base/ClassModule", "base/Promise", "main/communicate", "main/query", "main/object", "main/attr", "main/CustomEvent", "module/Widget", "module/src" ], function( $, ClassModule, Promise, communicate, query, object, attr, CustomEvent, Widget, src, undefined ) {
   //View need require depend on Widget
   //get Style
   "use strict"; //启用严格模式
@@ -14,11 +14,12 @@ aQuery.define( "app/View", [ "base/ClassModule", "main/communicate", "main/query
 
   }
 
-  var View = CustomEvent.extend( {
+  var View = CustomEvent.extend( "View", {
     init: function( contollerElement ) {
       this._super( );
-      this.htmlSrc = this.htmlSrc || getHtmlSrc( this.constructor._AMD.id );
-      this.topElement = View.getHTML( this.htmlSrc );
+      this.htmlSrc = this.htmlSrc || ( getHtmlSrc( this.constructor._AMD.id ) + ".xml" );
+      this.topElement = View.getHtml( this.htmlSrc );
+      console.log( this.topElement );
       attr.setAttr( this.topElement, "html-src", this.htmlSrc );
       this.id = attr.getAttr( this.topElement, "id" ) || null;
 
@@ -28,7 +29,7 @@ aQuery.define( "app/View", [ "base/ClassModule", "main/communicate", "main/query
         self.trigger( "domready", self, {
           type: "domready"
         } );
-        return this;
+        return self;
       } );
 
       this.replaceTo( contollerElement );
@@ -50,12 +51,12 @@ aQuery.define( "app/View", [ "base/ClassModule", "main/communicate", "main/query
     },
     appendTo: function( parent ) {
       parent.appendChild( this.topElement );
-      initDom( );
+      this.initDom( );
       return this;
     },
     replaceTo: function( element ) {
-      element.parentNode.replaceChild( this.topElement );
-      initDom( );
+      element.parentNode.replaceChild( this.topElement, element );
+      this.initDom( );
       return this;
     },
     removeTo: function( ) {
@@ -112,17 +113,18 @@ aQuery.define( "app/View", [ "base/ClassModule", "main/communicate", "main/query
     },
     getHtml: function( htmlSrc ) {
       htmlSrc = ClassModule.variable( htmlSrc );
+      var url = $.getPath( htmlSrc, ".xml" );
       if ( !ClassModule.contains( htmlSrc ) ) {
         if ( htmlSrc === "" || !htmlSrc ) {
           define( htmlSrc, document.createElement( "div" ) );
         } else {
           var self = this;
           communicate.ajax( {
-            url: htmlSrc,
+            url: url,
             async: false,
             dataType: "xml",
             complete: function( xml ) {
-              define( htmlSrc, xml );
+              define( htmlSrc, xml.childNodes[ 0 ] );
             },
             timeout: View.timeout,
             timeoutFun: View.error
