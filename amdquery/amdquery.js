@@ -156,6 +156,15 @@
         /// <summary>返回当前时间的字符串形式</summary>
         /// <returns type="String" />
         return ( new Date( ) ).getTime( );
+      },
+
+      removeSuffix: function( src ) {
+        src = src.replace( /\/$/, "" );
+        if ( src.match( /\.[^\/\.]*$/g ) ) {
+          src = src.replace( /\.[^\/\.]*$/, "" );
+        }
+
+        return src;
       }
     },
     count = 0,
@@ -537,7 +546,9 @@
         name = name.replace( /([A-Z]|^ms)/g, "-$1" ).toLowerCase( );
         head && ( name = head + "-" + name );
         return name;
-      }
+      },
+
+      removeSuffix: util.removeSuffix
     }
   } );
 
