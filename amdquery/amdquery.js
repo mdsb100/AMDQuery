@@ -1926,11 +1926,11 @@
       }
     } ).then( function( ) {
       if ( _config.ui.initWidget && !_config.app.src ) {
-        var self = this;
+        var promise = new Promise;
         require( "module/initWidget", function( initWidget ) {
-          initWidget.renderWidget( self, document.body );
+          initWidget.renderWidget( promise, document.body );
         } );
-        return this;
+        return promise;
       }
     } ).then( function( ) {
       // if app, sync must be true
