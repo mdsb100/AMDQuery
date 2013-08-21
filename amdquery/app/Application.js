@@ -1,6 +1,5 @@
 aQuery.define( "app/Application", [ "base/ClassModule", "base/Promise", "base/typed", "main/CustomEvent", "main/object", "app/Model", "app/View", "app/Controller", "ecma5/array.compati" ], function( $, ClassModule, Promise, typed, CustomEvent, object, BaseModel, BaseView, BaseController, Array, undefined ) {
   "use strict"; //启用严格模式
-
   var Application = CustomEvent.extend( "Application", {
     init: function( promiseCallback ) {
       this._super( );
