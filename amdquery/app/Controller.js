@@ -84,6 +84,8 @@ aQuery.define( "app/Controller", [ "base/ClassModule", "base/typed", "base/Promi
       this.models = this.models.concat( models );
     },
     destory: function( ) {
+      this.onDestroy( );
+
       this.promise.destoryFromRoot( );
 
       this.promise = null;
@@ -98,6 +100,9 @@ aQuery.define( "app/Controller", [ "base/ClassModule", "base/typed", "base/Promi
       this.promise.and( fn );
       // }, 0 );
       return this;
+    },
+    onDestroy: function( ) {
+
     },
     onReady: function( ) {
 

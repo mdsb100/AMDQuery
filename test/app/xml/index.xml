@@ -1,4 +1,5 @@
 <div style="width: 100%; height: 100%; position:relative;" amdquery-widget="ui.splitterpane">
-  <Controller src="@app/controller/navmenu.js" id="navmenu"/>
-  <Controller src="@app/controller/content.js" id="content"/>
+  <!--必须</Controller>结尾-->
+  <Controller src="@app/controller/navmenu.js" id="navmenu"></Controller>
+  <Controller src="@app/controller/content.js" id="content"></Controller>
 </div>
