@@ -1,4 +1,4 @@
-aQuery.define( "app/View", [ "base/ClassModule", "base/Promise", "main/communicate", "main/query", "main/object", "main/attr", "main/CustomEvent", "module/Widget", "module/src" ], function( $, ClassModule, Promise, communicate, query, object, attr, CustomEvent, Widget, src, undefined ) {
+aQuery.define( "app/View", [ "base/ClassModule", "base/Promise", "main/communicate", "main/query", "main/object", "main/attr", "main/CustomEvent", "module/Widget", "module/src", "module/parse" ], function( $, ClassModule, Promise, communicate, query, object, attr, CustomEvent, Widget, src, parse, undefined ) {
   //View need require depend on Widget
   //get Style
   "use strict"; //启用严格模式
@@ -126,7 +126,7 @@ aQuery.define( "app/View", [ "base/ClassModule", "base/Promise", "main/communica
             async: false,
             dataType: "string",
             complete: function( xml ) {
-              define( htmlSrc, $.createEle(xml) );
+              define( htmlSrc, parse.HTML(xml) );
             },
             timeout: View.timeout,
             timeoutFun: View.error

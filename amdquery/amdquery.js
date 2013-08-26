@@ -359,14 +359,14 @@
       /// <param name="tag" type="String">标签名</param>
       /// <returns type="Element" />
       var ele, div;
-      if ( /^<.*>$/.test( tag ) ) {
-        div = document.createElement( "div" );
-        div.innerHTML = tag;
-        ele = div.childNodes;
-        div = null;
-      } else {
-        ele = document.createElement( tag );
-      }
+      // if ( /^(?:(<[\w\W]+>)[^>]*|#([\w-]*))$/.test( tag ) ) {
+      //   div = document.createElement( "div" );
+      //   div.innerHTML = tag;
+      //   ele = div.childNodes[0];
+      //   div = null;
+      // } else {
+      ele = document.createElement( tag );
+      // }
       return ele;
     },
 
