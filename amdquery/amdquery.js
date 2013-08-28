@@ -223,7 +223,6 @@
     util.extend( _config.app, temp.app );
   }
 
-  //$("<div></div>") 需要自己先parseXML 这样就不用依赖 parseXML
   var aQuery = function( a, b, c ) {
     /// <summary>创造一个新$对象
     /// <para>例:$(function(){将会在window.onload时执行})</para>
@@ -236,6 +235,7 @@
     /// <para>例:$(null,"div",document.body)</para>
     /// <para>例:$({h:100,w:100},"div",document.body)</para>
     /// <para>对于table的appendChild,removeChild可能不兼容低版本IE浏览器,table必须插入tbody</para>
+    /// <para>如果要直接写html应当使用parse调用它的parse.xml()</para>
     /// </summary>
     /// <param name="a" type="Object/String/Element/fun/$">可重载</param>
     /// <param name="b" type="String">标签名 可选</param>
