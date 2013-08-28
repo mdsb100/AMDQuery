@@ -222,14 +222,25 @@
 			return ret === "" ? "auto" : ret;
 		};
 	}
+
 	var nodeNames = "abbr|article|aside|audio|bdi|canvas|data|datalist|details|figcaption|figure|footer|" +
 		"header|hgroup|mark|meter|nav|output|progress|section|summary|time|video",
-		rhtml = /<|&#?\w+;/,
+		rinlinejQuery = / jQuery\d+="(?:null|\d+)"/g,
+		rnoshimcache = new RegExp( "<(?:" + nodeNames + ")[\\s/>]", "i" ),
+		rleadingWhitespace = /^\s+/,
 		rxhtmlTag = /<(?!area|br|col|embed|hr|img|input|link|meta|param)(([\w:]+)[^>]*)\/>/gi,
 		rtagName = /<([\w:]+)/,
 		rtbody = /<tbody/i,
+		rhtml = /<|&#?\w+;/,
+		rnoInnerhtml = /<(?:script|style|link)/i,
 		manipulation_rcheckableType = /^(?:checkbox|radio)$/i,
+		// checked="checked" or checked
+		rchecked = /checked\s*(?:[^=]|=\s*.checked.)/i,
 		rscriptType = /^$|\/(?:java|ecma)script/i,
+		rscriptTypeMasked = /^true\/(.*)/,
+		rcleanScript = /^\s*<!(?:\[CDATA\[|--)|(?:\]\]|--)>\s*$/g,
+
+		// We have to close these tags to support XHTML (#13200)
 		wrapMap = {
 			option: [ 1, "<select multiple='multiple'>", "</select>" ],
 			legend: [ 1, "<fieldset>", "</fieldset>" ],
@@ -242,9 +253,10 @@
 
 			// IE6-8 can't serialize link, script, style, or any html5 (NoScope) tags,
 			// unless wrapped in a div with non-breaking characters in front of it.
-			_default: support.htmlSerialize ? [ 0, "", "" ] : [ 1, "X<div>", "</div>" ]
+			_default: jQuery.support.htmlSerialize ? [ 0, "", "" ] : [ 1, "X<div>", "</div>" ]
 		},
-		rleadingWhitespace = /^\s+/;
+		safeFragment = createSafeFragment( document ),
+		fragmentDiv = safeFragment.appendChild( document.createElement( "div" ) );
 
 	function createSafeFragment( document ) {
 		var list = nodeNames.split( "|" ),
@@ -297,6 +309,85 @@
 		for ( ;
 			( elem = elems[ i ] ) != null; i++ ) {
 			data.data( elem, "globalEval", !refElements || data.data( refElements[ i ], "globalEval" ) );
+		}
+	}
+
+	function disableScript( elem ) {
+		var attr = elem.getAttributeNode( "type" );
+		elem.type = ( attr && attr.specified ) + "/" + elem.type;
+		return elem;
+	}
+
+	function restoreScript( elem ) {
+		var match = rscriptTypeMasked.exec( elem.type );
+		if ( match ) {
+			elem.type = match[ 1 ];
+		} else {
+			elem.removeAttribute( "type" );
+		}
+		return elem;
+	}
+
+	function fixCloneNodeIssues( src, dest ) {
+		var nodeName, e, data;
+
+		// We do not need to do anything for non-Elements
+		if ( dest.nodeType !== 1 ) {
+			return;
+		}
+
+		nodeName = dest.nodeName.toLowerCase( );
+
+		// IE6-8 copies events bound via attachEvent when using cloneNode.
+		if ( !support.noCloneEvent ) {
+			event.clearHandlers( dest );
+
+			// Event data gets referenced instead of copied if the expando gets copied too
+			dest.removeAttribute( data.expando );
+		}
+
+		// IE blanks contents when cloning scripts, and tries to evaluate newly-set text
+		if ( nodeName === "script" && dest.text !== src.text ) {
+			disableScript( dest ).text = src.text;
+			restoreScript( dest );
+
+			// IE6-10 improperly clones children of object elements using classid.
+			// IE10 throws NoModificationAllowedError if parent is null, #12132.
+		} else if ( nodeName === "object" ) {
+			if ( dest.parentNode ) {
+				dest.outerHTML = src.outerHTML;
+			}
+
+			// This path appears unavoidable for IE9. When cloning an object
+			// element in IE9, the outerHTML strategy above is not sufficient.
+			// If the src has innerHTML and the destination does not,
+			// copy the src.innerHTML into the dest.innerHTML. #10324
+			if ( support.html5Clone && ( src.innerHTML && !$.util.trim( dest.innerHTML ) ) ) {
+				dest.innerHTML = src.innerHTML;
+			}
+
+		} else if ( nodeName === "input" && manipulation_rcheckableType.test( src.type ) ) {
+			// IE6-8 fails to persist the checked state of a cloned checkbox
+			// or radio button. Worse, IE6-7 fail to give the cloned element
+			// a checked appearance if the defaultChecked value isn't also set
+
+			dest.defaultChecked = dest.checked = src.checked;
+
+			// IE6-7 get confused and end up setting the value of a cloned
+			// checkbox/radio button to an empty string instead of "on"
+			if ( dest.value !== src.value ) {
+				dest.value = src.value;
+			}
+
+			// IE6-8 fails to return the selected option to the default selected
+			// state when cloning options
+		} else if ( nodeName === "option" ) {
+			dest.defaultSelected = dest.selected = src.defaultSelected;
+
+			// IE6-8 fails to set the defaultValue to the correct value when
+			// cloning other types of input fields
+		} else if ( nodeName === "input" || nodeName === "textarea" ) {
+			dest.defaultValue = src.defaultValue;
 		}
 	}
 
@@ -427,6 +518,64 @@
 
 			return safe;
 		},
+
+		clone: function( elem ) {
+			var destElements, node, clone, i, srcElements,
+				inPage = dom.contains( elem.ownerDocument, elem );
+
+			if ( support.html5Clone || typed.isXML( elem ) || !rnoshimcache.test( "<" + elem.nodeName + ">" ) ) {
+				clone = elem.cloneNode( true );
+
+				// IE<=8 does not properly clone detached, unknown element nodes
+			} else {
+				fragmentDiv.innerHTML = elem.outerHTML;
+				fragmentDiv.removeChild( clone = fragmentDiv.firstChild );
+			}
+
+			if ( ( !support.noCloneEvent || !support.noCloneChecked ) &&
+				( elem.nodeType === 1 || elem.nodeType === 11 ) && !typed.isXML( elem ) ) {
+
+				// We eschew Sizzle here for performance reasons: http://jsperf.com/getall-vs-sizzle/2
+				destElements = getAll( clone );
+				srcElements = getAll( elem );
+
+				// Fix all IE cloning issues
+				for ( i = 0;
+					( node = srcElements[ i ] ) != null; ++i ) {
+					// Ensure that the destination node is not null; Fixes #9587
+					if ( destElements[ i ] ) {
+						fixCloneNodeIssues( node, destElements[ i ] );
+					}
+				}
+			}
+
+			// can not clone ui, consider it
+			// Copy the events from the original to the clone
+			// if ( dataAndEvents ) {
+			// 	if ( deepDataAndEvents ) {
+			// 		srcElements = srcElements || getAll( elem );
+			// 		destElements = destElements || getAll( clone );
+
+			// 		for ( i = 0;
+			// 			( node = srcElements[ i ] ) != null; i++ ) {
+			// 			cloneCopyEvent( node, destElements[ i ] );
+			// 		}
+			// 	} else {
+			// 		cloneCopyEvent( elem, clone );
+			// 	}
+			// }
+
+			// Preserve script evaluation history
+			destElements = getAll( clone, "script" );
+			if ( destElements.length > 0 ) {
+				setGlobalEval( destElements, !inPage && getAll( elem, "script" ) );
+			}
+
+			destElements = srcElements = node = null;
+
+			// Return the cloned set
+			return clone;
+		},
 		css: function( ele, name, value, style, extra ) {
 			/// <summary>为元素添加样式</summary>
 			/// <param name="ele" type="Element">元素</param>
@@ -511,28 +660,7 @@
 			return style;
 		},
 
-		clone: function( ele ) {
-			/// <summary>clone一个新ele</summary>
-			/// <param name="ele" type="Element">ele元素</param>
-			/// <returns type="Element" />
-			return ele.cloneNode( true );
-		},
 		contains: sizzle.contains,
-		// contains: function(a, b) {
-		//     /// <summary>quote from jQuery1.7.2</summary>
-		//     /// <param name="a" type="Element">元素a</param>
-		//     /// <param name="b" type="Element">元素b</param>
-		//     /// <returns type="Boolean" />
-		//     /// <private />
-		//     if (document.documentElement.contains) {
-		//         return a !== b && (a.contains ? a.contains(b) : true);
-
-		//     } else if (document.documentElement.compareDocumentPosition) {
-		//         return !!(a.compareDocumentPosition(b) & 16);
-		//     } else {
-		//         return false;
-		//     }
-		// },
 
 		getHeight: function( ele ) {
 			/// <summary>获得元素的高度
@@ -991,6 +1119,13 @@
 	};
 
 	$.fn.extend( {
+		clone: function( ) {
+			// dataAndEvents = dataAndEvents == null ? false : dataAndEvents;
+			// deepDataAndEvents = deepDataAndEvents == null ? dataAndEvents : deepDataAndEvents;
+			return this.map( function( ) {
+				return dom.clone( this );
+			} );
+		},
 		css: function( style, value ) {
 			/// <summary>添加或获得样式
 			/// <para>如果要获得样式 返回为String</para>
@@ -1103,16 +1238,6 @@
 			}
 
 			return this;
-		},
-
-		clone: function( ) {
-			/// <summary>clone一个新$</summary>
-			/// <returns type="self" />
-			var eles = [ ];
-			this.each( function( ele ) {
-				eles.push( $.clone( ele ) );
-			} );
-			return $( eles );
 		},
 
 		getLeft: function( ) {
