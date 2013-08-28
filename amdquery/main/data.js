@@ -1,138 +1,163 @@
-﻿aQuery.define( "main/data", ["base/extend", "base/typed"], function( $, utilExtend, typed, undefined ) {
-  "use strict"; //启用严格模式
-  var
-  expando = "AMDQuery" + $.now( ),
-  uuid = 0,
-  windowData = {}, emptyObject = {},
-  data = {
-    cache: [ ],
+﻿aQuery.define( "main/data", [ "base/extend", "base/typed" ], function( $, utilExtend, typed, undefined ) {
+	"use strict"; //启用严格模式
 
-    data: function( ele, name, data ) {
-      /// <summary>获得或设置对象的数据
-      /// <para>如果name是obj可能有风险，他会赋值所有的</para>
-      /// <para>如果data是undefined会取值</para>
-      /// </summary>
-      /// <param name="ele" type="Object">对象</param>
-      /// <param name="name" type="String/Object/null">如果为nul则删除全部</param>
-      /// <param name="data" type="any">数据</param>
-      /// <returns type="thisCache/any/$" />
+	// checks a cache object for emptiness
 
-      //quote from jQuery-1.4.1 
-      if ( !ele || ( ele.nodeName && $.noData[ ele.nodeName.toLowerCase( ) ] ) )
-        return this;
+	// function isEmptyDataObject( obj ) {
+	// 	var name;
+	// 	for ( name in obj ) {
 
-      ele = ele == window ?
-        windowData :
-        ele;
+	// 		// if the public data object is empty, the private is still empty
+	// 		if ( name === "data" && typed.isEmptyObject( obj[ name ] ) ) {
+	// 			continue;
+	// 		}
+	// 		if ( name !== "toJSON" ) {
+	// 			return false;
+	// 		}
+	// 	}
 
-      var id = ele[ expando ],
-        cache = $.cache,
-        thisCache;
+	// 	return true;
+	// }
 
-      if ( !name && !id )
-        return this;
+	var
+	expando = "AMDQuery" + $.now( ),
+		uuid = 0,
+		windowData = {}, emptyObject = {},
+		data = {
+			cache: [ ],
 
-      if ( !id )
-        id = ++uuid;
+			data: function( ele, name, data ) {
+				/// <summary>获得或设置对象的数据
+				/// <para>如果name是obj可能有风险，他会赋值所有的</para>
+				/// <para>如果data是undefined会取值</para>
+				/// </summary>
+				/// <param name="ele" type="Object">对象</param>
+				/// <param name="name" type="String/Object/null">如果为nul则删除全部</param>
+				/// <param name="data" type="any">数据</param>
+				/// <returns type="thisCache/any/$" />
 
-      if ( typeof name === "object" ) {
-        ele[ expando ] = id;
-        thisCache = cache[ id ] = utilExtend.extend( true, {}, name );
-      } else if ( cache[ id ] ) {
-        thisCache = cache[ id ];
-      } else if ( data === undefined ) {
-        thisCache = emptyObject;
-      } else {
-        thisCache = cache[ id ] = {};
-      }
+				//quote from jQuery-1.4.1
+				if ( !ele || ( ele.nodeName && $.noData[ ele.nodeName.toLowerCase( ) ] ) )
+					return this;
 
-      if ( data !== undefined ) {
-        ele[ expando ] = id;
-        thisCache[ name ] = data;
-      }
+				ele = ele == window ?
+					windowData :
+					ele;
 
-      return typed.isStr( name ) ? thisCache[ name ] : thisCache;
-    },
+				var id = ele[ expando ],
+					cache = $.cache,
+					thisCache;
 
-    expando: expando,
+				if ( !name && !id )
+					return this;
 
-    noData: {
-      //quote from jQuery-1.4.1 
-      "embed": true,
-      "object": true,
-      "applet": true
-    },
+				if ( !id )
+					id = ++uuid;
 
-    removeData: function( ele, name ) {
-      /// <summary>删除对象的数据</summary>
-      /// <param name="ele" type="Object">对象</param>
-      /// <param name="name" type="String/undefined">如果为undefined则删除全部</param>
-      /// <returns type="self" />
-      if ( !ele || ( ele.nodeName && $.noData[ ele.nodeName.toLowerCase( ) ] ) )
-        return this;
+				if ( typeof name === "object" ) {
+					ele[ expando ] = id;
+					thisCache = cache[ id ] = utilExtend.extend( true, {}, name );
+				} else if ( cache[ id ] ) {
+					thisCache = cache[ id ];
+				} else if ( data === undefined ) {
+					thisCache = emptyObject;
+				} else {
+					thisCache = cache[ id ] = {};
+				}
 
-      ele = ele == window ?
-        windowData :
-        ele;
+				if ( data !== undefined ) {
+					ele[ expando ] = id;
+					thisCache[ name ] = data;
+				}
 
-      var id = ele[ expando ],
-        cache = $.cache,
-        thisCache = cache[ id ];
+				return typed.isStr( name ) ? thisCache[ name ] : thisCache;
+			},
 
-      if ( name ) {
-        if ( thisCache ) {
-          delete thisCache[ name ];
+			expando: expando,
 
-          if ( typed.isEmptyObj( thisCache ) )
-            $.removeData( ele );
+			noData: {
+				//quote from jQuery-1.4.1
+				"embed": true,
+				"object": true,
+				"applet": true
+			},
 
-        }
+			removeData: function( ele, name ) {
+				/// <summary>删除对象的数据</summary>
+				/// <param name="ele" type="Object">对象</param>
+				/// <param name="name" type="String/undefined">如果为undefined则删除全部</param>
+				/// <returns type="self" />
+				if ( !ele || ( ele.nodeName && $.noData[ ele.nodeName.toLowerCase( ) ] ) )
+					return this;
 
-      } else {
-        try {
-          delete ele[ expando ];
-        } catch ( e ) {
-          if ( ele.removeAttribute ) {
-            ele.removeAttribute( expando );
-          }
-        }
-        delete cache[ id ];
-      }
-      return this;
-    }
-  };
+				ele = ele == window ?
+					windowData :
+					ele;
 
-  $.extend( data );
+				var id = ele[ expando ],
+					cache = $.cache,
+					thisCache = cache[ id ];
 
-  $.fn.extend( {
-    data: function( key, value ) {
-      /// <summary>获得或设置对象的数据
-      /// <para>如果key是obj可能有风险，他会赋值所有的</para>
-      /// <para>如果value是undefined会取值</para>
-      /// </summary>
-      /// <param name="key" type="String/Object/null">如果为nul则删除全部</param>
-      /// <param name="value" type="any">数据</param>
-      /// <returns type="thisCache/any/$" />
-      if ( key === undefined && this.length ) {
-        return $.data( this[ 0 ] );
-      } else if ( typed.isObj( key ) ) {
-        return this.each( function( ele ) {
-          $.data( ele, key );
-        } );
-      }
-      return value === undefined ? $.data( this[ 0 ], key ) : this.each( function( ele ) {
-        $.data( ele, key, value );
-      } );
-    },
-    removeData: function( key ) {
-      /// <summary>删除对象的数据</summary>
-      /// <param name="key" type="String/null">如果为nul则删除全部</param>
-      /// <returns type="self" />
-      return this.each( function( ele ) {
-        $.removeData( ele, key );
-      } );
-    }
-  } );
+				if ( name ) {
+					if ( thisCache ) {
+						delete thisCache[ name ];
 
-  return data;
+						if ( typed.isEmptyObj( thisCache ) )
+							$.removeData( ele );
+
+					}
+
+				} else {
+					try {
+						delete ele[ expando ];
+					} catch ( e ) {
+						if ( ele.removeAttribute ) {
+							ele.removeAttribute( expando );
+						}
+					}
+					delete cache[ id ];
+				}
+				return this;
+			},
+
+			hasData: function( ele ) {
+				ele = ele.nodeType ? data.cache[ ele[ data.expando ] ] : ele[ data.expando ];
+				return !!ele;
+        //&& !isEmptyDataObject( ele );
+			}
+		};
+
+	$.extend( data );
+
+	$.fn.extend( {
+		data: function( key, value ) {
+			/// <summary>获得或设置对象的数据
+			/// <para>如果key是obj可能有风险，他会赋值所有的</para>
+			/// <para>如果value是undefined会取值</para>
+			/// </summary>
+			/// <param name="key" type="String/Object/null">如果为nul则删除全部</param>
+			/// <param name="value" type="any">数据</param>
+			/// <returns type="thisCache/any/$" />
+			if ( key === undefined && this.length ) {
+				return $.data( this[ 0 ] );
+			} else if ( typed.isObj( key ) ) {
+				return this.each( function( ele ) {
+					$.data( ele, key );
+				} );
+			}
+			return value === undefined ? $.data( this[ 0 ], key ) : this.each( function( ele ) {
+				$.data( ele, key, value );
+			} );
+		},
+		removeData: function( key ) {
+			/// <summary>删除对象的数据</summary>
+			/// <param name="key" type="String/null">如果为nul则删除全部</param>
+			/// <returns type="self" />
+			return this.each( function( ele ) {
+				$.removeData( ele, key );
+			} );
+		}
+	} );
+
+	return data;
 } );

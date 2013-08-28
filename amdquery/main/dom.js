@@ -225,7 +225,7 @@
 
 	var nodeNames = "abbr|article|aside|audio|bdi|canvas|data|datalist|details|figcaption|figure|footer|" +
 		"header|hgroup|mark|meter|nav|output|progress|section|summary|time|video",
-		rinlinejQuery = / jQuery\d+="(?:null|\d+)"/g,
+		rinlineaQuery = / aQuery\d+="(?:null|\d+)"/g,
 		rnoshimcache = new RegExp( "<(?:" + nodeNames + ")[\\s/>]", "i" ),
 		rleadingWhitespace = /^\s+/,
 		rxhtmlTag = /<(?!area|br|col|embed|hr|img|input|link|meta|param)(([\w:]+)[^>]*)\/>/gi,
@@ -253,7 +253,7 @@
 
 			// IE6-8 can't serialize link, script, style, or any html5 (NoScope) tags,
 			// unless wrapped in a div with non-breaking characters in front of it.
-			_default: jQuery.support.htmlSerialize ? [ 0, "", "" ] : [ 1, "X<div>", "</div>" ]
+			_default: support.htmlSerialize ? [ 0, "", "" ] : [ 1, "X<div>", "</div>" ]
 		},
 		safeFragment = createSafeFragment( document ),
 		fragmentDiv = safeFragment.appendChild( document.createElement( "div" ) );
@@ -391,6 +391,22 @@
 		}
 	}
 
+	function cloneCopyEvent( src, dest ) {
+
+		if ( dest.nodeType !== 1 || !data.hasData( src ) ) {
+			return;
+		}
+
+		var oldData = data.data( src );
+		var	curData = data.data( dest );
+
+		event.cloneHandlers( dest, src );
+
+		// if ( curData.data ) {
+		$.extend( true, curData, oldData.data );
+		// }
+	}
+
 	var dom = {
 		buildFragment: function( elems, context, scripts, selection ) {
 			var j, elem, contains,
@@ -519,7 +535,7 @@
 			return safe;
 		},
 
-		clone: function( elem ) {
+		clone: function( elem, dataAndEvents, deepDataAndEvents ) {
 			var destElements, node, clone, i, srcElements,
 				inPage = dom.contains( elem.ownerDocument, elem );
 
@@ -551,19 +567,19 @@
 
 			// can not clone ui, consider it
 			// Copy the events from the original to the clone
-			// if ( dataAndEvents ) {
-			// 	if ( deepDataAndEvents ) {
-			// 		srcElements = srcElements || getAll( elem );
-			// 		destElements = destElements || getAll( clone );
+			if ( dataAndEvents ) {
+				if ( deepDataAndEvents ) {
+					srcElements = srcElements || getAll( elem );
+					destElements = destElements || getAll( clone );
 
-			// 		for ( i = 0;
-			// 			( node = srcElements[ i ] ) != null; i++ ) {
-			// 			cloneCopyEvent( node, destElements[ i ] );
-			// 		}
-			// 	} else {
-			// 		cloneCopyEvent( elem, clone );
-			// 	}
-			// }
+					for ( i = 0;
+						( node = srcElements[ i ] ) != null; i++ ) {
+						cloneCopyEvent( node, destElements[ i ] );
+					}
+				} else {
+					cloneCopyEvent( elem, clone );
+				}
+			}
 
 			// Preserve script evaluation history
 			destElements = getAll( clone, "script" );
@@ -1119,9 +1135,9 @@
 	};
 
 	$.fn.extend( {
-		clone: function( ) {
-			// dataAndEvents = dataAndEvents == null ? false : dataAndEvents;
-			// deepDataAndEvents = deepDataAndEvents == null ? dataAndEvents : deepDataAndEvents;
+		clone: function( dataAndEvents, deepDataAndEvents ) {
+			dataAndEvents = dataAndEvents == null ? false : dataAndEvents;
+			deepDataAndEvents = deepDataAndEvents == null ? dataAndEvents : deepDataAndEvents;
 			return this.map( function( ) {
 				return dom.clone( this );
 			} );
@@ -1191,6 +1207,7 @@
 			/// </summary>
 			/// <param name="child" type="String/Element/$">子元素类型</param>
 			/// <returns type="self" />
+
 			var c = child,
 				ele = this.eles[ 0 ];
 			if ( !c ) return this;
@@ -1198,12 +1215,13 @@
 				var str, childNodes, i = 0,
 					len;
 				str = c.match( /^<\w.+[\/>|<\/\w.>]$/ );
+        // 若是写好的html还是使用parse.html
 				if ( str ) {
 					c = str[ 0 ];
 					this.each( function( ele ) {
-						//parseHTML
+
 						childNodes = $.createEle( c );
-						//div.innerHTML = c;
+
 						for ( i = 0, len = childNodes.length; i < len; i++ ) {
 							ele.appendChild( childNodes[ i ] );
 						}
@@ -1666,6 +1684,71 @@
 			return typed.isNul( width ) ? parseFloat( $.getWidth( this[ 0 ] ) ) : this.each( function( ele ) {
 				$.setWidth( ele, width );
 			} );
+		},
+
+		wrapAll: function( html ) {
+			if ( typed.isFun( html ) ) {
+				return this.each( function( i ) {
+					$( this ).wrapAll( html.call( this, i ) );
+				} );
+			}
+
+			if ( this[ 0 ] ) {
+				// The elements to wrap the target around
+				var wrap = $( html, this[ 0 ].ownerDocument ).eq( 0 ).clone( true );
+
+				if ( this[ 0 ].parentNode ) {
+					wrap.insertBefore( this[ 0 ] );
+				}
+
+				wrap.map( function( ) {
+					var elem = this;
+
+					while ( elem.firstChild && elem.firstChild.nodeType === 1 ) {
+						elem = elem.firstChild;
+					}
+
+					return elem;
+				} ).append( this );
+			}
+
+			return this;
+		},
+
+		wrapInner: function( html ) {
+			if ( typed.isFun( html ) ) {
+				return this.each( function( i ) {
+					$( this ).wrapInner( html.call( this, i ) );
+				} );
+			}
+
+			return this.each( function( ) {
+				var self = $( this ),
+					contents = self.contents( );
+
+				if ( contents.length ) {
+					contents.wrapAll( html );
+
+				} else {
+					self.append( html );
+				}
+			} );
+		},
+
+		wrap: function( html ) {
+			var isFunction = $.isFun( html );
+
+			return this.each( function( i ) {
+				$( this ).wrapAll( isFunction ? html.call( this, i ) : html );
+			} );
+		},
+
+		unwrap: function( ) {
+			return this.parent( ).each( function( ) {
+				if ( !typed.isNode( this, "body" ) ) {
+					$( this ).replaceWith( this.childNodes );
+				}
+			} ).end( );
 		}
 	} );
 
