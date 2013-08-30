@@ -1,4 +1,4 @@
-﻿aQuery.define( "main/data", [ "base/extend", "base/typed" ], function( $, utilExtend, typed, undefined ) {
+﻿aQuery.define( "main/data", [ "base/extend", "base/typed", "base/support" ], function( $, utilExtend, typed, support, undefined ) {
 	"use strict"; //启用严格模式
 
 	// checks a cache object for emptiness
@@ -108,12 +108,12 @@
 					}
 
 				} else {
-					try {
+					if ( support.deleteExpando ) {
 						delete ele[ expando ];
-					} catch ( e ) {
-						if ( ele.removeAttribute ) {
-							ele.removeAttribute( expando );
-						}
+					} else if ( ele.removeAttribute ) {
+						ele.removeAttribute( expando );
+					} else {
+						ele[ expando ] = null;
 					}
 					delete cache[ id ];
 				}
@@ -123,7 +123,7 @@
 			hasData: function( ele ) {
 				ele = ele.nodeType ? data.cache[ ele[ data.expando ] ] : ele[ data.expando ];
 				return !!ele;
-        //&& !isEmptyDataObject( ele );
+				//&& !isEmptyDataObject( ele );
 			}
 		};
 

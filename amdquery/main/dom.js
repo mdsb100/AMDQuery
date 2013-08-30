@@ -312,6 +312,10 @@
 		}
 	}
 
+	function findOrAppend( elem, tag ) {
+		return elem.getElementsByTagName( tag )[ 0 ] || elem.appendChild( elem.ownerDocument.createElement( tag ) );
+	}
+
 	function disableScript( elem ) {
 		var attr = elem.getAttributeNode( "type" );
 		elem.type = ( attr && attr.specified ) + "/" + elem.type;
@@ -398,7 +402,7 @@
 		}
 
 		var oldData = data.data( src );
-		var	curData = data.data( dest );
+		var curData = data.data( dest );
 
 		event.cloneHandlers( dest, src );
 
@@ -918,16 +922,25 @@
 			};
 		},
 
-		remove: function( ele ) {
+		remove: function( ele, selector, keepData ) {
 			/// <summary>把元素从文档流里移除</summary>
 			/// <param name="ele" type="Object">对象</param>
-			/// <param name="isDelete" type="Boolean">是否彻底删除</param>
+			/// <param name="selector" type="String">查询字符串</param>
+			/// <param name="keepData" type="String">是否保留数据</param>
 			/// <returns type="self" />
-			if ( ele.parentNode ) {
-				var parentNode = ele.parentNode;
-				parentNode.removeChild( ele );
-				if ( client.browser.ie678 ) {
-					ele = null;
+			if ( !selector || query.filter( selector, [ ele ] ).length > 0 ) {
+				if ( !keepData && ele.nodeType === 1 ) {
+					$.each( getAll( ele ), function( ele ) {
+						event.clearHandlers( ele );
+						data.removeData( ele );
+					} );
+				}
+
+				if ( ele.parentNode ) {
+					if ( keepData && query.contains( ele.ownerDocument, ele ) ) {
+						setGlobalEval( getAll( ele, "script" ) );
+					}
+					ele.parentNode.removeChild( ele );
 				}
 			}
 			return this;
@@ -1215,7 +1228,7 @@
 				var str, childNodes, i = 0,
 					len;
 				str = c.match( /^<\w.+[\/>|<\/\w.>]$/ );
-        // 若是写好的html还是使用parse.html
+				// 若是写好的html还是使用parse.html
 				if ( str ) {
 					c = str[ 0 ];
 					this.each( function( ele ) {
@@ -1518,19 +1531,6 @@
 			return $.position( this[ 0 ] );
 		},
 
-		remove: function( ) {
-			/// <summary>把所有元素从文档流里移除并且移除所有子元素</summary>
-			/// <returns type="self" />
-			return this.each( function( ele ) {
-				$.each( $.posterity( ele ), function( child ) {
-					event.clearHandlers( child );
-					$.removeData( child );
-				} );
-				event.clearHandlers( ele );
-				$.removeData( ele );
-				$.remove( ele );
-			} );
-		},
 		removeChild: function( child ) {
 			/// <summary>删除某个子元素</summary>
 			/// <param name="child" type="Number/Element/$"></param>
@@ -1683,6 +1683,139 @@
 			/// <returns type="Number" />
 			return typed.isNul( width ) ? parseFloat( $.getWidth( this[ 0 ] ) ) : this.each( function( ele ) {
 				$.setWidth( ele, width );
+			} );
+		},
+
+		remove: function( selector, keepData ) {
+			var elem,
+				i = 0;
+
+			for ( ;
+				( elem = this[ i ] ) != null; i++ ) {
+				dom.remove( elem, selector, keepData );
+			}
+
+			return this;
+		},
+
+		detach: function( selector ) {
+			return this.remove( selector, true );
+		},
+
+		domManip: function( args, table, callback ) {
+			// Flatten any nested arrays
+			args = [ ].concat( args );
+
+			var first, node, hasScripts,
+				scripts, doc, fragment,
+				i = 0,
+				l = this.length,
+				set = this,
+				iNoClone = l - 1,
+				value = args[ 0 ],
+				isFunction = typed.isFun( value );
+
+			// We can't cloneNode fragments that contain checked, in WebKit
+			if ( isFunction || !( l <= 1 || typeof value !== "string" || support.checkClone || !rchecked.test( value ) ) ) {
+				return this.each( function( index ) {
+					var self = set.eq( index );
+					if ( isFunction ) {
+						args[ 0 ] = value.call( this, index, table ? self.html( ) : undefined );
+					}
+					self.domManip( args, table, callback );
+				} );
+			}
+
+			if ( l ) {
+				fragment = dom.buildFragment( args, this[ 0 ].ownerDocument, false, this );
+				first = fragment.firstChild;
+
+				if ( fragment.childNodes.length === 1 ) {
+					fragment = first;
+				}
+
+				if ( first ) {
+					table = table && typed.isNode( first, "tr" );
+					scripts = query.map( getAll( fragment, "script" ), disableScript );
+					hasScripts = scripts.length;
+
+					// Use the original fragment for the last item instead of the first because it can end up
+					// being emptied incorrectly in certain situations (#8070).
+					for ( ; i < l; i++ ) {
+						node = fragment;
+
+						if ( i !== iNoClone ) {
+							node = dom.clone( node, true, true );
+
+							// Keep references to cloned scripts for later restoration
+							if ( hasScripts ) {
+								$.merge( scripts, getAll( node, "script" ) );
+							}
+						}
+
+						callback.call(
+							table && typed.isNode( this[ i ], "table" ) ?
+							findOrAppend( this[ i ], "tbody" ) :
+							this[ i ],
+							node,
+							i
+						);
+					}
+
+					// not support script
+					// if ( hasScripts ) {
+					// 	doc = scripts[ scripts.length - 1 ].ownerDocument;
+
+					// 	// Reenable scripts
+					// 	query.map( scripts, restoreScript );
+
+					// 	// Evaluate executable scripts on first document insertion
+					// 	for ( i = 0; i < hasScripts; i++ ) {
+					// 		node = scripts[ i ];
+					// 		if ( rscriptType.test( node.type || "" ) && !jQuery._data( node, "globalEval" ) && jQuery.contains( doc, node ) ) {
+
+					// 			if ( node.src ) {
+					// 				// Hope ajax is available...
+					// 				jQuery.ajax( {
+					// 					url: node.src,
+					// 					type: "GET",
+					// 					dataType: "script",
+					// 					async: false,
+					// 					global: false,
+					// 					"throws": true
+					// 				} );
+					// 			} else {
+					// 				jQuery.globalEval( ( node.text || node.textContent || node.innerHTML || "" ).replace( rcleanScript, "" ) );
+					// 			}
+					// 		}
+					// 	}
+					// }
+
+					// Fix #11809: Avoid leaking memory
+					fragment = first = null;
+				}
+			}
+
+			return this;
+		},
+
+		replaceWith: function( value ) {
+			var isFunc = typed.isFun( value );
+
+			// Make sure that the elements are removed from the DOM before they are inserted
+			// this can help fix replacing a parent with child elements
+			if ( !isFunc && typeof value !== "string" ) {
+				value = $( value ).not( this ).detach( );
+			}
+
+			return this.domManip( [ value ], true, function( elem ) {
+				var next = this.nextSibling,
+					parent = this.parentNode;
+
+				if ( parent ) {
+					$( this ).remove( );
+					parent.insertBefore( elem, next );
+				}
 			} );
 		},
 
