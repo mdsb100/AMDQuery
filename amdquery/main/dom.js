@@ -1152,7 +1152,7 @@
 			dataAndEvents = dataAndEvents == null ? false : dataAndEvents;
 			deepDataAndEvents = deepDataAndEvents == null ? dataAndEvents : deepDataAndEvents;
 			return this.map( function( ) {
-				return dom.clone( this );
+				return dom.clone( this, dataAndEvents, deepDataAndEvents );
 			} );
 		},
 		css: function( style, value ) {
@@ -1249,27 +1249,36 @@
 			}
 			return this;
 		},
-		appendTo: function( father ) {
-			/// <summary>添加当前的$所有元素到最前面
-			/// <para>father为$添加的目标为第一个子元素</para>
-			/// <para>father为ele则目标就是father</para>
-			/// </summary>
-			/// <param name="father" type="Element/$">父元素类型</param>
-			/// <returns type="self" />
-			var f = father;
-			if ( typed.isEle( f ) ) {} else if ( typed.is$( f ) ) {
-				f = f[ 0 ];
-			} else {
-				f = null;
-			}
-			if ( f ) {
-				this.each( function( ele ) {
-					f.appendChild( ele );
-				} );
-			}
 
-			return this;
+		prepend: function( ) {
+			return this.domManip( arguments, true, function( elem ) {
+				if ( this.nodeType === 1 || this.nodeType === 11 || this.nodeType === 9 ) {
+					this.insertBefore( elem, this.firstChild );
+				}
+			} );
 		},
+
+		// appendTo: function( father ) {
+		// 	/// <summary>添加当前的$所有元素到最前面
+		// 	/// <para>father为$添加的目标为第一个子元素</para>
+		// 	/// <para>father为ele则目标就是father</para>
+		// 	/// </summary>
+		// 	/// <param name="father" type="Element/$">父元素类型</param>
+		// 	/// <returns type="self" />
+		// 	var f = father;
+		// 	if ( typed.isEle( f ) ) {} else if ( typed.is$( f ) ) {
+		// 		f = f[ 0 ];
+		// 	} else {
+		// 		f = null;
+		// 	}
+		// 	if ( f ) {
+		// 		this.each( function( ele ) {
+		// 			f.appendChild( ele );
+		// 		} );
+		// 	}
+
+		// 	return this;
+		// },
 
 		getLeft: function( ) {
 			/// <summary>获得第一个元素离左边框的总长度
@@ -1347,90 +1356,30 @@
 				$.setInnerW( ele, width );
 			} ) : $.getInnerW( this[ 0 ] );
 		},
-		//Deprecated
-		insertAfter: function( newChild, refChild ) {
-			/// <summary>为$的某个元素后面加入子元素
-			/// <para>字符串是标签名:div</para>
-			/// <para>DOM元素</para>
-			/// <para>若为$，则为此$第一个元素添加另一个$的所有元素</para>
-			/// <para>也可以为这种形式：<span><span/><input /></para>
-			/// <para>select去append("<option></option>")存在问题</para>
-			/// <para>$({ i:"abc" }, "option")可以以这样方式实现</para>
-			/// </summary>
-			/// <param name="newChild" type="String/Element/$">新元素</param>
-			/// <param name="refChild" type="String/Element/$">已有元素,若为$则以第一个为准</param>
-			/// <returns type="self" />
-			return $.insertBefore( newChild, refChild.nextSibling );
-		},
 		after: function( refChild ) {
-			/// <summary>添加当前的$元素到添加到某个元素后面
-			/// <para>father为$添加的目标为第一个子元素</para>
-			/// <para>father为ele则目标就是father</para>
+			/// <summary>添加某个元素到$后面
 			/// </summary>
 			/// <param name="refChild" type="String/Element/$">已有元素</param>
 			/// <returns type="self" />
-			return $.before( refChild.nextSibling );
-		},
-		//Deprecated
-		insertBefore: function( newChild, refChild ) {
-			/// <summary>为$的某个元素前面加入子元素
-			/// <para>字符串是标签名:div</para>
-			/// <para>DOM元素</para>
-			/// <para>若为$，则为此$第一个元素添加另一个$的所有元素</para>
-			/// <para>也可以为这种形式：<span><span/><input /></para>
-			/// <para>select去append("<option></option>")存在问题</para>
-			/// <para>$({ i:"abc" }, "option")可以以这样方式实现</para>
-			/// </summary>
-			/// <param name="newChild" type="String/Element/$">新元素</param>
-			/// <param name="refChild" type="String/Element/$">已有元素,若为$则以第一个为准</param>
-			/// <returns type="self" />
-			var ele = this.eles[ 0 ];
-			if ( !newChild ) return this;
-			if ( typed.is$( refChild ) ) {
-				refChild = refChild[ 0 ];
-			}
-			if ( typed.isStr( newChild ) ) {
-				var str, childNodes, i = 0,
-					len;
-				str = newChild.match( /^<\w.+[\/>|<\/\w.>]$/ );
-				if ( str ) {
-					newChild = str[ 0 ];
-					this.each( function( ele ) {
-						childNodes = $.createEle( newChild );
-						//div.innerHTML = c;
-						for ( i = 0, len = childNodes.length; i < len; i++ ) {
-							ele.insertBefore( childNodes[ i ], refChild );
-						}
-						//delete div;
-					} );
+			return this.domManip( arguments, false, function( elem ) {
+				if ( this.parentNode ) {
+					this.parentNode.insertBefore( elem, this.nextSibling );
 				}
-			} else if ( typed.isEle( newChild ) || newChild.nodeType === 3 || newChild.nodeType === 8 ) {
-				ele.insertBefore( newChild, refChild );
-			} else if ( typed.is$( newChild ) ) {
-				newChild.each( function( newChild ) {
-					ele.insertBefore( newChild, refChild );
-				} );
-			}
-			return this;
+			} );
 		},
 		before: function( refChild ) {
-			/// <summary>添加当前的$元素到添加到某个元素前面
-			/// <para>father为$添加的目标为第一个子元素</para>
-			/// <para>father为ele则目标就是father</para>
+			/// <summary>添加某个元素到$前面
 			/// </summary>
 			/// <param name="father" type="Element/$">父元素</param>
 			/// <param name="refChild" type="String/Element/$">已有元素</param>
 			/// <returns type="self" />
 
-			if ( typed.is$( refChild ) ) {
-				refChild = refChild[ 0 ];
-			}
-
-			this.each( function( ele ) {
-				refChild.parentNode && refChild.parentNode.insertBefore( ele, refChild );
+			return this.domManip( arguments, false, function( elem ) {
+				if ( this.parentNode ) {
+					this.parentNode.insertBefore( elem, this );
+				}
 			} );
 
-			return this;
 		},
 		insertText: function( str ) {
 			/// <summary>给当前对象的所有ele插入TextNode</summary>
@@ -1704,7 +1653,7 @@
 
 		domManip: function( args, table, callback ) {
 			// Flatten any nested arrays
-			args = [ ].concat( args );
+			args = [ ].concat.apply( [], args );
 
 			var first, node, hasScripts,
 				scripts, doc, fragment,
@@ -1821,8 +1770,8 @@
 
 		wrapAll: function( html ) {
 			if ( typed.isFun( html ) ) {
-				return this.each( function( i ) {
-					$( this ).wrapAll( html.call( this, i ) );
+				return this.each( function( ele, i ) {
+					$( ele ).wrapAll( html.call( this, i ) );
 				} );
 			}
 
@@ -1850,13 +1799,13 @@
 
 		wrapInner: function( html ) {
 			if ( typed.isFun( html ) ) {
-				return this.each( function( i ) {
-					$( this ).wrapInner( html.call( this, i ) );
+				return this.each( function( ele, i ) {
+					$( ele ).wrapInner( html.call( this, i ) );
 				} );
 			}
 
-			return this.each( function( ) {
-				var self = $( this ),
+			return this.each( function( ele ) {
+				var self = $( ele ),
 					contents = self.contents( );
 
 				if ( contents.length ) {
@@ -1869,20 +1818,46 @@
 		},
 
 		wrap: function( html ) {
-			var isFunction = $.isFun( html );
+			var isFunction = typed.isFun( html );
 
-			return this.each( function( i ) {
-				$( this ).wrapAll( isFunction ? html.call( this, i ) : html );
+			return this.each( function( ele, i ) {
+				$( ele ).wrapAll( isFunction ? html.call( this, i ) : html );
 			} );
 		},
 
 		unwrap: function( ) {
-			return this.parent( ).each( function( ) {
+			return this.parent( ).each( function( ele ) {
 				if ( !typed.isNode( this, "body" ) ) {
-					$( this ).replaceWith( this.childNodes );
+					$( ele ).replaceWith( this.childNodes );
 				}
 			} ).end( );
 		}
+	} );
+
+	$.each( {
+		appendTo: "append",
+		prependTo: "prepend",
+		insertBefore: "before",
+		insertAfter: "after",
+		replaceAll: "replaceWith"
+	}, function( original, name ) {
+		$.fn[ name ] = function( selector ) {
+			var elems,
+				i = 0,
+				ret = [ ],
+				insert = $( selector ),
+				last = insert.length - 1;
+
+			for ( ; i <= last; i++ ) {
+				elems = i === last ? this : this.clone( true );
+				$( insert[ i ] )[ original ]( elems );
+
+				// Modern browsers can apply aQuery collections as arrays, but oldIE needs a .get()
+				ret.push.apply( ret, elems.get( ) );
+			}
+
+			return $( ret );
+		};
 	} );
 
 	var cssHooks = {

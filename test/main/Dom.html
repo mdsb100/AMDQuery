@@ -11,7 +11,7 @@
     <script src="../../amdquery/amdquery.js" type="text/javascript" amdquery="define:$;"
         amd="detectCR:1;"></script>
     <script type="text/javascript">
-        $.require(["main/query", "main/dom", "html5/css3"], function (query, dom) {
+        $.require(["main/query", "main/dom", "html5/css3", "module/parse"], function (query, dom, css3, parse) {
             $.ready(function () {
                 var test = $("#test");
                 var color = test.css("background-color");
@@ -29,12 +29,20 @@
                 test.outerWidth(200, true);
                 outterWidth2 = test.outerWidth(true);
                 outterWidth1 = test.outerWidth();
+
+                var wrap = $("#wrap");
+
+                wrap.wrap(parse.HTML("<div style='dispaly:block;clear:left;width:100px;height:100px;background-color: green;'></div>"));
             });
         })
     </script>
 </head>
 <body style="overflow: auto">
-    <div id="test" style="dispaly:block;float:left;border:10px solid green;width:100px;height:100px;padding-left:20px;margin-right:40px;background-color: red;" >
+    <div id="test" style="dispaly:block;clear:left;border:10px solid green;width:100px;height:100px;padding-left:20px;margin-right:40px;background-color: red;" >
+
+    </div>
+    <hr style="clear:left"/>
+    <div id="wrap" style="dispaly:block;clear:left;width:100px;height:100px;background-color: green;" >
 
     </div>
 </body>

@@ -6,6 +6,9 @@
 ( function( window, undefined ) {
   "use strict"; //启用严格模式
   var
+  core_slice = [].slice;
+
+  var
   version = "AMDQuery 1.0.0",
     util = {
       argToArray: function( arg, start, end ) {
@@ -14,7 +17,7 @@
         /// <param name="start" type="Number">开始</param>
         /// <param name="end" type="Number">结束</param>
         /// <returns type="Array" />
-        return [ ].slice.call( arg, start || 0, end || arg.length );
+        return core_slice.call( arg, start || 0, end || arg.length );
       },
 
       console: ( function( ) {
@@ -682,6 +685,22 @@
       /// <summary>返回生成$对象的总数</summary>
       /// <returns type="Number" />
       return count;
+    },
+
+    toArray: function() {
+      return core_slice.call( this );
+    },
+
+    // Get the Nth element in the matched element set OR
+    // Get the whole matched element set as a clean array
+    get: function( num ) {
+      return num == null ?
+
+        // Return a 'clean' array
+        this.toArray() :
+
+        // Return just the object
+        ( num < 0 ? this[ this.length + num ] : this[ num ] );
     },
 
     version: version
