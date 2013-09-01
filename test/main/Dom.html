@@ -32,7 +32,13 @@
 
                 var wrap = $("#wrap");
 
-                wrap.wrap(parse.HTML("<div style='dispaly:block;clear:left;width:100px;height:100px;background-color: green;'></div>"));
+                wrap.wrap(parse.HTML("<div style='dispaly:block;clear:left;width:400px;height:400px;background-color: red;'></div>"));
+
+                var clone = $( parse.HTML("<div id='clone' style='dispaly:block;clear:left;width:200px;height:200px;background-color: blue;'></div>") ).data("test", 50).clone(true);
+
+                wrap.after(clone);
+
+                console.log(clone.data("test"))
             });
         })
     </script>

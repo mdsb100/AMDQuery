@@ -402,13 +402,11 @@
 		}
 
 		var oldData = data.data( src );
-		var curData = data.data( dest );
+		var curData = data.data( dest, oldData );
 
 		event.cloneHandlers( dest, src );
 
-		// if ( curData.data ) {
-		$.extend( true, curData, oldData.data );
-		// }
+		// $.extend( true, curData, oldData.data );
 	}
 
 	var dom = {

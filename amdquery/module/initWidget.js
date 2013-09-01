@@ -16,7 +16,7 @@ aQuery.define( "module/initWidget", [ "base/typed", "main/query", "main/dom", "m
       left: 0,
       zIndex: 10001,
       backgroundColor: "white"
-    }, "div" ).append( $image ).insertBefore( body.children( )[0] );
+    }, "div" ).append( $image ).insertBefore( body.children( ) );
 
   $image.css( {
     marginTop: -$image.width( ) + "px",

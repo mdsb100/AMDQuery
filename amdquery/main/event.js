@@ -171,7 +171,7 @@
 
 			cloneHandlers: function( ele, handlerEve ) {
 				var customEvent = data.data( handlerEve, "_handlers_" );
-				if ( CustomEvent ) {
+				if ( customEvent ) {
 					var handlerMap = customEvent._handlerMap,
 						j = 0,
 						len = 0,
