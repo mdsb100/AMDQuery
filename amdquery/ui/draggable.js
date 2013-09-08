@@ -1,4 +1,11 @@
-﻿aQuery.define( "ui/draggable", [ "module/Widget", "main/event", "main/dom", "html5/css3", "main/query" ], function( $, Widget, event, dom, cls3, query, undefined ) {
+﻿aQuery.define( "ui/draggable", [
+  "module/Widget",
+  "main/event",
+  "main/css",
+  "main/position",
+  "main/dom",
+  "html5/css3",
+  "main/query" ], function( $, Widget, event, css, position, dom, cls3, query, undefined ) {
   "use strict"; //启用严格模式
   var eventFuns = event.event.document,
   draggable = Widget.extend( "ui.draggable", {

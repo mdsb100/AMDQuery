@@ -1,4 +1,4 @@
-aQuery.define( "module/initWidget", [ "base/typed", "main/query", "main/dom", "main/attr", "module/Widget" ], function( $, typed, query, dom, attr, Widget, undefinded ) {
+aQuery.define( "module/initWidget", [ "base/typed", "main/query", "main/css", "main/position", "main/dom", "main/attr", "module/Widget" ], function( $, typed, query, css, position, dom, attr, Widget, undefinded ) {
   "use strict"; //启用严格模式
 
   var body = $( "body" ),

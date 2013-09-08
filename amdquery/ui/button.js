@@ -4,13 +4,15 @@ aQuery.define( "ui/button", [
     "main/query",
     "main/class",
     "main/event",
+    "main/css",
+    "main/position",
     "main/dom",
     "main/attr",
     "module/src",
     "html5/css3"
   ],
 
-  function( $, client, Widget, query, cls, event, dom, attr, src, css3 ) {
+  function( $, client, Widget, query, cls, event, css, position, dom, attr, src, css3 ) {
     "use strict"; //启用严格模式
 
     src.link( {
