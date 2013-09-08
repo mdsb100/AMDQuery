@@ -275,8 +275,8 @@
 	function getAll( context, tag ) {
 		var elems, elem,
 			i = 0,
-			found = typeof context.getElementsByTagName !== undefined ? context.getElementsByTagName( tag || "*" ) :
-				typeof context.querySelectorAll !== undefined ? context.querySelectorAll( tag || "*" ) :
+			found = typeof context.getElementsByTagName !== "undefined" ? context.getElementsByTagName( tag || "*" ) :
+				typeof context.querySelectorAll !== "undefined" ? context.querySelectorAll( tag || "*" ) :
 				undefined;
 
 		if ( !found ) {

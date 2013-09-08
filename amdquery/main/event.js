@@ -95,7 +95,7 @@
 						item = types[ i ];
 						if ( data.hasHandler( item, fun ) == -1 && _domEventList[ item ] ) {
 							item = tools.editEventType( item );
-							$.event.document._addHanler( ele, item, proxy );
+							$.event.document._addHandler( ele, item, proxy );
 						}
 					}
 
@@ -178,10 +178,10 @@
 						i, item, fun;
 
 					for ( i in handlerMap ) {
-						item = CustomEvent._nameSpace( i );
+						item = customEvent._nameSpace( i );
 						for ( j = 0, len = item.length; j < len; j++ ) {
 							fun = item[ j ];
-							_domEventList[ i ] && event.document._addHandler( ele, i, fun.__guid || fun );
+							_domEventList[ i ] && $.event.document._addHandler( ele, i, fun.__guid || fun );
 						}
 					}
 					data.data( ele, "_handlers_", customEvent );
@@ -241,11 +241,11 @@
 						var types = type.split( " " ),
 							i = types.length - 1;
 						for ( ; i >= 0; i-- ) {
-							this._addHanler( ele, types[ i ], fn );
+							this._addHandler( ele, types[ i ], fn );
 						}
 
 					},
-					_addHanler: function( ele, type, fn ) {
+					_addHandler: function( ele, type, fn ) {
 						if ( ele.addEventListener ) ele.addEventListener( type, fn, false ); //事件冒泡
 						else if ( ele.attachEvent ) ele.attachEvent( "on" + type, fn );
 						else {
