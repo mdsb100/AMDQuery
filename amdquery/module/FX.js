@@ -1,4 +1,4 @@
-﻿aQuery.define( "module/FX", [ "base/typed", "base/array", "main/dom", "main/object" ], function( $, typed, array, dom, object, undefined ) {
+﻿aQuery.define( "module/FX", [ "base/typed", "base/array", "main/css", "main/object" ], function( $, typed, array, css, object, undefined ) {
   "use strict"; //启用严格模式
   var rfxnum = /^([+-]=)?([\d+-.]+)(.*)$/;
 
@@ -87,7 +87,7 @@
 
     update: function( nowPos ) {
       nowPos = nowPos == undefined ? this.nowPos.toFixed( 2 ) : nowPos;
-      $.css( this.ele, this.name, nowPos + this.unit );
+      css.css( this.ele, this.name, nowPos + this.unit );
     },
 
     isInDelay: function( ) {
@@ -123,8 +123,8 @@
         return ele[ name ];
       }
       var r;
-      r = parseFloat( $.css( ele, name ) );
-      r = r !== undefined && r > -10000 ? r : parseFloat( $.curCss( ele, name ) ) || 0;
+      r = parseFloat( css.css( ele, name ) );
+      r = r !== undefined && r > -10000 ? r : parseFloat( css.curCss( ele, name ) ) || 0;
       return r !== "auto" ? r : 0;
     },
 
@@ -181,6 +181,6 @@
     tick: function( ) {}
   } );
   $.fx = FX;
-  
+
   return FX;
 } );

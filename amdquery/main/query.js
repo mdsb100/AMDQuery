@@ -41,7 +41,7 @@
       } );
 
       if ( isSimple.test( qualifier ) ) {
-        return array.filter( qualifier, filtered, !keep );
+        return $.filter( qualifier, filtered, !keep );
       } else {
         qualifier = $.filter( qualifier, filtered );
       }
@@ -330,7 +330,7 @@
         typed.isStr( str ) ?
         rneedsContext.test( str ) ?
         $.find( str, this.context ).index( this[ 0 ] ) >= 0 :
-        array.filter( str, this.eles ).length > 0 :
+        $.filter( str, this.eles ).length > 0 :
         this.filter( str ).length > 0 );
     },
 
@@ -410,7 +410,7 @@
       }
 
       if ( selector && typeof selector === "string" ) {
-        ret = array.filter( selector, ret );
+        ret = $.filter( selector, ret );
       }
 
       ret = this.length > 1 && !guaranteedUnique[ name ] ? $.unique( ret ) : ret;

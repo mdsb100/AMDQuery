@@ -1,4 +1,4 @@
-aQuery.define( "main/dom", [ "base/typed", "base/extend", "base/array", "base/support", "base/client", "main/data", "main/query" ], function( $, typed, utilExtend, utilArray, support, client, data, query, undefined ) {
+aQuery.define( "main/css", [ "base/typed", "base/extend", "base/array", "base/support", "base/client", "main/data", "main/query" ], function( $, typed, utilExtend, utilArray, support, client, data, query, undefined ) {
 	"use strict"; //启用严格模式
 	var rnumnonpx = /^-?(?:\d*\.)?\d+(?!px)[^\d\s]+$/i,
 		rmargin = /^margin/,
@@ -114,7 +114,7 @@ aQuery.define( "main/dom", [ "base/typed", "base/extend", "base/array", "base/su
 		};
 	}
 
-	var dom = {
+	var css = {
 		css: function( ele, name, value, style, extra ) {
 			/// <summary>为元素添加样式</summary>
 			/// <param name="ele" type="Element">元素</param>
@@ -131,7 +131,7 @@ aQuery.define( "main/dom", [ "base/typed", "base/extend", "base/array", "base/su
 			var originName = $.util.camelCase( name );
 
 			var hooks = cssHooks[ name ] || {};
-			name = $.cssProps[ originName ] || ( $.cssProps[ originName ] = dom.vendorPropName( style, originName ) );
+			name = $.cssProps[ originName ] || ( $.cssProps[ originName ] = css.vendorPropName( style, originName ) );
 
 			if ( value == undefined ) {
 				var val = hooks.get ? hooks.get( ele, name ) : curCSS( ele, name, style );
@@ -184,7 +184,7 @@ aQuery.define( "main/dom", [ "base/typed", "base/extend", "base/array", "base/su
 			/// <param name="type" type="String">样式名 缺省返回""</param>
 			/// <param name="head" type="String">样式名的头 缺省则无</param>
 			/// <returns type="String" />
-			return dom.styleTable( ele )[ $.util.camelCase( type, head ) ];
+			return css.styleTable( ele )[ $.util.camelCase( type, head ) ];
 		},
 		styleTable: function( ele ) {
 			/// <summary>返回元素样式表</summary>
@@ -437,9 +437,9 @@ aQuery.define( "main/dom", [ "base/typed", "base/extend", "base/array", "base/su
 
 	var cssHooks = {
 		"opacity": {
-			"get": dom.getOpacity,
+			"get": css.getOpacity,
 			"set": function( ele, name, value ) {
-				dom.setOpacity( ele, value );
+				css.setOpacity( ele, value );
 			}
 		}
 	};
@@ -449,7 +449,7 @@ aQuery.define( "main/dom", [ "base/typed", "base/extend", "base/array", "base/su
 			get: function( elem ) {
 				// WebKit Bug 13343 - getComputedStyle returns wrong value for margin-right
 				// Work around by temporarily setting element display to inline-block
-				return dom.swap( elem, {
+				return css.swap( elem, {
 						"display": "inline-block"
 					},
 					curCSS, [ elem, "marginRight" ] );
@@ -457,12 +457,12 @@ aQuery.define( "main/dom", [ "base/typed", "base/extend", "base/array", "base/su
 		};
 	}
 
-	dom.cssHooks = cssHooks;
+	css.cssHooks = cssHooks;
 
-	$.extend( dom );
+	$.extend( css );
 
 	// do not extend $
-	dom.vendorPropName = function( style, name ) {
+	css.vendorPropName = function( style, name ) {
 		return name;
 	};
 
@@ -471,5 +471,5 @@ aQuery.define( "main/dom", [ "base/typed", "base/extend", "base/array", "base/su
 		parentNode && ( typed.isEle( parentNode ) || typed.is$( parentNode ) ) && dollar.appendTo( parentNode );
 	} );
 
-	return dom;
+	return css;
 }, "consult JQuery1.9.1" );

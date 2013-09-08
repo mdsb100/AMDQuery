@@ -1,17 +1,19 @@
 ﻿aQuery.define( "ui/accordion", [
-  "base/typed", 
+  "base/typed",
   "base/extend",
   "main/object",
   "module/Widget",
   "main/class",
   "main/event",
   "main/CustomEvent",
+  "main/css",
+  "main/position",
   "main/dom",
   "module/src",
   "module/animate",
   "html5/css3.transition.animate",
   "module/effect"
-], function( $, typed, utilExtend, object, Widget, css, event, CustomEvent, dom, src ) {
+], function( $, typed, utilExtend, object, Widget, css, event, CustomEvent, css, position, dom, src ) {
   "use strict"; //启用严格模式
   src.link( {
     href: $.getPath( "ui/css/accordion", ".css" )

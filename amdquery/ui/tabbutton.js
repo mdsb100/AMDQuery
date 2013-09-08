@@ -4,11 +4,13 @@ aQuery.define( "ui/tabbutton", [
     "main/query",
     "main/class",
     "main/event",
+    "main/css",
+    "main/position",
     "main/dom",
     "html5/css3",
     "module/src"
   ],
-  function( $, Widget, Button, query, cls, event, dom, css3, src ) {
+  function( $, Widget, Button, query, cls, event, css, position, dom, css3, src ) {
     "use strict"; //启用严格模式
 
     src.link( {

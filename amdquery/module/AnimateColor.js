@@ -1,4 +1,4 @@
-﻿aQuery.define( "module/AnimateColor", [ "base/extend", "main/object", "module/color", "main/dom", "module/FX" ], function( $, utilExtend, object, color, dom, FX ) {
+﻿aQuery.define( "module/AnimateColor", [ "base/extend", "main/object", "module/color", "main/css", "module/FX" ], function( $, utilExtend, object, color, css, FX ) {
   "use strict"; //启用严格模式
   var AnimateColor = FX.extend( function AnimateColor( ele, options, value, name, type ) {
     if ( this instanceof AnimateColor ) {
@@ -32,7 +32,7 @@
       };
     },
     cur: function( ) {
-      return color( dom.style( this.ele, this.name ) );
+      return color( css.style( this.ele, this.name ) );
     },
     update: function( ) {
       var _color = this.cur( );

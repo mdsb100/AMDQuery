@@ -1,5 +1,5 @@
 ﻿/*deprecated*/
-aQuery.define( "ui/turnBook", [ "base/typed", "main/class", "html5/css3", "ui/swappable", "module/Widget" ], function( $, typed, cls, css3, swappable, Widget, undefined ) {
+aQuery.define( "ui/turnBook", [ "base/typed", "main/css", "main/position", "main/dom", "main/class", "html5/css3", "ui/swappable", "module/Widget" ], function( $, typed, css1, position, dom, cls, css3, swappable, Widget, undefined ) {
   "use strict"; //启用严格模式
   var turnBook = Widget.extend( "ui.turnBook", {
     appendTo: function( index ) {
@@ -419,11 +419,11 @@ aQuery.define( "ui/turnBook", [ "base/typed", "main/class", "html5/css3", "ui/sw
             e.type = "turnbookstop";
             target.trigger( "turnbookstop", self, e );
             break;
-            //                    case "mouseout":                                                                        
-            //                        if (opt.inductionCorner == true && mouseshow) {                                                                        
-            //                            self.showPages(index);                                                                        
-            //                        }                                                                        
-            //                        break;                                                                        
+            //                    case "mouseout":
+            //                        if (opt.inductionCorner == true && mouseshow) {
+            //                            self.showPages(index);
+            //                        }
+            //                        break;
         }
       };
 

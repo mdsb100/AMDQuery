@@ -1,4 +1,4 @@
-aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "base/client", "main/css" ], function( $, typed, utilExtend, support, client, utilCss, undefined ) {
+aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "base/client", "main/css" ], function( $, typed, utilExtend, support, client, css, undefined ) {
 	"use strict"; //启用严格模式
 	var rnumnonpx = /^-?(?:\d*\.)?\d+(?!px)[^\d\s]+$/i,
 		rnumsplit = new RegExp( "^(" + $.reg.core_pnum + ")(.*)$", "i" ),
@@ -371,8 +371,9 @@ aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "
 			ele.style.width = setSize( ele, "width", width, bol === true ? "margin" : "border" );
 			return this;
 		}
-
 	};
+
+  $.extend(position);
 
 	$.fn.extend( {
 		width: function( width ) {

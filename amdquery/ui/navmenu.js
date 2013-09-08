@@ -1,16 +1,18 @@
 aQuery.define( "ui/navmenu", [
-    "base/typed", 
+    "base/typed",
     "base/extend",
     "ui/navitem",
     "module/Widget",
     "main/query",
     "main/class",
     "main/event",
+    "main/css",
+    "main/position",
     "main/dom",
     "main/attr",
     "module/src"
   ],
-  function( $, typed, utilExtend, NavItem, Widget, query, cls, event, dom, attr, src ) {
+  function( $, typed, utilExtend, NavItem, Widget, query, cls, event, css, position, dom, attr, src ) {
     "use strict"; //启用严格模式
 
     src.link( {

@@ -5,13 +5,15 @@ aQuery.define( "ui/splitter", [
     "main/query",
     "main/class",
     "main/event",
+    "main/css",
+    "main/position",
     "main/dom",
     "main/attr",
     "module/src",
     "html5/css3",
     "ui/splitterpane"
   ],
-  function( $, typed, support, Widget, query, cls, event, dom, attr, src, css3, splitterpane ) {
+  function( $, typed, support, Widget, query, cls, event, css, position, dom, attr, src, css3, splitterpane ) {
     "use strict"; //启用严格模式
     var proto, splitter;
     if ( support.box ) {

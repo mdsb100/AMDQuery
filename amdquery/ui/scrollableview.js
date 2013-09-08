@@ -1,4 +1,18 @@
-aQuery.define( "ui/scrollableview", [ "main/query", "main/dom", "main/class", "html5/css3", "html5/animate.transform", "html5/css3.transition.animate", "ui/swappable", "ui/draggable", "module/src", "module/Widget", "module/animate", "module/tween.extend" ], function( $, query, dom, cls, cls3, animateTransform, cls3Transition, swappable, draggable, src, Widget, animate, tween, undefined ) {
+aQuery.define( "ui/scrollableview", [
+  "main/query",
+  "main/css",
+  "main/position",
+  "main/dom",
+  "main/class",
+  "html5/css3",
+  "html5/animate.transform",
+  "html5/css3.transition.animate",
+  "ui/swappable",
+  "ui/draggable",
+  "module/src",
+  "module/Widget",
+  "module/animate",
+  "module/tween.extend" ], function( $, query, css, position, dom, cls, css3, animateTransform, css3Transition, swappable, draggable, src, Widget, animate, tween, undefined ) {
   "use strict"; //启用严格模式
   src.link( {
     href: $.getPath( "ui/css/scrollableview", ".css" )

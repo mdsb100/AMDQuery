@@ -1,9 +1,11 @@
 aQuery.define( "ui/navitem", [
-    "base/typed", 
+    "base/typed",
     "base/client",
     "module/Widget",
     "main/class",
     "main/event",
+    "main/css",
+    "main/position",
     "main/dom",
     "main/attr",
     "module/animate",
@@ -11,11 +13,11 @@ aQuery.define( "ui/navitem", [
     "module/tween.extend",
     "module/effect"
   ],
-  function( $, typed, client, Widget, cls, event, dom, attr, src, animate ) {
+  function( $, typed, client, Widget, cls, event, css, position, dom, attr, src, animate ) {
     "use strict"; //启用严格模式
 
     var complete = function( ) {
-      dom.css( this, "height", "auto" );
+      css.css( this, "height", "auto" );
     };
     var navitem = Widget.extend( "ui.navitem", {
       container: null,
