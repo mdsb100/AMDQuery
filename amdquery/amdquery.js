@@ -253,6 +253,8 @@
         var obj = document.createElement( b );
         this.init( [ obj ] );
 
+        $.interfaces.trigger( "constructorCSS", this, a, b, c );
+
         $.interfaces.trigger( "constructorDom", this, a, b, c );
 
         obj = null;
@@ -307,6 +309,7 @@
       handlers: {
         editEventType: null,
         proxy: null,
+        constructorCSS: null,
         constructorDom: null,
         constructorQuery: null
       }

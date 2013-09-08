@@ -57,6 +57,8 @@
     unique: Sizzle.uniqueSort,
     text: Sizzle.getText,
 
+    contains: Sizzle.contains,
+
     dir: function( ele, dir, until ) {
       var matched = [ ],
         cur = ele[ dir ];
