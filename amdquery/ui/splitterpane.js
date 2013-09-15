@@ -1,5 +1,5 @@
 aQuery.define( "ui/splitterpane", [
-    "base/typed", 
+    "base/typed",
     "base/support",
     "module/Widget",
     "main/query",
@@ -8,9 +8,10 @@ aQuery.define( "ui/splitterpane", [
     "main/dom",
     "main/attr",
     "module/src",
-    "html5/css3"
+    "html5/css3",
+    "util/function.extend"
   ],
-  function( $, typed, support, Widget, query, cls, event, dom, attr, src, css3 ) {
+  function( $, typed, support, Widget, query, cls, event, dom, attr, src, css3, functionExtend ) {
     "use strict"; //启用严格模式
 
     src.link( {
@@ -123,24 +124,30 @@ aQuery.define( "ui/splitterpane", [
         container: null,
         event: function( ) {},
         _initHandler: function( ) {
-          // var self = this;
-          this.event = function( e ) {
-
-          };
+          var self = this;
+          this.event = functionExtend( function( e ) {
+            switch ( e.type ) {
+              case "resize":
+                self.resize( );
+                break;
+            }
+          }, 15 );
           return this;
         },
         enable: function( ) {
-
+          event.on( window, "resize", this.event );
           this.options.disabled = true;
           return this;
         },
         disable: function( ) {
-
+          event.off( window, "resize", this.event );
           this.options.disabled = false;
           return this;
         },
         render: function( width, height ) {
-          return this.resize( width, height );
+          this.resize( width, height );
+          this.target.find( "li[ui-splitter]" ).uiSplitterpane( "resize" );
+          return this;
         },
         resize: function( width, height ) {
           var opt = this.options;
@@ -270,7 +277,7 @@ aQuery.define( "ui/splitterpane", [
           this.height = 0;
           this.traceWidth = 0;
           this.traceHeight = 0;
-          this.render( );
+          this.resize( );
           return this;
         },
         customEventName: [ ],
