@@ -204,6 +204,7 @@
     },
     ui: {
       initWidget: false,
+      autoFetchCss: true,
       image: "welcome.gif"
     },
     module: {

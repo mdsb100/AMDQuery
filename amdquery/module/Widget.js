@@ -524,9 +524,11 @@
       return attrNames;
     },
     fetchCSS: function( path ) {
-      src.link( {
-        href: $.getPath( path, ".css" )
-      } );
+      if ( $.config.ui.autoFetchCss ) {
+        src.link( {
+          href: $.getPath( path, ".css" )
+        } );
+      }
     },
     renderWidget: function( ele, funName ) {
       var widgetNames = Widget.getAttrWidgets( ele ),
