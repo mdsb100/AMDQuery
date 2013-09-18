@@ -18,7 +18,7 @@ aQuery.define( "ui/splitter", [
     var proto, splitter;
     if ( support.box ) {
       var boxFlexName = splitterpane.boxFlexName,
-      originBoxFlexValue = document.documentElement.style[ boxFlexName ];
+        originBoxFlexValue = document.documentElement.style[ boxFlexName ];
 
       proto = {
         container: null,
@@ -114,28 +114,45 @@ aQuery.define( "ui/splitter", [
           return this;
         },
         render: function( ) {
-
+          this.noticeParent( );
           return this;
         },
         resize: function( width, height ) {
-          typed.isNul( width ) && this.setWidth( width );
-          typed.isNul( height ) && this.setHeight( height );
+          typed.isNul( width ) && this.target.width( width );
+          typed.isNul( height ) && this.target.height( height );
+          this.render( );
         },
         setWidth: function( width ) {
           this.target.width( width );
+          this.render( );
         },
         setHeight: function( height ) {
           this.target.height( height );
+          this.render( );
         },
         _setFlex: function( flex ) {
           if ( typed.isNum( flex ) && flex >= 0 ) {
-            this.options.flex = flex;
-            //要通知父元素更改
+            if ( this.options.flex !== flex ) {
+              this.options.flex = flex;
+            }
           }
+        },
+        noticeParent: function( ) {
+          var parent = this.findParent( );
+          if ( parent ) {
+            parent.uiSplitterpane( "render" );
+          }
+        },
+        findParent: function( ) {
+          var parent = this.target.parentsUntil( "*[ui-splitterpane]" );
+          if ( parent.length && parent.first === this.target.first.parentNode ) {
+            return parent;
+          }
+          return null;
         },
         init: function( opt, target ) {
           this._super( opt, target );
-
+          this.render( );
           return this;
         },
         customEventName: [ ],

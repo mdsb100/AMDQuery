@@ -8,8 +8,10 @@
   "main/attr",
   "main/object",
   "module/utilEval"
-], function( $, typed, utilExtend, array, data, query, event, attr, object, utilEval, undefined ) {
+ ], function( $, typed, utilExtend, array, data, query, event, attr, object, utilEval, undefined ) {
   "use strict"; //启用严格模式
+
+  var prefix = "amdquery";
 
   function getWidgetsName( eles ) {
     var widgetNames = [ ],
@@ -131,7 +133,7 @@
       var tag = this.toString( ),
         optionAttr = this.widgetNameSpace + "-" + this.widgetName,
         optionTag = this.target.attr( optionAttr ),
-        widgetAttr = "amdquery-widget",
+        widgetAttr = prefix + "-widget",
         widgetTag = this.target.attr( widgetAttr );
 
       if ( widgetTag == undefined ) {
@@ -155,9 +157,9 @@
     },
     removeTag: function( ) {
       var tag = this.toString( ),
-        optionAttr = "amdquery-" + this.widgetNameSpace + "-" + this.widgetName,
+        optionAttr = prefix + "-" + this.widgetNameSpace + "-" + this.widgetName,
         optionTag = this.target.attr( optionTag ),
-        widgetAttr = "amdquery-widget",
+        widgetAttr = prefix + "-widget",
         widgetTag = this.target.attr( widgetAttr );
 
       if ( widgetTag != undefined ) {
@@ -488,7 +490,7 @@
       /// <param name="name" type="String">widget名字 如ui.navmenu</param>
       /// <returns type="Boolean" />
       if ( typed.is$( item ) ) {
-        var widgetTag = item.attr( "amdquery-widget" );
+        var widgetTag = item.attr( prefix + "-widget" );
         return item.attr( widgetName.replace( ".", "-" ) ) != undefined && widgetTag != undefined && widgetTag.indexOf( widgetName ) > -1;
       }
 
@@ -504,10 +506,10 @@
       return Widget[ tNameSpace ][ tName ];
     },
     findWidgets: function( parent ) {
-      return $( parent.parentNode || parent ).find( "*[amdquery-widget]" );
+      return $( parent.parentNode || parent ).find( "*[" + prefix + "-widget]" );
     },
     getAttrWidgets: function( ele ) {
-      var value = attr.getAttr( ele, "amdquery-widget" ),
+      var value = attr.getAttr( ele, prefix + "-widget" ),
         attrNames = typed.isStr( value ) && value != "" ? value.split( /;|,/ ) : [ ],
         widgetName = "",
         i;
@@ -526,8 +528,8 @@
 
       for ( i = widgetNames.length - 1; i >= 0; i-- ) {
         widgetName = widgetNames[ i ];
-        widgetName = widgetName.split(".");
-        key = $.util.camelCase(widgetName[1] , widgetName[0]);
+        widgetName = widgetName.split( "." );
+        key = $.util.camelCase( widgetName[ 1 ], widgetName[ 0 ] );
         if ( $( ele )[ key ] ) {
           $( ele )[ key ]( funName || "" );
         }
@@ -552,7 +554,7 @@
       return this;
     },
     destoryWidgets: function( parent, callback ) {
-      var eles = Widget.findWidgets( parent ).reverse();
+      var eles = Widget.findWidgets( parent ).reverse( );
       var widgetNames = getWidgetsName( eles );
 
       if ( widgetNames.length ) {
