@@ -9,15 +9,12 @@ aQuery.define( "ui/navmenu", [
     "main/css",
     "main/position",
     "main/dom",
-    "main/attr",
-    "module/src"
+    "main/attr"
   ],
-  function( $, typed, utilExtend, NavItem, Widget, query, cls, event, css, position, dom, attr, src ) {
+  function( $, typed, utilExtend, NavItem, Widget, query, cls, event, css, position, dom, attr ) {
     "use strict"; //启用严格模式
 
-    src.link( {
-      href: $.getPath( "ui/css/navmenu", ".css" )
-    } );
+    Widget.fetchCSS( "ui/css/navmenu" );
 
     var navmenu = Widget.extend( "ui.navmenu", {
       container: null,

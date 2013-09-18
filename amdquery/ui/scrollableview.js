@@ -9,14 +9,12 @@ aQuery.define( "ui/scrollableview", [
   "html5/css3.transition.animate",
   "ui/swappable",
   "ui/draggable",
-  "module/src",
   "module/Widget",
   "module/animate",
-  "module/tween.extend" ], function( $, query, css, position, dom, cls, css3, animateTransform, css3Transition, swappable, draggable, src, Widget, animate, tween, undefined ) {
+  "module/tween.extend" ], function( $, query, css, position, dom, cls, css3, animateTransform, css3Transition, swappable, draggable, Widget, animate, tween, undefined ) {
   "use strict"; //启用严格模式
-  src.link( {
-    href: $.getPath( "ui/css/scrollableview", ".css" )
-  } );
+  Widget.fetchCSS( "ui/css/scrollableview" );
+
   var transitionToAnimation = !! $.config.module.transitionToAnimation,
     scrollableview = Widget.extend( "ui.scrollableview", {
       container: null,

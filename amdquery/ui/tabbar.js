@@ -7,15 +7,12 @@ aQuery.define( "ui/tabbar", [
     "main/css",
     "main/position",
     "main/dom",
-    "main/attr",
-    "module/src"
+    "main/attr"
   ],
-  function( $, Widget, Button, query, cls, event, css, position, dom, attr, src ) {
+  function( $, Widget, Button, query, cls, event, css, position, dom, attr ) {
     "use strict"; //启用严格模式
 
-    src.link( {
-      href: $.getPath( "ui/css/tabbar", ".css" )
-    } );
+    Widget.fetchCSS( "ui/css/tabbar" );
 
     var tabbar = Widget.extend( "ui.tabbar", {
       container: null,

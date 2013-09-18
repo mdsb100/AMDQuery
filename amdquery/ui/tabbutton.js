@@ -7,15 +7,12 @@ aQuery.define( "ui/tabbutton", [
     "main/css",
     "main/position",
     "main/dom",
-    "html5/css3",
-    "module/src"
+    "html5/css3"
   ],
   function( $, Widget, Button, query, cls, event, css, position, dom, css3, src ) {
     "use strict"; //启用严格模式
 
-    src.link( {
-      href: $.getPath( "ui/css/tabbutton", ".css" )
-    } );
+    Widget.fetchCSS( "ui/css/tabbutton" );
 
     var tabbutton = Button.extend( "ui.tabbutton", {
       options: {
