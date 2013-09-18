@@ -9,16 +9,13 @@ aQuery.define( "ui/splitterpane", [
     "main/position",
     "main/dom",
     "main/attr",
-    "module/src",
     "html5/css3",
     "util/function.extend"
   ],
-  function( $, typed, support, Widget, query, cls, event, css, position, dom, attr, src, css3, functionExtend ) {
+  function( $, typed, support, Widget, query, cls, event, css, position, dom, attr, css3, functionExtend ) {
     "use strict"; //启用严格模式
 
-    src.link( {
-      href: $.getPath( "ui/css/splitterpane", ".css" )
-    } );
+    Widget.fetchCSS( "ui/css/splitterpane" );
 
     var domStyle = document.documentElement.style,
       boxFlexName = "",

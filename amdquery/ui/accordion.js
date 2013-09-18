@@ -9,15 +9,12 @@
   "main/css",
   "main/position",
   "main/dom",
-  "module/src",
   "module/animate",
   "html5/css3.transition.animate",
   "module/effect"
-], function( $, typed, utilExtend, object, Widget, css, event, CustomEvent, css, position, dom, src ) {
+], function( $, typed, utilExtend, object, Widget, css, event, CustomEvent, css, position, dom ) {
   "use strict"; //启用严格模式
-  src.link( {
-    href: $.getPath( "ui/css/accordion", ".css" )
-  } );
+  Widget.fetchCSS( "ui/css/accordion" );
 
   var Key = CustomEvent.extend( "Key", {
     init: function( key, parent ) {

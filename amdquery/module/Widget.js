@@ -7,8 +7,9 @@
   "main/event",
   "main/attr",
   "main/object",
+  "module/src",
   "module/utilEval"
- ], function( $, typed, utilExtend, array, data, query, event, attr, object, utilEval, undefined ) {
+ ], function( $, typed, utilExtend, array, data, query, event, attr, object, src, utilEval, undefined ) {
   "use strict"; //启用严格模式
 
   var prefix = "amdquery";
@@ -521,6 +522,11 @@
       }
 
       return attrNames;
+    },
+    fetchCSS: function( path ) {
+      src.link( {
+        href: $.getPath( path, ".css" )
+      } );
     },
     renderWidget: function( ele, funName ) {
       var widgetNames = Widget.getAttrWidgets( ele ),

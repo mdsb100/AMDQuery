@@ -8,16 +8,13 @@ aQuery.define( "ui/button", [
     "main/position",
     "main/dom",
     "main/attr",
-    "module/src",
     "html5/css3"
   ],
 
-  function( $, client, Widget, query, cls, event, css, position, dom, attr, src, css3 ) {
+  function( $, client, Widget, query, cls, event, css, position, dom, attr, css3 ) {
     "use strict"; //启用严格模式
 
-    src.link( {
-      href: $.getPath( "ui/css/button", ".css" )
-    } );
+    Widget.fetchCSS( "ui/css/button" );
 
     var button = Widget.extend( "ui.button", {
       container: null,
