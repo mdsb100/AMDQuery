@@ -17,94 +17,100 @@
       stack.push( self.constructor.prototype.__superConstructor );
     }
   },
-  popSuperStack = function( self ) {
-    var stack = self.__superStack;
-    if ( stack.length ) {
-      stack.pop( );
-    }
-  },
-  _getSuperConstructor = function( self ) {
-    var stack = self.__superStack,
-      tempConstructor;
+    popSuperStack = function( self ) {
+      var stack = self.__superStack;
+      if ( stack.length ) {
+        stack.pop( );
+      }
+    },
+    _getSuperConstructor = function( self ) {
+      var stack = self.__superStack,
+        tempConstructor;
 
-    if ( stack && stack.length ) {
-      tempConstructor = stack[ stack.length - 1 ];
-    } else {
-      tempConstructor = self.constructor.prototype.__superConstructor;
-    }
-    return tempConstructor;
-  },
-  _superInit = function( ) {
-    var tempConstructor;
+      if ( stack && stack.length ) {
+        tempConstructor = stack[ stack.length - 1 ];
+      } else {
+        tempConstructor = self.constructor.prototype.__superConstructor;
+      }
+      return tempConstructor;
+    },
+    _superInit = function( ) {
+      var tempConstructor;
 
-    pushSuperStack( this );
-    tempConstructor = _getSuperConstructor( this );
+      pushSuperStack( this );
+      tempConstructor = _getSuperConstructor( this );
 
-    tempConstructor.prototype.init ? tempConstructor.prototype.init.apply( this, arguments ) : tempConstructor.apply( this, arguments );
-    popSuperStack( this );
-    return this;
-  },
-  _invoke = function( name, context, args ) {
-    var fn = this.prototype[ name ];
-    return fn ? fn.apply( context, $.util.argToArray( arguments, 2 ) ) : undefined;
-  },
-  _anonymousTemplate = function( ) {
-    this.init.apply( this, arguments );
-  },
-  _inheritTemplate = function( Super ) {
-    inerit( this, Super );
-    return this;
-  },
-  _extendTemplate = function( name, prototype, statics ) {
-    var arg = $.util.argToArray( arguments );
-    if ( typed.isObj( name ) && this.name ) {
-      arg.splice( 0, 0, this.name );
-    }
-    arg.push( this );
-    /*arg = [name, prototype, statics, constructor]*/
-    return object.extend.apply( object, arg );
-  },
-  _joinPrototypeTemplate = function( ) {
-    for ( var i = 0, len = arguments.length, obj; i < len; i++ ) {
-      obj = arguments[ i ];
-      typed.isPlainObj( obj ) && utilExtend.extend( this.prototype, obj );
-    }
-    return this;
-  },
-  _forinstance = function( target ) {
-    var constructor = this,
-      ret = target instanceof this;
+      tempConstructor.prototype.init ? tempConstructor.prototype.init.apply( this, arguments ) : tempConstructor.apply( this, arguments );
+      popSuperStack( this );
+      return this;
+    },
+    _invoke = function( name, context, args ) {
+      var fn = this.prototype[ name ];
+      return fn ? fn.apply( context, $.util.argToArray( arguments, 2 ) ) : undefined;
+    },
+    _inheritTemplate = function( Super ) {
+      inerit( this, Super );
+      return this;
+    },
+    _getFunctionName = function( fn ) {
+      if ( fn.name !== undefined ) {
+        return fn.name;
+      } else {
+        var ret = fn.toString( ).match( /^function\s*([^\s(]+)/ );
+        return ( ret && ret[ 1 ] ) || "";
+      }
+    },
 
-    if ( ret == false ) {
-      constructor = target.constructor;
-      while ( !! constructor ) {
-        constructor = constructor.prototype.__superConstructor;
-        if ( constructor === target ) {
-          ret = true;
-          break;
+    _extendTemplate = function( name, prototype, statics ) {
+      var arg = $.util.argToArray( arguments );
+      if ( typed.isObj( name ) ) {
+        arg.splice( 0, 0, _getFunctionName( this ) || name.name || "anonymous" );
+      }
+      arg.push( this );
+      /*arg = [name, prototype, statics, constructor]*/
+      return object.extend.apply( object, arg );
+    },
+    _joinPrototypeTemplate = function( ) {
+      for ( var i = 0, len = arguments.length, obj; i < len; i++ ) {
+        obj = arguments[ i ];
+        typed.isPlainObj( obj ) && utilExtend.extend( this.prototype, obj );
+      }
+      return this;
+    },
+    _forinstance = function( target ) {
+      var constructor = this,
+        ret = target instanceof this;
+
+      if ( ret == false ) {
+        constructor = target.constructor;
+        while ( !! constructor ) {
+          constructor = constructor.prototype.__superConstructor;
+          if ( constructor === target ) {
+            ret = true;
+            break;
+          }
         }
       }
-    }
-    return ret;
-  },
-  _createGetterSetter = function( object ) {
-    object.providePropertyGetSet( this, object );
-  },
-  defaultValidate = function( ) {
-    return 1;
-  },
-  inerit = function( Sub, Super, name ) {
-    $.object.inheritProtypeWithParasitic( Sub, Super, name );
-    Sub.prototype.__superConstructor = Super;
-    Sub.prototype._super = _superInit;
-    if ( !Super.invoke ) {
-      Super.invoke = _invoke;
-    }
-  },
-  extend = function( Sub, Super ) {
-    object.inheritProtypeWithExtend( Sub, Super );
-  },
-  defaultPurview = "-pu -w -r";
+      return ret;
+    },
+    _createGetterSetter = function( object ) {
+      object.providePropertyGetSet( this, object );
+    },
+    defaultValidate = function( ) {
+      return 1;
+    },
+    inerit = function( Sub, Super, name ) {
+      $.object.inheritProtypeWithParasitic( Sub, Super, name );
+      Sub.prototype.__superConstructor = Super;
+      Sub.prototype._super = _superInit;
+      if ( !Super.invoke ) {
+        Super.invoke = _invoke;
+      }
+    },
+    extend = function( Sub, Super ) {
+      object.inheritProtypeWithExtend( Sub, Super );
+    },
+    defaultPurview = "-pu -w -r";
   var object = {
     //继承模块 可以自己实现一个 function模式 单继承
     _defaultPrototype: {
@@ -146,7 +152,9 @@
             ].join( "" ) ) || eval( "(" + name + ")" ) ) //fix ie678
           break;
         default:
-          anonymous = _anonymousTemplate;
+          anonymous = function anonymous( ) {
+            this.init.apply( this, arguments );
+          };
       }
 
       if ( Super ) {
@@ -195,8 +203,8 @@
             /// <param name="model" type="model<arguments>">对象</param>
             /// <returns type="self" />
             var arg = $.util.argToArray( arguments ),
-            len = arg.length,
-            i = 0;
+              len = arg.length,
+              i = 0;
 
             for ( ; i < len; i++ ) {
               model = arg[ i ];
@@ -312,8 +320,8 @@
       }
       var
       originPrototype = Sub.prototype,
-      name = Super.name || name,
-      Parasitic = typeof name == "string" ? ( eval( "(function " + name + "() { });" ) || eval( "(" + name + ")" ) ) : function( ) {};
+        name = Super.name || name,
+        Parasitic = typeof name == "string" ? ( eval( "(function " + name + "() { });" ) || eval( "(" + name + ")" ) ) : function( ) {};
       Parasitic.prototype = Super.prototype;
       Sub.prototype = new Parasitic( );
       //var prototype = Object(Super.prototype);
@@ -351,9 +359,9 @@
       //这里加个验证a
       return $.each( object, function( value, key ) {
         var purview = defaultPurview,
-        validate = defaultValidate,
-        defaultValue,
-        edit;
+          validate = defaultValidate,
+          defaultValue,
+          edit;
         switch ( typeof value ) {
           case "string":
             purview = value;
