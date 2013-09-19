@@ -139,19 +139,19 @@ aQuery.define( "ui/splitter", [
         noticeParent: function( ) {
           var parent = this.findParent( );
           if ( parent ) {
-            parent.uiSplitterpane( "render" );
+            parent.uiSplitterpane( "resize" );
           }
         },
         findParent: function( ) {
-          var parent = this.target.parentsUntil( "*[ui-splitterpane]" );
-          if ( parent.length && parent.first === this.target.first.parentNode ) {
+          var parent = this.target.parent( "[ui-splitterpane]" );
+          if ( parent.length && parent.firstEle === this.target.firstEle.parentNode ) {
             return parent;
           }
           return null;
         },
         init: function( opt, target ) {
           this._super( opt, target );
-          this.render( );
+          //this.render( );
           return this;
         },
         customEventName: [ ],
