@@ -29,30 +29,13 @@ aQuery.define( "app/Controller", [ "base/ClassModule", "base/typed", "base/Promi
         return promise;
       } ).then( function( controllers ) {
         if ( controllers.length ) {
-          var callback = new Promise;
-
-          var promise = new Promise;
-
-          $.each( controllers, function( controller ) {
+          for ( var i = controllers.length - 1, controller; i >= 0; i-- ) {
+            controller = controllers[ i ]
             if ( controller.getId( ) ) {
               selfController[ controller.getId( ) ] = controller;
             }
-
-            promise = promise.and( function( ) {
-              var self = this;
-              controller.ready( function( ) {
-                self.together( this );
-              } );
-            } );
-          } );
-
-          promise.then( function( ) {
-            callback.resolve( );
-          } )
-
-          promise.rootResolve( );
-
-          return callback;
+          };
+          return controllers;
         }
       } ).then( function( ) {
         selfController.onReady( );
@@ -135,10 +118,16 @@ aQuery.define( "app/Controller", [ "base/ClassModule", "base/typed", "base/Promi
 
           for ( ; i < len; i++ ) {
             ret.push( new Controllers[ i ]( depend[ i ], contollersElement[ i ] ) );
+            ret[ i ].ready( function( ) {
+              i--;
+              if ( i === 0 ) {
+                callback( ret );
+                depend = contollersElement = null;
+              }
+            } );
           }
+          //这里必须等controllers ready
 
-          callback( ret );
-          depend = contollersElement = null;
         } );
       } else {
         callback && callback( [ ] );

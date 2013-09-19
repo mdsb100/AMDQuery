@@ -9,6 +9,9 @@ aQuery.define( "@app/view/content", [ "app/View" ], function( $, SuperView, unde
       this._super( contollerElement );
 
     },
+    onDomReady: function( ) {
+      console.log("content view ready");
+    },
     htmlSrc: htmlSrc
   }, {
 

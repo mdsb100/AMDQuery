@@ -11,6 +11,9 @@ aQuery.define( "@app/view/index", [ "app/View" ], function( $, SuperView, undefi
       this._super( contollerElement );
 
     },
+    onDomReady: function( ) {
+      console.log("index view ready");
+    },
     htmlSrc: htmlSrc
   }, {
 
