@@ -9,6 +9,9 @@ aQuery.define( "@app/view/navmenu", [ "app/View" ], function( $, SuperView, unde
       this._super( contollerElement );
 
     },
+    onDomReady: function( ) {
+      console.log("navmenu view ready");
+    },
     htmlSrc: htmlSrc
   }, {
 
