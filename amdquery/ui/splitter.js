@@ -113,7 +113,9 @@ aQuery.define( "ui/splitter", [
           return this;
         },
         render: function( ) {
-          this.noticeParent( );
+          if ( this._lock === false ) {
+            this.noticeParent( );
+          }
           return this;
         },
         resize: function( width, height ) {
@@ -149,9 +151,19 @@ aQuery.define( "ui/splitter", [
           }
           return null;
         },
+        lock: function( ) {
+          this._lock = true;
+        },
+        unlock: function( ) {
+          this._lock = false;
+        },
         init: function( opt, target ) {
           this._super( opt, target );
-          //this.render( );
+          var self = this;
+          this._lock = false;
+          setTimeout( function( ) {
+            self.render( );
+          } );
           return this;
         },
         customEventName: [ ],
@@ -167,7 +179,9 @@ aQuery.define( "ui/splitter", [
         publics: {
           setWidth: Widget.AllowPublic,
           setHeight: Widget.AllowPublic,
-          resize: Widget.AllowPublic
+          resize: Widget.AllowPublic,
+          lock: Widget.AllowPublic,
+          unlock: Widget.AllowPublic
         },
         target: null,
         toString: function( ) {
