@@ -67,7 +67,7 @@ aQuery.define( "ui/button", [
           "text-decoration": "none"
         } ).addClass( "back" );
 
-        this.$img = $( $.createEle( "img" ) ).css( {
+        this.$img = $( $.createEle( "div" ) ).css( {
           "display": "block",
           "text-decoration": "none",
           "position": "relative"

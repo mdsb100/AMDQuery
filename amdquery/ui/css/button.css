@@ -12,7 +12,7 @@
 	-webkit-border-radius: 8px;
 	-o-border-radius: 8px;
 	-ms-border-radius: 8px;
-	border-radius:8px;  
+	border-radius:8px;
 }
 .button .back:link {}
 .button .back:visited {}
@@ -20,7 +20,7 @@
 .button .back:active {}
 
 .button .img{
-	background: url(../images/tabs.png) 0px -173px repeat-x;
+
 }
 
 .button .text{
@@ -36,7 +36,7 @@
 .button .text:link {}
 .button .text:visited {}
 .button .text:hover {
-	
+
 }
 .button .text:active {
     color: #FF0000;
