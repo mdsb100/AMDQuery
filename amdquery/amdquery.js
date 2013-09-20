@@ -1704,10 +1704,10 @@
         /// <param name="obj" type="any/arguments">参数，如果参数是argument则会使用apply</param>
         /// <returns type="self" />
         if ( this.state != "todo" ) {
-          util.error( {
-            fn: "Promise.resolve",
-            msg: "already resolved"
-          } )
+          // util.error( {
+          //   fn: "Promise.resolve",
+          //   msg: "already resolved"
+          // } )
           return this;
         };
 
@@ -1716,15 +1716,18 @@
           return this;
         } else if ( this.fail ) {
           try {
-            this.result = this.call( "todo", obj );
             this.state = "done";
+            this.result = this.call( "todo", obj );
+
           } catch ( e ) {
-            this.result = this.call( "fail", obj );
             this.state = "fail";
+            this.result = this.call( "fail", obj );
+
           }
         } else {
-          this.result = this.call( "todo", obj );
           this.state = "done";
+          this.result = this.call( "todo", obj );
+
         }
 
         if ( Promise.forinstance( this.result ) && this.result !== this) {
