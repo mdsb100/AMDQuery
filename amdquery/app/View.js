@@ -1,4 +1,4 @@
-aQuery.define( "app/View", [ "base/ClassModule", "base/Promise", "main/communicate", "main/query", "main/object", "main/attr", "main/CustomEvent", "module/Widget", "module/src", "module/parse" ], function( $, ClassModule, Promise, communicate, query, object, attr, CustomEvent, Widget, src, parse, undefined ) {
+aQuery.define( "app/View", [ "base/ClassModule", "base/Promise", "base/typed", "main/communicate", "main/query", "main/object", "main/attr", "main/CustomEvent", "module/Widget", "module/src", "module/parse" ], function( $, ClassModule, Promise, typed, communicate, query, object, attr, CustomEvent, Widget, src, parse, undefined ) {
   //View need require depend on Widget
   //get Style
   "use strict"; //启用严格模式
@@ -15,11 +15,9 @@ aQuery.define( "app/View", [ "base/ClassModule", "base/Promise", "main/communica
   }
 
   var View = CustomEvent.extend( "View", {
-    init: function( contollerElement ) {
+    init: function( contollerElement, src ) {
       this._super( );
-      this.htmlSrc = this.htmlSrc || ( getHtmlSrc( this.constructor._AMD.id ) + ".xml" );
-      this.originElement = View.getHtml( this.htmlSrc );
-      this.topElement = this.originElement.cloneNode( true );
+      this.topElement = this.initTopElement( src ).cloneNode( true );
       console.log( this.topElement );
       attr.setAttr( this.topElement, "html-src", this.htmlSrc );
       this.id = attr.getAttr( this.topElement, "id" ) || null;
@@ -37,7 +35,10 @@ aQuery.define( "app/View", [ "base/ClassModule", "base/Promise", "main/communica
 
       View.collection.add( this );
 
-
+    },
+    initTopElement: function( src ) {
+      src = src || ( getHtmlSrc( this.constructor._AMD.id ) + ".xml" );
+      return View.getHtml( src );
     },
     destory: function( ) {
       View.collection.remove( this );
@@ -49,16 +50,15 @@ aQuery.define( "app/View", [ "base/ClassModule", "base/Promise", "main/communica
       this.promise.destoryFromRoot( );
       this.promise = null;
       this.topElement = null;
-      this.originElement = null;
     },
     appendTo: function( parent ) {
       parent.appendChild( this.topElement );
-      this.initDom( );
+      this.initWidget( );
       return this;
     },
     replaceTo: function( element ) {
       element.parentNode.replaceChild( this.topElement, element );
-      this.initDom( );
+      this.initWidget( );
       return this;
     },
     removeTo: function( ) {
@@ -67,7 +67,7 @@ aQuery.define( "app/View", [ "base/ClassModule", "base/Promise", "main/communica
       }
       return this;
     },
-    initDom: function( ) {
+    initWidget: function( ) {
       var self = this;
 
       if ( this.promise.unfinished( ) && this.topElement && this.topElement.parentNode ) {
@@ -126,7 +126,7 @@ aQuery.define( "app/View", [ "base/ClassModule", "base/Promise", "main/communica
             async: false,
             dataType: "string",
             complete: function( xml ) {
-              define( htmlSrc, parse.HTML(xml) );
+              define( htmlSrc, parse.HTML( xml ) );
             },
             timeout: View.timeout,
             timeoutFun: View.error
