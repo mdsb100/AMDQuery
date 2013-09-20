@@ -35,6 +35,10 @@
     background: url(../images/icons.png) 0px -74px no-repeat;
 }
 
+.navmenu .file{
+    background: url(../images/icons.png) -2px -472px no-repeat;
+}
+
 .navmenu .item
 {
     height: auto;
@@ -52,7 +56,7 @@
 
 }
 
-.navmenu .title 
+.navmenu .title
 {
     height: 28px;
     text-align: left;
