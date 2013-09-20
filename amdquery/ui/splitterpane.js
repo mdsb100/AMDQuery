@@ -237,7 +237,9 @@ aQuery.define( "ui/splitterpane", [
               } else {
                 sumWidth += tempWidth;
               }
+              $item.uiSplitter( "lock" );
               $item.uiSplitter( "setWidth", tempWidth );
+              $item.uiSplitter( "unlock" );
             }
           }
           return this;
@@ -264,7 +266,9 @@ aQuery.define( "ui/splitterpane", [
               } else {
                 sumHeight += tempHeight;
               }
+              $item.uiSplitter( "lock" );
               $item.uiSplitter( "setHeight", tempHeight );
+              $item.uiSplitter( "unlock" );
             }
           }
 
