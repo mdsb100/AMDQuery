@@ -164,7 +164,7 @@ aQuery.define( "base/typed", function( $ ) {
       /// <summary>是否为对象</summary>
       /// <param name="a" type="any">任意对象</param>
       /// <returns type="Boolean" />
-      return typed.isType( a, "[object Object]" );
+      return a !== undefined ? typed.isType( a, "[object Object]" ) : false ;
     },
     isPlainObj: function( obj ) {
       /// <summary>是否为纯obj</summary>
