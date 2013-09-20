@@ -6,7 +6,7 @@ aQuery.define( "@app/controller/content", [ "base/client", "app/Controller", "@a
 
     },
     onReady: function( ) {
-      console.log( "content load" );
+      console.log( "content controller ready" );
 
       var $content = $( this.view.topElement ).find( "#content" );
 

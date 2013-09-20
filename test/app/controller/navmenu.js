@@ -6,7 +6,7 @@ aQuery.define( "@app/controller/navmenu", [ "app/Controller", "@app/view/navmenu
 
     },
     onReady: function( ) {
-      console.log( "navmenu load" );
+      console.log( "navmenu controller ready" );
 
       var controller = this;
       var $nav = $( this.view.topElement ).find( "#nav" );

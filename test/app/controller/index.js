@@ -6,10 +6,9 @@ aQuery.define( "@app/controller/index", [ "app/Controller", "@app/view/index" ],
 
     },
     onReady: function( ) {
-      console.log( "index load" );
+      console.log( "index controller ready" );
       var self = this;
       this.navmenu.on( "navmenu.select", function( e ) {
-        debugger
         self.content.loadPath( e.path );
       } );
       this.navmenu.on( "navmenu.dblclick", function( e ) {

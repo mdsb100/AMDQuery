@@ -2,16 +2,18 @@ aQuery.define( "@app/view/index", [ "app/View" ], function( $, SuperView, undefi
   "use strict"; //启用严格模式
   var htmlSrc = "@app/xml/index";
 
-  SuperView.getHtml( htmlSrc );
-
   SuperView.getStyle( "@app/css/reset" );
 
   var View = SuperView.extend( {
     init: function( contollerElement ) {
-      this._super( contollerElement );
-
+      this._super( contollerElement, htmlSrc );
     },
-    htmlSrc: htmlSrc
+    onDomReady: function( ) {
+      console.log( "index view ready" );
+    },
+    initTopElement: function( ) {
+      return SuperView.getHtml( htmlSrc );
+    }
   }, {
 
   } );
