@@ -125,7 +125,7 @@
 			event.clearHandlers( dest );
 
 			// Event data gets referenced instead of copied if the expando gets copied too
-			dest.removeAttribute( data.expando );
+			//dest.removeAttribute( data.expando );
 		}
 
 		// IE blanks contents when cloning scripts, and tries to evaluate newly-set text

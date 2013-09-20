@@ -163,7 +163,7 @@ aQuery.define( "ui/splitter", [
           this._lock = false;
           setTimeout( function( ) {
             self.render( );
-          } );
+          }, 1 );
           return this;
         },
         customEventName: [ ],
