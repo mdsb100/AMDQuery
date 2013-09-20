@@ -89,7 +89,7 @@ aQuery.define( "app/View", [ "base/ClassModule", "base/Promise", "base/typed", "
         return src;
       } );
     },
-    _getCtrollerElement: function( ) {
+    _getControllerElement: function( ) {
       return query.find( ">Controller", this.topElement );
     },
     htmlSrc: "",
