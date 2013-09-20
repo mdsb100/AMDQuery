@@ -113,7 +113,9 @@ aQuery.define( "ui/splitter", [
           return this;
         },
         render: function( ) {
-          this.noticeParent( );
+          if ( this._lock === false ) {
+            this.noticeParent( );
+          }
           return this;
         },
         resize: function( width, height ) {
@@ -139,19 +141,29 @@ aQuery.define( "ui/splitter", [
         noticeParent: function( ) {
           var parent = this.findParent( );
           if ( parent ) {
-            parent.uiSplitterpane( "render" );
+            parent.uiSplitterpane( "resize" );
           }
         },
         findParent: function( ) {
-          var parent = this.target.parentsUntil( "*[ui-splitterpane]" );
-          if ( parent.length && parent.first === this.target.first.parentNode ) {
+          var parent = this.target.parent( "[ui-splitterpane]" );
+          if ( parent.length && parent.firstEle === this.target.firstEle.parentNode ) {
             return parent;
           }
           return null;
         },
+        lock: function( ) {
+          this._lock = true;
+        },
+        unlock: function( ) {
+          this._lock = false;
+        },
         init: function( opt, target ) {
           this._super( opt, target );
-          this.render( );
+          var self = this;
+          this._lock = false;
+          setTimeout( function( ) {
+            self.render( );
+          }, 1 );
           return this;
         },
         customEventName: [ ],
@@ -167,7 +179,9 @@ aQuery.define( "ui/splitter", [
         publics: {
           setWidth: Widget.AllowPublic,
           setHeight: Widget.AllowPublic,
-          resize: Widget.AllowPublic
+          resize: Widget.AllowPublic,
+          lock: Widget.AllowPublic,
+          unlock: Widget.AllowPublic
         },
         target: null,
         toString: function( ) {

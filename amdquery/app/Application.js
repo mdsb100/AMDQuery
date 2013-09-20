@@ -38,9 +38,11 @@ aQuery.define( "app/Application", [ "base/ClassModule", "base/Promise", "base/ty
 
         return promise;
       } ).then( function( ) {
-        $cover.remove( );
-        $cover = null;
-        $image = null;
+        setTimeout( function( ) {
+          $cover.remove( );
+          $cover = null;
+          $image = null;
+        }, 1000 )
 
         app.launch( app.index );
 
