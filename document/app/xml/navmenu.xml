@@ -4,6 +4,7 @@
           <li amdquery-widget="ui.navitem" ui-navitem="html:guide;img:file">
               <ul>
                   <li amdquery-widget="ui.navitem" ui-navitem="html:about AQuery;img:file"></li>
+                  <li amdquery-widget="ui.navitem" ui-navitem="html:Architecture;img:file"></li>
               </ul>
           </li>
       </ul>
