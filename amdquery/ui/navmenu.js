@@ -9,9 +9,10 @@ aQuery.define( "ui/navmenu", [
     "main/css",
     "main/position",
     "main/dom",
-    "main/attr"
+    "main/attr",
+    "ecma5/array.compati"
   ],
-  function( $, typed, utilExtend, NavItem, Widget, query, cls, event, css, position, dom, attr ) {
+  function( $, typed, utilExtend, NavItem, Widget, query, cls, event, css, position, dom, attr, Array ) {
     "use strict"; //启用严格模式
 
     Widget.fetchCSS( "ui/css/navmenu" );
@@ -76,18 +77,25 @@ aQuery.define( "ui/navmenu", [
         return this;
       },
       getNavItemsByHtml: function( str ) {
-        var ret = [ ],
-          i = 0,
-          len = this.navItemList.length,
-          ele,
-          html;
-        for ( i = 0; i < len; i++ ) {
-          ele = this.navItemList[ i ];
-          html = $( ele ).navitem( "option", "html" );
-          if ( html === str ) {
-            ret.push( ele );
+        return this.navItemList.filter( function( ele ) {
+          return $( ele ).uiNavitem( "option", "html" ) === str;
+        } );
+      },
+      getNavItemsByHtmlPath: function( strList ) {
+        var ret = this.getNavItemsByHtml( strList.pop( ) ),
+          str = "";
+        ret.filter( function( ele ) {
+          for ( var i = strList.length - 1, parent; i >= 0; i-- ) {
+            str = strList[ i ];
+            parent = $( ele ).uiNavitem( "option", "parent" );
+
+            if ( !parent || parent.uiNavitem( "option", "html" ) !== str ) {
+              return false;
+            }
           }
-        }
+          return true;
+        } );
+
         return ret;
       },
       getNavItem: function( item ) {
@@ -97,7 +105,7 @@ aQuery.define( "ui/navmenu", [
         if ( typed.isStr( item ) ) {
           for ( i = 0; i < len; i++ ) {
             ele = this.navItemList[ i ];
-            if ( $.attr( ele, "id" ) === item ) {
+            if ( attr.getAttr( ele, "id" ) === item ) {
               ret = ele;
               break;
             }
@@ -122,13 +130,13 @@ aQuery.define( "ui/navmenu", [
         return ret;
       },
       getNavItemList: function( ) {
-        return this.target.find( "li[ui-navitem]" ).reverse( );
+        return this.target.find( "li[ui-navitem]" ).reverse( ).eles;
       },
       detectNavItemList: function( ) {
         this.navItemList = this.getNavItemList( );
       },
-      selectedNavItem: function( target ) {
-        var $target = $( target ),
+      selectNavItem: function( target ) {
+        var $target = $( this.getNavItem( target ) || [ ] ),
           opt = this.options;
         if ( Widget.is( $target, "ui.navitem" ) ) {
           if ( opt.selectedNavItem && opt.selectedNavItem !== target ) {
@@ -139,7 +147,7 @@ aQuery.define( "ui/navmenu", [
         }
       },
       changeSelectedNavItem: function( target ) {
-        var $target = $( target ),
+        var $target = $( this.getNavItem( target ) || [ ] ),
           opt = this.options;
         if ( Widget.is( $target, "ui.navitem" ) ) {
           if ( opt.selectedNavItem && opt.selectedNavItem !== target ) {
@@ -168,9 +176,10 @@ aQuery.define( "ui/navmenu", [
       },
       publics: {
         getNavItemsByHtml: Widget.AllowReturn,
+        getNavItemsByHtmlPath: Widget.AllowReturn,
         getNavItem: Widget.AllowReturn,
         detectNavItemList: Widget.AllowPublic,
-        selectedNavItem: Widget.AllowPublic,
+        selectNavItem: Widget.AllowPublic,
         changeSelectedNavItem: Widget.AllowPublic
       },
       customEventName: [ "open", "close" ],

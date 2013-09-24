@@ -8,6 +8,12 @@ aQuery.define( "@app/controller/navmenu", [ "app/Controller", "@app/view/navmenu
     onReady: function( ) {
       var controller = this;
       var $nav = $( this.view.topElement ).find( "#nav" );
+      //要移到on之后
+      $nav.uiNavmenu( "selectNavItem", "index_navmenu" );
+
+      var ret = $nav.uiNavmenu( "getNavItemsByHtml", "about AQuery" );
+
+      ret = $nav.uiNavmenu( "getNavItemsByHtmlPath", [ "guide", "about AQuery" ] );
 
       $nav.on( "navmenu.select", function( e ) {
         var target = $( e.navitem ),
@@ -21,9 +27,7 @@ aQuery.define( "@app/controller/navmenu", [ "app/Controller", "@app/view/navmenu
             path: path
           } );
         }
-      } );
-
-      $nav.on( "dblclick", function( e ) {
+      } ).on( "dblclick", function( e ) {
         controller.trigger( "navmenu.dblclick", controller, {
           type: "navmenu.dblclick",
           event: e

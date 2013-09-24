@@ -90,7 +90,12 @@ aQuery.define( "ui/navitem", [
       open: function( ) {
         var opt = this.options;
         if ( opt.isOpen == false ) {
+          if ( opt.parent && !opt.parent.uiNavitem( "option", "isOpen" ) ) {
+            opt.parent.uiNavitem( "open" );
+          }
+
           opt.isOpen = true;
+
           this.$board.slideDown( {
             duration: 200,
             easing: "cubic.easeInOut",
