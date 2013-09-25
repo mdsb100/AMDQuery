@@ -28,8 +28,20 @@ aQuery.define( "app/Application", [ "base/ClassModule", "base/Promise", "base/ty
       var app = this;
       this.promise = new Promise( function( ) {
         var promise = new Promise;
+        app.beforeLoad( promise );
+        app.trigger( "beforeLoad", app, {
+          type: "beforeLoad"
+        } );
+        return promise;
+      } ).then( function( ) {
+         var controllerElement = app.parseRouter( );
 
-        BaseController.loadController( document.body, function( controllers ) {
+         return controllerElement || document.body;
+
+      } ).then( function( node ) {
+        var promise = new Promise;
+
+        BaseController.loadController( node, function( controllers ) {
           app.index = controllers[ 0 ];
           app.index.ready( function( ) {
             promise.resolve( );
@@ -64,6 +76,13 @@ aQuery.define( "app/Application", [ "base/ClassModule", "base/Promise", "base/ty
       } else {
         return "";
       }
+    },
+    beforeLoad: function( promise ) {
+      promise.resolve( );
+    },
+    parseRouter: function( ) {
+      var hash = window.location.hash;
+
     },
     launch: function( ) {
 
