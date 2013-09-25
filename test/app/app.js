@@ -10,6 +10,7 @@ aQuery.define( "@app/app", [ "app/Application" ], function( $, Application ) {
     },
     beforeLoad: function( promise ) {
       this.addRouter("default", "@app/controller/index.js");
+      this.addRouter("router", "@app/controller/router.js");
       promise.resolve( );
     }
   }, {
