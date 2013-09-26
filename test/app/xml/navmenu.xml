@@ -38,7 +38,6 @@
           </li>
           <li amdquery-widget="ui.navitem" ui-navitem="html:ui;img:module">
               <ul>
-                  <li amdquery-widget="ui.navitem" ui-navitem="html:Accordion;img:class"></li>
                   <li amdquery-widget="ui.navitem" ui-navitem="html:Book;img:class"></li>
                   <li amdquery-widget="ui.navitem" ui-navitem="html:TabBar;img:class"></li>
                   <li amdquery-widget="ui.navitem" ui-navitem="html:Button;img:class"></li>
