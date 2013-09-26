@@ -95,14 +95,14 @@ aQuery.define( "ui/scrollableview", [
           switch ( e.type ) {
             case "drag.move":
               var x = self.checkXBoundary( e.offsetX, opt.boundary ),
-              y = self.checkYBoundary( e.offsetY, opt.boundary );
+                y = self.checkYBoundary( e.offsetY, opt.boundary );
               self.renderStatusBar( self.checkXStatusBar( x ), self.checkYStatusBar( y ) );
               self.showStatusBar( );
               break;
             case "drag.pause":
               var left = self.getLeft( ),
-              top = self.getTop( ),
-              distance = opt.pullDistance;
+                top = self.getTop( ),
+                distance = opt.pullDistance;
 
               if ( left > distance ) {
                 e.type = self.getEventName( "pullleft" );
@@ -208,9 +208,9 @@ aQuery.define( "ui/scrollableview", [
       },
       render: function( x, y, addtion, boundary ) {
         var position,
-        originX = 0,
-        originY = 0,
-        statusX, statusY;
+          originX = 0,
+          originY = 0,
+          statusX, statusY;
 
         if ( addtion ) {
           position = this.getContainerPosition( );
@@ -291,11 +291,11 @@ aQuery.define( "ui/scrollableview", [
 
       refreshStatusBar: function( ) {
         var viewportWidth = this.viewportWidth,
-        scrollWidth = this.scrollWidth,
-        viewportHeight = this.viewportHeight,
-        scrollHeight = this.scrollHeight,
-        width = 0,
-        height = 0;
+          scrollWidth = this.scrollWidth,
+          viewportHeight = this.viewportHeight,
+          scrollHeight = this.scrollHeight,
+          width = 0,
+          height = 0;
 
         if ( scrollWidth != viewportWidth ) {
           this.statusBarXVisible = 1;
@@ -345,10 +345,10 @@ aQuery.define( "ui/scrollableview", [
       },
       animate: function( e ) {
         var opt = this.options,
-        a0 = e.acceleration,
-        t0 = opt.animateDuration - e.duration,
-        s0 = Math.round( a0 * t0 * t0 * 0.5 ),
-        direction = e.direction;
+          a0 = e.acceleration,
+          t0 = opt.animateDuration - e.duration,
+          s0 = Math.round( a0 * t0 * t0 * 0.5 ),
+          direction = e.direction;
 
         if ( t0 <= 0 ) {
           this.toYBoundary( this.getTop( ) ).toXBoundary( this.getLeft( ) );
@@ -360,7 +360,7 @@ aQuery.define( "ui/scrollableview", [
             this.toX( -s0, t0, direction );
             break;
           case 9:
-            this.toX( s0, t0 , direction );
+            this.toX( s0, t0, direction );
             break;
           case 6:
             this.toY( -s0, t0, direction );
@@ -436,8 +436,8 @@ aQuery.define( "ui/scrollableview", [
 
       toXBoundary: function( left, direction ) {
         var outer = this.outerXBoundary( left ),
-        opt,
-        self = this;
+          opt,
+          self = this;
         if ( outer !== null ) {
           if ( this.isTransform3d( ) ) {
             opt = {
@@ -465,8 +465,8 @@ aQuery.define( "ui/scrollableview", [
 
       toYBoundary: function( top, direction ) {
         var outer = this.outerYBoundary( top ),
-        opt,
-        self = this;
+          opt,
+          self = this;
         if ( outer !== null ) {
           if ( this.isTransform3d( ) ) {
             opt = {
@@ -500,8 +500,8 @@ aQuery.define( "ui/scrollableview", [
       },
       animateY: function( y1, t, direction ) {
         var self = this,
-        y2 = this.checkYStatusBar( y1 ),
-        opt1, opt2;
+          y2 = this.checkYStatusBar( y1 ),
+          opt1, opt2;
 
         if ( this.isTransform3d( ) ) {
           opt1 = {
@@ -540,8 +540,8 @@ aQuery.define( "ui/scrollableview", [
       },
       animateX: function( x1, t, direction ) {
         var self = this,
-        x2 = this.checkXStatusBar( x1 ),
-        opt1, opt2;
+          x2 = this.checkXStatusBar( x1 ),
+          opt1, opt2;
 
         if ( this.isTransform3d( ) ) {
           opt1 = {
@@ -579,6 +579,7 @@ aQuery.define( "ui/scrollableview", [
         return this;
       }
     } );
+  //可以 x y变为一个方法
 
   //提供注释
   $.fn.uiScrollableview = function( a, b, c, args ) {
@@ -595,7 +596,8 @@ aQuery.define( "ui/scrollableview", [
     /// <param name="c" type="any">属性option子属性名的值</param>
     /// <param name="args" type="any">在调用方法的时候，后面是方法的参数</param>
     /// <returns type="$" />
-    return scrollableview.apply( this, arguments );
+    scrollableview.apply( this, arguments );
+    return this;
   };
 
   return scrollableview;
