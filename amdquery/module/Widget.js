@@ -137,7 +137,7 @@
       }
     },
     invokeTemplate = function( ) {
-      this.ctor.invoke.apply( this.ctor, arguments );
+      return this.ctor.invoke.apply( this.ctor, arguments );
     };
 
 
@@ -329,6 +329,13 @@
     },
     render: function( ) {},
     _initHandler: function( ) {},
+    _getInitHandler: function( Super, context ) {
+      var originEvent = this.event;
+      Super.invoke( "_initHandler", context );
+      var superEvent = this.event;
+      this.event = originEvent;
+      return superEvent;
+    },
 
     _isEventName: function( name ) {
       return array.inArray( this.customEventName, name ) > -1;
