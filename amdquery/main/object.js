@@ -46,7 +46,7 @@
     },
     _invoke = function( name, context, args ) {
       var fn = this.prototype[ name ];
-      return fn ? fn.apply( context, $.util.argToArray( arguments, 2 ) ) : undefined;
+      return fn ? fn.apply( context, typed.isArguments( args ) ? args : $.util.argToArray( arguments, 2 ) ) : undefined;
     },
     _inheritTemplate = function( Super ) {
       inerit( this, Super );
