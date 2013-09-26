@@ -9,7 +9,19 @@
   "main/object",
   "module/src",
   "module/utilEval"
- ], function( $, typed, utilExtend, array, data, query, event, attr, object, src, utilEval, undefined ) {
+ ], function(
+  $,
+  typed,
+  utilExtend,
+  array,
+  data,
+  query,
+  event,
+  attr,
+  object,
+  src,
+  utilEval,
+  undefined ) {
   "use strict"; //启用严格模式
 
   var prefix = "amdquery";
