@@ -28,7 +28,7 @@ aQuery.define( "ui/scrollableview", [
           "position": "absolute"
         }, "div" ).append( this.positionParent ).appendTo( this.target );
 
-        this.target.swappable( );
+        this.target.uiSwappable( );
 
         this.statusBarX = $( {
           height: "10px",
@@ -44,7 +44,7 @@ aQuery.define( "ui/scrollableview", [
           right: "0px"
         }, "div" ).addClass( "scrollableViewStatusBar" ).appendTo( this.target );
 
-        this.container.draggable( {
+        this.container.uiDraggable( {
           keepinner: 0,
           axis: opt.overflow,
           stopPropagation: false,
@@ -69,8 +69,6 @@ aQuery.define( "ui/scrollableview", [
         var event = this.event;
         this.container.on( "DomNodeInserted DomNodeRemoved drag.pause drag.move drag.start", event );
         this.target.on( "swap.move swap.stop swap.pause", event ).touchwheel( event );
-        // this.container.draggable("enable");
-        // this.target.swappable("enable");
         this.options.disabled = true;
         return this;
       },
@@ -78,8 +76,6 @@ aQuery.define( "ui/scrollableview", [
         var event = this.event;
         this.container.off( "DomNodeInserted DomNodeRemoved drag.pause drag.move drag.start", event );
         this.target.off( "swap.move swap.stop swap.pause", event ).off( "touchwheel", event );
-        // this.container.draggable("disable");
-        // this.target.swappable("disable");
         this.options.disabled = false;
         return this;
       },
@@ -159,8 +155,8 @@ aQuery.define( "ui/scrollableview", [
       },
       destory: function( key ) {
         if ( key ) {
-          this.target.swappable( "destory" );
-          this.container.draggable( "destory" );
+          this.target.uiSwappable( "destory" );
+          this.container.uiDraggable( "destory" );
           this.target.children( ).remove( );
           this.positionParent.children( ).appendTo( this.target );
           Widget.invoke( "destory", this, key );
