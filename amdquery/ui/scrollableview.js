@@ -62,8 +62,6 @@ aQuery.define( "ui/scrollableview", [
         return this;
       },
       event: function( ) {
-
-
       },
       enable: function( ) {
         var event = this.event;

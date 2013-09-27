@@ -230,23 +230,23 @@
     constructor: Widget,
     destory: function( key ) {
       /*应当返回原先的状态*/
+
+      //this.destoryChildren();
+      this.disable( );
+      this.removeTag( );
+      var i = 0,
+        name;
+      for ( i = this.customEventName.length - 1; i >= 0; i-- ) {
+        this.target.clearHandlers( this.widgetEventPrefix + "." + this.customEventName[ i ] );
+      }
+
+      this.container && this.options.removeContainer && $( this.container ).remove( );
+
+      for ( i in this ) {
+        name = i;
+        !typed.isPrototypeProperty( this, name ) && ( this[ name ] = null ) && delete this[ name ];
+      }
       if ( key ) {
-        //this.destoryChildren();
-        this.disable( );
-        this.removeTag( );
-        var i = 0,
-          name;
-        for ( i = this.customEventName.length - 1; i >= 0; i-- ) {
-          this.target.clearHandlers( this.widgetEventPrefix + "." + this.customEventName[ i ] );
-        }
-
-        this.container && this.options.removeContainer && $( this.container ).remove( );
-
-        for ( i in this ) {
-          name = i;
-          !typed.isPrototypeProperty( this, name ) && ( this[ name ] = null ) && delete this[ name ];
-        }
-
         this.target.removeData( key );
       }
       return this;
