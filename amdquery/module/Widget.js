@@ -189,7 +189,9 @@
     },
     checkAttr: function( ) {
       var key, attr, value, item, result = {}, i = 0,
+        j = 0,
         len = 0,
+        events,
         widgetName = this.widgetName,
         eventNames = this.customEventName;
       /*check event*/
@@ -198,8 +200,11 @@
         key = this.widgetNameSpace + "-" + widgetName + "-" + item;
         attr = this.target.attr( key );
         if ( attr !== undefined ) {
-          value = attr.split( ":" );
-          result[ item ] = utilEval.functionEval( value[ 0 ], value[ 1 ] || window );
+          events = attr.split( ";" );
+          for ( j = events.length - 1; j >= 0; j-- ) {
+            value = events[ j ].split( ":" );
+            result[ item ] = utilEval.functionEval( value[ 0 ], value[ 1 ] || window );
+          }
         }
       }
 
