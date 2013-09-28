@@ -45,7 +45,9 @@ aQuery.define( "ui/scrollableview", [
       }, "div" ).addClass( "scrollableViewStatusBar" ).appendTo( this.target );
 
       this.container.uiDraggable( {
-        keepinner: 0,
+        keepinner: 1,
+        innerWidth: opt.boundary,
+        innerHeight: opt.boundary,
         axis: opt.overflow,
         stopPropagation: false,
         axisx: this._isAllowedDirection( "x" ),
@@ -55,7 +57,7 @@ aQuery.define( "ui/scrollableview", [
         overflow: true
       } );
 
-      this.refreshPosition( );
+      this.refreshPosition( ).refreshContainerSize( );
 
       isTransform3d && this.container.initTransform3d( );
 
@@ -114,11 +116,11 @@ aQuery.define( "ui/scrollableview", [
 
             break;
           case "drag.start":
-            self.refreshPosition( );
+            self.refreshPosition( ).refreshContainerSize( );
             break;
           case "DomNodeInserted":
           case "DomNodeRemoved":
-            self.refreshPosition( ).toYBoundary( self.getTop( ) ).toXBoundary( self.getLeft( ) );
+            self.refreshPosition( ).refreshContainerSize( ).toYBoundary( self.getTop( ) ).toXBoundary( self.getLeft( ) );
             break;
           case "swap.move":
             self.showStatusBar( );
@@ -134,6 +136,7 @@ aQuery.define( "ui/scrollableview", [
             x = null;
             y = null;
             clearTimeout( self.wheelTimeId );
+            //refreshContainerSize?
             self.refreshPosition( );
             // var x = null,
             // y = null;
@@ -305,6 +308,12 @@ aQuery.define( "ui/scrollableview", [
       this.statusBarX.width( width );
       this.statusBarY.height( height );
 
+      return this;
+    },
+
+    refreshContainerSize: function( ) {
+      this.container.width( this.scrollWidth );
+      this.container.height( this.scrollHeight );
       return this;
     },
 

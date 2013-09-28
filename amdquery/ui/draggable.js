@@ -112,8 +112,6 @@
         keepinner: true,
         innerWidth: 0,
         innerHeight: 0,
-        overWidth: 0,
-        overHeight: 0,
         stopPropagation: true,
         isTransform3d: false,
         pauseSensitivity: 500
@@ -251,29 +249,21 @@
           cP = con.position( );
           cP.pageLeft -= parentLeft;
           cP.pageTop -= parentTop;
-          x = $.between( cP.pageLeft, cP.width + cP.pageLeft - this.target.width( ), x );
-          y = $.between( cP.pageTop, cP.height + cP.pageTop - this.target.height( ), y );
+
+          var diffWidth = cP.width - this.target.width( );
+          var diffHeight = cP.height - this.target.height( );
+
+          var innerWidth = diffWidth > 0 ? -opt.innerWidth : opt.innerWidth;
+          var innerHeight = diffHeight > 0 ? -opt.innerHeight : opt.innerHeight;
+          // console.log(cP.pageLeft + innerWidth);
+          // console.log(diffWidth + cP.pageLeft - innerWidth);
+          // console.log(this.target.height( ))
+          x = $.among( cP.pageLeft + innerWidth, diffWidth + cP.pageLeft - innerWidth, x );
+          y = $.among( cP.pageTop + innerHeight, diffHeight + cP.pageTop - innerHeight, y );
         }
 
         opt.x = x;
         opt.y = y;
-        // else {
-        //   if ( opt.overWidth ) {
-        //     var diffWidth = con.width( ) - target.width( );
-        //     if (diffWidth < 0){
-        //       x = $.between( diffWidth - opt.overWidth, opt.overWidth, x );
-        //     }
-        //     //diffWidth = diffWidth > 0
-
-        //     //x = $.between( diffWidth - opt.overWidth, opt.overWidth, x );
-        //   }
-        //   if ( opt.overHeight ) {
-        //     y = $.between( con.height( ) - target.height( ) - opt.overHeight, opt.overHeight, y );
-        //   }
-
-        // }
-
-        opt.x
 
         return this.isTransform3d( ) ? this._renderByTransform3d( x, y ) : this._render( x, y );
       },
