@@ -1,11 +1,10 @@
 ﻿aQuery.define( "module/utilEval", [ "base/typed", "base/support" ], function( $, typed, support ) {
-  var basicDataTypeReg = new RegExp( $.reg.core_pnum + "|true|false|undefined|null|NaN|Infinite", "i" );
   return {
     evalBasicDataType: function( str ) {
       /// <summary>如果是基本数据类型就eval</summary>
       /// <param name="s" type="String"></param>
       /// <returns type="any" />
-      if ( typed.isStr( str ) && basicDataTypeReg.test( str ) ) {
+      if ( typed.isStr( str ) && /(^(-?\d+)(\.\d+)?$)|true|false|undefined|null|NaN|Infinite/.test( str ) ) {
         return eval( str );
       }
       return str;
