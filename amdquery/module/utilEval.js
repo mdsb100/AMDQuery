@@ -4,7 +4,7 @@
       /// <summary>如果是基本数据类型就eval</summary>
       /// <param name="s" type="String"></param>
       /// <returns type="any" />
-      if ( typed.isStr( str ) && /^\d+(.[\d]*)?$|true|false|undefined|null|NaN|Infinite/.test( str ) ) {
+      if ( typed.isStr( str ) && /(^(-?\d+)(\.\d+)?$)|true|false|undefined|null|NaN|Infinite/.test( str ) ) {
         return eval( str );
       }
       return str;

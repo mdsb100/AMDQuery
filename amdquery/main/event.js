@@ -5,7 +5,7 @@
 		mutation = "load unload error".split( " " ),
 		html = "blur focus focusin focusout".split( " " ),
 		key = "keydown keypress keyup".split( " " ),
-		other = "resize scroll change select submit".split( " " ),
+		other = "resize scroll change select submit DomNodeInserted DomNodeRemoved".split( " " ),
 		_eventNameList = [ ].concat( mouse, mutation, html, key, other ),
 		_domEventList = {},
 		//, addHandler = $._redundance.addHandler

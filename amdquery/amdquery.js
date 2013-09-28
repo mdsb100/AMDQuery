@@ -6,7 +6,7 @@
 ( function( window, undefined ) {
   "use strict"; //启用严格模式
   var
-  core_slice = [].slice;
+  core_slice = [ ].slice;
 
   var
   version = "AMDQuery 1.0.0",
@@ -350,6 +350,14 @@
       /// <returns type="Number" />
       return Math.max( min, Math.min( max, num ) );
     },
+    among: function( num1, num2, num ) {
+      /// <summary>如果num在min和max区间内返回num否则返回min或max</summary>
+      /// <param name="num1" type="Number">值1</param>
+      /// <param name="num2" type="Number">值1</param>
+      /// <param name="num" type="Number">要比较的值</param>
+      /// <returns type="Number" />
+      return num2 > num1 ? $.between( num1, num2, num ) : $.between( num2, num1, num );
+    },
     bind: function( fun, context ) {
       /// <summary>绑定作用域</summary>
       /// <param name="fun" type="Function">方法</param>
@@ -691,7 +699,7 @@
       return count;
     },
 
-    toArray: function() {
+    toArray: function( ) {
       return core_slice.call( this );
     },
 
@@ -700,11 +708,11 @@
     get: function( num ) {
       return num == null ?
 
-        // Return a 'clean' array
-        this.toArray() :
+      // Return a 'clean' array
+      this.toArray( ) :
 
-        // Return just the object
-        ( num < 0 ? this[ this.length + num ] : this[ num ] );
+      // Return just the object
+      ( num < 0 ? this[ this.length + num ] : this[ num ] );
     },
 
     version: version
@@ -1730,7 +1738,7 @@
 
         }
 
-        if ( Promise.forinstance( this.result ) && this.result !== this) {
+        if ( Promise.forinstance( this.result ) && this.result !== this ) {
           var
           self = this,
             state = this.state,

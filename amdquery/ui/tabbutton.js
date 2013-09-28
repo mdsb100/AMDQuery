@@ -41,21 +41,7 @@ aQuery.define( "ui/tabbutton", [
         toggle: Widget.AllowPublic
       },
       _initHandler: function( ) {
-        var self = this;
-        this.event = function( e ) {
-          switch ( e.type ) {
-            case "click":
-              var para = {
-                type: self.getEventName( "click" ),
-                container: self.container,
-                target: self.target[ 0 ],
-                event: e
-              };
-              self.select( );
-              self.target.trigger( para.type, self.target[ 0 ], para );
-              break;
-          }
-        };
+        this.event = this._getInitHandler( Button, this );
         return this;
       },
       select: function( ) {

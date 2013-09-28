@@ -9,7 +9,19 @@
   "main/object",
   "module/src",
   "module/utilEval"
- ], function( $, typed, utilExtend, array, data, query, event, attr, object, src, utilEval, undefined ) {
+ ], function(
+  $,
+  typed,
+  utilExtend,
+  array,
+  data,
+  query,
+  event,
+  attr,
+  object,
+  src,
+  utilEval,
+  undefined ) {
   "use strict"; //启用严格模式
 
   var prefix = "amdquery";
@@ -58,6 +70,8 @@
   Widget.AllowPublic = 1;
   Widget.AllowReturn = 2;
 
+  Widget.initFirst = 2;
+
   var booleanExtend = function( a, b ) {
     for ( var i in b ) {
       if ( b[ i ] == 0 ) {
@@ -95,17 +109,13 @@
     },
     _initOptionsPurview = function( constructor ) {
       var proto = constructor.prototype,
-        getter = proto.getter,
-        setter = proto.setter,
+        getter = {},
+        setter = {},
         options = proto.options || {},
         i;
 
-      if ( !typed.isObj( getter ) ) {
-        getter = proto.getter = {};
-      }
-      if ( !typed.isObj( setter ) ) {
-        setter = proto.setter = {};
-      }
+      utilExtend.easyExtend( getter, proto.getter );
+      utilExtend.easyExtend( setter, proto.setter );
 
       for ( i in options ) {
         if ( getter[ i ] === undefined ) {
@@ -116,6 +126,9 @@
         }
       }
 
+      proto.getter = getter;
+
+      proto.setter = setter;
     },
     extendTemplate = function( tName, prototype, statics ) {
       if ( typed.isObj( statics ) ) {
@@ -125,7 +138,7 @@
       }
     },
     invokeTemplate = function( ) {
-      this.ctor.invoke.apply( this.ctor, arguments );
+      return this.ctor.invoke.apply( this.ctor, arguments );
     };
 
 
@@ -177,7 +190,9 @@
     },
     checkAttr: function( ) {
       var key, attr, value, item, result = {}, i = 0,
+        j = 0,
         len = 0,
+        events,
         widgetName = this.widgetName,
         eventNames = this.customEventName;
       /*check event*/
@@ -186,8 +201,11 @@
         key = this.widgetNameSpace + "-" + widgetName + "-" + item;
         attr = this.target.attr( key );
         if ( attr !== undefined ) {
-          value = attr.split( ":" );
-          result[ item ] = utilEval.functionEval( value[ 0 ], value[ 1 ] || window );
+          events = attr.split( ";" );
+          for ( j = events.length - 1; j >= 0; j-- ) {
+            value = events[ j ].split( ":" );
+            result[ item ] = utilEval.functionEval( value[ 0 ], value[ 1 ] || window );
+          }
         }
       }
 
@@ -218,23 +236,23 @@
     constructor: Widget,
     destory: function( key ) {
       /*应当返回原先的状态*/
+
+      //this.destoryChildren();
+      this.disable( );
+      this.removeTag( );
+      var i = 0,
+        name;
+      for ( i = this.customEventName.length - 1; i >= 0; i-- ) {
+        this.target.clearHandlers( this.widgetEventPrefix + "." + this.customEventName[ i ] );
+      }
+
+      this.container && this.options.removeContainer && $( this.container ).remove( );
+
+      for ( i in this ) {
+        name = i;
+        !typed.isPrototypeProperty( this, name ) && ( this[ name ] = null ) && delete this[ name ];
+      }
       if ( key ) {
-        //this.destoryChildren();
-        this.disable( );
-        this.removeTag( );
-        var i = 0,
-          name;
-        for ( i = this.customEventName.length - 1; i >= 0; i-- ) {
-          this.target.clearHandlers( this.widgetEventPrefix + "." + this.customEventName[ i ] );
-        }
-
-        this.container && this.options.removeContainer && $( this.container ).remove( );
-
-        for ( i in this ) {
-          name = i;
-          !typed.isPrototypeProperty( this, name ) && ( this[ name ] = null ) && delete this[ name ];
-        }
-
         this.target.removeData( key );
       }
       return this;
@@ -253,9 +271,11 @@
     event: function( ) {},
 
     init: function( obj, target ) {
+      var proto = this.constructor.prototype;
+
       //元素本身属性高于obj
       this.options = {};
-      utilExtend.easyExtend( this.options, this.constructor.prototype.options );
+      utilExtend.easyExtend( this.options, proto.options );
 
       target._initHandler( );
       this.target = target;
@@ -317,6 +337,13 @@
     },
     render: function( ) {},
     _initHandler: function( ) {},
+    _getInitHandler: function( Super, context ) {
+      var originEvent = this.event;
+      Super.invoke( "_initHandler", context );
+      var superEvent = this.event;
+      this.event = originEvent;
+      return superEvent;
+    },
 
     _isEventName: function( name ) {
       return array.inArray( this.customEventName, name ) > -1;
@@ -345,6 +372,14 @@
       return typed.isFun( fn ) ? fn.call( this ) : this.options[ key ];
     },
     doSpecialSetter: function( key, value ) {
+      var flag = "__" + key + "OptionInitFirstFlag";
+      if ( this.setter[ key ] === Widget.initFirst ) {
+        if ( this[ flag ] ) {
+          return;
+        } else {
+          this[ flag ] = true;
+        }
+      }
       var fn = this[ $.util.camelCase( key, "_set" ) ];
       typed.isFun( fn ) ? fn.call( this, value ) : ( this.options[ key ] = value );
     },
