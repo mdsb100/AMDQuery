@@ -1,4 +1,5 @@
 aQuery.define( "ui/scrollableview", [
+  "base/support",
   "main/query",
   "main/css",
   "main/position",
@@ -11,10 +12,10 @@ aQuery.define( "ui/scrollableview", [
   "ui/draggable",
   "module/Widget",
   "module/animate",
-  "module/tween.extend" ], function( $, query, css, position, dom, cls, css3, animateTransform, css3Transition, swappable, draggable, Widget, animate, tween, undefined ) {
+  "module/tween.extend" ], function( $, support, query, css, position, dom, cls, css3, animateTransform, css3Transition, swappable, draggable, Widget, animate, tween, undefined ) {
   "use strict"; //启用严格模式
   Widget.fetchCSS( "ui/css/scrollableview" );
-  var transitionToAnimation = !! $.config.module.transitionToAnimation;
+  var isTransform3d = !! $.config.module.transitionToAnimation && support.transform3d;
   var scrollableview = Widget.extend( "ui.scrollableview", {
     container: null,
     create: function( ) {
@@ -49,14 +50,14 @@ aQuery.define( "ui/scrollableview", [
         stopPropagation: false,
         axisx: this._isAllowedDirection( "x" ),
         axisy: this._isAllowedDirection( "y" ),
-        isTransform3d: this.isTransform3d( ),
+        isTransform3d: isTransform3d,
         container: this.target,
         overflow: true
       } );
 
       this.refreshPosition( );
 
-      this.isTransform3d( ) && this.container.initTransform3d( );
+      isTransform3d && this.container.initTransform3d( );
 
       return this;
     },
@@ -130,6 +131,8 @@ aQuery.define( "ui/scrollableview", [
             break;
           case "mousewheel":
           case "DOMMouseScroll":
+            x = null;
+            y = null;
             clearTimeout( self.wheelTimeId );
             self.refreshPosition( );
             // var x = null,
@@ -195,9 +198,6 @@ aQuery.define( "ui/scrollableview", [
       "toX": Widget.AllowPublic,
       "toY": Widget.AllowPublic
     },
-    isTransform3d: function( ) {
-      return transitionToAnimation && $.support.transform3d;
-    },
     render: function( x, y, addtion, boundary ) {
       var position,
         originX = 0,
@@ -220,7 +220,7 @@ aQuery.define( "ui/scrollableview", [
         statusY = this.checkYStatusBar( y );
       }
 
-      this.isTransform3d( ) ? this._renderByTransform3d( x, statusX, y, statusY ) : this._renderByDefault( x, statusX, y, statusY );
+      isTransform3d ? this._renderByTransform3d( x, statusX, y, statusY ) : this._renderByDefault( x, statusX, y, statusY );
       return this;
     },
     _renderByTransform3d: function( x1, x2, y1, y2 ) {
@@ -248,8 +248,6 @@ aQuery.define( "ui/scrollableview", [
       return this;
     },
     renderStatusBar: function( x, y ) {
-      var isTransform3d = this.isTransform3d( );
-
       this._isAllowedDirection( "x" ) && isTransform3d ? this.statusBarX.setTranslate3d( {
         tx: parseInt( x )
       } ) : this.statusBarX.offsetLeft( parseInt( x ) );
@@ -262,7 +260,7 @@ aQuery.define( "ui/scrollableview", [
     },
     getContainerPosition: function( ) {
       var x, y;
-      if ( this.isTransform3d( ) ) {
+      if ( isTransform3d ) {
         x = this.container.transform3d( "translateX", true );
         y = this.container.transform3d( "translateY", true );
       } else {
@@ -326,10 +324,10 @@ aQuery.define( "ui/scrollableview", [
       return this.options.overflow.indexOf( direction ) > -1;
     },
     getTop: function( ) {
-      return this.isTransform3d( ) ? this.container.transform3d( "translateY", true ) : this.container.offsetTop( );
+      return isTransform3d ? this.container.transform3d( "translateY", true ) : this.container.offsetTop( );
     },
     getLeft: function( ) {
-      return this.isTransform3d( ) ? this.container.transform3d( "translateX", true ) : this.container.offsetLeft( );
+      return isTransform3d ? this.container.transform3d( "translateX", true ) : this.container.offsetLeft( );
     },
     pause: function( ) {
 
@@ -431,7 +429,7 @@ aQuery.define( "ui/scrollableview", [
         opt,
         self = this;
       if ( outer !== null ) {
-        if ( this.isTransform3d( ) ) {
+        if ( isTransform3d ) {
           opt = {
             transform3d: {
               translateX: outer + "px"
@@ -460,7 +458,7 @@ aQuery.define( "ui/scrollableview", [
         opt,
         self = this;
       if ( outer !== null ) {
-        if ( this.isTransform3d( ) ) {
+        if ( isTransform3d ) {
           opt = {
             transform3d: {
               translateY: outer + "px"
@@ -495,7 +493,7 @@ aQuery.define( "ui/scrollableview", [
         y2 = this.checkYStatusBar( y1 ),
         opt1, opt2;
 
-      if ( this.isTransform3d( ) ) {
+      if ( isTransform3d ) {
         opt1 = {
           transform3d: {
             translateY: y1 + "px"
@@ -535,7 +533,7 @@ aQuery.define( "ui/scrollableview", [
         x2 = this.checkXStatusBar( x1 ),
         opt1, opt2;
 
-      if ( this.isTransform3d( ) ) {
+      if ( isTransform3d ) {
         opt1 = {
           transform3d: {
             translateX: x1 + "px"
