@@ -70,6 +70,8 @@
   Widget.AllowPublic = 1;
   Widget.AllowReturn = 2;
 
+  Widget.initFirst = 2;
+
   var booleanExtend = function( a, b ) {
     for ( var i in b ) {
       if ( b[ i ] == 0 ) {
@@ -107,17 +109,13 @@
     },
     _initOptionsPurview = function( constructor ) {
       var proto = constructor.prototype,
-        getter = proto.getter,
-        setter = proto.setter,
+        getter = {},
+        setter = {},
         options = proto.options || {},
         i;
 
-      if ( !typed.isObj( getter ) ) {
-        getter = proto.getter = {};
-      }
-      if ( !typed.isObj( setter ) ) {
-        setter = proto.setter = {};
-      }
+      utilExtend.easyExtend( getter, proto.getter );
+      utilExtend.easyExtend( setter, proto.setter );
 
       for ( i in options ) {
         if ( getter[ i ] === undefined ) {
@@ -128,6 +126,9 @@
         }
       }
 
+      proto.getter = getter;
+
+      proto.setter = setter;
     },
     extendTemplate = function( tName, prototype, statics ) {
       if ( typed.isObj( statics ) ) {
@@ -270,9 +271,11 @@
     event: function( ) {},
 
     init: function( obj, target ) {
+      var proto = this.constructor.prototype;
+
       //元素本身属性高于obj
       this.options = {};
-      utilExtend.easyExtend( this.options, this.constructor.prototype.options );
+      utilExtend.easyExtend( this.options, proto.options );
 
       target._initHandler( );
       this.target = target;
@@ -369,6 +372,14 @@
       return typed.isFun( fn ) ? fn.call( this ) : this.options[ key ];
     },
     doSpecialSetter: function( key, value ) {
+      var flag = "__" + key + "OptionInitFirstFlag";
+      if ( this.setter[ key ] === Widget.initFirst ) {
+        if ( this[ flag ] ) {
+          return;
+        } else {
+          this[ flag ] = true;
+        }
+      }
       var fn = this[ $.util.camelCase( key, "_set" ) ];
       typed.isFun( fn ) ? fn.call( this, value ) : ( this.options[ key ] = value );
     },
