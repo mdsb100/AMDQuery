@@ -15,7 +15,6 @@
         }
         $.require(["ui/draggable", "main/query"], function (draggable, query) {
             //$.ready(function () {
-                var con = $("#container");
 
                 // $("#drag").draggable({
                 //     container: con,
@@ -40,21 +39,31 @@
     </script>
 </head>
 <body style="width: 100%; height: 100%;">
-    <div style="left: 100px; top: 300px; width: 300px; height: 300px; background-color: Green;
-        position: relative" id="container">
+    <div style="left: 50px; top: 20px; width: 300px; height: 300px; background-color: Green;
+        position: absolute" id="container1">
         <div>
             <div style="position: inherit">
-                <div id="drag" amdquery-widget="ui.draggable" ui-draggable-pause="aQuery.cabinet.pause:window" ui-draggable="axis:x;keepinner:true;container:#container;isTransform3d:true" style="width: 100px; height: 100px; background-color: Red;">
+                <div amdquery-widget="ui.draggable" ui-draggable="axis:y;keepinner:true;container:#container1;innerHeight:50;overflow:true" style="width: 100px; height: 600px; background-color: blue;">
+                    拖动我
+                </div>
+            </div>
+        </div>
+    </div>
+    <div style="left: 100px; top: 330px; width: 300px; height: 300px; background-color: Green;
+        position: absolute" id="container2">
+        <div>
+            <div style="position: inherit">
+                <div id="drag" amdquery-widget="ui.draggable" ui-draggable-pause="aQuery.cabinet.pause:window" ui-draggable="axis:x;keepinner:true;container:#container2;innerWidth:-50;" style="width: 100px; height: 100px; background-color: Red;">
                     拖动我
                 </div>
             </div>
         </div>
     </div>
     <div style="left: 500px; top: 0px; width: 300px; height: 300px; background-color: Green;
-        position: relative" id="container1">
+        position: absolute" id="container3">
         <div>
             <div style="position: inherit">
-                <div id="drag1" amdquery-widget="draggable" ui-draggable="keepinner:false;container:#container1" style="width: 500px; height: 500px; background-color: Red; position: absolute">
+                <div id="drag1" amdquery-widget="draggable" ui-draggable="keepinner:false;container:#container3;overWidth:100;" style="width: 500px; height: 500px; background-color: Red; position: absolute">
                     拖动我
                 </div>
             </div>

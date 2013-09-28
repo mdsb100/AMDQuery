@@ -7,24 +7,24 @@
     <script src="../../amdquery/amdquery.js" type="text/javascript" amd="detectCR=1" module="transitionToAnimation:1" ui="initWidget:1"></script>
     <script type="text/javascript">
         $.require(["ui/swapview", "main/query"], function (swapview, query) {
-
+          $("#swapview").uiSwapview();
         });
 
     </script>
 </head>
 <body style="width: 100%; height: 100%;">
-    <div amdquery-widget="ui.swapview" ui-swapview="orientation:H">
+    <div id="swapview" style="width:100%; height:100%;" amdquery-widget="ui.swapview" ui-swapview="orientation:H">
       <ol>
-        <li>
-        this is one
+        <li style="background-color:red;">
+          this is one
         </li>
-        <li>
+        <li style="background-color:green;">
           this is two
         </li>
-        <li>
+        <li style="background-color:yellow;">
           this is three
         </li>
-        <li>
+        <li style="background-color:blue">
           this is four
         </li>
       </ol>
