@@ -43,6 +43,7 @@
                   <li amdquery-widget="ui.navitem" ui-navitem="html:Button;img:class"></li>
                   <li amdquery-widget="ui.navitem" ui-navitem="html:Drag;img:class"></li>
                   <li amdquery-widget="ui.navitem" ui-navitem="html:Keyboard;img:class"></li>
+                  <li amdquery-widget="ui.navitem" ui-navitem="html:swapview;img:class"></li>
                   <li amdquery-widget="ui.navitem" ui-navitem="html:ScrollableView;img:class"></li>
                   <li amdquery-widget="ui.navitem" ui-navitem="html:SplitterPane;img:class"></li>
                   <li amdquery-widget="ui.navitem" ui-navitem="html:Widget;img:class"></li>
