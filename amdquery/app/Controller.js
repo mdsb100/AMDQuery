@@ -91,8 +91,8 @@ aQuery.define( "app/Controller", [ "base/ClassModule", "base/typed", "base/Promi
 
     }
   }, {
-    loadController: function( container, callback ) {
-      var contollersElement = query.find( "Controller", container ),
+    loadController: function( node, callback ) {
+      var contollersElement = typed.isNode( node, "controller" ) ? $(node) : query.find( "controller", node ),
         controller = [ ];
 
       if ( contollersElement.length ) {

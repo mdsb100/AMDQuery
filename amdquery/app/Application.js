@@ -1,8 +1,21 @@
-aQuery.define( "app/Application", [ "base/ClassModule", "base/Promise", "base/typed", "main/CustomEvent", "main/object", "app/Model", "app/View", "app/Controller", "ecma5/array.compati" ], function( $, ClassModule, Promise, typed, CustomEvent, object, BaseModel, BaseView, BaseController, Array, undefined ) {
+aQuery.define( "app/Application", [
+  "base/ClassModule",
+  "base/Promise",
+  "base/typed",
+  "main/CustomEvent",
+  "main/object",
+  "main/query",
+  "main/attr",
+  "app/Model",
+  "app/View",
+  "app/Controller",
+  "ecma5/array.compati" ], function( $, ClassModule, Promise, typed, CustomEvent, object, query, attr, BaseModel, BaseView, BaseController, Array, undefined ) {
   "use strict"; //启用严格模式
   var Application = CustomEvent.extend( "Application", {
     init: function( promiseCallback ) {
       this._super( );
+
+      this._routerMap = {};
 
       var image = $.config.app.image,
         $image = $( {
@@ -28,8 +41,20 @@ aQuery.define( "app/Application", [ "base/ClassModule", "base/Promise", "base/ty
       var app = this;
       this.promise = new Promise( function( ) {
         var promise = new Promise;
+        app.beforeLoad( promise );
+        app.trigger( "beforeLoad", app, {
+          type: "beforeLoad"
+        } );
+        return promise;
+      } ).then( function( ) {
+        var controllerElement = app.parseRouter( );
 
-        BaseController.loadController( document.body, function( controllers ) {
+        return controllerElement || document.body;
+
+      } ).then( function( node ) {
+        var promise = new Promise;
+
+        BaseController.loadController( node, function( controllers ) {
           app.index = controllers[ 0 ];
           app.index.ready( function( ) {
             promise.resolve( );
@@ -64,6 +89,27 @@ aQuery.define( "app/Application", [ "base/ClassModule", "base/Promise", "base/ty
       } else {
         return "";
       }
+    },
+    beforeLoad: function( promise ) {
+      promise.resolve( );
+    },
+    addRouter: function( key, value ) {
+      this._routerMap[ key ] = value;
+      return this;
+    },
+    parseRouter: function( ) {
+      var hash = window.location.hash,
+        ret = hash.match( /\$(.*)\$/ )
+        if ( ret && ret.length > 1 ) {
+          var controllerSrc = this._routerMap[ ret[ 1 ] ];
+          if ( controllerSrc ) {
+            var $body = $( document.body );
+            $body.children( "controller" ).remove( );
+            var controllerElement = $($.createEle( "controller" )).attr( "src", controllerSrc );
+            $body.append( controllerElement );
+            return controllerElement[0];
+          }
+        }
     },
     launch: function( ) {
 

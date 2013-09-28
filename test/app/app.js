@@ -7,6 +7,11 @@ aQuery.define( "@app/app", [ "app/Application" ], function( $, Application ) {
     },
     launch: function( ) {
       console.log( "app load" );
+    },
+    beforeLoad: function( promise ) {
+      this.addRouter("default", "@app/controller/index.js");
+      this.addRouter("router", "@app/controller/router.js");
+      promise.resolve( );
     }
   }, {
 
