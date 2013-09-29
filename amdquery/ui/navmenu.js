@@ -40,9 +40,7 @@ aQuery.define( "ui/navmenu", [
               self.target.trigger( type, target[ 0 ], para );
               break;
             case "navitem.select":
-              type = para.type = self.getEventName( "select" );
               self.changeSelectedNavItem( e.target );
-              self.target.trigger( type, target[ 0 ], para );
               break;
           }
         };
@@ -154,6 +152,13 @@ aQuery.define( "ui/navmenu", [
             $( opt.selectedNavItem ).uiNavitem( "cancel" );
           }
           opt.selectedNavItem = target;
+
+          var para = {
+            navitem: target
+          }, type;
+
+          type = para.type = this.getEventName( "select" );
+          this.target.trigger( type, this.target[ 0 ], para );
         }
       },
       init: function( opt, target ) {

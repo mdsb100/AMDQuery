@@ -7,15 +7,13 @@ aQuery.define( "@app/controller/navmenu", [ "app/Controller", "@app/view/navmenu
     },
     onReady: function( ) {
       var controller = this;
-      var $nav = $( this.view.topElement ).find( "#nav" );
-      //要移到on之后
-      $nav.uiNavmenu( "selectNavItem", "index_navmenu" );
+      this.$nav = $( this.view.topElement ).find( "#nav" );
 
-      var ret = $nav.uiNavmenu( "getNavItemsByHtml", "about AQuery" );
+      var ret = this.$nav.uiNavmenu( "getNavItemsByHtml", "about AQuery" );
 
-      ret = $nav.uiNavmenu( "getNavItemsByHtmlPath", [ "guide", "about AQuery" ] );
+      ret = this.$nav.uiNavmenu( "getNavItemsByHtmlPath", [ "guide", "about AQuery" ] );
 
-      $nav.on( "navmenu.select", function( e ) {
+      this.$nav.on( "navmenu.select", function( e ) {
         var target = $( e.navitem ),
           ret = target.uiNavitem( "getOptionToRoot" ),
           path;
@@ -35,10 +33,12 @@ aQuery.define( "@app/controller/navmenu", [ "app/Controller", "@app/view/navmenu
       } );
 
     },
+    selectDefaultNavmenu: function( ) {
+      this.$nav.uiNavmenu( "selectNavItem", "index_navmenu" );
+    },
     onDestroy: function( ) {
-      var $nav = $( this.view.topElement ).find( "#nav" );
-      $nav.clearHandlers( );
-      $nav = null;
+      this.$nav.clearHandlers( );
+      this.$nav = null;
     }
   }, {
 
