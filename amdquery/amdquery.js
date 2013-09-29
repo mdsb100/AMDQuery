@@ -1994,6 +1994,8 @@
           return this;
         };
 
+        var asyncLoadJs = ClassModule.loadJs;
+
         require.sync = function( ) {
           ClassModule.loadJs = syncLoadJs;
         }
