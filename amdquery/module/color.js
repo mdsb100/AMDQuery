@@ -102,7 +102,7 @@
     this.init( r, g, b );
   }
 
-  object.inheritProtypeWidthCombination( RGB, color );
+  object.inheritProtypeWithCombination( RGB, color );
   utilExtend.easyExtend( RGB.prototype, {
     red: 0,
     green: 0,
@@ -262,7 +262,7 @@
     this.init( hue, saturation, value );
   }
 
-  object.inheritProtypeWidthCombination( HSV, color );
+  object.inheritProtypeWithCombination( HSV, color );
   utilExtend.easyExtend( HSV.prototype, {
     hue: 0,
     saturation: 0,
@@ -503,7 +503,7 @@
     this.init( hue, saturation, lightness );
   }
 
-  object.inheritProtypeWidthCombination( HSL, color );
+  object.inheritProtypeWithCombination( HSL, color );
   utilExtend.easyExtend( HSL.prototype, {
     hue: 0,
     saturation: 0,

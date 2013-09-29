@@ -331,7 +331,7 @@
 
       return this;
     },
-    inheritProtypeWidthCombination: function( Sub, Super ) {
+    inheritProtypeWithCombination: function( Sub, Super ) {
       /// <summary>继承prototype 使用经典组合继承 不会保有同一个内存地址</summary>
       /// <para>如果anotherPrototype为false对子类的prototype添加属性也会添加到父类</para>
       /// <para>如果Sub不为空也不会使用相同引用</para>
