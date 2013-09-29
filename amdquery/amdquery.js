@@ -1526,16 +1526,12 @@
         /// <param name="dependencies" type="Array">依赖列表</param>
         /// <param name="success" type="Function">回调函数</param>
         /// <param name="fail" type="Function">失败的函数</param>
-        /// <returns type="ClassModule" />
-        var fn = success,
-          success = function( ) {
-            var arg = arguments;
-            $.ready( function( ) {
-              fn && fn.apply( null, arg );
-            } );
-          }
-
-        return window.require && window.require( dependencies, success, fail );
+        /// <returns type="$" />
+        // 将会在$ ready 后执行。这样便把sync实现起来了
+        window.require && $.ready( function( ) {
+          window.require( dependencies, success, fail )
+        } );
+        return this;
       }
     } );
 
@@ -2008,7 +2004,9 @@
           require.sync( );
         }
 
-        promise.resolve( );
+        setTimeout( function( ) {
+          promise.resolve( );
+        }, 0 );
 
       } );
       return promise;
