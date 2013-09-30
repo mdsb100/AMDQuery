@@ -1888,6 +1888,14 @@
       var promise = new Promise,
         ready = function( e ) {
           promise.resolve( e );
+          if ( document.addEventListener ) {
+            document.removeEventListener( "DOMContentLoaded", ready );
+          } else if ( document.attachEvent ) {
+            document.detachEvent( "onreadystatechange", ready );
+          } else {
+            document.onload = null;
+          }
+          ready = null;
         }
       if ( document.addEventListener ) {
         document.addEventListener( "DOMContentLoaded", ready, false );
