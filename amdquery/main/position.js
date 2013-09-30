@@ -487,13 +487,13 @@ aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "
 			/// <para>Height:相对于整个大小</para>
 			/// </summary>
 			/// <returns type="Number" />
-			if ( client.browser.ie < 8 ) {
-				return css.swap( this[ 0 ], {
-					"overflow": "scroll"
-				}, function( ) {
-					return this.scrollHeight || 0;
-				} );
-			}
+			// if ( client.browser.ie < 8 ) {
+			// 	return css.swap( this[ 0 ], {
+			// 		"overflow": "scroll"
+			// 	}, function( ) {
+			// 		return this.scrollHeight || 0;
+			// 	} );
+			// }
 			return this[ 0 ].scrollHeight || 0;
 		},
 		scrollWidth: function( ) {
@@ -501,7 +501,14 @@ aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "
 			/// <para>Width:相对于整个大小</para>
 			/// </summary>
 			/// <returns type="Number" />
-			return this[ 0 ].scrollWidth || 0;
+			// if ( client.browser.ie < 8 ) {
+   //      return css.swap( this[ 0 ], {
+   //        "overflow": "scroll"
+   //      }, function( ) {
+   //        return this.scrollWidth || 0;
+   //      } );
+   //    }
+      return this[ 0 ].scrollWidth || 0;
 		},
 
 		position: function( ) {
