@@ -318,8 +318,8 @@ aQuery.define( "ui/scrollableview", [
     },
 
     refreshPosition: function( ) {
-      this.scrollWidth = this.container.scrollWidth( );
-      this.scrollHeight = this.container.scrollHeight( );
+      this.scrollWidth = this.positionParent.scrollWidth( );
+      this.scrollHeight = this.positionParent.scrollHeight( );
 
       this.viewportWidth = this.target.width( );
       this.viewportHeight = this.target.height( );
