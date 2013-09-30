@@ -57,28 +57,26 @@
         if ( !typed.isEle( ele ) || ( !hasOwnProperty.call( ele, property ) && ele[ property ] === undefined ) ) {
           return this;
         }
-        ele.onload = ele.onreadystatechange = null;
+        ele.onload = null;
         ele.setAttribute( property, "" );
         var o = utilExtend.extend( {}, $.srcSetting, options ),
-          completeReadyStateChanges = 0,
           timeId;
-        ele.onload = ele.onreadystatechange = function( ) {
-          if ( !client.browser.ie || ++( completeReadyStateChanges ) == 3 ) {
-            clearTimeout( timeId );
-            o.complete && o.complete.call( o.context || this, this );
-            ele = completeReadyStateChanges = timeId = o = null;
-          }
+
+        ele.onload = function( ) {
+          clearTimeout( timeId );
+          o.complete && o.complete.call( o.context || this, this );
+          ele = timeId = o = null;
         };
         ele.onerror = function( e ) {
           clearTimeout( timeId );
           o.error && o.timeoutFun.call( ele, e );
-          ele = completeReadyStateChanges = o = timeId = null;
+          ele = o = timeId = null;
         };
 
         if ( o.timeout ) {
           timeId = setTimeout( function( ) {
             o.timeoutFun && o.timeoutFun.call( ele, o );
-            ele = completeReadyStateChanges = o = timeId = null;
+            ele = o = timeId = null;
           }, o.timeout );
         }
         ele.setAttribute( property, o[ property ] );
@@ -135,6 +133,6 @@
   } );
 
   $.extend( src );
-  
+
   return src;
 } );
