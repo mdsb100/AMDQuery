@@ -105,6 +105,7 @@ aQuery.define( "app/Controller", [ "base/ClassModule", "base/typed", "base/Promi
 
         for ( ; i < len; i++ ) {
           element = contollersElement[ i ];
+          element.style.display = "block";
           src = attr.getAttr( element, "src" );
           src = $.util.removeSuffix( src );
           depend.push( src );
