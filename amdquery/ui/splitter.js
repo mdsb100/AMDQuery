@@ -146,7 +146,7 @@ aQuery.define( "ui/splitter", [
         },
         findParent: function( ) {
           var parent = this.target.parent( "[ui-splitterpane]" );
-          if ( parent.length && parent.firstEle === this.target.firstEle.parentNode ) {
+          if ( parent.length && parent[0] === this.target[0].parentNode ) {
             return parent;
           }
           return null;

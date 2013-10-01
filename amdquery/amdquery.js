@@ -6,7 +6,8 @@
 ( function( window, undefined ) {
   "use strict"; //启用严格模式
   var
-  core_slice = [ ].slice;
+  core_slice = [ ].slice,
+    core_splice = [ ].splice;
 
   var
   version = "AMDQuery 1.0.0",
@@ -568,18 +569,57 @@
   } );
 
   $.fn = $.prototype = {
-    addElement: function( ele ) {
-      /// <summary>添加元素或元素组</summary>
-      /// <param name="ele" type="Element/arr">内容为元素的数组或元素</param>
+    push: function( ele ) {
+      /// <summary>添加元素</summary>
+      /// <param name="ele" type="Element">元素</param>
       /// <returns type="self" />
-      if ( eles.constructor == Array ) {
-        $.each( eles, function( ele ) {
-          this.eles.push( ele );
-        }, this );
-      } else {
-        this.eles.push( ele );
-      }
-      return this;
+      this.eles.push( ele );
+      return this.init( this.eles );
+    },
+    pop: function( ) {
+      /// <summary>删除返回元素</summary>
+      /// <returns type="Self" />
+      var ret = this.eles.pop( );
+      this.init( this.eles );
+      return new $( ret );
+    },
+    shift: function( ) {
+      /// <summary>删除头部一个元素</summary>
+      /// <returns type="Self" />
+      var ret = this.eles.shift( );
+      this.init( this.eles );
+      return new $( ret );
+    },
+    unshift: function( ele ) {
+      /// <summary>增加头部第一个元素</summary>
+      /// <param name="ele" type="Element">元素</param>
+      /// <returns type="Self" />
+      return new $( this.eles.splice( 0, 0, ele ) );
+    },
+    slice: function( ) {
+      /// <summary>截取一段并返回新的$</summary>
+      /// <returns type="$" />
+      return new $( core_slice.call( this.eles, arguments ) );
+    },
+    splice: function( ) {
+      /// <summary>删除插入一段并返回新的$</summary>
+      /// <returns type="$" />
+      var ret = core_splice.call( this.eles, arguments );
+      this.init( this.eles );
+      return new $( ret );
+    },
+    reverse: function( ) {
+      /// <summary>反转</summary>
+      /// <returns type="self" />
+      this.eles.reverse( );
+      return this.init( this.eles );
+    },
+    sort: function( fn ) {
+      /// <summary>排序</summary>
+      /// <param name="fn" type="Function">筛选条件</param>
+      /// <returns type="self" />
+      this.eles.sort( fn );
+      return this.init( this.eles );
     },
 
     constructor: $,
@@ -592,8 +632,6 @@
       return this;
     },
     eles: null,
-
-    firstEle: null,
 
     first: function( ) {
       /// <summary>返回第一个元素</summary>
@@ -613,27 +651,15 @@
       return $( this.eles[ this.eles.length - 1 ] || this.eles );
     },
 
-    sort: function( fun ) {
-      /// <summary>排序</summary>
-      /// <param name="fun" type="Function">筛选条件</param>
-      /// <returns type="self" />
-      this.eles.sort( fun );
-      return this;
-    },
-
     init: function( eles, selector ) {
       /// <summary>初始化$</summary>
       /// <param name="eles" type="Array">内容为元素的数组</param>
       /// <param name="selector" type="any"></param>
       /// <returns type="self" />
       this.eles = null;
-      this.firstEle = null;
-      this.lastEle = null;
       this.context = null;
       this.selector = "";
-      if ( !eles.length ) {
-        //util.console.warn({ fn: "aQuery.init", msg: "has not query any element" });
-      }
+
       if ( this.eles ) this.each( function( ele, index ) {
         delete this[ index ];
       } );
@@ -643,8 +669,6 @@
         this[ index ] = ele;
       } );
       this.length = eles.length;
-      this.firstEle = this[ 0 ];
-      this.lastEle = this[ this.length - 1 ];
 
       if ( typeof selector == "string" ) {
         this.selector = selector;
@@ -668,15 +692,7 @@
       return len;
     },
 
-    lastEle: null,
     length: 0,
-
-    reverse: function( ) {
-      /// <summary>反转</summary>
-      /// <returns type="self" />
-      this.eles.reverse( );
-      return this;
-    },
 
     selector: "",
 
@@ -685,6 +701,7 @@
       /// <param name="eles" type="Array">内容为元素的数组</param>
       /// <returns type="self" />
       this.eles = eles;
+      return this.init( this.eles );
     },
 
     toString: function( ) {
