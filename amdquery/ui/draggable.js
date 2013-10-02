@@ -1,12 +1,33 @@
 ﻿aQuery.define( "ui/draggable", [
+  "base/support",
   "module/Widget",
   "main/event",
   "main/css",
   "main/position",
   "main/dom",
+  "module/FX",
+  "module/animate",
+  "html5/animate.transform",
+  "html5/css3.transition.animate",
   "html5/css3",
-  "main/query" ], function( $, Widget, event, css, position, dom, cls3, query, undefined ) {
+  "main/query",
+  "module/tween.extend" ], function( $,
+  support,
+  Widget,
+  event,
+  css,
+  position,
+  dom,
+  FX,
+  animate,
+  animateTransform,
+  css3Transition,
+  cls3,
+  query,
+  tween,
+  undefined ) {
   "use strict"; //启用严格模式
+  var isTransform3d = !! $.config.module.transitionToAnimation && support.transform3d;
   var eventFuns = event.event.document,
     draggable = Widget.extend( "ui.draggable", {
       container: null,
@@ -25,7 +46,7 @@
 
         return this;
       },
-      customEventName: [ "start", "move", "stop", "pause" ],
+      customEventName: [ "start", "move", "stop", "pause", "revert" ],
       event: function( ) {},
       enable: function( ) {
         var fun = this.event;
@@ -51,7 +72,7 @@
       },
       initPositionParent: function( ) {
         var result;
-        if ( this.isTransform3d( ) ) {
+        if ( isTransform3d ) {
           this.container.initTransform3d( );
           if ( this.options.container ) {
             this.positionParent = this.container;
@@ -102,6 +123,8 @@
         disabled: true,
         x: 0,
         y: 0,
+        originX: 0,
+        originY: 0,
         diffx: 0,
         diffy: 0,
         axis: null,
@@ -112,13 +135,20 @@
         keepinner: true,
         innerWidth: 0,
         innerHeight: 0,
+        outerWidth: 0,
+        outerHeight: 0,
+        isEase: false,
         stopPropagation: true,
-        isTransform3d: false,
-        pauseSensitivity: 500
+        pauseSensitivity: 500,
+        revert: false,
+        revertDuration: FX.normal,
+        revertEasing: tween.expo.easeOut
       },
       setter: {
         x: 0,
         y: 0,
+        originX: 0,
+        originY: 0,
         diffx: 0,
         diffy: 0,
         axisx: 0,
@@ -130,14 +160,11 @@
         getPositionY: Widget.AllowReturn,
         render: Widget.AllowPublic
       },
-      isTransform3d: function( ) {
-        return this.options.isTransform3d && $.support.transform3d;
-      },
       getPositionX: function( ) {
-        return this.target.getLeft( ) + ( this.isTransform3d( ) ? this.target.transform3d( "translateX", true ) : 0 );
+        return this.target.getLeft( ) + ( isTransform3d ? this.target.transform3d( "translateX", true ) : 0 );
       },
       getPositionY: function( ) {
-        return this.target.getTop( ) + ( this.isTransform3d( ) ? this.target.transform3d( "translateY", true ) : 0 );
+        return this.target.getTop( ) + ( isTransform3d ? this.target.transform3d( "translateY", true ) : 0 );
       },
       _initHandler: function( ) {
         var self = this,
@@ -161,6 +188,8 @@
               clientY: y,
               offsetX: e.offsetX || e.layerX || x - offsetLeft,
               offsetY: e.offsetY || e.layerY || y - offsetTop,
+              originX: null,
+              originY: null,
               event: e,
               target: this
             };
@@ -173,6 +202,9 @@
               opt.diffy = y - offsetTop;
               parentLeft = self.positionParent.getLeft( );
               parentTop = self.positionParent.getTop( );
+              para.originX = opt.originX = x - opt.diffx - parentLeft;
+              para.originY = opt.originY = y - opt.diffy - parentTop;
+
               if ( opt.disabled == false ) {
                 opt.cursor = "default";
               } else {
@@ -211,6 +243,8 @@
                 para.type = self.getEventName( "move" );
                 para.offsetX = opt.x;
                 para.offsetY = opt.y;
+                para.originX = opt.originX;
+                para.originY = opt.originY;
                 target.trigger( para.type, target[ 0 ], para );
 
                 clearTimeout( timeout );
@@ -226,11 +260,42 @@
               eventFuns.preventDefault( e );
               opt.stopPropagation && eventFuns.stopPropagation( e );
               para.type = self.getEventName( "stop" );
+              para.offsetX = opt.x;
+              para.offsetY = opt.y;
+              para.originX = opt.originX;
+              para.originY = opt.originY;
               dragging = null;
-              target.trigger( para.type, target[ 0 ], para );
+              var animateOpt = {};
+
               self.target.css( {
                 cursor: "pointer"
               } );
+              target.trigger( para.type, target[ 0 ], para );
+
+              if ( opt.revert ) {
+                if ( isTransform3d ) {
+                  animateOpt = {
+                    transform3d: {
+                      translateX: opt.originX + "px",
+                      translateY: opt.originY + "px"
+                    }
+                  };
+                } else {
+                  animateOpt = {
+                    left: opt.originX + "px",
+                    top: opt.originY + "px"
+                  };
+                }
+
+                target.animate( animateOpt, {
+                  duration: opt.revertDuration,
+                  easing: opt.revertEasing,
+                  complete: function( ) {
+                    para.type = "revert";
+                    target.trigger( para.type, target[ 0 ], para );
+                  }
+                } );
+              }
               break;
           }
         };
@@ -253,19 +318,18 @@
           var diffWidth = cP.width - this.target.width( );
           var diffHeight = cP.height - this.target.height( );
 
-          var innerWidth = diffWidth > 0 ? -opt.innerWidth : opt.innerWidth;
-          var innerHeight = diffHeight > 0 ? -opt.innerHeight : opt.innerHeight;
-          // console.log(cP.pageLeft + innerWidth);
-          // console.log(diffWidth + cP.pageLeft - innerWidth);
-          // console.log(this.target.height( ))
-          x = $.among( cP.pageLeft + innerWidth, diffWidth + cP.pageLeft - innerWidth, x );
-          y = $.among( cP.pageTop + innerHeight, diffHeight + cP.pageTop - innerHeight, y );
+          var boundaryWidth = diffWidth > 0 ? opt.outerWidth : opt.innerWidth;
+          var boundaryHeight = diffHeight > 0 ? opt.outerHeight : opt.innerHeight;
+
+          x = $.among( cP.pageLeft + boundaryWidth, diffWidth + cP.pageLeft - boundaryWidth, x );
+          y = $.among( cP.pageTop + boundaryHeight, diffHeight + cP.pageTop - boundaryHeight, y );
+
         }
 
         opt.x = x;
         opt.y = y;
 
-        return this.isTransform3d( ) ? this._renderByTransform3d( x, y ) : this._render( x, y );
+        return isTransform3d ? this._renderByTransform3d( x, y ) : this._render( x, y );
       },
       _render: function( x, y ) {
         var opt = this.options;

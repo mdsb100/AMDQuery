@@ -52,7 +52,6 @@ aQuery.define( "ui/scrollableview", [
         stopPropagation: false,
         axisx: this._isAllowedDirection( "x" ),
         axisy: this._isAllowedDirection( "y" ),
-        isTransform3d: isTransform3d,
         container: this.target,
         overflow: true
       } );
