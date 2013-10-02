@@ -7,18 +7,16 @@
     <script src="../../amdquery/amdquery.js" type="text/javascript" amd="detectCR=1" module="transitionToAnimation:1" ui="initWidget:1"></script>
     <script type="text/javascript">
         $.require(["ui/scrollableview", "main/query"], function (scrollableview, query) {
-            $.ready(function() {
-                $("#container1").on("scrollableview.pulldown", function(){
-                    $.showMsg("1")
-                }).on("scrollableview.pullup", function(){
-                    $.showMsg("2")
-                }).on("scrollableview.pullleft", function(){
-                    $.showMsg("3")
-                }).on("scrollableview.pullright", function(){
-                    $.showMsg("4")
-                }).on("scrollableview.animationEnd", function(e){
-                    $.showMsg(e.scene)
-                });
+            $("#container1").on("scrollableview.pulldown", function(){
+                $.showMsg("1")
+            }).on("scrollableview.pullup", function(){
+                $.showMsg("2")
+            }).on("scrollableview.pullleft", function(){
+                $.showMsg("3")
+            }).on("scrollableview.pullright", function(){
+                $.showMsg("4")
+            }).on("scrollableview.animationEnd", function(e){
+                $.showMsg(e.scene)
             });
         });
 
