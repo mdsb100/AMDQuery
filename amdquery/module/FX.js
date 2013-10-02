@@ -99,19 +99,19 @@
         completes[ i ].call( context, opt );
       }
     },
+    fast: 200,
+    slow: 600,
+    normal: 400,
     speeds: function( type ) {
       switch ( type ) {
         case "slow":
-          type = 600;
-          break;
+          return FX.slow;
         case "fast":
-          type = 200;
-          break;
+          return FX.fast;
         default:
         case "normal":
-          type = 400;
+          return FX.normal;
       }
-      return type;
     },
 
     custom: {},
