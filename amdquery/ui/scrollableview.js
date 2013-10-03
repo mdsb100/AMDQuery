@@ -16,6 +16,112 @@ aQuery.define( "ui/scrollableview", [
   "use strict"; //启用严格模式
   Widget.fetchCSS( "ui/css/scrollableview" );
   var isTransform3d = !! $.config.module.transitionToAnimation && support.transform3d;
+
+  var _render, renderStatusBar, renderStatusBarX, renderStatusBarY, getContainerPosition, getTop, getLeft, getXOpt, getYOpt;
+  if ( isTransform3d ) {
+    _render = function( x1, x2, y1, y2 ) {
+      var opt1 = {};
+      if ( x1 !== null && this._isAllowedDirection( "x" ) ) {
+        opt1.tx = parseInt( x1 );
+        this.statusBarX.setTranslate3d( {
+          tx: parseInt( x2 )
+        } );
+      }
+      if ( y1 !== null && this._isAllowedDirection( "y" ) ) {
+        opt1.ty = parseInt( y1 );
+        this.statusBarY.setTranslate3d( {
+          ty: parseInt( y2 )
+        } );
+      }
+      this.container.setTranslate3d( opt1 );
+      return this;
+    };
+
+    renderStatusBarX = function( x ) {
+      this.statusBarX.setTranslate3d( {
+        tx: parseInt( x )
+      } );
+    };
+
+    renderStatusBarY = function( y ) {
+      this.statusBarY.setTranslate3d( {
+        ty: parseInt( y )
+      } )
+    };
+
+    getContainerPosition = function( ) {
+      return {
+        x: this.container.transform3d( "translateX", true ),
+        y: this.container.transform3d( "translateY", true )
+      };
+    };
+    getTop = function( ) {
+      return this.container.transform3d( "translateY", true );
+    };
+
+    getLeft = function( ) {
+      return this.container.transform3d( "translateX", true );
+    };
+
+    getXOpt = function( outer ) {
+      return {
+        transform3d: {
+          translateX: outer + "px"
+        }
+      };
+    };
+
+    getYOpt = function( outer ) {
+      return {
+        transform3d: {
+          translateY: outer + "px"
+        }
+      };
+    };
+  } else {
+    _render = function( x1, x2, y1, y2 ) {
+      x1 !== null && this._isAllowedDirection( "x" ) && this.container.offsetLeft( parseInt( x1 ) ) && this.statusBarX.offsetLeft( parseInt( x2 ) );
+
+      y1 !== null && this._isAllowedDirection( "y" ) && this.container.offsetTop( parseInt( y1 ) ) && this.statusBarY.offsetTop( parseInt( y2 ) );
+      return this;
+    };
+
+    renderStatusBarX = function( x ) {
+      this.statusBarX.offsetLeft( parseInt( x ) );
+    };
+
+    renderStatusBarY = function( y ) {
+      this.statusBarX.offsetTop( parseInt( y ) );
+    };
+
+    getContainerPosition = function( ) {
+      return {
+        x: this.container.offsetLeft( ),
+        y: this.container.offsetTop( )
+      };
+    };
+
+    getTop = function( ) {
+      return this.container.offsetTop( );
+    };
+
+    getLeft = function( ) {
+      return this.container.offsetLeft( );
+    };
+
+    getXOpt = function( outer ) {
+      return {
+        left: outer + "px"
+      };
+    };
+
+    getYOpt = function( outer ) {
+      return {
+        top: outer + "px"
+      };
+    };
+  }
+
   var scrollableview = Widget.extend( "ui.scrollableview", {
     container: null,
     create: function( ) {
@@ -222,58 +328,19 @@ aQuery.define( "ui/scrollableview", [
         statusY = this.checkYStatusBar( y );
       }
 
-      isTransform3d ? this._renderByTransform3d( x, statusX, y, statusY ) : this._renderByDefault( x, statusX, y, statusY );
-      return this;
+      return this._render( x, statusX, y, statusY );
     },
-    _renderByTransform3d: function( x1, x2, y1, y2 ) {
-      var opt1 = {};
-      if ( x1 !== null && this._isAllowedDirection( "x" ) ) {
-        opt1.tx = parseInt( x1 );
-        this.statusBarX.setTranslate3d( {
-          tx: parseInt( x2 )
-        } );
-      }
-      if ( y1 !== null && this._isAllowedDirection( "y" ) ) {
-        opt1.ty = parseInt( y1 );
-        this.statusBarY.setTranslate3d( {
-          ty: parseInt( y2 )
-        } );
-      }
-      this.container.setTranslate3d( opt1 );
-
-      return this;
-    },
-    _renderByDefault: function( x1, x2, y1, y2 ) {
-      x1 !== null && this._isAllowedDirection( "x" ) && this.container.offsetLeft( parseInt( x1 ) ) && this.statusBarX.offsetLeft( parseInt( x2 ) );
-
-      y1 !== null && this._isAllowedDirection( "y" ) && this.container.offsetTop( parseInt( y1 ) ) && this.statusBarY.offsetTop( parseInt( y2 ) );
-      return this;
-    },
+    _render: _render,
+    renderStatusBarX: renderStatusBarX,
+    renderStatusBarY: renderStatusBarY,
     renderStatusBar: function( x, y ) {
-      this._isAllowedDirection( "x" ) && isTransform3d ? this.statusBarX.setTranslate3d( {
-        tx: parseInt( x )
-      } ) : this.statusBarX.offsetLeft( parseInt( x ) );
+      this._isAllowedDirection( "x" ) && this.renderStatusBarX( x );
 
-      this._isAllowedDirection( "y" ) && isTransform3d ? this.statusBarY.setTranslate3d( {
-        ty: parseInt( y )
-      } ) : this.statusBarY.offsetTop( parseInt( y ) );
+      this._isAllowedDirection( "y" ) && this.renderStatusBarY( y );
 
       return this;
     },
-    getContainerPosition: function( ) {
-      var x, y;
-      if ( isTransform3d ) {
-        x = this.container.transform3d( "translateX", true );
-        y = this.container.transform3d( "translateY", true );
-      } else {
-        x = this.container.offsetLeft( );
-        y = this.container.offsetTop( );
-      }
-      return {
-        x: x,
-        y: y
-      };
-    },
+    getContainerPosition: getContainerPosition,
 
     target: null,
     toString: function( ) {
@@ -317,8 +384,8 @@ aQuery.define( "ui/scrollableview", [
     },
 
     refreshPosition: function( ) {
-      this.scrollWidth = this.positionParent.scrollWidth();
-      this.scrollHeight = this.positionParent.scrollHeight();
+      this.scrollWidth = this.positionParent.scrollWidth( );
+      this.scrollHeight = this.positionParent.scrollHeight( );
 
       this.viewportWidth = this.target.width( );
       this.viewportHeight = this.target.height( );
@@ -331,12 +398,8 @@ aQuery.define( "ui/scrollableview", [
     _isAllowedDirection: function( direction ) {
       return this.options.overflow.indexOf( direction ) > -1;
     },
-    getTop: function( ) {
-      return isTransform3d ? this.container.transform3d( "translateY", true ) : this.container.offsetTop( );
-    },
-    getLeft: function( ) {
-      return isTransform3d ? this.container.transform3d( "translateX", true ) : this.container.offsetLeft( );
-    },
+    getTop: getTop,
+    getLeft: getLeft,
     pause: function( ) {
 
       return this;
@@ -434,21 +497,9 @@ aQuery.define( "ui/scrollableview", [
 
     toXBoundary: function( left, direction ) {
       var outer = this.outerXBoundary( left ),
-        opt,
         self = this;
       if ( outer !== null ) {
-        if ( isTransform3d ) {
-          opt = {
-            transform3d: {
-              translateX: outer + "px"
-            }
-          };
-        } else {
-          opt = {
-            left: outer + "px"
-          };
-        }
-        this.container.animate( opt, {
+        this.container.animate( getXOpt( outer ), {
           duration: this.options.boundaryDruation,
           easing: "expo.easeOut",
           queue: false,
@@ -463,21 +514,9 @@ aQuery.define( "ui/scrollableview", [
 
     toYBoundary: function( top, direction ) {
       var outer = this.outerYBoundary( top ),
-        opt,
         self = this;
       if ( outer !== null ) {
-        if ( isTransform3d ) {
-          opt = {
-            transform3d: {
-              translateY: outer + "px"
-            }
-          };
-        } else {
-          opt = {
-            top: outer + "px"
-          };
-        }
-        this.container.animate( opt, {
+        this.container.animate( getYOpt( outer ), {
           duration: this.options.boundaryDruation,
           easing: "expo.easeOut",
           queue: false,
@@ -498,30 +537,9 @@ aQuery.define( "ui/scrollableview", [
     },
     animateY: function( y1, t, direction ) {
       var self = this,
-        y2 = this.checkYStatusBar( y1 ),
-        opt1, opt2;
+        y2 = this.checkYStatusBar( y1 );
 
-      if ( isTransform3d ) {
-        opt1 = {
-          transform3d: {
-            translateY: y1 + "px"
-          }
-        };
-        opt2 = {
-          transform3d: {
-            translateY: y2 + "px"
-          }
-        };
-      } else {
-        opt1 = {
-          top: y1 + "px"
-        };
-        opt2 = {
-          top: y2 + "px"
-        };
-      }
-
-      this.container.animate( opt1, {
+      this.container.animate( getYOpt( y1 ), {
         duration: t,
         easing: "easeOut",
         complete: function( ) {
@@ -530,7 +548,7 @@ aQuery.define( "ui/scrollableview", [
         }
       } );
 
-      this.statusBarY.animate( opt2, {
+      this.statusBarY.animate( getYOpt( y2 ), {
         duration: t,
         easing: "easeOut"
       } );
@@ -538,30 +556,9 @@ aQuery.define( "ui/scrollableview", [
     },
     animateX: function( x1, t, direction ) {
       var self = this,
-        x2 = this.checkXStatusBar( x1 ),
-        opt1, opt2;
+        x2 = this.checkXStatusBar( x1 );
 
-      if ( isTransform3d ) {
-        opt1 = {
-          transform3d: {
-            translateX: x1 + "px"
-          }
-        };
-        opt2 = {
-          transform3d: {
-            translateX: x2 + "px"
-          }
-        };
-      } else {
-        opt1 = {
-          left: x1 + "px"
-        };
-        opt2 = {
-          left: x2 + "px"
-        };
-      }
-
-      this.container.animate( opt1, {
+      this.container.animate( getXOpt( x1 ), {
         duration: t,
         easing: "easeOut",
         complete: function( ) {
@@ -570,33 +567,13 @@ aQuery.define( "ui/scrollableview", [
         }
       } );
 
-      this.statusBarX.animate( opt2, {
+      this.statusBarX.animate( getXOpt( x2 ), {
         duration: t,
         easing: "easeOut"
       } );
       return this;
     }
   } );
-  //可以 x y变为一个方法
-
-  //提供注释
-  $.fn.uiScrollableview = function( a, b, c, args ) {
-    /// <summary>使对象的第一元素可以拖动
-    /// <para>bol obj.disabled:事件是否可用</para>
-    /// <para>num obj.axis:"x"表示横轴移动;"y"表示纵轴移动;缺省或其他值为2轴</para>
-    /// <para>num obj.second:秒数</para>
-    /// <para>fun obj.dragstar:拖动开始</para>
-    /// <para>fun obj.dragmove:拖动时</para>
-    /// <para>fun obj.dragstop:拖动结束</para>
-    /// </summary>
-    /// <param name="a" type="Object/String">初始化obj或属性名:option或方法名</param>
-    /// <param name="b" type="String/null">属性option子属性名</param>
-    /// <param name="c" type="any">属性option子属性名的值</param>
-    /// <param name="args" type="any">在调用方法的时候，后面是方法的参数</param>
-    /// <returns type="$" />
-    scrollableview.apply( this, arguments );
-    return this;
-  };
 
   return scrollableview;
 } );
