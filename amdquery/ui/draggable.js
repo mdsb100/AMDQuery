@@ -158,7 +158,8 @@
       publics: {
         getPositionX: Widget.AllowReturn,
         getPositionY: Widget.AllowReturn,
-        render: Widget.AllowPublic
+        render: Widget.AllowPublic,
+        animateTo: Widget.AllowPublic
       },
       getPositionX: function( ) {
         return this.target.getLeft( ) + ( isTransform3d ? this.target.transform3d( "translateX", true ) : 0 );
@@ -265,7 +266,6 @@
               para.originX = opt.originX;
               para.originY = opt.originY;
               dragging = null;
-              var animateOpt = {};
 
               self.target.css( {
                 cursor: "pointer"
@@ -273,33 +273,37 @@
               target.trigger( para.type, target[ 0 ], para );
 
               if ( opt.revert ) {
-                if ( isTransform3d ) {
-                  animateOpt = {
-                    transform3d: {
-                      translateX: opt.originX + "px",
-                      translateY: opt.originY + "px"
-                    }
-                  };
-                } else {
-                  animateOpt = {
-                    left: opt.originX + "px",
-                    top: opt.originY + "px"
-                  };
-                }
-
-                target.animate( animateOpt, {
-                  duration: opt.revertDuration,
-                  easing: opt.revertEasing,
-                  complete: function( ) {
-                    para.type = "revert";
-                    target.trigger( para.type, target[ 0 ], para );
-                  }
+                self.animateTo( opt.originX, opt.originY, opt.revertDuration, opt.revertEasing, function( ) {
+                  para.type = "revert";
+                  target.trigger( para.type, target[ 0 ], para );
                 } );
               }
               break;
           }
         };
 
+      },
+      animateTo: function( x, y, duration, easing, complete ) {
+        var animateOpt = {};
+        if ( isTransform3d ) {
+          animateOpt = {
+            transform3d: {
+              translateX: x + "px",
+              translateY: y + "px"
+            }
+          };
+        } else {
+          animateOpt = {
+            left: x + "px",
+            top: y + "px"
+          };
+        }
+
+        this.target.animate( animateOpt, {
+          duration: duration,
+          easing: easing,
+          complete: complete
+        } );
       },
       render: function( x, y, parentLeft, parentTop ) {
         var
@@ -362,24 +366,6 @@
       },
       widgetEventPrefix: "drag"
     } );
-
-  //提供注释
-  $.fn.uiDraggable = function( a, b, c, args ) {
-    /// <summary>使对象的第一元素可以拖动
-    /// <para>bol obj.disabled:事件是否可用</para>
-    /// <para>num obj.axis:"x"表示横轴移动;"y"表示纵轴移动;缺省或其他值为2轴</para>
-    /// <para>num obj.second:秒数</para>
-    /// <para>fun obj.dragstar:拖动开始</para>
-    /// <para>fun obj.dragmove:拖动时</para>
-    /// <para>fun obj.dragstop:拖动结束</para>
-    /// </summary>
-    /// <param name="a" type="Object/String">初始化obj或属性名:option或方法名</param>
-    /// <param name="b" type="String/null">属性option子属性名</param>
-    /// <param name="c" type="any">属性option子属性名的值</param>
-    /// <param name="args" type="any">在调用方法的时候，后面是方法的参数</param>
-    /// <returns type="$" />
-    return draggable.apply( this, arguments );
-  };
 
   return draggable;
 

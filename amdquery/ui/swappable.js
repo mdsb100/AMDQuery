@@ -212,31 +212,5 @@
     widgetEventPrefix: "swap"
   } );
 
-  //提供注释
-  $.fn.uiSwappable = function( a, b, c, args ) {
-    /// <summary>使其滑动
-    /// <para>bol obj.disabled:事件是否可用</para>
-    /// <para>num obj.pauseSensitivity:捕捉的灵敏度 缺省500毫秒</para>
-    /// <para>num obj.判断方向的区间范围:小于等于22.5大于0</para>
-    /// <para>fun obj.swapstart:滑动开始</para>
-    /// <para>fun obj.swapmove:滑动时</para>
-    /// <para>fun obj.swappause:滑动暂停</para>
-    /// <para>fun obj.swapstop:滑动结束</para>
-    /// <para>返回的event:</para>
-    /// <para>{ type: "swapstart", offsetX: x, offsetY: y, event: e</para>
-    /// <para>, speed: 0, target: this, startX: self.startX, startY: self.startY</para>
-    /// <para>, path: self.path, swapType: undefined</para>
-    /// <para>, angle: undefined,direction: undefined, distance: undefined</para>
-    /// <para>, currentAngle: undefined, currentDirection: undefined</para>
-    /// <para>}</para>
-    /// </summary>
-    /// <param name="a" type="Object/String">初始化obj或属性名:option或方法名</param>
-    /// <param name="b" type="String/null">属性option子属性名</param>
-    /// <param name="c" type="any">属性option子属性名的值</param>
-    /// <param name="args" type="any">在调用方法的时候，后面是方法的参数</param>
-    /// <returns type="$" />
-    return swappable.apply( this, arguments );
-  };
-
   return swappable;
 } );
