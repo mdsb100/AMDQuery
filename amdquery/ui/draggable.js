@@ -28,6 +28,108 @@
   undefined ) {
   "use strict"; //启用严格模式
   var isTransform3d = !! $.config.module.transitionToAnimation && support.transform3d;
+
+  var _render, initPositionParent, getPositionX, getPositionY, animateTo;
+  if ( isTransform3d ) {
+    _render = function( x, y ) {
+      var opt = this.options,
+        obj = {};
+
+      if ( opt.axisx === true && x != undefined ) {
+        obj.tx = x;
+      }
+      if ( opt.axisy === true && y != undefined ) {
+        obj.ty = y;
+      }
+      this.target.setTranslate3d( obj );
+      return this;
+    };
+
+    initPositionParent = function( ) {
+      this.container.initTransform3d( );
+      if ( this.options.container ) {
+        this.positionParent = this.container;
+      } else {
+        this.positionParent = this.target.parent( );
+      }
+      return this;
+    };
+
+    getPositionX = function( ) {
+      return this.target.getLeft( );
+    };
+
+    getPositionY = function( ) {
+      this.target.getTop( );
+    };
+
+    animateTo = function( x, y, duration, easing, complete ) {
+      this.target.animate( {
+        transform3d: {
+          translateX: x + "px",
+          translateY: y + "px"
+        }
+      }, {
+        duration: duration,
+        easing: easing,
+        complete: complete
+      } );
+    };
+  } else {
+    _render = function( x, y ) {
+      var opt = this.options;
+
+      if ( opt.axisx === true && x != undefined ) {
+        this.target.css( "left", x + "px" );
+      }
+      if ( opt.axisy === true && y != undefined ) {
+        this.target.css( "top", y + "px" );
+      }
+
+      return this;
+    };
+
+    initPositionParent = function( ) {
+      var result;
+      this.target.parents( ).each( function( ele ) {
+        switch ( $.style( ele, "position" ) ) {
+          case "absolute":
+          case "relative":
+            result = ele;
+            return false;
+        }
+      } );
+      if ( !result ) {
+        result = document.body;
+        $.css( result, "position", "relative" );
+      }
+      //self.container = $(result);
+      this.positionParent = $( result );
+      this._setOverflow( );
+
+      return this;
+    };
+
+    getPositionX = function( ) {
+      return this.target.getLeft( ) + ( this.target.transform3d( "translateX", true ) || 0 );
+    };
+
+    getPositionY = function( ) {
+      return this.target.getTop( ) + ( this.target.transform3d( "translateY", true ) || 0 );
+    };
+
+    animateTo = function( x, y, duration, easing, complete ) {
+      this.target.animate( {
+        left: x + "px",
+        top: y + "px"
+      }, {
+        duration: duration,
+        easing: easing,
+        complete: complete
+      } );
+    };
+  }
+
   var eventFuns = event.event.document,
     draggable = Widget.extend( "ui.draggable", {
       container: null,
@@ -70,35 +172,7 @@
         this.container = $( this.options.container || document.body );
         return this.create( ).render( );
       },
-      initPositionParent: function( ) {
-        var result;
-        if ( isTransform3d ) {
-          this.container.initTransform3d( );
-          if ( this.options.container ) {
-            this.positionParent = this.container;
-          } else {
-            this.positionParent = this.target.parent( );
-          }
-        } else {
-          this.target.parents( ).each( function( ele ) {
-            switch ( $.style( ele, "position" ) ) {
-              case "absolute":
-              case "relative":
-                result = ele;
-                return false;
-            }
-          } );
-          if ( !result ) {
-            result = document.body;
-            $.css( result, "position", "relative" );
-          }
-          //self.container = $(result);
-          this.positionParent = $( result );
-          this._setOverflow( );
-        }
-
-        return this;
-      },
+      initPositionParent: initPositionParent,
       _setOverflow: function( overflow ) {
         if ( overflow !== undefined ) {
           this.options.overflow = overflow;
@@ -161,12 +235,8 @@
         render: Widget.AllowPublic,
         animateTo: Widget.AllowPublic
       },
-      getPositionX: function( ) {
-        return this.target.getLeft( ) + ( isTransform3d ? this.target.transform3d( "translateX", true ) : 0 );
-      },
-      getPositionY: function( ) {
-        return this.target.getTop( ) + ( isTransform3d ? this.target.transform3d( "translateY", true ) : 0 );
-      },
+      getPositionX: getPositionX,
+      getPositionY: getPositionY,
       _initHandler: function( ) {
         var self = this,
           target = self.target,
@@ -283,28 +353,8 @@
         };
 
       },
-      animateTo: function( x, y, duration, easing, complete ) {
-        var animateOpt = {};
-        if ( isTransform3d ) {
-          animateOpt = {
-            transform3d: {
-              translateX: x + "px",
-              translateY: y + "px"
-            }
-          };
-        } else {
-          animateOpt = {
-            left: x + "px",
-            top: y + "px"
-          };
-        }
-
-        this.target.animate( animateOpt, {
-          duration: duration,
-          easing: easing,
-          complete: complete
-        } );
-      },
+      animateTo: animateTo,
+      _render: _render,
       render: function( x, y, parentLeft, parentTop ) {
         var
         opt = this.options,
@@ -333,32 +383,7 @@
         opt.x = x;
         opt.y = y;
 
-        return isTransform3d ? this._renderByTransform3d( x, y ) : this._render( x, y );
-      },
-      _render: function( x, y ) {
-        var opt = this.options;
-
-        if ( opt.axisx === true && x != undefined ) {
-          this.target.css( "left", x + "px" );
-        }
-        if ( opt.axisy === true && y != undefined ) {
-          this.target.css( "top", y + "px" );
-        }
-
-        return this;
-      },
-      _renderByTransform3d: function( x, y ) {
-        var opt = this.options,
-          obj = {};
-
-        if ( opt.axisx === true && x != undefined ) {
-          obj.tx = x;
-        }
-        if ( opt.axisy === true && y != undefined ) {
-          obj.ty = y;
-        }
-        this.target.setTranslate3d( obj );
-        return this;
+        return this._render( x, y );
       },
       target: null,
       toString: function( ) {
