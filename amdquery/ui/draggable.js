@@ -43,14 +43,6 @@
       return this;
     };
 
-    getPositionX = function( ) {
-      return this.target.getLeft( ) + ( this.target.transform3d( "translateX", true ) || 0 );
-    };
-
-    getPositionY = function( ) {
-      return this.target.getTop( ) + ( this.target.transform3d( "translateY", true ) || 0 );
-    };
-
   } else {
     initPositionParent = function( ) {
       var result;
@@ -66,21 +58,11 @@
         result = document.body;
         $.css( result, "position", "relative" );
       }
-      //self.container = $(result);
+
       this.positionParent = $( result );
-      this._setOverflow( );
 
       return this;
     };
-
-    getPositionX = function( ) {
-      return this.target.getLeft( );
-    };
-
-    getPositionY = function( ) {
-      return this.target.getTop( );
-    };
-
   }
 
   var eventFuns = event.event.document,
@@ -96,6 +78,8 @@
         this._initHandler( );
 
         this.initPositionParent( );
+
+        this._setOverflow( );
 
         this.enable( );
 
@@ -188,8 +172,12 @@
         render: Widget.AllowPublic,
         animateTo: Widget.AllowPublic
       },
-      getPositionX: getPositionX,
-      getPositionY: getPositionY,
+      getPositionX: function( ) {
+        return this.target.getLeftWithTranslate3d( );
+      },
+      getPositionY: function( ) {
+        return this.target.getTopWithTranslate3d( );
+      },
       _initHandler: function( ) {
         var self = this,
           target = self.target,

@@ -4,7 +4,7 @@
     <title>拖放</title>
     <meta charset="utf-8" />
     <link href="../../css/reset.css" rel="stylesheet" type="text/css" />
-    <script src="../../amdquery/amdquery.js" type="text/javascript" ui="initWidget:1;transitionToAnimation:1;"></script>
+    <script src="../../amdquery/amdquery.js" type="text/javascript" ui="initWidget:1;" module="transitionToAnimation:1"></script>
     <script type="text/javascript">
         aQuery.cabinet.start = function(){
             $.showMsg("3");
@@ -53,7 +53,7 @@
         position: absolute" id="container2">
         <div>
             <div style="position: inherit">
-                <div id="drag" amdquery-widget="ui.draggable" ui-draggable-pause="aQuery.cabinet.pause:window" ui-draggable="axis:x;keepinner:true;container:#container2;innerWidth:-50;" style="width: 100px; height: 100px; background-color: Red;">
+                <div id="drag" amdquery-widget="ui.draggable" ui-draggable-pause="aQuery.cabinet.pause:window" ui-draggable="axis:x;keepinner:true;container:#container2;outerWidth:5;" style="width: 100px; height: 100px; background-color: Red;">
                     拖动我
                 </div>
             </div>
