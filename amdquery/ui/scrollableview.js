@@ -17,71 +17,6 @@ aQuery.define( "ui/scrollableview", [
   Widget.fetchCSS( "ui/css/scrollableview" );
   var isTransform3d = !! $.config.module.transitionToAnimation && support.transform3d;
 
-  var _render, renderStatusBar, renderStatusBarX, renderStatusBarY, getTop, getLeft;
-  if ( isTransform3d ) {
-    _render = function( x1, x2, y1, y2 ) {
-      var opt1 = {};
-      if ( x1 !== null && this._isAllowedDirection( "x" ) ) {
-        opt1.tx = parseInt( x1 );
-        this.statusBarX.setTranslate3d( {
-          tx: parseInt( x2 )
-        } );
-      }
-      if ( y1 !== null && this._isAllowedDirection( "y" ) ) {
-        opt1.ty = parseInt( y1 );
-        this.statusBarY.setTranslate3d( {
-          ty: parseInt( y2 )
-        } );
-      }
-      this.container.setTranslate3d( opt1 );
-      return this;
-    };
-
-    renderStatusBarX = function( x ) {
-      this.statusBarX.setTranslate3d( {
-        tx: parseInt( x )
-      } );
-    };
-
-    renderStatusBarY = function( y ) {
-      this.statusBarY.setTranslate3d( {
-        ty: parseInt( y )
-      } )
-    };
-
-    getTop = function( ) {
-      return this.container.transform3d( "translateY", true );
-    };
-
-    getLeft = function( ) {
-      return this.container.transform3d( "translateX", true );
-    };
-
-  } else {
-    _render = function( x1, x2, y1, y2 ) {
-      x1 !== null && this._isAllowedDirection( "x" ) && this.container.offsetLeft( parseInt( x1 ) ) && this.statusBarX.offsetLeft( parseInt( x2 ) );
-
-      y1 !== null && this._isAllowedDirection( "y" ) && this.container.offsetTop( parseInt( y1 ) ) && this.statusBarY.offsetTop( parseInt( y2 ) );
-      return this;
-    };
-
-    renderStatusBarX = function( x ) {
-      this.statusBarX.offsetLeft( parseInt( x ) );
-    };
-
-    renderStatusBarY = function( y ) {
-      this.statusBarX.offsetTop( parseInt( y ) );
-    };
-
-    getTop = function( ) {
-      return this.container.offsetTop( );
-    };
-
-    getLeft = function( ) {
-      return this.container.offsetLeft( );
-    };
-  }
-
   var scrollableview = Widget.extend( "ui.scrollableview", {
     container: null,
     create: function( ) {
@@ -290,13 +225,23 @@ aQuery.define( "ui/scrollableview", [
 
       return this._render( x, statusX, y, statusY );
     },
-    _render: _render,
-    renderStatusBarX: renderStatusBarX,
-    renderStatusBarY: renderStatusBarY,
+    _render: function( x1, x2, y1, y2 ) {
+      var pos = {};
+      if ( x1 !== null && this._isAllowedDirection( "x" ) ) {
+        pos.x = parseInt( x1 );
+        this.statusBarX.setPositionX( isTransform3d, parseInt( x2 ) );
+      }
+      if ( y1 !== null && this._isAllowedDirection( "y" ) ) {
+        pos.y = parseInt( y1 );
+        this.statusBarY.setPositionY( isTransform3d, parseInt( y2 ) );
+      }
+      this.container.setPositionXY( isTransform3d, pos );
+      return this;
+    },
     renderStatusBar: function( x, y ) {
-      this._isAllowedDirection( "x" ) && this.renderStatusBarX( x );
+      this._isAllowedDirection( "x" ) && this.statusBarX.setPositionX( isTransform3d, parseInt( x ) );
 
-      this._isAllowedDirection( "y" ) && this.renderStatusBarY( y );
+      this._isAllowedDirection( "y" ) && this.statusBarY.setPositionY( isTransform3d, parseInt( y ) );
 
       return this;
     },
@@ -363,8 +308,12 @@ aQuery.define( "ui/scrollableview", [
     _isAllowedDirection: function( direction ) {
       return this.options.overflow.indexOf( direction ) > -1;
     },
-    getTop: getTop,
-    getLeft: getLeft,
+    getTop: function( ) {
+      return this.container.getPositionY( );
+    },
+    getLeft: function( ) {
+      return this.container.getPositionX( );
+    },
     pause: function( ) {
 
       return this;
