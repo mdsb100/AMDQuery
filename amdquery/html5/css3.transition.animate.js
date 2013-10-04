@@ -3,9 +3,9 @@
   //无法识别em这种
 
   $.extend( {
-    getPositionAnimationOptionProxy: function( isTranslate3d, x, y ) {
+    getPositionAnimationOptionProxy: function( isTransform3d, x, y ) {
       var opt = {};
-      if ( isTranslate3d && support.transform3d ) {
+      if ( isTransform3d && support.transform3d ) {
         opt.transform3d = {
 
         };
@@ -66,6 +66,7 @@
         utilExtend.easyExtend( opt, option );
         //opt._transitionList = [];
         opt._transitionEnd = function( event ) {
+          console.log("_transitionEnd")
           var i, ele = this,
             item,
             transitionList = $.data( ele, "_transitionList" );
@@ -73,7 +74,7 @@
           for ( i in transitionList ) {
             css3.removeTransition( ele, i );
             item = transitionList[ i ];
-            item.length || delete transitionList[ i ];
+            delete transitionList[ i ];
           }
 
           ele.removeEventListener( transitionEndType, opt._transitionEnd );
