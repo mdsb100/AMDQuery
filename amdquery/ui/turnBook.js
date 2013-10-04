@@ -337,7 +337,7 @@ aQuery.define( "ui/turnBook", [ "base/typed", "main/css", "main/position", "main
         };
       this.event = function( e ) {
         var index = opt.bookIndex,
-        offsetX = e.offsetX;
+          offsetX = e.offsetX;
         // offsetY = e.offsetY;
         switch ( e.type ) {
           case "swap.mousemove":
@@ -429,6 +429,9 @@ aQuery.define( "ui/turnBook", [ "base/typed", "main/css", "main/position", "main
 
     },
     render: function( direction, startX ) {
+      if ( !arguments.length ) {
+        return;
+      }
       var opt = this.options;
       if ( direction == "right" ) {
         if ( opt.bookIndex >= opt.pages.length - 1 ) {
@@ -476,7 +479,7 @@ aQuery.define( "ui/turnBook", [ "base/typed", "main/css", "main/position", "main
             default:
             case "Array:String":
               var page, content, len = bookContent.length; //, i = 1, value;
-                opt.pages = [ ];
+              opt.pages = [ ];
               opt.contents = [ ];
               len % 2 == 1 && bookContent.push( "" );
               $.each( bookContent, function( value, index ) {
@@ -563,9 +566,9 @@ aQuery.define( "ui/turnBook", [ "base/typed", "main/css", "main/position", "main
     },
     showPages: function( index ) {
       var opt = this.options,
-      begin, close, len = opt.pages.length - 1,
-      pageWidth = this.pageWidth,
-      bookWidth = this.bookWidth;
+        begin, close, len = opt.pages.length - 1,
+        pageWidth = this.pageWidth,
+        bookWidth = this.bookWidth;
       this.container.children( ).remove( );
       index = typed.isNum( index ) ? parseInt( $.between( 0, len, index ) ) : opt.bookIndex;
       if ( opt.positionType == "half" ) {

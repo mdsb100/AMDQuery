@@ -62,6 +62,9 @@ aQuery.define( "ui/splitterpane", [
           return this;
         },
         render: function( width, height ) {
+          if ( !arguments.length ) {
+            return;
+          }
           var opt = this.options;
           this.target.css( boxOrientName, opt.orient );
           //this.target.css(boxAlignName, opt.align);
@@ -144,6 +147,9 @@ aQuery.define( "ui/splitterpane", [
           return this;
         },
         render: function( width, height ) {
+          if ( !arguments.length ) {
+            return;
+          }
           this.resize( width, height );
           this.target.find( "li[ui-splitter]" ).uiSplitterpane( "resize" );
           return this;

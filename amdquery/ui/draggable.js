@@ -312,6 +312,9 @@
         this.target.setPositionXY( isTransform3d, pos );
       },
       render: function( x, y, parentLeft, parentTop ) {
+        if ( !arguments.length ) {
+          return;
+        }
         var
         opt = this.options,
           con = this.container,

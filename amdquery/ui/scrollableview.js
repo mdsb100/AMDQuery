@@ -202,6 +202,9 @@ aQuery.define( "ui/scrollableview", [
       "toY": Widget.AllowPublic
     },
     render: function( x, y, addtion, boundary ) {
+      if ( !arguments.length ) {
+        return;
+      }
       var position,
         originX = 0,
         originY = 0,
