@@ -1,7 +1,7 @@
 aQuery.define( "html5/css3.position", [ "base/support", "main/position", "html5/css3" ], function( $, support, position, css3 ) {
   var css3Position = {
     getPositionX: function( ele ) {
-      var x = css2.getOffsetL( ele );
+      var x = position.getOffsetL( ele );
       if ( support.transform3d ) {
         x += css3.getTransform3dByName( ele, "translateX", true );
       }
@@ -18,7 +18,7 @@ aQuery.define( "html5/css3.position", [ "base/support", "main/position", "html5/
       return this;
     },
     getPositionY: function( ele ) {
-      var y = css2.getOffsetT( ele );
+      var y = position.getOffsetT( ele );
       if ( support.transform3d ) {
         y += css3.getTransform3dByName( ele, "translateY", true );
       }
