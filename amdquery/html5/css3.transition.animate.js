@@ -1,7 +1,34 @@
-﻿aQuery.define( "html5/css3.transition.animate", [ "base/typed", "base/extend", "base/client", "main/event", "html5/css3", "module/FX", "html5/animate.transform", "hash/cubicBezier.tween" ], function( $, typed, utilExtend, client, event, css3, FX, transform, cubicBezierTween, undefined ) {
+﻿aQuery.define( "html5/css3.transition.animate", [ "base/typed", "base/support", "base/extend", "base/client", "main/event", "html5/css3", "module/FX", "html5/animate.transform", "hash/cubicBezier.tween" ], function( $, typed, support, utilExtend, client, event, css3, FX, transform, cubicBezierTween, undefined ) {
   "use strict"; //启用严格模式
   //无法识别em这种
-  if ( $.support.transition ) {
+
+  $.extend( {
+    getPositionAnimationOptionProxy: function( isTranslate3d, x, y ) {
+      var opt = {};
+      if ( isTranslate3d && support.transform3d ) {
+        opt.transform3d = {
+
+        };
+        if ( x !== undefined ) {
+          opt.transform3d.translateX = x + "px";
+        }
+        if ( y !== undefined ) {
+          opt.transform3d.translateY = y + "px";
+        }
+
+      } else {
+        if ( x !== undefined ) {
+          opt.left = x + "px";
+        }
+        if ( y !== undefined ) {
+          opt.top = y + "px";
+        }
+      }
+      return opt;
+    }
+  } );
+
+  if ( support.transition ) {
     var
     originComplete = $._originComplete,
 
@@ -61,9 +88,9 @@
           var name = $.util.unCamelCase( p );
           if ( p !== name ) {
             property[ name ] = property[ p ];
-            //把值复制给$.util.camelCase转化后的属性  
+            //把值复制给$.util.camelCase转化后的属性
             delete property[ p ];
-            //删除已经无用的属性  
+            //删除已经无用的属性
             p = name;
           }
 

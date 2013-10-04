@@ -29,7 +29,7 @@
   "use strict"; //启用严格模式
   var isTransform3d = !! $.config.module.transitionToAnimation && support.transform3d;
 
-  var _render, initPositionParent, getPositionX, getPositionY, animateTo;
+  var _render, initPositionParent, getPositionX, getPositionY;
   if ( isTransform3d ) {
     _render = function( x, y ) {
       var opt = this.options,
@@ -63,18 +63,6 @@
       this.target.getTop( );
     };
 
-    animateTo = function( x, y, duration, easing, complete ) {
-      this.target.animate( {
-        transform3d: {
-          translateX: x + "px",
-          translateY: y + "px"
-        }
-      }, {
-        duration: duration,
-        easing: easing,
-        complete: complete
-      } );
-    };
   } else {
     _render = function( x, y ) {
       var opt = this.options;
@@ -116,17 +104,6 @@
 
     getPositionY = function( ) {
       return this.target.getTop( ) + ( this.target.transform3d( "translateY", true ) || 0 );
-    };
-
-    animateTo = function( x, y, duration, easing, complete ) {
-      this.target.animate( {
-        left: x + "px",
-        top: y + "px"
-      }, {
-        duration: duration,
-        easing: easing,
-        complete: complete
-      } );
     };
   }
 
@@ -353,7 +330,13 @@
         };
 
       },
-      animateTo: animateTo,
+      animateTo: function( x, y, duration, easing, complete ) {
+        this.target.animate( $.getPositionAnimationOptionProxy( isTransform3d, x, y ), {
+          duration: duration,
+          easing: easing,
+          complete: complete
+        } );
+      },
       _render: _render,
       render: function( x, y, parentLeft, parentTop ) {
         var

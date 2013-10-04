@@ -17,7 +17,7 @@ aQuery.define( "ui/scrollableview", [
   Widget.fetchCSS( "ui/css/scrollableview" );
   var isTransform3d = !! $.config.module.transitionToAnimation && support.transform3d;
 
-  var _render, renderStatusBar, renderStatusBarX, renderStatusBarY, getContainerPosition, getTop, getLeft, getXOpt, getYOpt;
+  var _render, renderStatusBar, renderStatusBarX, renderStatusBarY, getTop, getLeft;
   if ( isTransform3d ) {
     _render = function( x1, x2, y1, y2 ) {
       var opt1 = {};
@@ -49,12 +49,6 @@ aQuery.define( "ui/scrollableview", [
       } )
     };
 
-    getContainerPosition = function( ) {
-      return {
-        x: this.container.transform3d( "translateX", true ),
-        y: this.container.transform3d( "translateY", true )
-      };
-    };
     getTop = function( ) {
       return this.container.transform3d( "translateY", true );
     };
@@ -63,21 +57,6 @@ aQuery.define( "ui/scrollableview", [
       return this.container.transform3d( "translateX", true );
     };
 
-    getXOpt = function( outer ) {
-      return {
-        transform3d: {
-          translateX: outer + "px"
-        }
-      };
-    };
-
-    getYOpt = function( outer ) {
-      return {
-        transform3d: {
-          translateY: outer + "px"
-        }
-      };
-    };
   } else {
     _render = function( x1, x2, y1, y2 ) {
       x1 !== null && this._isAllowedDirection( "x" ) && this.container.offsetLeft( parseInt( x1 ) ) && this.statusBarX.offsetLeft( parseInt( x2 ) );
@@ -94,31 +73,12 @@ aQuery.define( "ui/scrollableview", [
       this.statusBarX.offsetTop( parseInt( y ) );
     };
 
-    getContainerPosition = function( ) {
-      return {
-        x: this.container.offsetLeft( ),
-        y: this.container.offsetTop( )
-      };
-    };
-
     getTop = function( ) {
       return this.container.offsetTop( );
     };
 
     getLeft = function( ) {
       return this.container.offsetLeft( );
-    };
-
-    getXOpt = function( outer ) {
-      return {
-        left: outer + "px"
-      };
-    };
-
-    getYOpt = function( outer ) {
-      return {
-        top: outer + "px"
-      };
     };
   }
 
@@ -340,7 +300,12 @@ aQuery.define( "ui/scrollableview", [
 
       return this;
     },
-    getContainerPosition: getContainerPosition,
+    getContainerPosition: function( ) {
+      return {
+        x: this.getLeft( ),
+        y: this.getTop( )
+      };
+    },
 
     target: null,
     toString: function( ) {
@@ -499,7 +464,7 @@ aQuery.define( "ui/scrollableview", [
       var outer = this.outerXBoundary( left ),
         self = this;
       if ( outer !== null ) {
-        this.container.animate( getXOpt( outer ), {
+        this.container.animate( $.getPositionAnimationOptionProxy( isTransform3d, outer ), {
           duration: this.options.boundaryDruation,
           easing: "expo.easeOut",
           queue: false,
@@ -516,7 +481,7 @@ aQuery.define( "ui/scrollableview", [
       var outer = this.outerYBoundary( top ),
         self = this;
       if ( outer !== null ) {
-        this.container.animate( getYOpt( outer ), {
+        this.container.animate( $.getPositionAnimationOptionProxy( isTransform3d, undefined, outer ), {
           duration: this.options.boundaryDruation,
           easing: "expo.easeOut",
           queue: false,
@@ -539,7 +504,7 @@ aQuery.define( "ui/scrollableview", [
       var self = this,
         y2 = this.checkYStatusBar( y1 );
 
-      this.container.animate( getYOpt( y1 ), {
+      this.container.animate( $.getPositionAnimationOptionProxy( isTransform3d, undefined, y1 ), {
         duration: t,
         easing: "easeOut",
         complete: function( ) {
@@ -548,7 +513,7 @@ aQuery.define( "ui/scrollableview", [
         }
       } );
 
-      this.statusBarY.animate( getYOpt( y2 ), {
+      this.statusBarY.animate( $.getPositionAnimationOptionProxy( isTransform3d, undefined, y2 ), {
         duration: t,
         easing: "easeOut"
       } );
@@ -558,7 +523,7 @@ aQuery.define( "ui/scrollableview", [
       var self = this,
         x2 = this.checkXStatusBar( x1 );
 
-      this.container.animate( getXOpt( x1 ), {
+      this.container.animate( $.getPositionAnimationOptionProxy( isTransform3d, x1 ), {
         duration: t,
         easing: "easeOut",
         complete: function( ) {
@@ -567,7 +532,7 @@ aQuery.define( "ui/scrollableview", [
         }
       } );
 
-      this.statusBarX.animate( getXOpt( x2 ), {
+      this.statusBarX.animate( $.getPositionAnimationOptionProxy( isTransform3d, x2 ), {
         duration: t,
         easing: "easeOut"
       } );

@@ -1,4 +1,4 @@
-﻿aQuery.define( "html5/css3", [ "base/extend", "base/typed", "base/client", "base/array", "main/css" ], function( $, utilExtend, typed, client, array, css1, undefined ) {
+﻿aQuery.define( "html5/css3", [ "base/support", "base/extend", "base/typed", "base/client", "base/array", "main/css" ], function( $, support, utilExtend, typed, client, array, css2, undefined ) {
   "use strict"; //启用严格模式
   var css3Head = ( function( ) {
     var head = "";
@@ -76,73 +76,73 @@
       scaleY: /scaleY\([^\)]+\)/,
       skew: /skew\([^\)]+\)/
     },
-    transform3dNameMap = {
-      translateX: 1,
-      translateY: 2,
-      translateZ: 3,
-      scaleX: 1,
-      scaleY: 1
+      transform3dNameMap = {
+        translateX: 1,
+        translateY: 2,
+        translateZ: 3,
+        scaleX: 1,
+        scaleY: 1
 
-    },
-    editScale = function( obj ) {
-      var sx = obj.sx != undefined ? obj.sx : obj.scaleX || 1,
-        sy = obj.sy != undefined ? obj.sy : obj.scaleY || 1;
+      },
+      editScale = function( obj ) {
+        var sx = obj.sx != undefined ? obj.sx : obj.scaleX || 1,
+          sy = obj.sy != undefined ? obj.sy : obj.scaleY || 1;
 
-      return [
-        "scale(", Math.max( 0, sx ),
-        ",", Math.max( 0, sy ), ") "
-      ];
-    },
-    editTranslate3d = function( obj ) {
-      return [ "translate3d(",
-        obj.tx != undefined ? obj.tx + "px" : obj.translateX || 0, ", ",
-        obj.ty != undefined ? obj.ty + "px" : obj.translateY || 0, ", ",
-        obj.tz != undefined ? obj.tz + "px" : obj.translateZ || 0, ") " ]
-    },
-    editRotate3d = function( obj ) {
-      return [ "rotateX(", obj.rx != undefined ? obj.rx + "deg" : obj.rotateX || 0, ") ",
-        "rotateY(", obj.ry != undefined ? obj.ry + "deg" : obj.rotateY || 0, ") ",
-        "rotateZ(", obj.rz != undefined ? obj.rz + "deg" : obj.rotateZ || 0, ") " ]
-    },
-    regTransform = /[^\d\w\.\-\+]+/,
-    getTransformValue = function( transform, name ) {
-      var result = [ ],
-        transType = transform.match( transformReg[ name ] );
-      if ( transType ) {
-        result = transType[ 0 ].replace( ")", "" ).split( regTransform );
-      }
-      return result;
-    },
-    getTransformValues = function( transform ) {
-      var result = [ ];
-      transform = transform.split( ") " );
-      $.each( transform, function( value ) {
-        result.push( value.replace( ")", "" ).split( regTransform ) );
-      } );
-      return result;
-    },
-    editCss3Type = function( name ) {
-      var temp, unit = "";
-      switch ( name ) {
-        case "transform":
-          name = this.transform;
-          break;
-        case "transform3d":
-          name = this.transform3d;
-          break;
-        case "transformOrigin":
-          name = this.transformOrigin;
-          break;
-      }
-      if ( ( temp = $.interfaces.trigger.call( this, "editCss3Type", name ) ) ) {
-        name = temp.name;
-        unit = temp.unit;
-      }
-      return {
-        name: name,
-        unit: unit
+        return [
+          "scale(", Math.max( 0, sx ),
+          ",", Math.max( 0, sy ), ") "
+          ];
+      },
+      editTranslate3d = function( obj ) {
+        return [ "translate3d(",
+          obj.tx != undefined ? obj.tx + "px" : obj.translateX || 0, ", ",
+          obj.ty != undefined ? obj.ty + "px" : obj.translateY || 0, ", ",
+          obj.tz != undefined ? obj.tz + "px" : obj.translateZ || 0, ") " ]
+      },
+      editRotate3d = function( obj ) {
+        return [ "rotateX(", obj.rx != undefined ? obj.rx + "deg" : obj.rotateX || 0, ") ",
+          "rotateY(", obj.ry != undefined ? obj.ry + "deg" : obj.rotateY || 0, ") ",
+          "rotateZ(", obj.rz != undefined ? obj.rz + "deg" : obj.rotateZ || 0, ") " ]
+      },
+      regTransform = /[^\d\w\.\-\+]+/,
+      getTransformValue = function( transform, name ) {
+        var result = [ ],
+          transType = transform.match( transformReg[ name ] );
+        if ( transType ) {
+          result = transType[ 0 ].replace( ")", "" ).split( regTransform );
+        }
+        return result;
+      },
+      getTransformValues = function( transform ) {
+        var result = [ ];
+        transform = transform.split( ") " );
+        $.each( transform, function( value ) {
+          result.push( value.replace( ")", "" ).split( regTransform ) );
+        } );
+        return result;
+      },
+      editCss3Type = function( name ) {
+        var temp, unit = "";
+        switch ( name ) {
+          case "transform":
+            name = this.transform;
+            break;
+          case "transform3d":
+            name = this.transform3d;
+            break;
+          case "transformOrigin":
+            name = this.transformOrigin;
+            break;
+        }
+        if ( ( temp = $.interfaces.trigger.call( this, "editCss3Type", name ) ) ) {
+          name = temp.name;
+          unit = temp.unit;
+        }
+        return {
+          name: name,
+          unit: unit
+        };
       };
-    };
   }
   if ( hasTransition ) {
     var getTransitionValue = function( transition, name ) {
@@ -176,7 +176,7 @@
 
   $.interfaces.handlers.editCss3Type = null;
 
-  css1.vendorPropName = function( style, name ) {
+  css2.vendorPropName = function( style, name ) {
 
     // shortcut for names that are not vendor prefixed
     if ( name in style ) {
@@ -206,7 +206,7 @@
       /// <param name="ele" type="Element">元素</param>
       /// <param name="style" type="Array/Object/String">值得数组或值</param>
       /// <returns type="self" />
-      return $.setTransition( ele, style, css1.css( ele, transitionCssName ) );
+      return $.setTransition( ele, style, css2.css( ele, transitionCssName ) );
     },
     bindTransition: function( ele, style ) {
       /// <summary>添加transition属性并绑定事件
@@ -229,20 +229,20 @@
       $.each( style, function( item ) {
         $.each( item.events, function( value, name ) {
           eleObj.addHandler( name, function( ) {
-            css1.css( this, $.util.camelCase( item.name ), value );
+            css2.css( this, $.util.camelCase( item.name ), value );
           } );
         } );
         if ( item.toggle ) {
           var arr = [ ele ];
           $.each( item.toggle, function( value, index ) {
             arr.push( function( ) {
-              css1.css( this, $.util.camelCase( item.name, item.head ), value );
+              css2.css( this, $.util.camelCase( item.name, item.head ), value );
             } );
           } );
           $.toggle.apply( this, arr );
         }
       } );
-      return $.setTransition( ele, style, css1.css( ele, transitionCssName ) );
+      return $.setTransition( ele, style, css2.css( ele, transitionCssName ) );
     },
 
     css3: function( ele, name, value ) {
@@ -254,7 +254,7 @@
       /// <param name="value" type="String/Number/undefined">值</param>
       /// <returns type="self" />
       if ( hasCss3 ) {
-        return css1.css( ele, $.util.camelCase( name, css3Head ), value );
+        return css2.css( ele, $.util.camelCase( name, css3Head ), value );
       }
       return this;
     },
@@ -264,7 +264,7 @@
       /// <param name="ele" type="Element">元素</param>
       /// <param name="name" type="String">样式名</param>
       /// <returns type="self" />
-      return css1.style( ele, name, css3Head );
+      return css2.style( ele, name, css3Head );
     },
 
     getCss3Support: function( type ) {
@@ -286,7 +286,7 @@
       /// <returns type="Array" />
       var result = [ ];
       if ( hasTransform ) {
-        var transform = css1.css( ele, transformCssName ),
+        var transform = css2.css( ele, transformCssName ),
           temp, index = -1;
         if ( isFullCss( transform ) ) {
           if ( typed.isStr( name ) ) {
@@ -326,7 +326,7 @@
           scaleX: 1,
           scaleY: 1
         };
-        var transform = css1.css( ele, transformCssName ),
+        var transform = css2.css( ele, transformCssName ),
           result, i;
         if ( isFullCss( transform ) ) {
           result = getTransformValue( transform, "rotateX" );
@@ -364,7 +364,7 @@
       var result = null,
         index;
       if ( hasTransform3d ) {
-        var transform = css1.css( ele, transformCssName );
+        var transform = css2.css( ele, transformCssName );
 
         if ( isFullCss( transform ) ) {
           switch ( name ) {
@@ -426,7 +426,7 @@
       /// <returns type="Array" />
       var result = [ ];
       if ( hasTransform ) {
-        var transition = css1.css( ele, transitionCssName ),
+        var transition = css2.css( ele, transitionCssName ),
           temp, index = -1;
         if ( isFullCss( transition ) ) {
           if ( typed.isStr( name ) ) {
@@ -582,7 +582,7 @@
       /// <param name="ele" type="Element">元素</param>
       /// <param name="style" type="String/Array/undefined">值得数组或值</param>
       /// <returns type="self" />
-      var list, transition = css1.css( ele, transitionCssName ),
+      var list, transition = css2.css( ele, transitionCssName ),
         match, n = arguments[ 2 ] || "";
       if ( style == undefined ) {
         transition = "";
@@ -603,7 +603,7 @@
           transition = transition.replace( match[ 0 ], n );
         }
       } );
-      return css1.css( ele, transitionCssName, transition );
+      return css2.css( ele, transitionCssName, transition );
     },
     replaceTransition: function( ele, name, value ) {
       /// <summary>覆盖transition属性
@@ -657,7 +657,7 @@
         };
       utilExtend.easyExtend( obj, temp );
 
-      css1.css( ele, transformCssName, editScale( obj ).join( "" ) );
+      css2.css( ele, transformCssName, editScale( obj ).join( "" ) );
       return this;
     },
     setTransform: function( ele, style ) {
@@ -677,7 +677,7 @@
           }
         }, this );
 
-        css1.css( ele, transformCssName, result.join( "" ) );
+        css2.css( ele, transformCssName, result.join( "" ) );
       }
       return this;
     },
@@ -707,7 +707,7 @@
       /// <returns type="self" />
       if ( !obj || !hasTransform3d ) return this;
       obj = utilExtend.extend( $.getTransform3d( ele ), obj );
-      css1.css( ele, transformCssName, editTranslate3d( obj ).concat( editRotate3d( obj ) ).concat( editScale( obj ) ).join( "" ) );
+      css2.css( ele, transformCssName, editTranslate3d( obj ).concat( editRotate3d( obj ) ).concat( editScale( obj ) ).join( "" ) );
       return this;
     },
     setTransformByCurrent: function( ele, style ) {
@@ -780,7 +780,7 @@
       /// <param name="style" type="Object">参数</param>
       /// <returns type="self" />
       if ( hasTransform && style ) {
-        css1.css( ele, transformCssName + "Origin", [ style.x || "left", " ", style.y || "top" ].join( "" ) );
+        css2.css( ele, transformCssName + "Origin", [ style.x || "left", " ", style.y || "top" ].join( "" ) );
       }
       return this;
     },
@@ -801,7 +801,7 @@
         if ( typed.isStr( style ) ) {
           result = style;
         } else if ( typed.isObj( style ) ) {
-          style.name && ( result = [ $.util.unCamelCase( value.name, value.head ), style.duration || "1s", style["function"]  || "linear", style.delay || ""
+          style.name && ( result = [ $.util.unCamelCase( value.name, value.head ), style.duration || "1s", style[ "function" ] || "linear", style.delay || ""
           ].join( " " ) );
         } else if ( typed.isArr( style ) ) {
           var list = [ ];
@@ -809,14 +809,14 @@
             if ( typed.isStr( value ) ) {
               list.push( value );
             } else if ( typed.isObj( value ) ) {
-              value.name && list.push( [ $.util.unCamelCase( value.name, value.head ), value.duration || "1s", value["function"] || "linear", value.delay || ""
+              value.name && list.push( [ $.util.unCamelCase( value.name, value.head ), value.duration || "1s", value[ "function" ] || "linear", value.delay || ""
               ].join( " " ) );
             }
           } );
           result = list.join( "," );
         }
         if ( origin.replace( /\s/g, "" ).indexOf( result.replace( /\s/g, "" ) ) < 0 ) {
-          css1.css( ele, transitionCssName, ( origin ? origin + "," : "" ) + result );
+          css2.css( ele, transitionCssName, ( origin ? origin + "," : "" ) + result );
         }
       }
       return this;
@@ -842,11 +842,11 @@
         };
       utilExtend.easyExtend( obj, temp );
 
-      css1.css( ele, transformCssName, editTranslate3d( obj ).join( "" ) );
+      css2.css( ele, transformCssName, editTranslate3d( obj ).join( "" ) );
       return this;
     }
   };
-  utilExtend.easyExtend( $.support, css3Support );
+  utilExtend.easyExtend( support, css3Support );
   $.extend( css3 );
   $.fn.extend( {
     addTransition: function( style ) {
@@ -926,7 +926,7 @@
       /// <summary>返回样式表的css3的属性，其实是默认加了个head</summary>
       /// <param name="name" type="String">样式名</param>
       /// <returns type="self" />
-      return css1.style( this[ 0 ], name, css3Head );
+      return css2.style( this[ 0 ], name, css3Head );
     },
 
     initTransform3d: function( perspective, perspectiveOrigin ) {
