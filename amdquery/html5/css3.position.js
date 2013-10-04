@@ -30,7 +30,7 @@ aQuery.define( "html5/css3.position", [ "base/support", "main/position", "html5/
           ty: y
         } );
       } else {
-        position.setOffsetT( ele, x );
+        position.setOffsetT( ele, y );
       }
       return this;
     },
