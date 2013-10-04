@@ -10,6 +10,7 @@
   "html5/animate.transform",
   "html5/css3.transition.animate",
   "html5/css3",
+  "html5/css3.position",
   "main/query",
   "module/tween.extend" ], function( $,
   support,
@@ -23,28 +24,15 @@
   animateTransform,
   css3Transition,
   cls3,
+  cl3Position,
   query,
   tween,
   undefined ) {
   "use strict"; //启用严格模式
   var isTransform3d = !! $.config.module.transitionToAnimation && support.transform3d;
 
-  var _render, initPositionParent, getPositionX, getPositionY;
+  var initPositionParent, getPositionX, getPositionY;
   if ( isTransform3d ) {
-    _render = function( x, y ) {
-      var opt = this.options,
-        obj = {};
-
-      if ( opt.axisx === true && x != undefined ) {
-        obj.tx = x;
-      }
-      if ( opt.axisy === true && y != undefined ) {
-        obj.ty = y;
-      }
-      this.target.setTranslate3d( obj );
-      return this;
-    };
-
     initPositionParent = function( ) {
       this.container.initTransform3d( );
       if ( this.options.container ) {
@@ -56,27 +44,14 @@
     };
 
     getPositionX = function( ) {
-      return this.target.getLeft( );
+      return this.target.getLeft( ) + ( this.target.transform3d( "translateX", true ) || 0 );
     };
 
     getPositionY = function( ) {
-      this.target.getTop( );
+      return this.target.getTop( ) + ( this.target.transform3d( "translateY", true ) || 0 );
     };
 
   } else {
-    _render = function( x, y ) {
-      var opt = this.options;
-
-      if ( opt.axisx === true && x != undefined ) {
-        this.target.css( "left", x + "px" );
-      }
-      if ( opt.axisy === true && y != undefined ) {
-        this.target.css( "top", y + "px" );
-      }
-
-      return this;
-    };
-
     initPositionParent = function( ) {
       var result;
       this.target.parents( ).each( function( ele ) {
@@ -99,12 +74,13 @@
     };
 
     getPositionX = function( ) {
-      return this.target.getLeft( ) + ( this.target.transform3d( "translateX", true ) || 0 );
+      return this.target.getLeft( );
     };
 
     getPositionY = function( ) {
-      return this.target.getTop( ) + ( this.target.transform3d( "translateY", true ) || 0 );
+      return this.target.getTop( );
     };
+
   }
 
   var eventFuns = event.event.document,
@@ -337,7 +313,16 @@
           complete: complete
         } );
       },
-      _render: _render,
+      _render: function( x, y ) {
+        var pos = {}, opt = this.options;
+        if ( opt.axisx === true ) {
+          pos.x = x;
+        }
+        if ( opt.axisy === true ) {
+          pos.y = y;
+        }
+        this.target.setPositionXY( isTransform3d, pos );
+      },
       render: function( x, y, parentLeft, parentTop ) {
         var
         opt = this.options,
