@@ -8,6 +8,10 @@
     <script type="text/javascript">
         $.require(["ui/swapview", "main/query"], function (swapview, query) {
           $("#swapview").uiSwapview();
+          setTimeout(function(){
+            $("#swapview").uiSwapview("option", "index", 1);
+          },1000)
+
         });
 
     </script>
