@@ -141,7 +141,7 @@ aQuery.define( "ui/navmenu", [
             $( opt.selectedNavItem ).uiNavitem( "cancel" );
           }
           $target.uiNavitem( "select" );
-          opt.selectedNavItem = target;
+          opt.selectedNavItem = $target;
         }
       },
       changeSelectedNavItem: function( target ) {
@@ -151,7 +151,7 @@ aQuery.define( "ui/navmenu", [
           if ( opt.selectedNavItem && opt.selectedNavItem !== target ) {
             $( opt.selectedNavItem ).uiNavitem( "cancel" );
           }
-          opt.selectedNavItem = target;
+          opt.selectedNavItem = $target;
 
           var para = {
             navitem: target
