@@ -20,7 +20,6 @@
     disable: function( ) {
       var fun = this.event;
       this.target.off( "mousemove", fun ).off( "mousedown", fun );
-      //event.document.off(window, "scroll", fun);
       $( document ).off( "mouseup", fun );
       this.options.disabled = false;
       return this;
