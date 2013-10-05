@@ -29,7 +29,7 @@
   tween,
   undefined ) {
   "use strict"; //启用严格模式
-  var isTransform3d = !! $.config.module.transitionToAnimation && support.transform3d;
+  var isTransform3d = !! $.config.ui.isTransform3d && support.transform3d;
 
   var initPositionParent, getPositionX, getPositionY;
   if ( isTransform3d ) {

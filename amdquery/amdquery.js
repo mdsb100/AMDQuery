@@ -206,7 +206,8 @@
     ui: {
       initWidget: false,
       autoFetchCss: true,
-      image: "welcome.gif"
+      image: "welcome.gif",
+      isTransform3d: true
     },
     module: {
 

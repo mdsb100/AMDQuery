@@ -1,14 +1,15 @@
-﻿aQuery.define( "html5/animate.transform", [ "base/extend", "main/object", "module/FX", "html5/css3", "module/animate" ], function( $, utilExtend, object, FX, css3, animate, undefined ) {
-  "use strict"; //启用严格模式
+﻿aQuery.define( "html5/animate.transform", [ "base/extend", "base/support", "main/object", "module/FX", "html5/css3", "module/animate" ], function( $, utilExtend, support, object, FX, css3, animate, undefined ) {
+
   var getScale = function( r ) {
     return r ? Math.max( r, 0 ) : 1;
   }, transformCss = "-" + css3.css3Head + "-transform";
   //给动画类添加一个自定义方法
-  if ( $.support.transform3d ) {
+  if ( support.transform3d ) {
     var Transfrom3dForFX = FX.extend( function Transfrom3dForFX( ele, options, value, name, type ) {
       if ( this instanceof Transfrom3dForFX ) {
-        this._super( ele, options, value, name );
+        /*Fix*/
         this.type = type;
+        this._super( ele, options, value, name );
         this._originCss = transformCss;
         this.name = name.indexOf( "set" ) < 0 ? $.util.camelCase( name, "set" ) : name;
 
@@ -24,15 +25,16 @@
       }
     }, {
       cur: function( ) {
-        var r = parseFloat( $.getTransform3d( this.ele )[ this.type ] );
+        var r = css3.getTransform3dByName( this.ele, this.type, true );
         return r || 0;
       },
       update: function( transform, value ) {
-        transform = transform || $.getTransform3d( this.ele );
+        transform = transform || css3.getTransform3d( this.ele );
+
         value = value != undefined ? value : parseFloat( this.nowPos );
         if ( value != undefined && value !== NaN ) {
           transform[ this.type ] = value + this.unit;
-          $[ this.name ]( this.ele, transform );
+          css3[ this.name ]( this.ele, transform );
         }
 
         return transform;
@@ -53,9 +55,10 @@
       setTranslate3d: Transfrom3dForFX
     } );
   }
-  if ( $.support.transform ) {
+  if ( support.transform ) {
     var TransfromForFX = FX.extend( function TransfromForFX( ele, options, value, name, type, index ) {
       if ( this instanceof TransfromForFX ) {
+        /*Fix*/
         this.type = type;
         this.index = index;
         this._originCss = transformCss;
