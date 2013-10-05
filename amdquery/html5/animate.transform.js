@@ -30,7 +30,7 @@
       update: function( transform, value ) {
         transform = transform || $.getTransform3d( this.ele );
         value = value != undefined ? value : parseFloat( this.nowPos );
-        if ( value != undefined ) {
+        if ( value != undefined && value !== NaN ) {
           transform[ this.type ] = value + this.unit;
           $[ this.name ]( this.ele, transform );
         }
@@ -83,7 +83,7 @@
       update: function( transform, value ) {
         transform = transform || $.getTransform( this.ele, this.type[ 0 ] )[ 0 ] || [ ];
         value = value != undefined ? value : parseFloat( this.nowPos );
-        if ( value != undefined ) {
+        if ( value != undefined && value !== NaN ) {
           transform[ 0 ] = this.type[ 0 ];
 
           for ( var i = 1, item = transform[ i ], len = this.type.length; i < len; i++ ) {

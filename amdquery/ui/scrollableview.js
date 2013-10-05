@@ -116,6 +116,7 @@ aQuery.define( "ui/scrollableview", [
 
             break;
           case "drag.start":
+            self.stopAnimation( );
             self.refreshPosition( ).refreshContainerSize( );
             break;
           case "DomNodeInserted":
@@ -166,6 +167,8 @@ aQuery.define( "ui/scrollableview", [
     },
     init: function( opt, target ) {
       this._super( opt, target );
+
+      this._direction = null;
 
       this.originOverflow = this.target.css( "overflow" );
 
@@ -321,30 +324,36 @@ aQuery.define( "ui/scrollableview", [
 
       return this;
     },
+    stopAnimation: function( ) {
+      this.container.stopAnimation( true );
+      this.statusBarX.stopAnimation( true );
+      this.statusBarY.stopAnimation( true );
+      this.toYBoundary( this.getTop( ) ).toXBoundary( this.getLeft( ) );
+    },
     animate: function( e ) {
       var opt = this.options,
         a0 = e.acceleration,
         t0 = opt.animateDuration - e.duration,
-        s0 = Math.round( a0 * t0 * t0 * 0.5 ),
-        direction = e.direction;
+        s0 = Math.round( a0 * t0 * t0 * 0.5 );
+      this._direction = e.direction;
 
       if ( t0 <= 0 ) {
         this.toYBoundary( this.getTop( ) ).toXBoundary( this.getLeft( ) );
         return this.hideStatusBar( );
       }
 
-      switch ( direction ) {
+      switch ( e.direction ) {
         case 3:
-          this.toX( -s0, t0, direction );
+          this.toX( -s0, t0 );
           break;
         case 9:
-          this.toX( s0, t0, direction );
+          this.toX( s0, t0 );
           break;
         case 6:
-          this.toY( -s0, t0, direction );
+          this.toY( -s0, t0 );
           break;
         case 12:
-          this.toY( s0, t0, direction );
+          this.toY( s0, t0 );
           break;
         default:
           this.toXBoundary( this.getTop( ) ).toYBoundary( this.getLeft( ) );
@@ -384,7 +393,7 @@ aQuery.define( "ui/scrollableview", [
     },
 
     outerXBoundary: function( t ) {
-      if ( t >= 0 ) {
+      if ( t > 0 ) {
         return 0;
       } else if ( t < -this.overflowWidth ) {
         return -this.overflowWidth;
@@ -393,7 +402,7 @@ aQuery.define( "ui/scrollableview", [
     },
 
     outerYBoundary: function( t ) {
-      if ( t >= 0 ) {
+      if ( t > 0 ) {
         return 0;
       } else if ( t < -this.overflowHeight ) {
         return -this.overflowHeight;
@@ -412,7 +421,7 @@ aQuery.define( "ui/scrollableview", [
       } );
     },
 
-    toXBoundary: function( left, direction ) {
+    toXBoundary: function( left ) {
       var outer = this.outerXBoundary( left ),
         self = this;
       if ( outer !== null ) {
@@ -422,14 +431,14 @@ aQuery.define( "ui/scrollableview", [
           queue: false,
           complete: function( ) {
             self.hideStatusBar( );
-            self._triggerAnimate( "boundary", direction, self.options.boundaryDruation, outer );
+            self._triggerAnimate( "boundary", self._direction, self.options.boundaryDruation, outer );
           }
         } );
       }
       return this;
     },
 
-    toYBoundary: function( top, direction ) {
+    toYBoundary: function( top ) {
       var outer = this.outerYBoundary( top ),
         self = this;
       if ( outer !== null ) {
@@ -439,7 +448,7 @@ aQuery.define( "ui/scrollableview", [
           queue: false,
           complete: function( ) {
             self.hideStatusBar( );
-            self._triggerAnimate( "boundary", direction, self.options.boundaryDruation, outer );
+            self._triggerAnimate( "boundary", self._direction, self.options.boundaryDruation, outer );
           }
         } );
       }
@@ -452,7 +461,7 @@ aQuery.define( "ui/scrollableview", [
     toY: function( s, t, d ) {
       return this._isAllowedDirection( "y" ) ? this.animateY( this.checkYBoundary( this.getTop( ) - s ), t, d ) : this;
     },
-    animateY: function( y1, t, direction ) {
+    animateY: function( y1, t ) {
       var self = this,
         y2 = this.checkYStatusBar( y1 );
 
@@ -460,8 +469,8 @@ aQuery.define( "ui/scrollableview", [
         duration: t,
         easing: "easeOut",
         complete: function( ) {
-          self.toXBoundary( self.getLeft( ), direction ).toYBoundary( y1, direction );
-          self._triggerAnimate( "inner", direction, t, y1 );
+          self.toXBoundary( self.getLeft( ) ).toYBoundary( y1 );
+          self._triggerAnimate( "inner", self._direction, t, y1 );
         }
       } );
 
@@ -471,7 +480,7 @@ aQuery.define( "ui/scrollableview", [
       } );
       return this;
     },
-    animateX: function( x1, t, direction ) {
+    animateX: function( x1, t ) {
       var self = this,
         x2 = this.checkXStatusBar( x1 );
 
@@ -479,8 +488,8 @@ aQuery.define( "ui/scrollableview", [
         duration: t,
         easing: "easeOut",
         complete: function( ) {
-          self.toXBoundary( x1, direction ).toYBoundary( self.getTop( ), direction );
-          self._triggerAnimate( "inner", direction, t, x1 );
+          self.toXBoundary( x1 ).toYBoundary( self.getTop( ) );
+          self._triggerAnimate( "inner", self._direction, t, x1 );
         }
       } );
 

@@ -176,7 +176,7 @@
           tCompelete.splice( 0, 0, originComplete );
         }
       } else if ( typed.isFun( opt.complete ) ) {
-        tCompelete = [ originComplete, opt.complete ];
+        tCompelete = [ opt.complete, originComplete ];
       } else {
         tCompelete = [ originComplete ];
       }

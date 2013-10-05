@@ -66,7 +66,6 @@
         utilExtend.easyExtend( opt, option );
         //opt._transitionList = [];
         opt._transitionEnd = function( event ) {
-          console.log("_transitionEnd")
           var i, ele = this,
             item,
             transitionList = $.data( ele, "_transitionList" );
@@ -213,7 +212,7 @@
             tCompelete.splice( 0, 0, originComplete );
           }
         } else if ( typed.isFun( opt.complete ) ) {
-          tCompelete = [ originComplete, opt.complete ];
+          tCompelete = [ opt.complete, originComplete ];
         } else {
           tCompelete = [ originComplete ];
         }
