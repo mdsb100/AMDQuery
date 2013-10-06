@@ -1,0 +1,12 @@
+.swapindicator
+{
+
+}
+.swapindicator .active
+{
+  background:url(../images/swapindicator_active.png) center no-repeat;
+}
+.swapindicator li
+{
+  background:url(../images/swapindicator_deactive.png) center no-repeat;
+}

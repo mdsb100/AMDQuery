@@ -9,12 +9,14 @@ aQuery.define( "ui/swapview", [
   "html5/css3.position",
   "html5/animate.transform",
   "html5/css3.transition.animate",
-  "ui/swappable",
-  "ui/draggable",
   "module/Widget",
   "module/animate",
   "module/FX",
-  "module/tween.extend" ], function( $,
+  "module/tween.extend",
+  "ui/swappable",
+  "ui/draggable",
+  "ui/swapindicator"
+ ], function( $,
   support,
   query,
   css,
@@ -25,15 +27,16 @@ aQuery.define( "ui/swapview", [
   css3Position,
   animateTransform,
   css3Transition,
-  swappable,
-  draggable,
   Widget,
   animate,
   FX,
-  tween, undefined ) {
-  "use strict"; //启用严格模式
-
-  var horizental = "H",
+  tween,
+  swappable,
+  draggable,
+  swapindicator,
+  undefined ) {
+  "use strict";
+  var horizontal = "H",
     vertical = "V";
 
   var isTransform3d = !! $.config.ui.isTransform3d && support.transform3d;
@@ -44,12 +47,13 @@ aQuery.define( "ui/swapview", [
 
       this.target.uiSwappable( );
 
-      var isHorizental = opt.orientation === horizental;
+      var isHorizental = opt.orientation === horizontal;
 
-      this.container = this.target.children( "ol" );
+      this.container = this.target.children( "ol" ).eq( 0 );
 
       this.$views = this.container.children( "li" );
-
+      var indicator = this.target.children( 'ol[ui-swapindicator]' ).eq( 0 );
+      this.$indicator = indicator.length ? indicator.uiSwapindicator( ) : null;
       this.resize( );
 
       this.container.css( {
@@ -79,12 +83,12 @@ aQuery.define( "ui/swapview", [
       this.width = width;
       this.height = height;
 
-      this.orientationLength = this.options.orientation == horizental ? this.width : this.height;
+      this.orientationLength = this.options.orientation == horizontal ? this.width : this.height;
 
       this.$views.width( width );
       this.$views.height( height );
 
-      if ( this.options.orientation === horizental ) {
+      if ( this.options.orientation === horizontal ) {
         this.boardWidth = width * this.$views.length;
         this.boardHeight = height;
 
@@ -99,18 +103,19 @@ aQuery.define( "ui/swapview", [
     },
     render: function( index ) {
       var opt = this.options,
-        originIndex = opt.index
+        originIndex = opt.index,
         self = this;
       if ( index === undefined || index < 0 || index > this.$views.length - 1 ) {
         return;
       }
 
       opt.index = index;
+
       var activeView = $( this.$views[ index ] ),
         deactiveView = $( this.$views[ originIndex ] );
       var animationOpt;
 
-      if ( opt.orientation == horizental ) {
+      if ( opt.orientation == horizontal ) {
         animationOpt = $.getPositionAnimationOptionProxy( isTransform3d, -this.target.width( ) * index );
       } else {
         animationOpt = $.getPositionAnimationOptionProxy( isTransform3d, undefined, -this.target.height( ) * index );
@@ -139,6 +144,7 @@ aQuery.define( "ui/swapview", [
         easing: opt.animationEasing,
         queue: false,
         complete: function( ) {
+          self.$indicator && self.$indicator.uiSwapindicator( "option", "index", index );
           animationEvent.type = "afterAnimation";
           self.target.trigger( animationEvent.type, animationEvent.target, animationEvent );
           if ( originIndex !== index ) {
@@ -165,6 +171,7 @@ aQuery.define( "ui/swapview", [
       var event = this.event;
       this.container.on( "drag.start", event );
       this.target.on( "swap.stop swap.none", event );
+      this.$indicator && this.$indicator.on( "swapindicator.change", event );
       this.options.disabled = true;
       return this;
     },
@@ -172,6 +179,7 @@ aQuery.define( "ui/swapview", [
       var event = this.event;
       this.container.off( "drag.start", event );
       this.target.off( "swap.stop swap.none", event );
+      this.$indicator && this.$indicator.off( "swapindicator.change", event );
       this.options.disabled = false;
       return this;
     },
@@ -195,6 +203,9 @@ aQuery.define( "ui/swapview", [
           case "swap.none":
             self.render( opt.index );
             break;
+          case "swapindicator.change":
+            self.render( e.index );
+            break;
         }
       };
       return this;
@@ -209,12 +220,12 @@ aQuery.define( "ui/swapview", [
 
       switch ( direction ) {
         case 3:
-          if ( opt.orientation === horizental && status ) {
+          if ( opt.orientation === horizontal && status ) {
             return this.swapPrevious( );
           }
           break;
         case 9:
-          if ( opt.orientation === horizental && status ) {
+          if ( opt.orientation === horizontal && status ) {
             return this.swapNext( );
           }
           break;
@@ -233,8 +244,9 @@ aQuery.define( "ui/swapview", [
       return this.render( opt.index );
     },
     destory: function( key ) {
-      this.target.uiSwappable( "destory", key );
-      this.container.uiDraggable( "destory", key );
+      this.target.uiSwappable( "destory" );
+      this.container.uiDraggable( "destory" );
+      this.$swapindicator && this.$swapindicator.uiSwapindicator( "destory" );
       Widget.invoke( "destory", this, key );
     },
     init: function( opt, target ) {
@@ -244,12 +256,12 @@ aQuery.define( "ui/swapview", [
       this.boardWidth = 0;
       this.boardHeight = 0;
       this.orientationLength = 0;
-      return this.create( )._initHandler( ).enable( ).render( );
+      return this.create( )._initHandler( ).enable( ).render( opt.index );
     },
     customEventName: [ "beforeAnimation", "afterAnimation" ],
     options: {
       index: 0,
-      orientation: horizental,
+      orientation: horizontal,
       animationDuration: FX.normal,
       animationEasing: "expo.easeInOut"
     },
