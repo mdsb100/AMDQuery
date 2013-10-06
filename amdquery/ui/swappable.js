@@ -1,4 +1,4 @@
-﻿aQuery.define( "ui/swappable", [ "base/typed", "base/client", "main/event", "module/math", "module/Widget" ], function( $, typed, client, event, math, Widget, undefined ) {
+﻿aQuery.define( "ui/swappable", [ "base/typed", "base/client", "main/event", "module/math", "module/Widget", "html5/css3.position" ], function( $, typed, client, event, math, Widget, css3Position, undefined ) {
   "use strict"; //启用严格模式
   var swappable = Widget.extend( "ui.swappable", {
     container: null,
@@ -91,8 +91,8 @@
         time, timeout, lastEvent; //IE和绑定顺序有关？找不到startX值？
       this.event = function( e ) {
         //event.document.stopPropagation(e);
-        var left = target.getLeft( ),
-          top = target.getTop( ),
+        var left = target.getLeftWithTranslate3d( ),
+          top = target.getTopWithTranslate3d( ),
           temp, x = ( e.pageX || e.clientX ) - left,
           y = ( e.pageY || e.clientY ) - top,
           para;
@@ -189,7 +189,7 @@
               }
               clearTimeout( timeout );
 
-              self.getPara( para, time, opt.directionRange, self.startX, self.startY, $.between( 0, target.width( ), x ), $.between( 0, target.height( ), y ) );
+              self.getPara( para, time, opt.directionRange, self.startX, self.startY, x, y );
               para.type = self.getEventName( "stop" );
               para.swapType = self.computeSwapType( );
               target.trigger( para.type, target[ 0 ], para );

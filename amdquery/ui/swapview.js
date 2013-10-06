@@ -48,8 +48,6 @@ aQuery.define( "ui/swapview", [
 
       this.container = this.target.children( "ol" );
 
-      this.target.uiSwappable( );
-
       this.$views = this.container.children( "li" );
 
       this.resize( );
@@ -188,7 +186,7 @@ aQuery.define( "ui/swapview", [
       return this;
     },
     stopAnimation: function( ) {
-      //this.container.stopAnimation( true );
+      this.container.stopAnimation( true );
       return this;
     },
     _initHandler: function( ) {
