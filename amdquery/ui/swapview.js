@@ -111,17 +111,15 @@ aQuery.define( "ui/swapview", [
     },
     render: function( index ) {
       var opt = this.options,
+        originIndex = opt.index
         self = this;
       if ( index === undefined || index < 0 || index > this.$views.length - 1 ) {
         return;
       }
 
-      if ( opt.index !== index ) {
-
-      }
-
       opt.index = index;
-
+      var activeView = $( this.$views[ index ] ),
+        deactiveView = $( this.$views[ originIndex ] );
       var animationOpt;
 
       if ( opt.orientation == horizental ) {
@@ -139,6 +137,16 @@ aQuery.define( "ui/swapview", [
       };
       this.target.trigger( animationEvent.type, animationEvent.target, animationEvent );
 
+
+      if ( originIndex !== index ) {
+        deactiveView.trigger( "beforeDeactive", deactiveView[ index ], {
+          type: "beforeDeactive"
+        } );
+        activeView.trigger( "beforeActive", activeView[ index ], {
+          type: "beforeActive"
+        } );
+      }
+
       this.container.animate( animationOpt, {
         duration: opt.animationDuration,
         easing: opt.animationEasing,
@@ -146,6 +154,14 @@ aQuery.define( "ui/swapview", [
         complete: function( ) {
           animationEvent.type = "afterAnimation";
           self.target.trigger( animationEvent.type, animationEvent.target, animationEvent );
+          if ( originIndex !== index ) {
+            deactiveView.trigger( "deactive", deactiveView[ index ], {
+              type: "deactive"
+            } );
+            activeView.trigger( "active", activeView[ index ], {
+              type: "deactive"
+            } );
+          }
         }
       } );
     },
