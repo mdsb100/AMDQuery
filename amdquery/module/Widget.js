@@ -399,7 +399,9 @@
     //将来做事件用
     widgetName: "Widget",
 
-    widgetNameSpace: "ui"
+    widgetNameSpace: "ui",
+
+    initIgnore: false
   }, {
     extend: function( name, prototype, statics, Super ) {
       /// <summary>为$添加部件
@@ -567,10 +569,14 @@
     },
     renderWidget: function( ele, funName ) {
       var widgetNames = Widget.getAttrWidgets( ele ),
-        i, widgetName, key;
+        i, widgetName, key, widgetCtor;
 
       for ( i = widgetNames.length - 1; i >= 0; i-- ) {
         widgetName = widgetNames[ i ];
+        widgetCtor = Widget.get( widgetName );
+        if ( widgetCtor && widgetCtor.prototype.initIgnore === true ) {
+          continue;
+        }
         widgetName = widgetName.split( "." );
         key = $.util.camelCase( widgetName[ 1 ], widgetName[ 0 ] );
         if ( $( ele )[ key ] ) {
