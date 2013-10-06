@@ -50,6 +50,10 @@ aQuery.define( "ui/swapview", [
 
       this.target.uiSwappable( );
 
+      this.$views = this.container.children( "li" );
+
+      this.resize( );
+
       this.container.css( {
         dislplay: "block"
       } ).uiDraggable( {
@@ -64,15 +68,11 @@ aQuery.define( "ui/swapview", [
         overflow: true
       } );
 
-      this.$views = this.container.children( "li" );
-
       if ( isHorizental ) {
         this.$views.css( "float", "left" );
       } else {
         this.$views.css( "clear", "left" );
       }
-
-      this.resize( );
 
       return this;
     },
@@ -102,8 +102,8 @@ aQuery.define( "ui/swapview", [
 
 
       } else {
-        this.boardWidth = height * this.$views.length;
-        this.boardHeight = width;
+        this.boardWidth = width;
+        this.boardHeight = height * this.$views.length;
       }
 
       this.container.width( this.boardWidth );
@@ -123,12 +123,11 @@ aQuery.define( "ui/swapview", [
       var animationOpt;
 
       if ( opt.orientation == horizental ) {
-        animationOpt = $.getPositionAnimationOptionProxy( isTransform3d, -this.width * index );
+        animationOpt = $.getPositionAnimationOptionProxy( isTransform3d, -this.target.width( ) * index );
       } else {
-        animationOpt = $.getPositionAnimationOptionProxy( isTransform3d, -this.height * index );
+        animationOpt = $.getPositionAnimationOptionProxy( isTransform3d, undefined, -this.target.height( ) * index );
       }
-      // this.traget.trigger()
-      //点击stop 然后继续 动画
+
       var animationEvent = {
         type: this.getEventName( "beforeAnimation" ),
         target: this.container[ 0 ],
@@ -176,16 +175,20 @@ aQuery.define( "ui/swapview", [
     },
     enable: function( ) {
       var event = this.event;
-      this.container.on( "drag.pause drag.move drag.start", event );
-      this.target.on( "swap.move swap.stop swap.pause", event );
+      this.container.on( "drag.start", event );
+      this.target.on( "swap.stop swap.none", event );
       this.options.disabled = true;
       return this;
     },
     disable: function( ) {
       var event = this.event;
-      this.container.off( "drag.pause drag.move drag.start", event );
-      this.target.off( "swap.move swap.stop swap.pause", event );
+      this.container.off( "drag.start", event );
+      this.target.off( "swap.stop swap.none", event );
       this.options.disabled = false;
+      return this;
+    },
+    stopAnimation: function( ) {
+      //this.container.stopAnimation( true );
       return this;
     },
     _initHandler: function( ) {
@@ -195,11 +198,14 @@ aQuery.define( "ui/swapview", [
 
       this.event = function( e ) {
         switch ( e.type ) {
-          case "drag.stop":
-
+          case "drag.start":
+            self.stopAnimation( );
             break;
           case "swap.stop":
             self._acceptSwapBehavior( e );
+            break;
+          case "swap.none":
+            self.render( opt.index );
             break;
         }
       };
@@ -235,6 +241,7 @@ aQuery.define( "ui/swapview", [
           }
           break;
       }
+
       return this.render( opt.index );
     },
     destory: function( key ) {

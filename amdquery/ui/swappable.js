@@ -73,7 +73,7 @@
       this.startX = null;
       return this._initHandler( ).enable( ).render( );
     },
-    customEventName: [ "start", "move", "pause", "stop", "mousemove" ],
+    customEventName: [ "start", "move", "pause", "stop", "none", "mousemove" ],
     options: {
       cursor: "pointer",
       directionRange: 15,
@@ -181,7 +181,12 @@
               //event.document.preventDefault(e);
               //event.document.stopPropagation(e);
               self.isDown = false;
-              if ( !lastEvent && !client.browser.ie678 ) break;
+              if ( !lastEvent && !client.browser.ie678 ) {
+                target.trigger( self.getEventName( "none" ), target[ 0 ], {
+                  type: self.getEventName( "none" )
+                } );
+                break;
+              }
               clearTimeout( timeout );
 
               self.getPara( para, time, opt.directionRange, self.startX, self.startY, $.between( 0, target.width( ), x ), $.between( 0, target.height( ), y ) );
