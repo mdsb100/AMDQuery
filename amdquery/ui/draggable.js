@@ -138,9 +138,8 @@
         originY: 0,
         diffx: 0,
         diffy: 0,
-        axis: null,
-        axisx: true,
-        axisy: true,
+        vertical: true,
+        horizontal: true,
         cursor: "default",
         overflow: false,
         keepinner: true,
@@ -162,8 +161,6 @@
         originY: 0,
         diffx: 0,
         diffy: 0,
-        axisx: 0,
-        axisy: 0,
         cursor: 0
       },
       publics: {
@@ -220,19 +217,12 @@
               if ( opt.disabled == false ) {
                 opt.cursor = "default";
               } else {
-                switch ( opt.axis ) {
-                  case "x":
-                    opt.axisy = false;
-                    opt.cursor = "e-resize";
-                    break;
-                  case "y":
-                    opt.axisx = false;
-                    opt.cursor = "n-resize";
-                    break;
-                  default:
-                    opt.axisx = true;
-                    opt.axisy = true;
-                    opt.cursor = "move";
+                if ( opt.vertical && opt.horizontal ) {
+                  opt.cursor = "move";
+                } else if ( opt.horizontal ) {
+                  opt.cursor = "e-resize";
+                } else if ( opt.vertical ) {
+                  opt.cursor = "n-resize";
                 }
               }
               self.target.css( {
@@ -303,10 +293,10 @@
       },
       _render: function( x, y ) {
         var pos = {}, opt = this.options;
-        if ( opt.axisx === true ) {
+        if ( opt.horizontal == true ) {
           pos.x = x;
         }
-        if ( opt.axisy === true ) {
+        if ( opt.vertical == true ) {
           pos.y = y;
         }
         this.target.setPositionXY( isTransform3d, pos );

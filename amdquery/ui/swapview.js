@@ -58,10 +58,9 @@ aQuery.define( "ui/swapview", [
         keepinner: 1,
         innerWidth: this.target.width( ) / 4,
         innerHeight: this.target.height( ) / 4,
-        axis: isHorizental ? "x" : "y",
         stopPropagation: false,
-        axisx: isHorizental,
-        axisy: !isHorizental,
+        vertical: !isHorizental,
+        horizontal: isHorizental,
         container: this.target,
         overflow: true
       } );

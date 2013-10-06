@@ -49,10 +49,9 @@ aQuery.define( "ui/scrollableview", [
         keepinner: 1,
         innerWidth: opt.boundary,
         innerHeight: opt.boundary,
-        axis: opt.overflow,
         stopPropagation: false,
-        axisx: this._isAllowedDirection( "x" ),
-        axisy: this._isAllowedDirection( "y" ),
+        vertical: this._isAllowedDirection( "V" ),
+        horizontal: this._isAllowedDirection( "H" ),
         container: this.target,
         overflow: true
       } );
@@ -83,7 +82,7 @@ aQuery.define( "ui/scrollableview", [
         target = self.target,
         opt = self.options,
         check = function( ) {
-          self.toXBoundary( self.getLeft( ) ).toYBoundary( self.getTop( ) ).hideStatusBar( );
+          self.toHBoundary( self.getLeft( ) ).toVBoundary( self.getTop( ) ).hideStatusBar( );
         };
 
       this.event = function( e ) {
@@ -121,7 +120,7 @@ aQuery.define( "ui/scrollableview", [
             break;
           case "DomNodeInserted":
           case "DomNodeRemoved":
-            self.refreshPosition( ).refreshContainerSize( ).toYBoundary( self.getTop( ) ).toXBoundary( self.getLeft( ) );
+            self.refreshPosition( ).refreshContainerSize( ).toVBoundary( self.getTop( ) ).toHBoundary( self.getLeft( ) );
             break;
           case "swap.move":
             self.showStatusBar( );
@@ -189,7 +188,7 @@ aQuery.define( "ui/scrollableview", [
     },
     customEventName: [ "pulldown", "pullup", "pullleft", "pullright", "animationEnd" ],
     options: {
-      "overflow": "xy",
+      "overflow": "HV",
       "animateDuration": 600,
       "boundary": 150,
       "boundaryDruation": 300,
@@ -201,8 +200,8 @@ aQuery.define( "ui/scrollableview", [
       "showStatusBar": Widget.AllowPublic,
       "hideStatusBar": Widget.AllowPublic,
       "render": Widget.AllowPublic,
-      "toX": Widget.AllowPublic,
-      "toY": Widget.AllowPublic
+      "toH": Widget.AllowPublic,
+      "toV": Widget.AllowPublic
     },
     render: function( x, y, addtion, boundary ) {
       if ( !arguments.length ) {
@@ -220,11 +219,11 @@ aQuery.define( "ui/scrollableview", [
         originY = position.y;
       }
 
-      if ( x !== null && this._isAllowedDirection( "x" ) ) {
+      if ( x !== null && this._isAllowedDirection( "H" ) ) {
         x = this.checkXBoundary( originX + x, boundary );
         statusX = this.checkXStatusBar( x );
       }
-      if ( y !== null && this._isAllowedDirection( "y" ) ) {
+      if ( y !== null && this._isAllowedDirection( "V" ) ) {
         y = this.checkYBoundary( originY + y, boundary );
         statusY = this.checkYStatusBar( y );
       }
@@ -233,11 +232,11 @@ aQuery.define( "ui/scrollableview", [
     },
     _render: function( x1, x2, y1, y2 ) {
       var pos = {};
-      if ( x1 !== null && this._isAllowedDirection( "x" ) ) {
+      if ( x1 !== null && this._isAllowedDirection( "H" ) ) {
         pos.x = parseInt( x1 );
         this.statusBarX.setPositionX( isTransform3d, parseInt( x2 ) );
       }
-      if ( y1 !== null && this._isAllowedDirection( "y" ) ) {
+      if ( y1 !== null && this._isAllowedDirection( "V" ) ) {
         pos.y = parseInt( y1 );
         this.statusBarY.setPositionY( isTransform3d, parseInt( y2 ) );
       }
@@ -245,9 +244,9 @@ aQuery.define( "ui/scrollableview", [
       return this;
     },
     renderStatusBar: function( x, y ) {
-      this._isAllowedDirection( "x" ) && this.statusBarX.setPositionX( isTransform3d, parseInt( x ) );
+      this._isAllowedDirection( "H" ) && this.statusBarX.setPositionX( isTransform3d, parseInt( x ) );
 
-      this._isAllowedDirection( "y" ) && this.statusBarY.setPositionY( isTransform3d, parseInt( y ) );
+      this._isAllowedDirection( "V" ) && this.statusBarY.setPositionY( isTransform3d, parseInt( y ) );
 
       return this;
     },
@@ -328,7 +327,7 @@ aQuery.define( "ui/scrollableview", [
       this.container.stopAnimation( true );
       this.statusBarX.stopAnimation( true );
       this.statusBarY.stopAnimation( true );
-      this.toYBoundary( this.getTop( ) ).toXBoundary( this.getLeft( ) );
+      this.toVBoundary( this.getTop( ) ).toHBoundary( this.getLeft( ) );
     },
     animate: function( e ) {
       var opt = this.options,
@@ -338,25 +337,25 @@ aQuery.define( "ui/scrollableview", [
       this._direction = e.direction;
 
       if ( t0 <= 0 ) {
-        this.toYBoundary( this.getTop( ) ).toXBoundary( this.getLeft( ) );
+        this.toVBoundary( this.getTop( ) ).toHBoundary( this.getLeft( ) );
         return this.hideStatusBar( );
       }
 
       switch ( e.direction ) {
         case 3:
-          this.toX( -s0, t0 );
+          this.toH( -s0, t0 );
           break;
         case 9:
-          this.toX( s0, t0 );
+          this.toH( s0, t0 );
           break;
         case 6:
-          this.toY( -s0, t0 );
+          this.toV( -s0, t0 );
           break;
         case 12:
-          this.toY( s0, t0 );
+          this.toV( s0, t0 );
           break;
         default:
-          this.toXBoundary( this.getTop( ) ).toYBoundary( this.getLeft( ) );
+          this.toHBoundary( this.getTop( ) ).toVBoundary( this.getLeft( ) );
       }
 
       return this;
@@ -382,8 +381,8 @@ aQuery.define( "ui/scrollableview", [
     },
 
     showStatusBar: function( ) {
-      this.statusBarXVisible && this._isAllowedDirection( "x" ) && this.statusBarX.show( );
-      this.statusBarYVisible && this._isAllowedDirection( "y" ) && this.statusBarY.show( );
+      this.statusBarXVisible && this._isAllowedDirection( "H" ) && this.statusBarX.show( );
+      this.statusBarYVisible && this._isAllowedDirection( "V" ) && this.statusBarY.show( );
       return this;
     },
     hideStatusBar: function( ) {
@@ -421,7 +420,7 @@ aQuery.define( "ui/scrollableview", [
       } );
     },
 
-    toXBoundary: function( left ) {
+    toHBoundary: function( left ) {
       var outer = this.outerXBoundary( left ),
         self = this;
       if ( outer !== null ) {
@@ -438,7 +437,7 @@ aQuery.define( "ui/scrollableview", [
       return this;
     },
 
-    toYBoundary: function( top ) {
+    toVBoundary: function( top ) {
       var outer = this.outerYBoundary( top ),
         self = this;
       if ( outer !== null ) {
@@ -455,11 +454,11 @@ aQuery.define( "ui/scrollableview", [
       return this;
     },
 
-    toX: function( s, t, d ) {
-      return this._isAllowedDirection( "x" ) ? this.animateX( this.checkXBoundary( this.getLeft( ) - s ), t, d ) : this;
+    toH: function( s, t, d ) {
+      return this._isAllowedDirection( "H" ) ? this.animateX( this.checkXBoundary( this.getLeft( ) - s ), t, d ) : this;
     },
-    toY: function( s, t, d ) {
-      return this._isAllowedDirection( "y" ) ? this.animateY( this.checkYBoundary( this.getTop( ) - s ), t, d ) : this;
+    toV: function( s, t, d ) {
+      return this._isAllowedDirection( "V" ) ? this.animateY( this.checkYBoundary( this.getTop( ) - s ), t, d ) : this;
     },
     animateY: function( y1, t ) {
       var self = this,
@@ -469,7 +468,7 @@ aQuery.define( "ui/scrollableview", [
         duration: t,
         easing: "easeOut",
         complete: function( ) {
-          self.toXBoundary( self.getLeft( ) ).toYBoundary( y1 );
+          self.toHBoundary( self.getLeft( ) ).toVBoundary( y1 );
           self._triggerAnimate( "inner", self._direction, t, y1 );
         }
       } );
@@ -488,7 +487,7 @@ aQuery.define( "ui/scrollableview", [
         duration: t,
         easing: "easeOut",
         complete: function( ) {
-          self.toXBoundary( x1 ).toYBoundary( self.getTop( ) );
+          self.toHBoundary( x1 ).toVBoundary( self.getTop( ) );
           self._triggerAnimate( "inner", self._direction, t, x1 );
         }
       } );
