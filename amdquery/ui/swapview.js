@@ -74,15 +74,6 @@ aQuery.define( "ui/swapview", [
 
       return this;
     },
-    appendView: function( ) {
-
-    },
-    removeView: function( ) {
-
-    },
-    insertBeforeView: function( ) {
-
-    },
     resize: function( ) {
       var width = this.target.width( );
       var height = this.target.height( );

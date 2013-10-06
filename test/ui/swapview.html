@@ -4,7 +4,7 @@
     <title>swapview</title>
     <meta charset="utf-8" />
     <link href="../../css/reset.css" rel="stylesheet" type="text/css" />
-    <script src="../../amdquery/amdquery.js" type="text/javascript" amd="detectCR=1" module="transitionToAnimation:1" ui="initWidget:1;isTransform3d:0"></script>
+    <script src="../../amdquery/amdquery.js" type="text/javascript" amd="detectCR=1" module="transitionToAnimation:1" ui="initWidget:1;isTransform3d:1"></script>
     <script type="text/javascript">
         $.require(["ui/swapview", "main/query"], function (swapview, query) {
           $("#swapview").uiSwapview();
@@ -17,7 +17,8 @@
     </script>
 </head>
 <body style="width: 100%; height: 100%;">
-    <div id="swapview" style="width:100%; height:100%;" amdquery-widget="ui.swapview" ui-swapview="orientation:H">
+    <div style="width:100%;height:20%;"></div>
+    <div id="swapview" style="width:100%; height:80%;" amdquery-widget="ui.swapview" ui-swapview="orientation:H">
       <ol>
         <li style="background-color:red;">
           this is one
@@ -44,6 +45,7 @@
           this is four
         </li>
       </ol>
+      <div style="width:100px;height:100px;background-color:black;position:relative;top:50px;"></div>
     </div>
 </body>
 </html>
