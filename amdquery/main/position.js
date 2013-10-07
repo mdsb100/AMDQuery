@@ -243,30 +243,6 @@ aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "
       return parseFloat( getSize( ele, "width", bol === true ? "margin" : "border" ) );
     },
 
-    position: function( ele ) {
-      /// <summary>返回元素的位置及大小;值都是offset
-      /// <para>top:相对于父级</para>
-      /// <para>left:相对于父级</para>
-      /// <para>width:相对于显示部分</para>
-      /// <para>height:相对于显示部分</para>
-      /// <para>pageTop:相对于dom</para>
-      /// <para>pageLeft:相对于dom</para>
-      /// <para>scrollWidth:相对于整个大小</para>
-      /// <para>scrollHeight:相对于整个大小</para>
-      /// </summary>
-      /// <returns type="Object" />
-      var h = ele.offsetHeight || ele.clientHeight,
-        w = ele.offsetWidth || ele.clientWidth;
-      return {
-        top: ele.offsetTop,
-        left: ele.offsetLeft,
-        height: h,
-        width: w,
-        pageLeft: $.getLeft( ele ),
-        pageTop: $.getTop( ele )
-      };
-    },
-
     setHeight: function( ele, value ) {
       /// <summary>设置元素的高度
       /// </summary>
@@ -503,21 +479,6 @@ aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "
       }, function( ) {
         return Math.max( width, this.scrollWidth || 0 );
       } );
-    },
-
-    position: function( ) {
-      /// <summary>返回第一个元素的位置及大小;值都是offset
-      /// <para>top:相对于父级</para>
-      /// <para>left:相对于父级</para>
-      /// <para>width:相对于显示部分</para>
-      /// <para>height:相对于显示部分</para>
-      /// <para>Top:相对于dom</para>
-      /// <para>Left:相对于dom</para>
-      /// <para>Width:相对于整个大小</para>
-      /// <para>Height:相对于整个大小</para>
-      /// </summary>
-      /// <returns type="Object" />
-      return $.position( this[ 0 ] );
     }
 
   } );
