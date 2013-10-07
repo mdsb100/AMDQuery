@@ -92,7 +92,7 @@ aQuery.define( "app/Controller", [ "base/ClassModule", "base/typed", "base/Promi
     }
   }, {
     loadController: function( node, callback ) {
-      var contollersElement = typed.isNode( node, "controller" ) ? $(node) : query.find( "controller", node ),
+      var contollersElement = typed.isNode( node, "controller" ) ? $( node ) : query.find( "controller", node ),
         controller = [ ];
 
       if ( contollersElement.length ) {
@@ -115,13 +115,13 @@ aQuery.define( "app/Controller", [ "base/ClassModule", "base/typed", "base/Promi
           var Controllers = $.util.argToArray( arguments ),
             ret = [ ],
             i = 0,
-            len = Controllers.length;
-
+            len = Controllers.length,
+            readyCount = len;
           for ( ; i < len; i++ ) {
             ret.push( new Controllers[ i ]( depend[ i ], contollersElement[ i ] ) );
             ret[ i ].ready( function( ) {
-              i--;
-              if ( i === 0 ) {
+              readyCount--;
+              if ( readyCount === 0 ) {
                 callback( ret );
                 depend = contollersElement = null;
               }
