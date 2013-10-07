@@ -209,8 +209,8 @@
               dragging = target;
               opt.diffx = x - offsetLeft;
               opt.diffy = y - offsetTop;
-              parentLeft = self.positionParent.getLeft( );
-              parentTop = self.positionParent.getTop( );
+              parentLeft = self.positionParent.getLeftWithTranslate3d( );
+              parentTop = self.positionParent.getTopWithTranslate3d( );
               para.originX = opt.originX = x - opt.diffx - parentLeft;
               para.originY = opt.originY = y - opt.diffy - parentTop;
 
@@ -307,25 +307,24 @@
         }
         var
         opt = this.options,
-          con = this.container,
-          cP;
+          con = this.container;
 
-        parentLeft = parentLeft || this.positionParent.getLeft( );
-        parentTop = parentTop || this.positionParent.getTop( );
+        parentLeft = parentLeft || this.positionParent.getLeftWithTranslate3d( );
+        parentTop = parentTop || this.positionParent.getTopWithTranslate3d( );
 
         if ( opt.keepinner == true && con[ 0 ] ) {
-          cP = con.position( );
-          cP.pageLeft -= parentLeft;
-          cP.pageTop -= parentTop;
 
-          var diffWidth = cP.width - this.target.width( );
-          var diffHeight = cP.height - this.target.height( );
+          var pageLeft = con.getLeftWithTranslate3d( ) - parentLeft;
+          var pageTop = con.getTopWithTranslate3d( ) - parentTop;
+
+          var diffWidth = con.width( ) - this.target.width( );
+          var diffHeight = con.height( ) - this.target.height( );
 
           var boundaryWidth = diffWidth > 0 ? opt.outerWidth : opt.innerWidth;
           var boundaryHeight = diffHeight > 0 ? opt.outerHeight : opt.innerHeight;
 
-          x = $.among( cP.pageLeft + boundaryWidth, diffWidth + cP.pageLeft - boundaryWidth, x );
-          y = $.among( cP.pageTop + boundaryHeight, diffHeight + cP.pageTop - boundaryHeight, y );
+          x = $.among( pageLeft + boundaryWidth, diffWidth + pageLeft - boundaryWidth, x );
+          y = $.among( pageTop + boundaryHeight, diffHeight + pageTop - boundaryHeight, y );
 
         }
 
