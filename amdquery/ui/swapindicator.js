@@ -7,7 +7,7 @@ aQuery.define( "ui/swapindicator", [
   "main/dom",
   "main/class",
   "html5/css3",
-  "module/Widget",
+  "module/Widget"
    ], function( $, support, query, event, css2, position, dom, cls, css3, Widget ) {
   "use strict";
   Widget.fetchCSS( "ui/css/swapindicator" );
@@ -85,7 +85,7 @@ aQuery.define( "ui/swapindicator", [
     },
     render: function( index ) {
       var opt = this.options,
-        originIndex = opt.index
+        originIndex = opt.index,
         self = this;
       if ( index === undefined || index < 0 || index > this.$indicators.length - 1 ) {
         return;
