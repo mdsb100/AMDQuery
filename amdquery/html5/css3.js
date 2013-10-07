@@ -195,6 +195,20 @@
   };
 
   var css3 = {
+    transformCssName: transformCssName,
+    transitionCssName: transitionCssName,
+    getTransformStyleNameUnCamelCase: function( ) {
+      var ret = $.util.unCamelCase( transformCssName );
+      return transformCssName ?
+        ( ret.indexOf( "-" ) > -1 ? "-" + ret : ret ) :
+        transformCssName;
+    },
+    getTransitionStyleNameUnCamelCase: function( ) {
+      var ret = $.util.unCamelCase( transitionCssName );
+      return transitionCssName ?
+        ( ret.indexOf( "-" ) > -1 ? "-" + ret : ret ) :
+        transitionCssName;
+    },
     addTransition: function( ele, style ) {
       /// <summary>添加transition属性
       /// <para>可以如下方式设置</para>

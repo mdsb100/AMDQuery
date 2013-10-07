@@ -2,7 +2,9 @@
 
   var getScale = function( r ) {
     return r ? Math.max( r, 0 ) : 1;
-  }, transformCss = "-" + css3.css3Head + "-transform";
+  }, transformCss = css3.getTransformStyleNameUnCamelCase( );
+
+  //"-" + css3.css3Head + "-transform";
   //给动画类添加一个自定义方法
   if ( support.transform3d ) {
     var Transfrom3dForFX = FX.extend( function Transfrom3dForFX( ele, options, value, name, type ) {
