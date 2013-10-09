@@ -1,7 +1,18 @@
 <div style="width: 100%; height: 100%;" amdquery-widget="ui.splitterpane" ui-splitterpane="orient:vertical">
-  <div style="width: 100%;height:100px"></div>
-  <div style="width: 100%;height:100%" amdquery-widget="ui.splitterpane;ui.splitter" ui-splitter="flex:1">
+  <div style="width: 100%;height:50px;border-bottom:1px solid black;background-color:#0487C9;">
+    <center style="line-height:50px;">
+      <h1>Documentation</h1>
+    </center>
+  </div>
+  <div style="width: 100%;" amdquery-widget="ui.splitterpane;ui.splitter" ui-splitter="flex:1">
     <controller src="@app/controller/navmenu.js" id="navmenu"/>
     <controller src="@app/controller/content.js" id="content"/>
+  </div>
+  <div style="width: 100%;height:50px;border-bottom:1px solid black;background-color:#CF301A;">
+    <center style="line-height:50px;">
+      <h1>
+        <a style="color:black;" href="http://www.weibo.com/1870903955/profile">Contact me</a>
+      </h1>
+    </center>
   </div>
 </div>
