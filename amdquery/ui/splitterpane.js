@@ -10,35 +10,15 @@ aQuery.define( "ui/splitterpane", [
     "main/dom",
     "main/attr",
     "html5/css3",
-    "util/function.extend"
+    "util/function.extend",
+    "ui/splitter"
   ],
-  function( $, typed, support, Widget, query, cls, event, css, position, dom, attr, css3, functionExtend ) {
+  function( $, typed, support, Widget, query, cls, event, css, position, dom, attr, css3, functionExtend, splitter ) {
     "use strict"; //启用严格模式
 
     Widget.fetchCSS( "ui/css/splitterpane" );
 
-    var domStyle = document.documentElement.style,
-      boxFlexName = "",
-      boxOrientName = "";
-    //boxPackName = "",
-    //boxAlignName = "";
-
-    if ( "boxFlex" in domStyle ) {
-      boxFlexName = "boxFlex";
-      boxOrientName = "boxOrient";
-      //boxPackName = "boxPack";
-      //boxAlignName = "boxAlign";
-
-    } else if ( ( $.css3Head + "BoxFlex" ) in domStyle ) {
-      boxFlexName = $.css3Head + "BoxFlex";
-      boxOrientName = $.css3Head + "BoxOrient";
-      //boxPackName = $.css3Head + "BoxPack";
-      //boxAlignName = $.css3Head + "BoxAlign";
-    }
-
-    support.box = !! boxFlexName;
-
-    var splitterpane, proto;
+    var splitterpane, proto, boxOrientName = splitter.boxOrientName;
 
     if ( support.box ) {
       proto = {
@@ -64,6 +44,7 @@ aQuery.define( "ui/splitterpane", [
         render: function( width, height ) {
           var opt = this.options;
           this.target.css( boxOrientName, opt.orient );
+          this.target.children( "[ui-splitter]" ).uiSplitter( );
           //this.target.css(boxAlignName, opt.align);
           //this.target.css(boxPackName, opt.pack);
           this.resize( width, height );
@@ -145,7 +126,7 @@ aQuery.define( "ui/splitterpane", [
         },
         render: function( width, height ) {
           this.resize( width, height );
-          this.target.find( "li[ui-splitter]" ).uiSplitterpane( "resize" );
+          // this.target.find( "[ui-splitter]" ).uiSplitterpane( "resize" );
           return this;
         },
         resize: function( width, height ) {
@@ -306,9 +287,7 @@ aQuery.define( "ui/splitterpane", [
       };
     }
 
-    splitterpane = Widget.extend( "ui.splitterpane", proto, {
-      boxFlexName: boxFlexName
-    } );
+    splitterpane = Widget.extend( "ui.splitterpane", proto );
 
     return splitterpane;
   } );

@@ -9,15 +9,28 @@ aQuery.define( "ui/splitter", [
     "main/position",
     "main/dom",
     "main/attr",
-    "html5/css3",
-    "ui/splitterpane"
+    "html5/css3"
   ],
-  function( $, typed, support, Widget, query, cls, event, css, position, dom, attr, css3, splitterpane ) {
+  function( $, typed, support, Widget, query, cls, event, css, position, dom, attr, css3 ) {
     "use strict"; //启用严格模式
-    var proto, splitter;
+
+    var domStyle = document.documentElement.style,
+      proto, splitter,
+      boxFlexName = "",
+      boxOrientName = "";
+
+    if ( "boxFlex" in domStyle ) {
+      boxFlexName = "boxFlex";
+      boxOrientName = "boxOrient";
+    } else if ( ( $.css3Head + "BoxFlex" ) in domStyle ) {
+      boxFlexName = $.css3Head + "BoxFlex";
+      boxOrientName = $.css3Head + "BoxOrient";
+    }
+
+    support.box = !! boxFlexName;
+
     if ( support.box ) {
-      var boxFlexName = splitterpane.boxFlexName,
-        originBoxFlexValue = document.documentElement.style[ boxFlexName ];
+      var originBoxFlexValue = domStyle[ boxFlexName ];
 
       proto = {
         container: null,
@@ -146,7 +159,7 @@ aQuery.define( "ui/splitter", [
         },
         findParent: function( ) {
           var parent = this.target.parent( "[ui-splitterpane]" );
-          if ( parent.length && parent[0] === this.target[0].parentNode ) {
+          if ( parent.length && parent[ 0 ] === this.target[ 0 ].parentNode ) {
             return parent;
           }
           return null;
@@ -191,7 +204,10 @@ aQuery.define( "ui/splitter", [
       };
     }
 
-    splitter = Widget.extend( "ui.splitter", proto );
+    splitter = Widget.extend( "ui.splitter", proto, {
+      boxFlexName: boxFlexName,
+      boxOrientName: boxOrientName
+    } );
 
     return splitter;
   } );
