@@ -549,16 +549,22 @@
     getAttrWidgets: function( ele ) {
       var value = attr.getAttr( ele, prefix + "-widget" ),
         attrNames = typed.isStr( value ) && value != "" ? value.split( /;|,/ ) : [ ],
+        ret = [ ],
         widgetName = "",
         i;
       for ( i = attrNames.length - 1; i >= 0; i-- ) {
         widgetName = attrNames[ i ];
-        if ( widgetName.indexOf( "." ) < 0 ) {
-          attrNames[ i ] = "ui." + widgetName;
+        if ( widgetName ) {
+          if ( widgetName.indexOf( "." ) < 0 ) {
+            ret.push( "ui." + widgetName );
+          } else {
+            ret.push( widgetName );
+          }
         }
+
       }
 
-      return attrNames;
+      return ret;
     },
     fetchCSS: function( path ) {
       if ( $.config.ui.autoFetchCss ) {
