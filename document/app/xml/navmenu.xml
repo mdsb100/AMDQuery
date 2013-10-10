@@ -3,7 +3,7 @@
       <ul>
           <li amdquery-widget="ui.navitem" ui-navitem="html:guide;img:file">
               <ul>
-                  <li id="index_navmenu" amdquery-widget="ui.navitem" ui-navitem="html:AQuery;img:file"></li>
+                  <li id="index_navmenu" amdquery-widget="ui.navitem" ui-navitem="html:AMDQuery;img:file"></li>
                   <li amdquery-widget="ui.navitem" ui-navitem="html:Architecture;img:file"></li>
               </ul>
           </li>
