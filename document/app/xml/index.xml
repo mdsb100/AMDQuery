@@ -11,7 +11,7 @@
   <div style="width: 100%;height:50px;border-bottom:1px solid black;background-color:#CF301A;">
     <center style="line-height:50px;">
       <h1>
-        <a style="color:black;" href="http://www.weibo.com/1870903955/profile">Contact me</a>
+        <a style="color:black;" href="http://www.weibo.com/1870903955/profile" rel="contact" target="_blank">Contact me</a>
       </h1>
     </center>
   </div>
