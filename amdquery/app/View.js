@@ -20,7 +20,7 @@ aQuery.define( "app/View", [ "base/ClassModule", "base/Promise", "base/typed", "
       this.topElement = this.initTopElement( src ).cloneNode( true );
       console.log( this.topElement );
       attr.setAttr( this.topElement, "html-src", this.htmlSrc );
-      this.id = attr.getAttr( this.topElement, "id" ) || null;
+      this.id = attr.getAttr( contollerElement, "id" ) || null;
 
       var self = this;
       this.promise = new Promise( function( ) {

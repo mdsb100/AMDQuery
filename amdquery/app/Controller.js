@@ -1,13 +1,13 @@
 aQuery.define( "app/Controller", [ "base/ClassModule", "base/typed", "base/Promise", "main/query", "main/attr", "main/object", "main/CustomEvent", "app/View", "app/Model" ], function( $, ClassModule, typed, Promise, query, attr, object, CustomEvent, View, Model, undefined ) {
   "use strict"; //启用严格模式
   var Controller = CustomEvent.extend( "Controller", {
-    init: function( src, contollerElement, View, Models ) {
+    init: function( src, view, models ) {
       this._super( );
       this.src = src;
 
-      this.id = attr.getAttr( contollerElement, "id" ) || null;
+      this.id = view.id;
 
-      this.view = new View( contollerElement );
+      this.view = view
       // 生成Models
       //this.models = Models || [ ];
 
@@ -91,6 +91,9 @@ aQuery.define( "app/Controller", [ "base/ClassModule", "base/typed", "base/Promi
 
     }
   }, {
+    getView: function( ) {
+
+    },
     loadController: function( node, callback ) {
       var contollersElement = typed.isNode( node, "controller" ) ? $( node ) : query.find( "controller", node ),
         controller = [ ];

@@ -2,7 +2,7 @@ aQuery.define( "@app/controller/router", [ "app/Controller", "@app/view/router" 
   "use strict"; //启用严格模式
   var Controller = SuperController.extend( {
     init: function( id, contollerElement ) {
-      this._super( id, contollerElement, IndexView );
+      this._super( id, new IndexView( contollerElement ) );
 
     },
     onReady: function( ) {
