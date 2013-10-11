@@ -25,6 +25,7 @@ aQuery.define( "app/View", [ "base/ClassModule", "base/Promise", "base/typed", "
       var self = this;
       this.promise = new Promise( function( ) {
         self.onDomReady( );
+        $.config.app.consoleStatus && console.log( "View" + ( self.id ? " " + self.id : "" ) + " load" );
         self.trigger( "domready", self, {
           type: "domready"
         } );

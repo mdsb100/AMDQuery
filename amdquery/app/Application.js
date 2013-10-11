@@ -71,6 +71,8 @@ aQuery.define( "app/Application", [
 
         app.launch( app.index );
 
+        $.config.app.consoleStatus && console.log( "app load" );
+
         app.trigger( "ready", app, {
           type: "ready"
         } );
@@ -105,9 +107,9 @@ aQuery.define( "app/Application", [
           if ( controllerSrc ) {
             var $body = $( document.body );
             $body.children( "controller" ).remove( );
-            var controllerElement = $($.createEle( "controller" )).attr( "src", controllerSrc );
+            var controllerElement = $( $.createEle( "controller" ) ).attr( "src", controllerSrc );
             $body.append( controllerElement );
-            return controllerElement[0];
+            return controllerElement[ 0 ];
           }
         }
     },

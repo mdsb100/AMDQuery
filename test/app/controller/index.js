@@ -6,7 +6,6 @@ aQuery.define( "@app/controller/index", [ "app/Controller", "@app/view/index" ],
 
     },
     onReady: function( ) {
-      console.log( "index controller ready" );
       var self = this;
       this.navmenu.on( "navmenu.select", function( e ) {
         self.content.loadPath( e.path );

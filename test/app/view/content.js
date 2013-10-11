@@ -6,7 +6,7 @@ aQuery.define( "@app/view/content", [ "app/View" ], function( $, SuperView, unde
 
     },
     onDomReady: function( ) {
-      console.log("content view ready");
+
     }
   }, {
 

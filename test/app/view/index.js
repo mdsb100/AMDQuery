@@ -9,7 +9,7 @@ aQuery.define( "@app/view/index", [ "app/View" ], function( $, SuperView, undefi
       this._super( contollerElement, htmlSrc );
     },
     onDomReady: function( ) {
-      console.log( "index view ready" );
+
     },
     initTopElement: function( ) {
       return SuperView.getHtml( htmlSrc );

@@ -6,7 +6,7 @@ aQuery.define( "@app/app", [ "app/Application" ], function( $, Application ) {
       this._super( promiseCallback );
     },
     launch: function( ) {
-      console.log( "app load" );
+
     }
   }, {
 

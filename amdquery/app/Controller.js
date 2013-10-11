@@ -39,6 +39,7 @@ aQuery.define( "app/Controller", [ "base/ClassModule", "base/typed", "base/Promi
         }
       } ).then( function( ) {
         selfController.onReady( );
+        $.config.app.consoleStatus && console.log( "Controller" + ( selfController.id ? " " + selfController.id : "" ) + " load" );
         selfController.trigger( "ready", selfController, {
           type: "ready"
         } );

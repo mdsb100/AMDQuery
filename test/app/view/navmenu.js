@@ -6,7 +6,7 @@ aQuery.define( "@app/view/navmenu", [ "app/View" ], function( $, SuperView, unde
 
     },
     onDomReady: function( ) {
-      console.log("navmenu view ready");
+
     }
   }, {
 

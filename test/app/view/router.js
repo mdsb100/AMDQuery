@@ -9,7 +9,7 @@ aQuery.define( "@app/view/router", [ "app/View" ], function( $, SuperView, undef
       this._super( contollerElement, htmlSrc );
     },
     onDomReady: function( ) {
-      console.log( "router view ready" );
+
     },
     initTopElement: function( ) {
       return SuperView.getHtml( htmlSrc );

@@ -214,7 +214,8 @@
     },
     app: {
       src: "",
-      image: "welcome.gif"
+      image: "welcome.gif",
+      consoleStatus: false
     }
   };
 
