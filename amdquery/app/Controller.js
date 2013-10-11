@@ -48,18 +48,6 @@ aQuery.define( "app/Controller", [ "base/ClassModule", "base/typed", "base/Promi
       this.promise.rootResolve( );
 
     },
-    event: function( ) {
-
-    },
-    /*super*/
-    _initHandler: function( ) {
-      var self = this;
-      this.event = function( e ) {
-        switch ( e.type ) {
-
-        }
-      };
-    },
     addModels: function( models ) {
       if ( !typed.isArr( models ) ) {
         models = $.util.argToArray( arguments );
