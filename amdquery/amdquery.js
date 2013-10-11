@@ -289,7 +289,6 @@
       system: {},
       language: ""
     },
-    config: _config,
     copyright: "2012 Cao Jun",
     has: function( name, obj ) {
       return obj && typeof name == "string" && name in obj;
@@ -1560,6 +1559,11 @@
     }, "1.0.0" );
 
   } )( );
+
+  aQuery.define( "base/config", function( $ ) {
+    $.config = _config;
+    return _config;
+  } );
 
   aQuery.define( "base/queue", function( $ ) {
     $.Queue = Queue;
