@@ -193,7 +193,7 @@
         _prototype = utilExtend.extend( {}, prototype, {
           init: function( ) {
             this.models = [ ];
-            this.__map = {};
+            this.__modelMap = {};
             prototype.init ? prototype.init.apply( this, arguments ) : this.add.apply( this, arguments );
             return this;
           },
@@ -208,9 +208,9 @@
 
             for ( ; i < len; i++ ) {
               model = arg[ i ];
-              if ( !this.__map[ model.id ] ) {
+              if ( !this.__modelMap[ model.id ] ) {
                 this.models.push( model );
-                this.__map[ model.id || ( model.constructor.name + _expendo++ ) ] = model;
+                this.__modelMap[ model.id || ( model.constructor.name + _expendo++ ) ] = model;
               }
             }
             return this;
@@ -231,7 +231,7 @@
                 model = this.models[ id ];
                 break;
               case "string":
-                model = this.__map[ id ];
+                model = this.__modelMap[ id ];
                 break;
               case "object":
                 model = id;
@@ -239,9 +239,9 @@
             }
             if ( model ) {
               this.models.splice( array.inArray( this.models, model ), 1 );
-              for ( i in this.__map ) {
-                if ( this.__map[ i ] == model ) {
-                  delete this.__map[ i ];
+              for ( i in this.__modelMap ) {
+                if ( this.__modelMap[ i ] == model ) {
+                  delete this.__modelMap[ i ];
                 }
               }
             }
@@ -256,7 +256,7 @@
                 model = this.models[ id ];
                 break;
               case "string":
-                model = this.__map[ id ];
+                model = this.__modelMap[ id ];
                 break;
             }
             return model;
@@ -265,7 +265,7 @@
             /// <summary>重置所含对象</summary>
             /// <returns type="self" />
             this.models = [ ];
-            this.__map = {};
+            this.__modelMap = {};
             return this;
           },
 
@@ -333,7 +333,6 @@
     },
     inheritProtypeWithCombination: function( Sub, Super ) {
       /// <summary>继承prototype 使用经典组合继承 不会保有同一个内存地址</summary>
-      /// <para>如果anotherPrototype为false对子类的prototype添加属性也会添加到父类</para>
       /// <para>如果Sub不为空也不会使用相同引用</para>
       /// <param name="Sub" type="Object">子类</param>
       /// <param name="Super" type="Object">父类</param>
