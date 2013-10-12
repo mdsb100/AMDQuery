@@ -1,4 +1,24 @@
-aQuery.define( "app/Controller", [ "base/ClassModule", "base/typed", "base/Promise", "main/query", "main/attr", "main/object", "main/CustomEvent", "app/View", "app/Model" ], function( $, ClassModule, typed, Promise, query, attr, object, CustomEvent, View, Model, undefined ) {
+aQuery.define( "app/Controller", [
+  "base/config",
+  "base/ClassModule",
+  "base/typed",
+  "base/Promise",
+  "main/query",
+  "main/attr",
+  "main/object",
+  "main/CustomEvent",
+  "app/View",
+  "app/Model" ], function( $,
+  config,
+  ClassModule,
+  typed,
+  Promise,
+  query,
+  attr,
+  object,
+  CustomEvent,
+  View,
+  Model, undefined ) {
   "use strict"; //启用严格模式
   var Controller = CustomEvent.extend( "Controller", {
     init: function( src, view, models ) {
@@ -39,7 +59,7 @@ aQuery.define( "app/Controller", [ "base/ClassModule", "base/typed", "base/Promi
         }
       } ).then( function( ) {
         selfController.onReady( );
-        $.config.app.consoleStatus && console.log( "Controller" + ( selfController.id ? " " + selfController.id : "" ) + " load" );
+        config.app.consoleStatus && console.log( "Controller" + ( selfController.id ? " " + selfController.id : "" ) + " load" );
         selfController.trigger( "ready", selfController, {
           type: "ready"
         } );

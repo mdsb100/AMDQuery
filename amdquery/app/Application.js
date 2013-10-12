@@ -1,4 +1,5 @@
 aQuery.define( "app/Application", [
+  "base/config",
   "base/ClassModule",
   "base/Promise",
   "base/typed",
@@ -9,7 +10,7 @@ aQuery.define( "app/Application", [
   "app/Model",
   "app/View",
   "app/Controller",
-  "ecma5/array.compati" ], function( $, ClassModule, Promise, typed, CustomEvent, object, query, attr, BaseModel, BaseView, BaseController, Array, undefined ) {
+  "ecma5/array.compati" ], function( $, config, ClassModule, Promise, typed, CustomEvent, object, query, attr, BaseModel, BaseView, BaseController, Array, undefined ) {
   "use strict"; //启用严格模式
   var Application = CustomEvent.extend( "Application", {
     init: function( promiseCallback ) {
@@ -17,7 +18,7 @@ aQuery.define( "app/Application", [
 
       this._routerMap = {};
 
-      var image = $.config.app.image,
+      var image = config.app.image,
         $image = $( {
           position: "absolute",
           top: "50%",
@@ -71,7 +72,7 @@ aQuery.define( "app/Application", [
 
         app.launch( app.index );
 
-        $.config.app.consoleStatus && console.log( "app load" );
+        config.app.consoleStatus && console.log( "app load" );
 
         app.trigger( "ready", app, {
           type: "ready"

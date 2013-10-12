@@ -1,4 +1,5 @@
 ﻿aQuery.define( "module/Widget", [
+  "base/config",
   "base/typed",
   "base/extend",
   "base/array",
@@ -11,6 +12,7 @@
   "module/utilEval"
  ], function(
   $,
+  config,
   typed,
   utilExtend,
   array,
@@ -567,7 +569,7 @@
       return ret;
     },
     fetchCSS: function( path ) {
-      if ( $.config.ui.autoFetchCss ) {
+      if ( config.ui.autoFetchCss ) {
         src.link( {
           href: $.getPath( path, ".css" )
         } );

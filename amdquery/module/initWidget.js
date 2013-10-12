@@ -1,8 +1,8 @@
-aQuery.define( "module/initWidget", [ "base/typed", "main/query", "main/css", "main/position", "main/dom", "main/attr", "module/Widget" ], function( $, typed, query, css, position, dom, attr, Widget, undefinded ) {
+aQuery.define( "module/initWidget", [ "base/config", "base/typed", "main/query", "main/css", "main/position", "main/dom", "main/attr", "module/Widget" ], function( $, config, typed, query, css, position, dom, attr, Widget, undefinded ) {
   "use strict"; //启用严格模式
 
   var body = $( "body" ),
-    image = $.config.ui.image,
+    image = config.ui.image,
     $image = $( {
       position: "absolute",
       top: "50%",

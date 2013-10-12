@@ -1,4 +1,28 @@
-aQuery.define( "app/View", [ "base/ClassModule", "base/Promise", "base/typed", "main/communicate", "main/query", "main/object", "main/attr", "main/CustomEvent", "module/Widget", "module/src", "module/parse" ], function( $, ClassModule, Promise, typed, communicate, query, object, attr, CustomEvent, Widget, src, parse, undefined ) {
+aQuery.define( "app/View", [
+  "base/config",
+  "base/ClassModule",
+  "base/Promise",
+  "base/typed",
+  "main/communicate",
+  "main/query",
+  "main/object",
+  "main/attr",
+  "main/CustomEvent",
+  "module/Widget",
+  "module/src",
+  "module/parse" ], function( $,
+  config,
+  ClassModule,
+  Promise,
+  typed,
+  communicate,
+  query,
+  object,
+  attr,
+  CustomEvent,
+  Widget,
+  src,
+  parse, undefined ) {
   //View need require depend on Widget
   //get Style
   "use strict"; //启用严格模式
@@ -25,7 +49,7 @@ aQuery.define( "app/View", [ "base/ClassModule", "base/Promise", "base/typed", "
       var self = this;
       this.promise = new Promise( function( ) {
         self.onDomReady( );
-        $.config.app.consoleStatus && console.log( "View" + ( self.id ? " " + self.id : "" ) + " load" );
+        config.app.consoleStatus && console.log( "View" + ( self.id ? " " + self.id : "" ) + " load" );
         self.trigger( "domready", self, {
           type: "domready"
         } );

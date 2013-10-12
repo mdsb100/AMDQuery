@@ -1,4 +1,5 @@
 aQuery.define( "ui/scrollableview", [
+  "base/config",
   "base/support",
   "main/query",
   "main/css",
@@ -12,10 +13,10 @@ aQuery.define( "ui/scrollableview", [
   "ui/draggable",
   "module/Widget",
   "module/animate",
-  "module/tween.extend" ], function( $, support, query, css, position, dom, cls, css3, animateTransform, css3Transition, swappable, draggable, Widget, animate, tween, undefined ) {
+  "module/tween.extend" ], function( $, config, support, query, css, position, dom, cls, css3, animateTransform, css3Transition, swappable, draggable, Widget, animate, tween, undefined ) {
   "use strict"; //启用严格模式
   Widget.fetchCSS( "ui/css/scrollableview" );
-  var isTransform3d =  !! $.config.ui.isTransform3d && support.transform3d;
+  var isTransform3d = !! config.ui.isTransform3d && support.transform3d;
 
   var scrollableview = Widget.extend( "ui.scrollableview", {
     container: null,

@@ -1,4 +1,5 @@
 aQuery.define( "ui/swapview", [
+  "base/config",
   "base/support",
   "main/query",
   "main/css",
@@ -17,6 +18,7 @@ aQuery.define( "ui/swapview", [
   "ui/draggable",
   "ui/swapindicator"
  ], function( $,
+  config,
   support,
   query,
   css,
@@ -39,7 +41,7 @@ aQuery.define( "ui/swapview", [
   var horizontal = "H",
     vertical = "V";
 
-  var isTransform3d = !! $.config.ui.isTransform3d && support.transform3d;
+  var isTransform3d = !! config.ui.isTransform3d && support.transform3d;
   var swapview = Widget.extend( "ui.swapview", {
     container: null,
     create: function( ) {
