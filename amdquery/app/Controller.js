@@ -23,6 +23,8 @@ aQuery.define( "app/Controller", [
   var Controller = CustomEvent.extend( "Controller", {
     init: function( src, view, models ) {
       this._super( );
+      this._controllers = [ ];
+
       this.src = src;
 
       this.id = view.id;
@@ -55,6 +57,7 @@ aQuery.define( "app/Controller", [
               selfController[ controller.getId( ) ] = controller;
             }
           };
+          selfController._controllers = controllers;
           return controllers;
         }
       } ).then( function( ) {
@@ -81,6 +84,10 @@ aQuery.define( "app/Controller", [
       this.promise.destoryFromRoot( );
 
       this.promise = null;
+
+      for ( var i = this._controllers.length - 1; i >= 0; i-- ) {
+        this._controllers[ i ].destory( );
+      };
 
       Controller.collection.removeController( this );
 
