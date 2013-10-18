@@ -55,14 +55,19 @@
         if ( !fun.__guid ) {
           var temp;
           fun.__guid = function( e ) {
-            var evt = $.event.document.getEvent( e ),
+            var evt = e,
+              target = this;
+
+            if ( typed.isEvent( e ) ) {
+              evt = $.event.document.getEvent( e );
               target = $.event.document.getTarget( e );
-            if ( ( temp = $.interfaces.trigger( "proxy", evt, target ) ) ) {
-              //$.showMsg(temp.event.pageX)
-              evt = temp.event;
-              target = temp.target;
+              if ( ( temp = $.interfaces.trigger( "proxy", evt, target ) ) ) {
+                evt = temp.event;
+                target = temp.target;
+              }
+              config.module.compatibleEvent && tools.compatibleEvent( evt );
             }
-            config.module.compatibleEvent && tools.compatibleEvent( evt );
+
             fun.call( target, evt );
           };
         }
@@ -104,6 +109,29 @@
           $.bus.addHandler( ele, type );
         }
         return this;
+      },
+      once: function( ele, type, fun ) {
+        if ( typed.isEle( ele ) ) {
+          var data, proxy, item, types = type.split( " " ),
+            i = types.length - 1;
+
+          if ( !( data = $.data( ele, "_handlers_" ) ) ) {
+            data = $.data( ele, "_handlers_", new CustomEvent( ) );
+          }
+          proxy = tools.proxy( fun, this );
+
+          for ( ; i >= 0; i-- ) {
+            item = types[ i ];
+            if ( data.hasHandler( item, fun ) == -1 && _domEventList[ item ] ) {
+              item = tools.editEventType( item );
+              $.event.document.once( ele, item, proxy );
+            }
+          }
+
+          type && fun && data.once( type, proxy );
+        } else {
+          $.bus.once( ele, type );
+        }
       },
 
       ajaxStart: function( fun ) {
@@ -159,7 +187,7 @@
             item = data._nameSpace( i );
             for ( j = 0, len = item.length; j < len; j++ ) {
               fun = item[ j ];
-              _domEventList[ i ] && $.event.document._addHandler( ele, i, fun.__guid || fun );
+              _domEventList[ i ] && $.event.document._removeHandler( ele, i, fun.__guid || fun );
             }
           }
           data.clearHandlers( type );
@@ -253,6 +281,14 @@
               ele = null;
             }
           },
+          once: function( ele, type, fn ) {
+            var self = this,
+              fnproxy = function( ) {
+                self._removeHandler( ele, type, fnproxy );
+                fn.apply( this, arguments );
+              };
+            return this._addHandler( type, fnproxy );
+          },
           removeHandler: function( ele, type, fn ) {
             /// <summary>给DOM元素移除事件</summary>
             /// <param name="ele" type="Element">元素</param>
@@ -296,7 +332,7 @@
             if ( ele.dispatchEvent ) {
               ele.dispatchEvent( event );
             } else if ( ele.fireEvent ) {
-              ele.fireEvent( "on" + type, event );
+              ele.fireEvent( "on" + type, event, false );
             }
           },
           getCharCode: function( e ) {
@@ -706,6 +742,12 @@
         //                }
         //type = tools.editEventType(type);
         $.addHandler( ele, type, fun );
+      } );
+    },
+    once: function( type, fun ) {
+      if ( !typed.isStr( type ) || !( typed.isFun( fun ) || fun === null ) ) return this;
+      return this.each( function( ele ) {
+        $.once( ele, type, fun );
       } );
     },
 

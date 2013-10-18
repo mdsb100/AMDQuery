@@ -9,12 +9,12 @@
     <!--<script src="../../amdquery/oye.js" type="text/javascript"></script>-->
     <script type="text/javascript">
         $.require([
+            "base/typed",
             "main/event",
             "main/CustomEvent",
             "main/query"
         //,"module/Thread"
-        ], function (event, CustomEvent, query) {
-            $.ready(function () {
+        ], function (typed, event, CustomEvent, query) {
                 var cus = new CustomEvent();
                 var multibind = function () {
                     alert("multibind");
@@ -38,7 +38,7 @@
                 // cus.trigger("a.b");
                 // cus.trigger("a.b.c");
                 // cus.trigger("a.b.pp");
-                
+
                 var a = "123";
                 // $("body").delegate("div,#a", "click", function (e) {
                 //     alert(this.id);
@@ -46,11 +46,14 @@
 
                 var test1 = $("#a");
                 var fn1 = function (str) {
-                    alert(str || "fn1");
+                    console.log(typed.isEvent(str))
+                    console.log({}.toString.call(str))
+
+                    // alert(str || "fn1");
                 },
                 fn2 = function (str) {
-                    str.stopPropagation();
-                    alert(str.screenX || "fn2");
+                   // str.stopPropagation();
+                    // alert(str.screenX || "fn2");
                     //这里停止向body 冒泡 所以点击不到
                 },
                 fn3 = function (e) {
@@ -62,7 +65,7 @@
                 };
                 test1.on("mousedown", fn1);
 
-                test1.on("mousedown mouseup", fn2);
+                // test1.on("mousedown mouseup", fn2);
 
                 //test1.off("mousedown", fn2);
 
@@ -76,15 +79,32 @@
 
                 test1.toggle();
 
+                test1.trigger("mousedown", {
+                    screenX: 4
+                });
+
                 test1.clearHandlers("mousedown mouseup")
 
                 test1.trigger("mousedown", {
                     screenX: 5
                 });
 
-                test1.trigger("mouseup", {
-                    screenX: 6
-                });  
+
+                // test1.trigger("mouseup", {
+                //     screenX: 6
+                // });
+
+                test1.once("testonce", function(){
+                  console.log("trigger once")
+                });
+
+                var obj = {
+                  name: "abc"
+                }
+
+                test1.trigger("testonce", obj);
+
+                test1.trigger("testonce", obj);
 
                 return
 
@@ -139,9 +159,6 @@
                 test1.addHandler("my.test1", null);
 
                 test1.trigger("my.test1", null, "go");
-
-            });
-
         });
     </script>
 </head>
