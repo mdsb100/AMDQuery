@@ -16,6 +16,9 @@ aQuery.define( "base/typed", function( $ ) {
       /// <returns type="Boolean" />
       return typed.isType( a, "[object NodeList]" ) || typed.isType( a, "[object HTMLCollection]" ) || ( $.client.browser.ie678 && typed.isNum( a.length ) && !typed.isArr( a.length ) && ( typed.isObj( a.item ) || typed.isStr( a.item ) ) );
     },
+    isEvent: function( a ) {
+      return a && !! ( toString.call( a ).indexOf( "Event" ) > -1 || ( a.type && a.srcElement && a.cancelBubble !== undefined ) || ( a.type && a.target && a.bubbles !== undefined ) )
+    },
     isArguments: function( a ) {
       return !!a && "callee" in arguments;
     },
@@ -164,7 +167,7 @@ aQuery.define( "base/typed", function( $ ) {
       /// <summary>是否为对象</summary>
       /// <param name="a" type="any">任意对象</param>
       /// <returns type="Boolean" />
-      return a !== undefined ? typed.isType( a, "[object Object]" ) : false ;
+      return a !== undefined ? typed.isType( a, "[object Object]" ) : false;
     },
     isPlainObj: function( obj ) {
       /// <summary>是否为纯obj</summary>
