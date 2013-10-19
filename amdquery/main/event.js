@@ -87,7 +87,7 @@
           return this.clearHandlers( ele, type );
         }
 
-        if ( typed.isEle( ele ) ) {
+        if ( typed.isEle( ele ) || typed.isWindow( ele ) ) {
           var data, proxy, item, types = type.split( " " ),
             i = types.length - 1;
 
@@ -111,7 +111,7 @@
         return this;
       },
       once: function( ele, type, fun ) {
-        if ( typed.isEle( ele ) ) {
+        if ( typed.isEle( ele ) || typed.isWindow( ele ) ) {
           var data, proxy, item, types = type.split( " " ),
             i = types.length - 1;
 
@@ -161,7 +161,7 @@
         /// <param name="ele" type="Element/undefined">元素</param>
         /// <param name="type" type="String/undefinded">事件类型</param>
         /// <returns type="self" />
-        if ( typed.isEle( ele ) ) {
+        if ( typed.isEle( ele ) || typed.isWindow( ele ) ) {
           var data = $.data( ele, "_handlers_" );
           if ( !data ) {
             return this;
@@ -241,7 +241,7 @@
         /// <param name="type" type="String/Function">方法或类型</param>
         /// <param name="fun" type="Function/undefined">方法</param>
         /// <returns type="Number" />
-        if ( typed.isEle( ele ) ) {
+        if ( typed.isEle( ele ) || typed.isWindow( ele ) ) {
           var proxy;
           if ( _domEventList[ type ] ) {
             proxy = fun.__guid || fun;
@@ -569,7 +569,7 @@
         /// <param name="type" type="String/Function">方法或类型</param>
         /// <param name="fun" type="Function/undefined">方法或空</param>
         /// <returns type="self" />
-        if ( typed.isEle( ele ) ) {
+        if ( typed.isEle( ele ) || typed.isWindow( ele ) ) {
           var data, proxy = fun.__guid || fun,
             types = type.split( " " ),
             i = types.length - 1,
@@ -698,7 +698,7 @@
         /// <param name="context" type="Object">当为自定义事件时 为作用域 否则为事件参数</param>
         /// <param name="paras" type="para:[any]">当为自定义事件时 为参数列表</param>
         /// <returns type="self"></returns>
-        if ( typed.isEle( ele ) ) {
+        if ( typed.isEle( ele ) || typed.isWindow( ele ) ) {
           var data;
           if ( data = _domEventList[ type ] ) {
             type = tools.editEventType( type );
