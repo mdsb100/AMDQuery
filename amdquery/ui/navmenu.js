@@ -108,7 +108,7 @@ aQuery.define( "ui/navmenu", [
               break;
             }
           }
-        } else if ( $.Widget.is( item, "navmenu" ) ) {
+        } else if ( Widget.is( "ui.navmenu", item ) ) {
           for ( i = 0; i < len; i++ ) {
             ele = this.navItemList[ i ];
             if ( $( ele ).navitem( "equals", item ) ) {
@@ -136,7 +136,7 @@ aQuery.define( "ui/navmenu", [
       selectNavItem: function( target ) {
         var $target = $( this.getNavItem( target ) || [ ] ),
           opt = this.options;
-        if ( Widget.is( $target, "ui.navitem" ) ) {
+        if ( $target.isWidget( "ui.navitem" ) ) {
           if ( opt.selectedNavItem && opt.selectedNavItem !== target ) {
             $( opt.selectedNavItem ).uiNavitem( "cancel" );
           }
@@ -147,7 +147,7 @@ aQuery.define( "ui/navmenu", [
       changeSelectedNavItem: function( target ) {
         var $target = $( this.getNavItem( target ) || [ ] ),
           opt = this.options;
-        if ( Widget.is( $target, "ui.navitem" ) ) {
+        if ( $target.isWidget( "ui.navitem" ) ) {
           if ( opt.selectedNavItem && opt.selectedNavItem !== target ) {
             $( opt.selectedNavItem ).uiNavitem( "cancel" );
           }

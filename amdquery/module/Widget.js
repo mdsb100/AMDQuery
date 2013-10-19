@@ -524,17 +524,14 @@
 
       return widget;
     },
-    is: function( item, widgetName ) {
+    is: function( widgetName, item ) {
       /// <summary>是否含某个widget实例</summary>
       /// <param name="item" type="$"></param>
       /// <param name="name" type="String">widget名字 如ui.navmenu</param>
       /// <returns type="Boolean" />
-      if ( typed.is$( item ) ) {
-        var widgetTag = item.attr( prefix + "-widget" );
-        return item.attr( widgetName.replace( ".", "-" ) ) != undefined && widgetTag != undefined && widgetTag.indexOf( widgetName ) > -1;
-      }
-
-      return false;
+      var $item = $( item ),
+        widgetTag = $item.attr( prefix + "-widget" );
+      return $item.attr( widgetName.replace( ".", "-" ) ) != undefined && widgetTag != undefined && widgetTag.indexOf( widgetName ) > -1;
     },
     get: function( name ) {
       /// <summary>获得某个widget</summary>
@@ -627,6 +624,12 @@
       return this;
     }
   } );
+
+  $.fn.extend( {
+    isWidget: function( widgetName ) {
+      return Widget.is( widgetName, this[ 0 ] );
+    }
+  } )
 
   $.Widget = Widget;
 

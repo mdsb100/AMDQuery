@@ -172,7 +172,7 @@ aQuery.define( "ui/splitterpane", [
 
           children.each( function( ele ) {
             $item = $( ele );
-            if ( Widget.is( $item, "ui.splitter" ) ) {
+            if ( $item.isWidget( "ui.splitter" ) ) {
               $item.isSplitter = true;
               $item.uiSplitter( );
               flex += $item.splitter( "option", "flex" );

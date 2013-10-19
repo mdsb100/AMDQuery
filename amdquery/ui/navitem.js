@@ -167,7 +167,7 @@ aQuery.define( "ui/navitem", [
       detectParent: function( ) {
         var parentNavitem = this.target.parent( ).parent( ),
           opt = this.options;
-        if ( Widget.is( parentNavitem, "ui.navitem" ) ) {
+        if ( parentNavitem.isWidget( "ui.navitem" ) ) {
           opt.parent = parentNavitem;
         }
         return this;
