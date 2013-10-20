@@ -46,6 +46,7 @@
                   <li amdquery-widget="ui.navitem" ui-navitem="html:swapview;img:class"></li>
                   <li id="ScrollableView-navItem" amdquery-widget="ui.navitem" ui-navitem="html:ScrollableView;img:class"></li>
                   <li amdquery-widget="ui.navitem" ui-navitem="html:Widget;img:class"></li>
+                  <li amdquery-widget="ui.navitem" ui-navitem="html:flex;img:class"></li>
               </ul>
           </li>
       </ul>
