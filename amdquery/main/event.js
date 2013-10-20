@@ -55,11 +55,10 @@
         if ( !fun.__guid ) {
           var temp;
           fun.__guid = function( e ) {
-            var evt = e,
+            var evt = $.event.document.getEvent( e ),
               target = this;
 
-            if ( typed.isEvent( e ) ) {
-              evt = $.event.document.getEvent( e );
+            if ( typed.isEvent( evt ) ) {
               target = $.event.document.getTarget( e );
               if ( ( temp = $.interfaces.trigger( "proxy", evt, target ) ) ) {
                 evt = temp.event;
@@ -68,7 +67,7 @@
               config.module.compatibleEvent && tools.compatibleEvent( evt );
             }
 
-            fun.call( target, evt );
+            fun.call( target, evt || {} );
           };
         }
         return fun.__guid;
@@ -345,7 +344,7 @@
             /// <summary>获得兼容的事件event对象</summary>
             /// <param name="e" type="Event">event对象</param>
             /// <returns type="event" />
-            return e ? e : window.event;
+            return e || window.event;
           },
           getTarget: function( e ) {
             /// <summary>获得事件对象</summary>
