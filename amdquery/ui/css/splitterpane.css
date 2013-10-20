@@ -1,6 +1,0 @@
-.splitterpane{
-	display:-moz-box; /* Firefox */
-	display:-webkit-box; /* Safari and Chrome */
-	display:-o-box;
-	display:box;
-}
