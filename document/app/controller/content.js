@@ -10,9 +10,6 @@ aQuery.define( "@app/controller/content", [ "base/client", "app/Controller", "@a
 
       this.$content = $content;
 
-      if ( client.browser.firefox ) {
-        $content.height( $content.parent( ).height( ) );
-      }
     },
     onDestroy: function( ) {
 
