@@ -1,4 +1,5 @@
 aQuery.define( "ui/flex", [
+    "base/client",
     "base/typed",
     "base/support",
     "module/Widget",
@@ -12,7 +13,7 @@ aQuery.define( "ui/flex", [
     "html5/css3",
     "util/function.extend"
   ],
-  function( $, typed, support, Widget, query, cls, event, css, position, dom, attr, css3, functionExtend ) {
+  function( $, client, typed, support, Widget, query, cls, event, css, position, dom, attr, css3, functionExtend ) {
     "use strict"; //启用严格模式
 
     Widget.fetchCSS( "ui/css/flex" );
@@ -92,7 +93,7 @@ aQuery.define( "ui/flex", [
         init: function( opt, target ) {
           this._super( opt, target );
           this.target.addClass( "flex" );
-          if ( !this.findParent( ) ) {
+          if ( !this.findParent( ) || ( typed.isNode( this.target[ 0 ], "iframe" ) && client.browser.ie >= 10 ) ) {
             if ( this.options.fillParentWidth ) {
               this.target.css( "width", "100%" );
             }
@@ -228,7 +229,9 @@ aQuery.define( "ui/flex", [
             itemFlex = 0;
             $item.isFlex = isFlex;
             if ( isFlex ) {
-              $item.uiFlex( );
+              $item.uiFlex( {
+                initWithParent: true
+              } );
               itemFlex = $item.uiFlex( "option", "flex" );
             }
             hasFlex = itemFlex > 0;
@@ -337,7 +340,7 @@ aQuery.define( "ui/flex", [
         noticeParent: function( ) {
           var parent = this.findParent( );
           if ( parent ) {
-            parent.uiFlex( "render" );
+            parent.uiFlex( "resize" );
           }
         },
         findParent: function( ) {
@@ -373,6 +376,10 @@ aQuery.define( "ui/flex", [
           if ( !this.findParent( ) ) {
             this.fillParent( );
             this.render( );
+          } else {
+            if ( !this.options.initWithParent ) {
+              this.noticeParent( );
+            }
           }
           return this;
         },
@@ -381,10 +388,11 @@ aQuery.define( "ui/flex", [
           flex: 0,
           flexDirection: "row",
           fillParentWidth: true,
-          fillParentHeight: true
+          fillParentHeight: true,
+          initWithParent: false
         },
         getter: {
-
+          initWithParent: false
         },
         setter: {
 

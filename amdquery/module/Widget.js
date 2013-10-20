@@ -332,7 +332,8 @@
       instanceofWidget: Widget.AllowReturn,
       equals: Widget.AllowReturn,
       beSetter: Widget.AllowReturn,
-      beGetter: Widget.AllowReturn
+      beGetter: Widget.AllowReturn,
+      render: Widget.AllowPublic
     },
     getEventName: function( name ) {
       return this.widgetEventPrefix + "." + name;
