@@ -70,6 +70,9 @@ aQuery.define( "ui/flex", [
           }
           return this;
         },
+        resize: function( width, height ) {
+          this.render( width, height );
+        },
         findParent: function( ) {
           var parent = this.target.parent( "[ui-flex]" );
           if ( parent.length && parent[ 0 ] === this.target[ 0 ].parentNode ) {
@@ -115,7 +118,8 @@ aQuery.define( "ui/flex", [
         },
         publics: {
           setWidth: Widget.AllowPublic,
-          setHeight: Widget.AllowPublic
+          setHeight: Widget.AllowPublic,
+          resize: Widget.AllowPublic
         },
         target: null,
         toString: function( ) {
@@ -137,39 +141,37 @@ aQuery.define( "ui/flex", [
           // var self = this;
           var self = this;
 
-          this.event = functionExtend.debounce( function( e ) {
-            switch ( e.type ) {
-              case "resize":
-                self.fillParent( );
-                self.render( );
-                break;
-            }
-          }, 10 );
+          this.event = functionExtend.debounce( function( ) {
+            self.fillParent( );
+            self.render( );
+          }, 50 );
 
           return this;
         },
         enable: function( ) {
-          if ( !! this.findParent( ) ) {
+          if ( !this.findParent( ) ) {
             event.event.document.addHandler( window, "resize", this.event );
           }
           this.options.disabled = true;
           return this;
         },
         disable: function( ) {
-          if ( !! this.findParent( ) ) {
+          if ( !this.findParent( ) ) {
             event.event.document.removeHandler( window, "resize", this.event );
           }
           this.options.disabled = false;
           return this;
         },
         render: function( width, height ) {
-
           if ( !typed.isNul( width ) ) {
-            this.setWidth( width );
+            this.target.width( width );
           }
           if ( !typed.isNul( height ) ) {
-            this.setHeight( height );
+            this.target.height( height );
           }
+
+          this.width = this.target.width( );
+          this.height = this.target.height( );
 
           this.toDirection( this.options.flexDirection );
 
@@ -179,6 +181,9 @@ aQuery.define( "ui/flex", [
           }
 
           return this;
+        },
+        resize: function( width, height ) {
+          this.render( width, height );
         },
         setWidth: function( width ) {
           this.render( width, null );
@@ -206,6 +211,7 @@ aQuery.define( "ui/flex", [
         },
         filterFlex: function( ) {
           var children = this.target.children( ),
+            opt = this.options,
             $item,
             flexTarget = [ ],
             itemFlex,
@@ -227,14 +233,15 @@ aQuery.define( "ui/flex", [
             }
             hasFlex = itemFlex > 0;
             $item.hasFlex = hasFlex;
-            if ( isFlex ) {
-              if ( hasFlex ) {
-                totalFlex += itemFlex;
-                $lastItem = $item;
-              }
+            if ( isFlex && hasFlex ) {
+              totalFlex += itemFlex;
+              $lastItem = $item;
             } else {
-              traceWidth -= $item.outerWidth( );
-              traceHeight -= $item.outerHeight( );
+              if ( opt.flexDirection === "row" ) {
+                traceWidth -= $item.outerWidth( );
+              } else if ( opt.flexDirection === "column" ) {
+                traceHeight -= $item.outerHeight( );
+              }
             }
             flexTarget.push( $item );
           } );
@@ -298,8 +305,7 @@ aQuery.define( "ui/flex", [
                   if ( isFillParentHeight ) {
                     tempHeight = traceHeight;
                   }
-                }
-                if ( direction === "column" ) {
+                } else if ( direction === "column" ) {
                   if ( traceHeight > 0 ) {
                     tempHeight = Math.round( itemFlex / totalFlex * traceHeight );
                     if ( $item.isLastItem ) {
@@ -311,18 +317,19 @@ aQuery.define( "ui/flex", [
                   if ( isFillParentWidth ) {
                     tempWidth = traceWidth;
                   }
-                } else if ( isFillParentWidth ) {
-                  if ( isFillParentWidth ) {
-                    tempWidth = traceWidth;
-                  }
-                  if ( isFillParentHeight ) {
-                    tempHeight = traceHeight;
-                  }
                 }
-                $item.uiFlex( "lock" );
-                $item.uiFlex( "render", tempWidth, tempHeight );
-                $item.uiFlex( "unlock" );
+
+              } else {
+                if ( isFillParentWidth ) {
+                  tempWidth = traceWidth;
+                }
+                if ( isFillParentHeight ) {
+                  tempHeight = traceHeight;
+                }
               }
+              $item.uiFlex( "lock" );
+              $item.uiFlex( "resize", tempWidth, tempHeight );
+              $item.uiFlex( "unlock" );
             }
           }
           return this;
@@ -362,12 +369,11 @@ aQuery.define( "ui/flex", [
           this.height = 0;
           this.traceWidth = 0;
           this.traceHeight = 0;
+          this._initHandler( ).enable( );
           if ( !this.findParent( ) ) {
             this.fillParent( );
+            this.render( );
           }
-          setTimeout( function( ) {
-            self.render( );
-          }, 0 );
           return this;
         },
         customEventName: [ ],
@@ -386,6 +392,7 @@ aQuery.define( "ui/flex", [
         publics: {
           setWidth: Widget.AllowPublic,
           setHeight: Widget.AllowPublic,
+          resize: Widget.AllowPublic,
           lock: Widget.AllowPublic,
           unlock: Widget.AllowPublic
         },
