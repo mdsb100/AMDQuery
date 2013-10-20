@@ -82,7 +82,17 @@ aQuery.define( "app/View", [
       return this;
     },
     replaceTo: function( element ) {
-      element.parentNode.replaceChild( this.topElement, element );
+      var parentNode = element.parentNode;
+      parentNode.replaceChild( this.topElement, element );
+      try {
+        //fix ie7
+        for ( var i = parentNode.childNodes.length - 1, node; i >= 0; i-- ) {
+          node = parentNode.childNodes[ i ];
+          if ( typed.isNode( node, "/controller" ) ) {
+            parentNode.removeChild( node );
+          }
+        };
+      } catch ( e ) {}
       this.initWidget( );
       return this;
     },
