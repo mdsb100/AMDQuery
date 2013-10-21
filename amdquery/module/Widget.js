@@ -478,8 +478,10 @@
           arg = arguments;
         this.each( function( ele ) {
           var data = $.data( ele, key ); //key = nameSpace + "." + name,
-          if ( data == undefined ) data = $.data( ele, key, new ctor( a, $( ele ) ) ); //完全调用基类的构造函数 不应当在构造函数 create render
-          else {
+          if ( data == undefined ) {
+            //完全调用基类的构造函数 不应当在构造函数 create render
+            data = $.data( ele, key, new ctor( a, $( ele ) ) );
+          } else {
             if ( typed.isObj( a ) ) {
               data.option( a );
               data.render( );

@@ -229,9 +229,6 @@ aQuery.define( "ui/flex", [
             itemFlex = 0;
             $item.isFlex = isFlex;
             if ( isFlex ) {
-              $item.uiFlex( {
-                initWithParent: true
-              } );
               itemFlex = $item.uiFlex( "option", "flex" );
             }
             hasFlex = itemFlex > 0;
@@ -373,14 +370,29 @@ aQuery.define( "ui/flex", [
           this.traceWidth = 0;
           this.traceHeight = 0;
           this._initHandler( ).enable( );
-          if ( !this.findParent( ) ) {
-            this.fillParent( );
-            this.render( );
-          } else {
-            if ( !this.options.initWithParent ) {
-              this.noticeParent( );
+
+          var $item;
+
+          this.target.children( ).each( function( ele ) {
+            $item = $( ele )
+            if ( $item.isWidget( "ui.flex" ) ) {
+              $item.uiFlex( {
+                initWithParent: true
+              } );
             }
-          }
+          } );
+
+          setTimeout( function( ) {
+            if ( !self.findParent( ) ) {
+              self.fillParent( );
+              self.render( );
+            } else {
+              if ( !self.options.initWithParent ) {
+                self.noticeParent( );
+              }
+            }
+          }, 0 );
+
           return this;
         },
         customEventName: [ ],
