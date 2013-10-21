@@ -67,18 +67,14 @@ aQuery.define( "app/View", [
     },
     destory: function( ) {
       View.collection.remove( this );
-      if ( this.topElement && this.topElement.parentNode ) {
-        var self = this;
-        Widget.destoryWidgets( this.topElement.parentNode );
-        self.removeTo( );
-      }
+      self.remove( );
       this.promise.destoryFromRoot( );
       this.promise = null;
       this.topElement = null;
     },
     appendTo: function( parent ) {
       parent.appendChild( this.topElement );
-      this.initWidget( );
+      this._initWidget( );
       return this;
     },
     replaceTo: function( element ) {
@@ -93,16 +89,17 @@ aQuery.define( "app/View", [
           }
         };
       } catch ( e ) {}
-      this.initWidget( );
+      this._initWidget( );
       return this;
     },
-    removeTo: function( ) {
-      if ( this.topElement.parentNode ) {
-        this.topElement.parentNode.removeChild( this.topElement );
+    remove: function( ) {
+      if ( this.topElement && this.topElement.parentNode ) {
+        Widget.destoryWidgets( this.topElement.parentNode );
+        $( this.topElement ).remove( );
       }
       return this;
     },
-    initWidget: function( ) {
+    _initWidget: function( ) {
       var self = this;
 
       if ( this.promise.unfinished( ) && this.topElement && this.topElement.parentNode ) {
