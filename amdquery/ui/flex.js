@@ -127,10 +127,10 @@ aQuery.define( "ui/flex", [
           return "ui.flex";
         },
         widgetEventPrefix: "flex",
-        destory: function( key ) {
+        destroy: function( key ) {
           this.target.css( flexName, originFlexValue );
           this.target.css( flexDirectionName, originFlexDirectionValue );
-          Widget.invoke( "destory", this, key );
+          Widget.invoke( "destroy", this, key );
           return this;
         }
       };

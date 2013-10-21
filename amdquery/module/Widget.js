@@ -236,10 +236,10 @@
     create: function( ) {},
     container: null,
     constructor: Widget,
-    destory: function( key ) {
+    destroy: function( key ) {
       /*应当返回原先的状态*/
 
-      //this.destoryChildren();
+      //this.destroyChildren();
       this.disable( );
       this.removeTag( );
       var i = 0,
@@ -494,7 +494,7 @@
                   result = data.option( b, c );
                   return false;
                 }
-              } else if ( a === "destory" ) {
+              } else if ( a === "destroy" ) {
                 data[ a ].call( data, key );
               } else if ( !! data.publics[ a ] ) {
                 var temp = data[ a ].apply( data, $.util.argToArray( arg, 1 ) );
@@ -608,14 +608,14 @@
       }
       return this;
     },
-    destoryWidgets: function( parent, callback ) {
+    destroyWidgets: function( parent, callback ) {
       var eles = Widget.findWidgets( parent ).reverse( );
       var widgetNames = getWidgetsName( eles );
 
       if ( widgetNames.length ) {
         require( widgetNames, function( ) {
           for ( var i = 0, len = eles.length; i < len; i++ ) {
-            Widget.renderWidget( eles[ i ], "destory" );
+            Widget.renderWidget( eles[ i ], "destroy" );
           }
           callback && callback( );
         } );

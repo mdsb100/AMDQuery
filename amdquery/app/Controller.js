@@ -78,20 +78,20 @@ aQuery.define( "app/Controller", [
       }
       this.models = this.models.concat( models );
     },
-    destory: function( ) {
+    destroy: function( ) {
       this.onDestroy( );
 
-      this.promise.destoryFromRoot( );
+      this.promise.destroyFromRoot( );
 
       this.promise = null;
 
       for ( var i = this._controllers.length - 1; i >= 0; i-- ) {
-        this._controllers[ i ].destory( );
+        this._controllers[ i ].destroy( );
       };
 
       Controller.collection.removeController( this );
 
-      this.view.destory( );
+      this.view.destroy( );
     },
     ready: function( fn ) {
       // var self;

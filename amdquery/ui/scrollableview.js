@@ -156,13 +156,13 @@ aQuery.define( "ui/scrollableview", [
       };
       return this;
     },
-    destory: function( key ) {
+    destroy: function( key ) {
       if ( key ) {
-        this.target.uiSwappable( "destory" );
-        this.container.uiDraggable( "destory" );
+        this.target.uiSwappable( "destroy" );
+        this.container.uiDraggable( "destroy" );
         this.target.children( ).remove( );
         this.positionParent.children( ).appendTo( this.target );
-        Widget.invoke( "destory", this, key );
+        Widget.invoke( "destroy", this, key );
       }
     },
     init: function( opt, target ) {

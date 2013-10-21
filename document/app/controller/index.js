@@ -17,7 +17,7 @@ aQuery.define( "@app/controller/index", [ "app/Controller", "@app/view/index" ],
 
       // this.navmenu.selectDefaultNavmenu();
     },
-    onDestory: function( ) {
+    onDestroy: function( ) {
       this.navmenu.clearHandlers( );
     }
   }, {

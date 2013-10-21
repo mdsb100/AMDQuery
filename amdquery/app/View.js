@@ -65,10 +65,10 @@ aQuery.define( "app/View", [
       src = src || ( getHtmlSrc( this.constructor._AMD.id ) + ".xml" );
       return View.getHtml( src );
     },
-    destory: function( ) {
+    destroy: function( ) {
       View.collection.remove( this );
       self.remove( );
-      this.promise.destoryFromRoot( );
+      this.promise.destroyFromRoot( );
       this.promise = null;
       this.topElement = null;
     },
@@ -94,7 +94,7 @@ aQuery.define( "app/View", [
     },
     remove: function( ) {
       if ( this.topElement && this.topElement.parentNode ) {
-        Widget.destoryWidgets( this.topElement.parentNode );
+        Widget.destroyWidgets( this.topElement.parentNode );
         $( this.topElement ).remove( );
       }
       return this;

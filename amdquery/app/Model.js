@@ -9,7 +9,7 @@ aQuery.define( "app/Model", [ "main/attr", "main/object", "main/CustomEvent" ], 
       this.src = attr.getAttr( modelElement, "src" );
       Model.collection.add( this );
     },
-    destory: function( ) {
+    destroy: function( ) {
       Model.collection.remove( this );
     }
   }, {

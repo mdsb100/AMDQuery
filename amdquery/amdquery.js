@@ -1702,7 +1702,7 @@
         return this;
       },
 
-      destory: function( parent ) {
+      destroy: function( parent ) {
         /// <summary>删除节点下的promise</summary>
         /// <param name="parent" type="Promise">undefined/Promise</param>
         /// <returns type="self" />
@@ -1714,17 +1714,17 @@
         if ( thens.length ) {
           for ( i = len - 1; i >= 0; i-- ) {
             then = thens[ i ];
-            then.destory( );
+            then.destroy( );
             then = thens.pop( );
             then._clearProperty( );
           }
         }
         return this;
       },
-      destoryFromRoot: function( ) {
+      destroyFromRoot: function( ) {
         /// <summary>删除根下的所有节点</summary>
         /// <returns type="self" />
-        return this.destory( this.root( ) );
+        return this.destroy( this.root( ) );
       },
       resolve: function( obj ) {
         /// <summary>执行</summary>

@@ -245,11 +245,11 @@ aQuery.define( "ui/swapview", [
 
       return this.render( opt.index );
     },
-    destory: function( key ) {
-      this.target.uiSwappable( "destory" );
-      this.container.uiDraggable( "destory" );
-      this.$swapindicator && this.$swapindicator.uiSwapindicator( "destory" );
-      Widget.invoke( "destory", this, key );
+    destroy: function( key ) {
+      this.target.uiSwappable( "destroy" );
+      this.container.uiDraggable( "destroy" );
+      this.$swapindicator && this.$swapindicator.uiSwapindicator( "destroy" );
+      Widget.invoke( "destroy", this, key );
     },
     init: function( opt, target ) {
       this._super( opt, target );

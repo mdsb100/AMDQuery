@@ -14,7 +14,7 @@ aQuery.define( "@app/controller/router", [ "app/Controller", "@app/view/router" 
         self.content.openWindow( );
       } );
     },
-    onDestory: function( ) {
+    onDestroy: function( ) {
       this.navmenu.clearHandlers( );
     }
   }, {
