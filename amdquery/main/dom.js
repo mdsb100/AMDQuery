@@ -413,7 +413,7 @@
 			/// <summary>把元素从文档流里移除</summary>
 			/// <param name="ele" type="Object">对象</param>
 			/// <param name="selector" type="String">查询字符串</param>
-			/// <param name="keepData" type="String">是否保留数据</param>
+			/// <param name="keepData" type="Boolean">是否保留数据</param>
 			/// <returns type="self" />
 			if ( !selector || query.filter( selector, [ ele ] ).length > 0 ) {
 				if ( !keepData && ele.nodeType === 1 ) {
