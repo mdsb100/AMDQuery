@@ -4,34 +4,46 @@
     <title>AMDQuery</title>
     <meta charset="utf-8" />
     <link href="../app/css/reset.css" rel="stylesheet" type="text/css" />
+    <link href="../css/document.css" rel="stylesheet" type="text/css" />
     <script src="../../amdquery/amdquery.js" type="text/javascript" amd="detectCR=1" module="transitionToAnimation:1" ui="initWidget:1;isTransform3d:1"></script>
     <script type="text/javascript">
-        $.require(["ui/scrollableview", "main/query"], function (scrollableview, query) {
-            $("#container1").on("scrollableview.pulldown", function(){
-                $.showMsg("1")
-            }).on("scrollableview.pullup", function(){
-                $.showMsg("2")
-            }).on("scrollableview.pullleft", function(){
-                $.showMsg("3")
-            }).on("scrollableview.pullright", function(){
-                $.showMsg("4")
-            }).on("scrollableview.animationEnd", function(e){
-                $.showMsg(e.scene)
-            });
-        });
 
     </script>
 </head>
 <body style="width: 100%; height: 100%;">
-    <div style="left: 50px; top: 50px; width: 500px; height: 500px; background-color: Black;position: absolute;overflow: hidden;overflow-y: hidden;overflow-x:hidden;" id="container1" amdquery-widget="ui.scrollableview">
-        <div style="width:3000px;height:3000px;background-color: red;">
-            <div style="width:500px;height:500px;background-color: green;float:left;"></div>
-            <div style="width:500px;height:500px;background-color: blue;float:left;"></div>
-            <div style="width:500px;height:500px;background-color: beige;float:left;"></div>
-            <div style="width:500px;height:500px;background-color: yellow;float:left;"></div>
-            <div style="width:500px;height:500px;background-color: orange;float:left;"></div>
-            <div style="width:500px;height:500px;background-color: chocolate;float:left;"></div>
-        </div>
+  <div amdquery-widget="ui.flex" ui-flex="flex:1;flexDriection:row">
+    <div style="height:100%;width:20px;" amdquery-widget="ui.flex" ui-flex="fillParentWidth:false" ></div>
+    <div class="document" id="swapview" style="" amdquery-widget="ui.swapview;ui.flex" ui-flex="flex:1" ui-swapview="orientation:H">
+      <ol>
+        <li id="first">
+          <div style="width: 100%; height: 100%;" amdquery-widget="ui.scrollableview">
+            <h1>AMDQuery</h1>
+            <ul class="guide">
+              <li><a href="#Overview" >Overview</a>
+              </li>
+            </ul>
+            <h2 name="Overview" id="Overview">Overview</h2>
+            <p>This guide provides basic instructions on understanding AMDQuery architecture and using AMDQuery.</p>
+          </div>
+        </li>
+        <li style="">
+          this is two
+        </li>
+        <li style="background-color:yellow;">
+          this is three
+        </li>
+        <li style="background-color:blue">
+          this is four
+        </li>
+      </ol>
+      <ol style="width:100px;height:20px;" amdquery-widget="ui.swapindicator" ui-swapindicator="orientation:H">
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+      </ol>
     </div>
+    <div style="height:100%;width:20px;" amdquery-widget="ui.flex" ui-flex="fillParentWidth:false" ></div>
+  </div>
 </body>
 </html>
