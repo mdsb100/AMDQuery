@@ -1,7 +1,7 @@
-﻿aQuery.define( "main/query", [ "lib/sizzle", "base/extend", "base/typed", "base/array" ], function( $, Sizzle, utilExtend, typed, array, undefined ) {
+﻿aQuery.define( "main/query", [ "lib/js/sizzle", "base/extend", "base/typed", "base/array" ], function( $, Sizzle, utilExtend, typed, array, undefined ) {
   "use strict"; //启用严格模式
 
-  $.module[ "lib/sizzle" ] = "Sizzle1.10.3";
+  $.module[ "lib/js/sizzle" ] = "Sizzle1.10.3";
 
   var core_deletedIds = [ ],
   core_concat = core_deletedIds.concat;
