@@ -56,14 +56,11 @@ aQuery.define( "ui/swapview", [
       this.$views = this.container.children( "li" );
       var indicator = this.target.children( 'ol[ui-swapindicator]' ).eq( 0 );
       this.$indicator = indicator.length ? indicator.uiSwapindicator( ) : null;
-      this.resize( );
 
       this.container.css( {
         dislplay: "block"
       } ).uiDraggable( {
         keepinner: 1,
-        innerWidth: this.target.width( ) / 4,
-        innerHeight: this.target.height( ) / 4,
         stopPropagation: false,
         vertical: !isHorizental,
         horizontal: isHorizental,
@@ -76,6 +73,8 @@ aQuery.define( "ui/swapview", [
       } else {
         this.$views.css( "clear", "left" );
       }
+
+      this.resize( );
 
       return this;
     },
@@ -102,6 +101,22 @@ aQuery.define( "ui/swapview", [
 
       this.container.width( this.boardWidth );
       this.container.height( this.boardHeight );
+
+      this.container.uiDraggable( {
+        innerWidth: width / 4,
+        innerHeight: height / 4,
+      } );
+
+      this.$indicator && this.$indicator.uiSwapindicator( "resize" );
+    },
+    toPosition: function( ) {
+      var pos = {}, opt = this.options;
+      if ( opt.orientation == horizontal ) {
+        pos.x = -this.target.width( ) * opt.index;
+      } else {
+        pos.y = -this.target.height( ) * opt.index;
+      }
+      this.container.setPositionXY( isTransform3d, pos );
     },
     render: function( index ) {
       var opt = this.options,
@@ -173,6 +188,7 @@ aQuery.define( "ui/swapview", [
       var event = this.event;
       this.container.on( "drag.start", event );
       this.target.on( "swap.stop swap.none", event );
+      this.options.detectFlexResize && this.target.on( "flex.resize", event );
       this.$indicator && this.$indicator.on( "swapindicator.change", event );
       this.options.disabled = true;
       return this;
@@ -181,6 +197,7 @@ aQuery.define( "ui/swapview", [
       var event = this.event;
       this.container.off( "drag.start", event );
       this.target.off( "swap.stop swap.none", event );
+      this.options.detectFlexResize && this.target.on( "flex.resize", event );
       this.$indicator && this.$indicator.off( "swapindicator.change", event );
       this.options.disabled = false;
       return this;
@@ -198,6 +215,7 @@ aQuery.define( "ui/swapview", [
         switch ( e.type ) {
           case "drag.start":
             self.stopAnimation( );
+            // self.resize();
             break;
           case "swap.stop":
             self._acceptSwapBehavior( e );
@@ -207,6 +225,10 @@ aQuery.define( "ui/swapview", [
             break;
           case "swapindicator.change":
             self.render( e.index );
+            break;
+          case "flex.resize":
+            self.resize( );
+            self.toPosition( );
             break;
         }
       };
@@ -265,7 +287,8 @@ aQuery.define( "ui/swapview", [
       index: 0,
       orientation: horizontal,
       animationDuration: FX.normal,
-      animationEasing: "expo.easeInOut"
+      animationEasing: "expo.easeInOut",
+      detectFlexResize: true,
     },
     publics: {
       render: Widget.AllowPublic,
@@ -273,7 +296,8 @@ aQuery.define( "ui/swapview", [
       swapNext: Widget.AllowPublic
     },
     setter: {
-      orientation: Widget.initFirst
+      orientation: Widget.initFirst,
+      detectFlexResize: Widget.initFirst
     },
     getter: {
 

@@ -43,14 +43,25 @@ aQuery.define( "ui/flex", [
         event: function( ) {},
         _initHandler: function( ) {
           // var self = this;
+          var self = this;
+
+          this.event = functionExtend.debounce( function( ) {
+            self.resize( );
+          }, 50 );
 
           return this;
         },
         enable: function( ) {
+          // if ( !this.findParent( ) ) {
+          event.event.document.addHandler( window, "resize", this.event );
+          // }
           this.options.disabled = true;
           return this;
         },
         disable: function( ) {
+          // if ( !this.findParent( ) ) {
+          event.event.document.removeHandler( window, "resize", this.event );
+          // }
           this.options.disabled = false;
           return this;
         },
@@ -69,6 +80,16 @@ aQuery.define( "ui/flex", [
           if ( opt.flexDirection !== originFlexDirectionValue ) {
             this.target.css( flexDirectionName, opt.flexDirection + "" );
           }
+
+          var eventName = this.getEventName( "resize" );
+
+          this.target.trigger( eventName, this.target[ 0 ], {
+            type: eventName,
+            target: this.target[ 0 ],
+            width: this.target.width( ),
+            height: this.target.height( )
+          } );
+
           return this;
         },
         resize: function( width, height ) {
@@ -101,7 +122,7 @@ aQuery.define( "ui/flex", [
               this.target.css( "height", "100%" );
             }
           }
-          this.render( );
+          this._initHandler( ).enable( ).render( );
           return this;
         },
         customEventName: [ ],
@@ -132,7 +153,8 @@ aQuery.define( "ui/flex", [
           this.target.css( flexDirectionName, originFlexDirectionValue );
           Widget.invoke( "destroy", this, key );
           return this;
-        }
+        },
+        initIndex: 1000
       };
     } else {
       proto = {
@@ -175,6 +197,14 @@ aQuery.define( "ui/flex", [
           this.height = this.target.height( );
 
           this.toDirection( this.options.flexDirection );
+
+          var eventName = this.getEventName( "resize" );
+          this.target.trigger( eventName, this.target[ 0 ], {
+            type: eventName,
+            target: this.target[ 0 ],
+            width: this.width,
+            height: this.height
+          } );
 
           //来自父元素的
           if ( this._lock === false ) {
@@ -395,7 +425,7 @@ aQuery.define( "ui/flex", [
 
           return this;
         },
-        customEventName: [ ],
+        customEventName: [ "resize" ],
         options: {
           flex: 0,
           flexDirection: "row",
@@ -420,7 +450,8 @@ aQuery.define( "ui/flex", [
         toString: function( ) {
           return "ui.flex";
         },
-        widgetEventPrefix: "flex"
+        widgetEventPrefix: "flex",
+        initIndex: 1000
       };
     }
 

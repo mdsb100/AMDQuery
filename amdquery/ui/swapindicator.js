@@ -35,7 +35,7 @@ aQuery.define( "ui/swapindicator", [
         this.$indicators.css( "clear", "left" );
       }
 
-      this.resize( ).layout( );
+      this.resize( );
 
       return this;
     },
@@ -81,6 +81,7 @@ aQuery.define( "ui/swapindicator", [
         this.$indicators.width( width );
         this.$indicators.height( height / this.$indicators.length );
       }
+      this.layout( );
       return this;
     },
     render: function( index ) {
@@ -169,6 +170,7 @@ aQuery.define( "ui/swapindicator", [
       render: Widget.AllowPublic,
       orevious: Widget.AllowPublic,
       next: Widget.AllowPublic,
+      resize: Widget.AllowPublic,
       layout: Widget.AllowPublic
     },
     setter: {
