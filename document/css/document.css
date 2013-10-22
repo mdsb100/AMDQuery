@@ -1,0 +1,26 @@
+.document{}
+.document h1{
+  color:#9b1c1f;
+  padding-top: 7px;
+  margin-bottom: 16px;
+}
+
+.document h2{
+  border-bottom: 1px solid #f1f1f1;
+  margin:30px 0 15px 0;
+  padding-bottom: 5px;
+  font-weight: bold;
+  line-height: 20px;
+  letter-spacing: -1px;
+  color: #666;
+}
+
+.guide{
+  list-style:disc inside;
+  margin: 0 20px 0 20px;
+
+}
+.guide a{
+  color: #5d87a1;
+  text-decoration: none;
+}
