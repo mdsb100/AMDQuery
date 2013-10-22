@@ -404,7 +404,9 @@
 
     widgetNameSpace: "ui",
 
-    initIgnore: false
+    initIgnore: false,
+
+    initIndex: 0,
   }, {
     extend: function( name, prototype, statics, Super ) {
       /// <summary>为$添加部件
@@ -577,7 +579,7 @@
     },
     renderWidget: function( ele, funName ) {
       var widgetNames = Widget.getAttrWidgets( ele ),
-        i, widgetName, key, widgetCtor;
+        i, widgetName, key, widgetCtor, ret = [ ];
 
       for ( i = widgetNames.length - 1; i >= 0; i-- ) {
         widgetName = widgetNames[ i ];
@@ -585,12 +587,25 @@
         if ( widgetCtor && widgetCtor.prototype.initIgnore === true ) {
           continue;
         }
-        widgetName = widgetName.split( "." );
+
+        ret.push( {
+          widgetName: widgetName,
+          index: ( widgetCtor && widgetCtor.prototype.initIndex ) || 0
+        } );
+
+      }
+
+      ret.sort( function( a, b ) {
+        return a.index - b.index
+      } );
+
+      for ( i = ret.length - 1; i >= 0; i-- ) {
+        widgetName = ret[ i ]["widgetName"].split( "." );
         key = $.util.camelCase( widgetName[ 1 ], widgetName[ 0 ] );
-        if ( $( ele )[ key ] ) {
+        if ( $.fn[ key ] ) {
           $( ele )[ key ]( funName || "" );
         }
-      }
+      };
 
       return this;
     },
