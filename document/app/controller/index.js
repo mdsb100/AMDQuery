@@ -15,7 +15,7 @@ aQuery.define( "@app/controller/index", [ "app/Controller", "@app/view/index" ],
         self.content.openWindow( );
       } );
 
-      // this.navmenu.selectDefaultNavmenu();
+      this.navmenu.selectDefaultNavmenu();
     },
     onDestroy: function( ) {
       this.navmenu.clearHandlers( );
