@@ -15,12 +15,52 @@
   color: #666;
 }
 
+.document h3{
+  font-weight: bold;
+  color: #666;
+  margin-top: .5em;
+  padding-top: 16px;
+  font-size: 16px;
+  line-height: 16px;
+  margin-bottom: 4px;
+}
+
 .guide{
   list-style:disc inside;
   margin: 0 20px 0 20px;
 
 }
-.guide a{
+
+a{
   color: #5d87a1;
   text-decoration: none;
+}
+
+.Top{
+  text-align:center;
+  display: block;
+  margin: 50px auto;
+}
+
+p{
+  margin: 0 0 1em;
+  color: #484848;
+  font-size: 13px;
+  line-height: 13px;
+}
+
+.admonition-note {
+  padding: 1em 1em 1em 3em;
+  background-color: #FFFFDD;
+  border-color: #F7DF92;
+}
+
+.admonition-note p{
+  background-color: #FFFFDD;
+  border-color: #F7DF92;
+  margin: auto;
+}
+
+pre{
+  margin-bottom: 1em;
 }

@@ -7,7 +7,7 @@
     <link href="../css/document.css" rel="stylesheet" type="text/css" />
     <link href="../../amdquery/lib/css/prettify/naspinski.css" rel="stylesheet" type="text/css" />
     <script src="../../amdquery/lib/js/prettify.js" type="text/javascript"></script>
-    <script src="../../amdquery/amdquery.js" type="text/javascript" amd="detectCR=1" module="transitionToAnimation:1" ui="initWidget:1;isTransform3d:1"></script>
+    <script src="../../amdquery/amdquery.js" type="text/javascript" amd="detectCR=1" module="transitionToAnimation:0" ui="initWidget:1;isTransform3d:0"></script>
     <script type="text/javascript">
 
     </script>
@@ -19,20 +19,183 @@
       <ol>
         <li id="first">
           <div style="width: 100%; height: 100%;" amdquery-widget="ui.scrollableview">
-            <h1>AMDQuery</h1>
+            <h1 name="AMDQuery" >AMDQuery</h1>
             <ul class="guide">
               <li><a href="#Overview" >Overview</a>
               </li>
-              <li><a href="#Load_JS" >Load JS</a>
+              <li><a href="#AMD" >AMD</a>
+              </li>
+              <li><a href="#Require_Define" >Require & Define</a>
+              </li>
+              <li><a href="#MainGuide" >Guide: main of module</a>
               </li>
             </ul>
             <h2 name="Overview" id="Overview">Overview</h2>
             <p>This guide provides basic instructions on understanding AMDQuery architecture and using AMDQuery.</p>
-            <h2 name="Load_JS" id="Load_JS">Load JS</h2>
-            <p>Include the script tag below in your head</p>
+            <h3 name="AMD" id="AMD" >AMD</h3>
+            <p>AMDQuery follow the <a target="_blank" href="http://en.wikipedia.org/wiki/Asynchronous_module_definition">AMD</a> standard.
+            AMDQuery manage module and use module depend on AMD, there are based moudle of AMD in amdquery.js.
+            </p>
+            <p>Include the script tag below in your head.</p>
+            <p>by default, define 'aQuery' at global. 'amdquery="define:$"' is one of the config, define '$' at global.
+              This example: you can use "$" or "aQuery".
+            </p>
             <pre class="prettyprint">
-              &ltscript src="../../amdquery/amdquery.js" type="text/javascript" amd="detectCR=1&gt&lt/script&gt
+              &ltscript src="../../amdquery/amdquery.js" type="text/javascript" amdquery="define:$;" &gt&lt/script&gt
             </pre>
+
+            <blod>Best Practices</blod>
+            <div class="admonition-note">
+              <blod>Define your global name and use it.</blod>
+            </div>
+
+            <h3 name="Require_Define" id="Require_Define">Require & Define</h3>
+            <ul class="guide">
+              <li>Globals has "require" and "define" function.
+                <ul class="guide">
+                  <li>
+                    <p>
+                      The difference of $.require and require.
+                      require follow AMD standard.
+                      $.require follow AMD and be invoke after AMDQuery-ready.
+                    </p>
+                  </li>
+                  <li>
+                    <p>
+                      The difference of $.define and define.
+                      define follow AMD standard.
+                      $.define follow AMD and define AMDQuery at first arguments in callback.
+                    </p>
+                  </li>
+                </ul>
+              </li>
+            </ul>
+
+            <pre class="prettyprint">
+              &ltscript type="text/javascript" &gt
+                $.define( "myobject", [ "main/extend" ], function( $, utilExtend ) {
+                  return {
+                    dosth: function( ) {
+                      alert( $.toString() );
+                    };
+                  };
+                } );
+                $.require( [ "main/query", "myobject" ], function( query, myobject ) {
+                    $( "#someElement" ).find( "ohterElement" );
+                    myobject.dosth( );
+                } );
+              &lt/script&gt
+            </pre>
+
+            <p>Equivalent</p>
+            <pre class="prettyprint">
+              &ltscript type="text/javascript" &gt
+                define( "myobject", [ "main/extend" ], function( utilExtend ) {
+                  return {
+                    dosth: function( ) {
+                      alert( aQuery.toString() );
+                    };
+                  };
+                } );
+                require( [ "main/query", "myobject" ], function( query, myobject ) {
+                    aQuery.ready( function( ){
+                      $( "#someElement" ).find( "ohterElement" );
+                      myobject.dosth( );
+                    } );
+                } );
+              &lt/script&gt
+            </pre>
+
+            <h3 name="MainGuide" id="MainGuide" >Guide: main of module</h3>
+            <pre class="prettyprint">
+              $.require( [
+                  "main/data",
+                  "main/CustomeEvent",
+                  "main/event",
+                  "main/attr",
+                  "main/class",
+                  "main/css",
+                  "main/position",
+                  "main/dom",
+                  "main/query",
+                  "main/object",
+                  "main/communicate"
+              ], function(
+                  CustomeEvent,
+                  data,
+                  event,
+                  attr,
+                  cls,
+                  css,
+                  position,
+                  dom,
+                  query,
+                  object,
+                  communicate
+              ) {
+                  // require query to use
+                  $( "#someElement" ).find( "ohterElement" );
+                  query.find( "ohterElement", someElement );
+
+                  // require Data to use
+                  $( "#someElement" ).data( "myName", "Jarry" );
+                  $.data( someElement, "myName", "Jarry" );
+
+                  // require Event to use
+                  $( "#someElement" ).click( function( ) {} );
+                  event.on( someElement, "click", function( ) {} );
+
+                  // require attr to use
+                  $( "#someElement" ).attr( "id" );
+                  attr.getAttr( someElement, "id" );
+
+                  // require cls to use
+                  $( "#someElement" ).addClass( "pretty" );
+                  cls.addClass( someElement, "pretty" );
+
+                  // require position to use
+                  $( "#someElement" ).width( )
+                  position.getWidth( someElement )
+
+                  // require dom to use
+                  $( "#someElement" ).clone( )
+                  dom.clone( someElement )
+
+                  // require css to use
+                  $( "#someElement" ).css( "background-color", "red" )
+                  css.css( someElement, "background-color", "red" )
+
+                  // Unrelated elements
+                  // require object to use
+                  var MyObject = object.extend( "MyObject", {
+                    init: function( ) {}
+                  }, {
+                    staticFn: function( ) {}
+                  } );
+
+                  // require object to use
+                  var MyObject = object.extend( "MyObject", {
+                    init: function( ) {}
+                  }, {
+                    staticFn: function( ) {}
+                  } );
+
+                  // require communicate to use
+                  var MyObject = communicate.ajax( {
+                    url: "http://www.data.com",
+                    complete: function( ) {}
+                  } );
+
+                  // require CustomEvent to use
+                  var myEvent = new CustomEvent( );
+                  myEvent.on( "dosth", function( ) {} );
+                  myEvent.trigger( "dosth", this, {
+                    type: "dosth"
+                  } );
+
+              } );
+            </pre>
+            <a href="#AMDQuery" class="Top">Top</a>
           </div>
         </li>
         <li style="">
