@@ -1628,10 +1628,10 @@
         switch ( name ) {
           case "fail":
           case "progress":
-            break
+            break;
           case "todo":
           default:
-            name = "todo"
+            name = "todo";
         }
 
         return result && typeof result == "function" ? this[ name ].apply( this, result ) : this[ name ]( result );
@@ -1736,7 +1736,7 @@
           //   msg: "already resolved"
           // } )
           return this;
-        };
+        }
 
         if ( Promise.forinstance( this.result ) ) {
           this.result.resolve( obj );
@@ -1858,7 +1858,7 @@
         /// <returns type="Promise" />
         var master = this.root( )._branch[ 0 ].promise || this;
 
-        return master
+        return master;
       },
 
       root: function( ) {
@@ -1866,7 +1866,7 @@
         /// <returns type="Promise" />
         var parent = this;
         while ( parent.parent ) {
-          parent = parent.parent
+          parent = parent.parent;
         }
         return parent;
       },
