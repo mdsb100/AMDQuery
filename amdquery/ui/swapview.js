@@ -104,7 +104,7 @@ aQuery.define( "ui/swapview", [
 
       this.container.uiDraggable( {
         innerWidth: width / 4,
-        innerHeight: height / 4,
+        innerHeight: height / 4
       } );
 
       this.$indicator && this.$indicator.uiSwapindicator( "resize" );
@@ -288,7 +288,7 @@ aQuery.define( "ui/swapview", [
       orientation: horizontal,
       animationDuration: FX.normal,
       animationEasing: "expo.easeInOut",
-      detectFlexResize: true,
+      detectFlexResize: true
     },
     publics: {
       render: Widget.AllowPublic,

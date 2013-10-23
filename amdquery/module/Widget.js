@@ -406,7 +406,7 @@
 
     initIgnore: false,
 
-    initIndex: 0,
+    initIndex: 0
   }, {
     extend: function( name, prototype, statics, Super ) {
       /// <summary>为$添加部件

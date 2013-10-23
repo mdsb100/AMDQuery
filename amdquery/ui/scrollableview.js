@@ -3,6 +3,7 @@ aQuery.define( "ui/scrollableview", [
   "base/support",
   "main/query",
   "main/css",
+  "main/event",
   "main/position",
   "main/dom",
   "main/class",
@@ -12,8 +13,9 @@ aQuery.define( "ui/scrollableview", [
   "ui/swappable",
   "ui/draggable",
   "module/Widget",
+  "module/FX",
   "module/animate",
-  "module/tween.extend" ], function( $, config, support, query, css, position, dom, cls, css3, animateTransform, css3Transition, swappable, draggable, Widget, animate, tween, undefined ) {
+  "module/tween.extend" ], function( $, config, support, query, css, event, position, dom, cls, css3, animateTransform, css3Transition, swappable, draggable, Widget, FX, animate, tween, undefined ) {
   "use strict"; //启用严格模式
   Widget.fetchCSS( "ui/css/scrollableview" );
   var isTransform3d = !! config.ui.isTransform3d && support.transform3d;
@@ -68,6 +70,7 @@ aQuery.define( "ui/scrollableview", [
       var event = this.event;
       this.container.on( "DomNodeInserted DomNodeRemoved drag.pause drag.move drag.start", event );
       this.target.on( "swap.move swap.stop swap.pause", event ).touchwheel( event );
+      this.anchors.on( "click", event );
       this.options.disabled = true;
       return this;
     },
@@ -75,6 +78,7 @@ aQuery.define( "ui/scrollableview", [
       var event = this.event;
       this.container.off( "DomNodeInserted DomNodeRemoved drag.pause drag.move drag.start", event );
       this.target.off( "swap.move swap.stop swap.pause", event ).off( "touchwheel", event );
+      this.anchors.off( "click", event );
       this.options.disabled = false;
       return this;
     },
@@ -152,6 +156,29 @@ aQuery.define( "ui/scrollableview", [
 
             self.render( x, y, true, opt.boundary );
             break;
+          case "click":
+            event.event.document.preventDefault( e );
+            event.event.document.stopPropagation( e );
+
+            self.refreshPosition( );
+
+            var $a = $( this ),
+              href = ( $a.attr( "href" ) || "" ).replace( "#", "" ),
+              //会找所有的 可能不好
+              $toElement = self.target.find( "[name=" + ( href || "__undefined" ) + "]" );
+
+            if ( $toElement.length === 1 ) {
+              var top = $toElement.getTopWithTranslate3d( ),
+                left = $toElement.getLeftWithTranslate3d( );
+              if ( self._isAllowedDirection( "V" ) ) {
+                self.animateY( Math.max( -top + self.viewportHeight > 0 ? 0 : -top, -self.scrollHeight + self.viewportHeight ), FX.normal );
+              }
+              if ( self._isAllowedDirection( "H" ) ) {
+                self.animateX( Math.max( -left + self.viewportHeight > 0 ? 0 : -left, -self.scrollWidth + self.viewportWidth ), FX.normal );
+              }
+            }
+
+            break;
         }
       };
       return this;
@@ -184,6 +211,11 @@ aQuery.define( "ui/scrollableview", [
       if ( pos != "relative" && pos != "absolute" ) {
         this.target.css( "position", "relative" );
       }
+
+      // a anchor ---> 获取位置 ---> animateTo
+
+      this.anchors = this.target.find( "a[href^=#]" );
+
 
       return this.create( )._initHandler( ).enable( ).render( 0, 0 );
     },
@@ -434,6 +466,8 @@ aQuery.define( "ui/scrollableview", [
             self._triggerAnimate( "boundary", self._direction, self.options.boundaryDruation, outer );
           }
         } );
+      } else {
+        this.statusBarX.hide( );
       }
       return this;
     },
@@ -451,6 +485,8 @@ aQuery.define( "ui/scrollableview", [
             self._triggerAnimate( "boundary", self._direction, self.options.boundaryDruation, outer );
           }
         } );
+      } else {
+        this.statusBarY.hide( );
       }
       return this;
     },
