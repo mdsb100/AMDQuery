@@ -18,12 +18,14 @@
     <div class="document" id="swapview" style="" amdquery-widget="ui.swapview;ui.flex" ui-flex="flex:1" ui-swapview="orientation:H">
       <ol>
         <li id="first">
-          <div style="width: 100%; height: 100%;" amdquery-widget="ui.scrollableview">
-            <h1 name="AMDQuery" >AMDQuery</h1>
+          <div style="width: 100%; height: 100%;" amdquery-widget="ui.scrollableview" ui-scrollableview="orientation:V">
+            <h1 name="AMDQuery" >AMDQuery 1.0.0</h1>
             <ul class="guide">
               <li><a href="#Overview" >Overview</a>
               </li>
               <li><a href="#AMD" >AMD</a>
+              </li>
+              <li><a href="#Reference_AMDQuery" >Reference AMDQuery</a>
               </li>
               <li><a href="#Require_Define" >Require & Define</a>
               </li>
@@ -34,12 +36,18 @@
             </ul>
             <h2 name="Overview" id="Overview">Overview</h2>
             <p>This guide provides basic instructions on understanding AMDQuery architecture and using AMDQuery.</p>
+            <p>check aQuery version: console.log( aQuery.version )</p>
             <h3 name="AMD" id="AMD" >AMD</h3>
             <p>AMDQuery follow the <a target="_blank" href="http://en.wikipedia.org/wiki/Asynchronous_module_definition">AMD</a> standard.
             AMDQuery manage module and use module depend on AMD, there are based moudle of AMD in amdquery.js.
             </p>
+            <p>watch module in chrome Console</p>
+            <img src="../css/image/AQueryModule1.png" />
+            <p>watch module in chrome when debug</p>
+            <img src="../css/image/AQueryModule2.png" />
+            <h3 name="Reference_AMDQuery" id="Reference_AMDQuery">Reference AMDQuery</h3>
             <p>Include the script tag below in your head.</p>
-            <p>by default, define 'aQuery' at global. 'amdquery="define:$"' is one of the config, define '$' at global.
+            <p>by default, define 'aQuery' in global. 'amdquery="define:$"' is one of the config, define '$' in global.
               This example: you can use "$" or "aQuery".
             </p>
             <pre class="prettyprint">
@@ -53,7 +61,7 @@
 
             <h3 name="Require_Define" id="Require_Define">Require & Define</h3>
             <ul class="guide">
-              <li>Globals has "require" and "define" function.
+              <li>Global has "require" and "define" function.
                 <ul class="guide">
                   <li>
                     <p>
@@ -251,14 +259,11 @@
             <a href="#AMDQuery" class="Top">Top</a>
           </div>
         </li>
-        <li style="">
-          this is two
+        <li>
+          API Documentation
         </li>
-        <li style="background-color:yellow;">
-          this is three
-        </li>
-        <li style="background-color:blue">
-          this is four
+        <li>
+          Best Practices
         </li>
       </ol>
       <ol style="width:100px;height:20px;" amdquery-widget="ui.swapindicator" ui-swapindicator="orientation:H">
