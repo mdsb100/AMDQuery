@@ -218,17 +218,18 @@
       consoleStatus: false
     }
   };
-
-  if ( typeof aQueryConfig != "undefined" ) {
-    _config = aQueryConfig;
+  var defineConfig = {};
+  if ( typeof aQueryConfig != "undefined" && typeof aQueryConfig === "object" ) {
+    defineConfig = aQueryConfig;
   } else {
-    var temp = util.getJScriptConfig( [ "amdquery", "amd", "ui", "module", "app" ] );
-    util.extend( _config.amdquery, temp.amdquery );
-    util.extend( _config.amd, temp.amd );
-    util.extend( _config.ui, temp.ui );
-    util.extend( _config.module, temp.module );
-    util.extend( _config.app, temp.app );
+    defineConfig = util.getJScriptConfig( [ "amdquery", "amd", "ui", "module", "app" ] );
   }
+
+  util.extend( _config.amdquery, defineConfig.amdquery );
+  util.extend( _config.amd, defineConfig.amd );
+  util.extend( _config.ui, defineConfig.ui );
+  util.extend( _config.module, defineConfig.module );
+  util.extend( _config.app, defineConfig.app );
 
   var aQuery = function( a, b, c ) {
     /// <summary>创造一个新$对象
