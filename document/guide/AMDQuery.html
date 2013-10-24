@@ -27,7 +27,9 @@
               </li>
               <li><a href="#Require_Define" >Require & Define</a>
               </li>
-              <li><a href="#MainGuide" >Guide: main of module</a>
+              <li><a href="#config" >config</a>
+              </li>
+              <li><a href="#MainGuide" >Overview: main of module</a>
               </li>
             </ul>
             <h2 name="Overview" id="Overview">Overview</h2>
@@ -105,8 +107,59 @@
                 } );
               &lt/script&gt
             </pre>
+            <blod>Best Practices</blod>
+            <div class="admonition-note">
+              <blod>Define your global name and use it.</blod>
+            </div>
 
-            <h3 name="MainGuide" id="MainGuide" >Guide: main of module</h3>
+            <h3 name="config" id="config">config</h3>
+            <ul class="guide">
+              <li>two ways to set config
+                <ul class="guide">
+                  <li>
+                    <p>
+                      set config in the script tag
+                    </p>
+                    <pre class="prettyprint">
+                      &ltscript src="amdquery.js" type="text/javascript" amdquery="define:$;package:json/package;" amd="detectCR:1;" ui="initWidget:false" module="compatibleEvent:1;" app="src:document/app/app;"&gt&lt/script&gt
+                    </pre>
+                  </li>
+                  <li>
+                    <p>
+                      define object in global and named "aQueryConfig" before load script tag of "amdquery.js"
+                    </p>
+                    <pre class="prettyprint">
+                      &ltscript type="text/javascript" &gt
+                        var aQueryConfig = {
+                          amdquery : {
+                                        define : "$",
+                                        package: "json/package"
+                                     },
+                          amd : { detectCR : true }
+                        }
+                      &lt/script&gt
+                      &ltscript src="amdquery.js" type="text/javascript" &gt&lt/script&gt
+                    </pre>
+                    <div class="admonition-note">
+                      <blod style="color:red">If you define "aQueryConfig" before load script tag, the config which be defined in tag does not work!</blod>
+                    </div>
+                  </li>
+                </ul>
+              </li>
+              <li>use config
+                  <pre class="prettyprint">
+                    $.require( [ "base/config" ], function( config ) {
+
+                    } );
+                    $.define( "my/moudle", [ "base/config" ], function( $, config ) {
+                      var mymoudle = {};
+                      return mymoudle;
+                    } );
+                  </pre>
+              </li>
+            </ul>
+
+            <h3 name="MainGuide" id="MainGuide" >Overview: main of module</h3>
             <pre class="prettyprint">
               $.require( [
                   "main/data",
