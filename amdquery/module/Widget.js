@@ -220,7 +220,7 @@
           item = attr[ i ].split( ":" );
           if ( item.length == 2 ) {
             key = item[ 0 ];
-            if ( $.reg.id.test( item[ 1 ] ) ) {
+            if ( /^#((?:[\w\u00c0-\uFFFF-]|\\.)+)/.test( item[ 1 ] ) ) {
               result[ key ] = $( item[ 1 ] )[ 0 ];
             } else if ( this.options[ key ] !== undefined ) {
               result[ key ] = utilEval.evalBasicDataType( item[ 1 ] );

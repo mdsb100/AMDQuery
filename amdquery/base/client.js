@@ -11,7 +11,7 @@ aQuery.define( "base/client", ["base/extend"], function( $, extend ) {
           kong: false,
           firefox: false,
           ie: false,
-          ie678: false
+          ie678: "v" == "/v"
         },
         engine: {
           opera: false,
@@ -19,7 +19,7 @@ aQuery.define( "base/client", ["base/extend"], function( $, extend ) {
           khtml: false,
           gecko: false,
           ie: false,
-          ie678: false
+          ie678: "v" == "/v"
         },
         system: {},
         language: ""
@@ -147,7 +147,5 @@ aQuery.define( "base/client", ["base/extend"], function( $, extend ) {
     _engine.ie678 = _browser.ie678 = _browser.ie;
   }
 
-  extend.easyExtend( $.client, client );
-
-  return $.client;
+  return client;
 }, "1.0.0" );

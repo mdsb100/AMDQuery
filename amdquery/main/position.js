@@ -1,7 +1,7 @@
 aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "base/client", "main/css" ], function( $, typed, utilExtend, support, client, css, undefined ) {
   "use strict"; //启用严格模式
   var rnumnonpx = /^-?(?:\d*\.)?\d+(?!px)[^\d\s]+$/i,
-    rnumsplit = new RegExp( "^(" + $.reg.core_pnum + ")(.*)$", "i" ),
+    rnumsplit = new RegExp( "^(" + $.core_pnum + ")(.*)$", "i" ),
     cssExpand = [ "Top", "Right", "Bottom", "Left" ],
     rdisplayswap = /^(none|table(?!-c[ea]).+)/,
     cssShow = {

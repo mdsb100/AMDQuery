@@ -14,7 +14,11 @@ aQuery.define( "base/typed", function( $ ) {
       /// <summary>是否为DOM元素的集合</summary>
       /// <param name="a" type="any">任意对象</param>
       /// <returns type="Boolean" />
-      return typed.isType( a, "[object NodeList]" ) || typed.isType( a, "[object HTMLCollection]" ) || ( $.client.browser.ie678 && typed.isNum( a.length ) && !typed.isArr( a.length ) && ( typed.isObj( a.item ) || typed.isStr( a.item ) ) );
+      return typed.isType( a, "[object NodeList]" ) ||
+        typed.isType( a, "[object HTMLCollection]" ) ||
+        ( typed.isNum( a.length ) && !typed.isArr( a.length ) &&
+        ( a.length > 0 ? typed.isEle( a[ 0 ] ) : true ) &&
+        ( typed.isObj( a.item ) || typed.isStr( a.item ) ) );
     },
     isEvent: function( a ) {
       return a && !! ( toString.call( a ).indexOf( "Event" ) > -1 || ( a.type && a.srcElement && a.cancelBubble !== undefined ) || ( a.type && a.target && a.bubbles !== undefined ) )
@@ -89,8 +93,8 @@ aQuery.define( "base/typed", function( $ ) {
       /// <returns type="Boolean" />
       if ( !a || a === document ) return false;
       var str = ( a.constructor && a.constructor.toString( ) ) + Object.prototype.toString.call( a )
-      if ( ( str.indexOf( "HTML" ) > -1 && str.indexOf( "Collection" ) == -1 ) || ( $.client.browser.ie678 && a.nodeType === 1 ) ) {
-        return true; //可能nodeType有问题
+      if ( ( str.indexOf( "HTML" ) > -1 && str.indexOf( "Collection" ) == -1 ) || a.nodeType === 1 ) {
+        return true;
       }
       return false;
     },

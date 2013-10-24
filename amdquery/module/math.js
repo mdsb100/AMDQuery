@@ -4,7 +4,7 @@
   pi = M.PI,
   martrix = function( a, b, c ) {
     this.init( a, b, c )
-  }, 
+  },
   directionHash = {
     0: 3,
     1: 4,
@@ -198,7 +198,6 @@
     }
   };
 
-  $.math = math;
   return math;
 
 } );

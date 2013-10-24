@@ -311,7 +311,7 @@
     } );
 
     if ( config.module.transitionToAnimation ) {
-      if ( $.support.transition ) {
+      if ( support.transition ) {
         $.animate = $.animateByTransition;
         $.stopAnimation = $.stopAnimationByTransition;
         $.animationPower = "css3.transition";

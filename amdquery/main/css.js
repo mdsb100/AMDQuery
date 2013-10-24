@@ -3,7 +3,7 @@ aQuery.define( "main/css", [ "base/typed", "base/extend", "base/array", "base/su
 	var rnumnonpx = /^-?(?:\d*\.)?\d+(?!px)[^\d\s]+$/i,
 		rmargin = /^margin/,
 		rposition = /^(top|right|bottom|left)$/,
-		rrelNum = new RegExp( "^([+-])=(" + $.reg.core_pnum + ")", "i" ),
+		rrelNum = new RegExp( "^([+-])=(" + $.core_pnum + ")", "i" ),
 		cssNumber = {
 			"columnCount": true,
 			"fillOpacity": true,

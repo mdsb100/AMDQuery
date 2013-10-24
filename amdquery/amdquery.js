@@ -186,7 +186,7 @@
       return ret;
     }( ) ),
     rootPath = basePath.replace( /((.*?\/){3}).*$/, "$1" ),
-    msgDiv, runTime, ie678 = "v" == "/v";
+    msgDiv, runTime;
 
   var _config = {
     amdquery: {
@@ -280,20 +280,8 @@
 
   util.extend( $, {
     cabinet: {},
-    client: {
-      browser: {
-        ie678: ie678
-      },
-      engine: {
-        ie678: "v" == "/v"
-      },
-      system: {},
-      language: ""
-    },
     copyright: "2012 Cao Jun",
-    has: function( name, obj ) {
-      return obj && typeof name == "string" && name in obj;
-    },
+
     interfaces: {
       achieve: function( name, fun ) {
         /// <summary>实现一个接口</summary>
@@ -319,15 +307,12 @@
       }
 
     },
-    math: {},
     module: {},
     toString: function( ) {
       /// <summary></summary>
       /// <returns type="String" />
       return "AMDQuery";
     },
-    support: {},
-    ui: {},
     valueOf: function( ) {
       /// <summary>返回模块信息</summary>
       /// <returns type="String" />
@@ -441,60 +426,11 @@
 
     getJScriptConfig: util.getJScriptConfig,
     getPath: util.getPath,
-    getRunTime: function( msg ) {
-      /// <summary>检测运行时间</summary>
-      /// <param name="unit" type="Boolean">默认为秒,true为毫秒</param>
-      /// <returns type="self" />
-      var now = new Date( );
-      if ( runTime && msg ) {
-        msg += ":" + ( now - runTime );
-      } else {
-        runTime = now;
-        msg = "root:0";
-      }
-      console.log( msg );
-    },
-    getValueAndUnit: function( value ) {
-      /// <summary>返回一个字符串的数值和单位
-      /// <para>obj.value</para>
-      /// <para>obj.unit</para>
-      /// <para>默认2个值是undefined</para>
-      /// </summary>
-      /// <param name="value" type="String">字符串</param>
-      /// <returns type="Object" />
-      var result = {
-        value: value,
-        unit: ""
-      };
-      if ( typeof value == "number" ) {
-        result.value = value;
-      } else if ( typeof value == "string" ) {
-        value = value.match( /[+-]?\d+\.?\d*\w+/g );
-        if ( value ) {
-          var num = parseFloat( value[ 0 ] );
-          if ( num != undefined ) {
-            result.value = num;
-            result.unit = value[ 0 ].replace( num.toString( ), "" ) || "";
-          }
-        }
-      }
-      return result;
-    },
 
     now: util.now,
 
-    reg: {
-      // Used for matching numbers
-      core_pnum: /[+-]?(?:\d*\.|)\d+(?:[eE][+-]?\d+|)/.source,
-      id: /^#((?:[\w\u00c0-\uFFFF-]|\\.)+)/
-      //num: /^(-?\\d+)(\\.\\d+)?$/,
-      // className: function(className) {
-      //     return reg = new RegExp("(\\s|^)" + className + "(\\s|$)")
-      // },
-      //int: /(\+|\-)?\d+/g,
-      //numAndEng: /[A-Za-z0-9]+/,
-      //pEqual: /[!\^\*\$]?=?/,
-    },
+    core_pnum: /[+-]?(?:\d*\.|)\d+(?:[eE][+-]?\d+|)/.source,
+
     rootPath: rootPath,
 
     showMsg: function( str, bool ) {

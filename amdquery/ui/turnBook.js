@@ -1,5 +1,5 @@
 ﻿/*deprecated*/
-aQuery.define( "ui/turnBook", [ "base/typed", "main/css", "main/position", "main/dom", "main/class", "html5/css3", "ui/swappable", "module/Widget" ], function( $, typed, css1, position, dom, cls, css3, swappable, Widget, undefined ) {
+aQuery.define( "ui/turnBook", [ "base/support", "base/typed", "main/css", "main/position", "main/dom", "main/class", "html5/css3", "ui/swappable", "module/Widget" ], function( $, support, typed, css1, position, dom, cls, css3, swappable, Widget, undefined ) {
   "use strict"; //启用严格模式
   var turnBook = Widget.extend( "ui.turnBook", {
     appendTo: function( index ) {
@@ -536,7 +536,7 @@ aQuery.define( "ui/turnBook", [ "base/typed", "main/css", "main/position", "main
       return this;
     },
     setCss: function( item, css, css3d ) {
-      if ( css3d && $.support.transform3d ) {
+      if ( css3d && support.transform3d ) {
         delete css.left;
         delete css.top;
         item.transform3d( css3d );

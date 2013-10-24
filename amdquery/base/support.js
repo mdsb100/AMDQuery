@@ -242,7 +242,6 @@
 
     body.removeChild( container );
 
-    utilExtend.easyExtend( $.support, support );
 
     // Null elements to avoid leaks in IE
     container = div = tds = marginDiv = null;
@@ -270,7 +269,5 @@
 
   root = script = null;
 
-  utilExtend.easyExtend( $.support, support );
-
-  return $.support;
+  return support;
 }, "JQuery1.9.1" );
