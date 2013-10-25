@@ -16,21 +16,21 @@ aQuery.define( "ui/tabbutton", [
 
     var tabbutton = Button.extend( "ui.tabbutton", {
       options: {
-        defualtCssName: "defaultTabButton",
+        defaultCssName: "defaultTabButton",
         selectCssName: "selectTabButton",
         select: false,
         text: "",
         title: ""
       },
       getter: {
-        defualtCssName: 1,
+        defaultCssName: 1,
         selectCssName: 1,
         select: 1,
         text: 1,
         title: 1
       },
       setter: {
-        defualtCssName: 1,
+        defaultCssName: 1,
         selectCssName: 1,
         select: 1,
         text: 1,
@@ -66,13 +66,13 @@ aQuery.define( "ui/tabbutton", [
       render: function( ) {
         Button.invoke( "render", this );
         var opt = this.options;
-        if ( this.defualtCssName != opt.defualtCssName ) {
-          this.target.removeClass( this.defualtCssName );
-          this.defualtCssName = opt.defualtCssName;
+        if ( this.defaultCssName != opt.defaultCssName ) {
+          this.defaultCssName = opt.defaultCssName;
+          this.target.removeClass( this.defaultCssName );
         }
         if ( this.selectCssName != opt.selectCssName ) {
-          this.target.removeClass( this.selectCssName );
           this.selectCssName = opt.selectCssName;
+          this.target.removeClass( this.selectCssName );
         }
 
         this.change( );
@@ -84,7 +84,7 @@ aQuery.define( "ui/tabbutton", [
 
         target.addClass( "tabButton" );
 
-        this.defualtCssName = opt.defualtCssName;
+        this.defaultCssName = opt.defaultCssName;
         this.selectCssName = opt.selectCssName;
         return this;
       },

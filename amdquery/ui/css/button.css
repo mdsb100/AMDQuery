@@ -4,15 +4,16 @@
 	cursor: pointer;
 	background-color: White;
 	overflow:hidden;
+  vertical-align: middle;
+  -moz-border-radius: 8px;
+  -webkit-border-radius: 8px;
+  -o-border-radius: 8px;
+  -ms-border-radius: 8px;
+  border-radius:8px;
 }
 
 .button .back{
 	background: url(../images/tabs.png) 0px -173px repeat-x;
-	-moz-border-radius: 8px;
-	-webkit-border-radius: 8px;
-	-o-border-radius: 8px;
-	-ms-border-radius: 8px;
-	border-radius:8px;
 }
 .button .back:link {}
 .button .back:visited {}
@@ -25,9 +26,9 @@
 
 .button .text{
 	font: 12px Arial, "\5FAE\8F6F\96C5\9ED1";
-	padding: 4px;
 	text-align: center;
 	vertical-align: middle;
+  line-height: 200%;
 	font-family: 宋体;
 	font-weight: bold;
 	font-size: 14px;

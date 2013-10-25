@@ -64,19 +64,27 @@ aQuery.define( "ui/button", [
 
         this.container = $( $.createEle( "a" ) ).css( {
           "display": "inline-block",
-          "text-decoration": "none"
+          "text-decoration": "none",
+          "width": "100%",
+          "height": "100%",
+          "position": "relative"
         } ).addClass( "back" );
 
         this.$img = $( $.createEle( "div" ) ).css( {
           "display": "block",
           "text-decoration": "none",
-          "position": "relative"
+          "position": "absolute",
+          "width": "100%",
+          "height": "100%"
         } ).addClass( "img" ).addClass( this.options.icon );
 
         this.$text = $( $.createEle( "a" ) ).css( {
           "display": "block",
           "text-decoration": "none",
-          "float": "left"
+          "position": "absolute",
+          "float": "left",
+          "width": "100%",
+          "height": "100%"
         } ).addClass( "text" );
 
         this.container.append( this.$img ).append( this.$text );

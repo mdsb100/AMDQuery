@@ -1,15 +1,21 @@
 .tabButton
 {
 	border-left: 1px solid black;
+  -moz-border-radius: 0;
+  -webkit-border-radius: 0;
+  -o-border-radius: 0;
+  -ms-border-radius: 0;
+  border-radius: 0;
 }
 
 .defaultTabButton
 {
-    
+
 }
 
 .defaultTabButton .back{
-	background: url(../images/tabs.png) 0px -173px repeat-x;
+	background: #292727;
+  /*url(../images/tabs.png) 0px -173px repeat-x;*/
 	/*-moz-border-radius: 8px;
 	-webkit-border-radius: 8px;
 	-o-border-radius: 8px;
@@ -26,19 +32,18 @@
 }
 
 .defaultTabButton .text{
-	font: 12px Arial, "\5FAE\8F6F\96C5\9ED1";
-	padding: 4px;
+	font: 14px Arial, "\5FAE\8F6F\96C5\9ED1";
 	text-align: center;
 	vertical-align: middle;
 	font-family: 宋体;
 	font-weight: bold;
-	font-size: 14px;
-	color: #6B573B;
+	color: #b5b1b1;
+  line-height: 200%;
 }
 .defaultTabButton .text:link {}
 .defaultTabButton .text:visited {}
 .defaultTabButton .text:hover {
-	
+
 }
 .defaultTabButton .text:active {
     color: #FF0000;
@@ -48,11 +53,12 @@
 
 .selectTabButton
 {
-    
+
 }
 
 .selectTabButton .back{
-	background: red;
+	background: #1f1d1d;
+  /*red;*/
 	/*background: url(../images/tabs.png) 0px -173px repeat-x;*/
 	/*-moz-border-radius: 8px;
 	-webkit-border-radius: 8px;
@@ -66,7 +72,7 @@
 .selectTabButton .back:active {}
 
 .selectTabButton .img{
-	background: url(../images/tabs.png) 0px -173px repeat-x;
+	/*background: url(../images/tabs.png) 0px -173px repeat-x;*/
 }
 .selectTabButton .img:link {}
 .selectTabButton .img:visited {}
@@ -74,19 +80,18 @@
 .selectTabButton .img:active {}
 
 .selectTabButton .text{
-	font: 12px Arial, "\5FAE\8F6F\96C5\9ED1";
-	padding: 4px;
+	font: 14px Arial, "\5FAE\8F6F\96C5\9ED1";
 	text-align: center;
 	vertical-align: middle;
 	font-family: 宋体;
 	font-weight: bold;
-	font-size: 14px;
-	color: #6B573B;
+	color: #FFFFFF;
+  line-height: 200%;
 }
 .selectTabButton .text:link {}
 .selectTabButton .text:visited {}
 .selectTabButton .text:hover {
-	
+
 }
 .selectTabButton .text:active {
     color: #FF0000;
