@@ -1,4 +1,4 @@
-<div amdquery-widget="ui.flex;ui.scrollableview" ui-flex="fillParentWidth:false" ui-scrollableview="overflow:V" style="width:200px;border-right:1px solid black;">
+<div amdquery-widget="ui.flex;ui.scrollableview" ui-flex="fillParentWidth:false;flex:1" ui-scrollableview="overflow:V" style="width:200px;border-right:1px solid black;">
   <div id="nav" amdquery-widget="ui.navmenu">
       <ul>
           <li amdquery-widget="ui.navitem" ui-navitem="html:guide;img:file">
