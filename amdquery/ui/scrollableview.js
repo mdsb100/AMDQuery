@@ -70,7 +70,7 @@ aQuery.define( "ui/scrollableview", [
       var event = this.event;
       this.container.on( "DomNodeInserted DomNodeRemoved drag.pause drag.move drag.start", event );
       this.target.on( "swap.move swap.stop swap.pause", event ).touchwheel( event );
-      this.anchors.on( "click", event );
+      this.target.delegate( "a[href^=#]", "click", event );
       this.options.disabled = true;
       return this;
     },
@@ -78,7 +78,7 @@ aQuery.define( "ui/scrollableview", [
       var event = this.event;
       this.container.off( "DomNodeInserted DomNodeRemoved drag.pause drag.move drag.start", event );
       this.target.off( "swap.move swap.stop swap.pause", event ).off( "touchwheel", event );
-      this.anchors.off( "click", event );
+      this.target.off( "click", event );
       this.options.disabled = false;
       return this;
     },
@@ -211,11 +211,6 @@ aQuery.define( "ui/scrollableview", [
       if ( pos != "relative" && pos != "absolute" ) {
         this.target.css( "position", "relative" );
       }
-
-      // a anchor ---> 获取位置 ---> animateTo
-
-      this.anchors = this.target.find( "a[href^=#]" );
-
 
       return this.create( )._initHandler( ).enable( ).render( 0, 0 );
     },
