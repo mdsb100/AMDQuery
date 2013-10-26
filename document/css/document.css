@@ -39,7 +39,8 @@ a{
 .Top{
   text-align:center;
   display: block;
-  margin: 50px auto;
+  bottom:30px;
+  right:30px;
 }
 
 p{

@@ -34,6 +34,11 @@ aQuery.define( "ui/scrollableview", [
 
       this.target.uiSwappable( );
 
+      this.target.find( "a[float=false]" ).css( {
+        position: "absolute",
+        zIndex: 1000
+      } ).appendTo( this.target );
+
       this.statusBarX = $( {
         height: "10px",
         display: "none",
