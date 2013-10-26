@@ -168,6 +168,7 @@ aQuery.define( "ui/navmenu", [
         this.navItemList = [ ];
         this.$parent = null;
         this.detectNavItemList( );
+        $( this.navItemList ).uiNavitem( );
 
         this._initHandler( ).enable( ).render( );
 
@@ -191,6 +192,10 @@ aQuery.define( "ui/navmenu", [
       target: null,
       toString: function( ) {
         return "ui.navmenu";
+      },
+      destroy: function( ) {
+        $( this.navItemList ).destroyUiNavitem( );
+        Widget.invoke( "destroy", this );
       },
       widgetEventPrefix: "navmenu"
     } );

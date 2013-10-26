@@ -148,10 +148,10 @@ aQuery.define( "ui/flex", [
           return "ui.flex";
         },
         widgetEventPrefix: "flex",
-        destroy: function( key ) {
+        destroy: function( ) {
           this.target.css( flexName, originFlexValue );
           this.target.css( flexDirectionName, originFlexDirectionValue );
-          Widget.invoke( "destroy", this, key );
+          Widget.invoke( "destroy", this );
           return this;
         },
         initIndex: 1000

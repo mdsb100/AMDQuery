@@ -173,8 +173,8 @@
     },
     removeTag: function( ) {
       var tag = this.toString( ),
-        optionAttr = prefix + "-" + this.widgetNameSpace + "-" + this.widgetName,
-        optionTag = this.target.attr( optionTag ),
+        optionAttr = this.widgetNameSpace + "-" + this.widgetName,
+        optionTag = this.target.attr( optionAttr ),
         widgetAttr = prefix + "-widget",
         widgetTag = this.target.attr( widgetAttr );
 
@@ -236,7 +236,7 @@
     create: function( ) {},
     container: null,
     constructor: Widget,
-    destroy: function( key ) {
+    destroy: function( ) {
       /*应当返回原先的状态*/
 
       //this.destroyChildren();
@@ -252,11 +252,9 @@
 
       for ( i in this ) {
         name = i;
-        !typed.isPrototypeProperty( this, name ) && ( this[ name ] = null ) && delete this[ name ];
+        !object.isPrototypeProperty( this, name ) && ( this[ name ] = null ) && delete this[ name ];
       }
-      if ( key ) {
-        this.target.removeData( key );
-      }
+
       return this;
     },
     able: function( ) {
@@ -482,9 +480,14 @@
           var data = $.data( ele, key ); //key = nameSpace + "." + name,
           if ( data == undefined ) {
             //完全调用基类的构造函数 不应当在构造函数 create render
-            data = $.data( ele, key, new ctor( a, $( ele ) ) );
+            if ( a !== "destroy" ) {
+              data = $.data( ele, key, new ctor( a, $( ele ) ) );
+            }
           } else {
-            if ( typed.isObj( a ) ) {
+            if ( a === "destroy" ) {
+              data[ a ].call( data );
+              $.removeData( ele, key );
+            } else if ( typed.isObj( a ) ) {
               data.option( a );
               data.render( );
             } else if ( typed.isStr( a ) ) {
@@ -498,8 +501,6 @@
                   result = data.option( b, c );
                   return false;
                 }
-              } else if ( a === "destroy" ) {
-                data[ a ].call( data, key );
               } else if ( !! data.publics[ a ] ) {
                 var temp = data[ a ].apply( data, $.util.argToArray( arg, 1 ) );
                 if ( data.publics[ a ] == Widget.AllowReturn ) {
@@ -521,11 +522,28 @@
 
       utilExtend.easyExtend( widget, statics );
 
-      if ( !$.prototype[ name ] ) {
-        $.prototype[ name ] = widget;
+
+      var destroyWidget = function( ) {
+        this.each( function( ele ) {
+          var data = $.data( ele, key );
+          if ( data ) {
+            data[ "destroy" ].call( data );
+            $.removeData( ele, key );
+          }
+        } )
+      };
+
+      // add init function to $.prototype
+      if ( !$.fn[ name ] ) {
+        $.fn[ name ] = widget;
+        $.fn[ $.util.camelCase( name, "destroy" ) ] = destroyWidget;
       }
 
-      $.prototype[ $.util.camelCase( name, nameSpace ) ] = widget;
+      var initName = $.util.camelCase( name, nameSpace );
+
+      $.fn[ initName ] = widget;
+
+      $.fn[ $.util.camelCase( initName, "destroy" ) ] = destroyWidget;
 
       return widget;
     },
@@ -577,7 +595,7 @@
         } );
       }
     },
-    renderWidget: function( ele, funName ) {
+    _renderWidget: function( ele, funName ) {
       var widgetNames = Widget.getAttrWidgets( ele ),
         i, widgetName, key, widgetCtor, ret = [ ];
 
@@ -595,12 +613,21 @@
 
       }
 
-      ret.sort( function( a, b ) {
-        return a.index - b.index
-      } );
+      var order;
+      if ( funName === "destroy" ) {
+        order = function( a, b ) {
+          return b.index - a.index
+        }
+      } else {
+        order = function( a, b ) {
+          return a.index - b.index
+        }
+      }
+
+      ret.sort( order );
 
       for ( i = ret.length - 1; i >= 0; i-- ) {
-        widgetName = ret[ i ]["widgetName"].split( "." );
+        widgetName = ret[ i ][ "widgetName" ].split( "." );
         key = $.util.camelCase( widgetName[ 1 ], widgetName[ 0 ] );
         if ( $.fn[ key ] ) {
           $( ele )[ key ]( funName || "" );
@@ -616,7 +643,7 @@
       if ( widgetNames.length ) {
         require( widgetNames, function( ) {
           for ( var i = 0, len = eles.length; i < len; i++ ) {
-            Widget.renderWidget( eles[ i ] );
+            Widget._renderWidget( eles[ i ] );
           }
           callback && callback( );
         } );
@@ -632,7 +659,7 @@
       if ( widgetNames.length ) {
         require( widgetNames, function( ) {
           for ( var i = 0, len = eles.length; i < len; i++ ) {
-            Widget.renderWidget( eles[ i ], "destroy" );
+            Widget._renderWidget( eles[ i ], "destroy" );
           }
           callback && callback( );
         } );

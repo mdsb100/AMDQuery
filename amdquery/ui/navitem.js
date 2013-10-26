@@ -308,7 +308,8 @@ aQuery.define( "ui/navitem", [
       toString: function( ) {
         return "ui.navitem";
       },
-      widgetEventPrefix: "navitem"
+      widgetEventPrefix: "navitem",
+      initIgnore: true
     } );
 
     return navitem;

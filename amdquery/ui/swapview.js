@@ -267,11 +267,11 @@ aQuery.define( "ui/swapview", [
 
       return this.render( opt.index );
     },
-    destroy: function( key ) {
-      this.target.uiSwappable( "destroy" );
-      this.container.uiDraggable( "destroy" );
-      this.$swapindicator && this.$swapindicator.uiSwapindicator( "destroy" );
-      Widget.invoke( "destroy", this, key );
+    destroy: function( ) {
+      this.target.destroyUiSwappable( );
+      this.container.destroyUiDraggable( );
+      this.$swapindicator && this.$swapindicator.destroyUiSwapindicator( );
+      Widget.invoke( "destroy", this );
     },
     init: function( opt, target ) {
       this._super( opt, target );

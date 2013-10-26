@@ -292,7 +292,7 @@
       /// <returns type="Number" />
       var count = 0;
       for ( var i in obj ) {
-        bool == true ? typed.isPrototypeProperty( obj, i ) || count++ : count++;
+        bool == true ? object.isPrototypeProperty( obj, i ) || count++ : count++;
       }
       return count;
     },
