@@ -10,6 +10,8 @@
             //$.ready(function () {
             var con = $("#container");
 
+            con.keyboard();
+
             con.keyboard({
                 keyList: [
                     { type: "keyup", keyCode: "Up"
@@ -24,6 +26,28 @@
                     }
                 ]
             });
+
+            con.keyboard({
+              keyList: [
+                  {
+                    type: "keyup",
+                    keyCode: "E",
+                    fun: function (e) {
+                        alert("cmd+E");
+                    },
+                    combinationKey: ["cmd"]
+                  },
+                  {
+                    type: "keyup",
+                    keyCode: "E",
+                    fun: function (e) {
+                        alert("cmd+shift+E");
+                    },
+                    combinationKey: ["cmd", "shift"]
+                  }
+              ]
+            });
+
             con.keyboard("addKeys",
                 [{
                     type: "keyup",
@@ -69,7 +93,7 @@
             });
 
         });
-       
+
     </script>
 </head>
 <body style="width: 100%; height: 100%;">

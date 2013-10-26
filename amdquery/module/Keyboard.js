@@ -6,6 +6,7 @@
       this._super( );
       this.keyList = [ ];
       this.container = container;
+      this.commandStatus = false;
       if ( this.container.getAttribute( "tabindex" ) == undefined ) {
         this.container.setAttribute( "tabindex", Keyboard.tableindex++ );
       }
@@ -19,17 +20,11 @@
       return this;
     },
     enable: function( ) {
-      event
-        .on( this.container, "keydown", this.event )
-        .on( this.container, "keypress", this.event )
-        .on( this.container, "keyup", this.event );
+      event.on( this.container, "keydown keypress keyup", this.event );
       return this;
     },
     disable: function( ) {
-      event
-        .off( this.container, "keydown", this.event )
-        .off( this.container, "keypress", this.event )
-        .off( this.container, "keyup", this.event );
+      event.off( this.container, "keydown keypress keyup", this.event );
       return this;
     },
     _push: function( ret ) {
@@ -89,6 +84,7 @@
       var item, ret = Keyboard.createOpt( obj );
       if ( item = this.iterationKeyList( ret ) ) {
         this.keyList.splice( array.inArray( this.keyList, item ), 1 );
+        item.fun && this.off( Keyboard._getHandlerName( item ), item.fun );
       }
       return this;
     },
@@ -97,7 +93,12 @@
         code = e.keyCode || e.which;
 
         item = keyList[ i ];
-        //console.log(e.type + ":" + code)
+
+        // console.log( e.type + ":" + code )
+
+        // if ( e.type == "keydown" && code == 69 ) {
+        //   debugger
+        // }
 
         if (
           e.type == item.type &&
@@ -124,11 +125,12 @@
     stringToCodeReflect: charcode.stringToCodeReflect,
     createOpt: function( obj ) {
       var keyCode = obj.keyCode;
+      //若有组合键 会把type强制转换
       if ( obj.combinationKey && obj.combinationKey.length ) {
         if ( typed.isStr( keyCode ) ) {
           keyCode = keyCode.length > 1 ? keyCode : keyCode.toUpperCase( );
         }
-        obj.type = "keyup";
+        obj.type = array.inArray( obj.combinationKey, "cmd" ) > -1 ? "keydown" : "keyup";
       }
       if ( typed.isStr( keyCode ) ) {
         obj.keyCode = Keyboard.stringToCode( keyCode );
@@ -169,6 +171,15 @@
         }
       } else {
         for ( var count2 = combinationKey ? combinationKey.length : 0; i < len; i++ ) {
+          if ( combinationKey[ i ] === "cmd" ) {
+            if ( Keyboard.commandStatus == true ) {
+              count1++;
+            } else {
+              return 0;
+            }
+            continue;
+          }
+
           if ( e[ defCon[ i ] + "Key" ] == true ) count1++;
 
           if ( e[ combinationKey[ i ] + "Key" ] == false ) {
@@ -203,6 +214,23 @@
         Keyboard.cache.push( keyboard );
       }
       return keyboard;
+    }
+  } );
+
+  event.on( document.documentElement, "keydown keypress keyup", function( e ) {
+    var code = e.keyCode || e.which;
+    if ( code === charcode.stringToCodeReflect[ "LeftCommand" ] ||
+      code === charcode.stringToCodeReflect[ "RightCommand" ] ||
+      code === charcode.stringToCodeReflect[ "Command" ] ) {
+      switch ( e.type ) {
+        case "keydown":
+        case "keypress":
+          Keyboard.commandStatus = true;
+          break;
+        case "keyup":
+          Keyboard.commandStatus = false;
+          break;
+      }
     }
   } );
 
