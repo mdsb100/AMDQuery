@@ -16,8 +16,8 @@ aQuery.define( "ui/tabbutton", [
 
     var tabbutton = Button.extend( "ui.tabbutton", {
       options: {
-        defaultCssName: "defaultTabButton",
-        selectCssName: "selectTabButton",
+        defaultCssName: "aquery-defaultTabButton",
+        selectCssName: "aquery-selectTabButton",
         select: false,
         text: "",
         title: ""
@@ -82,7 +82,7 @@ aQuery.define( "ui/tabbutton", [
         this._super( opt, target );
         opt = this.options;
 
-        target.addClass( "tabButton" );
+        target.addClass( "aquery-tabButton" );
 
         this.defaultCssName = opt.defaultCssName;
         this.selectCssName = opt.selectCssName;

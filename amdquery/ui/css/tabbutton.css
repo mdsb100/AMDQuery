@@ -1,4 +1,4 @@
-.tabButton
+.aquery-tabButton
 {
 	border-left: 1px solid black;
   -moz-border-radius: 0;
@@ -8,12 +8,12 @@
   border-radius: 0;
 }
 
-.defaultTabButton
+.aquery-defaultTabButton
 {
 
 }
 
-.defaultTabButton .back{
+.aquery-defaultTabButton .back{
 	background: #292727;
   /*url(../images/tabs.png) 0px -173px repeat-x;*/
 	/*-moz-border-radius: 8px;
@@ -22,16 +22,16 @@
 	-ms-border-radius: 8px;
 	border-radius:8px;  */
 }
-.defaultTabButton .back:link {}
-.defaultTabButton .back:visited {}
-.defaultTabButton .back:hover {}
-.defaultTabButton .back:active {}
+.aquery-defaultTabButton .back:link {}
+.aquery-defaultTabButton .back:visited {}
+.aquery-defaultTabButton .back:hover {}
+.aquery-defaultTabButton .back:active {}
 
-.defaultTabButton .img{
+.aquery-defaultTabButton .img{
 	/*background: url(../images/tabs.png) 0px -173px repeat-x;*/
 }
 
-.defaultTabButton .text{
+.aquery-defaultTabButton .text{
 	font: 14px Arial, "\5FAE\8F6F\96C5\9ED1";
 	text-align: center;
 	vertical-align: middle;
@@ -40,23 +40,23 @@
 	color: #b5b1b1;
   line-height: 200%;
 }
-.defaultTabButton .text:link {}
-.defaultTabButton .text:visited {}
-.defaultTabButton .text:hover {
+.aquery-defaultTabButton .text:link {}
+.aquery-defaultTabButton .text:visited {}
+.aquery-defaultTabButton .text:hover {
 
 }
-.defaultTabButton .text:active {
+.aquery-defaultTabButton .text:active {
     color: #FF0000;
 }
 
 
 
-.selectTabButton
+.aquery-selectTabButton
 {
 
 }
 
-.selectTabButton .back{
+.aquery-selectTabButton .back{
 	background: #1f1d1d;
   /*red;*/
 	/*background: url(../images/tabs.png) 0px -173px repeat-x;*/
@@ -66,20 +66,20 @@
 	-ms-border-radius: 8px;
 	border-radius:8px;  */
 }
-.selectTabButton .back:link {}
-.selectTabButton .back:visited {}
-.selectTabButton .back:hover {}
-.selectTabButton .back:active {}
+.aquery-selectTabButton .back:link {}
+.aquery-selectTabButton .back:visited {}
+.aquery-selectTabButton .back:hover {}
+.aquery-selectTabButton .back:active {}
 
-.selectTabButton .img{
+.aquery-selectTabButton .img{
 	/*background: url(../images/tabs.png) 0px -173px repeat-x;*/
 }
-.selectTabButton .img:link {}
-.selectTabButton .img:visited {}
-.selectTabButton .img:hover {}
-.selectTabButton .img:active {}
+.aquery-selectTabButton .img:link {}
+.aquery-selectTabButton .img:visited {}
+.aquery-selectTabButton .img:hover {}
+.aquery-selectTabButton .img:active {}
 
-.selectTabButton .text{
+.aquery-selectTabButton .text{
 	font: 14px Arial, "\5FAE\8F6F\96C5\9ED1";
 	text-align: center;
 	vertical-align: middle;
@@ -88,11 +88,11 @@
 	color: #FFFFFF;
   line-height: 200%;
 }
-.selectTabButton .text:link {}
-.selectTabButton .text:visited {}
-.selectTabButton .text:hover {
+.aquery-selectTabButton .text:link {}
+.aquery-selectTabButton .text:visited {}
+.aquery-selectTabButton .text:hover {
 
 }
-.selectTabButton .text:active {
+.aquery-selectTabButton .text:active {
     color: #FF0000;
 }

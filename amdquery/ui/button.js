@@ -104,7 +104,7 @@ aQuery.define( "ui/button", [
       },
       customEventName: [ "click" ],
       options: {
-        defualtCssName: "button",
+        defualtCssName: "aquery-button",
         text: "clickme",
         title: "",
         icon: "icon"

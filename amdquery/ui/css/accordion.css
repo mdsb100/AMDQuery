@@ -1,4 +1,4 @@
-﻿.accordion
+﻿.aquery-accordion
 {
     text-align: center;
     cursor: pointer;
@@ -17,22 +17,22 @@
     border-top:2px solid #a8680e;
 }
 
-.accordion .shell
+.aquery-accordion .shell
 {
     height: auto;
     width: 100%;
     font: 24px Arial, "\5FAE\8F6F\96C5\9ED1";
 }
 
-.accordion .title:hover /*改成shell就一起变了*/
+.aquery-accordion .title:hover /*改成shell就一起变了*/
 {
 }
-.accordion .title:active
+.aquery-accordion .title:active
 {
 }
 
 
-.accordion .title 
+.aquery-accordion .title
 {
     width: 100%;
     height: 28px;
@@ -44,59 +44,59 @@
     font-size: 14px;
     color: #6B573B;
 }
-.accordion .title_select
+.aquery-accordion .title_select
 {
     background: url(../images/accordion_typeSelect.jpg) repeat-x;
-    
+
 }
-.accordion .title_unselect
+.aquery-accordion .title_unselect
 {
     background: url(../images/accordion_typeUnselect.jpg) repeat-x;
 }
 
-.accordion .arrowRight
+.aquery-accordion .arrowRight
 {
     width: 32px;
     height: 100%;
     background: url(../images/accordion_arrowRight.jpg) 50% 50% no-repeat;
 }
 
-.accordion .arrowBottom
+.aquery-accordion .arrowBottom
 {
     width: 32px;
     height: 100%;
     background: url(../images/accordion_arrowBottom.jpg) 50% 50% no-repeat;
 }
 
-.accordion .text
+.aquery-accordion .text
 {
     /*width: 166px;*/
     height: 100%;
     font-size:14px;
 }
 
-.accordion .board
+.aquery-accordion .board
 {
     width: 100%;
     background: url(../images/accordion_bottomBackground.jpg) bottom repeat-x;
 }
 
-.accordion .key
+.aquery-accordion .key
 {
     width: 100%;
     height: 28px;
     line-height: 28px;
 }
-.accordion .board .select
+.aquery-accordion .board .select
 {
     color: #d30000;
 }
-.accordion .board .unselect
+.aquery-accordion .board .unselect
 {
     color:#6B573B;
 }
 
-.accordion .key .a
+.aquery-accordion .key .a
 {
     width: 100%;
     height: 100%;
@@ -105,12 +105,12 @@
     padding-left: 30px;
     text-align: left;
 }
-.accordion .key .a:hover
+.aquery-accordion .key .a:hover
 {
     color: #d30000;
     /*text-decoration: underline;*/
     background-color:#fff9ef;
 }
-.accordion .key .a:active
+.aquery-accordion .key .a:active
 {
 }

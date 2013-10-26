@@ -427,7 +427,7 @@
     create: function( ) {
       this.container = $( $.createEle( "div" ) )
         .css( "position", "relative" )
-        .addClass( "accordion" );
+        .addClass( "aquery-accordion" );
       var shells = this.target.children( );
       this.container.append( shells ).appendTo( this.target );
 

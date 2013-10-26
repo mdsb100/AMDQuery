@@ -1,12 +1,12 @@
-.swapindicator
+.aquery-swapindicator
 {
 
 }
-.swapindicator .active
+.aquery-swapindicator .active
 {
   background:url(../images/swapindicator_active.png) center no-repeat;
 }
-.swapindicator li
+.aquery-swapindicator li
 {
   background:url(../images/swapindicator_deactive.png) center no-repeat;
 }

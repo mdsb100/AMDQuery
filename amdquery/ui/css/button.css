@@ -1,4 +1,4 @@
-.button
+.aquery-button
 {
 	float: left;
 	cursor: pointer;
@@ -12,19 +12,19 @@
   border-radius:8px;
 }
 
-.button .back{
+.aquery-button .back{
 	background: url(../images/tabs.png) 0px -173px repeat-x;
 }
-.button .back:link {}
-.button .back:visited {}
-.button .back:hover {}
-.button .back:active {}
+.aquery-button .back:link {}
+.aquery-button .back:visited {}
+.aquery-button .back:hover {}
+.aquery-button .back:active {}
 
-.button .img{
+.aquery-button .img{
 
 }
 
-.button .text{
+.aquery-button .text{
 	font: 12px Arial, "\5FAE\8F6F\96C5\9ED1";
 	text-align: center;
 	vertical-align: middle;
@@ -34,11 +34,11 @@
 	font-size: 14px;
 	color: #6B573B;
 }
-.button .text:link {}
-.button .text:visited {}
-.button .text:hover {
+.aquery-button .text:link {}
+.aquery-button .text:visited {}
+.aquery-button .text:hover {
 
 }
-.button .text:active {
+.aquery-button .text:active {
     color: #FF0000;
 }

@@ -113,7 +113,7 @@ aQuery.define( "ui/flex", [
         },
         init: function( opt, target ) {
           this._super( opt, target );
-          this.target.addClass( "flex" );
+          this.target.addClass( "aquery-flex" );
           if ( !this.findParent( ) || ( typed.isNode( this.target[ 0 ], "iframe" ) && client.browser.ie >= 10 ) ) {
             if ( this.options.fillParentWidth ) {
               this.target.css( "width", "100%" );

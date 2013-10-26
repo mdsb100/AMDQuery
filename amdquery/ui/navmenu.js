@@ -163,7 +163,7 @@ aQuery.define( "ui/navmenu", [
       },
       init: function( opt, target ) {
         this._super( opt, target );
-        target.addClass( "navmenu" );
+        target.addClass( "aquery-nvamenu" );
 
         this.navItemList = [ ];
         this.$parent = null;

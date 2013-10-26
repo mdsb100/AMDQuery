@@ -1,6 +1,6 @@
 aQuery.define( "ui/tabbar", [
     "module/Widget",
-    "ui/button",
+    "ui/tabbutton",
     "main/query",
     "main/class",
     "main/event",
@@ -9,7 +9,7 @@ aQuery.define( "ui/tabbar", [
     "main/dom",
     "main/attr"
   ],
-  function( $, Widget, Button, query, cls, event, css, position, dom, attr ) {
+  function( $, Widget, tabbutton, query, cls, event, css, position, dom, attr ) {
     "use strict"; //启用严格模式
 
     Widget.fetchCSS( "ui/css/tabbar" );
@@ -49,12 +49,14 @@ aQuery.define( "ui/tabbar", [
       init: function( opt, target ) {
         this._super( opt, target );
 
-        target.css( {
+        this.target.css( {
           "border-top": "1px solid black",
           "border-bottom": "1px solid black",
           "border-right": "1px solid black",
           "float": "left"
         } );
+
+        this.target.addClass( "aquery-tabbar" );
 
         this.$tabButtons = target.find( "*[ui-tabbutton]" );
 

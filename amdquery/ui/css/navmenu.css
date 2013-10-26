@@ -1,4 +1,4 @@
-.navmenu
+.aquery-nvamenu
 {
     /*text-align: center;*/
     background-color: White;
@@ -17,46 +17,46 @@
     /*position: absolute;*/
 }
 
-.navmenu ul{
+.aquery-nvamenu ul{
     float: left;
 }
 
-.navmenu .img{
+.aquery-nvamenu .img{
     width: 16px;
     height: 28px;
     cursor: pointer;
 }
 
-.navmenu .module{
+.aquery-nvamenu .module{
     background: url(../images/icons.png) 0px -35px no-repeat;
 }
 
-.navmenu .class{
+.aquery-nvamenu .class{
     background: url(../images/icons.png) 0px -74px no-repeat;
 }
 
-.navmenu .file{
+.aquery-nvamenu .file{
     background: url(../images/icons.png) -2px -472px no-repeat;
 }
 
-.navmenu .item
+.aquery-nvamenu .item
 {
     height: auto;
     font: 24px Arial, "\5FAE\8F6F\96C5\9ED1";
 }
 
-.navmenu .title:link {}
-.navmenu .title:visited {}
-.navmenu .title:hover /*改成shell就一起变了*/
+.aquery-nvamenu .title:link {}
+.aquery-nvamenu .title:visited {}
+.aquery-nvamenu .title:hover /*改成shell就一起变了*/
 {
     color: #d30000;
 }
-.navmenu .title:active
+.aquery-nvamenu .title:active
 {
 
 }
 
-.navmenu .title
+.aquery-nvamenu .title
 {
     height: 28px;
     text-align: left;
@@ -67,27 +67,27 @@
     color: #6B573B;
 }
 
-.navmenu .arrow{
+.aquery-nvamenu .arrow{
     width: 16px;
     height: 28px;
     cursor: pointer;
 }
 
-.navmenu .arrowRight
+.aquery-nvamenu .arrowRight
 {
     width: 16px;
     height: 28px;
     background: url(../images/navmenu_arrows.png) 2px 5px no-repeat;
 }
 
-.navmenu .arrowBottom
+.aquery-nvamenu .arrowBottom
 {
     width: 16px;
     height: 28px;
     background: url(../images/navmenu_arrows.png) -12px 5px no-repeat;
 }
 
-.navmenu .text
+.aquery-nvamenu .text
 {
     /*width: 166px;*/
     height: 100%;
@@ -95,28 +95,28 @@
     cursor: pointer;
 }
 
-.navmenu .text_select
+.aquery-nvamenu .text_select
 {
     /*background: url(../images/navmenu_typeSelect.jpg) repeat-x;*/
     color: #d30000;
 }
-.navmenu .text_unselect
+.aquery-nvamenu .text_unselect
 {
     /*background: url(../images/navmenu_typeUnselect.jpg) repeat-x;*/
 }
 
 
-.navmenu .board
+.aquery-nvamenu .board
 {
     margin-left: 16px;
     background: url(../images/navmenu_bottomBackground.jpg) bottom repeat-x;
 }
 
-.navmenu .board .select
+.aquery-nvamenu .board .select
 {
     color: #d30000;
 }
-.navmenu .board .unselect
+.aquery-nvamenu .board .unselect
 {
     color:#6B573B;
 }

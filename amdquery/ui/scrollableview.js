@@ -39,14 +39,14 @@ aQuery.define( "ui/scrollableview", [
         display: "none",
         position: "absolute",
         bottom: "0px"
-      }, "div" ).addClass( "scrollableViewStatusBar" ).appendTo( this.target );
+      }, "div" ).addClass( "aquery-scrollableViewStatusBar" ).appendTo( this.target );
 
       this.statusBarY = $( {
         width: "10px",
         display: "none",
         position: "absolute",
         right: "0px"
-      }, "div" ).addClass( "scrollableViewStatusBar" ).appendTo( this.target );
+      }, "div" ).addClass( "aquery-scrollableViewStatusBar" ).appendTo( this.target );
 
       this.container.uiDraggable( {
         keepinner: 1,

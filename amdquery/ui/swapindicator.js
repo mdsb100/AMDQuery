@@ -25,7 +25,7 @@ aQuery.define( "ui/swapindicator", [
         display: "block",
         position: "relative",
         cursor: "pointer"
-      } ).addClass( "swapindicator" );
+      } ).addClass( "aquery-swapindicator" );
 
       this.$indicators = this.target.children( 'li' );
 
