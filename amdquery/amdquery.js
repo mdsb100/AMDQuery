@@ -219,7 +219,7 @@
       image: "welcome.gif",
       consoleStatus: false,
       debug: false,
-      development: true,
+      development: true
     }
   };
   var defineConfig = {};

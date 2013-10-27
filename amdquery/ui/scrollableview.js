@@ -421,8 +421,9 @@ aQuery.define( "ui/scrollableview", [
     },
 
     refreshPosition: function( ) {
-      this.scrollWidth = this.positionParent.scrollWidth( );
-      this.scrollHeight = this.positionParent.scrollHeight( );
+      // add Math.max to fix ie7
+      this.scrollWidth = Math.max( this.positionParent.scrollWidth( ), this.container.scrollWidth( ) );
+      this.scrollHeight = Math.max( this.positionParent.scrollHeight( ), this.container.scrollHeight( ) );
 
       this.viewportWidth = this.target.width( );
       this.viewportHeight = this.target.height( );
@@ -545,6 +546,7 @@ aQuery.define( "ui/scrollableview", [
     toHBoundary: function( left ) {
       var outer = this.outerXBoundary( left ),
         self = this;
+
       if ( outer !== null ) {
         this.container.animate( $.getPositionAnimationOptionProxy( isTransform3d, outer ), {
           duration: this.options.boundaryDruation,
@@ -587,10 +589,11 @@ aQuery.define( "ui/scrollableview", [
       return this._isAllowedDirection( "V" ) ? this.animateY( this.checkYBoundary( this.getTop( ) - s ), t, d ) : this;
     },
     animateY: function( y1, t ) {
+      var opt = $.getPositionAnimationOptionProxy( isTransform3d, undefined, y1 );
       var self = this,
-        y2 = this.checkYStatusBar( y1 );
+        y2 = this.checkYStatusBar( parseFloat( opt.top ) );
 
-      this.container.animate( $.getPositionAnimationOptionProxy( isTransform3d, undefined, y1 ), {
+      this.container.animate( opt, {
         duration: t,
         easing: "easeOut",
         complete: function( ) {
@@ -606,10 +609,12 @@ aQuery.define( "ui/scrollableview", [
       return this;
     },
     animateX: function( x1, t ) {
+      var opt = $.getPositionAnimationOptionProxy( isTransform3d, x1 );
+      //也有可能要移动之后
       var self = this,
-        x2 = this.checkXStatusBar( x1 );
+        x2 = this.checkXStatusBar( parseFloat( opt.left ) );
 
-      this.container.animate( $.getPositionAnimationOptionProxy( isTransform3d, x1 ), {
+      this.container.animate( opt, {
         duration: t,
         easing: "easeOut",
         complete: function( ) {

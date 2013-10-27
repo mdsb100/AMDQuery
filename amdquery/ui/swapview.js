@@ -47,7 +47,7 @@ aQuery.define( "ui/swapview", [
     create: function( ) {
       var opt = this.options;
 
-      this.target.uiSwappable( );
+      this.target.css( "position", "relative" ).uiSwappable( );
 
       var isHorizental = opt.orientation === horizontal;
 
@@ -58,7 +58,9 @@ aQuery.define( "ui/swapview", [
       this.$indicator = indicator.length ? indicator.uiSwapindicator( ) : null;
 
       this.container.css( {
-        dislplay: "block"
+        dislplay: "block",
+        left: "0px",
+        top: "0px"
       } ).uiDraggable( {
         keepinner: 1,
         stopPropagation: false,

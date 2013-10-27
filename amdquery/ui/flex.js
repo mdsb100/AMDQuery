@@ -412,16 +412,16 @@ aQuery.define( "ui/flex", [
             }
           } );
 
-          setTimeout( function( ) {
-            if ( !self.findParent( ) ) {
-              self.fillParent( );
-              self.render( );
-            } else {
-              if ( !self.options.initWithParent ) {
+          if ( !self.findParent( ) ) {
+            self.fillParent( );
+            self.render( );
+          } else {
+            if ( !self.options.initWithParent ) {
+              setTimeout( function( ) {
                 self.noticeParent( );
-              }
+              }, 0 );
             }
-          }, 0 );
+          }
 
           return this;
         },
