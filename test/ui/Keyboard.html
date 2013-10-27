@@ -4,13 +4,29 @@
     <title>Keyboard</title>
     <meta charset="utf-8" />
     <link href="../../css/reset.css" rel="stylesheet" type="text/css" />
-    <script src="../../amdquery/amdquery.js" type="text/javascript" amdquery="debug:false" ></script>
+    <script src="../../amdquery/amdquery.js" type="text/javascript" amdquery="debug:true" ></script>
     <script type="text/javascript">
         $.require(["ui/keyboard", "main/query", "main/event"], function (keyboard, query, event) {
             //$.ready(function () {
             var con = $("#container");
 
             con.keyboard();
+
+            con.uiKeyboard( "addKey", {
+              type: "keyup",
+              keyCode: [ "Up", "Right", "Down", "Left" ],
+              combinationKey: ["ctrl"],
+              todo: function( e ) {
+                alert( e.type );
+              }
+            } );
+
+            con.uiKeyboard( "removeKey", {
+              type: "keyup",
+              keyCode: [ "Up", "Right", "Down", "Left" ],
+              combinationKey: ["ctrl"],
+              todo: event
+            } );
 
             con.keyboard({
                 keyList: [

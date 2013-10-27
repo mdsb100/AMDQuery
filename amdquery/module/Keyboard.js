@@ -38,8 +38,8 @@
         ret;
       if ( typed.isArr( keyCode ) ) {
         for ( var i = 0, len = keyCode.length, nObj; i < len; i++ ) {
-          utilExtend.easyExtend( {}, obj );
-          nObj = obj;
+          nObj = {};
+          utilExtend.easyExtend( nObj, obj );
           nObj.keyCode = keyCode[ i ];
           this.addKey( nObj );
         }
@@ -106,9 +106,9 @@
 
         config.amdquery.debug && console.log( "keyboard.iterationKeyList", "type:code", e.type + ":" + code );
 
-        // if ( e.type == "keyup" && code == 74 ) {
-        //   debugger
-        // }
+        if ( e.type == "keyup" && code == 38 ) {
+          debugger
+        }
 
         if (
           e.type == item.type &&
