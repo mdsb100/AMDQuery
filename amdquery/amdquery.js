@@ -192,7 +192,9 @@
     amdquery: {
       define: "$",
       package: "json/package",
-      packageNames: ""
+      packageNames: "",
+      debug: false,
+      development: true
     },
     amd: {
       //同步
@@ -215,7 +217,8 @@
     app: {
       src: "",
       image: "welcome.gif",
-      consoleStatus: false
+      consoleStatus: false,
+      development: true
     }
   };
   var defineConfig = {};
