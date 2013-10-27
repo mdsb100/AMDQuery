@@ -422,8 +422,8 @@ aQuery.define( "ui/scrollableview", [
 
     refreshPosition: function( ) {
       // add Math.max to fix ie7
-      this.scrollWidth = Math.max( this.positionParent.scrollWidth( ), this.container.scrollWidth( ) );
-      this.scrollHeight = Math.max( this.positionParent.scrollHeight( ), this.container.scrollHeight( ) );
+      this.scrollWidth = client.browser.ie678 ? Math.max( this.positionParent.scrollWidth( ), this.container.scrollWidth( ) ) : this.positionParent.scrollWidth( );
+      this.scrollHeight = client.browser.ie678 ? Math.max( this.positionParent.scrollHeight( ), this.container.scrollHeight( ) ) : this.positionParent.scrollHeight( );
 
       this.viewportWidth = this.target.width( );
       this.viewportHeight = this.target.height( );
