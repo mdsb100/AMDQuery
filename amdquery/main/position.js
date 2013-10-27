@@ -473,7 +473,7 @@ aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "
       /// <para>Width:相对于整个大小</para>
       /// </summary>
       /// <returns type="Number" />
-      var width = this.height( );
+      var width = this.width( );
       return css.swap( this[ 0 ], {
         "overflow": "scroll"
       }, function( ) {
