@@ -1,6 +1,6 @@
 ﻿aQuery.define( "ui/keyboard", [ "main/object", "module/Widget", "module/Keyboard" ], function( $, object, Widget, Keyboard, undefined ) {
   "use strict"; //启用严格模式
-
+  var allowPublic = Widget.AllowPublic;
   var keyboard = Widget.extend( "ui.keyboard", {
     container: null,
     customEventName: [ ],
@@ -32,10 +32,11 @@
       this.options.keyList = this.keyboard.keyList;
     },
     publics: {
-      addKey: Widget.AllowPublic,
-      addKeys: Widget.AllowPublic,
-      changeKey: Widget.AllowPublic,
-      removeKey: Widget.AllowPublic
+      addKey: allowPublic,
+      addKeys: allowPublic,
+      changeKey: allowPublic,
+      removeKey: allowPublic,
+      removeTodo: allowPublic
     },
     addKey: function( obj ) {
       this.keyboard.addKey( obj );
@@ -54,6 +55,11 @@
     },
     removeKey: function( obj ) {
       this.keyboard.removeKey( obj );
+      this.options.keyList = this.keyboard.keyList;
+      return this;
+    },
+    removeTodo: function( obj ) {
+      this.keyboard.removeTodo( obj );
       this.options.keyList = this.keyboard.keyList;
       return this;
     },

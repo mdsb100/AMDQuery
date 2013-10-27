@@ -15,24 +15,28 @@
             con.keyboard({
                 keyList: [
                     { type: "keyup", keyCode: "Up"
-                        , fun: function (e) {
+                        , todo: function (e) {
                             alert("Up")
                         }
                     },
                     { type: "keyup", keyCode: "Down"
-                        , fun: function (e) {
+                        , todo: function (e) {
                             alert("Down")
                         }
                     }
                 ]
             });
 
+            var deleteTodo = function (e) {
+              alert("cmd+E+delete");
+            }
+
             con.keyboard({
               keyList: [
                   {
                     type: "keyup",
                     keyCode: "E",
-                    fun: function (e) {
+                    todo: function (e) {
                         alert("cmd+E");
                     },
                     combinationKey: ["cmd"]
@@ -40,7 +44,13 @@
                   {
                     type: "keyup",
                     keyCode: "E",
-                    fun: function (e) {
+                    todo: deleteTodo,
+                    combinationKey: ["cmd"]
+                  },
+                  {
+                    type: "keyup",
+                    keyCode: "E",
+                    todo: function (e) {
                         alert("cmd+shift+E");
                     },
                     combinationKey: ["cmd", "shift"]
@@ -48,11 +58,24 @@
               ]
             });
 
+            con.keyboard("removeTodo", {
+              type: "keyup",
+              keyCode: "E",
+              todo: deleteTodo,
+              combinationKey: ["cmd"]
+            });
+
+            con.keyboard("removeKey", {
+              type: "keyup",
+              keyCode: "E",
+              combinationKey: ["cmd"]
+            });
+
             con.keyboard("addKeys",
                 [{
                     type: "keyup",
                     keyCode: "J",
-                    fun: function (e) {
+                    todo: function (e) {
                         alert("ctrl+alt+J");
                     },
                     combinationKey: ["ctrl", "alt"]
@@ -60,7 +83,7 @@
                 {
                     type: "keydown",
                     keyCode: "J",
-                    fun: function (e) {
+                    todo: function (e) {
                         alert("alt+J");
                     },
                     combinationKey: ["alt"]
@@ -71,7 +94,7 @@
                 {
                     type: "keyup",
                     keyCode: "K",
-                    fun: function (e) {
+                    todo: function (e) {
                         alert("ctrl+alt+K");
                     },
                     combinationKey: ["ctrl", "alt"]
@@ -87,7 +110,7 @@
             $.keyboard({
                 type: "keydown",
                 keyCode: 13, //["enter", "Enter"],
-                fun: function (e) {
+                todo: function (e) {
                     alert("Enter");
                 }
             });

@@ -41,9 +41,6 @@
           utilExtend.easyExtend( {}, obj );
           nObj = obj;
           nObj.keyCode = keyCode[ i ];
-          //                    ret = Keyboard.createOpt(nObj);
-          //                    this._push(ret);
-          //                    ret.fun && this.addHandler(Keyboard._getHandlerName(ret), ret.fun);
           this.addKey( nObj );
         }
         return this;
@@ -55,7 +52,7 @@
         this._push( ret );
       }
 
-      ret.fun && this.on( Keyboard._getHandlerName( ret ), ret.fun );
+      ret.todo && this.on( Keyboard._getHandlerName( ret ), ret.todo );
       return this;
     },
     addKeys: function( keyList ) {
@@ -84,9 +81,13 @@
       var item, ret = Keyboard.createOpt( obj );
       if ( item = this.iterationKeyList( ret ) ) {
         this.keyList.splice( array.inArray( this.keyList, item ), 1 );
-        item.fun && this.off( Keyboard._getHandlerName( item ), item.fun );
+        this.clearHandlers( Keyboard._getHandlerName( item ) );
       }
       return this;
+    },
+    removeTodo: function( obj ) {
+      var opt = Keyboard.createOpt( obj );
+      this.off( Keyboard._getHandlerName( opt ), obj.todo );
     },
     iterationKeyList: function( e ) {
       for ( var i = 0, keyList = this.keyList, len = keyList.length, item, code, result = 0; i < len; i++ ) {
@@ -114,7 +115,7 @@
       e = event.event.document.getEvent( e );
       var item;
       if ( item = this.iterationKeyList( e ) ) {
-        //item.fun.call(this, e);i
+        //item.todo.call(this, e);i
         this.trigger( Keyboard._getHandlerName( item ), target, e );
         event.event.document.preventDefault( e );
         event.event.document.stopPropagation( e );
