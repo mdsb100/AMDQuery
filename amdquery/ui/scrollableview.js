@@ -1,5 +1,6 @@
 aQuery.define( "ui/scrollableview", [
   "base/config",
+  "base/client",
   "base/support",
   "main/query",
   "main/css",
@@ -10,12 +11,34 @@ aQuery.define( "ui/scrollableview", [
   "html5/css3",
   "html5/animate.transform",
   "html5/css3.transition.animate",
-  "ui/swappable",
-  "ui/draggable",
   "module/Widget",
   "module/FX",
   "module/animate",
-  "module/tween.extend" ], function( $, config, support, query, css, event, position, dom, cls, css3, animateTransform, css3Transition, swappable, draggable, Widget, FX, animate, tween, undefined ) {
+  "module/tween.extend",
+  "module/Keyboard",
+  "ui/swappable",
+  "ui/draggable",
+  "ui/keyboard" ], function( $,
+  config,
+  client,
+  support,
+  query,
+  css,
+  event,
+  position,
+  dom,
+  cls,
+  css3,
+  animateTransform,
+  css3Transition,
+  Widget,
+  FX,
+  animate,
+  tween,
+  Keyboard,
+  swappable,
+  draggable,
+  keyboard, undefined ) {
   "use strict"; //启用严格模式
   Widget.fetchCSS( "ui/css/scrollableview" );
   var isTransform3d = !! config.ui.isTransform3d && support.transform3d;
@@ -53,6 +76,10 @@ aQuery.define( "ui/scrollableview", [
         right: "0px"
       }, "div" ).addClass( "aquery-scrollableViewStatusBar" ).appendTo( this.target );
 
+      if ( opt.enableKeyboard ) {
+        this.target.uiKeyboard( );
+      }
+
       this.container.uiDraggable( {
         keepinner: 1,
         innerWidth: opt.boundary,
@@ -72,19 +99,47 @@ aQuery.define( "ui/scrollableview", [
     },
     event: function( ) {},
     enable: function( ) {
-      var event = this.event;
+      var event = this.event,
+        opt = this.options;
       this.container.on( "DomNodeInserted DomNodeRemoved drag.pause drag.move drag.start", event );
+      this.container.uiDraggable( "enable" );
       this.target.on( "swap.move swap.stop swap.pause", event ).touchwheel( event );
+      this.target.uiSwappable( "enable" );
       this.target.delegate( "a[href^=#]", "click", event );
-      this.options.disabled = true;
+
+      if ( opt.enableKeyboard ) {
+        this.target.uiKeyboard( "addKey", {
+          type: "keyup",
+          keyCode: [ "Up", "Right", "Down", "Left" ],
+          combinationKey: opt.combinationKey.split( /;|,/ ),
+          todo: event
+        } );
+        this.target.uiKeyboard( "enable" );
+      }
+
+      opt.disabled = true;
       return this;
     },
     disable: function( ) {
-      var event = this.event;
+      var event = this.event,
+        opt = this.options;
       this.container.off( "DomNodeInserted DomNodeRemoved drag.pause drag.move drag.start", event );
+      this.container.uiDraggable( "disable" );
       this.target.off( "swap.move swap.stop swap.pause", event ).off( "touchwheel", event );
+      this.target.uiSwappable( "disable" );
       this.target.off( "click", event );
-      this.options.disabled = false;
+
+      if ( opt.enableKeyboard ) {
+        this.target.uiKeyboard( "removeKey", {
+          type: "keyup",
+          keyCode: [ "Up", "Right", "Down", "Left" ],
+          combinationKey: opt.combinationKey.split( /;|,/ ),
+          todo: event
+        } );
+        this.target.uiKeyboard( "disable" );
+      }
+
+      opt.disabled = false;
       return this;
     },
     _initHandler: function( ) {
@@ -94,6 +149,20 @@ aQuery.define( "ui/scrollableview", [
         check = function( ) {
           self.toHBoundary( self.getLeft( ) ).toVBoundary( self.getTop( ) ).hideStatusBar( );
         };
+
+      var
+      keyItem = {
+        type: "keyup",
+        keyCode: "Up",
+        combinationKey: opt.combinationKey.split( /;|,/ )
+      },
+        keyList = [ "Up", "Right", "Down", "Left" ],
+        keyType = {};
+
+      for ( var i = keyList.length - 1; i >= 0; i-- ) {
+        keyItem.keyCode = keyList[ i ]
+        keyType[ keyList[ i ] ] = Keyboard.getHandlerName( keyItem );
+      }
 
       this.event = function( e ) {
         switch ( e.type ) {
@@ -125,6 +194,7 @@ aQuery.define( "ui/scrollableview", [
 
             break;
           case "drag.start":
+            opt.enableKeyboard && target[ 0 ].focus( );
             self.stopAnimation( );
             self.refreshPosition( ).refreshContainerSize( );
             break;
@@ -184,6 +254,19 @@ aQuery.define( "ui/scrollableview", [
             }
 
             break;
+
+          case keyType.Up:
+            self.animateY( 0, FX.normal );
+            break;
+          case keyType.Right:
+            self.animateX( -self.scrollWidth + self.viewportWidth, FX.normal );
+            break;
+          case keyType.Down:
+            self.animateY( -self.scrollHeight + self.viewportHeight, FX.normal );
+            break;
+          case keyType.Left:
+            self.animateX( 0, FX.normal );
+            break;
         }
       };
       return this;
@@ -226,7 +309,13 @@ aQuery.define( "ui/scrollableview", [
       "boundary": 150,
       "boundaryDruation": 300,
       "mouseWheelAccuracy": 0.3,
-      "pullDistance": 50
+      "pullDistance": 50,
+      "enableKeyboard": false,
+      "combinationKey": client.system.mac ? "cmd" : "ctrl"
+    },
+    setter: {
+      "enableKeyboard": Widget.initFirst,
+      "combinationKey": Widget.initFirst
     },
     publics: {
       "refreshPosition": Widget.AllowPublic,
