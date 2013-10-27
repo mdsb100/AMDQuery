@@ -1,4 +1,4 @@
-﻿aQuery.define( "module/Keyboard", [ "base/typed", "base/extend", "base/array", "main/event", "main/CustomEvent", "main/object", "hash/charcode" ], function( $, typed, utilExtend, array, event, CustomEvent, object, charcode ) {
+﻿aQuery.define( "module/Keyboard", [ "base/config", "base/typed", "base/extend", "base/array", "main/event", "main/CustomEvent", "main/object", "hash/charcode" ], function( $, config, typed, utilExtend, array, event, CustomEvent, object, charcode ) {
   "use strict"; //启用严格模式
   var Keyboard = CustomEvent.extend( "Keyboard", {
     constructor: Keyboard,
@@ -44,15 +44,12 @@
           this.addKey( nObj );
         }
         return this;
-      } else if ( typed.isStr( keyCode ) ) {
+      } else {
         ret = Keyboard.createOpt( obj );
         this._push( ret );
-      } else if ( typed.isNum( keyCode ) ) {
-        ret = obj;
-        this._push( ret );
       }
-
-      ret.todo && this.on( Keyboard._getHandlerName( ret ), ret.todo );
+      config.amdquery.debug && console.log( "keyboard.addKey", "handlerName:", Keyboard.getHandlerName( ret ) );
+      ret.todo && this.on( Keyboard.getHandlerName( ret ), ret.todo );
       return this;
     },
     addKeys: function( keyList ) {
@@ -78,16 +75,28 @@
       return this;
     },
     removeKey: function( obj ) {
-      var item, ret = Keyboard.createOpt( obj );
-      if ( item = this.iterationKeyList( ret ) ) {
-        this.keyList.splice( array.inArray( this.keyList, item ), 1 );
-        this.clearHandlers( Keyboard._getHandlerName( item ) );
+      var item, ret, keyCode = obj.keyCode;
+      if ( typed.isArr( keyCode ) ) {
+        for ( var i = 0, len = keyCode.length, nObj; i < len; i++ ) {
+          utilExtend.easyExtend( {}, obj );
+          nObj = obj;
+          nObj.keyCode = keyCode[ i ];
+          this.removeKey( nObj );
+        }
+        return this;
+      } else {
+        ret = Keyboard.createOpt( obj );
+        if ( item = this.iterationKeyList( ret ) ) {
+          this.keyList.splice( array.inArray( this.keyList, item ), 1 );
+          config.amdquery.debug && console.log( "keyboard.removeKey:", "handlerName:", Keyboard.getHandlerName( item ) );
+          this.clearHandlers( Keyboard.getHandlerName( item ) );
+        }
       }
       return this;
     },
     removeTodo: function( obj ) {
       var opt = Keyboard.createOpt( obj );
-      this.off( Keyboard._getHandlerName( opt ), obj.todo );
+      this.off( Keyboard.getHandlerName( opt ), obj.todo );
     },
     iterationKeyList: function( e ) {
       for ( var i = 0, keyList = this.keyList, len = keyList.length, item, code, result = 0; i < len; i++ ) {
@@ -95,9 +104,9 @@
 
         item = keyList[ i ];
 
-        // console.log( e.type + ":" + code )
+        config.amdquery.debug && console.log( "keyboard.iterationKeyList", "type:code", e.type + ":" + code );
 
-        // if ( e.type == "keydown" && code == 69 ) {
+        // if ( e.type == "keyup" && code == 74 ) {
         //   debugger
         // }
 
@@ -116,7 +125,13 @@
       var item;
       if ( item = this.iterationKeyList( e ) ) {
         //item.todo.call(this, e);i
-        this.trigger( Keyboard._getHandlerName( item ), target, e );
+        var type = Keyboard.getHandlerName( item );
+        config.amdquery.debug && console.log( "keyboard.routing", "handlerName", type );
+        this.trigger( type, target, {
+          type: type,
+          event: e,
+          keyItem: item
+        } );
         event.event.document.preventDefault( e );
         event.event.document.stopPropagation( e );
       }
@@ -191,13 +206,12 @@
           return 0;
         }
       }
-      //console.log(count1 + ":" + count2);
       return 1;
     },
-    _getHandlerName: function( obj ) {
-      //obj = Keyboard.createOpt(obj);
+    getHandlerName: function( obj ) {
+      obj = Keyboard.createOpt( obj );
       var combinationKey = obj.combinationKey ? obj.combinationKey.join( "+" ) + "+" : "";
-      return obj.type + "." + combinationKey + Keyboard.stringToCode( obj.keyCode );
+      return obj.type + ":" + combinationKey + Keyboard.stringToCode( obj.keyCode );
     },
     tableindex: 9000,
     cache: [ ],
