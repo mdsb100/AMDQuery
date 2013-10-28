@@ -18,7 +18,7 @@ aQuery.define( "base/extend", [ "base/typed" ], function( $, typed ) {
       /// </summary>
       /// <param name="a" type="Boolean/Object">如果设为true，则递归合并。如果为纯obj则添加到$中</param>
       /// <returns type="Object" />
-      //quote from jQuery-1.4.1 
+      //quote from jQuery-1.4.1
       var target = arguments[ 0 ] || {},
         i = 1,
         length = arguments.length,
@@ -36,7 +36,7 @@ aQuery.define( "base/extend", [ "base/typed" ], function( $, typed ) {
         i = 2;
       }
 
-      if ( !typed.isObj( target ) && !typed.isFun( target ) && !typed.isArr( target ) ) { //加了个array
+      if ( !typed.isObj( target ) && !typed.isFun( target ) ) { //加了个array && !typed.isArr( target )
         target = {};
       }
 
@@ -48,20 +48,22 @@ aQuery.define( "base/extend", [ "base/typed" ], function( $, typed ) {
       for ( ; i < length; i++ ) {
         if ( ( options = arguments[ i ] ) != null ) {
           for ( name in options ) {
-            src = target[ name ];
-            copy = options[ name ];
+            if ( options.hasOwnProperty( name ) ) {
+              src = target[ name ];
+              copy = options[ name ];
 
-            if ( target === copy ) {
-              continue;
-            }
+              if ( target === copy ) {
+                continue;
+              }
 
-            if ( deep && copy && ( typed.isPlainObj( copy ) || typed.isArr( copy ) ) ) {
-              var clone = src && ( typed.isPlainObj( src ) || typed.isArr( src ) ) ? src : typed.isArr( copy ) ? [ ] : {};
+              if ( deep && copy && ( typed.isPlainObj( copy ) || typed.isArr( copy ) ) ) {
+                var clone = src && ( typed.isPlainObj( src ) || typed.isArr( src ) ) ? src : typed.isArr( copy ) ? [ ] : {};
 
-              target[ name ] = $.extend( deep, clone, copy );
+                target[ name ] = $.extend( deep, clone, copy );
 
-            } else if ( copy !== undefined ) {
-              target[ name ] = copy;
+              } else if ( copy !== undefined ) {
+                target[ name ] = copy;
+              }
             }
           }
         }
