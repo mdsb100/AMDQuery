@@ -72,7 +72,7 @@ aQuery.define( "app/Application", [
 
         app.launch( app.index );
 
-        config.app.consoleStatus && console.log( "app load" );
+        config.app.debug && console.log( "app load" );
 
         app.trigger( "ready", app, {
           type: "ready"

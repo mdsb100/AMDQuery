@@ -42,21 +42,26 @@ aQuery.define( "app/View", [
     init: function( contollerElement, src ) {
       this._super( );
       this.topElement = this.initTopElement( src ).cloneNode( true );
-      console.log( this.topElement );
+      config.app.debug && console.log( this.topElement );
       attr.setAttr( this.topElement, "html-src", this.htmlSrc );
       this.id = attr.getAttr( contollerElement, "id" ) || null;
 
       var self = this;
       this.promise = new Promise( function( ) {
         self.onDomReady( );
-        config.app.consoleStatus && console.log( "View" + ( self.id ? " " + self.id : "" ) + " load" );
+        config.app.debug && console.log( "View" + ( self.id ? " " + self.id : "" ) + " load" );
         self.trigger( "domready", self, {
           type: "domready"
         } );
         return self;
       } );
 
-      this.replaceTo( contollerElement );
+      if ( typed.isNode( contollerElement, "controller" ) ) {
+        this.replaceTo( contollerElement );
+      } else {
+        this.appendTo( contollerElement );
+      }
+
 
       View.collection.add( this );
 

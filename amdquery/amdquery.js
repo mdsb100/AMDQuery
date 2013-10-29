@@ -217,7 +217,6 @@
     app: {
       src: "",
       image: "welcome.gif",
-      consoleStatus: false,
       debug: false,
       development: true
     }

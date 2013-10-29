@@ -21,11 +21,9 @@ aQuery.define( "app/Controller", [
   Model, undefined ) {
   "use strict"; //启用严格模式
   var Controller = CustomEvent.extend( "Controller", {
-    init: function( src, view, models ) {
+    init: function( view, models ) {
       this._super( );
       this._controllers = [ ];
-
-      this.src = src;
 
       this.id = view.id;
 
@@ -62,7 +60,7 @@ aQuery.define( "app/Controller", [
         }
       } ).then( function( ) {
         selfController.onReady( );
-        config.app.consoleStatus && console.log( "Controller" + ( selfController.id ? " " + selfController.id : "" ) + " load" );
+        config.app.debug && console.log( "Controller" + ( selfController.id ? " " + selfController.id : "" ) + " load" );
         selfController.trigger( "ready", selfController, {
           type: "ready"
         } );
@@ -137,7 +135,7 @@ aQuery.define( "app/Controller", [
             len = Controllers.length,
             readyCount = len;
           for ( ; i < len; i++ ) {
-            ret.push( new Controllers[ i ]( depend[ i ], contollersElement[ i ] ) );
+            ret.push( new Controllers[ i ]( contollersElement[ i ] ) );
             ret[ i ].ready( function( ) {
               readyCount--;
               if ( readyCount === 0 ) {
