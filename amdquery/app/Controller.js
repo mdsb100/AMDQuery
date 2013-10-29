@@ -31,17 +31,15 @@ aQuery.define( "app/Controller", [
 
       Controller.collection.add( this );
 
-      var selfController = this;
-
       this.promise = new Promise( function( ) {
         var promise = new Promise( );
-        selfController.view.domReady( function( ) {
+        this.view.domReady( function( ) {
           promise.resolve( );
         } );
         return promise;
-      } ).then( function( ) {
+      } ).withContext( this ).then( function( ) {
         var promise = new Promise( );
-        Controller.loadController( selfController.view.topElement, function( controllers ) {
+        Controller.loadController( this.view.topElement, function( controllers ) {
           promise.resolve( controllers );
         } );
         return promise;
@@ -50,16 +48,16 @@ aQuery.define( "app/Controller", [
           for ( var i = controllers.length - 1, controller; i >= 0; i-- ) {
             controller = controllers[ i ];
             if ( controller.getId( ) ) {
-              selfController[ controller.getId( ) ] = controller;
+              this[ controller.getId( ) ] = controller;
             }
           }
-          selfController._controllers = controllers;
+          this._controllers = controllers;
           return controllers;
         }
       } ).then( function( ) {
-        selfController.onReady( );
-        config.app.debug && console.log( "Controller " + ( selfController.constructor._AMD.id ) + " load" );
-        selfController.trigger( "ready", selfController, {
+        this.onReady( );
+        config.app.debug && console.log( "Controller " + ( this.constructor._AMD.id ) + " load" );
+        this.trigger( "ready", this, {
           type: "ready"
         } );
 

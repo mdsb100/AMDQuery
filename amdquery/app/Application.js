@@ -39,21 +39,20 @@ aQuery.define( "app/Application", [
         marginLeft: -$image.height( ) + "px"
       } );
 
-      var app = this;
       this.promise = new Promise( function( ) {
         var promise = new Promise;
-        app.beforeLoad( promise );
-        app.trigger( "beforeLoad", app, {
+        this.beforeLoad( promise );
+        this.trigger( "beforeLoad", this, {
           type: "beforeLoad"
         } );
         return promise;
-      } ).then( function( ) {
-        var controllerElement = app.parseRouter( );
+      } ).withContext( this ).then( function( ) {
+        var controllerElement = this.parseRouter( );
 
         return controllerElement || document.body;
 
       } ).then( function( node ) {
-        var promise = new Promise;
+        var promise = new Promise, app = this;
 
         BaseController.loadController( node, function( controllers ) {
           app.index = controllers[ 0 ];
@@ -70,11 +69,11 @@ aQuery.define( "app/Application", [
           $image = null;
         }, 1000 )
 
-        app.launch( app.index );
+        this.launch( this.index );
 
-        config.app.debug && console.log( "app " + app.constructor._AMD.id + " load" );
+        config.app.debug && console.log( "app " + this.constructor._AMD.id + " load" );
 
-        app.trigger( "ready", app, {
+        this.trigger( "ready", this, {
           type: "ready"
         } );
 

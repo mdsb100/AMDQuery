@@ -45,15 +45,14 @@ aQuery.define( "app/View", [
       config.app.debug && console.log( this.topElement );
       attr.setAttr( this.topElement, "html-src", this.htmlSrc );
 
-      var self = this;
       this.promise = new Promise( function( ) {
-        self.onDomReady( );
-        config.app.debug && console.log( "View " + self.constructor._AMD.id + " load" );
-        self.trigger( "domready", self, {
+        this.onDomReady( );
+        config.app.debug && console.log( "View " + this.constructor._AMD.id + " load" );
+        this.trigger( "domready", this, {
           type: "domready"
         } );
-        return self;
-      } );
+        return this;
+      } ).withContext( this );
 
       View.collection.add( this );
 
