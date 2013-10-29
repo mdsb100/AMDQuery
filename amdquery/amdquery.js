@@ -1574,13 +1574,17 @@
             name = "todo";
         }
 
-        return result && typeof result == "function" ? this[ name ].apply( this, result ) : this[ name ]( result );
+        return this[ name ].call( this.context, result );
       },
       get: function( propertyName ) {
         /// <summary>获得某个属性</summary>
         /// <param name="propertyName" type="String">属性名称</param>
         /// <returns type="any" />
         return this[ propertyName ];
+      },
+      withContext: function( context ) {
+        this.context = context;
+        return this;
       },
       then: function( nextToDo, nextFail, nextProgress ) {
         /// <summary>然后执行</summary>
@@ -1590,7 +1594,10 @@
         /// <para>then是不能传 path的</para>
         /// <returns type="Promise" />
         var promise = new Promise( nextToDo, nextFail, nextProgress, arguments[ 3 ] || this.path );
-        promise.parent = this; //相互应用是否有问题
+        if ( this.context !== this ) {
+          promise.withContext( this.context );
+        }
+        promise.parent = this;
         if ( this.state != "todo" ) {
           // 如果当前状态是已完成，则nextOK会被立即调用
           promise.resolve( this.result );
@@ -1609,6 +1616,7 @@
         /// <returns type="self" />
         var arg = checkArg.apply( this, arguments );
 
+        this.context = this;
         this.__promiseFlag = true;
         this.state = "todo";
         this.result = null;
