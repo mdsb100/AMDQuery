@@ -5,10 +5,6 @@ aQuery.define( "@app/controller/tabbar", [ "base/client", "app/Controller", "@ap
       this._super( new TabbarView( contollerElement ) );
 
     },
-    onReady: function( ) {
-
-
-    },
     onDestroy: function( ) {
 
     }

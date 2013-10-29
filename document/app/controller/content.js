@@ -3,13 +3,9 @@ aQuery.define( "@app/controller/content", [ "base/client", "app/Controller", "@a
   var Controller = SuperController.extend( {
     init: function( contollerElement ) {
       this._super( new ContentView( contollerElement ) );
-
-    },
-    onReady: function( ) {
       var $content = $( this.view.topElement ).find( "#content" );
 
       this.$content = $content;
-
     },
     onDestroy: function( ) {
 

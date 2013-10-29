@@ -45,17 +45,7 @@ aQuery.define( "app/View", [
       config.app.debug && console.log( this.topElement );
       attr.setAttr( this.topElement, "html-src", this.htmlSrc );
 
-      this.promise = new Promise( function( ) {
-        this.onDomReady( );
-        config.app.debug && console.log( "View " + this.constructor._AMD.id + " load" );
-        this.trigger( "domready", this, {
-          type: "domready"
-        } );
-        return this;
-      } ).withContext( this );
-
       View.collection.add( this );
-
     },
     initTopElement: function( src ) {
       src = src || ( getHtmlSrc( this.constructor._AMD.id ) + ".xml" );
@@ -64,14 +54,13 @@ aQuery.define( "app/View", [
     destroy: function( ) {
       View.collection.remove( this );
       self.remove( );
-      this.promise.destroyFromRoot( );
-      this.promise = null;
       this.topElement = null;
     },
     appendTo: function( parent ) {
       //必须appendTo 或 replaceTo 才能触发ready
       parent.appendChild( this.topElement );
       this._initWidget( );
+      config.app.debug && console.log( "View " + this.constructor._AMD.id + " appendTo" );
       return this;
     },
     replaceTo: function( element ) {
@@ -87,6 +76,7 @@ aQuery.define( "app/View", [
         };
       } catch ( e ) {}
       this._initWidget( );
+      config.app.debug && console.log( "View " + this.constructor._AMD.id + " replaceTo" );
       return this;
     },
     remove: function( ) {
@@ -100,9 +90,7 @@ aQuery.define( "app/View", [
       var self = this;
 
       if ( this.promise.unfinished( ) && this.topElement && this.topElement.parentNode ) {
-        Widget.initWidgets( this.topElement.parentNode, function( ) {
-          self.promise.resolve( );
-        } );
+        Widget.initWidgets( this.topElement.parentNode );
       }
     },
     _getModelsElement: function( ) {
@@ -125,17 +113,7 @@ aQuery.define( "app/View", [
     _timeout: 5000,
     _error: function( ) {
       $.console.error( "get " + this.htmlSrc + " error" );
-    },
-    domReady: function( fn ) {
-      // setTimeout( function( ) {
-      this.promise.and( fn );
-      // }, 0 );
-      return this;
-    },
-    onDomReady: function( ) {
-
     }
-
   }, {
     getStyle: function( path ) {
       src.link( {

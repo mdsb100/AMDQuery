@@ -30,40 +30,18 @@ aQuery.define( "app/Controller", [
       //this.models = Models || [ ];
 
       Controller.collection.add( this );
-
-      this.promise = new Promise( function( ) {
-        var promise = new Promise( );
-        this.view.domReady( function( ) {
-          promise.resolve( );
-        } );
-        return promise;
-      } ).withContext( this ).then( function( ) {
-        var promise = new Promise( );
-        Controller.loadController( this.view.topElement, function( controllers ) {
-          promise.resolve( controllers );
-        } );
-        return promise;
-      } ).then( function( controllers ) {
-        if ( controllers.length ) {
-          for ( var i = controllers.length - 1, controller; i >= 0; i-- ) {
-            controller = controllers[ i ];
-            if ( controller.getId( ) ) {
-              this[ controller.getId( ) ] = controller;
-            }
+      var controllers = Controller.loadController( this.view.topElement );
+      this._controllers = controllers;
+      if ( controllers.length ) {
+        for ( var i = controllers.length - 1, controller; i >= 0; i-- ) {
+          controller = controllers[ i ];
+          if ( controller.getId( ) ) {
+            this[ controller.getId( ) ] = controller;
           }
-          this._controllers = controllers;
-          return controllers;
         }
-      } ).then( function( ) {
-        this.onReady( );
-        config.app.debug && console.log( "Controller " + ( this.constructor._AMD.id ) + " load" );
-        this.trigger( "ready", this, {
-          type: "ready"
-        } );
+      }
 
-      } );
-
-      this.promise.rootResolve( );
+      config.app.debug && console.log( "Controller " + ( this.constructor._AMD.id ) + " load" );
 
     },
     addModels: function( models ) {
@@ -75,10 +53,6 @@ aQuery.define( "app/Controller", [
     destroy: function( ) {
       this.onDestroy( );
 
-      this.promise.destroyFromRoot( );
-
-      this.promise = null;
-
       for ( var i = this._controllers.length - 1; i >= 0; i-- ) {
         this._controllers[ i ].destroy( );
       }
@@ -86,25 +60,12 @@ aQuery.define( "app/Controller", [
       Controller.collection.removeController( this );
 
       this.view.destroy( );
-    },
-    ready: function( fn ) {
-      // var self;
-      // setTimeout( function( ) {
-      this.promise.and( fn );
-      // }, 0 );
-      return this;
-    },
-    onDestroy: function( ) {
-
-    },
-    onReady: function( ) {
-
     }
   }, {
     getView: function( ) {
 
     },
-    loadController: function( node, callback ) {
+    loadController: function( node ) {
       var contollersElement = typed.isNode( node, "controller" ) ? $( node ) : query.find( "controller", node ),
         controller = [ ];
 
@@ -137,14 +98,10 @@ aQuery.define( "app/Controller", [
             controller.view.replaceTo( contollersElement[ i ] );
             controller.id = attr.getAttr( contollersElement[ i ], "id" );
           }
-
-          Controller._promiseControllersReady( ret, callback );
-
-          //这里必须等controllers ready
-
+          return ret;
         } );
       } else {
-        callback && callback( [ ] );
+        return ret;
       }
 
     },

@@ -3,9 +3,6 @@ aQuery.define( "@app/controller/index", [ "app/Controller", "@app/view/index" ],
   var Controller = SuperController.extend( {
     init: function( contollerElement ) {
       this._super( new IndexView( contollerElement ) );
-
-    },
-    onReady: function( ) {
       var self = this;
 
       this.navmenu.on( "navmenu.select", function( e ) {

@@ -4,8 +4,6 @@ aQuery.define( "@app/controller/navmenu", [ "app/Controller", "@app/view/navmenu
     init: function( contollerElement ) {
       this._super( new NavmenuView( contollerElement ) );
 
-    },
-    onReady: function( ) {
       var controller = this;
       this.$nav = $( this.view.topElement ).find( "#nav" );
 

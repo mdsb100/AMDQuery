@@ -1,4 +1,4 @@
-aQuery.define( "@app/view/content", [ "base/client", "app/View" ], function( $, client, SuperView, undefined ) {
+aQuery.define( "@app/view/content", [ "base/client", "ui/flex", "app/View" ], function( $, client, flex, SuperView, undefined ) {
   "use strict"; //启用严格模式
   var View = SuperView.extend( {
     init: function( contollerElement ) {
