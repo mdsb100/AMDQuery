@@ -25,9 +25,7 @@ aQuery.define( "app/Controller", [
       this._super( );
       this._controllers = [ ];
 
-      this.id = view.id;
-
-      this.view = view
+      this.view = view;
       // 生成Models
       //this.models = Models || [ ];
 
@@ -36,13 +34,13 @@ aQuery.define( "app/Controller", [
       var selfController = this;
 
       this.promise = new Promise( function( ) {
-        var promise = new Promise;
+        var promise = new Promise( );
         selfController.view.domReady( function( ) {
           promise.resolve( );
         } );
         return promise;
       } ).then( function( ) {
-        var promise = new Promise;
+        var promise = new Promise( );
         Controller.loadController( selfController.view.topElement, function( controllers ) {
           promise.resolve( controllers );
         } );
@@ -50,17 +48,17 @@ aQuery.define( "app/Controller", [
       } ).then( function( controllers ) {
         if ( controllers.length ) {
           for ( var i = controllers.length - 1, controller; i >= 0; i-- ) {
-            controller = controllers[ i ]
+            controller = controllers[ i ];
             if ( controller.getId( ) ) {
               selfController[ controller.getId( ) ] = controller;
             }
-          };
+          }
           selfController._controllers = controllers;
           return controllers;
         }
       } ).then( function( ) {
         selfController.onReady( );
-        config.app.debug && console.log( "Controller" + ( selfController.id ? " " + selfController.id : "" ) + " load" );
+        config.app.debug && console.log( "Controller " + ( selfController.constructor._AMD.id ) + " load" );
         selfController.trigger( "ready", selfController, {
           type: "ready"
         } );
@@ -85,7 +83,7 @@ aQuery.define( "app/Controller", [
 
       for ( var i = this._controllers.length - 1; i >= 0; i-- ) {
         this._controllers[ i ].destroy( );
-      };
+      }
 
       Controller.collection.removeController( this );
 
@@ -132,13 +130,17 @@ aQuery.define( "app/Controller", [
           var Controllers = $.util.argToArray( arguments ),
             ret = [ ],
             i = 0,
-            len = Controllers.length;
+            len = Controllers.length,
+            controller;
 
           for ( ; i < len; i++ ) {
-            ret.push( new Controllers[ i ]( contollersElement[ i ] ) );
+            controller = new Controllers[ i ]( );
+            ret.push( controller );
+            controller.view.replaceTo( contollersElement[ i ] );
+            controller.id = attr.getAttr( contollersElement[ i ], "id" );
           }
 
-          Controller._promiseControllersReady( ret, callback )
+          Controller._promiseControllersReady( ret, callback );
 
           //这里必须等controllers ready
 
@@ -162,7 +164,7 @@ aQuery.define( "app/Controller", [
 
   var ControllerCollection = object.Collection( Controller, {} );
 
-  Controller.collection = new ControllerCollection;
+  Controller.collection = new ControllerCollection( );
 
   object.providePropertyGetSet( Controller, {
     id: "-pu -r"

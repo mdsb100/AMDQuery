@@ -44,24 +44,16 @@ aQuery.define( "app/View", [
       this.topElement = this.initTopElement( src ).cloneNode( true );
       config.app.debug && console.log( this.topElement );
       attr.setAttr( this.topElement, "html-src", this.htmlSrc );
-      this.id = attr.getAttr( contollerElement, "id" ) || null;
 
       var self = this;
       this.promise = new Promise( function( ) {
         self.onDomReady( );
-        config.app.debug && console.log( "View" + ( self.id ? " " + self.id : "" ) + " load" );
+        config.app.debug && console.log( "View " + self.constructor._AMD.id + " load" );
         self.trigger( "domready", self, {
           type: "domready"
         } );
         return self;
       } );
-
-      if ( typed.isNode( contollerElement, "controller" ) ) {
-        this.replaceTo( contollerElement );
-      } else {
-        this.appendTo( contollerElement );
-      }
-
 
       View.collection.add( this );
 
@@ -78,6 +70,7 @@ aQuery.define( "app/View", [
       this.topElement = null;
     },
     appendTo: function( parent ) {
+      //必须appendTo 或 replaceTo 才能触发ready
       parent.appendChild( this.topElement );
       this._initWidget( );
       return this;

@@ -72,7 +72,7 @@ aQuery.define( "app/Application", [
 
         app.launch( app.index );
 
-        config.app.debug && console.log( "app load" );
+        config.app.debug && console.log( "app " + app.constructor._AMD.id + " load" );
 
         app.trigger( "ready", app, {
           type: "ready"
