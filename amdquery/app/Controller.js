@@ -39,7 +39,14 @@ aQuery.define( "app/Controller", [
         return promise;
       } ).withContext( this ).then( function( ) {
         var promise = new Promise( );
-        Controller.loadController( this.view.topElement, function( controllers ) {
+        Controller.loadController( this.view.topElement, function( controllersFromDom ) {
+          promise.resolve( controllersFromDom );
+        } );
+        return promise;
+      } ).then( function( controllersFromDom ) {
+        var promise = new Promise( ),
+          controllers = controllersFromDom.concat( this.loadController( ) );
+        Controller._promiseControllersReady( controllers, function( controllers ) {
           promise.resolve( controllers );
         } );
         return promise;
@@ -65,6 +72,9 @@ aQuery.define( "app/Controller", [
 
       this.promise.rootResolve( );
 
+    },
+    loadController: function( ) {
+      return [ ];
     },
     addModels: function( models ) {
       if ( !typed.isArr( models ) ) {
@@ -138,17 +148,17 @@ aQuery.define( "app/Controller", [
             controller.id = attr.getAttr( contollersElement[ i ], "id" );
           }
 
-          Controller._promiseControllersReady( ret, callback );
-
-          //这里必须等controllers ready
+          callback( ret );
 
         } );
       } else {
-        callback && callback( [ ] );
+        callback( [ ] );
       }
-
     },
     _promiseControllersReady: function( controllers, callback ) {
+      if ( !controllers.length ) {
+        callback( [ ] );
+      }
       for ( var i = 0, len = controllers.length, readyCount = len; i < len; i++ ) {
         controllers[ i ].ready( function( ) {
           readyCount--;
