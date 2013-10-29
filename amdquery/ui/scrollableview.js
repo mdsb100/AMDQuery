@@ -241,18 +241,7 @@ aQuery.define( "ui/scrollableview", [
               href = ( $a.attr( "href" ) || "" ).replace( "#", "" ),
               //会找所有的 可能不好
               $toElement = self.target.find( "[name=" + ( href || "__undefined" ) + "]" );
-
-            if ( $toElement.length === 1 ) {
-              var top = $toElement.getTopWithTranslate3d( ),
-                left = $toElement.getLeftWithTranslate3d( );
-              if ( self._isAllowedDirection( "V" ) ) {
-                self.animateY( Math.max( -top + self.viewportHeight > 0 ? 0 : -top, -self.scrollHeight + self.viewportHeight ), FX.normal );
-              }
-              if ( self._isAllowedDirection( "H" ) ) {
-                self.animateX( Math.max( -left + self.viewportHeight > 0 ? 0 : -left, -self.scrollWidth + self.viewportWidth ), FX.normal );
-              }
-            }
-
+            self.animateToElement( $toElement );
             break;
 
           case keyType.Up:
@@ -270,6 +259,19 @@ aQuery.define( "ui/scrollableview", [
         }
       };
       return this;
+    },
+    animateToElement: function( ele ) {
+      var $toElement = $( ele );
+      if ( $toElement.length === 1 && query.contains( this.target[ 0 ], $toElement[ 0 ] ) ) {
+        var top = $toElement.getTopWithTranslate3d( ),
+          left = $toElement.getLeftWithTranslate3d( );
+        if ( this._isAllowedDirection( "V" ) ) {
+          this.animateY( Math.max( -top + this.viewportHeight > 0 ? 0 : -top, -this.scrollHeight + this.viewportHeight ), FX.normal );
+        }
+        if ( this._isAllowedDirection( "H" ) ) {
+          this.animateX( Math.max( -left + this.viewportHeight > 0 ? 0 : -left, -this.scrollWidth + this.viewportWidth ), FX.normal );
+        }
+      }
     },
     destroy: function( ) {
       if ( key ) {
@@ -323,7 +325,8 @@ aQuery.define( "ui/scrollableview", [
       "hideStatusBar": Widget.AllowPublic,
       "render": Widget.AllowPublic,
       "toH": Widget.AllowPublic,
-      "toV": Widget.AllowPublic
+      "toV": Widget.AllowPublic,
+      "animateToElement": Widget.AllowPublic
     },
     render: function( x, y, addtion, boundary ) {
       if ( !arguments.length ) {
