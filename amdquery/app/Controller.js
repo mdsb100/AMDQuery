@@ -132,18 +132,14 @@ aQuery.define( "app/Controller", [
           var Controllers = $.util.argToArray( arguments ),
             ret = [ ],
             i = 0,
-            len = Controllers.length,
-            readyCount = len;
+            len = Controllers.length;
+
           for ( ; i < len; i++ ) {
             ret.push( new Controllers[ i ]( contollersElement[ i ] ) );
-            ret[ i ].ready( function( ) {
-              readyCount--;
-              if ( readyCount === 0 ) {
-                callback( ret );
-                depend = contollersElement = null;
-              }
-            } );
           }
+
+          Controller._promiseControllersReady( ret, callback )
+
           //这里必须等controllers ready
 
         } );
@@ -151,6 +147,16 @@ aQuery.define( "app/Controller", [
         callback && callback( [ ] );
       }
 
+    },
+    _promiseControllersReady: function( controllers, callback ) {
+      for ( var i = 0, len = controllers.length, readyCount = len; i < len; i++ ) {
+        controllers[ i ].ready( function( ) {
+          readyCount--;
+          if ( readyCount === 0 ) {
+            callback( controllers );
+          }
+        } );
+      }
     }
   } );
 
