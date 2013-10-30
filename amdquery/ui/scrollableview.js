@@ -238,7 +238,7 @@ aQuery.define( "ui/scrollableview", [
             self.refreshPosition( );
 
             var $a = $( this ),
-              href = ( $a.attr( "href" ) || "" ).replace( "#", "" ),
+              href = ( $a.attr( "href" ) || "" ).replace( window.location.href, "" ).replace( "#", "" ),
               //会找所有的 可能不好
               $toElement = self.target.find( "[name=" + ( href || "__undefined" ) + "]" );
             self.animateToElement( $toElement );
