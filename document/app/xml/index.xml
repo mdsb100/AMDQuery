@@ -6,10 +6,10 @@
   </div>
   <div style="" amdquery-widget="ui.flex" ui-flex="flexDirection:row;flex:1">
     <div amdquery-widget="ui.flex" ui-flex="flexDirection:column;fillParentWidth:false" style="200px;">
-      <!-- <controller src="@app/controller/tabbar.js" id="tabbar"/> -->
+      <controller src="@app/controller/tabbar.js" id="tabbar"/>
       <controller src="@app/controller/navmenu.js" id="navmenu"/>
     </div>
-    <!-- <controller src="@app/controller/content.js" id="content"/> -->
+    <controller src="@app/controller/content.js" id="content"/>
   </div>
   <div style="width: 100%;height:50px;border-bottom:1px solid black;background-color:#CF301A;">
     <center style="line-height:50px;">

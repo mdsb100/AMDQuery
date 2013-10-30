@@ -13,14 +13,14 @@ aQuery.define( "@app/controller/index", [
       this._super( new IndexView( contollerElement ) );
       var self = this;
 
-      // this.navmenu.on( "navmenu.select", function( e ) {
-      //   self.content.loadPath( e.path );
-      // } );
-      // this.navmenu.on( "navmenu.dblclick", function( e ) {
-      //   self.content.openWindow( );
-      // } );
+      this.navmenu.on( "navmenu.select", function( e ) {
+        self.content.loadPath( e.path );
+      } );
+      this.navmenu.on( "navmenu.dblclick", function( e ) {
+        self.content.openWindow( );
+      } );
 
-      // this.navmenu.selectDefaultNavmenu();
+      this.navmenu.selectDefaultNavmenu();
     },
     onDestroy: function( ) {
       this.navmenu.clearHandlers( );

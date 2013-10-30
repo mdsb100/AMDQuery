@@ -88,9 +88,8 @@ aQuery.define( "app/Controller", [
           if ( !( ControllerModule && ControllerModule.isReady( ) ) ) {
             throw "If you Write '<Controller/>' in xml and auto init, you must define them in dependencies of controller file"
           }
-          controller = new ControllerModule.first( );
+          controller = new ControllerModule.first( element );
           ret.push( controller );
-          controller.view.replaceTo( element );
           controller.setId( attr.getAttr( element, "id" ) );
         }
 

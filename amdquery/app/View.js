@@ -44,8 +44,15 @@ aQuery.define( "app/View", [
       this.topElement = this.initTopElement( src ).cloneNode( true );
       config.app.debug && console.log( this.topElement );
       attr.setAttr( this.topElement, "html-src", this.htmlSrc );
-
       View.collection.add( this );
+
+      if ( typed.isNode( contollerElement, "controller" ) ) {
+        this.replaceTo( contollerElement );
+      } else {
+        this.appendTo( contollerElement );
+      }
+
+
     },
     initTopElement: function( src ) {
       src = src || ( getHtmlSrc( this.constructor._AMD.id ) + ".xml" );
@@ -76,9 +83,9 @@ aQuery.define( "app/View", [
         };
       } catch ( e ) {}
       var self = this;
-      setTimeout( function( ) {
-        self._initWidget( );
-      }, 0 );
+
+      self._initWidget( );
+
       config.app.debug && console.log( "View " + this.constructor._AMD.id + " replaceTo" );
       return this;
     },
