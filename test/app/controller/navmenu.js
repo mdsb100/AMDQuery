@@ -33,8 +33,13 @@ aQuery.define( "@app/controller/navmenu", [ "app/Controller", "@app/view/navmenu
 
 
     },
-    selectDefaultNavmenu: function( ) {
-      this.$nav.uiNavmenu( "selectNavItem", "ScrollableView-navItem" );
+    selectDefaultNavmenu: function( target ) {
+      var ret = "ScrollableView-navItem";
+      if ( target ) {
+        var navItem = this.$nav.uiNavmenu( "getNavItemsByHtmlPath", target.split( /\W/ ) )[ 0 ];
+        ret = navItem || ret;
+      }
+      this.$nav.uiNavmenu( "selectNavItem", ret );
     },
     onDestroy: function( ) {
       this.$nav.clearHandlers( );

@@ -1,4 +1,4 @@
-aQuery.define( "@app/controller/index", [ "app/Controller", "@app/view/index" ], function( $, SuperController, IndexView, undefined ) {
+aQuery.define( "@app/controller/index", [ "hash/locationHash", "app/Controller", "@app/view/index" ], function( $, locationHash, SuperController, IndexView, undefined ) {
   "use strict"; //启用严格模式
   var Controller = SuperController.extend( {
     init: function( contollerElement ) {
@@ -13,7 +13,7 @@ aQuery.define( "@app/controller/index", [ "app/Controller", "@app/view/index" ],
       this.navmenu.on( "navmenu.dblclick", function( e ) {
         self.content.openWindow( );
       } );
-      this.navmenu.selectDefaultNavmenu( );
+      this.navmenu.selectDefaultNavmenu( locationHash.navmenu );
     },
     onDestroy: function( ) {
       this.navmenu.clearHandlers( );

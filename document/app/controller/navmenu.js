@@ -9,10 +9,6 @@ aQuery.define( "@app/controller/navmenu", [ "app/Controller", "@app/view/navmenu
       var controller = this;
       this.$nav = $( this.view.topElement ).find( "#nav" );
 
-      var ret = this.$nav.uiNavmenu( "getNavItemsByHtml", "about AQuery" );
-
-      ret = this.$nav.uiNavmenu( "getNavItemsByHtmlPath", [ "guide", "about AQuery" ] );
-
       this.$nav.on( "navmenu.select", function( e ) {
         var target = $( e.navitem ),
           ret = target.uiNavitem( "getOptionToRoot" ),
@@ -33,8 +29,13 @@ aQuery.define( "@app/controller/navmenu", [ "app/Controller", "@app/view/navmenu
       } );
 
     },
-    selectDefaultNavmenu: function( ) {
-      this.$nav.uiNavmenu( "selectNavItem", "index_navmenu" );
+    selectDefaultNavmenu: function( target ) {
+      var ret = "index_navmenu";
+      if ( target ) {
+        var navItem = this.$nav.uiNavmenu( "getNavItemsByHtmlPath", target.split( /\W/ ) )[ 0 ];
+        ret = navItem || ret;
+      }
+      this.$nav.uiNavmenu( "selectNavItem", ret );
     },
     onDestroy: function( ) {
       this.$nav.clearHandlers( );

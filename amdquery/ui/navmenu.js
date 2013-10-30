@@ -97,34 +97,40 @@ aQuery.define( "ui/navmenu", [
         return ret;
       },
       getNavItem: function( item ) {
-        var ret, i = 0,
+        var ret = null,
+          i = 0,
           len = this.navItemList.length,
-          ele;
+          ele,
+          checkFn;
+
         if ( typed.isStr( item ) ) {
-          for ( i = 0; i < len; i++ ) {
-            ele = this.navItemList[ i ];
-            if ( attr.getAttr( ele, "id" ) === item ) {
-              ret = ele;
-              break;
-            }
-          }
+          checkFn = function( ele, item ) {
+            return attr.getAttr( ele, "id" ) === item;
+          };
+        } else if ( typed.is$( item ) ) {
+          checkFn = function( ele, item ) {
+            return ele === item[ 0 ];
+          };
         } else if ( Widget.is( "ui.navmenu", item ) ) {
-          for ( i = 0; i < len; i++ ) {
-            ele = this.navItemList[ i ];
-            if ( $( ele ).navitem( "equals", item ) ) {
-              ret = ele;
-              break;
-            }
-          }
+          checkFn = function( ele, item ) {
+            return $( ele ).navitem( "equals", item );
+          };
         } else if ( typed.isEle( item ) ) {
-          for ( i = 0; i < len; i++ ) {
-            ele = this.navItemList[ i ];
-            if ( ele === item ) {
-              ret = ele;
-              break;
-            }
+          checkFn = function( ele, item ) {
+            return ele === item
+          };
+        } else {
+          return null;
+        }
+
+        for ( i = 0; i < len; i++ ) {
+          ele = this.navItemList[ i ];
+          if ( checkFn( ele, item ) ) {
+            ret = ele;
+            break;
           }
         }
+
         return ret;
       },
       getNavItemList: function( ) {
