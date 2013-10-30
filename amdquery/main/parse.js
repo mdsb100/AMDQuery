@@ -1,4 +1,4 @@
-﻿aQuery.define( "module/parse", [ "main/dom" ], function( $, dom ) {
+﻿aQuery.define( "main/parse", [ "main/dom" ], function( $, dom ) {
 	"use strict"; //启用严格模式
 	var rsingleTag = /^<(\w+)\s*\/?>(?:<\/\1>|)$/;
 
@@ -72,15 +72,15 @@
 				}
 				return $.merge( [ ], parsed.childNodes );
 			},
-			QueryString: function( str ) {
+			QueryString: function( str, split1, split2 ) {
 				/// <summary>解析查询字符串</summary>
 				/// <param name="str" type="String/undefined">可以指定一个字符串，缺省是获得当前location</param>
 				/// <returns type="String" />
 				var qs = str || ( location.search.length > 0 ? location.search.substring( 1 ) : "" ),
 					args = {};
 				if ( qs ) {
-					$.each( qs.split( "&" ), function( item ) {
-						item = item.split( "=" );
+					$.each( qs.split( split1 || "&" ), function( item ) {
+						item = item.split( split2 || "=" );
 						args[ decodeURIComponent( item[ 0 ] ) ] = decodeURIComponent( item[ 1 ] );
 					} );
 				}
@@ -140,8 +140,6 @@
 				return parseXML;
 			} )( )
 		};
-
-	$.parse = parse;
 
 	return parse;
 } );

@@ -1,4 +1,4 @@
-﻿aQuery.define( "html5/Storage", function( $, undefined ) {
+﻿aQuery.define( "html5/Storage", [ "module/parse" ], function( $, parse, undefined ) {
   "use strict"; //启用严格模式
   var localStorage = window.localStorage || globalStorage[ location.host ],
     sessionStorage = window.sessionStorage;
@@ -12,7 +12,7 @@
     constructor: Storage,
     addChangeHandler: function( fun ) {
       /// <summary>绑定storge改变事件</summary>
-      /// <para>e.key</para> 
+      /// <para>e.key</para>
       /// <para>e.newValue</para>
       /// <para>e.oldValue</para>
       /// <para>e.url</para>
@@ -33,7 +33,7 @@
       /// <param name="key" type="String">键</param>
       /// <returns type="self" />
       var value = this.storage.getItem( key );
-      return value ? $.parseJSON( value ) : value;
+      return value ? parse.parseJSON( value ) : value;
     },
     set: function( key, value ) {
       /// <summary>储存到本地数据</summary>
@@ -63,7 +63,7 @@
       return this;
     }
   };
-  
+
   localStorage && ( $.Storage.local = new Storage( localStorage ) );
   sessionStorage && ( $.Storage.session = new Storage( sessionStorage ) );
 

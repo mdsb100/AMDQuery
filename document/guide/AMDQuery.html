@@ -224,7 +224,8 @@
                   "main/dom",
                   "main/query",
                   "main/object",
-                  "main/communicate"
+                  "main/communicate",
+                  "main/parse"
               ], function(
                   CustomeEvent,
                   data,
@@ -236,7 +237,8 @@
                   dom,
                   query,
                   object,
-                  communicate
+                  communicate,
+                  parse
               ) {
                   // require query to use
                   $( "#someElement" ).find( "ohterElement" );
@@ -297,6 +299,11 @@
                   myEvent.trigger( "dosth", this, {
                     type: "dosth"
                   } );
+
+                  // require parse to use
+                  var json = parse.JSON({
+                    name: "abc"
+                  });
 
               } );
             </pre>

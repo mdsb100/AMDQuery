@@ -8,9 +8,10 @@ aQuery.define( "app/View", [
   "main/object",
   "main/attr",
   "main/CustomEvent",
+  "main/parse",
   "module/Widget",
   "module/src",
-  "module/parse" ], function( $,
+   ], function( $,
   config,
   ClassModule,
   Promise,
@@ -20,9 +21,9 @@ aQuery.define( "app/View", [
   object,
   attr,
   CustomEvent,
+  parse,
   Widget,
-  src,
-  parse, undefined ) {
+  src, undefined ) {
   //View need require depend on Widget
   //get Style
   "use strict"; //启用严格模式

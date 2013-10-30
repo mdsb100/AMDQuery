@@ -1,4 +1,4 @@
-﻿aQuery.define( "main/communicate", [ "base/typed", "base/extend", "main/event", "module/parse" ], function( $, typed, extend, parse, undefined ) {
+﻿aQuery.define( "main/communicate", [ "base/typed", "base/extend", "main/event", "main/parse" ], function( $, typed, extend, parse, undefined ) {
   "use strict"; //启用严格模式
   var communicate = {
     ajax: function( options ) {
@@ -75,7 +75,7 @@
                   response = _ajax.responseXML;
                   if ( !response ) {
                     try {
-                      response = $.parseXML( _ajax.responseText );
+                      response = parse.parseXML( _ajax.responseText );
                     } catch ( e ) {}
                   }
                   break;
