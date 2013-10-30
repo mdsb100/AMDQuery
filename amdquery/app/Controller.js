@@ -94,16 +94,6 @@ aQuery.define( "app/Controller", [
       }
 
       return ret;
-    },
-    _promiseControllersReady: function( controllers, callback ) {
-      for ( var i = 0, len = controllers.length, readyCount = len; i < len; i++ ) {
-        controllers[ i ].ready( function( ) {
-          readyCount--;
-          if ( readyCount === 0 ) {
-            callback( controllers );
-          }
-        } );
-      }
     }
   } );
 
