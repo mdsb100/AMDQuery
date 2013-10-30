@@ -51,8 +51,6 @@ aQuery.define( "app/Controller", [
       this.models = this.models.concat( models );
     },
     destroy: function( ) {
-      this.onDestroy( );
-
       for ( var i = this._controllers.length - 1; i >= 0; i-- ) {
         this._controllers[ i ].destroy( );
       }

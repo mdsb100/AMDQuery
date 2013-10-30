@@ -5,8 +5,8 @@ aQuery.define( "@app/controller/index", [
   "@app/controller/navmenu",
   "@app/controller/content"
   ], function( $,
-    SuperController,
-    IndexView, undefined ) {
+  SuperController,
+  IndexView ) {
   "use strict"; //启用严格模式
   var Controller = SuperController.extend( {
     init: function( contollerElement ) {
@@ -20,10 +20,11 @@ aQuery.define( "@app/controller/index", [
         self.content.openWindow( );
       } );
 
-      this.navmenu.selectDefaultNavmenu();
+      this.navmenu.selectDefaultNavmenu( );
     },
-    onDestroy: function( ) {
+    destroy: function( ) {
       this.navmenu.clearHandlers( );
+      SuperController.invoke( "destroy" );
     }
   }, {
 

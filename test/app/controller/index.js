@@ -4,7 +4,7 @@ aQuery.define( "@app/controller/index", [
   "@app/controller/navmenu",
   "@app/controller/content",
   "@app/controller/router"
-  ], function( $, SuperController, IndexView, undefined ) {
+  ], function( $, SuperController, IndexView ) {
   "use strict"; //启用严格模式
   var Controller = SuperController.extend( {
     init: function( contollerElement ) {
@@ -18,8 +18,9 @@ aQuery.define( "@app/controller/index", [
       } );
       this.navmenu.selectDefaultNavmenu( );
     },
-    onDestroy: function( ) {
+    destroy: function( ) {
       this.navmenu.clearHandlers( );
+      SuperController.invoke( "destroy" );
     }
   }, {
 

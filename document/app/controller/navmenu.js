@@ -1,4 +1,4 @@
-aQuery.define( "@app/controller/navmenu", [ "app/Controller", "@app/view/navmenu" ], function( $, SuperController, NavmenuView, undefined ) {
+aQuery.define( "@app/controller/navmenu", [ "app/Controller", "@app/view/navmenu" ], function( $, SuperController, NavmenuView ) {
   "use strict"; //启用严格模式
   var Controller = SuperController.extend( {
     init: function( contollerElement ) {
@@ -34,9 +34,10 @@ aQuery.define( "@app/controller/navmenu", [ "app/Controller", "@app/view/navmenu
     selectDefaultNavmenu: function( ) {
       this.$nav.uiNavmenu( "selectNavItem", "index_navmenu" );
     },
-    onDestroy: function( ) {
+    destroy: function( ) {
       this.$nav.clearHandlers( );
       this.$nav = null;
+      SuperController.invoke( "destroy" );
     }
   }, {
 
