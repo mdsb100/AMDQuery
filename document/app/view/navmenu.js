@@ -1,4 +1,4 @@
-aQuery.define( "@app/view/navmenu", [ "base/client", "main/css", "app/View" ], function( $, client, css, SuperView, undefined ) {
+aQuery.define( "@app/view/navmenu", [ "base/client", "main/css", "app/View", "ui/flex", "ui/scrollableview", "ui/navmenu", "ui/navitem" ], function( $, client, css, SuperView ) {
   "use strict"; //启用严格模式
   var View = SuperView.extend( {
     init: function( contollerElement ) {

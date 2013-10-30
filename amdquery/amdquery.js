@@ -852,7 +852,8 @@
         return ret;
       },
       getModule: function( k ) {
-        return this.modules[ k ];
+        k = ClassModule.variable( k );
+        return ClassModule.modules[ k ];
       },
       holdon: {},
       loadDependencies: function( dependencies ) { //要改
@@ -1201,6 +1202,9 @@
       setStatus: function( status ) {
         this.status = status;
         return this;
+      },
+      isReady: function( ) {
+        return this.status === 4;
       },
       trigger: function( ) {
         var h = this.handlers[ this.id ],

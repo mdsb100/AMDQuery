@@ -1,11 +1,9 @@
-aQuery.define( "@app/controller/navmenu", [ "app/Controller", "@app/view/navmenu" ], function( $, SuperController, NavmenuView, undefined ) {
+aQuery.define( "@app/controller/navmenu", [ "app/Controller", "@app/view/navmenu" ], function( $, SuperController, NavmenuView ) {
   "use strict"; //启用严格模式
   var Controller = SuperController.extend( {
     init: function( contollerElement ) {
       this._super( new NavmenuView( contollerElement ) );
 
-    },
-    onReady: function( ) {
       var controller = this;
       this.$nav = $( this.view.topElement ).find( "#nav" );
 
@@ -30,8 +28,6 @@ aQuery.define( "@app/controller/navmenu", [ "app/Controller", "@app/view/navmenu
         } );
       } );
 
-
-
     },
     selectDefaultNavmenu: function( target ) {
       var ret = "ScrollableView-navItem";
@@ -41,9 +37,10 @@ aQuery.define( "@app/controller/navmenu", [ "app/Controller", "@app/view/navmenu
       }
       this.$nav.uiNavmenu( "selectNavItem", ret );
     },
-    onDestroy: function( ) {
+    destroy: function( ) {
       this.$nav.clearHandlers( );
       this.$nav = null;
+      SuperController.invoke( "destroy" );
     }
   }, {
 

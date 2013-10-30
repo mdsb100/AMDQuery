@@ -52,16 +52,7 @@ aQuery.define( "app/Application", [
         return controllerElement || document.body;
 
       } ).then( function( node ) {
-        var promise = new Promise, app = this;
-
-        BaseController.loadController( node, function( controllers ) {
-          app.index = controllers[ 0 ];
-          app.index.ready( function( ) {
-            promise.resolve( );
-          } );
-        } );
-
-        return promise;
+        this.index = BaseController.loadController( node )[ 0 ];
       } ).then( function( ) {
         setTimeout( function( ) {
           $cover.remove( );

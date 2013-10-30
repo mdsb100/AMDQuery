@@ -29,48 +29,19 @@ aQuery.define( "app/Controller", [
       // 生成Models
       //this.models = Models || [ ];
 
+      var controllers = Controller.loadController( this.view.topElement );
+      this._controllers = controllers;
+      if ( controllers.length ) {
+        for ( var i = controllers.length - 1, controller; i >= 0; i-- ) {
+          controller = controllers[ i ];
+          if ( controller.getId( ) ) {
+            this[ controller.getId( ) ] = controller;
+          }
+        }
+      }
       Controller.collection.add( this );
 
-      this.promise = new Promise( function( ) {
-        var promise = new Promise( );
-        this.view.domReady( function( ) {
-          promise.resolve( );
-        } );
-        return promise;
-      } ).withContext( this ).then( function( ) {
-        var promise = new Promise( );
-        Controller.loadController( this.view.topElement, function( controllersFromDom ) {
-          promise.resolve( controllersFromDom );
-        } );
-        return promise;
-      } ).then( function( controllersFromDom ) {
-        var promise = new Promise( ),
-          controllers = controllersFromDom.concat( this.loadController( ) );
-        Controller._promiseControllersReady( controllers, function( controllers ) {
-          promise.resolve( controllers );
-        } );
-        return promise;
-      } ).then( function( controllers ) {
-        if ( controllers.length ) {
-          for ( var i = controllers.length - 1, controller; i >= 0; i-- ) {
-            controller = controllers[ i ];
-            if ( controller.getId( ) ) {
-              this[ controller.getId( ) ] = controller;
-            }
-          }
-          this._controllers = controllers;
-          return controllers;
-        }
-      } ).then( function( ) {
-        this.onReady( );
-        config.app.debug && console.log( "Controller " + ( this.constructor._AMD.id ) + " load" );
-        this.trigger( "ready", this, {
-          type: "ready"
-        } );
-
-      } );
-
-      this.promise.rootResolve( );
+      config.app.debug && console.log( "Controller " + ( this.constructor._AMD.id ) + " load" );
 
     },
     loadController: function( ) {
@@ -83,12 +54,6 @@ aQuery.define( "app/Controller", [
       this.models = this.models.concat( models );
     },
     destroy: function( ) {
-      this.onDestroy( );
-
-      this.promise.destroyFromRoot( );
-
-      this.promise = null;
-
       for ( var i = this._controllers.length - 1; i >= 0; i-- ) {
         this._controllers[ i ].destroy( );
       }
@@ -96,27 +61,15 @@ aQuery.define( "app/Controller", [
       Controller.collection.removeController( this );
 
       this.view.destroy( );
-    },
-    ready: function( fn ) {
-      // var self;
-      // setTimeout( function( ) {
-      this.promise.and( fn );
-      // }, 0 );
-      return this;
-    },
-    onDestroy: function( ) {
-
-    },
-    onReady: function( ) {
-
     }
   }, {
     getView: function( ) {
 
     },
-    loadController: function( node, callback ) {
+    loadController: function( node ) {
       var contollersElement = typed.isNode( node, "controller" ) ? $( node ) : query.find( "controller", node ),
-        controller = [ ];
+        controller = [ ],
+        ret = [ ];
 
       if ( contollersElement.length ) {
         var
@@ -124,49 +77,25 @@ aQuery.define( "app/Controller", [
           src,
           i = 0,
           len = contollersElement.length,
-          depend = [ ];
+          ControllerModule = null,
+          Controller = null;
 
         for ( ; i < len; i++ ) {
           element = contollersElement[ i ];
           element.style.display = "block";
           src = attr.getAttr( element, "src" );
           src = $.util.removeSuffix( src );
-          depend.push( src );
+          ControllerModule = ClassModule.getModule( src );
+          if ( !( ControllerModule && ControllerModule.isReady( ) ) ) {
+            throw "If you Write '<Controller/>' in xml and auto init, you must define them in dependencies of controller file"
+          }
+          controller = new ControllerModule.first( element );
+          ret.push( controller );
+          controller.setId( attr.getAttr( element, "id" ) );
         }
 
-        require( depend, function( ) {
-          var Controllers = $.util.argToArray( arguments ),
-            ret = [ ],
-            i = 0,
-            len = Controllers.length,
-            controller;
-
-          for ( ; i < len; i++ ) {
-            controller = new Controllers[ i ]( );
-            ret.push( controller );
-            controller.view.replaceTo( contollersElement[ i ] );
-            controller.id = attr.getAttr( contollersElement[ i ], "id" );
-          }
-
-          callback( ret );
-
-        } );
-      } else {
-        callback( [ ] );
       }
-    },
-    _promiseControllersReady: function( controllers, callback ) {
-      if ( !controllers.length ) {
-        callback( [ ] );
-      }
-      for ( var i = 0, len = controllers.length, readyCount = len; i < len; i++ ) {
-        controllers[ i ].ready( function( ) {
-          readyCount--;
-          if ( readyCount === 0 ) {
-            callback( controllers );
-          }
-        } );
-      }
+      return ret;
     }
   } );
 
@@ -175,7 +104,7 @@ aQuery.define( "app/Controller", [
   Controller.collection = new ControllerCollection( );
 
   object.providePropertyGetSet( Controller, {
-    id: "-pu -r"
+    id: "-pu -r -w"
   } );
 
   return Controller;
