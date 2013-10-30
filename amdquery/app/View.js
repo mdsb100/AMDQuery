@@ -75,7 +75,10 @@ aQuery.define( "app/View", [
           }
         };
       } catch ( e ) {}
-      this._initWidget( );
+      var self = this;
+      setTimeout( function( ) {
+        self._initWidget( );
+      }, 0 );
       config.app.debug && console.log( "View " + this.constructor._AMD.id + " replaceTo" );
       return this;
     },
@@ -89,7 +92,7 @@ aQuery.define( "app/View", [
     _initWidget: function( ) {
       var self = this;
 
-      if ( this.promise.unfinished( ) && this.topElement && this.topElement.parentNode ) {
+      if ( this.topElement && this.topElement.parentNode ) {
         Widget.initWidgets( this.topElement.parentNode );
       }
     },
@@ -149,7 +152,7 @@ aQuery.define( "app/View", [
   View.collection = new ViewCollection;
 
   object.providePropertyGetSet( View, {
-    id: "-pu -r"
+    id: "-pu -r -w"
   } );
 
   return View;

@@ -1,4 +1,4 @@
-.aquery-nvamenu
+.aquery-navmenu
 {
     /*text-align: center;*/
     background-color: White;
@@ -17,46 +17,46 @@
     /*position: absolute;*/
 }
 
-.aquery-nvamenu ul{
+.aquery-navmenu ul{
     float: left;
 }
 
-.aquery-nvamenu .img{
+.aquery-navmenu .img{
     width: 16px;
     height: 28px;
     cursor: pointer;
 }
 
-.aquery-nvamenu .module{
+.aquery-navmenu .module{
     background: url(../images/icons.png) 0px -35px no-repeat;
 }
 
-.aquery-nvamenu .class{
+.aquery-navmenu .class{
     background: url(../images/icons.png) 0px -74px no-repeat;
 }
 
-.aquery-nvamenu .file{
+.aquery-navmenu .file{
     background: url(../images/icons.png) -2px -472px no-repeat;
 }
 
-.aquery-nvamenu .item
+.aquery-navmenu .item
 {
     height: auto;
     font: 24px Arial, "\5FAE\8F6F\96C5\9ED1";
 }
 
-.aquery-nvamenu .title:link {}
-.aquery-nvamenu .title:visited {}
-.aquery-nvamenu .title:hover /*改成shell就一起变了*/
+.aquery-navmenu .title:link {}
+.aquery-navmenu .title:visited {}
+.aquery-navmenu .title:hover /*改成shell就一起变了*/
 {
     color: #d30000;
 }
-.aquery-nvamenu .title:active
+.aquery-navmenu .title:active
 {
 
 }
 
-.aquery-nvamenu .title
+.aquery-navmenu .title
 {
     height: 28px;
     text-align: left;
@@ -67,27 +67,27 @@
     color: #6B573B;
 }
 
-.aquery-nvamenu .arrow{
+.aquery-navmenu .arrow{
     width: 16px;
     height: 28px;
     cursor: pointer;
 }
 
-.aquery-nvamenu .arrowRight
+.aquery-navmenu .arrowRight
 {
     width: 16px;
     height: 28px;
     background: url(../images/navmenu_arrows.png) 2px 5px no-repeat;
 }
 
-.aquery-nvamenu .arrowBottom
+.aquery-navmenu .arrowBottom
 {
     width: 16px;
     height: 28px;
     background: url(../images/navmenu_arrows.png) -12px 5px no-repeat;
 }
 
-.aquery-nvamenu .text
+.aquery-navmenu .text
 {
     /*width: 166px;*/
     height: 100%;
@@ -95,28 +95,28 @@
     cursor: pointer;
 }
 
-.aquery-nvamenu .text_select
+.aquery-navmenu .text_select
 {
     /*background: url(../images/navmenu_typeSelect.jpg) repeat-x;*/
     color: #d30000;
 }
-.aquery-nvamenu .text_unselect
+.aquery-navmenu .text_unselect
 {
     /*background: url(../images/navmenu_typeUnselect.jpg) repeat-x;*/
 }
 
 
-.aquery-nvamenu .board
+.aquery-navmenu .board
 {
     margin-left: 16px;
     background: url(../images/navmenu_bottomBackground.jpg) bottom repeat-x;
 }
 
-.aquery-nvamenu .board .select
+.aquery-navmenu .board .select
 {
     color: #d30000;
 }
-.aquery-nvamenu .board .unselect
+.aquery-navmenu .board .unselect
 {
     color:#6B573B;
 }

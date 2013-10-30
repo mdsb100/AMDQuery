@@ -29,7 +29,6 @@ aQuery.define( "app/Controller", [
       // 生成Models
       //this.models = Models || [ ];
 
-      Controller.collection.add( this );
       var controllers = Controller.loadController( this.view.topElement );
       this._controllers = controllers;
       if ( controllers.length ) {
@@ -40,6 +39,7 @@ aQuery.define( "app/Controller", [
           }
         }
       }
+      Controller.collection.add( this );
 
       config.app.debug && console.log( "Controller " + ( this.constructor._AMD.id ) + " load" );
 
@@ -67,7 +67,8 @@ aQuery.define( "app/Controller", [
     },
     loadController: function( node ) {
       var contollersElement = typed.isNode( node, "controller" ) ? $( node ) : query.find( "controller", node ),
-        controller = [ ];
+        controller = [ ],
+        ret = [ ];
 
       if ( contollersElement.length ) {
         var
@@ -75,35 +76,27 @@ aQuery.define( "app/Controller", [
           src,
           i = 0,
           len = contollersElement.length,
-          depend = [ ];
+          ControllerModule = null,
+          Controller = null;
 
         for ( ; i < len; i++ ) {
           element = contollersElement[ i ];
           element.style.display = "block";
           src = attr.getAttr( element, "src" );
           src = $.util.removeSuffix( src );
-          depend.push( src );
+          ControllerModule = ClassModule.getModule( src );
+          if ( !( ControllerModule && ControllerModule.isReady( ) ) ) {
+            throw "If you Write '<Controller/>' in xml and auto init, you must define them in dependencies of controller file"
+          }
+          controller = new ControllerModule.first( );
+          ret.push( controller );
+          controller.view.replaceTo( element );
+          controller.setId( attr.getAttr( element, "id" ) );
         }
 
-        require( depend, function( ) {
-          var Controllers = $.util.argToArray( arguments ),
-            ret = [ ],
-            i = 0,
-            len = Controllers.length,
-            controller;
-
-          for ( ; i < len; i++ ) {
-            controller = new Controllers[ i ]( );
-            ret.push( controller );
-            controller.view.replaceTo( contollersElement[ i ] );
-            controller.id = attr.getAttr( contollersElement[ i ], "id" );
-          }
-          return ret;
-        } );
-      } else {
-        return ret;
       }
 
+      return ret;
     },
     _promiseControllersReady: function( controllers, callback ) {
       for ( var i = 0, len = controllers.length, readyCount = len; i < len; i++ ) {
@@ -122,7 +115,7 @@ aQuery.define( "app/Controller", [
   Controller.collection = new ControllerCollection( );
 
   object.providePropertyGetSet( Controller, {
-    id: "-pu -r"
+    id: "-pu -r -w"
   } );
 
   return Controller;
