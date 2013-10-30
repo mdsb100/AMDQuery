@@ -1,4 +1,4 @@
-aQuery.define( "@app/view/index", [ "app/View" ], function( $, SuperView, undefined ) {
+aQuery.define( "@app/view/index", [ "app/View", "ui/flex" ], function( $, SuperView ) {
   "use strict"; //启用严格模式
   var htmlSrc = "@app/xml/index";
 

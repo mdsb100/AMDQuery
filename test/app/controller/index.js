@@ -1,11 +1,14 @@
-aQuery.define( "@app/controller/index", [ "app/Controller", "@app/view/index" ], function( $, SuperController, IndexView, undefined ) {
+aQuery.define( "@app/controller/index", [
+  "app/Controller",
+  "@app/view/index",
+  "@app/controller/navmenu",
+  "@app/controller/content",
+  "@app/controller/router"
+  ], function( $, SuperController, IndexView, undefined ) {
   "use strict"; //启用严格模式
   var Controller = SuperController.extend( {
     init: function( contollerElement ) {
       this._super( new IndexView( contollerElement ) );
-
-    },
-    onReady: function( ) {
       var self = this;
       this.navmenu.on( "navmenu.select", function( e ) {
         self.content.loadPath( e.path );
