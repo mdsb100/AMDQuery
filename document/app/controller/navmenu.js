@@ -1,4 +1,4 @@
-aQuery.define( "@app/controller/navmenu", [ "app/Controller", "@app/view/navmenu" ], function( $, SuperController, NavmenuView ) {
+aQuery.define( "@app/controller/navmenu", [ "hash/locationHash", "app/Controller", "@app/view/navmenu" ], function( $, locationHash, SuperController, NavmenuView ) {
   "use strict"; //启用严格模式
   var Controller = SuperController.extend( {
     init: function( contollerElement ) {
@@ -14,6 +14,11 @@ aQuery.define( "@app/controller/navmenu", [ "app/Controller", "@app/view/navmenu
         if ( ret.length > 1 ) {
           ret.push( "document", ".." );
           path = $.getPath( ret.reverse( ).join( "/" ), ".html" );
+
+          if ( locationHash.scrollTo ) {
+            path += "#scrollTo=" + locationHash.scrollTo;
+          }
+
           controller.trigger( "navmenu.select", controller, {
             type: "navmenu.select",
             path: path
