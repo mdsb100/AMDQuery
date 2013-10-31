@@ -1933,7 +1933,7 @@
 
         var promise = new Promise;
         require( _config.app.src, function( Application ) {
-          $.application = new Application( promise );
+          new Application( promise );
         } );
         return promise;
       }

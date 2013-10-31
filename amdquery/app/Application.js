@@ -3,6 +3,7 @@ aQuery.define( "app/Application", [
   "base/ClassModule",
   "base/Promise",
   "base/typed",
+  "base/extend",
   "main/CustomEvent",
   "main/object",
   "main/query",
@@ -10,11 +11,17 @@ aQuery.define( "app/Application", [
   "app/Model",
   "app/View",
   "app/Controller",
-  "ecma5/array.compati" ], function( $, config, ClassModule, Promise, typed, CustomEvent, object, query, attr, BaseModel, BaseView, BaseController, Array, undefined ) {
+  "ecma5/array.compati" ], function( $, config, ClassModule, Promise, typed, utilExtend, CustomEvent, object, query, attr, BaseModel, BaseView, BaseController, Array, undefined ) {
   "use strict"; //启用严格模式
   var Application = CustomEvent.extend( "Application", {
     init: function( promiseCallback ) {
       this._super( );
+
+      $.application = this;
+
+      this.global = {};
+
+      utilExtend.easyExtend( this.global, this.constructor.global || {} );
 
       this._routerMap = {};
 

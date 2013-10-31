@@ -9,7 +9,9 @@ aQuery.define( "@app/app", [ "app/Application", "@app/controller/index" ], funct
 
     }
   }, {
+    global: {
 
+    }
   }, Application );
 
   return app;
