@@ -1,4 +1,5 @@
 aQuery.define( "ui/tabbar", [
+    "base/typed",
     "module/Widget",
     "ui/tabbutton",
     "main/query",
@@ -9,7 +10,7 @@ aQuery.define( "ui/tabbar", [
     "main/dom",
     "main/attr"
   ],
-  function( $, Widget, tabbutton, query, cls, event, css, position, dom, attr ) {
+  function( $, typed, Widget, tabbutton, query, cls, event, css, position, dom, attr ) {
     "use strict"; //启用严格模式
 
     Widget.fetchCSS( "ui/css/tabbar" );
@@ -20,20 +21,38 @@ aQuery.define( "ui/tabbar", [
       _initHandler: function( ) {
         var self = this;
         this.event = function( e ) {
-          self.$tabButtons.uiTabbutton( "option", "select", false );
-          $( this ).uiTabbutton( "option", "select", true );
-
+          var $button = $( this );
+          self.select( $button );
           var para = {
             type: self.getEventName( "click" ),
             container: self.container,
             target: self.target[ 0 ],
             tabButton: this,
+            index: $button.index( ),
             event: e
           };
 
           self.target.trigger( para.type, self.target[ 0 ], para );
         };
         return this;
+      },
+      select: function( ele ) {
+        var $button = typed.isNum( ele ) ? this.$tabButtons.eq( ele ) : $( ele );
+        this.$tabButtons.uiTabbutton( "option", "select", false );
+        $button.uiTabbutton( "option", "select", true );
+      },
+      render: function( ) {
+        this.select( this.options.index );
+      },
+      getSelectionIndex: function( ) {
+        var SelectionIndex = 0
+        this.$tabButtons.each( function( ele, index ) {
+          if ( $( ele ).uiTabbutton( "option", "select" ) ) {
+            SelectionIndex = index;
+            return false
+          }
+        } );
+        return SelectionIndex;
       },
       enable: function( ) {
         this.disable( );
@@ -52,21 +71,24 @@ aQuery.define( "ui/tabbar", [
         this.target.css( {
           "border-top": "1px solid black",
           "border-bottom": "1px solid black",
-          "border-right": "1px solid black",
-          "float": "left"
+          "border-right": "1px solid black"
         } );
 
         this.target.addClass( "aquery-tabbar" );
 
-        this.$tabButtons = target.find( "*[ui-tabbutton]" );
+        this.$tabButtons = target.find( "*[amdquery-widget*='ui.tabbutton']" );
 
-        this._initHandler( ).enable( );
+        this.$tabButtons.uiTabbutton( );
+
+        this.options.index = this.getSelectionIndex( );
+
+        this._initHandler( ).enable( ).render( );
 
         return this;
       },
       customEventName: [ ],
       options: {
-
+        index: 0
       },
       getter: {
 
@@ -75,13 +97,15 @@ aQuery.define( "ui/tabbar", [
 
       },
       publics: {
-
+        select: Widget.AllowPublic,
+        getSelectionIndex: Widget.AllowReturn
       },
       target: null,
       toString: function( ) {
         return "ui.tabbar";
       },
-      widgetEventPrefix: "tabbar"
+      widgetEventPrefix: "tabbar",
+      initIgnore: true
     } );
 
     //提供注释

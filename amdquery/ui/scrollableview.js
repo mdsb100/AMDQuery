@@ -289,7 +289,7 @@ aQuery.define( "ui/scrollableview", [
 
       this.originOverflow = this.target.css( "overflow" );
 
-      this.target.attr( "amdquery-ui", "scrollableview" );
+      // this.target.attr( "amdquery-ui", "scrollableview" );
       this.target.css( {
         "overflow": "hidden",
         /*fix ie*/

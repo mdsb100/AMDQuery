@@ -162,7 +162,7 @@ aQuery.define( "ui/navitem", [
         return this.target.trigger( para.type, this.target[ 0 ], para );
       },
       hasChild: function( ) {
-        return !!this.target.find( "li[ui-navitem]" ).length;
+        return !!this.target.find( "li[amdquery-widget*='ui.navitem']" ).length;
       },
       detectParent: function( ) {
         var parentNavitem = this.target.parent( ).parent( ),

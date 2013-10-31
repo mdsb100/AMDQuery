@@ -54,7 +54,7 @@ aQuery.define( "ui/swapview", [
       this.container = this.target.children( "ol" ).eq( 0 );
 
       this.$views = this.container.children( "li" );
-      var indicator = this.target.children( 'ol[ui-swapindicator]' ).eq( 0 );
+      var indicator = this.target.children( "ol[amdquery-widget*='ui-swapindicator']" ).eq( 0 );
       this.$indicator = indicator.length ? indicator.uiSwapindicator( ) : null;
 
       this.container.css( {
@@ -167,11 +167,11 @@ aQuery.define( "ui/swapview", [
           animationEvent.type = "afterAnimation";
           self.target.trigger( animationEvent.type, animationEvent.target, animationEvent );
           if ( originIndex !== index ) {
-            deactiveView.trigger( "deactive", deactiveView[ index ], {
+            deactiveView.trigger( "deactive", deactiveView[ 0 ], {
               type: "deactive"
             } );
-            activeView.trigger( "active", activeView[ index ], {
-              type: "deactive"
+            activeView.trigger( "active", activeView[ 0 ], {
+              type: "active"
             } );
           }
         }

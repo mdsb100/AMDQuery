@@ -371,7 +371,7 @@ aQuery.define( "ui/flex", [
           }
         },
         findParent: function( ) {
-          var parent = this.target.parent( "[ui-flex]" );
+          var parent = this.target.parent( "*[amdquery-widget*='ui.flex']" );
           if ( parent.length && parent[ 0 ] === this.target[ 0 ].parentNode ) {
             return parent;
           }
