@@ -302,6 +302,13 @@ aQuery.define( "ui/scrollableview", [
         this.target.css( "position", "relative" );
       }
 
+      if ( this.options.firstToElement ) {
+        var self = this;
+        setTimeout( function( ) {
+          self.animateToElement( self.options.firstToElement );
+        }, 0 );
+      }
+
       return this.create( )._initHandler( ).enable( ).render( 0, 0 );
     },
     customEventName: [ "pulldown", "pullup", "pullleft", "pullright", "animationEnd" ],
@@ -313,20 +320,22 @@ aQuery.define( "ui/scrollableview", [
       "mouseWheelAccuracy": 0.3,
       "pullDistance": 50,
       "enableKeyboard": false,
-      "combinationKey": client.system.mac ? "cmd" : "ctrl"
+      "combinationKey": client.system.mac ? "cmd" : "ctrl",
+      "firstToElement": ""
     },
     setter: {
       "enableKeyboard": Widget.initFirst,
-      "combinationKey": Widget.initFirst
+      "combinationKey": Widget.initFirst,
+      "firstToElement": Widget.initFirst
     },
     publics: {
       "refreshPosition": Widget.AllowPublic,
       "showStatusBar": Widget.AllowPublic,
       "hideStatusBar": Widget.AllowPublic,
       "render": Widget.AllowPublic,
+      "animateToElement": Widget.AllowPublic,
       "toH": Widget.AllowPublic,
-      "toV": Widget.AllowPublic,
-      "animateToElement": Widget.AllowPublic
+      "toV": Widget.AllowPublic
     },
     render: function( x, y, addtion, boundary ) {
       if ( !arguments.length ) {
