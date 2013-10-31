@@ -82,6 +82,7 @@ aQuery.define( "app/Controller", [
 
         for ( ; i < len; i++ ) {
           element = contollersElement[ i ];
+          //fix ie678
           element.style.display = "block";
           src = attr.getAttr( element, "src" );
           src = $.util.removeSuffix( src );
