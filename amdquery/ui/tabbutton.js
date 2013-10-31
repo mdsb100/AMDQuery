@@ -91,7 +91,8 @@ aQuery.define( "ui/tabbutton", [
       toString: function( ) {
         return "ui.tabbutton";
       },
-      widgetEventPrefix: "tabbutton"
+      widgetEventPrefix: "tabbutton",
+      initIgnore: true
     } );
 
     //提供注释

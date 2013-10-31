@@ -65,6 +65,12 @@ aQuery.define( "ui/tabview", [
             type: "active"
           } );
 
+          var eventName = this.getEventName( "select" );
+
+          this.target.trigger( eventName, this.target[ 0 ], {
+            type: eventName,
+            index: index
+          } );
         }
       },
       init: function( opt, target ) {
@@ -86,7 +92,7 @@ aQuery.define( "ui/tabview", [
 
         return this;
       },
-      customEventName: [ ],
+      customEventName: [ "select" ],
       options: {
         index: 0
       },

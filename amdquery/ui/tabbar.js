@@ -86,7 +86,7 @@ aQuery.define( "ui/tabbar", [
 
         return this;
       },
-      customEventName: [ ],
+      customEventName: [ "click" ],
       options: {
         index: 0
       },
@@ -104,8 +104,7 @@ aQuery.define( "ui/tabbar", [
       toString: function( ) {
         return "ui.tabbar";
       },
-      widgetEventPrefix: "tabbar",
-      initIgnore: true
+      widgetEventPrefix: "tabbar"
     } );
 
     //提供注释
