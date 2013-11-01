@@ -67,7 +67,7 @@ aQuery.define( "app/View", [
     appendTo: function( parent ) {
       //必须appendTo 或 replaceTo 才能触发ready
       parent.appendChild( this.topElement );
-      this._initWidget( );
+      // this._initWidget( );
       config.app.debug && console.log( "View " + this.constructor._AMD.id + " appendTo" );
       return this;
     },
@@ -85,7 +85,7 @@ aQuery.define( "app/View", [
       } catch ( e ) {}
       var self = this;
 
-      self._initWidget( );
+      // self._initWidget( );
 
       config.app.debug && console.log( "View " + this.constructor._AMD.id + " replaceTo" );
       return this;
@@ -97,7 +97,7 @@ aQuery.define( "app/View", [
       }
       return this;
     },
-    _initWidget: function( ) {
+    initWidget: function( ) {
       var self = this;
 
       if ( this.topElement && this.topElement.parentNode ) {

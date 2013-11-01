@@ -1,4 +1,4 @@
-aQuery.define( "@app/view/index", [ "app/View", "ui/flex" ], function( $, SuperView ) {
+aQuery.define( "@app/view/index", [ "app/View", "ui/flex", "ui/tabview" ], function( $, SuperView ) {
   "use strict"; //启用严格模式
   SuperView.getStyle( "@app/css/reset" );
 

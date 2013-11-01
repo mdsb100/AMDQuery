@@ -5,9 +5,14 @@
     </center>
   </div>
   <div style="" amdquery-widget="ui.flex" ui-flex="flexDirection:row;flex:1">
-    <div amdquery-widget="ui.flex" ui-flex="flexDirection:column;fillParentWidth:false" style="200px;">
-      <controller src="@app/controller/tabbar.js" id="tabbar"/>
+    <div amdquery-widget="ui.flex;ui.tabview" ui-flex="flexDirection:column;fillParentWidth:false" style="width:200px;">
+      <div id="TabBar" amdquery-widget="ui.tabbar;" style="width:200px;height:30px">
+        <div id="button1" style="width:100px;height:30px;border:0;" amdquery-widget="ui.tabbutton" ui-tabbutton="text:document;title:document;select:true" ></div>
+        <div id="button2" style="width:100px;height:30px;border:0;" amdquery-widget="ui.tabbutton" ui-tabbutton="text:api;title:api" ></div>
+      </div>
       <controller src="@app/controller/navmenu.js" id="navmenu"/>
+      <div ui-flex="fillParentWidth:false;flex:1" widget="ui.flex;" style="width:200px;background-color:red">
+      </div>
     </div>
     <controller src="@app/controller/content.js" id="content"/>
   </div>

@@ -41,6 +41,8 @@ aQuery.define( "app/Controller", [
       }
       Controller.collection.add( this );
 
+      this.view.initWidget( );
+
       config.app.debug && console.log( "Controller " + ( this.constructor._AMD.id ) + " load" );
 
     },

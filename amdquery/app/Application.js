@@ -65,7 +65,7 @@ aQuery.define( "app/Application", [
           $cover.remove( );
           $cover = null;
           $image = null;
-        }, 1000 )
+        }, 1000 );
 
         this.launch( this.index );
 
@@ -84,7 +84,7 @@ aQuery.define( "app/Application", [
     },
     getAppRelativePath: function( path ) {
       if ( path ) {
-        path = path.indexOf( "/" ) == 0 ? "" : "/" + path;
+        path = path.indexOf( "/" ) === 0 ? "" : "/" + path;
         return ClassModule.variable( "app" ) + path;
       } else {
         return "";
@@ -99,7 +99,7 @@ aQuery.define( "app/Application", [
     },
     parseRouter: function( ) {
       var hash = window.location.hash,
-        ret = hash.match( /\$(.*)\$/ )
+        ret = hash.match( /\$(.*)\$/ );
         if ( ret && ret.length > 1 ) {
           var controllerSrc = this._routerMap[ ret[ 1 ] ];
           if ( controllerSrc ) {
