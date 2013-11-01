@@ -1,8 +1,8 @@
 aQuery.define( "@app/controller/content", [ "base/client", "app/Controller", "@app/view/content" ], function( $, client, SuperController, ContentView ) {
   "use strict"; //启用严格模式
   var Controller = SuperController.extend( {
-    init: function( contollerElement ) {
-      this._super( new ContentView( contollerElement ) );
+    init: function( contollerElement, models ) {
+      this._super( new ContentView( contollerElement ), models );
       var $content = $( this.view.topElement ).find( "#content" );
 
       this.$content = $content;

@@ -1,8 +1,8 @@
 aQuery.define( "@app/controller/navmenu", [ "app/Controller", "@app/view/navmenu" ], function( $, SuperController, NavmenuView ) {
   "use strict"; //启用严格模式
   var Controller = SuperController.extend( {
-    init: function( contollerElement ) {
-      this._super( new NavmenuView( contollerElement ) );
+    init: function( contollerElement, models ) {
+      this._super( new NavmenuView( contollerElement ), models );
 
       var controller = this;
       this.$nav = $( this.view.topElement ).find( "#nav" );

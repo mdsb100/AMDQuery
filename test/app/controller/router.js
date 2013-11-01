@@ -2,7 +2,7 @@ aQuery.define( "@app/controller/router", [ "app/Controller", "@app/view/router" 
   "use strict"; //启用严格模式
   var Controller = SuperController.extend( {
     init: function( contollerElement ) {
-      this._super( new IndexView( contollerElement ) );
+      this._super( new IndexView( contollerElement ), models );
       var self = this;
       this.navmenu.on( "navmenu.select", function( e ) {
         self.content.loadPath( e.path );

@@ -8,8 +8,8 @@ aQuery.define( "@app/controller/index", [
   ], function( $, locationHash, SuperController, IndexView ) {
   "use strict"; //启用严格模式
   var Controller = SuperController.extend( {
-    init: function( contollerElement ) {
-      this._super( new IndexView( contollerElement ) );
+    init: function( contollerElement, models ) {
+      this._super( new IndexView( contollerElement ), models );
       var self = this;
       this.navmenu.on( "navmenu.select", function( e ) {
         self.content.loadPath( e.path );
