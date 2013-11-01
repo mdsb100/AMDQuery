@@ -7,9 +7,10 @@ aQuery.define( "ui/tabview", [
     "main/dom",
     "main/attr",
     "module/Widget",
+    "ui/tabbar",
     "ui/tabbutton"
   ],
-  function( $, query, cls, event, css, position, dom, attr, Widget, tabbutton ) {
+  function( $, query, cls, event, css, position, dom, attr, Widget, tabbar, tabbutton ) {
     "use strict"; //启用严格模式
 
     // Widget.fetchCSS( "ui/css/tabview" );
@@ -111,11 +112,6 @@ aQuery.define( "ui/tabview", [
       },
       widgetEventPrefix: "tabview"
     } );
-
-    //提供注释
-    $.fn.uiTabbar = function( a, b, c, args ) {
-      return tabview.apply( this, arguments );
-    };
 
     return tabview;
   } );

@@ -107,10 +107,5 @@ aQuery.define( "ui/tabbar", [
       widgetEventPrefix: "tabbar"
     } );
 
-    //提供注释
-    $.fn.uiTabbar = function( a, b, c, args ) {
-      return tabbar.apply( this, arguments );
-    };
-
     return tabbar;
   } );

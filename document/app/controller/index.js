@@ -2,7 +2,6 @@ aQuery.define( "@app/controller/index", [
   "hash/locationHash",
   "app/Controller",
   "@app/view/index",
-  "@app/controller/tabbar",
   "@app/controller/navmenu",
   "@app/controller/content"
   ], function( $,
