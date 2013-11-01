@@ -59,7 +59,7 @@ aQuery.define( "app/Application", [
         return controllerElement || document.body;
 
       } ).then( function( node ) {
-        this.index = BaseController.loadController( node )[ 0 ];
+        this.index = BaseController.loadController( node, document.body )[ 0 ];
       } ).then( function( ) {
         setTimeout( function( ) {
           $cover.remove( );

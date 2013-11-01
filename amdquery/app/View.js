@@ -53,6 +53,12 @@ aQuery.define( "app/View", [
         this.appendTo( contollerElement );
       }
 
+      if ( contollerElement._originParent != null ) {
+        this._originParent = contollerElement._originParent;
+      } else {
+        this._originParent = this.topElement.parentNode;
+      }
+
 
     },
     initTopElement: function( src ) {
@@ -98,10 +104,8 @@ aQuery.define( "app/View", [
       return this;
     },
     initWidget: function( ) {
-      var self = this;
-
-      if ( this.topElement && this.topElement.parentNode ) {
-        Widget.initWidgets( this.topElement.parentNode );
+      if ( this._originParent ) {
+        Widget.initWidgets( this._originParent );
       }
     },
     _getModelsElement: function( ) {
