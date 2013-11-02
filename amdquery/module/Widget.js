@@ -233,6 +233,9 @@
 
       return result;
     },
+    _doAfterInit: function( ) {
+
+    },
     create: function( ) {},
     container: null,
     constructor: Widget,
@@ -258,7 +261,7 @@
       return this;
     },
     able: function( ) {
-      !!this.options.disabled === false ? this.enable( ) : this.disable( );
+      !! this.options.disabled === false ? this.enable( ) : this.disable( );
     },
     disable: function( ) {
       this.options.disabled = true;
@@ -482,6 +485,7 @@
             //完全调用基类的构造函数 不应当在构造函数 create render
             if ( a !== "destroy" ) {
               data = $.data( ele, key, new ctor( a, $( ele ) ) );
+              data._doAfterInit( ); //跳出堆栈，在flex这种会用到
             }
           } else {
             if ( a === "destroy" ) {
@@ -552,8 +556,11 @@
       /// <param name="item" type="$"></param>
       /// <param name="name" type="String">widget名字 如ui.navmenu</param>
       /// <returns type="Boolean" />
-      var $item = $( item ),
-        widgetTag = $item.attr( prefix + "-widget" );
+      var $item = $( item );
+      if ( !$item.length ) {
+        return false;
+      }
+      var widgetTag = $item.attr( prefix + "-widget" );
       return $item.attr( widgetName.replace( ".", "-" ) ) != undefined && widgetTag != undefined && widgetTag.indexOf( widgetName ) > -1;
     },
     get: function( name ) {

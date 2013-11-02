@@ -102,6 +102,7 @@ aQuery.define( "ui/flex", [
           }
           return null;
         },
+        noticeParent: function( ) {},
         setWidth: function( width ) {
           this.target.width( width );
         },
@@ -141,7 +142,8 @@ aQuery.define( "ui/flex", [
         publics: {
           setWidth: Widget.AllowPublic,
           setHeight: Widget.AllowPublic,
-          resize: Widget.AllowPublic
+          resize: Widget.AllowPublic,
+          noticeParent: Widget.AllowPublic
         },
         target: null,
         toString: function( ) {
@@ -368,6 +370,11 @@ aQuery.define( "ui/flex", [
           var parent = this.findParent( );
           if ( parent ) {
             parent.uiFlex( "resize" );
+          }
+        },
+        _doAfterInit: function( ) {
+          if ( !this.options.initWithParent ) {
+            this.noticeParent( );
           }
         },
         findParent: function( ) {
