@@ -14,14 +14,14 @@
       this.disable( );
       this.target.on( "mousemove", fun ).on( "mousedown", fun );
       $( document ).on( "mouseup", fun );
-      this.options.disabled = true;
+      this.options.disabled = false;
       return this;
     },
     disable: function( ) {
       var fun = this.event;
       this.target.off( "mousemove", fun ).off( "mousedown", fun );
       $( document ).off( "mouseup", fun );
-      this.options.disabled = false;
+      this.options.disabled = true;
       return this;
     },
     computeSwapType: function( swapTypeName ) {

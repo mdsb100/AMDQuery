@@ -40,12 +40,12 @@ aQuery.define( "ui/button", [
       enable: function( ) {
         this.disable( );
         this.target.on( "click", this.event );
-        this.options.disabled = true;
+        this.options.disabled = false;
         return this;
       },
       disable: function( ) {
         this.target.off( "click", this.event );
-        this.options.disabled = false;
+        this.options.disabled = true;
         return this;
       },
       render: function( ) {

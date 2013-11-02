@@ -8,12 +8,12 @@
     enable: function( ) {
       this.disable( );
       this.keyboard.enable( );
-      this.options.disabled = true;
+      this.options.disabled = false;
       return this;
     },
     disable: function( ) {
       this.keyboard.disable( );
-      this.options.disabled = false;
+      this.options.disabled = true;
       return this;
     },
     init: function( opt, target ) {

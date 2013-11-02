@@ -192,7 +192,7 @@ aQuery.define( "ui/swapview", [
       this.target.on( "swap.stop swap.none", event );
       this.options.detectFlexResize && this.target.on( "flex.resize", event );
       this.$indicator && this.$indicator.on( "swapindicator.change", event );
-      this.options.disabled = true;
+      this.options.disabled = false;
       return this;
     },
     disable: function( ) {
@@ -201,7 +201,7 @@ aQuery.define( "ui/swapview", [
       this.target.off( "swap.stop swap.none", event );
       this.options.detectFlexResize && this.target.on( "flex.resize", event );
       this.$indicator && this.$indicator.off( "swapindicator.change", event );
-      this.options.disabled = false;
+      this.options.disabled = true;
       return this;
     },
     stopAnimation: function( ) {

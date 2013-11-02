@@ -258,14 +258,14 @@
       return this;
     },
     able: function( ) {
-      this.options.disabled === false ? this.disable( ) : this.enable( );
+      !!this.options.disabled === false ? this.enable( ) : this.disable( );
     },
     disable: function( ) {
-      this.options.disabled = false;
+      this.options.disabled = true;
       return this;
     },
     enable: function( ) {
-      this.options.disabled = true;
+      this.options.disabled = false;
       return this;
     },
     event: function( ) {},
@@ -314,7 +314,7 @@
     },
     customEventName: [ ],
     options: {
-      disabled: 1
+      disabled: 0
     },
     getter: {
       disabled: 1

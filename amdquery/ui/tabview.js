@@ -29,12 +29,12 @@ aQuery.define( "ui/tabview", [
       enable: function( ) {
         this.disable( );
         this.$tabBar.on( "tabbar.click", this.event );
-        this.options.disabled = true;
+        this.options.disabled = false;
         return this;
       },
       disable: function( ) {
         this.$tabBar.off( "tabbar.click", this.event );
-        this.options.disabled = false;
+        this.options.disabled = true;
         return this;
       },
       render: function( ) {

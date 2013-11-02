@@ -56,7 +56,7 @@ aQuery.define( "ui/navmenu", [
 
         this.changeHandler( $( this.navItemList ), fun, "on" );
 
-        this.options.disabled = true;
+        this.options.disabled = false;
         return this;
       },
       disable: function( ) {
@@ -64,7 +64,7 @@ aQuery.define( "ui/navmenu", [
 
         this.changeHandler( $( this.navItemList ), fun, "off" );
 
-        this.options.disabled = false;
+        this.options.disabled = true;
         return this;
       },
       getNavItemsByHtml: function( str ) {
@@ -178,7 +178,7 @@ aQuery.define( "ui/navmenu", [
         var $navitems = $( navitems );
         $( navitemParent || this.target ).children( "ul" ).append( $navitems );
         this.navItemList = this.getNavItemList( );
-        if ( this.options.disabled ) {
+        if ( !this.options.disabled ) {
           this.changeHandler( $navitems, this.event, "on" );
         }
       },

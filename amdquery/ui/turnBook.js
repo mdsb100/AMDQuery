@@ -157,7 +157,7 @@ aQuery.define( "ui/turnBook", [ "base/support", "base/typed", "main/css", "main/
         pause: null,
         mousemove: null
       } );
-      this.options.disabled = false;
+      this.options.disabled = true;
       return this;
     },
     enable: function( ) {
@@ -170,7 +170,7 @@ aQuery.define( "ui/turnBook", [ "base/support", "base/typed", "main/css", "main/
         pause: event,
         mousemove: event
       } );
-      this.options.disabled = true;
+      this.options.disabled = false;
       return this;
     },
 
@@ -254,7 +254,7 @@ aQuery.define( "ui/turnBook", [ "base/support", "base/typed", "main/css", "main/
       inductionCorner: true,
 
       directionRange: 22.5,
-      disabled: true,
+      disabled: 0,
 
       messageHideTime: 1500,
       messageClass: "amdquery_turnbook_message",

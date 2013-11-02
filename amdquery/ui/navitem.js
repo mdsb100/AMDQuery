@@ -45,14 +45,14 @@ aQuery.define( "ui/navitem", [
         this.disable( );
         this.$text.on( "click", fun );
         this.$arrow.on( "click", fun );
-        this.options.disabled = true;
+        this.options.disabled = false;
         return this;
       },
       disable: function( ) {
         var fun = this.event;
         this.$text.off( "click", fun );
         this.$arrow.off( "click", fun );
-        this.options.disabled = false;
+        this.options.disabled = true;
         return this;
       },
       getBoard: function( ) {

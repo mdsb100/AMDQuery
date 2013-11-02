@@ -57,12 +57,12 @@ aQuery.define( "ui/tabbar", [
       enable: function( ) {
         this.disable( );
         this.$tabButtons.on( "tabbutton.click", this.event );
-        this.options.disabled = true;
+        this.options.disabled = false;
         return this;
       },
       disable: function( ) {
         this.$tabButtons.off( "tabbutton.click", this.event );
-        this.options.disabled = false;
+        this.options.disabled = true;
         return this;
       },
       init: function( opt, target ) {

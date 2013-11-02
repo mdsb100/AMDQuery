@@ -117,7 +117,7 @@ aQuery.define( "ui/scrollableview", [
         this.target.uiKeyboard( "enable" );
       }
 
-      opt.disabled = true;
+      opt.disabled = false;
       return this;
     },
     disable: function( ) {
@@ -139,7 +139,7 @@ aQuery.define( "ui/scrollableview", [
         this.target.uiKeyboard( "disable" );
       }
 
-      opt.disabled = false;
+      opt.disabled = true;
       return this;
     },
     _initHandler: function( ) {

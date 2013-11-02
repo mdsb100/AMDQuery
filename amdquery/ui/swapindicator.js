@@ -118,12 +118,12 @@ aQuery.define( "ui/swapindicator", [
     },
     enable: function( ) {
       this.target.on( "click mousedown", this.event );
-      this.options.disabled = true;
+      this.options.disabled = false;
       return this;
     },
     disable: function( ) {
       this.target.off( "click mousedown", this.event );
-      this.options.disabled = false;
+      this.options.disabled = true;
       return this;
     },
     _initHandler: function( ) {

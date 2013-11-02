@@ -55,14 +55,14 @@ aQuery.define( "ui/flex", [
           // if ( !this.findParent( ) ) {
           event.event.document.addHandler( window, "resize", this.event );
           // }
-          this.options.disabled = true;
+          this.options.disabled = false;
           return this;
         },
         disable: function( ) {
           // if ( !this.findParent( ) ) {
           event.event.document.removeHandler( window, "resize", this.event );
           // }
-          this.options.disabled = false;
+          this.options.disabled = true;
           return this;
         },
         render: function( width, height ) {
@@ -175,14 +175,14 @@ aQuery.define( "ui/flex", [
           if ( !this.findParent( ) ) {
             event.event.document.addHandler( window, "resize", this.event );
           }
-          this.options.disabled = true;
+          this.options.disabled = false;
           return this;
         },
         disable: function( ) {
           if ( !this.findParent( ) ) {
             event.event.document.removeHandler( window, "resize", this.event );
           }
-          this.options.disabled = false;
+          this.options.disabled = true;
           return this;
         },
         render: function( width, height ) {
@@ -415,13 +415,14 @@ aQuery.define( "ui/flex", [
           if ( !self.findParent( ) ) {
             self.fillParent( );
             self.render( );
-          } else {
-            if ( !self.options.initWithParent ) {
-              setTimeout( function( ) {
-                self.noticeParent( );
-              }, 0 );
-            }
           }
+          // else {
+          //   if ( !self.options.initWithParent ) {
+          //     setTimeout( function( ) {
+          //       self.noticeParent( );
+          //     }, 0 );
+          //   }
+          // }
 
           return this;
         },

@@ -95,7 +95,7 @@
         $( "body" ).on( "mouseup", fun );
         this.container.on( "mousemove mouseup", fun );
         this.target.on( "mousedown", fun );
-        this.options.disabled = true;
+        this.options.disabled = false;
         return this;
       },
       disable: function( ) {
@@ -103,7 +103,7 @@
         $( "body" ).off( "mouseup", fun );
         this.container.off( "mousemove mouseup", fun );
         this.target.off( "mousedown", fun );
-        this.options.disabled = false;
+        this.options.disabled = true;
         return this;
       },
       init: function( opt, target ) {
@@ -133,7 +133,6 @@
       },
       options: {
         container: null,
-        disabled: true,
         x: 0,
         y: 0,
         originX: 0,
@@ -216,7 +215,7 @@
               para.originX = opt.originX = x - opt.diffx - parentLeft;
               para.originY = opt.originY = y - opt.diffy - parentTop;
 
-              if ( opt.disabled == false ) {
+              if ( opt.disabled == true ) {
                 opt.cursor = "default";
               } else {
                 if ( opt.vertical && opt.horizontal ) {
