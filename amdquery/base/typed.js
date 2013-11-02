@@ -24,7 +24,7 @@ aQuery.define( "base/typed", function( $ ) {
       return a && !! ( toString.call( a ).indexOf( "Event" ) > -1 || ( a.type && a.srcElement && a.cancelBubble !== undefined ) || ( a.type && a.target && a.bubbles !== undefined ) )
     },
     isArguments: function( a ) {
-      return !!a && "callee" in arguments;
+      return !!a && "callee" in a && this.isNum( a.length );
     },
     isArr: function( a ) {
       /// <summary>是否为数组</summary>
