@@ -48,7 +48,7 @@ aQuery.define( "base/extend", [ "base/typed" ], function( $, typed ) {
       for ( ; i < length; i++ ) {
         if ( ( options = arguments[ i ] ) != null ) {
           for ( name in options ) {
-            if ( options.hasOwnProperty( name ) ) {
+            if ( "hasOwnProperty" in options ? options.hasOwnProperty( name ) : true ) {
               src = target[ name ];
               copy = options[ name ];
 

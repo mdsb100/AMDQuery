@@ -345,7 +345,7 @@
       /// <param name="obj" type="any">任意对象</param>
       /// <param name="name" type="String">属性名</param>
       /// <returns type="Boolean" />
-      return !obj.hasOwnProperty( name ) && ( name in obj );
+      return "hasOwnProperty" in obj && !obj.hasOwnProperty( name ) && ( name in obj );
     },
     providePropertyGetSet: function( obj, object ) {
       /// <summary>提供类的属性get和set方法</summary>
