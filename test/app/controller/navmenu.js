@@ -7,6 +7,13 @@ aQuery.define( "@app/controller/navmenu", [ "app/Controller", "@app/view/navmenu
       var controller = this;
       this.$nav = $( this.view.topElement ).find( "#nav" );
 
+      var li = $( $.createEle( "li" ) ).uiNavitem( {
+        html: "destroyWidget",
+        img: "class"
+      } );
+      var parentNode = this.$nav.uiNavmenu( "getNavItemsByHtmlPath", [ "ui" ] );
+      this.$nav.uiNavmenu( "addNavItem", li, parentNode );
+
       this.$nav.on( "navmenu.select", function( e ) {
         var target = $( e.navitem ),
           ret = target.uiNavitem( "getOptionToRoot" ),

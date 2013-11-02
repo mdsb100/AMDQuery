@@ -63,6 +63,8 @@ aQuery.define( "ui/navitem", [
         this.$text.html( opt.html );
         this.$img.addClass( opt.img );
 
+        this.detectParent( );
+
         if ( opt.isOpen ) {
           this.$arrow.addClass( "arrowBottom" ).removeClass( "arrowRight" );
         } else {
@@ -78,7 +80,6 @@ aQuery.define( "ui/navitem", [
         if ( !this.hasChild( ) ) {
           this.$arrow.removeClass( "arrowRight" ).removeClass( "arrowBottom" );
         }
-        this.detectParent( );
         // if(client.browser.ie){
         //     //this.$title.width(this.$arrow.width() + this.$img.width() + this.$text.width());
         // }
@@ -165,6 +166,9 @@ aQuery.define( "ui/navitem", [
         return !!this.target.find( "li[amdquery-widget*='ui.navitem']" ).length;
       },
       detectParent: function( ) {
+        if ( !this.target.parent( ).length ) {
+          return this;
+        }
         var parentNavitem = this.target.parent( ).parent( ),
           opt = this.options;
         if ( parentNavitem.isWidget( "ui.navitem" ) ) {

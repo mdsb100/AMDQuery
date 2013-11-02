@@ -46,31 +46,24 @@ aQuery.define( "ui/navmenu", [
         };
         return this;
       },
+      changeHandler: function( $ele, fun, type ) {
+        $ele[ type ]( "navitem.open", fun );
+        $ele[ type ]( "navitem.close", fun );
+        $ele[ type ]( "navitem.select", fun );
+      },
       enable: function( ) {
-        var fun = this.event,
-          i = 0,
-          len = this.navItemList.length,
-          ele;
-        for ( i = 0; i < len; i++ ) {
-          ele = $( this.navItemList[ i ] );
-          ele.on( "navitem.open", fun );
-          ele.on( "navitem.close", fun );
-          ele.on( "navitem.select", fun );
-        }
+        var fun = this.event;
+
+        this.changeHandler( $( this.navItemList ), fun, "on" );
+
         this.options.disabled = true;
         return this;
       },
       disable: function( ) {
-        var fun = this.event,
-          i = 0,
-          len = this.navItemList.length,
-          ele;
-        for ( i = 0; i < len; i++ ) {
-          ele = $( this.navItemList[ i ] );
-          ele.off( "navitem.open", fun );
-          ele.off( "navitem.close", fun );
-          ele.on( "navitem.select", fun );
-        }
+        var fun = this.event;
+
+        this.changeHandler( $( this.navItemList ), fun, "off" );
+
         this.options.disabled = false;
         return this;
       },
@@ -136,9 +129,6 @@ aQuery.define( "ui/navmenu", [
       getNavItemList: function( ) {
         return this.target.find( "li[ui-navitem]" ).reverse( ).eles;
       },
-      detectNavItemList: function( ) {
-        this.navItemList = this.getNavItemList( );
-      },
       selectNavItem: function( target ) {
         var $target = $( this.getNavItem( target ) || [ ] ),
           opt = this.options;
@@ -171,14 +161,33 @@ aQuery.define( "ui/navmenu", [
         this._super( opt, target );
         target.addClass( "aquery-navmenu" );
 
-        this.navItemList = [ ];
-        this.$parent = null;
-        this.detectNavItemList( );
+        this.navItemList = this.getNavItemList( );
+
         $( this.navItemList ).uiNavitem( );
 
         this._initHandler( ).enable( ).render( );
 
         return this;
+      },
+      refreshNavItem: function( ) {
+        this.navItemList = this.getNavItemList( );
+
+        $( this.navItemList ).uiNavitem( ).enable( );
+      },
+      addNavItem: function( navitems, navitemParent ) {
+        var $navitems = $( navitems );
+        $( navitemParent || this.target ).children( "ul" ).append( $navitems );
+        this.navItemList = this.getNavItemList( );
+        if ( this.options.disabled ) {
+          this.changeHandler( $navitems, this.event, "on" );
+        }
+      },
+      removeNavItem: function( navitems ) {
+        var $navitems = $( navitems );
+        this.changeHandler( $navitems, this.event, "off" );
+        $navitems.uiNavitem( "destroy" );
+        $navitems.remove( );
+        this.navItemList = this.getNavItemList( );
       },
       options: {
         selectedNavItem: null
@@ -190,8 +199,10 @@ aQuery.define( "ui/navmenu", [
         getNavItemsByHtml: Widget.AllowReturn,
         getNavItemsByHtmlPath: Widget.AllowReturn,
         getNavItem: Widget.AllowReturn,
-        detectNavItemList: Widget.AllowPublic,
         selectNavItem: Widget.AllowPublic,
+        refreshNavItem: Widget.AllowPublic,
+        addNavItem: Widget.AllowPublic,
+        removeNavItem: Widget.AllowPublic,
         changeSelectedNavItem: Widget.AllowPublic
       },
       customEventName: [ "open", "close" ],
