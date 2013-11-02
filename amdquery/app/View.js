@@ -34,7 +34,7 @@ aQuery.define( "app/View", [
     if ( index > -1 ) {
       return id.substring( 0, index ) + id.substring( index, id.length ).replace( /view\//, "xml/" );
     } else {
-      throw "View need htmlSrc or path need contains view/'";
+      throw new Error( "View need htmlSrc or path need contains view/'" );
     }
 
   }
@@ -109,7 +109,7 @@ aQuery.define( "app/View", [
       return this._getModelsElement( ).map( function( ele ) {
         var src = attr.getAttr( ele, "src" );
         if ( !src ) {
-          throw "require model:src must exist";
+          throw new Error( "require model:src must exist" );
         }
         return src;
       } );

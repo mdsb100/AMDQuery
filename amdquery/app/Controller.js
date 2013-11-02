@@ -91,7 +91,7 @@ aQuery.define( "app/Controller", [
           src = $.util.removeSuffix( src );
           ControllerModule = ClassModule.getModule( src );
           if ( !( ControllerModule && ControllerModule.isReady( ) ) ) {
-            throw "If you Write '<Controller/>' in xml and auto init, you must define them in dependencies of controller file"
+            throw new Error( "If you Write '<Controller/>' in xml and auto init, you must define them in dependencies of controller file" );
           }
           controller = new ControllerModule.first( element );
           ret.push( controller );
