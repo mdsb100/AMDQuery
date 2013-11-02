@@ -53,13 +53,6 @@ aQuery.define( "app/View", [
         this.appendTo( contollerElement );
       }
 
-      if ( contollerElement._originParent != null ) {
-        this._originParent = contollerElement._originParent;
-      } else {
-        this._originParent = this.topElement.parentNode;
-      }
-
-
     },
     initTopElement: function( src ) {
       src = src || ( getHtmlSrc( this.constructor._AMD.id ) + ".xml" );
@@ -104,8 +97,8 @@ aQuery.define( "app/View", [
       return this;
     },
     initWidget: function( ) {
-      if ( this._originParent ) {
-        Widget.initWidgets( this._originParent );
+      if ( this.topElement && this.topElement.parentNode ) {
+        Widget.initWidgets( this.topElement );
       }
     },
     _getModelsElement: function( ) {

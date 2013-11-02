@@ -29,7 +29,10 @@ aQuery.define( "app/Controller", [
       // 生成Models
       //this.models = Models || [ ];
 
-      var controllers = Controller.loadController( this.view.topElement, this.view._originParent );
+      this.view.initWidget( );
+
+      var controllers = Controller.loadController( this.view.topElement );
+
       this._controllers = controllers;
       if ( controllers.length ) {
         for ( var i = controllers.length - 1, controller; i >= 0; i-- ) {
@@ -40,10 +43,6 @@ aQuery.define( "app/Controller", [
         }
       }
       Controller.collection.add( this );
-
-      if ( controllers.length === 0 ) {
-        this.view.initWidget( );
-      }
 
       config.app.debug && console.log( "Controller " + ( this.constructor._AMD.id ) + " load" );
 
@@ -70,7 +69,7 @@ aQuery.define( "app/Controller", [
     getView: function( ) {
 
     },
-    loadController: function( node, _originParent ) {
+    loadController: function( node ) {
       var contollersElement = typed.isNode( node, "controller" ) ? $( node ) : query.find( "controller", node ),
         controller = [ ],
         ret = [ ];
@@ -94,13 +93,9 @@ aQuery.define( "app/Controller", [
           if ( !( ControllerModule && ControllerModule.isReady( ) ) ) {
             throw "If you Write '<Controller/>' in xml and auto init, you must define them in dependencies of controller file"
           }
-          if ( _originParent ) {
-            element._originParent = _originParent
-          }
           controller = new ControllerModule.first( element );
           ret.push( controller );
           controller.setId( attr.getAttr( element, "id" ) );
-          _originParent = null;
         }
 
       }
