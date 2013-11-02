@@ -335,7 +335,9 @@ aQuery.define( "ui/scrollableview", [
       "render": Widget.AllowPublic,
       "animateToElement": Widget.AllowPublic,
       "toH": Widget.AllowPublic,
-      "toV": Widget.AllowPublic
+      "toV": Widget.AllowPublic,
+      "append": Widget.AllowPublic,
+      "remove": Widget.AllowPublic
     },
     render: function( x, y, addtion, boundary ) {
       if ( !arguments.length ) {
@@ -397,6 +399,19 @@ aQuery.define( "ui/scrollableview", [
     },
     widgetEventPrefix: "scrollableview",
 
+    append: function( content ) {
+      this.positionParent.append( content );
+      this.refreshPosition( ).refreshContainerSize( );
+    },
+
+    remove: function( content ) {
+      // must ele
+      if ( query.contains( this.positionParent[ 0 ], content ) ) {
+        $( content ).remove( );
+        this.refreshPosition( ).refreshContainerSize( );
+      }
+    },
+
     refreshStatusBar: function( ) {
       var viewportWidth = this.viewportWidth,
         scrollWidth = this.scrollWidth,
@@ -425,20 +440,29 @@ aQuery.define( "ui/scrollableview", [
 
       return this;
     },
-
     refreshContainerSize: function( ) {
       this.container.width( this.scrollWidth );
       this.container.height( this.scrollHeight );
       return this;
     },
-
     refreshPosition: function( ) {
       // add Math.max to fix ie7
-      this.scrollWidth = client.browser.ie678 ? Math.max( this.positionParent.scrollWidth( ), this.container.scrollWidth( ) ) : this.positionParent.scrollWidth( );
-      this.scrollHeight = client.browser.ie678 ? Math.max( this.positionParent.scrollHeight( ), this.container.scrollHeight( ) ) : this.positionParent.scrollHeight( );
+      var originViewportHeight = this.viewportHeight,
+        originViewportWidth = this.viewportWidth;
 
       this.viewportWidth = this.target.width( );
       this.viewportHeight = this.target.height( );
+
+      if ( originViewportWidth !== this.originViewportWidth ) {
+        this.positionParent.width( this.viewportWidth );
+      }
+
+      if ( originViewportHeight !== this.viewportHeight ) {
+        this.positionParent.height( this.viewportHeight );
+      }
+
+      this.scrollWidth = client.browser.ie678 ? Math.max( this.positionParent.scrollWidth( ), this.container.scrollWidth( ) ) : this.positionParent.scrollWidth( );
+      this.scrollHeight = client.browser.ie678 ? Math.max( this.positionParent.scrollHeight( ), this.container.scrollHeight( ) ) : this.positionParent.scrollHeight( );
 
       this.overflowWidth = this.scrollWidth - this.viewportWidth;
       this.overflowHeight = this.scrollHeight - this.viewportHeight;

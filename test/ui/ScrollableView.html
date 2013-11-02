@@ -6,7 +6,7 @@
     <link href="../../css/reset.css" rel="stylesheet" type="text/css" />
     <script src="../../amdquery/amdquery.js" type="text/javascript" amd="detectCR=1" module="transitionToAnimation:0" ui="initWidget:1;isTransform3d:1"></script>
     <script type="text/javascript">
-        $.require(["ui/scrollableview", "main/query"], function (scrollableview, query) {
+        $.require(["ui/scrollableview", "main/query", "main/dom", "main/css"], function (scrollableview, query, dom, css) {
             $("#container1").on("scrollableview.pulldown", function(){
                 $.showMsg("1")
             }).on("scrollableview.pullup", function(){
@@ -18,6 +18,17 @@
             }).on("scrollableview.animationEnd", function(e){
                 $.showMsg(e.scene)
             });
+
+            var div = $.createEle("div");
+            $(div).css({
+              width: "200px",
+              height: "200px",
+              "background-color": "pink"
+            });
+
+            $("#container1").uiScrollableview( "append", div );
+
+            $("#container1").uiScrollableview( "remove", div );
         });
 
     </script>
