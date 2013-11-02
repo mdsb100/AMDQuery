@@ -11,33 +11,35 @@ aQuery.define( "ui/swapindicator", [
    ], function( $, support, query, event, css2, position, dom, cls, css3, Widget ) {
   "use strict";
   Widget.fetchCSS( "ui/css/swapindicator" );
-  var horizontal = "H",
-    vertical = "V";
+  var HORIZONTAL = "H",
+    VERTICAL = "V";
   var eventFuns = event.event.document;
 
   var swapindicator = Widget.extend( "ui.swapindicator", {
     create: function( ) {
       var opt = this.options;
 
-      var isHorizental = opt.orientation === horizontal;
-
+      this.$indicators = null;
       this.target.css( {
         display: "block",
         position: "relative",
         cursor: "pointer"
       } ).addClass( "aquery-swapindicator" );
 
-      this.$indicators = this.target.children( 'li' );
-
-      if ( isHorizental ) {
-        this.$indicators.css( "float", "left" );
-      } else {
-        this.$indicators.css( "clear", "left" );
-      }
+      this.detectIndicators( );
 
       this.resize( );
 
       return this;
+    },
+    detectIndicators: function( ) {
+      this.$indicators = this.target.children( 'li' );
+
+      if ( this.options.orientation === HORIZONTAL ) {
+        this.$indicators.css( "float", "left" );
+      } else {
+        this.$indicators.css( "clear", "left" );
+      }
     },
     layout: function( ) {
       var opt = this.options,
@@ -74,7 +76,7 @@ aQuery.define( "ui/swapindicator", [
       this.width = width;
       this.height = height;
 
-      if ( this.options.orientation === horizontal ) {
+      if ( this.options.orientation === HORIZONTAL ) {
         this.$indicators.width( width / this.$indicators.length );
         this.$indicators.height( height );
       } else {
@@ -83,6 +85,21 @@ aQuery.define( "ui/swapindicator", [
       }
       this.layout( );
       return this;
+    },
+    append: function( li ) {
+      this.target.append( li );
+      this.detectIndicators( );
+      this.resize( );
+    },
+    remove: function( removeIndex, renderIndex ) {
+      var $indicator = this.$indicators.eq( removeIndex );
+      if ( !$indicator.length ) {
+        return;
+      }
+      $indicator.remove( );
+      this.detectIndicators( );
+      this.resize( );
+      this.render( renderIndex && renderIndex <= this.$indicators.length ? renderIndex : 0 );
     },
     render: function( index ) {
       var opt = this.options,
@@ -159,7 +176,7 @@ aQuery.define( "ui/swapindicator", [
     customEventName: [ "change" ],
     options: {
       index: 0,
-      orientation: horizontal,
+      orientation: HORIZONTAL,
       horizontalAlign: "center",
       verticalAlign: "bottom",
       margin: 15,
@@ -171,7 +188,9 @@ aQuery.define( "ui/swapindicator", [
       orevious: Widget.AllowPublic,
       next: Widget.AllowPublic,
       resize: Widget.AllowPublic,
-      layout: Widget.AllowPublic
+      layout: Widget.AllowPublic,
+      append: Widget.AllowPublic,
+      remove: Widget.AllowPublic
     },
     setter: {
       orientation: Widget.initFirst

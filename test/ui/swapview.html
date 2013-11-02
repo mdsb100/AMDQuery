@@ -6,11 +6,17 @@
     <link href="../../css/reset.css" rel="stylesheet" type="text/css" />
     <script src="../../amdquery/amdquery.js" type="text/javascript" amd="detectCR=1" module="transitionToAnimation:1" ui="initWidget:1;isTransform3d:1"></script>
     <script type="text/javascript">
-        $.require(["ui/swapview", "main/query"], function (swapview, query) {
+        $.require(["ui/swapview", "main/query", "main/css"], function (swapview, query, css) {
           $("#swapview").uiSwapview();
+          var view = $.createEle("li");
+          $(view).css({
+            "background-color": "red"
+          }).html("add");
+          $("#swapview").uiSwapview( "append", view);
           setTimeout(function(){
-            $("#swapview").uiSwapview("option", "index", 1);
-          },1000)
+            // $("#swapview").uiSwapview("option", "index", 1);
+            $("#swapview").uiSwapview("remove", 4, 1);
+          },2000)
 
         });
 
