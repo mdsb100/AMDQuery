@@ -72,7 +72,7 @@
             if ( window.console.error || !isThrow ) {
               window.console.error( s );
             } else {
-              throw new window[ isThrow ]( s );
+              throw new Error( s );
             }
           }
         };
