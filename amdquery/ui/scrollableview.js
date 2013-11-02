@@ -337,7 +337,8 @@ aQuery.define( "ui/scrollableview", [
       "toH": Widget.AllowPublic,
       "toV": Widget.AllowPublic,
       "append": Widget.AllowPublic,
-      "remove": Widget.AllowPublic
+      "remove": Widget.AllowPublic,
+      "replace": Widget.AllowPublic
     },
     render: function( x, y, addtion, boundary ) {
       if ( !arguments.length ) {
@@ -408,6 +409,14 @@ aQuery.define( "ui/scrollableview", [
       // must ele
       if ( query.contains( this.positionParent[ 0 ], content ) ) {
         $( content ).remove( );
+        this.refreshPosition( ).refreshContainerSize( );
+      }
+    },
+
+    replace: function( ele1, ele2 ) {
+      // must ele
+      if ( query.contains( this.positionParent[ 0 ], ele1 ) ) {
+        $( ele1 ).replaceWith( ele2 );
         this.refreshPosition( ).refreshContainerSize( );
       }
     },
