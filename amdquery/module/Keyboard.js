@@ -21,12 +21,10 @@
     },
     enable: function( ) {
       event.on( this.container, "keydown keypress keyup", this.event );
-      this.options.disabled = false;
       return this;
     },
     disable: function( ) {
       event.off( this.container, "keydown keypress keyup", this.event );
-      this.options.disabled = true;
       return this;
     },
     _push: function( ret ) {
