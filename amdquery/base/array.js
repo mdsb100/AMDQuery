@@ -1,21 +1,21 @@
-aQuery.define( "base/array", [ "base/typed", "base/extend" ], function( $, typed, extend) {
+aQuery.define( "base/array", [ "base/typed", "base/extend" ], function( $, typed, extend ) {
   "use strict"; //启用严格模式
   var
   indexOf = Array.prototype.indexOf || function( item, i ) {
-      var len = this.length;
-      i = i || 0;
-      if ( i < 0 ) i += len;
-      for ( ; i < len; i++ )
-        if ( i in this && this[ i ] === item ) return i;
-      return -1;
-    }, lastIndexOf = Array.prototype.lastIndexOf || function( item, i ) {
-      var len = this.length - 1;
-      i = i || len;
-      if ( i < 0 ) i += len;
-      for ( ; i > -1; i-- )
-        if ( i in this && this[ i ] === item ) break;
-      return i;
-    }, push = Array.prototype.push,
+    var len = this.length;
+    i = i || 0;
+    if ( i < 0 ) i += len;
+    for ( ; i < len; i++ )
+      if ( i in this && this[ i ] === item ) return i;
+    return -1;
+  }, lastIndexOf = Array.prototype.lastIndexOf || function( item, i ) {
+    var len = this.length - 1;
+    i = i || len;
+    if ( i < 0 ) i += len;
+    for ( ; i > -1; i-- )
+      if ( i in this && this[ i ] === item ) break;
+    return i;
+  }, push = Array.prototype.push,
     array = {
       grep: function( arr, callback, inv ) {
         var retVal,
@@ -45,7 +45,7 @@ aQuery.define( "base/array", [ "base/typed", "base/extend" ], function( $, typed
         var ret = [ ];
         for ( var i = 0, len = arr.length, item; i < len; i++ ) {
           item = arr[ i ];
-          fun.call( context, item, i, arr ) == true && ret.push( item );
+          fun.call( context, item, i, arr ) === true && ret.push( item );
         }
         return ret;
       },
@@ -97,11 +97,11 @@ aQuery.define( "base/array", [ "base/typed", "base/extend" ], function( $, typed
         /// <param name="array" type="any">任意</param>
         /// <param name="results" type="Array">数组 可缺省</param>
         /// <returns type="Array" />
-        //quote from jQuery-1.4.1 
+        //quote from jQuery-1.4.1
         var result = results || [ ];
 
-        if ( array != null ) {
-          if ( array.length == null || typed.isStr( array ) || typed.isFun( array ) || array.setInterval ) {
+        if ( array ) {
+          if ( typed.isNul( array.length ) || typed.isStr( array ) || typed.isFun( array ) || array.setInterval ) {
             push.call( result, array );
           } else {
             result = array.toArray( array );
