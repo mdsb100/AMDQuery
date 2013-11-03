@@ -40,10 +40,6 @@ aQuery.define( "ui/tabbutton", [
         select: Widget.AllowPublic,
         toggle: Widget.AllowPublic
       },
-      _initHandler: function( ) {
-        this.event = this._getInitHandler( Button, this );
-        return this;
-      },
       select: function( ) {
         this.options.select = true;
         return this.change( );

@@ -76,7 +76,7 @@
 
   var booleanExtend = function( a, b ) {
     for ( var i in b ) {
-      if ( b[ i ] == 0 ) {
+      if ( b[ i ] === 0 || b[ i ] === false ) {
         a[ i ] = 0;
       } else {
         if ( typed.isBol( a[ i ] ) || typed.isNum( a[ i ] ) ) {
@@ -98,7 +98,7 @@
 
       utilExtend.easyExtend( newValue, superValue );
 
-      if ( subValue != undefined ) {
+      if ( !typed.isNul( subValue ) ) {
         if ( booleanCheck ) {
           extend = booleanExtend;
         } else {
@@ -152,7 +152,7 @@
         widgetAttr = prefix + "-widget",
         widgetTag = this.target.attr( widgetAttr );
 
-      if ( widgetTag == undefined ) {
+      if ( typed.isNul( widgetTag ) ) {
         this.target.attr( widgetAttr, tag );
       } else {
         var reg = new RegExp( "(\\W|^)" + tag + "(\\W|$)" ),
@@ -178,13 +178,13 @@
         widgetAttr = prefix + "-widget",
         widgetTag = this.target.attr( widgetAttr );
 
-      if ( widgetTag != undefined ) {
+      if ( typed.isNul( widgetTag ) ) {
         var reg = new RegExp( "(\\W|^)" + tag + "(\\W|$)", "g" );
         widgetTag = widgetTag.replace( reg, ";" ).replace( /^\W/, "" );
         this.target.attr( widgetAttr, widgetTag );
       }
 
-      if ( optionTag == "" ) {
+      if ( optionTag === "" ) {
         this.target.removeAttr( optionAttr );
       }
 
@@ -260,8 +260,7 @@
 
       return this;
     },
-    able: function( ) {
-      !! this.options.disabled === false ? this.enable( ) : this.disable( );
+    able: function( ) { !! this.options.disabled === false ? this.enable( ) : this.disable( );
     },
     disable: function( ) {
       this.options.disabled = true;
@@ -276,16 +275,18 @@
     init: function( obj, target ) {
       var proto = this.constructor.prototype;
 
-      //元素本身属性高于obj
+
       this.options = {};
       utilExtend.easyExtend( this.options, proto.options );
 
       target._initHandler( );
       this.target = target;
       this.addTag( );
+      //obj高于元素本身属性
       obj = typed.isPlainObj( obj ) ? obj : {};
-      utilExtend.extend( obj, this.checkAttr( ) );
-      this.option( obj );
+      var ret = {};
+      utilExtend.extend( ret, this.checkAttr( ), obj );
+      this.option( ret );
       return this;
     },
     instanceofWidget: function( item ) {
@@ -341,13 +342,13 @@
     },
     render: function( ) {},
     _initHandler: function( ) {},
-    _getInitHandler: function( Super, context ) {
-      var originEvent = this.event;
-      Super.invoke( "_initHandler", context );
-      var superEvent = this.event;
-      this.event = originEvent;
-      return superEvent;
-    },
+    // _getInitHandler: function( Super, context ) {
+    //   var originEvent = this.event;
+    //   Super.invoke( "_initHandler", context );
+    //   var superEvent = this.event;
+    //   this.event = originEvent;
+    //   return superEvent;
+    // },
 
     _isEventName: function( name ) {
       return array.inArray( this.customEventName, name ) > -1;
@@ -451,21 +452,21 @@
         statics = {};
       }
 
-      var ctor = object.extend( name, prototype, Super );
-      ctor.prototype.widgetName = name;
-      ctor.prototype.widgetNameSpace = nameSpace;
+      var Ctor = object.extend( name, prototype, Super );
+      Ctor.prototype.widgetName = name;
+      Ctor.prototype.widgetNameSpace = nameSpace;
 
-      Widget[ nameSpace ][ name ] = ctor;
+      Widget[ nameSpace ][ name ] = Ctor;
 
       /*如果当前prototype没有定义setter和getter将自动生成*/
-      _initOptionsPurview( ctor );
+      _initOptionsPurview( Ctor );
 
-      _extendAttr( "publics", ctor, prototype, true );
-      _extendAttr( "options", ctor );
+      _extendAttr( "publics", Ctor, prototype, true );
+      _extendAttr( "options", Ctor );
 
       /*遵从父级为false 子集就算设为ture 最后也会为false*/
-      _extendAttr( "getter", ctor, true );
-      _extendAttr( "setter", ctor, true );
+      _extendAttr( "getter", Ctor, true );
+      _extendAttr( "setter", Ctor, true );
 
 
       var key = nameSpace + "." + name + $.now( );
@@ -481,10 +482,10 @@
           arg = arguments;
         this.each( function( ele ) {
           var data = $.data( ele, key ); //key = nameSpace + "." + name,
-          if ( data == undefined ) {
+          if ( data === undefined || data === null ) {
             //完全调用基类的构造函数 不应当在构造函数 create render
             if ( a !== "destroy" ) {
-              data = $.data( ele, key, new ctor( a, $( ele ) ) );
+              data = $.data( ele, key, new Ctor( a, $( ele ) ) );
               data._doAfterInit( ); //跳出堆栈，在flex这种会用到
             }
           } else {
@@ -518,7 +519,7 @@
         return result;
       };
 
-      widget.ctor = ctor;
+      widget.ctor = Ctor;
 
       widget.extend = extendTemplate;
 
@@ -531,10 +532,10 @@
         this.each( function( ele ) {
           var data = $.data( ele, key );
           if ( data ) {
-            data[ "destroy" ].call( data );
+            data.destroy.call( data );
             $.removeData( ele, key );
           }
-        } )
+        } );
       };
 
       // add init function to $.prototype
@@ -561,7 +562,7 @@
         return false;
       }
       var widgetTag = $item.attr( prefix + "-widget" );
-      return $item.attr( widgetName.replace( ".", "-" ) ) != undefined && widgetTag != undefined && widgetTag.indexOf( widgetName ) > -1;
+      return !typed.isNul( $item.attr( widgetName.replace( ".", "-" ) ) ) && !typed.isNul( widgetTag ) && widgetTag.indexOf( widgetName ) > -1;
     },
     get: function( name ) {
       /// <summary>获得某个widget</summary>
@@ -577,7 +578,7 @@
     },
     getAttrWidgets: function( ele ) {
       var value = attr.getAttr( ele, prefix + "-widget" ),
-        attrNames = typed.isStr( value ) && value != "" ? value.split( /;|,/ ) : [ ],
+        attrNames = typed.isStr( value ) && value !== "" ? value.split( /;|,/ ) : [ ],
         ret = [ ],
         widgetName = "",
         i;
@@ -623,23 +624,23 @@
       var order;
       if ( funName === "destroy" ) {
         order = function( a, b ) {
-          return b.index - a.index
-        }
+          return b.index - a.index;
+        };
       } else {
         order = function( a, b ) {
-          return a.index - b.index
-        }
+          return a.index - b.index;
+        };
       }
 
       ret.sort( order );
 
       for ( i = ret.length - 1; i >= 0; i-- ) {
-        widgetName = ret[ i ][ "widgetName" ].split( "." );
+        widgetName = ret[ i ].widgetName.split( "." );
         key = $.util.camelCase( widgetName[ 1 ], widgetName[ 0 ] );
         if ( $.fn[ key ] ) {
           $( ele )[ key ]( funName || "" );
         }
-      };
+      }
 
       return this;
     },
@@ -681,7 +682,7 @@
     isWidget: function( widgetName ) {
       return Widget.is( widgetName, this[ 0 ] );
     }
-  } )
+  } );
 
   $.Widget = Widget;
 
