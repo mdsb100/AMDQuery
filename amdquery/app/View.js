@@ -29,6 +29,7 @@ aQuery.define( "app/View", [
   "use strict"; //启用严格模式
 
   function getHtmlSrc( id ) {
+    //都只能小写
     var index = id.lastIndexOf( "view/" );
 
     if ( index > -1 ) {
@@ -56,7 +57,7 @@ aQuery.define( "app/View", [
     },
     initTopElement: function( src ) {
       src = src || ( getHtmlSrc( this.constructor._AMD.id ) + ".xml" );
-      return View.getHtml( src );
+      return View.getXML( src );
     },
     destroy: function( ) {
       View.collection.remove( this );
@@ -128,7 +129,7 @@ aQuery.define( "app/View", [
         href: ClassModule.getPath( path, ".css" )
       } );
     },
-    getHtml: function( htmlSrc ) {
+    getXML: function( htmlSrc ) {
       htmlSrc = ClassModule.variable( htmlSrc );
       var url = $.getPath( htmlSrc, ".xml" );
       if ( !ClassModule.contains( htmlSrc ) ) {

@@ -7,12 +7,6 @@ aQuery.define( "@app/view/router", [ "app/View", "ui/flex" ], function( $, Super
   var View = SuperView.extend( {
     init: function( contollerElement ) {
       this._super( contollerElement, htmlSrc );
-    },
-    onDomReady: function( ) {
-
-    },
-    initTopElement: function( ) {
-      return SuperView.getHtml( htmlSrc );
     }
   }, {
 
