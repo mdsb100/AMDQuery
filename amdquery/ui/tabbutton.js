@@ -52,7 +52,7 @@ aQuery.define( "ui/tabbutton", [
       change: function( ) {
         var opt = this.options;
 
-        if ( opt.select == true ) {
+        if ( opt.select ) {
           this.target.removeClass( opt.defaultCssName ).addClass( opt.selectCssName );
         } else {
           this.target.removeClass( opt.selectCssName ).addClass( opt.defaultCssName );

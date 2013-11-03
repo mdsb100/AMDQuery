@@ -149,7 +149,7 @@ aQuery.define( "ui/turnBook", [ "base/support", "base/typed", "main/css", "main/
 
     },
     disable: function( ) {
-      //var event = this.event();
+      //var event = this.turnBookEvent();
       this.container.swappable( {
         start: null,
         stop: null,
@@ -161,7 +161,7 @@ aQuery.define( "ui/turnBook", [ "base/support", "base/typed", "main/css", "main/
       return this;
     },
     enable: function( ) {
-      var event = this.event;
+      var event = this.turnBookEvent;
       this.disable( );
       this.container.swappable( {
         start: event,
@@ -335,7 +335,7 @@ aQuery.define( "ui/turnBook", [ "base/support", "base/typed", "main/css", "main/
             left: $.between( -pageWidth, 0, offsetX / 2 - pageWidth ) + "px"
           } );
         };
-      this.event = function( e ) {
+      this.turnBookEvent = function( e ) {
         var index = opt.bookIndex,
           offsetX = e.offsetX;
         // offsetY = e.offsetY;

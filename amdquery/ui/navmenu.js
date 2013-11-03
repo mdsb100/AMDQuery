@@ -19,10 +19,9 @@ aQuery.define( "ui/navmenu", [
 
     var navmenu = Widget.extend( "ui.navmenu", {
       container: null,
-      event: function( ) {},
       _initHandler: function( ) {
         var self = this;
-        this.event = function( e ) {
+        this.navmenuEvent = function( e ) {
           var para = utilExtend.extend( {}, e ),
             type,
             target;
@@ -52,7 +51,7 @@ aQuery.define( "ui/navmenu", [
         $ele[ type ]( "navitem.select", fun );
       },
       enable: function( ) {
-        var fun = this.event;
+        var fun = this.navmenuEvent;
 
         this.changeHandler( $( this.navItemList ), fun, "on" );
 
@@ -60,7 +59,7 @@ aQuery.define( "ui/navmenu", [
         return this;
       },
       disable: function( ) {
-        var fun = this.event;
+        var fun = this.navmenuEvent;
 
         this.changeHandler( $( this.navItemList ), fun, "off" );
 
@@ -110,7 +109,7 @@ aQuery.define( "ui/navmenu", [
           };
         } else if ( typed.isEle( item ) ) {
           checkFn = function( ele, item ) {
-            return ele === item
+            return ele === item;
           };
         } else {
           return null;
@@ -179,12 +178,12 @@ aQuery.define( "ui/navmenu", [
         $( navitemParent || this.target ).children( "ul" ).append( $navitems );
         this.navItemList = this.getNavItemList( );
         if ( !this.options.disabled ) {
-          this.changeHandler( $navitems, this.event, "on" );
+          this.changeHandler( $navitems, this.navmenuEvent, "on" );
         }
       },
       removeNavItem: function( navitems ) {
         var $navitems = $( navitems );
-        this.changeHandler( $navitems, this.event, "off" );
+        this.changeHandler( $navitems, this.navmenuEvent, "off" );
         $navitems.uiNavitem( "destroy" );
         $navitems.remove( );
         this.navItemList = this.getNavItemList( );

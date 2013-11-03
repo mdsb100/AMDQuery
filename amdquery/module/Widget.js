@@ -251,16 +251,17 @@
         this.target.clearHandlers( this.widgetEventPrefix + "." + this.customEventName[ i ] );
       }
 
-      this.container && this.options.removeContainer && $( this.container ).remove( );
+      if ( this.container && this.options.removeContainer ) $( this.container ).remove( );
 
       for ( i in this ) {
         name = i;
-        !object.isPrototypeProperty( this, name ) && ( this[ name ] = null ) && delete this[ name ];
+        if ( !object.isPrototypeProperty( this, name ) && ( this[ name ] = null ) ) delete this[ name ];
       }
 
       return this;
     },
-    able: function( ) { !! this.options.disabled === false ? this.enable( ) : this.disable( );
+    able: function( ) {
+      this.options.disabled ? this.disable( ) : this.enable( );
     },
     disable: function( ) {
       this.options.disabled = true;
@@ -270,7 +271,6 @@
       this.options.disabled = false;
       return this;
     },
-    event: function( ) {},
 
     init: function( obj, target ) {
       var proto = this.constructor.prototype;
@@ -356,8 +356,13 @@
     setOption: function( key, value ) {
       if ( this.beSetter( key ) && this.options[ key ] !== undefined ) {
         this.doSpecialSetter( key, value );
-      } else if ( typed.isFun( value ) && this._isEventName( key ) ) {
-        this.target.addHandler( this.widgetEventPrefix + "." + key, value );
+      } else if ( this._isEventName( key ) ) {
+        var eventName = this.getEventName( key );
+        if ( typed.isFun( value ) ) {
+          this.target.on( eventName, value );
+        } else if ( value === null ) {
+          this.target.clearHandlers( eventName );
+        }
       }
     },
     getOption: function( key ) {
@@ -653,10 +658,10 @@
           for ( var i = 0, len = eles.length; i < len; i++ ) {
             Widget._renderWidget( eles[ i ] );
           }
-          callback && callback( );
+          if ( typed.isFun( callback ) ) callback( );
         } );
       } else {
-        callback && callback( );
+        if ( typed.isFun( callback ) ) callback( );
       }
       return this;
     },
@@ -669,10 +674,10 @@
           for ( var i = 0, len = eles.length; i < len; i++ ) {
             Widget._renderWidget( eles[ i ], "destroy" );
           }
-          callback && callback( );
+          if ( typed.isFun( callback ) ) callback( );
         } );
       } else {
-        callback && callback( );
+        if ( typed.isFun( callback ) ) callback( );
       }
       return this;
     }

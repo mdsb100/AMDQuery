@@ -21,19 +21,19 @@ aQuery.define( "ui/tabview", [
       _initHandler: function( ) {
         var self = this,
           opt = this.options;
-        this.event = function( e ) {
+        this.tabviewEvent = function( e ) {
           self.selectView( e.index );
         };
         return this;
       },
       enable: function( ) {
         this.disable( );
-        this.$tabBar.on( "tabbar.click", this.event );
+        this.$tabBar.on( "tabbar.click", this.tabviewEvent );
         this.options.disabled = false;
         return this;
       },
       disable: function( ) {
-        this.$tabBar.off( "tabbar.click", this.event );
+        this.$tabBar.off( "tabbar.click", this.tabviewEvent );
         this.options.disabled = true;
         return this;
       },

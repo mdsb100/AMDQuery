@@ -93,13 +93,12 @@ aQuery.define( "ui/scrollableview", [
 
       this.refreshPosition( ).refreshContainerSize( );
 
-      isTransform3d && this.container.initTransform3d( );
+      if ( isTransform3d ) this.container.initTransform3d( );
 
       return this;
     },
-    event: function( ) {},
     enable: function( ) {
-      var event = this.event,
+      var event = this.scrollableviewEvent,
         opt = this.options;
       this.container.on( "DomNodeInserted DomNodeRemoved drag.pause drag.move drag.start", event );
       this.container.uiDraggable( "enable" );
@@ -121,7 +120,7 @@ aQuery.define( "ui/scrollableview", [
       return this;
     },
     disable: function( ) {
-      var event = this.event,
+      var event = this.scrollableviewEvent,
         opt = this.options;
       this.container.off( "DomNodeInserted DomNodeRemoved drag.pause drag.move drag.start", event );
       this.container.uiDraggable( "disable" );
@@ -160,11 +159,11 @@ aQuery.define( "ui/scrollableview", [
         keyType = {};
 
       for ( var i = keyList.length - 1; i >= 0; i-- ) {
-        keyItem.keyCode = keyList[ i ]
+        keyItem.keyCode = keyList[ i ];
         keyType[ keyList[ i ] ] = Keyboard.getHandlerName( keyItem );
       }
 
-      this.event = function( e ) {
+      this.scrollableviewEvent = function( e ) {
         switch ( e.type ) {
           case "drag.move":
             var x = self.checkXBoundary( e.offsetX, opt.boundary ),
@@ -194,7 +193,7 @@ aQuery.define( "ui/scrollableview", [
 
             break;
           case "drag.start":
-            opt.enableKeyboard && target[ 0 ].focus( );
+            if ( opt.enableKeyboard ) target[ 0 ].focus( );
             self.stopAnimation( );
             self.refreshPosition( ).refreshContainerSize( );
             break;
@@ -370,20 +369,20 @@ aQuery.define( "ui/scrollableview", [
     _render: function( x1, x2, y1, y2 ) {
       var pos = {};
       if ( x1 !== null && this._isAllowedDirection( "H" ) ) {
-        pos.x = parseInt( x1 );
-        this.statusBarX.setPositionX( isTransform3d, parseInt( x2 ) );
+        pos.x = parseInt( x1, 0 );
+        this.statusBarX.setPositionX( isTransform3d, parseInt( x2, 0 ) );
       }
       if ( y1 !== null && this._isAllowedDirection( "V" ) ) {
-        pos.y = parseInt( y1 );
-        this.statusBarY.setPositionY( isTransform3d, parseInt( y2 ) );
+        pos.y = parseInt( y1, 0 );
+        this.statusBarY.setPositionY( isTransform3d, parseInt( y2, 0 ) );
       }
       this.container.setPositionXY( isTransform3d, pos );
       return this;
     },
     renderStatusBar: function( x, y ) {
-      this._isAllowedDirection( "H" ) && this.statusBarX.setPositionX( isTransform3d, parseInt( x ) );
+      if ( this._isAllowedDirection( "H" ) ) this.statusBarX.setPositionX( isTransform3d, parseInt( x, 0 ) );
 
-      this._isAllowedDirection( "V" ) && this.statusBarY.setPositionY( isTransform3d, parseInt( y ) );
+      if ( this._isAllowedDirection( "V" ) ) this.statusBarY.setPositionY( isTransform3d, parseInt( y, 0 ) );
 
       return this;
     },
@@ -530,11 +529,11 @@ aQuery.define( "ui/scrollableview", [
     },
 
     checkXBoundary: function( s, boundary ) {
-      var boundary = boundary !== undefined ? boundary : this.options.boundary;
+      boundary = boundary !== undefined ? boundary : this.options.boundary;
       return $.between( -( this.overflowWidth + boundary ), boundary, s );
     },
     checkYBoundary: function( s, boundary ) {
-      var boundary = boundary !== undefined ? boundary : this.options.boundary;
+      boundary = boundary !== undefined ? boundary : this.options.boundary;
       return $.between( -( this.overflowHeight + boundary ), boundary, s );
     },
 
@@ -549,8 +548,8 @@ aQuery.define( "ui/scrollableview", [
     },
 
     showStatusBar: function( ) {
-      this.statusBarXVisible && this._isAllowedDirection( "H" ) && this.statusBarX.show( );
-      this.statusBarYVisible && this._isAllowedDirection( "V" ) && this.statusBarY.show( );
+      if ( this.statusBarXVisible && this._isAllowedDirection( "H" ) ) this.statusBarX.show( );
+      if ( this.statusBarYVisible && this._isAllowedDirection( "V" ) ) this.statusBarY.show( );
       return this;
     },
     hideStatusBar: function( ) {

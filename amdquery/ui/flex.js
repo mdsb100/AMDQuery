@@ -40,12 +40,11 @@ aQuery.define( "ui/flex", [
 
       proto = {
         container: null,
-        event: function( ) {},
         _initHandler: function( ) {
           // var self = this;
           var self = this;
 
-          this.event = functionExtend.debounce( function( ) {
+          this.flexEvent = functionExtend.debounce( function( ) {
             self.resize( );
           }, 50 );
 
@@ -53,14 +52,14 @@ aQuery.define( "ui/flex", [
         },
         enable: function( ) {
           // if ( !this.findParent( ) ) {
-          event.event.document.addHandler( window, "resize", this.event );
+          event.event.document.addHandler( window, "resize", this.flexEvent );
           // }
           this.options.disabled = false;
           return this;
         },
         disable: function( ) {
           // if ( !this.findParent( ) ) {
-          event.event.document.removeHandler( window, "resize", this.event );
+          event.event.document.removeHandler( window, "resize", this.flexEvent );
           // }
           this.options.disabled = true;
           return this;
@@ -161,12 +160,11 @@ aQuery.define( "ui/flex", [
     } else {
       proto = {
         container: null,
-        event: function( ) {},
         _initHandler: function( ) {
           // var self = this;
           var self = this;
 
-          this.event = functionExtend.debounce( function( ) {
+          this.flexEvent = functionExtend.debounce( function( ) {
             self.fillParent( );
             self.render( );
           }, 50 );
@@ -175,14 +173,14 @@ aQuery.define( "ui/flex", [
         },
         enable: function( ) {
           if ( !this.findParent( ) ) {
-            event.event.document.addHandler( window, "resize", this.event );
+            event.event.document.addHandler( window, "resize", this.flexEvent );
           }
           this.options.disabled = false;
           return this;
         },
         disable: function( ) {
           if ( !this.findParent( ) ) {
-            event.event.document.removeHandler( window, "resize", this.event );
+            event.event.document.removeHandler( window, "resize", this.flexEvent );
           }
           this.options.disabled = true;
           return this;
@@ -411,7 +409,7 @@ aQuery.define( "ui/flex", [
           var $item;
 
           this.target.children( ).each( function( ele ) {
-            $item = $( ele )
+            $item = $( ele );
             if ( $item.isWidget( "ui.flex" ) ) {
               $item.uiFlex( {
                 initWithParent: true

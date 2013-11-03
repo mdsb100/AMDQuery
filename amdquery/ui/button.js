@@ -18,10 +18,9 @@ aQuery.define( "ui/button", [
 
     var button = Widget.extend( "ui.button", {
       container: null,
-      event: function( ) {},
       _initHandler: function( ) {
         var self = this;
-        this.event = function( e ) {
+        this.buttonEvent = function( e ) {
           switch ( e.type ) {
             case "click":
               var para = {
@@ -39,21 +38,25 @@ aQuery.define( "ui/button", [
       },
       enable: function( ) {
         this.disable( );
-        this.target.on( "click", this.event );
+        this.target.on( "click", this.buttonEvent );
         this.options.disabled = false;
         return this;
       },
       disable: function( ) {
-        this.target.off( "click", this.event );
+        this.target.off( "click", this.buttonEvent );
         this.options.disabled = true;
         return this;
       },
       render: function( ) {
         var opt = this.options,
           ie = client.browser.ie < 9;
-        ie && this.$text.remove( );
+        if ( ie ) {
+          this.$text.remove( );
+        }
         this.$text.html( opt.text );
-        ie && this.$text.appendTo( this.container );
+        if ( ie ) {
+          this.$text.appendTo( this.container );
+        }
         this.container.attr( "title", opt.title );
         return this;
       },

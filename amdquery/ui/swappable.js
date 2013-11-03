@@ -6,11 +6,8 @@
 
       return this;
     },
-    event: function( ) {
-
-    },
     enable: function( ) {
-      var fun = this.event;
+      var fun = this.swappableEvent;
       this.disable( );
       this.target.on( "mousemove", fun ).on( "mousedown", fun );
       $( document ).on( "mouseup", fun );
@@ -18,7 +15,7 @@
       return this;
     },
     disable: function( ) {
-      var fun = this.event;
+      var fun = this.swappableEvent;
       this.target.off( "mousemove", fun ).off( "mousedown", fun );
       $( document ).off( "mouseup", fun );
       this.options.disabled = true;
@@ -26,7 +23,7 @@
     },
     computeSwapType: function( swapTypeName ) {
       var path = this.path,
-        swaptype = undefined;
+        swaptype;
 
       ///先用简单实现
       ///这里去计算path 最后返回如: "LeftToRight","Linear","Cicrle" 多元线性回归;
@@ -89,7 +86,7 @@
         target = self.target,
         opt = self.options,
         time, timeout, lastEvent; //IE和绑定顺序有关？找不到startX值？
-      this.event = function( e ) {
+      this.swappableEvent = function( e ) {
         //event.document.stopPropagation(e);
         var left = target.getLeftWithTranslate3d( ),
           top = target.getTopWithTranslate3d( ),
@@ -144,7 +141,7 @@
             break;
           case "mousemove":
             //event.document.stopPropagation(e);
-            if ( e.which === 0 || ( client.browser.ie678 && e.button != 1 ) || self.isDown == false ) {
+            if ( e.which === 0 || ( client.browser.ie678 && e.button != 1 ) || self.isDown === false ) {
               self.isDown = false;
               para.type = self.getEventName( "mousemove" );
               target.trigger( para.type, target[ 0 ], para );

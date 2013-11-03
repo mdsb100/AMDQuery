@@ -88,9 +88,8 @@
         return this;
       },
       customEventName: [ "start", "move", "stop", "pause", "revert" ],
-      event: function( ) {},
       enable: function( ) {
-        var fun = this.event;
+        var fun = this.draggableEvent;
         this.disable( );
         $( "body" ).on( "mouseup", fun );
         this.container.on( "mousemove mouseup", fun );
@@ -99,7 +98,7 @@
         return this;
       },
       disable: function( ) {
-        var fun = this.event;
+        var fun = this.draggableEvent;
         $( "body" ).off( "mouseup", fun );
         this.container.off( "mousemove mouseup", fun );
         this.target.off( "mousedown", fun );
@@ -117,7 +116,7 @@
           this.options.overflow = overflow;
         }
         if ( this.positionParent ) {
-          if ( this.options.overflow == true ) {
+          if ( this.options.overflow === true || this.options.overflow === 1 ) {
             this.positionParent.css( {
               "overflow": "hidden"
             } );
@@ -127,7 +126,7 @@
         }
       },
       _setContainer: function( container ) {
-        if ( this.options.container == null ) {
+        if ( this.options.container === null ) {
           this.options.container = container;
         }
       },
@@ -184,7 +183,7 @@
           parentLeft = null,
           parentTop = null,
           dragging = null;
-        this.event = function( e ) {
+        this.draggableEvent = function( e ) {
           var offsetLeft, offsetTop, x, y, para = {};
           if ( e.type !== "mousemove" || dragging ) {
             offsetLeft = self.getPositionX( );
@@ -215,7 +214,7 @@
               para.originX = opt.originX = x - opt.diffx - parentLeft;
               para.originY = opt.originY = y - opt.diffy - parentTop;
 
-              if ( opt.disabled == true ) {
+              if ( opt.disabled ) {
                 opt.cursor = "default";
               } else {
                 if ( opt.vertical && opt.horizontal ) {
@@ -231,7 +230,9 @@
               } );
 
               eventFuns.preventDefault( e );
-              opt.stopPropagation && eventFuns.stopPropagation( e );
+              if ( opt.stopPropagation ) {
+                eventFuns.stopPropagation( e );
+              }
               target.trigger( para.type, target[ 0 ], para );
               break;
             case "touchmove":
@@ -261,7 +262,9 @@
             case "mouseup":
               clearTimeout( timeout );
               eventFuns.preventDefault( e );
-              opt.stopPropagation && eventFuns.stopPropagation( e );
+              if ( opt.stopPropagation ) {
+                eventFuns.stopPropagation( e );
+              }
               para.type = self.getEventName( "stop" );
               para.offsetX = opt.x;
               para.offsetY = opt.y;
@@ -294,10 +297,10 @@
       },
       _render: function( x, y ) {
         var pos = {}, opt = this.options;
-        if ( opt.horizontal == true ) {
+        if ( opt.horizontal ) {
           pos.x = x;
         }
-        if ( opt.vertical == true ) {
+        if ( opt.vertical ) {
           pos.y = y;
         }
         this.target.setPositionXY( isTransform3d, pos );
@@ -313,7 +316,7 @@
         parentLeft = parentLeft || this.positionParent.getLeftWithTranslate3d( );
         parentTop = parentTop || this.positionParent.getTopWithTranslate3d( );
 
-        if ( opt.keepinner == true && con[ 0 ] ) {
+        if ( opt.keepinner && con[ 0 ] ) {
 
           var pageLeft = con.getLeftWithTranslate3d( ) - parentLeft;
           var pageTop = con.getTopWithTranslate3d( ) - parentTop;

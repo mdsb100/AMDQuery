@@ -21,12 +21,10 @@ aQuery.define( "ui/navitem", [
     };
     var navitem = Widget.extend( "ui.navitem", {
       container: null,
-      event: function( ) {},
       _initHandler: function( ) {
         var self = this;
-        // target = self.target,
-        // opt = self.options;
-        this.event = function( e ) {
+
+        this.navitemEvent = function( e ) {
           switch ( e.type ) {
             case "click":
               if ( $.event.document.getTarget( e ) == self.$arrow[ 0 ] ) {
@@ -41,7 +39,7 @@ aQuery.define( "ui/navitem", [
         return this;
       },
       enable: function( ) {
-        var fun = this.event;
+        var fun = this.navitemEvent;
         this.disable( );
         this.$text.on( "click", fun );
         this.$arrow.on( "click", fun );
@@ -49,7 +47,7 @@ aQuery.define( "ui/navitem", [
         return this;
       },
       disable: function( ) {
-        var fun = this.event;
+        var fun = this.navitemEvent;
         this.$text.off( "click", fun );
         this.$arrow.off( "click", fun );
         this.options.disabled = true;
@@ -90,7 +88,7 @@ aQuery.define( "ui/navitem", [
       },
       open: function( ) {
         var opt = this.options;
-        if ( opt.isOpen == false ) {
+        if ( !opt.isOpen  ) {
           if ( opt.parent && !opt.parent.uiNavitem( "option", "isOpen" ) ) {
             opt.parent.uiNavitem( "open" );
           }
@@ -116,7 +114,7 @@ aQuery.define( "ui/navitem", [
       },
       close: function( ) {
         var opt = this.options;
-        if ( opt.isOpen == true ) {
+        if ( opt.isOpen ) {
           opt.isOpen = false;
           this.$board.slideUp( {
             duration: 200,

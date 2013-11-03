@@ -20,7 +20,7 @@ aQuery.define( "ui/tabbar", [
       event: function( ) {},
       _initHandler: function( ) {
         var self = this;
-        this.event = function( e ) {
+        this.tabbarEvent = function( e ) {
           var $button = $( this );
           self.select( $button );
           var para = {
@@ -45,23 +45,23 @@ aQuery.define( "ui/tabbar", [
         this.select( this.options.index );
       },
       getSelectionIndex: function( ) {
-        var SelectionIndex = 0
+        var SelectionIndex = 0;
         this.$tabButtons.each( function( ele, index ) {
           if ( $( ele ).uiTabbutton( "option", "select" ) ) {
             SelectionIndex = index;
-            return false
+            return false;
           }
         } );
         return SelectionIndex;
       },
       enable: function( ) {
         this.disable( );
-        this.$tabButtons.on( "tabbutton.click", this.event );
+        this.$tabButtons.on( "tabbutton.click", this.tabbarEvent );
         this.options.disabled = false;
         return this;
       },
       disable: function( ) {
-        this.$tabButtons.off( "tabbutton.click", this.event );
+        this.$tabButtons.off( "tabbutton.click", this.tabbarEvent );
         this.options.disabled = true;
         return this;
       },

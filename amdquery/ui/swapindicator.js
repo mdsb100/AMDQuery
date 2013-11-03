@@ -134,12 +134,12 @@ aQuery.define( "ui/swapindicator", [
       this.layout( );
     },
     enable: function( ) {
-      this.target.on( "click mousedown", this.event );
+      this.target.on( "click mousedown", this.swapindicatorEvent );
       this.options.disabled = false;
       return this;
     },
     disable: function( ) {
-      this.target.off( "click mousedown", this.event );
+      this.target.off( "click mousedown", this.swapindicatorEvent );
       this.options.disabled = true;
       return this;
     },
@@ -148,7 +148,7 @@ aQuery.define( "ui/swapindicator", [
         target = self.target,
         opt = self.options;
 
-      this.event = function( e ) {
+      this.swapindicatorEvent = function( e ) {
         switch ( e.type ) {
           case "mousedown":
           case "touchstart":

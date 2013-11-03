@@ -147,7 +147,7 @@ aQuery.define( "ui/swapview", [
         innerHeight: height / 4
       } );
 
-      this.$indicator && this.$indicator.uiSwapindicator( "resize" );
+      if ( this.$indicator ) this.$indicator.uiSwapindicator( "resize" );
     },
     toPosition: function( ) {
       var pos = {}, opt = this.options;
@@ -201,7 +201,7 @@ aQuery.define( "ui/swapview", [
         easing: opt.animationEasing,
         queue: false,
         complete: function( ) {
-          self.$indicator && self.$indicator.uiSwapindicator( "option", "index", index );
+          if ( self.$indicator ) self.$indicator.uiSwapindicator( "option", "index", index );
           animationEvent.type = "afterAnimation";
           self.target.trigger( animationEvent.type, animationEvent.target, animationEvent );
           if ( originIndex !== index ) {
@@ -225,20 +225,20 @@ aQuery.define( "ui/swapview", [
       this.render( index );
     },
     enable: function( ) {
-      var event = this.event;
+      var event = this.swapviewEvent;
       this.container.on( "drag.start", event );
       this.target.on( "swap.stop swap.none", event );
-      this.options.detectFlexResize && this.target.on( "flex.resize", event );
-      this.$indicator && this.$indicator.on( "swapindicator.change", event );
+      if ( this.options.detectFlexResize ) this.target.on( "flex.resize", event );
+      if ( this.$indicator ) this.$indicator.on( "swapindicator.change", event );
       this.options.disabled = false;
       return this;
     },
     disable: function( ) {
-      var event = this.event;
+      var event = this.swapviewEvent;
       this.container.off( "drag.start", event );
       this.target.off( "swap.stop swap.none", event );
-      this.options.detectFlexResize && this.target.on( "flex.resize", event );
-      this.$indicator && this.$indicator.off( "swapindicator.change", event );
+      if ( this.options.detectFlexResize ) this.target.on( "flex.resize", event );
+      if ( this.$indicator ) this.$indicator.off( "swapindicator.change", event );
       this.options.disabled = true;
       return this;
     },
@@ -251,7 +251,7 @@ aQuery.define( "ui/swapview", [
         target = self.target,
         opt = self.options;
 
-      this.event = function( e ) {
+      this.swapviewEvent = function( e ) {
         switch ( e.type ) {
           case "drag.start":
             self.stopAnimation( );
@@ -310,7 +310,7 @@ aQuery.define( "ui/swapview", [
     destroy: function( ) {
       this.target.destroyUiSwappable( );
       this.container.destroyUiDraggable( );
-      this.$swapindicator && this.$swapindicator.destroyUiSwapindicator( );
+      if ( this.$swapindicator ) this.$swapindicator.destroyUiSwapindicator( );
       Widget.invoke( "destroy", this );
     },
     init: function( opt, target ) {
