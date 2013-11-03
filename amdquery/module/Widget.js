@@ -237,6 +237,9 @@
 
     },
     create: function( ) {},
+    detect: function( ) {
+      return this;
+    },
     container: null,
     constructor: Widget,
     destroy: function( ) {
@@ -262,6 +265,7 @@
     },
     able: function( ) {
       this.options.disabled ? this.disable( ) : this.enable( );
+      return this;
     },
     disable: function( ) {
       this.options.disabled = true;
@@ -335,7 +339,8 @@
       equals: Widget.AllowReturn,
       beSetter: Widget.AllowReturn,
       beGetter: Widget.AllowReturn,
-      render: Widget.AllowPublic
+      render: Widget.AllowPublic,
+      detect: Widget.AllowPublic
     },
     getEventName: function( name ) {
       return this.widgetEventPrefix + "." + name;
@@ -557,6 +562,9 @@
 
       return widget;
     },
+    hasWidget: function( item ) {
+      return !!this.getAttrWidgets( item ).length;
+    },
     is: function( widgetName, item ) {
       /// <summary>是否含某个widget实例</summary>
       /// <param name="item" type="$"></param>
@@ -649,8 +657,24 @@
 
       return this;
     },
-    initWidgets: function( parent, callback ) {
-      var eles = Widget.findWidgets( parent );
+    triggerDetectToParent: function( target ) {
+      var eventName = "widget.detect";
+      if ( target ) {
+        $( target ).parents( ).each( function( ele ) {
+          if ( Widget.hasWidget( ele ) ) {
+            console.log( "triggerDetectToParent", ele )
+            if ( ele.id == "tabview" ) {
+              debugger
+            }
+            $( ele ).trigger( eventName, ele, {
+              type: eventName
+            } );
+          }
+        } );
+      }
+    },
+    initWidgets: function( target, callback ) {
+      var eles = Widget.findWidgets( target );
       var widgetNames = getWidgetsName( eles );
 
       if ( widgetNames.length ) {
@@ -658,6 +682,7 @@
           for ( var i = 0, len = eles.length; i < len; i++ ) {
             Widget._renderWidget( eles[ i ] );
           }
+          Widget.triggerDetectToParent( target );
           if ( typed.isFun( callback ) ) callback( );
         } );
       } else {
@@ -665,8 +690,8 @@
       }
       return this;
     },
-    destroyWidgets: function( parent, callback ) {
-      var eles = Widget.findWidgets( parent ).reverse( );
+    destroyWidgets: function( target, callback ) {
+      var eles = Widget.findWidgets( target ).reverse( );
       var widgetNames = getWidgetsName( eles );
 
       if ( widgetNames.length ) {
@@ -674,6 +699,7 @@
           for ( var i = 0, len = eles.length; i < len; i++ ) {
             Widget._renderWidget( eles[ i ], "destroy" );
           }
+          Widget.triggerDetectToParent( target );
           if ( typed.isFun( callback ) ) callback( );
         } );
       } else {

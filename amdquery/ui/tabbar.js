@@ -74,17 +74,26 @@ aQuery.define( "ui/tabbar", [
           "border-right": "1px solid black"
         } );
 
+        this._initHandler( );
+
         this.target.addClass( "aquery-tabbar" );
 
-        this.$tabButtons = target.find( "*[amdquery-widget*='ui.tabbutton']" );
+        this.detect( );
+
+        return this;
+      },
+      destroy: function( ) {
+        this.$tabButtons.destroyTabbutton( );
+        Widget.invoke( "destroy", this );
+      },
+      detect: function( ) {
+        this.$tabButtons = this.target.find( "*[amdquery-widget*='ui.tabbutton']" );
 
         this.$tabButtons.uiTabbutton( );
 
         this.options.index = this.getSelectionIndex( );
 
-        this._initHandler( ).enable( ).render( );
-
-        return this;
+        return this.able( ).render( );
       },
       customEventName: [ "click" ],
       options: {

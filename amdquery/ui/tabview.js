@@ -22,18 +22,29 @@ aQuery.define( "ui/tabview", [
         var self = this,
           opt = this.options;
         this.tabviewEvent = function( e ) {
-          self.selectView( e.index );
+          switch ( e.type ) {
+            case "widget.detect":
+              self.detect( );
+              self.$tabBar.uiTabbar( "detect" );
+              break;
+            case "tabbar.click":
+              self.selectView( e.index );
+              break;
+          }
+
         };
         return this;
       },
       enable: function( ) {
         this.disable( );
         this.$tabBar.on( "tabbar.click", this.tabviewEvent );
+        this.target.on( "widget.detect", this.tabviewEvent );
         this.options.disabled = false;
         return this;
       },
       disable: function( ) {
         this.$tabBar.off( "tabbar.click", this.tabviewEvent );
+        this.target.off( "widget.detect", this.tabviewEvent );
         this.options.disabled = true;
         return this;
       },
@@ -77,21 +88,30 @@ aQuery.define( "ui/tabview", [
       init: function( opt, target ) {
         this._super( opt, target );
 
-        var $tabBar = target.children( "div[amdquery-widget*='ui.tabbar']" );
+        this._initHandler( );
 
-        $tabBar.uiTabbar( );
+        this.detect( );
+
+        return this;
+      },
+      destroy: function( ) {
+        this.$tabBar.destroyTabbar( );
+        Widget.invoke( "destroy", this );
+      },
+      detect: function( ) {
+        var $tabBar = this.target.children( "div[amdquery-widget*='ui.tabbar']" );
 
         this.$tabBar = $tabBar;
 
-        this.$view = target.children( ).filter( function( ) {
+        $tabBar.uiTabbar( );
+
+        this.$view = this.target.children( ).filter( function( ) {
           return this === $tabBar[ 0 ];
         } );
 
         this.options.index = $tabBar.uiTabbar( "option", "index" );
 
-        this._initHandler( ).enable( ).render( );
-
-        return this;
+        return this.able( ).render( );
       },
       customEventName: [ "select" ],
       options: {

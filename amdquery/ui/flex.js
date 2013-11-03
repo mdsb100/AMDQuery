@@ -164,7 +164,15 @@ aQuery.define( "ui/flex", [
           // var self = this;
           var self = this;
 
-          this.flexEvent = functionExtend.debounce( function( ) {
+          this.flexEvent = function( e ) {
+            switch ( e.type ) {
+              case "widget.detect":
+                self.detect( );
+                break;
+            }
+          };
+
+          this.resizeEvent = functionExtend.debounce( function( ) {
             self.fillParent( );
             self.render( );
           }, 50 );
@@ -173,14 +181,16 @@ aQuery.define( "ui/flex", [
         },
         enable: function( ) {
           if ( !this.findParent( ) ) {
-            event.event.document.addHandler( window, "resize", this.flexEvent );
+            event.event.document.addHandler( window, "resize", this.resizeEvent );
+            this.target.on( "widget.detect", this.flexEvent );
           }
           this.options.disabled = false;
           return this;
         },
         disable: function( ) {
           if ( !this.findParent( ) ) {
-            event.event.document.removeHandler( window, "resize", this.flexEvent );
+            event.event.document.removeHandler( window, "resize", this.resizeEvent );
+            this.target.off( "widget.detect", this.flexEvent );
           }
           this.options.disabled = true;
           return this;
@@ -212,6 +222,9 @@ aQuery.define( "ui/flex", [
           }
 
           return this;
+        },
+        detect: function( ) {
+          this.toDirection( this.options.flexDirection );
         },
         resize: function( width, height ) {
           this.render( width, height );

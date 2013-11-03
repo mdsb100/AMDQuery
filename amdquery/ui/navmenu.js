@@ -170,8 +170,12 @@ aQuery.define( "ui/navmenu", [
       },
       refreshNavItem: function( ) {
         this.navItemList = this.getNavItemList( );
-
-        $( this.navItemList ).uiNavitem( ).enable( );
+        var $navItemList = $( this.navItemList );
+        $navItemList.uiNavitem( );
+        this.able( );
+      },
+      detect: function( ) {
+        this.refreshNavItem( );
       },
       addNavItem: function( navitems, navitemParent ) {
         var $navitems = $( navitems );

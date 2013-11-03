@@ -95,6 +95,11 @@ aQuery.define( "ui/swapview", [
       this.$indicator = this.getIndicator( );
       this.resize( );
     },
+    detect: function( ) {
+      this.$views = this.getViews( );
+      this.setViewOrientation( );
+      this.resize( );
+    },
     append: function( view ) {
       if ( typed.isNode( view, "li" ) ) {
         this.container.append( view );
@@ -227,7 +232,7 @@ aQuery.define( "ui/swapview", [
     enable: function( ) {
       var event = this.swapviewEvent;
       this.container.on( "drag.start", event );
-      this.target.on( "swap.stop swap.none", event );
+      this.target.on( "swap.stop swap.none widget.detect", event );
       if ( this.options.detectFlexResize ) this.target.on( "flex.resize", event );
       if ( this.$indicator ) this.$indicator.on( "swapindicator.change", event );
       this.options.disabled = false;
@@ -236,7 +241,7 @@ aQuery.define( "ui/swapview", [
     disable: function( ) {
       var event = this.swapviewEvent;
       this.container.off( "drag.start", event );
-      this.target.off( "swap.stop swap.none", event );
+      this.target.off( "swap.stop swap.none widget.detect", event );
       if ( this.options.detectFlexResize ) this.target.on( "flex.resize", event );
       if ( this.$indicator ) this.$indicator.off( "swapindicator.change", event );
       this.options.disabled = true;
@@ -253,6 +258,10 @@ aQuery.define( "ui/swapview", [
 
       this.swapviewEvent = function( e ) {
         switch ( e.type ) {
+          case "widget.detect":
+            self.detect( );
+            self.$indicator && self.$indicator.uiSwapindicator( "detect" );
+            break;
           case "drag.start":
             self.stopAnimation( );
             // self.resize();

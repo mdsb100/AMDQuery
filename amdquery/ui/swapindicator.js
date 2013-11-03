@@ -26,13 +26,11 @@ aQuery.define( "ui/swapindicator", [
         cursor: "pointer"
       } ).addClass( "aquery-swapindicator" );
 
-      this.detectIndicators( );
-
-      this.resize( );
+      this.detect( );
 
       return this;
     },
-    detectIndicators: function( ) {
+    detect: function( ) {
       this.$indicators = this.target.children( 'li' );
 
       if ( this.options.orientation === HORIZONTAL ) {
@@ -40,6 +38,8 @@ aQuery.define( "ui/swapindicator", [
       } else {
         this.$indicators.css( "clear", "left" );
       }
+
+      this.resize( );
     },
     layout: function( ) {
       var opt = this.options,
@@ -88,8 +88,7 @@ aQuery.define( "ui/swapindicator", [
     },
     append: function( li ) {
       this.target.append( li );
-      this.detectIndicators( );
-      this.resize( );
+      this.detect( );
     },
     remove: function( removeIndex, renderIndex ) {
       var $indicator = this.$indicators.eq( removeIndex );
@@ -97,8 +96,7 @@ aQuery.define( "ui/swapindicator", [
         return;
       }
       $indicator.remove( );
-      this.detectIndicators( );
-      this.resize( );
+      this.detect( );
       this.render( renderIndex && renderIndex <= this.$indicators.length ? renderIndex : 0 );
     },
     render: function( index ) {

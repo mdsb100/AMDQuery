@@ -91,7 +91,7 @@ aQuery.define( "ui/scrollableview", [
         overflow: true
       } );
 
-      this.refreshPosition( ).refreshContainerSize( );
+      this.detect( );
 
       if ( isTransform3d ) this.container.initTransform3d( );
 
@@ -102,7 +102,7 @@ aQuery.define( "ui/scrollableview", [
         opt = this.options;
       this.container.on( "DomNodeInserted DomNodeRemoved drag.pause drag.move drag.start", event );
       this.container.uiDraggable( "enable" );
-      this.target.on( "swap.move swap.stop swap.pause", event ).touchwheel( event );
+      this.target.on( "swap.move swap.stop swap.pause widget.detect", event ).touchwheel( event );
       this.target.uiSwappable( "enable" );
       this.target.delegate( "a[href^=#]", "click", event );
 
@@ -124,7 +124,7 @@ aQuery.define( "ui/scrollableview", [
         opt = this.options;
       this.container.off( "DomNodeInserted DomNodeRemoved drag.pause drag.move drag.start", event );
       this.container.uiDraggable( "disable" );
-      this.target.off( "swap.move swap.stop swap.pause", event ).off( "touchwheel", event );
+      this.target.off( "swap.move swap.stop swap.pause widget.detect", event ).off( "touchwheel", event );
       this.target.uiSwappable( "disable" );
       this.target.off( "click", event );
 
@@ -165,6 +165,9 @@ aQuery.define( "ui/scrollableview", [
 
       this.scrollableviewEvent = function( e ) {
         switch ( e.type ) {
+          case "widget.detect":
+            self.detect( );
+            break;
           case "drag.move":
             var x = self.checkXBoundary( e.offsetX, opt.boundary ),
               y = self.checkYBoundary( e.offsetY, opt.boundary );
@@ -195,11 +198,11 @@ aQuery.define( "ui/scrollableview", [
           case "drag.start":
             if ( opt.enableKeyboard ) target[ 0 ].focus( );
             self.stopAnimation( );
-            self.refreshPosition( ).refreshContainerSize( );
+            self.detect( );
             break;
           case "DomNodeInserted":
           case "DomNodeRemoved":
-            self.refreshPosition( ).refreshContainerSize( ).toVBoundary( self.getTop( ) ).toHBoundary( self.getLeft( ) );
+            self.detect( ).toVBoundary( self.getTop( ) ).toHBoundary( self.getLeft( ) );
             break;
           case "swap.move":
             self.showStatusBar( );
@@ -401,22 +404,27 @@ aQuery.define( "ui/scrollableview", [
 
     append: function( content ) {
       this.positionParent.append( content );
-      this.refreshPosition( ).refreshContainerSize( );
+      this.detect( );
     },
 
     remove: function( content ) {
       // must ele
       if ( query.contains( this.positionParent[ 0 ], content ) ) {
         $( content ).remove( );
-        this.refreshPosition( ).refreshContainerSize( );
+        this.detect( );
       }
+    },
+
+    detect: function( ) {
+      this.refreshPosition( ).refreshContainerSize( );
+      return this;
     },
 
     replace: function( ele1, ele2 ) {
       // must ele
       if ( query.contains( this.positionParent[ 0 ], ele1 ) ) {
         $( ele1 ).replaceWith( ele2 );
-        this.refreshPosition( ).refreshContainerSize( );
+        this.detect( );
       }
     },
 
