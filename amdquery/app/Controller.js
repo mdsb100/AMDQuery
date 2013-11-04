@@ -26,10 +26,8 @@ aQuery.define( "app/Controller", [
       this._controllers = [ ];
 
       this.view = view;
-      // 生成Models
-      //this.models = Models || [ ];
 
-      this.view.initWidget( );
+      // this.view.initWidget( );
 
       var controllers = Controller.loadController( this.view.topElement );
 
