@@ -2,10 +2,10 @@
 amdqueryPath = '../amdquery/';
 
 //Configurate project root path
-projectRootPath = setPath('../../', true);
+projectRootPath = '../../';
 
 //All build files will save to outputPath
-outputPath = setPath('../output/', true);
+outputPath = '../output/';
 
 //All apps entrance - get them from app/*.js(only one segment)
 apps = [
