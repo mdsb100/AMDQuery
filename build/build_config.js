@@ -5,11 +5,15 @@ exports.amdqueryPath = '../amdquery/';
 exports.projectRootPath = '../../';
 
 //All build files will save to outputPath
-exports.outputPath = '../output/';
+exports.outputPath = 'output/';
 
 //All apps entrance - get them from app/*.js(only one segment)
 exports.apps = {
-    "test": "../build/test"
+
+}
+
+exports.defines = {
+  test: "../build/test/test"
 }
 
 //Compress level of JS Minifier

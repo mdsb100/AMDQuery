@@ -3,8 +3,9 @@
    debug: false,
    amdqueryPath: '../amdquery/',
    projectRootPath: '../../',
-   outputPath: '../output/',
+   outputPath: 'output/',
    apps: {},
+   defines: {},
    levelOfJSMin: 3,
    uglifyOptions: {
      strict_semicolons: false,
@@ -94,7 +95,7 @@
  //Uglify
  var uglify = require( './lib/uglify/uglify-js.js' );
  var minify = function( content ) {
-   return uglify( content, uglifyOptions );
+   return uglify( content, buildConfig.uglifyOptions );
  };
 
  var glob = require( "glob" );
@@ -107,24 +108,60 @@
 
  function readBaseAMDQueryJS( next, result ) {
    oye.readFile( buildConfig.amdqueryPath + "amdquery.js", function( content ) {
-     setBaseFileStack( content, "amdquery.js" );
      next( null, content );
    } );
+ }
+
+ function buildDefines( result, next ) {
+
+   if ( !buildConfig.defines ) {
+     return next( null, {} );
+   }
+   var l = 0,
+     i = 0,
+     key;
+
+   for ( key in buildConfig.defines ) {
+     l++;
+   }
+
+   if ( l === 0 ) {
+     next( null, {} );
+   }
+   //Process all defines
+   var n = l,
+     name,
+     item
+     result = {
+
+     },
+     callback = function( name, list ) {
+       n--;
+       result[ name ] = list;
+       if ( n <= 0 ) {
+         next( null, result );
+       }
+     };
+
+   for ( name in buildConfig.defines ) {
+     item = buildConfig.defines[ name ];
+     _buildjs( item, name, callback );
+   }
+
  }
 
  function buildApps( result, next ) {
 
    if ( !buildConfig.apps ) {
-     return next( "apps is empty", null );
+     return next( null, {} );
    }
    var l = 0,
      key;
    for ( key in buildConfig.apps ) {
      l++;
-
    }
    if ( l === 0 ) {
-     next( "apps is empty", null );
+     next( null, {} );
    }
    //Process all apps
    var n = l,
@@ -143,8 +180,50 @@
 
  }
 
+ function saveDefinesFile( result, next ) {
+   var dirPath = buildConfig.outputPath + "defins/",
+     list,
+     i = 0,
+     len,
+     p,
+     allFile,
+     minFile,
+     content,
+     minContent,
+     name;
+   mkdirSync( dirPath );
+
+   for ( name in result ) {
+     list = result[ name ];
+     len = list.length;
+     name = name.replace( /^\/+/, '' );
+     path = dirPath + name.replace( /[^\/]*$/, '' );
+     allPath = dirPath + name + '.all.js';
+     minPath = dirPath + name + '.min.js';
+
+     content = list.join( "\r\n" );
+     minContent = minifyContent( content );
+
+     if ( minContent ) {
+       FSO.writeFile( allPath, content, function( err ) {
+         if ( err ) {
+           throw err;
+         }
+       } );
+       console.log( '\r\nSave defines file: ' + allPath );
+     }
+     FSO.writeFile( minPath, minContent, function( err ) {
+       if ( err ) {
+         throw err;
+       }
+     } );
+     console.log( '\r\nSave defines file: ' + minPath );
+   }
+
+ }
+
  function main( ) {
-   async.waterfall( [ readBaseAMDQueryJS, buildApps ], function( err, result ) {
+   async.waterfall( [ readBaseAMDQueryJS, buildDefines, saveDefinesFile ], function( err, result ) {
      if ( err ) {
        throw err;
      }
@@ -154,65 +233,57 @@
    } );
  }
 
- var _build = function( sModule, appName, callback ) {
+ var _buildjs = function( sModule, name, callback ) {
    oye.require( sModule, function( Module ) { //Asynchronous
      var list = Module.getDependenciesMap( );
      var l = list.length;
      console.info( '\u001b[34m' + '\r\nDependencies length of module ' + sModule + ': ' + l + '\u001b[39m' );
-     var item, moduleName;
+     var item, moduleName, result = [ ],
+       pathMap = {};
      for ( var i = 0; i < l; i++ ) {
        item = list[ i ];
-       moduleName = item.name;
-       setFileStack( item.content, moduleName, appName )
+
+       if ( !pathMap[ item.path ] ) {
+         result.unshift( editDefine( item.content, item.name ) );
+         pathMap[ item.path ] = true;
+       }
      }
-     callback( );
+     callback( name, result );
    } );
  };
 
- function processFile( module, path, target, callbak ) {
-   FSO.readFile( path, function( err, data ) {
-     if ( err ) {
-       throw err;
+ function minifyContent( content ) {
+   try {
+     var minContent = minify( content );
+     return minContent;
+   } catch ( e ) {
+     var line = e.line,
+       start = ( line > 10 ? line - 10 : 0 ),
+       end = line + 10;
+     //var line = e.line, start = 0, end = undefined;
+     console.log( '\u001b[31m' + e.message + ' Line: ' + line + '\u001b[0m' );
+     content = content.split( /(?:\r\n|[\r\n])/ ).slice( start, end );
+     var errCode = [ ],
+       lineNumber, code;
+     for ( var i = 0; i < content.length; i++ ) {
+       lineNumber = i + start + 1;
+       code = ( lineNumber === line ) ? ( '\u001b[31m' + lineNumber + ' ' + content[ i ] + '\u001b[0m' ) : ( '\u001b[36m' + lineNumber + ' \u001b[32m' + content[ i ] + '\u001b[0m' );
+       errCode.push( code );
      }
-     var content = data.toString( );
-
-     setFileStack( content, module, target );
-
-     if ( callback ) {
-       callback( content );
-     }
-   } );
- }
+     console.log( errCode.join( '\r\n' ) );
+     return null;
+   }
+ };
 
  function editDefine( content, module ) {
-   content = "/*===================" + module + "===========================*/\n" + content;
+   content = "/*===================" + module + "===========================*/\r\n" + content;
    var r = /define\s*\(\s*(['"])[^\1]*\1/i;
    if ( !r.test( content ) ) {
      content = content.replace( /define\(/, 'define("' + module + '",' );
    }
-   content += "\n/*=======================================================*/\n";
+   content += "\r\n\r\n/*=======================================================*/\r\n";
    logger( content );
    return content;
- }
-
- function setBaseFileStack( content, module ) {
-   content = editDefine( content, module );
-   baseFileStack.unshift( content );
- }
-
- function setFileStack( content, module, target ) {
-   content = editDefine( content, module );
-   if ( !fileStack[ target ] ) {
-     fileStack[ target ] = {
-       modules: [ ],
-       content: [ ]
-     };
-   }
-   if ( !fileStack[ loadedModule ][ module ] ) {
-     fileStack[ loadedModule ][ module ] = true;
-     fileStack[ target ].modules.unshift( module );
-     fileStack[ target ].content.unshift( content );
-   }
  }
 
  function mkdirSync( path ) {

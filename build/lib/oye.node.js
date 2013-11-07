@@ -204,7 +204,6 @@ var _basePath = __filename.replace( /[^\\\/]*[\\\/]+[^\\\/]*$/i, '' ), //oye文�
       }
       var content = data.toString( );
       //Match define ( 'moduleID', ['a', 'b']
-      console.log( '\n' )
       var moduleAndDepends = macthDefineOrRequire( content, "define" );
       var fakeModule = "",
         module;
@@ -272,7 +271,7 @@ var _basePath = __filename.replace( /[^\\\/]*[\\\/]+[^\\\/]*$/i, '' ), //oye文�
           fakeModule += name ? name + "," : "";
           fakeModule += depends ? depends + "," : "";
           fakeModule += '{});';
-          console.log( "fakeModule!!!", fakeModule )
+          // console.log( "fakeModule!!!", fakeModule )
           eval( fakeModule );
 
 
@@ -286,7 +285,7 @@ var _basePath = __filename.replace( /[^\\\/]*[\\\/]+[^\\\/]*$/i, '' ), //oye文�
           fakeModule += RegExp.$2 + ',';
         }
         fakeModule += '{});';
-        console.log( "fakeModule", fakeModule )
+        // console.log( "fakeModule", fakeModule )
         eval( fakeModule );
       }
     } );
@@ -739,9 +738,10 @@ _ClassModule.prototype.todo = function( fnX ) {
   }
 
   if ( this._amdReady ) {
-
-    fnX.apply( this, [ ].concat( this ) ); //执行模块准备好时调用的代码
-
+    var self = this;
+    setTimeout( function( ) {
+      fnX.apply( self, [ ].concat( self ) ); //执行模块准备好时调用的代码
+    }, 0 );
   } else {
 
     oModule = _modules[ sMD ];
