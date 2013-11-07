@@ -159,21 +159,13 @@
      var list = Module.getDependenciesMap( );
      var l = list.length;
      console.info( '\u001b[34m' + '\r\nDependencies length of module ' + sModule + ': ' + l + '\u001b[39m' );
-     var item, moduleName, n = l,
-       fn = function( ) {
-         n--;
-         if ( n === 0 ) {
-           if ( callback )
-             callback( );
-         }
-       }
-       console.log(list)
+     var item, moduleName;
      for ( var i = 0; i < l; i++ ) {
        item = list[ i ];
        moduleName = item.name;
-       console.log( moduleName, item.path, oye.require.content[moduleName], appName );
-       // processFile( moduleName, module.path, appName, fn );
+       setFileStack( item.content, moduleName, appName )
      }
+     callback( );
    } );
  };
 
