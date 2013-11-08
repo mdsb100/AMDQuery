@@ -28,6 +28,8 @@ var _basePath = __filename.replace( /[^\\\/]*[\\\/]+[^\\\/]*$/i, '' ), //oye文�
 
   _mapDependencies = {}, //被依赖模块映射表
 
+  index = 0,
+
   //取模块路径
 
   _fnGetPath = function( sKey, sExt ) {
@@ -670,6 +672,8 @@ _ClassModule.prototype._amdGetReady = function( ) {
 
   F._content = this._content || "";
 
+  F._index = index++;
+
   F.getDependenciesMap = this.getDependenciesMap;
 
   aFnReady = this._amdReadyQueue[ id ] || [ ];
@@ -709,7 +713,8 @@ _ClassModule.prototype.getDependenciesMap = function( ) {
   ret.push( {
     name: sMD,
     path: module ? module._url || path : path,
-    content: module ? module._content || "" : ""
+    content: module ? module._content || "" : "",
+    index: module ? module._index || 0 : 0
   } );
 
   for ( DM in MD ) {
@@ -718,7 +723,8 @@ _ClassModule.prototype.getDependenciesMap = function( ) {
     ret.push( {
       name: DM,
       path: module ? module._url || path : path,
-      content: module ? module._content || "" : ""
+      content: module ? module._content || "" : "",
+      index: module ? module._index || 0 : 0
     } );
 
   }

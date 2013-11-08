@@ -105,14 +105,17 @@
  var fileStack = {};
  fileStack[ loadedModule ] = {};
  var baseFileStack = [ ];
+ var amdqueryContent = "";
+ var AMDQueryJSPath = buildConfig.amdqueryPath + "amdquery.js";
 
  function readBaseAMDQueryJS( next, result ) {
-   oye.readFile( buildConfig.amdqueryPath + "amdquery.js", function( content ) {
+   oye.readFile( AMDQueryJSPath, function( content ) {
+     amdqueryContent = content;
      next( null, content );
    } );
  }
 
- function buildDefines( result, next ) {
+ function buildDefines( content, next ) {
 
    if ( !buildConfig.defines ) {
      return next( null, {} );
@@ -131,7 +134,7 @@
    //Process all defines
    var n = l,
      name,
-     item
+     item,
      result = {
 
      },
@@ -181,7 +184,7 @@
  }
 
  function saveDefinesFile( result, next ) {
-   var dirPath = buildConfig.outputPath + "defins/",
+   var dirPath = buildConfig.outputPath + "defines/",
      list,
      i = 0,
      len,
@@ -191,6 +194,7 @@
      content,
      minContent,
      name;
+
    mkdirSync( dirPath );
 
    for ( name in result ) {
@@ -236,15 +240,23 @@
  var _buildjs = function( sModule, name, callback ) {
    oye.require( sModule, function( Module ) { //Asynchronous
      var list = Module.getDependenciesMap( );
+     list.sort( function( a, b ) {
+       return a.index - b.index;
+     } );
      var l = list.length;
      console.info( '\u001b[34m' + '\r\nDependencies length of module ' + sModule + ': ' + l + '\u001b[39m' );
-     var item, moduleName, result = [ ],
+     var item,
+       moduleName, result = [ ],
        pathMap = {};
+
+     result.push( editDefine( amdqueryContent, "amdquery" ) );
+     pathMap[ AMDQueryJSPath ] = true;
+
      for ( var i = 0; i < l; i++ ) {
        item = list[ i ];
 
        if ( !pathMap[ item.path ] ) {
-         result.unshift( editDefine( item.content, item.name ) );
+         result.push( editDefine( item.content, item.name ) );
          pathMap[ item.path ] = true;
        }
      }
@@ -273,7 +285,7 @@
      console.log( errCode.join( '\r\n' ) );
      return null;
    }
- };
+ }
 
  function editDefine( content, module ) {
    content = "/*===================" + module + "===========================*/\r\n" + content;
