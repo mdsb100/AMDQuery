@@ -154,7 +154,7 @@ var _basePath = __filename.replace( /[^\\\/]*[\\\/]+[^\\\/]*$/i, '' ), //oyeæ–‡ä
   macthDefineOrRequire = function( content, name ) {
 
     var r = new RegExp( name + "\\s*\\(\\s*([^,]*,)?\\s*(\\[[^\\]]*\\])", "i" ),
-      match = new RegExp( name + "\\s*\\([^\\;\\r\\n]*[\\;\\n\\r\\)]", "gm" ),
+      match = new RegExp( name + "\\s*\\([^\\)]*\\)", "gm" ),
       // new RegExp( name + "\\s*\\(\\s*([^,]*,)?\\s*((\\[[^\\]]*\\])?[\\,\\s\\n\\r]+)", "gm" ),
       rname = new RegExp( name + "\\s*\\(\\s*([\'\"][^,\\[\\)]*[\'\"],?)?", "i" ),
       rdepends = /\s*(\[[^\]]*\])/i;

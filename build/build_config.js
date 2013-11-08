@@ -13,7 +13,10 @@ exports.apps = {
 }
 
 exports.defines = {
-  test: "../build/test/test"
+  test: {
+    path: "../build/test/test",
+    package: [ "ui/button" ]
+  }
 }
 
 //Compress level of JS Minifier

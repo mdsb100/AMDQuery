@@ -135,6 +135,7 @@
    var n = l,
      name,
      item,
+     package,
      result = {
 
      },
@@ -148,7 +149,9 @@
 
    for ( name in buildConfig.defines ) {
      item = buildConfig.defines[ name ];
-     _buildjs( item, name, callback );
+     package = item.package || [ ];
+     package.push( item.path )
+     _buildjs( package, name, callback );
    }
 
  }
@@ -178,7 +181,7 @@
      };
 
    for ( appName in buildConfig.apps ) {
-     _build( buildConfig.apps[ appName ], appName, callback );
+     _buildjs( buildConfig.apps[ appName ], appName, callback );
    }
 
  }
@@ -237,20 +240,29 @@
    } );
  }
 
- var _buildjs = function( sModule, name, callback ) {
-   oye.require( sModule, function( Module ) { //Asynchronous
-     var list = Module.getDependenciesMap( );
+ var _buildjs = function( modules, name, callback ) {
+   oye.require( modules, function( Module ) { //Asynchronous
+     var
+     args = arguments,
+       len = args.length,
+       i = 0,
+       module,
+       list = [ ];
+
+     for ( ; i < len; i++ ) {
+       module = args[ i ];
+       list = list.concat( module.getDependenciesMap( ) );
+       console.info( '\u001b[34m' + '\r\nDependencies length of module ' + module._amdID + ': ' + l + '\u001b[39m' );
+     };
+
      list.sort( function( a, b ) {
        return a.index - b.index;
      } );
      var l = list.length;
-     console.info( '\u001b[34m' + '\r\nDependencies length of module ' + sModule + ': ' + l + '\u001b[39m' );
+
      var item,
        moduleName, result = [ ],
        pathMap = {};
-
-     result.push( editDefine( amdqueryContent, "amdquery" ) );
-     pathMap[ AMDQueryJSPath ] = true;
 
      for ( var i = 0; i < l; i++ ) {
        item = list[ i ];
