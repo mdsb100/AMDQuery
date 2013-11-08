@@ -198,7 +198,6 @@
     },
     amd: {
       //同步
-      sync: false,
       //检查循环依赖
       detectCR: false,
       "debug": true,
@@ -1893,6 +1892,7 @@
         } );
         return promise;
       }
+      return null;
     } ).then( function( _package ) {
       if ( _package ) {
         var promise = new Promise,
@@ -1945,54 +1945,6 @@
         } );
         return promise;
       }
-    } ).then( function( ) {
-      // if app, sync must be true
-      // _config.amd.sync = _config.amd.sync || !!_config.app.src;
-      var promise = new Promise;
-      require( [ "base/ClassModule", "main/communicate", "module/utilEval" ], function( ClassModule, communicate, utilEval ) {
-        var syncLoadJs = function( url, id, error ) {
-          var module = ClassModule.getModule( id );
-
-          if ( ClassModule.resource[ url ] || ( module && ( module.getStatus( ) > 2 ) ) ) {
-            return this;
-          }
-
-          ClassModule.resource[ url ] = id;
-
-          communicate.ajax( {
-            url: url,
-            async: false,
-            dataType: "text",
-            complete: function( js ) {
-              utilEval.functionEval( js );
-            },
-            timeout: _config.amd.timeout,
-            timeoutFun: error
-          } );
-
-          return this;
-        };
-
-        var asyncLoadJs = ClassModule.loadJs;
-
-        require.sync = function( ) {
-          ClassModule.loadJs = syncLoadJs;
-        }
-
-        require.async = function( ) {
-          ClassModule.loadJs = asyncLoadJs;
-        }
-
-        if ( _config.amd.sync ) {
-          require.sync( );
-        }
-
-        setTimeout( function( ) {
-          promise.resolve( );
-        }, 0 );
-
-      } );
-      return promise;
     } ).then( function( ) {
       document.documentElement.style.left = "0px";
       document.documentElement.style.position = "";
