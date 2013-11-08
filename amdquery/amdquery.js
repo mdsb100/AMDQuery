@@ -1847,7 +1847,9 @@
       document.documentElement.style.left = "100000px";
       var promise = new Promise,
         ready = function( e ) {
-          promise.resolve( e );
+          setTimeout( function( ) {
+            promise.resolve( e );
+          }, 0 );
           if ( document.addEventListener ) {
             document.removeEventListener( "DOMContentLoaded", ready );
           } else if ( document.attachEvent ) {
