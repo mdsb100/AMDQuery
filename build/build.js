@@ -106,6 +106,7 @@
  var baseFileStack = [ ];
  var amdqueryContent = "";
  var AMDQueryJSPath = buildConfig.amdqueryPath + "amdquery.js";
+ var AMDQueryJSRooPath = relativePath + buildConfig.amdqueryPath;
 
  function readBaseAMDQueryJS( next, result ) {
    oye.readFile( AMDQueryJSPath, function( content ) {
@@ -134,7 +135,7 @@
    var n = l,
      name,
      item,
-     package,
+     requireList,
      result = {
 
      },
@@ -148,9 +149,9 @@
 
    for ( name in buildConfig.defines ) {
      item = buildConfig.defines[ name ];
-     package = item.package || [ ];
-     package.push( item.path )
-     _buildjs( package, name, callback );
+     requireList = checkDirectory( item.directory );
+     requireList.push( item.path );
+     _buildjs( requireList, name, callback );
    }
 
  }
@@ -191,6 +192,11 @@
      i = 0,
      len,
      p,
+     readFileCallback = function( err ) {
+       if ( err ) {
+         throw err;
+       }
+     },
      allFile,
      minFile,
      content,
@@ -211,25 +217,20 @@
      minContent = minifyContent( content );
 
      if ( minContent ) {
-       FSO.writeFile( allPath, content, function( err ) {
-         if ( err ) {
-           throw err;
-         }
-       } );
+       FSO.writeFile( allPath, content, readFileCallback );
        console.log( '\r\nSave defines file: ' + allPath );
      }
-     FSO.writeFile( minPath, minContent, function( err ) {
-       if ( err ) {
-         throw err;
-       }
-     } );
+     FSO.writeFile( minPath, minContent, readFileCallback );
      console.log( '\r\nSave defines file: ' + minPath );
    }
 
  }
 
  function main( ) {
-   async.waterfall( [ readBaseAMDQueryJS, buildDefines, saveDefinesFile ], function( err, result ) {
+   async.waterfall( [
+    readBaseAMDQueryJS,
+    buildDefines,
+    saveDefinesFile ], function( err, result ) {
      if ( err ) {
        throw err;
      }
@@ -251,10 +252,10 @@
 
      for ( ; i < len; i++ ) {
        module = args[ i ];
-       dependencies = module.getDependenciesMap( )
+       dependencies = module.getDependenciesMap( );
        list = list.concat( dependencies );
        console.info( '\u001b[34m' + '\r\nDependencies length of module ' + module._amdID + ': ' + dependencies.length + '\u001b[39m' );
-     };
+     }
 
      list.sort( function( a, b ) {
        return a.index - b.index;
@@ -265,7 +266,7 @@
        moduleName, result = [ ],
        pathMap = {};
 
-     for ( var i = 0; i < l; i++ ) {
+     for ( i = 0; i < l; i++ ) {
        item = list[ i ];
 
        if ( !pathMap[ item.path ] ) {
@@ -273,6 +274,9 @@
          pathMap[ item.path ] = true;
        }
      }
+
+     console.info( '\u001b[33m' + '\r\nthe defines "' + name + '" Dependencies length is ' + result.length + '\u001b[39m' );
+
      callback( name, result );
    } );
  };
@@ -326,6 +330,43 @@
      }
      FSO.mkdirSync( _path );
    }
+ }
+
+ function checkDirectory( directoryList, suffix ) {
+   suffix = suffix || "*.js";
+   var result = [ ],
+     i = 0,
+     j = 0,
+     k = 0,
+     l = directoryList.length,
+     m,
+     n,
+     globOpt,
+     resultDirectory = [ ],
+     directory,
+     moduleAndDepends,
+     content;
+   for ( i = 0; i < l; i++ ) {
+     directory = directoryList[ i ];
+     globOpt = {
+       cwd: AMDQueryJSRooPath + directory
+     };
+     resultDirectory = resultDirectory.concat( glob.sync( suffix, globOpt ) );
+     for ( j = 0, m = resultDirectory.length; j < m; j++ ) {
+       content = FSO.readFileSync( AMDQueryJSRooPath + directory + resultDirectory[ j ] );
+       moduleAndDepends = oye.matchDefine( content.toString( ) );
+       for ( k = 0, n = moduleAndDepends.length; k < n; k++ ) {
+         if ( moduleAndDepends[ k ].module ) {
+           result.push( moduleAndDepends[ k ].module );
+         }
+
+       }
+     }
+   }
+
+
+
+   return result;
  }
 
  function forEach( obj, callback, context ) {

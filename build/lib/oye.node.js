@@ -46,7 +46,8 @@ var _basePath = __filename.replace( /[^\\\/]*[\\\/]+[^\\\/]*$/i, '' ), //oye文�
 
       sURL = _maps[ sKey ];
 
-    } else if ( /\.[^\/]*$/i.test( sKey ) ) {
+    } else if ( /\.[^\/]*$/i.test( sKey ) && false ) {
+      //只build js
 
       //如果传入的模块是带扩展名的，则原样返回
 
@@ -151,25 +152,24 @@ var _basePath = __filename.replace( /[^\\\/]*[\\\/]+[^\\\/]*$/i, '' ), //oye文�
 
   },
 
-  macthDefineOrRequire = function( content, name ) {
-
-    var r = new RegExp( name + "\\s*\\(\\s*([^,]*,)?\\s*(\\[[^\\]]*\\])", "i" ),
-      match = new RegExp( name + "\\s*\\([^\\)]*\\)", "gm" ),
-      // new RegExp( name + "\\s*\\(\\s*([^,]*,)?\\s*((\\[[^\\]]*\\])?[\\,\\s\\n\\r]+)", "gm" ),
-      rname = new RegExp( name + "\\s*\\(\\s*([\'\"][^,\\[\\)]*[\'\"],?)?", "i" ),
+  matchDefine = function( content ) {
+    var r = /define\s*\(\s*([^,]*,)?\s*(\[[^\]]*\])/i,
+      match = /define\s*\([^\)]*\)/gm,
+      rname = /define\s*\(\s*(['"]([^,\[\)]*)['"],?)?/i,
       rdepends = /\s*(\[[^\]]*\])/i;
 
     var ret = content.match( match );
     var moduleAndDepends = [ ];
 
     if ( ret ) {
-      for ( var i = 0, module, depends; i < ret.length; i++ ) {
-        module = "";
+      for ( var i = 0, sModule, depends; i < ret.length; i++ ) {
+        sModule = "";
         depends = "";
         // console.log(rname.test(ret[i]))
         // console.log(RegExp.$1)
-        if ( rname.test( ret[ i ] ) && RegExp.$1 ) {
-          module = RegExp.$1.replace( ",", "" );
+        if ( rname.test( ret[ i ] ) && RegExp.$2 ) {
+          sModule = RegExp.$2.replace( /\,/g, "" );
+          sModule = String( sModule );
         }
 
 
@@ -180,8 +180,8 @@ var _basePath = __filename.replace( /[^\\\/]*[\\\/]+[^\\\/]*$/i, '' ), //oye文�
         }
 
         moduleAndDepends.push( {
-          name: name,
-          module: module,
+          name: "define",
+          module: sModule,
           depends: depends
         } );
 
@@ -202,22 +202,23 @@ var _basePath = __filename.replace( /[^\\\/]*[\\\/]+[^\\\/]*$/i, '' ), //oye文�
   readFile = function( url, callback ) {
     FSO.readFile( url, function( err, data ) {
       if ( err ) {
+        debugger
         throw err;
       }
       var content = data.toString( );
       //Match define ( 'moduleID', ['a', 'b']
-      var moduleAndDepends = macthDefineOrRequire( content, "define" );
+      var moduleAndDepends = matchDefine( content );
       var fakeModule = "",
         module;
       for ( var item, i = 0, len = moduleAndDepends.length; i < len; i++ ) {
         item = moduleAndDepends[ i ]
         fakeModule = item.name + "("
         if ( item.module && item.depends ) {
-          fakeModule += item.module + "," + item.depends + ",{}";
+          fakeModule += '"' + item.module + '"' + " ," + item.depends + ",{}";
         } else if ( !item.module && !item.depends ) {
           fakeModule += "{}"
         } else {
-          fakeModule += ( item.module || item.depends ) + ",{}";
+          fakeModule += ( item.module ? '"' + item.module + '"' : item.depends ) + ",{}";
         }
 
         fakeModule += ");";
@@ -231,64 +232,8 @@ var _basePath = __filename.replace( /[^\\\/]*[\\\/]+[^\\\/]*$/i, '' ), //oye文�
           module._content = content;
         }
       }
-      if ( callback )
+      if ( callback ) {
         callback( content );
-      return
-      var r = /define\s*\(\s*([^,]*,)?\s*(\[[^\]]*\])/i;
-      var match = /define\s*\(\s*([^,]*,)?\s*((\[[^\]]*\])+|[\,\s])/gm;
-
-      var ret = content.match( match );
-      var fakeModule = "";
-      var name, depends;
-      // console.log(ret)
-      if ( ret ) {
-        for ( var i = 0; i < ret.length; i++ ) {
-          name = "";
-          depends = "";
-          // console.log(/define\s*\(\s*([^,\[]*,)?/i.test(ret[i]))
-          // console.log(RegExp.$1)
-          if ( /define\s*\(\s*([^,\[]*,)?/i.test( ret[ i ] ) && RegExp.$1 ) {
-            name = RegExp.$1.replace( ",", "" )
-            // fakeModule = 'define(';
-            // fakeModule += RegExp.$1.replace(",", "");
-            // fakeModule += ');';
-            // console.log("!!!", fakeModule)
-            // eval(fakeModule);
-          }
-
-
-          // console.log(/\s*(\[[^\]]*\])/i.test(ret[i]))
-          // console.log("array", RegExp.$1)
-          if ( /\s*(\[[^\]]*\])/i.test( ret[ i ] ) && RegExp.$1 ) {
-            // console.log(RegExp.$1)
-            depends = RegExp.$1;
-            // fakeModule = 'define(';
-            // fakeModule += RegExp.$1;
-            // fakeModule += ',{});';
-            // console.log("fakeModule!!!",fakeModule)
-            // eval(fakeModule);
-          }
-
-          fakeModule = 'define(';
-          fakeModule += name ? name + "," : "";
-          fakeModule += depends ? depends + "," : "";
-          fakeModule += '{});';
-          // console.log( "fakeModule!!!", fakeModule )
-          eval( fakeModule );
-
-
-
-        };
-      } else {
-        var r = /define\s*\(\s*([^,]*,)?\s*(\[[^\]]*\])/i;
-        r.test( content );
-        var fakeModule = 'define(';
-        if ( RegExp.$2 ) {
-          fakeModule += RegExp.$2 + ',';
-        }
-        fakeModule += '{});';
-        // console.log( "fakeModule", fakeModule )
-        eval( fakeModule );
       }
     } );
   },
@@ -1150,6 +1095,6 @@ exports.require = require;
 
 exports.define = define;
 
-exports.macthDefineOrRequire = macthDefineOrRequire;
+exports.matchDefine = matchDefine;
 
 exports.readFile = readFile;
