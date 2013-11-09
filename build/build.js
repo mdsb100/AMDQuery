@@ -78,7 +78,6 @@
  } );
  amdRequire = oye.require;
  amdDefine = oye.define;
- macthDefineOrRequire = oye.macthDefineOrRequire;
 
 
  for ( var i = 2, len = argvs.length, fn; i < len; i++ ) {
@@ -247,12 +246,14 @@
        len = args.length,
        i = 0,
        module,
+       dependencies,
        list = [ ];
 
      for ( ; i < len; i++ ) {
        module = args[ i ];
-       list = list.concat( module.getDependenciesMap( ) );
-       console.info( '\u001b[34m' + '\r\nDependencies length of module ' + module._amdID + ': ' + l + '\u001b[39m' );
+       dependencies = module.getDependenciesMap( )
+       list = list.concat( dependencies );
+       console.info( '\u001b[34m' + '\r\nDependencies length of module ' + module._amdID + ': ' + dependencies.length + '\u001b[39m' );
      };
 
      list.sort( function( a, b ) {
