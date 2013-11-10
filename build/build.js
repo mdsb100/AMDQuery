@@ -3,6 +3,9 @@
    amdqueryPath: '../amdquery/',
    projectRootPath: '../../',
    outputPath: 'output/',
+   pathVariable: {
+
+   },
    apps: {},
    defines: {},
    levelOfJSMin: 3,
@@ -59,9 +62,6 @@
 
  //Configurate project root path
  projectRootPath = buildConfig.projectRootPath;
-
- //All build files will save to outputPath
- outputPath = relativePath + '../output/';
 
  var oye = require( './lib/oye.node.js' );
 
@@ -134,39 +134,9 @@
 
    for ( name in buildConfig.defines ) {
      item = buildConfig.defines[ name ];
-     requireList = checkDirectory( item.directory );
+     requireList = checkJSDirectory( item.directory );
      requireList.push( item.path );
      _buildjs( requireList, name, callback );
-   }
-
- }
-
- function buildApps( result, next ) {
-
-   if ( !buildConfig.apps ) {
-     return next( null, {} );
-   }
-   var l = 0,
-     key;
-   for ( key in buildConfig.apps ) {
-     l++;
-   }
-   if ( l === 0 ) {
-     next( null, {} );
-   }
-   //Process all apps
-   var n = l,
-     appName,
-     callback = function( ) {
-       n--;
-
-       if ( n <= 0 ) {
-         next( null, null );
-       }
-     };
-
-   for ( appName in buildConfig.apps ) {
-     _buildjs( buildConfig.apps[ appName ], appName, callback );
    }
 
  }
@@ -211,7 +181,53 @@
 
  }
 
+
+ function buildApps( result, next ) {
+   //需要 映射一下@app
+   if ( !buildConfig.apps ) {
+     return next( null, {} );
+   }
+   var l = 0,
+     key;
+   for ( key in buildConfig.apps ) {
+     l++;
+   }
+   if ( l === 0 ) {
+     next( null, {} );
+   }
+   //Process all apps
+   var n = l,
+     appName,
+     callback = function( ) {
+       n--;
+
+       if ( n <= 0 ) {
+         next( null, null );
+       }
+     };
+
+   for ( appName in buildConfig.apps ) {
+     _buildjs( buildConfig.apps[ appName ], appName, callback );
+   }
+
+ }
+
  function main( ) {
+   setPathVariable( buildConfig.pathVariable );
+
+   // build defines
+   async.waterfall( [
+    readBaseAMDQueryJS,
+    buildDefines,
+    saveDefinesFile ], function( err, result ) {
+     if ( err ) {
+       throw err;
+     }
+     switch ( result ) {
+
+     }
+   } );
+
    async.waterfall( [
     readBaseAMDQueryJS,
     buildDefines,
@@ -225,7 +241,13 @@
    } );
  }
 
- var _buildjs = function( modules, name, callback ) {
+ function setPathVariable( obj ) {
+   for ( var name in obj ) {
+     oye.require.variable( name, obj[ name ] );
+   }
+ }
+
+ function _buildjs( modules, name, callback ) {
    oye.require( modules, function( Module ) { //Asynchronous
      var
      args = arguments,
@@ -317,7 +339,7 @@
    }
  }
 
- function checkDirectory( directoryList, suffix ) {
+ function checkJSDirectory( directoryList, suffix ) {
    suffix = suffix || "*.js";
    var result = [ ],
      i = 0,
@@ -349,23 +371,7 @@
      }
    }
 
-
-
    return result;
  }
-
- function forEach( obj, callback, context ) {
-   if ( !obj ) return this;
-   var i = 0,
-     item, len = obj.length,
-     isObj = typeof len != "number" || typeof obj == "function";
-   if ( isObj ) {
-     for ( item in obj )
-       if ( callback.call( context || obj[ item ], obj[ item ], item ) === false ) break;
-   } else
-     for ( var value = obj[ 0 ]; i < len && callback.call( context || value, value, i ) !== false; value = obj[ ++i ] ) {}
-   return this;
- }
-
 
  main( );

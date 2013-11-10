@@ -30,6 +30,26 @@ var _basePath = __filename.replace( /[^\\\/]*[\\\/]+[^\\\/]*$/i, '' ), //oye文�
 
   index = 0,
 
+  _variableMap = {},
+
+  _variablePrefix = "@",
+
+  _variable = function( ret ) {
+    var variableReg = new RegExp( "\\" + _variablePrefix + "[^\\/]+", "g" ),
+      variables = ret.match( variableReg );
+
+    if ( variables && variables.length ) {
+      for ( var i = variables.length - 1, path; i >= 0; i-- ) {
+        path = require.variable( variables[ i ] );
+        if ( path ) {
+          ret = ret.replace( variables[ i ], path );
+        }
+      }
+    }
+
+    return ret;
+  },
+
   //取模块路径
 
   _fnGetPath = function( sKey, sExt ) {
@@ -754,6 +774,8 @@ var require = function( sModule, fnSuccess, fnFailure ) {
 
   }
 
+  sModule = _variable( sModule );
+
   var ret = _modules[ sModule ] || new _ClassModule( sModule, [ sModule ], function( ) {
     return new String( sModule );
   } );
@@ -957,6 +979,12 @@ var require = function( sModule, fnSuccess, fnFailure ) {
 
     }
 
+    if ( id === null ) {
+      return;
+    }
+
+    id = _variable( id );
+
     bDeep = _modules[ id ];
 
     //如果该模块已经存在，且当前执行在require周期内，需要深入加载依赖模块
@@ -1085,6 +1113,18 @@ define.amd = _maps;
 define.amd.namedModules = {};
 
 require.config = config;
+
+require.variable = function( name, path ) {
+  if ( name.indexOf( _variablePrefix ) != 0 ) {
+    name = _variablePrefix + name;
+  }
+  if ( path ) {
+    _variableMap[ name ] = path;
+  } else {
+    return _variableMap[ name ];
+  }
+}
+
 
 exports.setPath = function( opt ) {
   _basePath = opt.oyeModulePath;

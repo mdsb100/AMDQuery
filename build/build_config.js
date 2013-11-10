@@ -7,9 +7,16 @@ exports.projectRootPath = '../../';
 //All build files will save to outputPath
 exports.outputPath = 'output/';
 
+//mapping of path for AMD
+exports.pathVariable = {
+
+}
+
 //All apps entrance - get them from app/*.js(only one segment)
 exports.apps = {
-
+  document: {
+    path: "../document/app/app"
+  }
 }
 
 exports.defines = {
