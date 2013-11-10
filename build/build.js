@@ -1,4 +1,3 @@
- //需要安装 minimatch
  var buildConfig = {
    debug: false,
    amdqueryPath: '../amdquery/',
@@ -37,12 +36,6 @@
 
  var argvs = process.argv;
 
- var argvsMap = {
-   "-d": function( ) {
-     buildConfig.debug = true;
-   }
- };
-
  var relativePath = process.argv[ 1 ].replace( /([\\\/])[^\\\/]*$/, '$1' );
 
  var buildConfigFile = process.argv[ 2 ];
@@ -79,14 +72,6 @@
  amdRequire = oye.require;
  amdDefine = oye.define;
 
-
- for ( var i = 2, len = argvs.length, fn; i < len; i++ ) {
-   fn = argvsMap[ argvs[ i ] ];
-   if ( fn ) {
-     fn( argvs[ i ] );
-   }
- }
-
  var logger = buildConfig.debug ? console.info : function( ) {};
 
  logger( relativePath );
@@ -98,7 +83,7 @@
  };
 
  var glob = require( "glob" );
- var async = require( "./lib/async.js" );
+ var async = require( "async" );
 
  var loadedModule = 'loaded' + ( -new Date( ) );
  var fileStack = {};

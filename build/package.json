@@ -1,0 +1,20 @@
+{
+  "name": "Build-AMDQuery",
+  "version": "0.0.1",
+  "author": "Cao Jun",
+  "description": "Build AMDQuery",
+  "license": "MIT",
+  "main": "build.js",
+  "files": [
+    "lib",
+    "build.js"
+  ],
+  "dependencies": {
+    "glob": ">3.x.x",
+    "async": ">0.0.0",
+    "clean-css": ">0.0.0"
+  },
+  "engines": {
+    "node": ">=0.8.0"
+  }
+}

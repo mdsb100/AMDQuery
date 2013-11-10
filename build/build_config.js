@@ -1,4 +1,4 @@
-//Configurate oye.js
+//Configurate amdquery.js
 exports.amdqueryPath = '../amdquery/';
 
 //Configurate project root path
