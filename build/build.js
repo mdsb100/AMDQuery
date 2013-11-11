@@ -84,6 +84,7 @@
 
  var glob = require( "glob" );
  var async = require( "async" );
+ var _ = require( "underscore" );
 
  var loadedModule = 'loaded' + ( -new Date( ) );
  var fileStack = {};
@@ -160,6 +161,8 @@
 
    mkdirSync( dirPath );
 
+   console.log( '\u001b[34m' + '\r\nBegin write defines file' + '\u001b[39m' );
+
    for ( name in result ) {
      list = result[ name ];
      len = list.length;
@@ -179,40 +182,28 @@
      console.log( '\r\nSave defines file: ' + minPath );
    }
 
+   next( null, null );
+
  }
 
 
- function buildApps( result, next ) {
-   //需要 映射一下@app
-   if ( !buildConfig.apps ) {
-     return next( null, {} );
-   }
-   var l = 0,
-     key;
-   for ( key in buildConfig.apps ) {
-     l++;
-   }
-   if ( l === 0 ) {
-     next( null, {} );
-   }
-   //Process all apps
-   var n = l,
-     appName,
-     callback = function( ) {
-       n--;
-
-       if ( n <= 0 ) {
-         next( null, null );
-       }
-     };
-
-   for ( appName in buildConfig.apps ) {
-     _buildjs( buildConfig.apps[ appName ], appName, callback );
-   }
-
+ function openHtml( result, next ) {
+   console.log( result.path );
+   next( null, null );
  }
 
  function main( ) {
+   async.waterfall( [
+    startBuildDefines,
+    startBuildApps ], function( err, result ) {
+     if ( err ) {
+       throw err;
+     }
+     console.log( '\u001b[34m' + '\r\nBuiding finish' + '\u001b[39m' );
+   } );
+ }
+
+ function startBuildDefines( waterfallNext ) {
    setPathVariable( buildConfig.pathVariable );
 
    // build defines
@@ -226,19 +217,31 @@
      switch ( result ) {
 
      }
+     waterfallNext( null, null );
    } );
+ }
 
-   async.waterfall( [
-    readBaseAMDQueryJS,
-    buildDefines,
-    saveDefinesFile ], function( err, result ) {
-     if ( err ) {
-       throw err;
-     }
-     switch ( result ) {
+ var apps = buildConfig.apps.concat( );
 
-     }
-   } );
+ function startBuildApps( result, waterfallNext ) {
+   if ( apps.length ) {
+     var appConfig = apps.shift( );
+
+     async.waterfall( [
+       function( callback ) {
+         callback( null, appConfig );
+       },
+       openHtml
+        ], function( err, result ) {
+       if ( err ) {
+         throw err;
+       }
+       startBuildApps( null, waterfallNext );
+     } );
+
+   } else {
+     waterfallNext( null, null );
+   }
  }
 
  function setPathVariable( obj ) {

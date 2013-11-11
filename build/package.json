@@ -12,7 +12,9 @@
   "dependencies": {
     "glob": ">3.x.x",
     "async": ">0.0.0",
-    "clean-css": ">0.0.0"
+    "clean-css": ">0.0.0",
+    "trumpet": ">0.0.0",
+    "underscore": ">0.0.0"
   },
   "engines": {
     "node": ">=0.8.0"

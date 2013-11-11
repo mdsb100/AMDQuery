@@ -12,12 +12,15 @@ exports.pathVariable = {
 
 }
 
-//All apps entrance - get them from app/*.js(only one segment)
-exports.apps = {
-  document: {
-    path: "../document/app/app"
+exports.debug = false;
+
+//All apps entrance
+exports.apps = [
+  {
+    name: "document",
+    path: "../document/app/app.html"
   }
-}
+ ]
 
 exports.defines = {
   test: {
