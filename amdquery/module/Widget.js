@@ -610,7 +610,7 @@
       return ret;
     },
     fetchCSS: function( path ) {
-      if ( config.ui.autoFetchCss ) {
+      if ( config.ui.autoFetchCss && config.app.development ) {
         src.link( {
           href: $.getPath( path, ".css" )
         } );
@@ -714,6 +714,10 @@
       return Widget.is( widgetName, this[ 0 ] );
     }
   } );
+
+  if ( !config.app.development ) {
+    widget.fetchCSS( "ui/css/combination" );
+  }
 
   $.Widget = Widget;
 

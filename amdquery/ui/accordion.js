@@ -12,7 +12,7 @@
   "module/animate",
   "html5/css3.transition.animate",
   "module/effect"
-], function( $, typed, utilExtend, object, Widget, css, event, CustomEvent, css, position, dom ) {
+], function( $, typed, utilExtend, object, Widget, cls, event, CustomEvent, css, position, dom ) {
   "use strict"; //启用严格模式
   Widget.fetchCSS( "ui/css/accordion" );
 

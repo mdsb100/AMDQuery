@@ -200,7 +200,7 @@
       //同步
       //检查循环依赖
       detectCR: false,
-      "debug": true,
+      debug: true,
       timeout: 5000,
       console: false
     },
@@ -1862,6 +1862,7 @@
       var promise = new Promise,
         ready = function( e ) {
           setTimeout( function( ) {
+            // define will be call before this ready
             promise.resolve( e );
           }, 0 );
           if ( document.addEventListener ) {
