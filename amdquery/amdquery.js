@@ -191,8 +191,6 @@
   var _config = {
     amdquery: {
       define: "$",
-      package: "json/package",
-      packageNames: "",
       debug: false,
       development: true
     },
@@ -1887,36 +1885,6 @@
       }
 
       return promise;
-    } ).then( function( ) {
-      if ( _config.amdquery.packageNames ) {
-        var promise = new Promise;
-        require( _config.amdquery.package, function( _package ) {
-          promise.resolve( _package );
-        } );
-        return promise;
-      }
-      return null;
-    } ).then( function( _package ) {
-      if ( _package ) {
-        var promise = new Promise,
-          packageNames = _config.amdquery.packageNames.split( "," ),
-          i = 0,
-          item = null,
-          len = packageNames.length,
-          result = [ ];
-
-        for ( ; i < len; i++ ) {
-          item = _package[ packageNames[ i ] ];
-          if ( item.constructor == Array ) {
-            result = result.concat( item )
-          }
-        }
-
-        result.length && require( result, function( ) {
-          promise.resolve( );
-        } );
-        return promise;
-      }
     } ).then( function( ) {
       if ( _config.app.src ) {
         var src = _config.app.src;
