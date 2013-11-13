@@ -128,8 +128,9 @@
      callback = function( name, list ) {
        n--;
        result[ name ] = list;
+
        if ( n <= 0 ) {
-         next( null, result );
+         next( null, result, "defines/" );
        }
      };
 
@@ -142,8 +143,8 @@
 
  }
 
- function saveDefinesFile( result, next ) {
-   var dirPath = buildConfig.outputPath + "defines/",
+ function saveJSFile( result, dirPath, next ) {
+   var dirPath = buildConfig.outputPath + dirPath,
      list,
      i = 0,
      len,
@@ -187,9 +188,86 @@
  }
 
 
- function openHtml( result, next ) {
-   console.log( result.path );
-   next( null, null );
+ function openHtml( appConfig, createAppDirAndCopyFile ) {
+
+   var trumpet = require( 'trumpet' );
+   var tr = trumpet( );
+   var htmlInfo = {
+     appConfig: {},
+     cssPath: [ ],
+     path: AMDQueryJSRooPath + appConfig.path,
+     appName: appConfig.name
+   };
+
+   tr.selectAll( 'link', function( link ) {
+     console.log( "!!!" );
+     link.getAttribute( "href", function( value ) {
+       console.log( "href", value );
+       htmlInfo.cssPath.push( value );
+     } );
+
+     // link.createReadStream( {outer: true} ).pipe( process.stdout );
+   } );
+
+   tr.selectAll( 'script[app]', function( script ) {
+     script.getAttribute( "app", function( value ) {
+       console.log( "app", value );
+       var list = value.split( /;|,/ ),
+         item, i, attr;
+
+       for ( i = list.length - 1; i >= 0; i-- ) {
+         item = list[ i ];
+         if ( item ) {
+           attr = item.split( /=|:/ );
+           if ( attr[ 1 ] ) {
+             htmlInfo.appConfig[ attr[ 0 ] ] = attr[ 1 ];
+           }
+         }
+       }
+       console.log( JSON.stringify( htmlInfo ) );
+       createAppDirAndCopyFile( null, htmlInfo, appConfig );
+     } );
+     // script.createReadStream( {outer: true} ).pipe( process.stdout );
+   } );
+
+   var fs = require( 'fs' );
+   fs.createReadStream( AMDQueryJSRooPath + appConfig.path ).pipe( tr );
+ }
+
+ function createAppDirAndCopyFile( htmlInfo, appConfig, buildAppJS ) {
+   var appProjectPath = "apps/" + htmlInfo.appName + "/",
+     outputPath = buildConfig.outputPath + appProjectPath;
+
+   var remove = require( "remove" );
+
+   if ( appConfig.clear === true && FSO.existsSync( outputPath ) ) {
+     console.log( '\u001b[34m' + '\r\nClean app ' + htmlInfo.appName + ' directory \u001b[39m' );
+     remove.removeSync( outputPath );
+   }
+
+   mkdirSync( outputPath );
+
+   var dirNameList = [ "amdquery/ui/", "amdquery/ui/css/", "amdquery/ui/images/", "app/asset/", "app/css/", "app/xml/" ],
+     len = dirNameList.length,
+     i;
+
+   for ( i = 0; i < len; i++ ) {
+     mkdirSync( outputPath + dirNameList[ i ] );
+   }
+
+   //buildAppJS( null, htmlInfo, appProjectPath );
+
+ }
+
+ function buildAppJS( htmlInfo, dir, next ) {
+   if ( !htmlInfo.appConfig.src ) {
+     throw htmlInfo.path + ": 'app' of attribute must define 'src'";
+   }
+
+   _buildjs( htmlInfo.appConfig.src, htmlInfo.appName, function( name, contentList ) {
+
+   } );
+
  }
 
  function main( ) {
@@ -210,7 +288,7 @@
    async.waterfall( [
     readBaseAMDQueryJS,
     buildDefines,
-    saveDefinesFile ], function( err, result ) {
+    saveJSFile ], function( err, result ) {
      if ( err ) {
        throw err;
      }
@@ -231,7 +309,8 @@
        function( callback ) {
          callback( null, appConfig );
        },
-       openHtml
+       openHtml,
+       createAppDirAndCopyFile
         ], function( err, result ) {
        if ( err ) {
          throw err;
@@ -289,7 +368,7 @@
 
      callback( name, result );
    } );
- };
+ }
 
  function minifyContent( content ) {
    try {
