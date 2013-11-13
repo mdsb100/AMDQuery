@@ -12,8 +12,9 @@ aQuery.define( "@app/controller/navmenu", [ "hash/locationHash", "app/Controller
           ret = target.uiNavitem( "getOptionToRoot" ),
           path;
         if ( ret.length > 1 ) {
-          ret.push( "document", ".." );
-          path = $.getPath( ret.reverse( ).join( "/" ), ".html" );
+          ret.push( "source", "asset" );
+
+          path = $.pagePath + ret.reverse( ).join( "/" ) + ".html";
 
           if ( locationHash.scrollTo ) {
             path += "#scrollTo=" + locationHash.scrollTo;

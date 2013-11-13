@@ -121,10 +121,11 @@
             if ( attr[ 1 ] ) {
               attr[ 1 ].match( /false|true|1|0/ ) && ( attr[ 1 ] = eval( attr[ 1 ] ) );
               result[ item ][ attr[ 0 ] ] = attr[ 1 ];
-            } else {
-              attr[ 1 ].match( /false|true|1|0/ ) && ( attr[ 0 ] = eval( attr[ 1 ] ) );
-              result[ item ] = attr[ 0 ];
             }
+            // else {
+            //   attr[ 1 ].match( /false|true|1|0/ ) && ( attr[ 0 ] = eval( attr[ 1 ] ) );
+            //   result[ item ] = attr[ 0 ];
+            // }
           }
         }
         return result;
@@ -173,6 +174,7 @@
     },
     count = 0,
     reg = RegExp,
+    pagePath = document.location.toString( ).replace( /[^\/]+$/, "" ),
     basePath = ( function( ) {
       var ret = util.getJScriptConfig( [ "src" ] ).src.replace( /\/[^\/]+$/, "" );
       if ( !/^[a-z]+?:\/\//.test( ret ) ) {
@@ -432,6 +434,8 @@
     core_pnum: /[+-]?(?:\d*\.|)\d+(?:[eE][+-]?\d+|)/.source,
 
     rootPath: rootPath,
+
+    pagePath: pagePath,
 
     showMsg: function( str, bool ) {
       /// <summary>设置浏览器标题或者显示个div 点击会自动消失</summary>
