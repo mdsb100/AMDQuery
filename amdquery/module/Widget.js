@@ -663,9 +663,6 @@
         $( target ).parents( ).each( function( ele ) {
           if ( Widget.hasWidget( ele ) ) {
             console.log( "triggerDetectToParent", ele )
-            if ( ele.id == "tabview" ) {
-              debugger
-            }
             $( ele ).trigger( eventName, ele, {
               type: eventName
             } );
