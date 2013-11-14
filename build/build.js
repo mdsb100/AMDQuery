@@ -224,7 +224,7 @@
            }
          }
        }
-       console.log( JSON.stringify( htmlInfo ) );
+       logger( JSON.stringify( htmlInfo ) );
        createAppDirAndCopyFile( null, htmlInfo, appConfig );
      } );
      // script.createReadStream( {outer: true} ).pipe( process.stdout );
@@ -256,17 +256,40 @@
    }
 
    //buildAppJS( null, htmlInfo, appProjectPath );
+   buildAppJS( null, htmlInfo, appProjectPath + "amdquery/" );
 
  }
 
- function buildAppJS( htmlInfo, dir, next ) {
+ function buildAppJS( htmlInfo, AMDQueryPath, buildAppCss ) {
    if ( !htmlInfo.appConfig.src ) {
      throw htmlInfo.path + ": 'app' of attribute must define 'src'";
    }
 
-   _buildjs( htmlInfo.appConfig.src, htmlInfo.appName, function( name, contentList ) {
+   var src = htmlInfo.appConfig.src;
 
+   if ( /^\//.test( src ) ) {
+     src = src.replace( /((.*?\/){3}).*$/, "$1" );
+     src = src.substr( 1 )
+   } else {
+     src = src.replace( /[^\/]+$/, "" );
+   }
+
+   src = src.replace( /\/$/, "" );
+   src = src.replace( ".js", "" );
+
+   oye.require.variablePrefix( "@" );
+   oye.require.variable( "app", src );
+
+   console.log( '\u001b[34m' + '\r\nBuild app ' + htmlInfo.appName + ' js file \u001b[39m' );
+   _buildjs( htmlInfo.appConfig.src, htmlInfo.appName, function( name, contentList ) {
+     var obj = {}
+     obj[ name ] = contentList;
+     saveJSFile( obj, AMDQueryPath, buildAppCss );
    } );
+
+ }
+
+ function buildAppCss( ) {
 
  }
 
@@ -282,6 +305,8 @@
  }
 
  function startBuildDefines( waterfallNext ) {
+   console.log( '\u001b[31m\r\nstart building defines... \u001b[39m' );
+
    setPathVariable( buildConfig.pathVariable );
 
    // build defines
@@ -305,12 +330,16 @@
    if ( apps.length ) {
      var appConfig = apps.shift( );
 
+     console.log( '\u001b[31m\r\nstart building app ' + appConfig.name + ' ... \u001b[39m' );
+
      async.waterfall( [
        function( callback ) {
          callback( null, appConfig );
        },
        openHtml,
-       createAppDirAndCopyFile
+       createAppDirAndCopyFile,
+       buildAppJS,
+       buildAppCss
         ], function( err, result ) {
        if ( err ) {
          throw err;
@@ -331,6 +360,7 @@
 
  function _buildjs( modules, name, callback ) {
    oye.require( modules, function( Module ) { //Asynchronous
+     debugger
      var
      args = arguments,
        len = args.length,
@@ -364,7 +394,7 @@
        }
      }
 
-     console.info( '\u001b[33m' + '\r\nthe defines "' + name + '" Dependencies length is ' + result.length + '\u001b[39m' );
+     console.info( '\u001b[33m' + '\r\nthe defines "' + name + '" Dependencies length of file ' + result.length + '\u001b[39m' );
 
      callback( name, result );
    } );

@@ -9,6 +9,11 @@
   OYE: A module manager implementation of Asynchronous Module Definition
 
 */
+
+
+/*
+  根据需求做了相应修改
+*/
 var FSO = require( 'fs' );
 var _basePath = __filename.replace( /[^\\\/]*[\\\/]+[^\\\/]*$/i, '' ), //oye文件路径
 
@@ -245,6 +250,8 @@ var _basePath = __filename.replace( /[^\\\/]*[\\\/]+[^\\\/]*$/i, '' ), //oye文�
         // if(fakeModule == "define({});"){
         //   console.log("!!!!!", JSON.stringify(item))
         // }
+
+        fakeModule = _variable( fakeModule );
 
         module = eval( fakeModule );
         if ( module ) {
@@ -1123,6 +1130,10 @@ require.variable = function( name, path ) {
   } else {
     return _variableMap[ name ];
   }
+}
+
+require.variablePrefix = function( Prefix ) {
+  _variablePrefix = Prefix;
 }
 
 
