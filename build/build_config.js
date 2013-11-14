@@ -18,8 +18,7 @@ exports.debug = false;
 exports.apps = [
   {
     name: "document",
-    path: "../document/app/app.html",
-    clear: true
+    path: "../document/app/app.html"
   }
  ]
 

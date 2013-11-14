@@ -1894,15 +1894,8 @@
         var src = _config.app.src;
         // _config.ui.initWidget = true;
 
-        if ( /^\//.test( src ) ) {
-          src = src.replace( /((.*?\/){3}).*$/, "$1" );
-          src = src.substr( 1 )
-        } else {
-          src = src.replace( /[^\/]+$/, "" );
-        }
-
-        src = src.replace( /\/$/, "" );
-        src = src.replace( ".js", "" );
+        src = src.replace(/([\\\/])[^\\\/]*$/, "$1");
+        src.replace( /\/$/, "" );
 
         require.variable( "app", src );
 

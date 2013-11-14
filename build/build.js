@@ -54,7 +54,7 @@
 
 
 
- var FSO = require( 'fs' );
+ var FSE = require( 'fs-extra' );
  var PATH = require( 'path' );
 
  //Configurate oye.js
@@ -92,7 +92,7 @@
  var baseFileStack = [ ];
  var amdqueryContent = "";
  var AMDQueryJSPath = buildConfig.amdqueryPath + "amdquery.js";
- var AMDQueryJSRooPath = relativePath + buildConfig.amdqueryPath;
+ var AMDQueryJSRootPath = relativePath + buildConfig.amdqueryPath;
 
  function readBaseAMDQueryJS( next, result ) {
    oye.readFile( AMDQueryJSPath, function( content ) {
@@ -162,7 +162,7 @@
 
    mkdirSync( dirPath );
 
-   console.log( '\u001b[34m' + '\r\nBegin write defines file' + '\u001b[39m' );
+   console.log( '\u001b[34m' + '\r\nBegin write file' + '\u001b[39m' );
 
    for ( name in result ) {
      list = result[ name ];
@@ -170,17 +170,20 @@
      name = name.replace( /^\/+/, '' );
      path = dirPath + name.replace( /[^\/]*$/, '' );
      allPath = dirPath + name + '.all.js';
-     minPath = dirPath + name + '.min.js';
+     minPath = dirPath + name + '.js';
 
      content = list.join( "\r\n" );
      minContent = minifyContent( content );
 
      if ( minContent ) {
-       FSO.writeFile( allPath, content, readFileCallback );
-       console.log( '\r\nSave defines file: ' + allPath );
+       FSE.writeFile( minPath, minContent, readFileCallback );
+       console.log( '\r\nSave file: ' + minPath );
      }
-     FSO.writeFile( minPath, minContent, readFileCallback );
-     console.log( '\r\nSave defines file: ' + minPath );
+
+     FSE.writeFile( allPath, content, readFileCallback );
+     console.log( '\r\nSave file: ' + allPath );
+
+
    }
 
    next( null, null );
@@ -195,14 +198,14 @@
    var htmlInfo = {
      appConfig: {},
      cssPath: [ ],
-     path: AMDQueryJSRooPath + appConfig.path,
+     htmlPath: AMDQueryJSRootPath + appConfig.path,
+     appProjectPath: getFileParentDirectoryPath( AMDQueryJSRootPath + appConfig.path ),
      appName: appConfig.name
    };
 
    tr.selectAll( 'link', function( link ) {
-     console.log( "!!!" );
      link.getAttribute( "href", function( value ) {
-       console.log( "href", value );
+       // console.log( "href", value );
        htmlInfo.cssPath.push( value );
      } );
 
@@ -231,65 +234,78 @@
    } );
 
    var fs = require( 'fs' );
-   fs.createReadStream( AMDQueryJSRooPath + appConfig.path ).pipe( tr );
+   fs.createReadStream( AMDQueryJSRootPath + appConfig.path ).pipe( tr );
  }
 
  function createAppDirAndCopyFile( htmlInfo, appConfig, buildAppJS ) {
-   var appProjectPath = "apps/" + htmlInfo.appName + "/",
-     outputPath = buildConfig.outputPath + appProjectPath;
+   var appOutputProjectPath = "apps/" + htmlInfo.appName + "/",
+     outputPath = buildConfig.outputPath + appOutputProjectPath;
 
-   var remove = require( "remove" );
-
-   if ( appConfig.clear === true && FSO.existsSync( outputPath ) ) {
+   if ( FSE.existsSync( outputPath ) ) {
      console.log( '\u001b[34m' + '\r\nClean app ' + htmlInfo.appName + ' directory \u001b[39m' );
-     remove.removeSync( outputPath );
+     FSE.removeSync( outputPath );
    }
 
    mkdirSync( outputPath );
 
-   var dirNameList = [ "amdquery/ui/", "amdquery/ui/css/", "amdquery/ui/images/", "app/asset/", "app/css/", "app/xml/" ],
+   var dirNameList = [ "amdquery/ui/" ],
      len = dirNameList.length,
      i;
 
    for ( i = 0; i < len; i++ ) {
      mkdirSync( outputPath + dirNameList[ i ] );
    }
+   //"app/asset/"
+   var copyDirMap = {
+     "app/asset/": htmlInfo.appProjectPath + "asset/",
+     "app/css/": htmlInfo.appProjectPath + "css/",
+     "app/xml/": htmlInfo.appProjectPath + "xml/",
+     "app/app.html": htmlInfo.appProjectPath + "app.html",
+     "amdquery/ui/css/": AMDQueryJSRootPath + "ui/css/",
+     "amdquery/ui/images/": AMDQueryJSRootPath + "ui/images/"
+   }, key, value;
 
-   //buildAppJS( null, htmlInfo, appProjectPath );
-   buildAppJS( null, htmlInfo, appProjectPath + "amdquery/" );
+   for ( key in copyDirMap ) {
+     value = copyDirMap[ key ];
+     logger( "copy " + value + " to " + key );
+     FSE.copySync( value, outputPath + key );
+   }
+
+   //buildAppJS( null, htmlInfo, appOutputProjectPath );
+   buildAppJS( null, htmlInfo, appOutputProjectPath + "amdquery/" );
 
  }
 
- function buildAppJS( htmlInfo, AMDQueryPath, buildAppCss ) {
+ function buildAppJS( htmlInfo, AMDQueryPath, buildUICss ) {
    if ( !htmlInfo.appConfig.src ) {
-     throw htmlInfo.path + ": 'app' of attribute must define 'src'";
+     throw htmlInfo.htmlPath + ": 'app' of attribute must define 'src'";
    }
 
-   var src = htmlInfo.appConfig.src;
-
-   if ( /^\//.test( src ) ) {
-     src = src.replace( /((.*?\/){3}).*$/, "$1" );
-     src = src.substr( 1 )
-   } else {
-     src = src.replace( /[^\/]+$/, "" );
-   }
-
-   src = src.replace( /\/$/, "" );
-   src = src.replace( ".js", "" );
+   var dirPath = getFileParentDirectoryPath( htmlInfo.appConfig.src );
+   dirPath = dirPath.replace( /\/$/, "" );
+   console.log( dirPath );
 
    oye.require.variablePrefix( "@" );
-   oye.require.variable( "app", src );
+   oye.require.variable( "app", dirPath );
 
    console.log( '\u001b[34m' + '\r\nBuild app ' + htmlInfo.appName + ' js file \u001b[39m' );
    _buildjs( htmlInfo.appConfig.src, htmlInfo.appName, function( name, contentList ) {
      var obj = {}
-     obj[ name ] = contentList;
-     saveJSFile( obj, AMDQueryPath, buildAppCss );
+     obj[ "amdquery" ] = contentList;
+     saveJSFile( obj, AMDQueryPath, buildUICss );
    } );
 
  }
 
- function buildAppCss( ) {
+ function buildUICss( htmlInfo, AMDQueryPath, buildXML ) {
+
+ }
+
+ function buildXML( htmlInfo, AMDQueryPath, modifyAppHTML ) {
+
+ }
+
+ function modifyAppHTML( htmlInfo, AMDQueryPath ) {
 
  }
 
@@ -302,6 +318,10 @@
      }
      console.log( '\u001b[34m' + '\r\nBuiding finish' + '\u001b[39m' );
    } );
+ }
+
+ function getFileParentDirectoryPath( path ) {
+   return path.replace( /([\\\/])[^\\\/]*$/, '$1' );
  }
 
  function startBuildDefines( waterfallNext ) {
@@ -339,7 +359,7 @@
        openHtml,
        createAppDirAndCopyFile,
        buildAppJS,
-       buildAppCss
+       buildUICss
         ], function( err, result ) {
        if ( err ) {
          throw err;
@@ -360,7 +380,6 @@
 
  function _buildjs( modules, name, callback ) {
    oye.require( modules, function( Module ) { //Asynchronous
-     debugger
      var
      args = arguments,
        len = args.length,
@@ -447,7 +466,7 @@
      if ( PATH.existsSync( _path ) ) {
        continue;
      }
-     FSO.mkdirSync( _path );
+     FSE.mkdirSync( _path );
    }
  }
 
@@ -468,11 +487,11 @@
    for ( i = 0; i < l; i++ ) {
      directory = directoryList[ i ];
      globOpt = {
-       cwd: AMDQueryJSRooPath + directory
+       cwd: AMDQueryJSRootPath + directory
      };
      resultDirectory = resultDirectory.concat( glob.sync( suffix, globOpt ) );
      for ( j = 0, m = resultDirectory.length; j < m; j++ ) {
-       content = FSO.readFileSync( AMDQueryJSRooPath + directory + resultDirectory[ j ] );
+       content = FSE.readFileSync( AMDQueryJSRootPath + directory + resultDirectory[ j ] );
        moduleAndDepends = oye.matchDefine( content.toString( ) );
        for ( k = 0, n = moduleAndDepends.length; k < n; k++ ) {
          if ( moduleAndDepends[ k ].module ) {
