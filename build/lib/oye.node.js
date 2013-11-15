@@ -33,8 +33,6 @@ var _basePath = __filename.replace( /[^\\\/]*[\\\/]+[^\\\/]*$/i, '' ), //oye文�
 
   _mapDependencies = {}, //被依赖模块映射表
 
-  index = 0,
-
   _variableMap = {},
 
   _variablePrefix = "@",
@@ -187,7 +185,7 @@ var _basePath = __filename.replace( /[^\\\/]*[\\\/]+[^\\\/]*$/i, '' ), //oye文�
     var moduleAndDepends = [ ];
 
     if ( ret ) {
-      for ( var i = 0, sModule, depends; i < ret.length; i++ ) {
+      for ( var i = 0, sModule, depends, isAnonymous; i < ret.length; i++ ) {
         sModule = "";
         depends = "";
         // console.log(rname.test(ret[i]))
@@ -197,11 +195,17 @@ var _basePath = __filename.replace( /[^\\\/]*[\\\/]+[^\\\/]*$/i, '' ), //oye文�
           sModule = String( sModule );
         }
 
-
         // console.log(rdepends.test(ret[i]))
         // console.log("array", RegExp.$1)
         if ( rdepends.test( ret[ i ] ) && RegExp.$1 ) {
           depends = RegExp.$1;
+        }
+
+        isAnonymous = ret[ i ].match( /\,/g );
+
+        if ( depends === "" && sModule === "" && isAnonymous && isAnonymous.length > 0 ) {
+          //不是匿名的，是自己定义的
+          continue;
         }
 
         moduleAndDepends.push( {
@@ -213,12 +217,15 @@ var _basePath = __filename.replace( /[^\\\/]*[\\\/]+[^\\\/]*$/i, '' ), //oye文�
       }
     } else {
       //可能为空的情况 也需要 define一下
-      r.test( content )
-      moduleAndDepends.push( {
-        name: name,
-        module: "",
-        depends: RegExp.$2
-      } );
+
+
+      if ( r.test( content ) && RegExp.$2 ) {
+        moduleAndDepends.push( {
+          name: "",
+          module: "",
+          depends: RegExp.$2
+        } );
+      }
     }
 
     return moduleAndDepends;
@@ -572,6 +579,8 @@ var _basePath = __filename.replace( /[^\\\/]*[\\\/]+[^\\\/]*$/i, '' ), //oye文�
 
             }
 
+          } else {
+            _fnDetectCR( sDP, mDP._amdDependencies );
           }
 
         }
@@ -644,9 +653,9 @@ _ClassModule.prototype._amdGetReady = function( ) {
 
   F._content = this._content || "";
 
-  F._index = index++;
-
   F.getDependenciesMap = this.getDependenciesMap;
+
+  F.getDependenciesList = this.getDependenciesList;
 
   aFnReady = this._amdReadyQueue[ id ] || [ ];
 
@@ -670,8 +679,55 @@ _ClassModule.prototype._amdGetReady = function( ) {
 
 _ClassModule.prototype._amdReadyQueue = {};
 
-//取当前模块所有依赖模块
+var _tempMap = {};
 
+_getDependenciesList = function( module, ret ) {
+  var i = 0,
+    ad = module._amdDependencies,
+    len = ad.length,
+    item,
+    path;
+
+  for ( ; i < len; i++ ) {
+    item = _modules[ ad[ i ] ];
+    _getDependenciesList( item, ret );
+    if ( !_tempMap[ item._amdID ] ) {
+      path = _fnGetPath( item._amdID );
+      ret.push( {
+        name: item._amdID,
+        path: item ? item._url || path : path,
+        content: item ? item._content || "" : "",
+      } );
+      _tempMap[ item._amdID ] = true;
+    }
+  }
+
+}
+
+_ClassModule.prototype.getDependenciesList = function( ) {
+  var sMD = this._amdID,
+    DM, ret = [ ],
+    fnGetPath = _fnGetPath,
+    modules = _modules,
+    module = _modules[ sMD ],
+    path = fnGetPath( sMD );
+
+  _tempMap = {};
+
+  _getDependenciesList( module, ret )
+
+  ret.push( {
+    name: sMD,
+    path: module ? module._url || path : path,
+    content: module ? module._content || "" : ""
+  } );
+
+
+  return ret;
+
+}
+
+//取当前模块所有依赖模块
 _ClassModule.prototype.getDependenciesMap = function( ) {
 
   var sMD = this._amdID,
@@ -685,8 +741,7 @@ _ClassModule.prototype.getDependenciesMap = function( ) {
   ret.push( {
     name: sMD,
     path: module ? module._url || path : path,
-    content: module ? module._content || "" : "",
-    index: module ? module._index || 0 : 0
+    content: module ? module._content || "" : ""
   } );
 
   for ( DM in MD ) {
@@ -695,8 +750,7 @@ _ClassModule.prototype.getDependenciesMap = function( ) {
     ret.push( {
       name: DM,
       path: module ? module._url || path : path,
-      content: module ? module._content || "" : "",
-      index: module ? module._index || 0 : 0
+      content: module ? module._content || "" : ""
     } );
 
   }

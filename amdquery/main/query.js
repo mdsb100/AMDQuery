@@ -4,19 +4,19 @@
   $.module[ "lib/js/sizzle" ] = "Sizzle1.10.3";
 
   var core_deletedIds = [ ],
-  core_concat = core_deletedIds.concat;
+    core_concat = core_deletedIds.concat;
 
   var runtil = /Until$/,
-  rparentsprev = /^(?:parents|prev(?:Until|All))/,
-  isSimple = /^.[^:#\[\.,]*$/,
-  rneedsContext = Sizzle.selectors.match.needsContext,
-  // methods guaranteed to produce a unique set when starting from a unique set
-  guaranteedUnique = {
-    children: true,
-    contents: true,
-    next: true,
-    prev: true
-  };
+    rparentsprev = /^(?:parents|prev(?:Until|All))/,
+    isSimple = /^.[^:#\[\.,]*$/,
+    rneedsContext = Sizzle.selectors.match.needsContext,
+    // methods guaranteed to produce a unique set when starting from a unique set
+    guaranteedUnique = {
+      children: true,
+      contents: true,
+      next: true,
+      prev: true
+    };
 
   function winnow( elements, qualifier, keep ) {
 
@@ -140,7 +140,7 @@
       } else if ( ele === document )
         list = [ ele.documentElement ];
       else if ( ele === window )
-        list = [ window ];//有风险的
+        list = [ window ]; //有风险的
       else if ( typed.isDoc( ele ) ) {
         list = [ ele.documentElement ];
       }

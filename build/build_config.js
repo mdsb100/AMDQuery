@@ -24,8 +24,8 @@ exports.apps = [
 
 exports.defines = {
   test: {
-    path: "../build/test/test",
-    directory: [ "main/" ]
+    path: "module/Widget",
+    directory: [ "ui/" ]
   }
 }
 

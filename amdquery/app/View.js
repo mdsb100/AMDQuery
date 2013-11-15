@@ -124,10 +124,11 @@ aQuery.define( "app/View", [
     }
   }, {
     getStyle: function( path ) {
-      if ( config.app.development )
+      // if ( config.amdquery.autoFetchCss && config.app.development ) {
         src.link( {
           href: ClassModule.getPath( path, ".css" )
         } );
+      // }
     },
     getXML: function( htmlSrc ) {
       htmlSrc = ClassModule.variable( htmlSrc );
@@ -161,5 +162,10 @@ aQuery.define( "app/View", [
     id: "-pu -r -w"
   } );
 
+  // if ( !config.app.development ) {
+  //   src.link( {
+  //     href: ClassModule.getPath( path, ".css" )
+  //   } );
+  // }
   return View;
 } );

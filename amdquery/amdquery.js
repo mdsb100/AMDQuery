@@ -194,6 +194,7 @@
     amdquery: {
       define: "$",
       debug: false,
+      autoFetchCss: true,
       development: true
     },
     amd: {
@@ -206,7 +207,6 @@
     },
     ui: {
       initWidget: false,
-      autoFetchCss: true,
       image: "welcome.gif",
       isTransform3d: true
     },
@@ -1858,7 +1858,18 @@
       }, 0 );
     }, rootPromise;
 
-    rootPromise = new Promise( function( ) { //window.ready first to fix ie
+    rootPromise = new Promise( function( ) {
+      // 预处理设置
+      if ( _config.app.src ) {
+        var src = _config.app.src;
+        // _config.ui.initWidget = true;
+
+        src = src.replace( /([\\\/])[^\\\/]*$/, "$1" );
+        src = src.replace( /\/$/, "" );
+
+        require.variable( "app", src );
+      }
+    } ).then( function( ) { //window.ready first to fix ie
       document.documentElement.style.position = "absolute";
       document.documentElement.style.left = "100000px";
       var promise = new Promise,
@@ -1891,14 +1902,6 @@
       return promise;
     } ).then( function( ) {
       if ( _config.app.src ) {
-        var src = _config.app.src;
-        // _config.ui.initWidget = true;
-
-        src = src.replace(/([\\\/])[^\\\/]*$/, "$1");
-        src.replace( /\/$/, "" );
-
-        require.variable( "app", src );
-
         var promise = new Promise;
         require( _config.app.src, function( Application ) {
           new Application( promise );

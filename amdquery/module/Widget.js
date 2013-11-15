@@ -610,7 +610,7 @@
       return ret;
     },
     fetchCSS: function( path ) {
-      if ( config.ui.autoFetchCss && config.app.development ) {
+      if ( config.amdquery.autoFetchCss && config.app.development ) {
         src.link( {
           href: $.getPath( path, ".css" )
         } );
@@ -712,8 +712,10 @@
     }
   } );
 
-  if ( !config.app.development ) {
-    widget.fetchCSS( "ui/css/combination" );
+  if ( !config.app.development && config.amdquery.autoFetchCss ) {
+    src.link( {
+      href: $.getPath( "ui/css/combination", ".css" )
+    } );
   }
 
   $.Widget = Widget;
