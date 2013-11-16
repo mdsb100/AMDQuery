@@ -73,7 +73,7 @@ pre{
 }
 
 .widget-loading {
-  background-image: url(image/welcome.gif);
+  background-image: url(../images/welcome.gif);
   background-position: center;
   background-repeat: no-repeat;
 }
