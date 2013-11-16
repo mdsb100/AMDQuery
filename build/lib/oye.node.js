@@ -177,23 +177,27 @@ var _basePath = __filename.replace( /[^\\\/]*[\\\/]+[^\\\/]*$/i, '' ), //oye文�
 
   matchDefine = function( content ) {
     var r = /define\s*\(\s*([^,]*,)?\s*(\[[^\]]*\])/i,
-      match = /define\s*\([^\)]*\)/gm,
-      rname = /define\s*\(\s*(['"]([^,\[\)]*)['"],?)?/i,
+      match = /(define|require)\s*\([^\)]*\)/gm,
+      rname = /(define|require)\s*\(\s*(['"]([^,\[\)]*)['"],?)?/i,
       rdepends = /\s*(\[[^\]]*\])/i;
 
     var ret = content.match( match );
     var moduleAndDepends = [ ];
 
     if ( ret ) {
-      for ( var i = 0, sModule, depends, isAnonymous; i < ret.length; i++ ) {
+      for ( var i = 0, sModule, depends, name, isAnonymous; i < ret.length; i++ ) {
         sModule = "";
         depends = "";
+        name = "";
         // console.log(rname.test(ret[i]))
         // console.log(RegExp.$1)
-        if ( rname.test( ret[ i ] ) && RegExp.$2 ) {
-          sModule = RegExp.$2.replace( /\,/g, "" );
+        rname.test( ret[ i ] );
+        name = RegExp.$1;
+        if ( RegExp.$2 ) {
+          sModule = RegExp.$2.replace( /\,|\"|\'/g, "" );
           sModule = String( sModule );
         }
+
 
         // console.log(rdepends.test(ret[i]))
         // console.log("array", RegExp.$1)
@@ -203,13 +207,17 @@ var _basePath = __filename.replace( /[^\\\/]*[\\\/]+[^\\\/]*$/i, '' ), //oye文�
 
         isAnonymous = ret[ i ].match( /\,/g );
 
+        if ( name === "require" && depends === "" && sModule === "" ) {
+          continue;
+        }
+
         if ( depends === "" && sModule === "" && isAnonymous && isAnonymous.length > 0 ) {
           //不是匿名的，是自己定义的
           continue;
         }
 
         moduleAndDepends.push( {
-          name: "define",
+          name: name,
           module: sModule,
           depends: depends
         } );
@@ -234,7 +242,6 @@ var _basePath = __filename.replace( /[^\\\/]*[\\\/]+[^\\\/]*$/i, '' ), //oye文�
   readFile = function( url, callback ) {
     FSO.readFile( url, function( err, data ) {
       if ( err ) {
-        debugger
         throw err;
       }
       var content = data.toString( );
@@ -246,11 +253,11 @@ var _basePath = __filename.replace( /[^\\\/]*[\\\/]+[^\\\/]*$/i, '' ), //oye文�
         item = moduleAndDepends[ i ]
         fakeModule = item.name + "("
         if ( item.module && item.depends ) {
-          fakeModule += '"' + item.module + '"' + " ," + item.depends + ",{}";
+          fakeModule += '"' + item.module + '"' + " ," + item.depends + ",function(){}";
         } else if ( !item.module && !item.depends ) {
-          fakeModule += "{}"
+          fakeModule += "function(){}"
         } else {
-          fakeModule += ( item.module ? '"' + item.module + '"' : item.depends ) + ",{}";
+          fakeModule += ( item.module ? '"' + item.module + '"' : item.depends ) + ",function(){}";
         }
 
         fakeModule += ");";
