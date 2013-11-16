@@ -137,7 +137,8 @@
    for ( name in buildConfig.defines ) {
      item = buildConfig.defines[ name ];
      requireList = checkJSDirectory( item.directory );
-     requireList.push( item.path );
+
+     requireList = requireList.concat( filterDependencies( item.path ) );
      _buildjs( requireList, name, callback );
    }
 
@@ -406,6 +407,30 @@
    for ( var name in obj ) {
      oye.require.variable( name, obj[ name ] );
    }
+ }
+
+ function filterDependencies( url ) {
+   debugger
+   var result = [ ],
+     content = FSE.readFileSync( buildConfig.amdqueryPath + url + ".js" ).toString( ),
+     moduleList = oye.matchDefine( content ),
+     moduleInfo,
+     i = 0,
+     len = moduleList.length;
+   debugger
+   for ( ; i < len; i++ ) {
+     moduleInfo = moduleList[ i ];
+
+     if ( moduleInfo.name === "require" && moduleInfo.module ) {
+       result.push( moduleInfo.module );
+     }
+     if ( moduleInfo.depends ) {
+       result = result.concat( eval(moduleInfo.depends) );
+     }
+
+   }
+
+   return result;
  }
 
  function _buildjs( modules, name, callback ) {

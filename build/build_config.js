@@ -24,7 +24,7 @@ exports.apps = [
 
 exports.defines = {
   test: {
-    path: "module/Widget",
+    path: "../document/app/asset/source/js/scrollTo",
     directory: [ "ui/" ]
   }
 }
