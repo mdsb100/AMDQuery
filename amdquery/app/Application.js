@@ -25,12 +25,12 @@ aQuery.define( "app/Application", [
 
       this._routerMap = {};
 
-      var image = config.app.image,
+      var loadingImage = config.app.loadingImage,
         $image = $( {
           position: "absolute",
           top: "50%",
           left: "50%"
-        }, "img" ).attr( "src", ClassModule.getPath( "@app/asset/images/", image ) ),
+        }, "img" ),
         $cover = $( {
           width: "100%",
           height: "100%",
@@ -40,6 +40,10 @@ aQuery.define( "app/Application", [
           zIndex: 10001,
           backgroundColor: "white"
         }, "div" ).append( $image ).insertBefore( $( "body" ).children( ) );
+
+      if ( loadingImage ) {
+        $image.attr( "src", loadingImage );
+      }
 
       $image.css( {
         marginTop: -$image.width( ) + "px",
@@ -100,16 +104,16 @@ aQuery.define( "app/Application", [
     parseRouter: function( ) {
       var hash = window.location.hash,
         ret = hash.match( /\$(.*)\$/ );
-        if ( ret && ret.length > 1 ) {
-          var controllerSrc = this._routerMap[ ret[ 1 ] ];
-          if ( controllerSrc ) {
-            var $body = $( document.body );
-            $body.children( "controller" ).remove( );
-            var controllerElement = $( $.createEle( "controller" ) ).attr( "src", controllerSrc );
-            $body.append( controllerElement );
-            return controllerElement[ 0 ];
-          }
+      if ( ret && ret.length > 1 ) {
+        var controllerSrc = this._routerMap[ ret[ 1 ] ];
+        if ( controllerSrc ) {
+          var $body = $( document.body );
+          $body.children( "controller" ).remove( );
+          var controllerElement = $( $.createEle( "controller" ) ).attr( "src", controllerSrc );
+          $body.append( controllerElement );
+          return controllerElement[ 0 ];
         }
+      }
     },
     launch: function( ) {
 

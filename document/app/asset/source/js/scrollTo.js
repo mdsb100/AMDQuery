@@ -1,4 +1,4 @@
-$.require( [ "main/query", "hash/locationHash", "ui/scrollableview" ], function( query, locationHash ) {
+$.require( [ "main/query", "hash/locationHash", "ui/scrollableview", "module/initWidget" ], function( query, locationHash ) {
   var scrollableview = $( "#scrollableview" );
   if ( scrollableview.length ) {
     scrollableview.uiScrollableview( );

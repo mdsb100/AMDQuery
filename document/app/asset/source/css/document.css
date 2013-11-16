@@ -71,3 +71,9 @@ pre{
   margin-bottom: 1em;
   letter-spacing: 1px;
 }
+
+.widget-loading {
+  background-image: url(image/welcome.gif);
+  background-position: center;
+  background-repeat: no-repeat;
+}

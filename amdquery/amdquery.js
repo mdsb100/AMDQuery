@@ -207,7 +207,7 @@
     },
     ui: {
       initWidget: false,
-      image: "welcome.gif",
+      loadingClassName: "widget-loading",
       isTransform3d: true
     },
     module: {
@@ -215,7 +215,7 @@
     },
     app: {
       src: "",
-      image: "welcome.gif",
+      loadingImage: "",
       debug: false,
       development: true
     }

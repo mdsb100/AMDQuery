@@ -1,13 +1,8 @@
-aQuery.define( "module/initWidget", [ "base/config", "base/typed", "main/query", "main/css", "main/position", "main/dom", "main/attr", "module/Widget" ], function( $, config, typed, query, css, position, dom, attr, Widget, undefinded ) {
+aQuery.define( "module/initWidget", [ "base/config", "base/typed", "main/query", "main/css", "main/position", "main/dom", "main/attr", "main/class", "module/Widget" ], function( $, config, typed, query, css, position, dom, attr, cls, Widget, undefinded ) {
   "use strict"; //启用严格模式
 
   var body = $( "body" ),
-    image = config.ui.image,
-    $image = $( {
-      position: "absolute",
-      top: "50%",
-      left: "50%"
-    }, "img" ).attr( "src", $.getPath( "ui/images/", image ) ),
+    loadingClassName = config.ui.loadingClassName,
     $cover = $( {
       width: "100%",
       height: "100%",
@@ -16,12 +11,11 @@ aQuery.define( "module/initWidget", [ "base/config", "base/typed", "main/query",
       left: 0,
       zIndex: 10001,
       backgroundColor: "white"
-    }, "div" ).append( $image ).insertBefore( body.children( ) );
+    }, "div" ).insertBefore( body.children( ) );
 
-  $image.css( {
-    marginTop: -$image.width( ) + "px",
-    marginLeft: -$image.height( ) + "px"
-  } );
+  if ( loadingClassName ) {
+    $cover.addClass( loadingClassName );
+  }
 
   var initWidget = {
     renderWidget: function( promise, parent ) {
