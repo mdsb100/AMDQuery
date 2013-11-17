@@ -64,3 +64,18 @@ exports.uglifyOptions = {
     inline_script: false
   }
 };
+
+exports.cleanCssOptions = {
+  //* for keeping all (default), 1 for keeping first one only, 0 for removing all
+  keepSpecialComments: "*",
+  //whether to keep line breaks (default is false)
+  keepBreaks: false,
+  //whether to process @import rules
+  processImport: true,
+  //whether to skip URLs rebasing
+  noRebase: false,
+  //set to true to disable advanced optimizations - selector & property merging, reduction, etc.
+  noAdvanced: false,
+  //ie8 for IE8 compatibility mode, * for merging all (default)
+  selectorsMergeMode: "*"
+}

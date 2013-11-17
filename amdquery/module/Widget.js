@@ -714,7 +714,7 @@
 
   if ( !config.app.development && config.amdquery.autoFetchCss ) {
     src.link( {
-      href: $.getPath( "ui/css/combination", ".css" )
+      href: $.getPath( "ui/css/amdquery-widget", ".css" )
     } );
   }
 

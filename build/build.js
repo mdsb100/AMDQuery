@@ -34,6 +34,14 @@
        ascii_only: false,
        inline_script: false
      }
+   },
+   cleanCssOptions: {
+     keepSpecialComments: "*",
+     keepBreaks: false,
+     processImport: true,
+     noRebase: false,
+     noAdvanced: false,
+     selectorsMergeMode: "*"
    }
  };
 
@@ -206,7 +214,6 @@
 
    tr.selectAll( 'link', function( link ) {
      link.getAttribute( "href", function( value ) {
-       // console.log( "href", value );
        htmlInfo.cssPath.push( value );
      } );
 
@@ -254,9 +261,10 @@
      i;
 
    for ( i = 0; i < len; i++ ) {
+     console.log( "make directory:" + dirNameList[ i ] );
      mkdirSync( outputPath + dirNameList[ i ] );
    }
-   //"app/asset/"
+
    var copyDirMap = {
      "app/asset/": htmlInfo.appProjectPath + "asset/",
      "app/css/": htmlInfo.appProjectPath + "css/",
@@ -268,7 +276,7 @@
 
    for ( key in copyDirMap ) {
      value = copyDirMap[ key ];
-     logger( "copy " + value + " to " + key );
+     console.log( "copy " + value + " to " + outputPath + key );
      FSE.copySync( value, outputPath + key );
    }
 
@@ -285,7 +293,6 @@
 
    var dirPath = getFileParentDirectoryPath( htmlInfo.appConfig.src );
    dirPath = dirPath.replace( /\/$/, "" );
-   console.log( dirPath );
 
    oye.require.variablePrefix( "@" );
    oye.require.variable( "app", dirPath );
@@ -319,15 +326,15 @@
    }
 
    var CleanCSS = require( 'clean-css' );
-   var minimized = new CleanCSS( ).minify( cssTxt );
+   var minimized = new CleanCSS( buildConfig.cleanCssOptions ).minify( cssTxt );
 
-   htmlInfo.uiCombinationCssPath = htmlInfo.projectOutputPath + "amdquery/ui/css/combination.css";
+   htmlInfo.uiCombinationCssPath = htmlInfo.projectOutputPath + "amdquery/ui/css/amdquery-widget.css";
 
    console.log( htmlInfo.uiCombinationCssPath );
 
    FSE.writeFileSync( htmlInfo.uiCombinationCssPath, minimized.toString( ) );
 
-   console.log( '\r\nSave UI combination.css: ' + htmlInfo.uiCombinationCssPath );
+   console.log( '\r\nSave UI amdquery-widget.css: ' + htmlInfo.uiCombinationCssPath );
  }
 
  function buildXML( htmlInfo, modifyAppHTML ) {
@@ -417,7 +424,7 @@
      moduleInfo,
      i = 0,
      len = moduleList.length;
-   debugger
+
    for ( ; i < len; i++ ) {
      moduleInfo = moduleList[ i ];
 
@@ -425,7 +432,7 @@
        result.push( moduleInfo.module );
      }
      if ( moduleInfo.depends ) {
-       result = result.concat( eval(moduleInfo.depends) );
+       result = result.concat( eval( moduleInfo.depends ) );
      }
 
    }
@@ -460,7 +467,7 @@
        pathMap = {};
 
      pathMap[ AMDQueryJSPath ] = true;
-     console.log( AMDQueryJSPath )
+
      result.push( editDefine( amdqueryContent, "amdquery" ) );
 
      for ( i = 0; i < l; i++ ) {
