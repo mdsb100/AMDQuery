@@ -261,7 +261,7 @@
      i;
 
    for ( i = 0; i < len; i++ ) {
-     console.log( "make directory:" + dirNameList[ i ] );
+     console.log( "make directory: " + "\u001b[34m" + dirNameList[ i ] + "\u001b[39m" );
      mkdirSync( outputPath + dirNameList[ i ] );
    }
 
@@ -276,7 +276,7 @@
 
    for ( key in copyDirMap ) {
      value = copyDirMap[ key ];
-     console.log( "copy " + value + " to " + outputPath + key );
+     console.log( "copy \u001b[34m" + value + "\u001b[39m to \u001b[34m" + outputPath + key + "\u001b[39m" );
      FSE.copySync( value, outputPath + key );
    }
 
