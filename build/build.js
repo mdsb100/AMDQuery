@@ -47,7 +47,7 @@
 
  var argvs = process.argv;
 
- var relativePath = process.argv[ 1 ].replace( /([\\\/])[^\\\/]*$/, '$1' );
+ var buildFileRootPath = process.argv[ 1 ].replace( /([\\\/])[^\\\/]*$/, '$1' );
 
  var buildConfigFile = process.argv[ 2 ];
  if ( buildConfigFile && /\.js/.test( buildConfigFile ) ) {
@@ -82,7 +82,7 @@
 
  var logger = buildConfig.debug ? console.info : function( ) {};
 
- logger( relativePath );
+ logger( buildFileRootPath );
 
  //Uglify
  var uglify = require( './lib/uglify/uglify-js.js' );
@@ -100,7 +100,7 @@
  var baseFileStack = [ ];
  var amdqueryContent = "";
  var AMDQueryJSPath = buildConfig.amdqueryPath + "amdquery.js";
- var AMDQueryJSRootPath = relativePath + buildConfig.amdqueryPath;
+ var AMDQueryJSRootPath = buildFileRootPath + buildConfig.amdqueryPath;
 
  function readBaseAMDQueryJS( next, result ) {
    oye.readFile( AMDQueryJSPath, function( content ) {
@@ -241,8 +241,7 @@
      // script.createReadStream( {outer: true} ).pipe( process.stdout );
    } );
 
-   var fs = require( 'fs' );
-   fs.createReadStream( AMDQueryJSRootPath + appConfig.path ).pipe( tr );
+   FSE.createReadStream( AMDQueryJSRootPath + appConfig.path ).pipe( tr );
  }
 
  function createAppDirAndCopyFile( htmlInfo, appConfig, buildAppJS ) {
@@ -286,7 +285,7 @@
 
  }
 
- function buildAppJS( htmlInfo, AMDQueryPath, buildUICss ) {
+ function buildAppJS( htmlInfo, AMDQueryPath, buildAppCss ) {
    if ( !htmlInfo.appConfig.src ) {
      throw htmlInfo.htmlPath + ": 'app' of attribute must define 'src'";
    }
@@ -303,41 +302,62 @@
      obj[ "amdquery" ] = contentList;
      saveJSFile( obj, AMDQueryPath, function( ) {
        htmlInfo[ "AMDQueryJSPath" ] = AMDQueryPath + "amdquery";
-       buildUICss( null, htmlInfo );
+       buildAppCss( null, htmlInfo );
      } );
    } );
 
  }
 
- function buildUICss( htmlInfo, buildXML ) {
+ function buildAppCss( htmlInfo, modifyHTMLCssLink ) {
+   console.log( '\u001b[34m' + '\r\nBuild app ' + htmlInfo.appName + ' css file \u001b[39m' );
+
+   var
+   pathList = htmlInfo.cssPath,
+     resultPath = [ ];
+
+   pathList.forEach( function( item, index ) {
+     var path = "";
+     //绝对路径 项目路径下
+     if ( /^\//.test( item ) ) {
+       path = buildFileRootPath + projectRootPath + item.replace( /^\//, "" );
+     } else {
+       path = getFileParentDirectoryPath( htmlInfo.htmlPath ) + item;
+     }
+     console.log( "buildAppCss css path:", path );
+     resultPath.push( path );
+   } );
+
+   htmlInfo.appCombinationCssPath = htmlInfo.projectOutputPath + "app/css/" + htmlInfo.appName + ".css";
+
+   _buildCssAndSave( resultPath, htmlInfo.appCombinationCssPath );
+
+   console.log( '\r\nSave app Combination css: ' + htmlInfo.appCombinationCssPath );
+
+   modifyHTMLCssLink( null, htmlInfo );
+ }
+
+
+ function modifyHTMLCssLink( htmlInfo, buildUICss ) {
+   buildUICss( null, htmlInfo );
+ }
+
+ function buildUICss( htmlInfo, buildAppXML ) {
    console.log( '\u001b[34m' + '\r\nBuild css of AMDQuery-UI \u001b[39m' );
    var
    cwd = AMDQueryJSRootPath + "ui/css/",
      globOpt = {
        cwd: cwd
      },
-     cssFileList = glob.sync( "*.css", globOpt )
-     len = cssFileList.length,
-     i = 0,
-     cssTxt = "";
+     cssFileList = glob.sync( "*.css", globOpt );
 
-   for ( ; i < len; i++ ) {
-     cssTxt += FSE.readFileSync( cwd + cssFileList[ i ] );
-   }
+   htmlInfo.uiCombinationCssPath = htmlInfo.projectOutputPath + "amdquery/ui/css/amdquery-widget.css"
 
-   var CleanCSS = require( 'clean-css' );
-   var minimized = new CleanCSS( buildConfig.cleanCssOptions ).minify( cssTxt );
-
-   htmlInfo.uiCombinationCssPath = htmlInfo.projectOutputPath + "amdquery/ui/css/amdquery-widget.css";
-
-   console.log( htmlInfo.uiCombinationCssPath );
-
-   FSE.writeFileSync( htmlInfo.uiCombinationCssPath, minimized.toString( ) );
+   _buildCssAndSave( cssFileList, htmlInfo.uiCombinationCssPath, cwd );
 
    console.log( '\r\nSave UI amdquery-widget.css: ' + htmlInfo.uiCombinationCssPath );
  }
 
- function buildXML( htmlInfo, modifyAppHTML ) {
+ function buildAppXML( htmlInfo, modifyAppHTML ) {
 
  }
 
@@ -397,6 +417,8 @@
        openHtml,
        createAppDirAndCopyFile,
        buildAppJS,
+       buildAppCss,
+       modifyHTMLCssLink,
        buildUICss
      ], function( err, result ) {
        if ( err ) {
@@ -417,7 +439,6 @@
  }
 
  function filterDependencies( url ) {
-   debugger
    var result = [ ],
      content = FSE.readFileSync( buildConfig.amdqueryPath + url + ".js" ).toString( ),
      moduleList = oye.matchDefine( content ),
@@ -483,6 +504,25 @@
 
      callback( name, result );
    } );
+ }
+
+ function _buildCssAndSave( cssPathList, output, cwd ) {
+   var
+   len = cssPathList.length,
+     i = 0,
+     cssTxt = "";
+   cwd = ( cwd ? cwd : "" );
+
+   for ( ; i < len; i++ ) {
+     cssTxt += FSE.readFileSync( cwd + cssPathList[ i ] );
+   }
+
+   var CleanCSS = require( 'clean-css' );
+   var minimized = new CleanCSS( buildConfig.cleanCssOptions ).minify( cssTxt );
+
+   FSE.writeFileSync( output, minimized.toString( ) );
+
+   return output;
  }
 
  function minifyContent( content ) {
