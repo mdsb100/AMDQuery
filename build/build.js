@@ -304,6 +304,7 @@
      obj.amdquery = contentList;
      saveJSFile( obj, AMDQueryPath, function() {
        htmlInfo.AMDQueryJSPath = AMDQueryPath + "amdquery";
+       htmlInfo.AMDQueryJSRelativeHTMLPath = "../amdquery/amdquery";
        buildAppCss( null, htmlInfo );
      } );
    } );
@@ -359,9 +360,9 @@
  }
 
  function modifyHTML( htmlInfo ) {
-   var tr1 = trumpet(),
-     tr2 = trumpet(),
-     tr3 = trumpet(),
+   var linkTr1 = trumpet(),
+     linkTr2 = trumpet(),
+     scriptTr3 = trumpet(),
      s = through();
 
    htmlInfo.outputHtmlPath = htmlInfo.projectOutputPath + "app/app.html";
@@ -371,13 +372,13 @@
      append = "",
      i = 0;
 
-   tr1.selectAll( "link", function( link ) {
+   linkTr1.selectAll( "link", function( link ) {
      link.getAttribute( "href", function( value ) {
        cssList.push( value );
      } );
    } );
 
-   tr2.selectAll( "link", function( link ) {
+   linkTr2.selectAll( "link", function( link ) {
      var ws = link.createWriteStream( {
        outer: true
      } );
@@ -389,17 +390,23 @@
      ws.end( append + "\n<!-- annotate by build link.src: " + cssList[ i++ ] + " -->" );
    } );
 
+   //必须需要有app这个属性
+   var script = scriptTr3.select( "script[app]" );
 
-   // headWS.pipe( concat( function( head ) {
-   //   head.createWriteStream();
+   script.setAttribute( "src", htmlInfo.AMDQueryJSRelativeHTMLPath + ".js" );
 
-   //   console.log( "abc" );
-   //   // console.log( head.toString() );
-   // } ) );
+   script.getAttribute( "app", function( value ) {
+     var config = splitAttrToObject( value );
 
-   // s.pipe( headWS );
+     console.log( config );
 
-   // s.end( "<link href='css/pt.css' rel='stylesheet' type='text/css' />" );
+     config.src = "../app/app";
+     config.development = "0";
+
+     console.log( formatToAttr( config ) );
+
+     script.setAttribute( "app", formatToAttr( config ) );
+   } );
 
    var write = FSE.createWriteStream( htmlInfo.outputHtmlPath );
 
@@ -408,7 +415,7 @@
      // buildUICss( null, htmlInfo );
    } );
 
-   FSE.createReadStream( htmlInfo.htmlPath ).pipe( tr1 ).pipe( tr2 ).pipe( tr3 ).pipe( write );
+   FSE.createReadStream( htmlInfo.htmlPath ).pipe( linkTr1 ).pipe( linkTr2 ).pipe( scriptTr3 ).pipe( write );
  }
 
  function buildAppXML( htmlInfo, modifyAppHTML ) {
@@ -576,6 +583,31 @@
    FSE.writeFileSync( output, minimized.toString() );
 
    return output;
+ }
+
+ function splitAttrToObject( str ) {
+   var result = {}, j = 0,
+     attrs = str.split( /;|,/ ),
+     attr;
+   for ( ; attr = attrs[ j++ ]; ) {
+     attr = attr.split( /:|=/ );
+     if ( attr[ 1 ] ) {
+       // attr[ 1 ].match( /false|true|1|0/ ) && ( attr[ 1 ] = eval( attr[ 1 ] ) );
+       result[ attr[ 0 ] ] = attr[ 1 ];
+     }
+   }
+   return result;
+ }
+
+ function formatToAttr( object ) {
+   var result = "",
+     key, value;
+   for ( key in object ) {
+     value = object[ key ];
+     result += key + ":" + value + ";";
+   }
+
+   return result;
  }
 
  function minifyContent( content ) {
