@@ -386,25 +386,25 @@
      if ( !first ) {
        first = true;
        append = '<link href="' + htmlInfo.appCombinationCssRelativePath + '" rel="stylesheet" type="text/css" />';
+       logger( "add combinationCss", append );
      }
+
      ws.end( append + "\n<!-- annotate by build link.src: " + cssList[ i++ ] + " -->" );
    } );
 
    //必须需要有app这个属性
    var script = scriptTr3.select( "script[app]" );
-
-   script.setAttribute( "src", htmlInfo.AMDQueryJSRelativeHTMLPath + ".js" );
+   var src = htmlInfo.AMDQueryJSRelativeHTMLPath + ".js";
+   script.setAttribute( "src", src );
+   logger( "script setAttribute src", src );
 
    script.getAttribute( "app", function( value ) {
      var config = splitAttrToObject( value );
 
-     console.log( config );
-
      config.src = "../app/app";
+     logger( "script setAttribute app", "src = " + config.src );
      config.development = "0";
-
-     console.log( formatToAttr( config ) );
-
+     logger( "script setAttribute app", "development = " + config.development );
      script.setAttribute( "app", formatToAttr( config ) );
    } );
 
