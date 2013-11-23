@@ -29,7 +29,7 @@
   var prefix = "amdquery";
 
   function getWidgetsName( eles ) {
-    var widgetNames = [ ],
+    var widgetNames = [],
       widgetMap = {};
 
     eles.each( function( ele ) {
@@ -139,14 +139,14 @@
         return Widget.extend( tName, prototype, this.ctor );
       }
     },
-    invokeTemplate = function( ) {
+    invokeTemplate = function() {
       return this.ctor.invoke.apply( this.ctor, arguments );
     };
 
 
   object.extend( Widget, {
-    addTag: function( ) {
-      var tag = this.toString( ),
+    addTag: function() {
+      var tag = this.toString(),
         optionAttr = this.widgetNameSpace + "-" + this.widgetName,
         optionTag = this.target.attr( optionAttr ),
         widgetAttr = prefix + "-widget",
@@ -171,8 +171,8 @@
 
       return this;
     },
-    removeTag: function( ) {
-      var tag = this.toString( ),
+    removeTag: function() {
+      var tag = this.toString(),
         optionAttr = this.widgetNameSpace + "-" + this.widgetName,
         optionTag = this.target.attr( optionAttr ),
         widgetAttr = prefix + "-widget",
@@ -190,7 +190,7 @@
 
       return this;
     },
-    checkAttr: function( ) {
+    checkAttr: function() {
       var key, attr, value, item, result = {}, i = 0,
         j = 0,
         len = 0,
@@ -233,28 +233,28 @@
 
       return result;
     },
-    _doAfterInit: function( ) {
+    _doAfterInit: function() {
 
     },
-    create: function( ) {},
-    detect: function( ) {
+    create: function() {},
+    detect: function() {
       return this;
     },
     container: null,
     constructor: Widget,
-    destroy: function( ) {
+    destroy: function() {
       /*应当返回原先的状态*/
 
       //this.destroyChildren();
-      this.disable( );
-      this.removeTag( );
+      this.disable();
+      this.removeTag();
       var i = 0,
         name;
       for ( i = this.customEventName.length - 1; i >= 0; i-- ) {
         this.target.clearHandlers( this.widgetEventPrefix + "." + this.customEventName[ i ] );
       }
 
-      if ( this.container && this.options.removeContainer ) $( this.container ).remove( );
+      if ( this.container && this.options.removeContainer ) $( this.container ).remove();
 
       for ( i in this ) {
         name = i;
@@ -263,15 +263,15 @@
 
       return this;
     },
-    able: function( ) {
-      this.options.disabled ? this.disable( ) : this.enable( );
+    able: function() {
+      this.options.disabled ? this.disable() : this.enable();
       return this;
     },
-    disable: function( ) {
+    disable: function() {
       this.options.disabled = true;
       return this;
     },
-    enable: function( ) {
+    enable: function() {
       this.options.disabled = false;
       return this;
     },
@@ -283,13 +283,13 @@
       this.options = {};
       utilExtend.easyExtend( this.options, proto.options );
 
-      target._initHandler( );
+      target._initHandler();
       this.target = target;
-      this.addTag( );
+      this.addTag();
       //obj高于元素本身属性
       obj = typed.isPlainObj( obj ) ? obj : {};
       var ret = {};
-      utilExtend.extend( ret, this.checkAttr( ), obj );
+      utilExtend.extend( ret, this.checkAttr(), obj );
       this.option( ret );
       return this;
     },
@@ -305,7 +305,7 @@
     },
     equals: function( item ) {
       if ( this.forinstance( item ) ) {
-        return this.getElement( ) === item.getElement( ) && this[ this.widgetName ]( "getSelf" ) === item[ this.widgetName ]( "getSelf" );
+        return this.getElement() === item.getElement() && this[ this.widgetName ]( "getSelf" ) === item[ this.widgetName ]( "getSelf" );
       }
       return false;
     },
@@ -320,7 +320,7 @@
         this.setOption( key, value );
       }
     },
-    customEventName: [ ],
+    customEventName: [],
     options: {
       disabled: 0
     },
@@ -345,8 +345,8 @@
     getEventName: function( name ) {
       return this.widgetEventPrefix + "." + name;
     },
-    render: function( ) {},
-    _initHandler: function( ) {},
+    render: function() {},
+    _initHandler: function() {},
     // _getInitHandler: function( Super, context ) {
     //   var originEvent = this.event;
     //   Super.invoke( "_initHandler", context );
@@ -375,9 +375,9 @@
         return this.doSpecialGetter( key );
       } else {
         if ( this.options[ key ] !== undefined ) {
-          $.console.error( "widget:" + this.toString( ) + " can not get option " + key + "; please check getter" );
+          $.console.error( "widget:" + this.toString() + " can not get option " + key + "; please check getter" );
         } else {
-          $.console.error( "widget:" + this.toString( ) + " option " + key + " is undefined; please check options" );
+          $.console.error( "widget:" + this.toString() + " option " + key + " is undefined; please check options" );
         }
         return undefined;
       }
@@ -404,10 +404,10 @@
     beSetter: function( key ) {
       return !!this.setter[ key ];
     },
-    toString: function( ) {
+    toString: function() {
       return "ui.widget";
     },
-    getSelf: function( ) {
+    getSelf: function() {
       return this;
     },
     widgetEventPrefix: "",
@@ -479,7 +479,7 @@
       _extendAttr( "setter", Ctor, true );
 
 
-      var key = nameSpace + "." + name + $.now( );
+      var key = nameSpace + "." + name + $.now();
 
       var widget = function( a, b, c ) {
         /// <summary>对当前$的所有元素初始化某个UI控件或者修改属性或使用其方法</summary>
@@ -496,7 +496,7 @@
             //完全调用基类的构造函数 不应当在构造函数 create render
             if ( a !== "destroy" ) {
               data = $.data( ele, key, new Ctor( a, $( ele ) ) );
-              data._doAfterInit( ); //跳出堆栈，在flex这种会用到
+              data._doAfterInit(); //跳出堆栈，在flex这种会用到
             }
           } else {
             if ( a === "destroy" ) {
@@ -504,13 +504,13 @@
               $.removeData( ele, key );
             } else if ( typed.isObj( a ) ) {
               data.option( a );
-              data.render( );
+              data.render();
             } else if ( typed.isStr( a ) ) {
               if ( a === "option" ) {
                 if ( c !== undefined ) {
                   /*若可set 则全部set*/
                   data.option( b, c );
-                  data.render( );
+                  data.render();
                 } else {
                   /*若可get 则返回第一个*/
                   result = data.option( b, c );
@@ -538,7 +538,7 @@
       utilExtend.easyExtend( widget, statics );
 
 
-      var destroyWidget = function( ) {
+      var destroyWidget = function() {
         this.each( function( ele ) {
           var data = $.data( ele, key );
           if ( data ) {
@@ -591,8 +591,8 @@
     },
     getAttrWidgets: function( ele ) {
       var value = attr.getAttr( ele, prefix + "-widget" ),
-        attrNames = typed.isStr( value ) && value !== "" ? value.split( /;|,/ ) : [ ],
-        ret = [ ],
+        attrNames = typed.isStr( value ) && value !== "" ? value.split( /;|,/ ) : [],
+        ret = [],
         widgetName = "",
         i;
       for ( i = attrNames.length - 1; i >= 0; i-- ) {
@@ -618,7 +618,7 @@
     },
     _renderWidget: function( ele, funName ) {
       var widgetNames = Widget.getAttrWidgets( ele ),
-        i, widgetName, key, widgetCtor, ret = [ ];
+        i, widgetName, key, widgetCtor, ret = [];
 
       for ( i = widgetNames.length - 1; i >= 0; i-- ) {
         widgetName = widgetNames[ i ];
@@ -660,9 +660,9 @@
     triggerDetectToParent: function( target ) {
       var eventName = "widget.detect";
       if ( target ) {
-        $( target ).parents( ).each( function( ele ) {
+        $( target ).parents().each( function( ele ) {
           if ( Widget.hasWidget( ele ) ) {
-            console.log( "triggerDetectToParent", ele )
+            config.ui.debug && console.log( "triggerDetectToParent", ele );
             $( ele ).trigger( eventName, ele, {
               type: eventName
             } );
@@ -675,32 +675,32 @@
       var widgetNames = getWidgetsName( eles );
 
       if ( widgetNames.length ) {
-        require( widgetNames, function( ) {
+        require( widgetNames, function() {
           for ( var i = 0, len = eles.length; i < len; i++ ) {
             Widget._renderWidget( eles[ i ] );
           }
           Widget.triggerDetectToParent( target );
-          if ( typed.isFun( callback ) ) callback( );
+          if ( typed.isFun( callback ) ) callback();
         } );
       } else {
-        if ( typed.isFun( callback ) ) callback( );
+        if ( typed.isFun( callback ) ) callback();
       }
       return this;
     },
     destroyWidgets: function( target, callback ) {
-      var eles = Widget.findWidgets( target ).reverse( );
+      var eles = Widget.findWidgets( target ).reverse();
       var widgetNames = getWidgetsName( eles );
 
       if ( widgetNames.length ) {
-        require( widgetNames, function( ) {
+        require( widgetNames, function() {
           for ( var i = 0, len = eles.length; i < len; i++ ) {
             Widget._renderWidget( eles[ i ], "destroy" );
           }
           Widget.triggerDetectToParent( target );
-          if ( typed.isFun( callback ) ) callback( );
+          if ( typed.isFun( callback ) ) callback();
         } );
       } else {
-        if ( typed.isFun( callback ) ) callback( );
+        if ( typed.isFun( callback ) ) callback();
       }
       return this;
     }

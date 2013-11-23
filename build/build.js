@@ -181,7 +181,7 @@
      len = list.length;
      name = name.replace( /^\/+/, '' );
      path = dirPath + name.replace( /[^\/]*$/, '' );
-     allPath = dirPath + name + '.all.js';
+     allPath = dirPath + name + '.debug.js';
      minPath = dirPath + name + '.js';
 
      content = list.join( "\r\n" );
@@ -236,7 +236,7 @@
          }
        }
        logger( JSON.stringify( htmlInfo ) );
-       createAppDirAndCopyFile( null, htmlInfo, appConfig );
+       createAppDirAndCopyFile( null, appConfig, htmlInfo );
      } );
      // script.createReadStream( {outer: true} ).pipe( process.stdout );
    } );
@@ -244,7 +244,7 @@
    FSE.createReadStream( AMDQueryJSRootPath + appConfig.path ).pipe( tr );
  }
 
- function createAppDirAndCopyFile( htmlInfo, appConfig, buildAppJS ) {
+ function createAppDirAndCopyFile( appConfig, htmlInfo, buildAppJS ) {
    var appOutputProjectPath = "apps/" + htmlInfo.appName + "/",
      outputPath = buildConfig.outputPath + appOutputProjectPath;
 
@@ -282,10 +282,10 @@
 
    htmlInfo.projectOutputPath = outputPath;
 
-   buildAppJS( null, htmlInfo, appOutputProjectPath + "amdquery/" );
+   buildAppJS( null, appConfig, htmlInfo, appOutputProjectPath + "amdquery/" );
  }
 
- function buildAppJS( htmlInfo, AMDQueryPath, buildAppXML ) {
+ function buildAppJS( appConfig, htmlInfo, AMDQueryPath, buildAppXML ) {
    if ( !htmlInfo.appConfig.src ) {
      throw htmlInfo.htmlPath + ": 'app' of attribute must define 'src'";
    }
@@ -304,12 +304,12 @@
      saveJSFile( obj, AMDQueryPath, function() {
        htmlInfo.AMDQueryJSPath = AMDQueryPath + "amdquery";
        htmlInfo.AMDQueryJSRelativeHTMLPath = "../amdquery/amdquery";
-       buildAppXML( null, htmlInfo, XMLAndCSSPathList );
+       buildAppXML( null, appConfig, htmlInfo, XMLAndCSSPathList );
      } );
    } );
  }
 
- function buildAppXML( htmlInfo, XMLAndCSSPathList, buildAppCss ) {
+ function buildAppXML( appConfig, htmlInfo, XMLAndCSSPathList, buildAppCss ) {
    console.log( '\u001b[34m' + '\r\nBuild xml ' + htmlInfo.appName + ' css file \u001b[39m' );
    var content = "<root>",
      xmlPathList = XMLAndCSSPathList.xmlPathList,
@@ -333,11 +333,11 @@
 
    FSE.writeFileSync( htmlInfo.appCombinationXMLPath, content );
 
-   buildAppCss( null, htmlInfo, XMLAndCSSPathList );
+   buildAppCss( null, appConfig, htmlInfo, XMLAndCSSPathList );
  }
 
 
- function buildAppCss( htmlInfo, XMLAndCSSPathList, buildUICss ) {
+ function buildAppCss( appConfig, htmlInfo, XMLAndCSSPathList, buildUICss ) {
    console.log( '\u001b[34m' + '\r\nBuild app ' + htmlInfo.appName + ' css file \u001b[39m' );
 
    var
@@ -369,10 +369,10 @@
 
    console.log( '\r\nSave app Combination css: ' + htmlInfo.appCombinationCssPath );
 
-   buildUICss( null, htmlInfo );
+   buildUICss( null, appConfig, htmlInfo );
  }
 
- function buildUICss( htmlInfo, modifyHTML ) {
+ function buildUICss( appConfig, htmlInfo, modifyHTML ) {
    console.log( '\u001b[34m' + '\r\nBuild css of AMDQuery-UI \u001b[39m' );
    var
    cwd = AMDQueryJSRootPath + "ui/css/",
@@ -387,10 +387,10 @@
 
    console.log( '\r\nSave UI amdquery-widget.css: ' + htmlInfo.uiCombinationCssPath );
 
-   modifyHTML( null, htmlInfo );
+   modifyHTML( null, appConfig, htmlInfo );
  }
 
- function modifyHTML( htmlInfo ) {
+ function modifyHTML( appConfig, htmlInfo ) {
    var linkTr1 = trumpet(),
      linkTr2 = trumpet(),
      scriptTr3 = trumpet(),
@@ -425,7 +425,8 @@
 
    //必须需要有app这个属性
    var script = scriptTr3.select( "script[app]" );
-   var src = htmlInfo.AMDQueryJSRelativeHTMLPath + ".js";
+
+   var src = htmlInfo.AMDQueryJSRelativeHTMLPath + ( appConfig.debug ? ".debug" : "" ) + ".js";
    script.setAttribute( "src", src );
    logger( "script setAttribute src", src );
 
@@ -436,6 +437,9 @@
      logger( "script setAttribute app", "src = " + config.src );
      config.development = "0";
      logger( "script setAttribute app", "development = " + config.development );
+     config.debug = !! appConfig.debug;
+     logger( "script setAttribute app", "debug = " + config.debug );
+
      script.setAttribute( "app", formatToAttr( config ) );
    } );
 
