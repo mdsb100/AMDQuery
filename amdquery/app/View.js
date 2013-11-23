@@ -155,11 +155,18 @@ aQuery.define( "app/View", [
 
     View.getXML = function( htmlSrc ) {
       var key = "",
-        xml;
-      if ( /xml\/(.*)/.test( htmlSrc ) ) {
+        xml,
+        $xml;
+      if ( !ClassModule.contains( htmlSrc ) && /xml\/(.*)/.test( htmlSrc ) ) {
         key = RegExp.$1;
-        xml = query.find( "wrap[key=" + key + "]", combinationXML[ 0 ] )[0].childNodes[0];
+        $xml = $( combinationXML[ 0 ] ).find( "wrap[key=" + key + "]" );
+        xml = $xml.children()[ 0 ];
         define( htmlSrc, xml );
+        $xml.remove();
+        $xml = null;
+        if ( !combinationXML[ 0 ].childNodes.length ) {
+          combinationXML = null;
+        }
       }
       return require( htmlSrc ).first;
     };
@@ -185,10 +192,5 @@ aQuery.define( "app/View", [
     };
   }
 
-  // if ( !config.app.development ) {
-  //   src.link( {
-  //     href: ClassModule.getPath( path, ".css" )
-  //   } );
-  // }
   return View;
 } );
