@@ -217,7 +217,8 @@
       src: "",
       loadingImage: "",
       debug: false,
-      development: true
+      development: true,
+      xmlPath : "xml/combination.xml"
     }
   };
   var defineConfig = {};

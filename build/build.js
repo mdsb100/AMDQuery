@@ -285,7 +285,7 @@
    buildAppJS( null, htmlInfo, appOutputProjectPath + "amdquery/" );
  }
 
- function buildAppJS( htmlInfo, AMDQueryPath, buildAppCss ) {
+ function buildAppJS( htmlInfo, AMDQueryPath, buildAppXML ) {
    if ( !htmlInfo.appConfig.src ) {
      throw htmlInfo.htmlPath + ": 'app' of attribute must define 'src'";
    }
@@ -304,34 +304,38 @@
      saveJSFile( obj, AMDQueryPath, function() {
        htmlInfo.AMDQueryJSPath = AMDQueryPath + "amdquery";
        htmlInfo.AMDQueryJSRelativeHTMLPath = "../amdquery/amdquery";
-       buildAppCss( null, htmlInfo, XMLAndCSSPathList );
+       buildAppXML( null, htmlInfo, XMLAndCSSPathList );
      } );
    } );
  }
 
- function getXMLAndCSS( htmlInfo, moduleList ) {
-   var i = 0,
-     len = moduleList.length,
-     mdItem, xmlPathList = [],
-     cssPath, cssPathList = [];
+ function buildAppXML( htmlInfo, XMLAndCSSPathList, buildAppCss ) {
+   console.log( '\u001b[34m' + '\r\nBuild xml ' + htmlInfo.appName + ' css file \u001b[39m' );
+   var content = "<root>",
+     xmlPathList = XMLAndCSSPathList.xmlPathList,
+     i = 0,
+     xmlItem = null,
+     len = xmlPathList.length;
+
    for ( ; i < len; i++ ) {
-     mdItem = moduleList[ i ];
-
-     if ( /app\/view\/(.*)/.test( mdItem.name ) ) {
-       xmlPathList.push( htmlInfo.appProjectPath + "xml/" + RegExp.$1 + ".xml" );
-       cssPath = htmlInfo.appProjectPath + "css/" + RegExp.$1 + ".css";
-       if ( FSE.existsSync( cssPath ) ) {
-         cssPathList.push( cssPath );
-       }
-     }
-
+     xmlItem = xmlPathList[ i ];
+     content += "<wrap key='" + xmlItem.key + "' >" + FSE.readFileSync( xmlItem.path );
+     content += "</wrap>";
    }
 
-   return {
-     xmlPathList: xmlPathList,
-     cssPathList: cssPathList
-   }
+   content += "</root>"
+
+   htmlInfo.appCombinationXMLRelativePath = "xml/" + "combination.xml";
+
+   htmlInfo.appCombinationXMLPath = htmlInfo.projectOutputPath + "app/" + htmlInfo.appCombinationXMLRelativePath;
+
+   console.log( '\r\nSave app Combination xml: ' + htmlInfo.appCombinationXMLPath );
+
+   FSE.writeFileSync( htmlInfo.appCombinationXMLPath, content );
+
+   buildAppCss( null, htmlInfo, XMLAndCSSPathList );
  }
+
 
  function buildAppCss( htmlInfo, XMLAndCSSPathList, buildUICss ) {
    console.log( '\u001b[34m' + '\r\nBuild app ' + htmlInfo.appName + ' css file \u001b[39m' );
@@ -353,9 +357,9 @@
      resultPath.push( path );
    } );
 
-   resultPath = resultPath.concat( CSSPathList );
-
-
+   CSSPathList.forEach( function( item ) {
+     resultPath.push( item.path );
+   } );
 
    htmlInfo.appCombinationCssRelativePath = "css/" + htmlInfo.appName + ".css";
 
@@ -367,8 +371,6 @@
 
    buildUICss( null, htmlInfo );
  }
-
- function buildAppXML( htmlInfo, XMLAndCSSPathList, modifyAppHTML ) {}
 
  function buildUICss( htmlInfo, modifyHTML ) {
    console.log( '\u001b[34m' + '\r\nBuild css of AMDQuery-UI \u001b[39m' );
@@ -500,6 +502,7 @@
        openHtml,
        createAppDirAndCopyFile,
        buildAppJS,
+       buildAppXML,
        buildAppCss,
        buildUICss,
        modifyHTML
@@ -543,6 +546,39 @@
    }
 
    return result;
+ }
+
+
+ function getXMLAndCSS( htmlInfo, moduleList ) {
+   var i = 0,
+     len = moduleList.length,
+     mdItem, xmlPath, xmlPathList = [],
+     cssPath, cssPathList = [];
+   for ( ; i < len; i++ ) {
+     mdItem = moduleList[ i ];
+
+     if ( /app\/view\/(.*)/.test( mdItem.name ) ) {
+       xmlPath = htmlInfo.appProjectPath + "xml/" + RegExp.$1 + ".xml";
+       cssPath = htmlInfo.appProjectPath + "css/" + RegExp.$1 + ".css";
+       if ( FSE.existsSync( xmlPath ) ) {
+         xmlPathList.push( {
+           key: RegExp.$1,
+           path: xmlPath
+         } );
+       }
+       if ( FSE.existsSync( cssPath ) ) {
+         cssPathList.push( {
+           key: RegExp.$1,
+           path: cssPath
+         } );
+       }
+     }
+   }
+
+   return {
+     xmlPathList: xmlPathList,
+     cssPathList: cssPathList
+   }
  }
 
  function _buildjs( modules, name, callback ) {

@@ -41,7 +41,7 @@ aQuery.define( "app/View", [
 
   var View = CustomEvent.extend( "View", {
     init: function( contollerElement, src ) {
-      this._super( );
+      this._super();
       this.topElement = this.initTopElement( src ).cloneNode( true );
       config.app.debug && console.log( this.topElement );
       attr.setAttr( this.topElement, "html-src", this.htmlSrc );
@@ -58,15 +58,15 @@ aQuery.define( "app/View", [
       src = src || ( getHtmlSrc( this.constructor._AMD.id ) + ".xml" );
       return View.getXML( src );
     },
-    destroy: function( ) {
+    destroy: function() {
       View.collection.remove( this );
-      self.remove( );
+      self.remove();
       this.topElement = null;
     },
     appendTo: function( parent ) {
       //必须appendTo 或 replaceTo 才能触发ready
       parent.appendChild( this.topElement );
-      this.initWidget( );
+      this.initWidget();
       config.app.debug && console.log( "View " + this.constructor._AMD.id + " appendTo" );
       return this;
     },
@@ -83,29 +83,29 @@ aQuery.define( "app/View", [
         };
       } catch ( e ) {}
 
-      this.initWidget( );
+      this.initWidget();
 
       config.app.debug && console.log( "View " + this.constructor._AMD.id + " replaceTo" );
       return this;
     },
-    remove: function( ) {
+    remove: function() {
       if ( this.topElement && this.topElement.parentNode ) {
         Widget.destroyWidgets( this.topElement.parentNode );
-        $( this.topElement ).remove( );
+        $( this.topElement ).remove();
       }
       return this;
     },
-    initWidget: function( ) {
+    initWidget: function() {
       if ( this.topElement && this.topElement.parentNode ) {
         Widget.initWidgets( this.topElement );
       }
     },
-    _getModelsElement: function( ) {
+    _getModelsElement: function() {
       //Collection
       return query.find( ">Model", this.topElement );
     },
-    getModelsSrc: function( ) {
-      return this._getModelsElement( ).map( function( ele ) {
+    getModelsSrc: function() {
+      return this._getModelsElement().map( function( ele ) {
         var src = attr.getAttr( ele, "src" );
         if ( !src ) {
           throw new Error( "require model:src must exist" );
@@ -113,12 +113,12 @@ aQuery.define( "app/View", [
         return src;
       } );
     },
-    _getControllerElement: function( ) {
+    _getControllerElement: function() {
       return query.find( ">Controller", this.topElement );
     },
     htmlSrc: "",
     _timeout: 5000,
-    _error: function( ) {
+    _error: function() {
       $.console.error( "get " + this.htmlSrc + " error" );
     }
   }, {
@@ -128,28 +128,6 @@ aQuery.define( "app/View", [
           href: ClassModule.getPath( path, ".css" )
         } );
       }
-    },
-    getXML: function( htmlSrc ) {
-      htmlSrc = ClassModule.variable( htmlSrc );
-      var url = $.getPath( htmlSrc, ".xml" );
-      if ( !ClassModule.contains( htmlSrc ) ) {
-        if ( htmlSrc === "" || !htmlSrc ) {
-          define( htmlSrc, document.createElement( "div" ) );
-        } else {
-          var self = this;
-          communicate.ajax( {
-            url: url,
-            async: false,
-            dataType: "string",
-            complete: function( xml ) {
-              define( htmlSrc, parse.HTML( xml ) );
-            },
-            timeout: View.timeout,
-            timeoutFun: View.error
-          } );
-        }
-      }
-      return require( htmlSrc ).first;
     }
   } );
 
@@ -160,6 +138,52 @@ aQuery.define( "app/View", [
   object.providePropertyGetSet( View, {
     id: "-pu -r -w"
   } );
+
+  if ( !config.app.development ) {
+    var combinationXML = null;
+
+    communicate.ajax( {
+      url: config.app.xmlPath,
+      async: false,
+      dataType: "string",
+      complete: function( xml ) {
+        combinationXML = parse.HTML( xml );
+      },
+      timeout: View.timeout,
+      timeoutFun: View.error
+    } );
+
+    View.getXML = function( htmlSrc ) {
+      var key = "",
+        xml;
+      if ( /xml\/(.*)/.test( htmlSrc ) ) {
+        key = RegExp.$1;
+        xml = query.find( "wrap[key=" + key + "]", combinationXML[ 0 ] )[0].childNodes[0];
+        define( htmlSrc, xml );
+      }
+      return require( htmlSrc ).first;
+    };
+
+  } else {
+    View.getXML = function( htmlSrc ) {
+      htmlSrc = ClassModule.variable( htmlSrc );
+      var url = $.getPath( htmlSrc, ".xml" );
+      if ( !ClassModule.contains( htmlSrc ) ) {
+        var self = this;
+        communicate.ajax( {
+          url: url,
+          async: false,
+          dataType: "string",
+          complete: function( xml ) {
+            define( htmlSrc, parse.HTML( xml ) );
+          },
+          timeout: View.timeout,
+          timeoutFun: View.error
+        } );
+      }
+      return require( htmlSrc ).first;
+    };
+  }
 
   // if ( !config.app.development ) {
   //   src.link( {
