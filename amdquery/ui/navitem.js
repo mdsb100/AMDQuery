@@ -88,6 +88,9 @@ aQuery.define( "ui/navitem", [
       },
       open: function( ) {
         var opt = this.options;
+
+        this.render( );
+
         if ( !opt.isOpen  ) {
           if ( opt.parent && !opt.parent.uiNavitem( "option", "isOpen" ) ) {
             opt.parent.uiNavitem( "open" );
@@ -100,7 +103,7 @@ aQuery.define( "ui/navitem", [
             easing: "cubic.easeInOut",
             complete: complete
           } );
-          this.render( );
+
           var para = {
             type: this.getEventName( "open" ),
             container: this.container,
@@ -114,13 +117,16 @@ aQuery.define( "ui/navitem", [
       },
       close: function( ) {
         var opt = this.options;
+
+        this.render( );
+
         if ( opt.isOpen ) {
           opt.isOpen = false;
           this.$board.slideUp( {
             duration: 200,
             easing: "cubic.easeInOut"
           } );
-          this.render( );
+
           var para = {
             type: this.getEventName( "close" ),
             container: this.container,
