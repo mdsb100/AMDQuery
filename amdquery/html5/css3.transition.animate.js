@@ -9,17 +9,17 @@
   "module/FX",
   "html5/animate.transform",
   "hash/cubicBezier.tween" ], function( $,
-    config,
-    typed,
-    support,
-    utilExtend,
-    client,
-    event,
-    css3,
-    FX,
-    transform,
-    cubicBezierTween,
-    undefined ) {
+  config,
+  typed,
+  support,
+  utilExtend,
+  client,
+  event,
+  css3,
+  FX,
+  transform,
+  cubicBezierTween,
+  undefined ) {
   "use strict"; //启用严格模式
   //无法识别em这种
 
@@ -53,14 +53,14 @@
     var
     originComplete = $._originComplete,
 
-      transitionEndType = ( function( ) {
+      transitionEndType = ( function() {
         var type = "";
         if ( client.engine.ie ) type = "MS";
         else if ( client.engine.webkit || client.system.mobile ) type = "webkit";
         else if ( client.engine.gecko ) return "transitionend";
         else if ( client.engine.opera ) type = "o";
         return type + "TransitionEnd";
-      } )( ),
+      } )(),
       animateByTransition = function( ele, property, option ) {
         /// <summary>给所有元素添加一个动画
         /// <para>obj property:{ width: "50em", top: "+=500px" }</para>
@@ -99,7 +99,7 @@
 
           ele.removeEventListener( transitionEndType, opt._transitionEnd );
 
-          setTimeout( function( ) {
+          setTimeout( function() {
             FX.invokeCompelete( opt.complete, ele, opt );
             ele = opt = null;
           }, 0 );
@@ -130,7 +130,7 @@
         ele.addEventListener( transitionEndType, opt._transitionEnd, false );
 
         $.each( property, function( value, key ) {
-          var ret, i, temp, tran = [ ],
+          var ret, i, temp, tran = [],
             duration = opt.duration / 1000,
             delay = opt.delay / 1000,
             item, startTime;
@@ -144,15 +144,15 @@
             tran.push( temp, duration + "s", easing );
             opt.delay && tran.push( delay + "s" );
             css3.addTransition( ele, tran.join( " " ) );
-            value = ret[ 0 ].update( );
-            startTime = new Date( );
+            value = ret[ 0 ].update();
+            startTime = new Date();
             for ( i = 0; i < ret.length; i++ ) {
               item = ret[ i ];
               value = item.update( value, item.end );
               item.startTime = startTime;
             }
             if ( !transitionList[ temp ] ) {
-              transitionList[ temp ] = [ ];
+              transitionList[ temp ] = [];
             }
             transitionList[ temp ] = transitionList[ temp ].concat( ret );
           } else {
@@ -165,7 +165,7 @@
 
             css3.addTransition( ele, tran.join( " " ) );
             ele.style[ $.util.camelCase( key ) ] = ret.end + ret.unit;
-            ret.startTime = new Date( );
+            ret.startTime = new Date();
             transitionList[ key ] = ret;
           }
         } );
@@ -192,7 +192,7 @@
           if ( option.queue === false ) {
             animateByTransition( ele, property, option );
           } else {
-            $.queue( ele, "fx", function( ) {
+            $.queue( ele, "fx", function() {
               animateByTransition( ele, property, option );
               $.dequeue( ele, [ ele ] );
               ele = property = option = null;
@@ -210,10 +210,10 @@
           if ( typed.isArr( fx ) ) {
             for ( i = fx.length - 1; i >= 0; i-- ) {
               item = fx[ i ];
-              item.isInDelay( ) ? item.update( null, fx.from ) : item.step( );
+              item.isInDelay() ? item.update( null, fx.from ) : item.step();
             }
           } else {
-            fx.isInDelay( ) ? fx.update( fx.from ) : fx.step( );
+            fx.isInDelay() ? fx.update( fx.from ) : fx.step();
           }
           delete transitionList[ type ];
         }
@@ -245,7 +245,7 @@
           complete: tCompelete,
           specialEasing: opt.specialEasing,
           queue: opt.queue === false ? false : true,
-          para: opt.para || [ ] //如何使用
+          para: opt.para || [] //如何使用
         };
 
         return ret;
@@ -319,10 +319,7 @@
         $.fn.animate = $.fn.animateByTransition;
         $.fn.stopAnimation = $.fn.stopAnimationByTransition;
       } else {
-        $.console.log( {
-          msg: "browser is not support transitionEnd",
-          fn: "css3.transition.animate load"
-        } );
+        $.logger( "css3.transition.animate load", "browser is not support transitionEnd" );
       }
     }
   }

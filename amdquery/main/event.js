@@ -6,7 +6,7 @@
     html = "blur focus focusin focusout".split( " " ),
     key = "keydown keypress keyup".split( " " ),
     other = "resize scroll change select submit DomNodeInserted DomNodeRemoved".split( " " ),
-    _eventNameList = [ ].concat( mouse, mutation, html, key, other ),
+    _eventNameList = [].concat( mouse, mutation, html, key, other ),
     _domEventList = {},
     //, addHandler = $._redundance.addHandler
     tools = {
@@ -35,16 +35,16 @@
       },
       compatibleEvent: function( e ) {
         var eventDoc = $.event.document;
-        e.getCharCode = function( ) {
+        e.getCharCode = function() {
           eventDoc.getCharCode( this );
         };
-        e.preventDefault || ( e.preventDefault = function( ) {
+        e.preventDefault || ( e.preventDefault = function() {
           this.returnValue = false;
         } );
-        e.stopPropagation || ( e.stopPropagation = function( ) {
+        e.stopPropagation || ( e.stopPropagation = function() {
           this.cancelBubble = true;
         } );
-        e.getButton = function( ) {
+        e.getButton = function() {
           eventDoc.getButton( this );
         };
       },
@@ -91,7 +91,7 @@
             i = types.length - 1;
 
           if ( !( data = $.data( ele, "_handlers_" ) ) ) {
-            data = $.data( ele, "_handlers_", new CustomEvent( ) );
+            data = $.data( ele, "_handlers_", new CustomEvent() );
           }
           proxy = tools.proxy( fun, this );
 
@@ -115,7 +115,7 @@
             i = types.length - 1;
 
           if ( !( data = $.data( ele, "_handlers_" ) ) ) {
-            data = $.data( ele, "_handlers_", new CustomEvent( ) );
+            data = $.data( ele, "_handlers_", new CustomEvent() );
           }
           proxy = tools.proxy( fun, this );
 
@@ -153,7 +153,7 @@
         return $.ajaxStart( fun, "ajaxTimeout" );
       },
 
-      bus: ( new CustomEvent( ) ),
+      bus: ( new CustomEvent() ),
 
       clearHandlers: function( ele, type ) {
         /// <summary>移除dom元素的所有事件或所有aQuery提供的事件，如果类型存在则删除这种类型</summary>
@@ -282,7 +282,7 @@
           },
           once: function( ele, type, fn ) {
             var self = this,
-              fnproxy = function( ) {
+              fnproxy = function() {
                 self._removeHandler( ele, type, fnproxy );
                 fn.apply( this, arguments );
               };
@@ -318,7 +318,7 @@
             if ( document.createEvent ) {
               e = document.createEvent( type );
             } else if ( document.createEventObject ) {
-              e = document.createEventObject( );
+              e = document.createEventObject();
             }
             return e;
           },
@@ -394,7 +394,7 @@
                 e = createEvent( "KeyEvents" );
                 e.initKeyEvent( type, i.bubbles, i.cancelable, i.view, i.ctrlKey, i.altKey, i.shiftKey, i.metaKey, i.keyCode, i.charCode );
               } else if ( client.browser.ie678 ) {
-                e = createEvent( );
+                e = createEvent();
                 for ( i in settings ) {
                   e[ i ] = settings[ i ];
                 }
@@ -448,7 +448,7 @@
                   e[ i ] = settings[ i ];
                 }
               } else if ( client.browser.ie678 ) {
-                e = createEvent( );
+                e = createEvent();
                 for ( i in settings ) {
                   e[ i ] = settings[ i ];
                 }
@@ -475,7 +475,7 @@
                 e, i = settings;
 
               if ( client.browser.ie678 ) {
-                e = createEvent( );
+                e = createEvent();
                 for ( i in settings ) {
                   e[ i ] = settings[ i ];
                 }
@@ -497,14 +497,14 @@
             /// <summary>阻止Element对象默认行为</summary>
             /// <param name="e" type="Event">event对象</param>
             /// <returns type="null" />
-            if ( e.preventDefault ) e.preventDefault( );
+            if ( e.preventDefault ) e.preventDefault();
             else e.returnValue = false;
           },
           stopPropagation: function( e ) {
             /// <summary>阻止Element对象事件的冒泡</summary>
             /// <param name="e" type="Event">event对象</param>
             /// <returns type="null" />
-            if ( e.stopPropagation ) e.stopPropagation( );
+            if ( e.stopPropagation ) e.stopPropagation();
             else e.cancelBubble = true;
           },
           getButton: function( e ) {
@@ -556,7 +556,7 @@
         /// <summary>初始化事件集</summary>
         /// <param name="ele" type="Element/undefined">元素</param>
         /// <private/>
-        $.data( ele, "_handlers_" ) || $.data( ele, "_handlers_", new CustomEvent( ) );
+        $.data( ele, "_handlers_" ) || $.data( ele, "_handlers_", new CustomEvent() );
         return this;
       },
 
@@ -583,7 +583,7 @@
           }
 
           if ( !( data = $.data( ele, "_handlers_" ) ) ) {
-            data = $.data( ele, "_handlers_", new CustomEvent( ) );
+            data = $.data( ele, "_handlers_", new CustomEvent() );
           }
 
           type && fun && data.removeHandler( type, fun );
@@ -701,10 +701,7 @@
           var data;
           if ( data = _domEventList[ type ] ) {
             type = tools.editEventType( type );
-            typed.isFun( data ) ? data( ele, type, context ) : $.console.warn( {
-              fn: "trigger",
-              msg: "triggering" + type + " is not supported"
-            } );
+            typed.isFun( data ) ? data( ele, type, context ) : $.logger( "trigger", "triggering" + type + " is not supported" );
           } else {
             ( data = $.data( ele, "_handlers_" ) ) && data.trigger.apply( data, [ type, context ].concat( $.util.argToArray( arguments, 3 ) ) );
           }
@@ -770,7 +767,7 @@
           var
           eleCollection = $.find( selector, parentNode ),
             target = event.event.document.getTarget( e ),
-            ret = array.inArray( eleCollection || [ ], target );
+            ret = array.inArray( eleCollection || [], target );
 
           if ( ret > -1 ) {
             fun.call( target, e );
@@ -800,7 +797,7 @@
       } );
     },
 
-    _initHandler: function( ) {
+    _initHandler: function() {
       /// <summary>初始化事件集</summary>
       /// <private/>
       return this.each( function( ele ) {
@@ -817,7 +814,7 @@
         temp, i = 0,
         ele;
       for ( ; ele = this.eles[ i++ ]; ) {
-        temp = arg.concat( );
+        temp = arg.concat();
         temp.splice( 0, 0, ele );
         $.toggle.apply( $, temp );
       }

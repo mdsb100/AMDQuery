@@ -26,29 +26,29 @@
                 var test1 = object.extend("test1", {
                     init: function(){
                         var a =3;
-                        console.log("init test1")
+                        $.logger("init test1")
                     },
                     test: function(){
-                        console.log("test1")
+                        $.logger("test1")
                     }
                 }, {});
                 var test2 = object.extend("test2", {
                     init: function(){
                         //this._super();
-                        console.log("init test2")
+                        $.logger("init test2")
                     },
                     test: function(){
-                        console.log("test2")
+                        $.logger("test2")
                         //this._superCall("test");
                     }
                 }, {}, test1);
                 var test3 = object.extend("test3", {
                     init: function(){
                         this._super();
-                        console.log("init test3")
+                        $.logger("init test3")
                     },
                     test: function(){
-                        console.log("test3")
+                        $.logger("test3")
                         //this._superCall("test");
                     }
                 }, {}, test2);
@@ -62,14 +62,14 @@
                 var test4 = test3.extend({
                     init: function(){
                         this._super();
-                        console.log("init test4")
+                        $.logger("init test4")
                     },
                     test: function(){
-                        console.log("test4")
+                        $.logger("test4")
                     }
                 }, {
                     staticFun: function (){
-                        console.log("staticFun")
+                        $.logger("staticFun")
                     }
                 });
 

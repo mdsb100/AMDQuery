@@ -156,7 +156,7 @@ aQuery.define( "ui/swapview", [
     },
     toPosition: function( ) {
       var pos = {}, opt = this.options;
-      if ( opt.orientation == horizontal ) {
+      if ( opt.orientation == HORIZONTAL ) {
         pos.x = -this.target.width( ) * opt.index;
       } else {
         pos.y = -this.target.height( ) * opt.index;

@@ -62,7 +62,7 @@
         var o = utilExtend.extend( {}, $.srcSetting, options ),
           timeId;
 
-        ele.onload = function( ) {
+        ele.onload = function() {
           clearTimeout( timeId );
           o.complete && o.complete.call( o.context || this, this );
           ele = timeId = o = null;
@@ -74,7 +74,7 @@
         };
 
         if ( o.timeout ) {
-          timeId = setTimeout( function( ) {
+          timeId = setTimeout( function() {
             o.timeoutFun && o.timeoutFun.call( ele, o );
             ele = o = timeId = null;
           }, o.timeout );
@@ -86,17 +86,11 @@
       },
       srcSetting: {
         error: function( e ) {
-          $.console.warn( {
-            fn: "aQuery.src",
-            msg: ( this.src || "(empty)" ) + "of " + this.tagName + " getting error:" + e.toString( )
-          } );
+          $.logger( "aQuery.src", ( this.src || "(empty)" ) + "of " + this.tagName + " getting error:" + e.toString() );
         },
         timeout: false,
         timeoutFun: function( o ) {
-          $.console.warn( {
-            fn: "aQuery.src",
-            msg: ( o.url || "(empty)" ) + "of " + this.tagName + "is timeout:" + ( o.timeout / 1000 ) + "second"
-          } );
+          $.logger( "aQuery.src", ( o.url || "(empty)" ) + "of " + this.tagName + "is timeout:" + ( o.timeout / 1000 ) + "second" );
         },
         src: ""
       }

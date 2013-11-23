@@ -31,7 +31,7 @@
           o.data = $.getURLParam( o.data );
 
           if ( o.isRandom == true && o.type == "get" ) {
-            o.data += "&random=" + $.now( );
+            o.data += "&random=" + $.now();
           }
           o.url += o.routing;
           switch ( o.type ) {
@@ -62,8 +62,8 @@
           }
           //_ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
           //type == "post" && _ajax.setRequestHeader("Content-type", "");
-          _ajax.onreadystatechange = function( ) {
-            if ( (_ajax.readyState == 4 || _ajax.readyState == 0)  &&  ((_ajax.status >= 200 && _ajax.status <300) || _ajax.status == 304) ) {
+          _ajax.onreadystatechange = function() {
+            if ( ( _ajax.readyState == 4 || _ajax.readyState == 0 ) && ( ( _ajax.status >= 200 && _ajax.status < 300 ) || _ajax.status == 304 ) ) {
               var response;
               clearTimeout( _timeId );
               $.trigger( "ajaxStop", _ajax, o );
@@ -93,8 +93,8 @@
             }
           };
           if ( o.timeout ) {
-            _timeId = setTimeout( function( ) {
-              _ajax && _ajax.abort( );
+            _timeId = setTimeout( function() {
+              _ajax && _ajax.abort();
               $.trigger( "ajaxTimeout", _ajax, o );
               o.timeoutFun.call( _ajax, o );
               o = null;
@@ -118,7 +118,7 @@
         count = 0;
       return $.each( list, function( item ) {
         item._complete = item.complete;
-        item.complete = function( ) {
+        item.complete = function() {
           count++;
           item._complete && item._complete.apply( this, arguments );
           if ( count == sum ) {
@@ -139,10 +139,7 @@
       async: true,
       timeout: false,
       timeoutFun: function( o ) {
-        $.console.warn( {
-          fn: "aQuery.ajax",
-          msg: o.url + "of ajax is timeout:" + ( o.timeout / 1000 ) + "second"
-        } );
+        $.logger( "aQuery.ajax", o.url + "of ajax is timeout:" + ( o.timeout / 1000 ) + "second" );
       },
       routing: "",
       header: null,
@@ -185,8 +182,8 @@
 
 
       if ( o.JSONP ) {
-        random = ( "aQuery" + $.now( ) ) + parseInt( Math.random( ) * 10 );
-        window[ random ] = function( ) {
+        random = ( "aQuery" + $.now() ) + parseInt( Math.random() * 10 );
+        window[ random ] = function() {
           typed.isFun( o.complete ) && o.complete.apply( o.context || window, arguments );
         };
         //o.JSONP = random;
@@ -197,20 +194,20 @@
       //                _data += "&" + (o.JSONPKey) + "=" + o.JSONP;
       //            }
 
-      o.isRandom == true && ( _data += "&random=" + $.now( ) );
+      o.isRandom == true && ( _data += "&random=" + $.now() );
 
       o.url += o.routing + ( _data == "" ? _data : "?" + _data );
 
       //IE和其他浏览器 不一样
 
-      _scripts.onload = _scripts.onreadystatechange = function( ) {
+      _scripts.onload = _scripts.onreadystatechange = function() {
         if ( !this.readyState || this.readyState == "loaded" || this.readyState == "complete" ) {
           clearTimeout( _timeId );
           $.trigger( "getJSStop", _scripts, o );
           var js = typeof window[ o.checkString ] != "undefined" ? window[ o.checkString ] : undefined;
           !o.JSONP && typed.isFun( o.complete ) && o.complete.call( o.context || this, js );
           //typed.isFun(o.complete) && o.complete.call(o.context || this, js);
-          this.nodeName.toLowerCase( ) == "script" && o.isDelete == true && _head.removeChild( this );
+          this.nodeName.toLowerCase() == "script" && o.isDelete == true && _head.removeChild( this );
           this.onerror = this.onload = o = _head = null;
           if ( window[ random ] ) {
             window[ random ] = undefined;
@@ -221,7 +218,7 @@
 
       _scripts.onerror = o.error;
 
-      o.timeout && ( _timeId = setTimeout( function( ) {
+      o.timeout && ( _timeId = setTimeout( function() {
         $.trigger( "getJSTimeout", _scripts, o );
         o.timeoutFun.call( this, o );
         _scripts = _scripts.onerror = _scripts.onload = o.error = _head = null;
@@ -243,11 +240,8 @@
     jsonpSetting: {
       chaset: "",
       checkString: "",
-      error: function( ) {
-        $.console.warn( {
-          fn: "aQuery.jsonp",
-          msg: ( this.src || "(empty)" ) + " of javascript getting error"
-        } );
+      error: function() {
+        $.logger( "aQuery.jsonp", ( this.src || "(empty)" ) + " of javascript getting error" );
       },
       isDelete: true,
       isRandom: false,
@@ -256,10 +250,7 @@
       routing: "",
       timeout: false,
       timeoutFun: function( o ) {
-        $.console.warn( {
-          fn: "aQuery.jsonp",
-          msg: ( o.url || "(empty)" ) + "of ajax is timeout:" + ( o.timeout / 1000 ) + "second"
-        } );
+        $.logger( aQuery.jsonp, ( o.url || "(empty)" ) + "of ajax is timeout:" + ( o.timeout / 1000 ) + "second" );
       },
       url: ""
     },
@@ -274,7 +265,7 @@
         count = 0;
       $.each( list, function( item ) {
         item._complete = item.complete;
-        item.complete = function( ) {
+        item.complete = function() {
           count++;
           item._complete && item._complete.apply( this, arguments );
           if ( count == sum ) {
@@ -291,10 +282,10 @@
       /// <summary>返回url参数</summary>
       /// <param name="content" type="String/Object/$/Array[element]">内容可以是Object键值对，也可以是数组形式的element，也可以是aQuery对象</param>
       /// <returns type="String" />
-      var list = [ ];
+      var list = [];
       if ( typed.isObj( content ) ) {
         $.each( content, function( value, name ) {
-          value = typed.isFun( value ) ? value( ) : value;
+          value = typed.isFun( value ) ? value() : value;
           !typed.isNul( value ) && list.push( encodeURIComponent( name ) + "=" + encodeURIComponent( value ) );
         } );
         content = list.join( "&" );
@@ -324,14 +315,11 @@
           }, this );
         } else {
           try {
-            xhr = new XMLHttpRequest( );
+            xhr = new XMLHttpRequest();
           } catch ( e ) {}
         }
         if ( !xhr ) {
-          $.console.warn( {
-            fn: "getXhrObject",
-            msg: "broswer no support AJAX"
-          } );
+          $.logger( "getXhrObject", "broswer no support AJAX" );
         }
       }
       return xhr;

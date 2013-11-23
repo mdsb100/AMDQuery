@@ -6,8 +6,8 @@
 ( function( window, undefined ) {
   "use strict"; //启用严格模式
   var
-  core_slice = [ ].slice,
-    core_splice = [ ].splice;
+  core_slice = [].slice,
+    core_splice = [].splice;
 
   var
   version = "AMDQuery 1.0.0",
@@ -21,70 +21,12 @@
         return core_slice.call( arg, start || 0, end || arg.length );
       },
 
-      console: ( function( ) {
-        var console = {
-          log: function( info ) {
-            /// <summary>控制台记录</summary>
-            /// <para>info.fn</para>
-            /// <para>info.msg</para>
-            /// <param name="info" type="String/Object">方法名</param>
-            /// <returns />
-            var a = arguments[ 2 ] || "log";
-            if ( window.console && window.console[ a ] ) {
-              var s = "";
-              if ( info.fn && info.msg ) {
-                s = [ "call ", info.fn, "()", " error: ", info.msg ].join( "" );
-              } else {
-                s = info.toString( );
-              }
-              window.console[ a ]( s );
-            }
-          },
-          warn: function( info ) {
-            /// <summary>控制台警告</summary>
-            /// <para>info.fn</para>
-            /// <para>info.msg</para>
-            /// <param name="info" type="String/Object">方法名</param>
-            /// <returns />
-            this.log( info, "warn" );
-          },
-          info: function( info ) {
-            /// <summary>控制台信息</summary>
-            /// <para>info.fn</para>
-            /// <para>info.msg</para>
-            /// <param name="info" type="String/Object">方法名</param>
-            /// <returns />
-            this.log( info, "info" );
-          },
-          error: function( info, isThrow ) {
-            /// <summary>控制台错误</summary>
-            /// <para>info.fn</para>
-            /// <para>info.msg</para>
-            /// <param name="info" type="String/Object">方法名</param>
-            /// <param name="isThrow" type="Boolean">是否强制曝出错误</param>
-            /// <returns />
-            var s = "";
-            if ( info.fn && info.msg ) {
-              s = [ "call ", info.fn, "()", " error: ", info.msg ].join( "" );
-            } else {
-              s = info.toString( );
-            }
-            if ( window.console.error || !isThrow ) {
-              window.console.error( s );
-            } else {
-              throw new Error( s );
-            }
-          }
-        };
-        return console;
-      } )( ),
-
       error: function( info, type ) {
         var s = "";
         if ( info.fn && info.msg ) {
           s = [ "call ", info.fn, "()", " error: ", info.msg ].join( "" );
         } else {
-          s = info.toString( );
+          s = info.toString();
         }
         throw new window[ type || "Error" ]( s );
       },
@@ -157,10 +99,10 @@
         return _url;
       },
 
-      now: function( ) {
+      now: function() {
         /// <summary>返回当前时间的字符串形式</summary>
         /// <returns type="String" />
-        return ( new Date( ) ).getTime( );
+        return ( new Date() ).getTime();
       },
 
       removeSuffix: function( src ) {
@@ -174,11 +116,11 @@
     },
     count = 0,
     reg = RegExp,
-    pagePath = document.location.toString( ).replace( /[^\/]+$/, "" ),
-    basePath = ( function( ) {
+    pagePath = document.location.toString().replace( /[^\/]+$/, "" ),
+    basePath = ( function() {
       var ret = util.getJScriptConfig( [ "src" ] ).src.replace( /\/[^\/]+$/, "" );
       if ( !/^[a-z]+?:\/\//.test( ret ) ) {
-        var sl = document.location.toString( );
+        var sl = document.location.toString();
         if ( /^\//.test( ret ) ) {
           ret = sl.replace( /((.*?\/){3}).*$/, "$1" ) + ret.substr( 1 );
         } else {
@@ -186,7 +128,7 @@
         }
       }
       return ret;
-    }( ) ),
+    }() ),
     rootPath = basePath.replace( /((.*?\/){3}).*$/, "$1" ),
     msgDiv, runTime;
 
@@ -218,7 +160,7 @@
       loadingImage: "",
       debug: false,
       development: true,
-      xmlPath : "xml/combination.xml"
+      xmlPath: "xml/combination.xml"
     }
   };
   var defineConfig = {};
@@ -311,12 +253,12 @@
 
     },
     module: {},
-    toString: function( ) {
+    toString: function() {
       /// <summary></summary>
       /// <returns type="String" />
       return "AMDQuery";
     },
-    valueOf: function( ) {
+    valueOf: function() {
       /// <summary>返回模块信息</summary>
       /// <returns type="String" />
       var info = [ version, "\n" ],
@@ -354,12 +296,12 @@
       /// <param name="fun" type="Function">方法</param>
       /// <param name="context" type="Object">context</param>
       /// <returns type="Function" />
-      return function( ) {
+      return function() {
         return fun.apply( context || window, arguments );
       };
     },
 
-    console: util.console,
+    logger: ( window.console ? ( console.log.bind ? console.log.bind( console ) : console.log ) : function() {} ),
     createEle: function( tag ) {
       /// <summary>制造一个Dom元素</summary>
       /// <param name="tag" type="String">标签名</param>
@@ -399,7 +341,7 @@
       /// <summary>是否为$对象</summary>
       /// <param name="a" type="any">任意对象</param>
       /// <returns type="Boolean" />
-      return obj instanceof $ || ( obj && obj.toString( ) == "AMDQuery" )
+      return obj instanceof $ || ( obj && obj.toString() == "AMDQuery" )
     },
 
     merge: function( first, second ) {
@@ -443,7 +385,7 @@
       /// <param name="str" type="any">任何对象都将被toString显示</param>
       /// <param name="bool" type="Boolean">为true的话使用div显示否则在title显示</param>
       /// <returns type="self" />
-      str = str.toString( );
+      str = str.toString();
       if ( bool ) {
         if ( msgDiv ) {
           msgDiv.innerHTML = str;
@@ -458,7 +400,7 @@
           s.display = "block";
           s.innerHTML = str;
           s.fontSize = "18px";
-          msgDiv.onclick = function( ) {
+          msgDiv.onclick = function() {
             this.style.display = "none";
           };
           document.body.appendChild( msgDiv );
@@ -478,13 +420,13 @@
         /// <param name="name" type="String">字符串</param>
         /// <param name="head" type="String">字符串头</param>
         /// <returns type="String" />
-        name.indexOf( "-" ) > 0 ? name = name.toLowerCase( ).split( "-" ) : name = [ name ];
+        name.indexOf( "-" ) > 0 ? name = name.toLowerCase().split( "-" ) : name = [ name ];
 
         head && name.splice( 0, 0, head );
 
         for ( var i = 1, item; i < name.length; i++ ) {
           item = name[ i ];
-          name[ i ] = item.substr( 0, 1 ).toUpperCase( ) + item.slice( 1 );
+          name[ i ] = item.substr( 0, 1 ).toUpperCase() + item.slice( 1 );
         }
         return name.join( "" );
       },
@@ -502,7 +444,7 @@
         /// <param name="name" type="String">字符串</param>
         /// <param name="head" type="String">字符串头</param>
         /// <returns type="String" />
-        name = name.replace( /([A-Z]|^ms)/g, "-$1" ).toLowerCase( );
+        name = name.replace( /([A-Z]|^ms)/g, "-$1" ).toLowerCase();
         head && ( name = head + "-" + name );
         return name;
       },
@@ -519,17 +461,17 @@
       this.eles.push( ele );
       return this.init( this.eles );
     },
-    pop: function( ) {
+    pop: function() {
       /// <summary>删除返回元素</summary>
       /// <returns type="Self" />
-      var ret = this.eles.pop( );
+      var ret = this.eles.pop();
       this.init( this.eles );
       return new $( ret );
     },
-    shift: function( ) {
+    shift: function() {
       /// <summary>删除头部一个元素</summary>
       /// <returns type="Self" />
-      var ret = this.eles.shift( );
+      var ret = this.eles.shift();
       this.init( this.eles );
       return new $( ret );
     },
@@ -539,22 +481,22 @@
       /// <returns type="Self" />
       return new $( this.eles.splice( 0, 0, ele ) );
     },
-    slice: function( ) {
+    slice: function() {
       /// <summary>截取一段并返回新的$</summary>
       /// <returns type="$" />
       return new $( core_slice.call( this.eles, arguments ) );
     },
-    splice: function( ) {
+    splice: function() {
       /// <summary>删除插入一段并返回新的$</summary>
       /// <returns type="$" />
       var ret = core_splice.call( this.eles, arguments );
       this.init( this.eles );
       return new $( ret );
     },
-    reverse: function( ) {
+    reverse: function() {
       /// <summary>反转</summary>
       /// <returns type="self" />
-      this.eles.reverse( );
+      this.eles.reverse();
       return this.init( this.eles );
     },
     sort: function( fn ) {
@@ -576,7 +518,7 @@
     },
     eles: null,
 
-    first: function( ) {
+    first: function() {
       /// <summary>返回第一个元素</summary>
       /// <returns type="Element" />
       return $( this.eles[ 0 ] || this.eles );
@@ -588,7 +530,7 @@
       if ( typeof index == "number" && index != 0 ) return this[ index ];
       else return this[ 0 ];
     },
-    last: function( ) {
+    last: function() {
       /// <summary>返回最后个元素</summary>
       /// <returns type="Element" />
       return $( this.eles[ this.eles.length - 1 ] || this.eles );
@@ -647,19 +589,19 @@
       return this.init( this.eles );
     },
 
-    toString: function( ) {
+    toString: function() {
       /// <summary>返回元素组的字符串形式</summary>
       /// <returns type="String" />
-      return this.eles.toString( );
+      return this.eles.toString();
     },
 
-    valueOf: function( ) {
+    valueOf: function() {
       /// <summary>返回生成$对象的总数</summary>
       /// <returns type="Number" />
       return count;
     },
 
-    toArray: function( ) {
+    toArray: function() {
       return core_slice.call( this );
     },
 
@@ -669,7 +611,7 @@
       return num == null ?
 
       // Return a 'clean' array
-      this.toArray( ) :
+      this.toArray() :
 
       // Return just the object
       ( num < 0 ? this[ this.length + num ] : this[ num ] );
@@ -678,8 +620,8 @@
     version: version
   };
 
-  function Queue( ) {
-    this.list = [ ];
+  function Queue() {
+    this.list = [];
   }
 
   Queue.prototype = {
@@ -696,38 +638,38 @@
       return this;
     },
     dequeue: function( context, args ) {
-      var fn = this.list.shift( );
+      var fn = this.list.shift();
       if ( fn && fn === "inprogress" ) {
-        fn = this.list.shift( );
+        fn = this.list.shift();
       }
 
       if ( fn ) {
         this.list.splice( 0, 0, "inprogress" );
-        fn.apply( context || null, args || [ ] );
+        fn.apply( context || null, args || [] );
       }
       return this;
 
     },
-    clearQueue: function( ) {
-      return this.queue( [ ] );
+    clearQueue: function() {
+      return this.queue( [] );
     }
   };
 
-  ( function( /*require*/ ) {
+  ( function( /*require*/) {
     "use strict"; //启用严格模式
     $.module.require = "1.0.0";
 
     var _define, _require;
     if ( window.define ) {
-      util.console.warn( "window.define has defined" );
+      $.logger( "window.define has defined" );
       _define = window.define;
     }
     if ( window.require ) {
-      util.console.warn( "window.require has defined" );
+      $.logger( "window.require has defined" );
       _require = window.require;
     }
 
-    var requireQueue = new Queue( );
+    var requireQueue = new Queue();
 
     function ClassModule( module, dependencies, factory, status, container, fail ) {
       if ( !module ) {
@@ -806,19 +748,19 @@
           case "function":
             return md;
           case "string":
-            return function( ) {
+            return function() {
               return new String( md );
             };
           case "number":
-            return function( ) {
+            return function() {
               return new Number( md );
             };
           case "boolean":
-            return function( ) {
+            return function() {
               return new Boolean( md );
             };
           default:
-            return function( ) {
+            return function() {
               return md;
             };
         }
@@ -865,13 +807,13 @@
         if ( !dep || dep.constructor == Array || dep.length ) {
           return this;
         }
-        setTimeout( function( ) {
+        setTimeout( function() {
           for ( len = dep.length; i < length; i++ ) { //是否要用function 而不是for
             item = dep[ i ];
             module = ClassModule.getModule( item );
             if ( !module ) {
               require( item );
-            } else if ( module.getStatus( ) == 2 ) {
+            } else if ( module.getStatus() == 2 ) {
               ClassModule.loadDependencies( module.dependencies );
             }
           }
@@ -881,7 +823,7 @@
       loadJs: function( url, id, error ) {
         var module = ClassModule.getModule( id );
         //该模块已经载入过，不再继续加载，主要用于require与define在同一文件
-        if ( ClassModule.resource[ url ] || ( module && ( module.getStatus( ) > 2 ) ) ) {
+        if ( ClassModule.resource[ url ] || ( module && ( module.getStatus() > 2 ) ) ) {
           return this;
         }
 
@@ -891,12 +833,12 @@
           head = document.getElementsByTagName( "HEAD" )[ 0 ],
           timeId;
 
-        error && ( script.onerror = function( ) {
+        error && ( script.onerror = function() {
           clearTimeout( timeId );
-          error( );
+          error();
         } );
 
-        script.onload = script.onreadystatechange = function( ) {
+        script.onload = script.onreadystatechange = function() {
           if ( !this.readyState || this.readyState == "loaded" || this.readyState == "complete" ) {
             clearTimeout( timeId );
             head.removeChild( script );
@@ -909,8 +851,8 @@
         script.setAttribute( "type", "text/javascript" );
         script.setAttribute( "language", "javascript" );
 
-        timeId = setTimeout( function( ) {
-          error && error( );
+        timeId = setTimeout( function() {
+          error && error();
           head.removeChild( script );
           script = script.onerror = script.onload = error = head = null;
         }, _config.amd.timeout );
@@ -962,21 +904,21 @@
             return this;
           }
           var h = this.handlers[ this.id ];
-          h == undefined && ( h = this.handlers[ this.id ] = [ ] );
+          h == undefined && ( h = this.handlers[ this.id ] = [] );
           h.push( fn );
         }
         return this;
       },
-      check: function( ) {
-        var status = this.getStatus( ),
+      check: function() {
+        var status = this.getStatus(),
           dps = this.dependencies;
         switch ( status ) {
           case 4:
-            this.holdReady( ).trigger( );
+            this.holdReady().trigger();
             break;
           case 3:
             if ( !dps || !dps.length ) {
-              this.getReady( );
+              this.getReady();
               break;
             }
           case 2:
@@ -986,7 +928,7 @@
               break;
             }
           default:
-            var aDP = [ ],
+            var aDP = [],
               hd = ClassModule.holdon,
               i = 0,
               sMD, sDP, mDP;
@@ -1002,7 +944,7 @@
             //加入holdon
             for ( ; sDP = dps[ i++ ]; ) { //有依赖自己的情况
               mDP = ClassModule.getModule( sDP );
-              if ( !mDP || mDP.getStatus( ) != 4 ) {
+              if ( !mDP || mDP.getStatus() != 4 ) {
                 aDP.push( sDP );
                 if ( hd[ sDP ] ) {
                   hd[ sDP ].push( this.id );
@@ -1014,11 +956,11 @@
             //}
             if ( !aDP.length ) {
               //依赖貌似都准备好，尝试转正
-              this.getReady( );
+              this.getReady();
             } else {
               //ClassModule.setModule(this);
               if ( status >= 2 ) { //深入加载依赖模块 <=1？
-                this.loadDependencies( );
+                this.loadDependencies();
               }
             }
             break;
@@ -1026,8 +968,8 @@
         return this;
       },
       constructor: ClassModule,
-      getDependenciesMap: function( ) {
-        var ret = [ ];
+      getDependenciesMap: function() {
+        var ret = [];
         if ( _config.amd.detectCR ) {
           var id = this.id,
             MD = ClassModule.dependenciesMap[ id ],
@@ -1047,21 +989,18 @@
             } );
           }
         } else {
-          util.console.warn( {
-            fn: "getDependenciesMap",
-            msg: "you had to set require.detectCR true for getting map list"
-          } );
+          $.logger( "getDependenciesMap", "you had to set require.detectCR true for getting map list" );
         }
         return ret;
       },
-      getReady: function( ) {
+      getReady: function() {
         if ( this.status == 4 ) {
           return;
         }
         var dps = this.dependencies,
           l = dps.length,
           i = 0,
-          dplist = [ ],
+          dplist = [],
           id = this.id,
           sdp, md, map, F;
 
@@ -1096,21 +1035,21 @@
         };
         this.module = F;
         this.first = F[ 0 ];
-        _config.amd.console && $.console.log( "module " + id + " ready" );
+        _config.amd.console && $.logger( "module " + id + " ready" );
         //_getMoudule(id, F);
         //当传入的模块是已准备好的，开启转正机会
-        this.holdReady( ).trigger( );
+        this.holdReady().trigger();
       },
       getStatus: function( isStr ) {
         var s = this.status;
         return isStr == true ? ClassModule.statusReflect[ s ] : s;
       },
-      holdReady: function( ) {
+      holdReady: function() {
         var md, hd = ClassModule.holdon[ this.id ],
           MD = ClassModule.modules;
         if ( hd && hd.length ) {
-          for ( ; md = MD[ hd.shift( ) ]; ) {
-            md.getReady( );
+          for ( ; md = MD[ hd.shift() ]; ) {
+            md.getReady();
           }
         }
         return this;
@@ -1126,10 +1065,10 @@
         this.fail = fail;
         return this;
       },
-      load: function( ) {
+      load: function() {
         var id = this.id,
           fail = this.fail,
-          status = this.getStatus( ),
+          status = this.getStatus(),
           url;
 
         // if ( status == 2 ) {
@@ -1152,13 +1091,13 @@
         }
 
         if ( ClassModule.cache[ id ] ) {
-          ClassModule.cache[ id ]( );
+          ClassModule.cache[ id ]();
         } else {
           ClassModule.loadJs( url, id, fail );
         }
         return this;
       },
-      loadDependencies: function( ) {
+      loadDependencies: function() {
         var dep = this.dependencies,
           i = 0,
           len, item, module;
@@ -1182,19 +1121,19 @@
             var namedModule = ClassModule.namedModules[ this.id ],
               self = this;
             if ( namedModule ) {
-              this.load( );
+              this.load();
             } else {
               this.setStatus( 1 );
-              requireQueue.queue( function( ) {
+              requireQueue.queue( function() {
                 if ( !ClassModule.anonymousID ) {
                   ClassModule.anonymousID = self.id;
                 }
-                self.load( );
+                self.load();
               } );
             }
             break;
           case 4:
-            this.check( );
+            this.check();
             break;
 
         }
@@ -1205,13 +1144,13 @@
         this.status = status;
         return this;
       },
-      isReady: function( ) {
+      isReady: function() {
         return this.status === 4;
       },
-      trigger: function( ) {
+      trigger: function() {
         var h = this.handlers[ this.id ],
           item;
-        if ( h && h.constructor == Array && this.getStatus( ) == 4 && this.module ) {
+        if ( h && h.constructor == Array && this.getStatus() == 4 && this.module ) {
 
           for ( ; h.length && ( item = h.splice( 0, 1 ) ); ) {
             item[ 0 ].apply( this, this.module );
@@ -1236,14 +1175,14 @@
         case 1:
           body = id;
           id = ClassModule.anonymousID; //_resource[container];
-          dependencies = [ ];
+          dependencies = [];
           factory = ClassModule.funBody( body );
           break;
         case 2:
           if ( typeof arg[ 0 ] == "string" ) {
             id = id; //util.getJScriptConfig(["src"], true).src; //_tempId();_amdAnonymousID
             body = dependencies;
-            dependencies = [ ];
+            dependencies = [];
           } else if ( arg[ 0 ] && arg[ 0 ].constructor == Array ) {
             var temp = id;
             id = ClassModule.anonymousID; //_resource[container]; // ; //_tempId();
@@ -1270,7 +1209,7 @@
       ClassModule.checkNamed( id );
       container = ClassModule.getContainer( id );
       if ( ret = ClassModule.getModule( id ) ) {
-        deep = ret.getStatus( );
+        deep = ret.getStatus();
         //container = deep != 0 ? ClassModule.getContainer(id) : null;
         ret.init( dependencies, factory, 3, container );
       } else {
@@ -1284,12 +1223,12 @@
         ClassModule.anonymousID = null;
       }
 
-      ret.check( );
+      ret.check();
 
       //if (!/_temp_/.test(id)) (container = ClassModule.getContainer(id)); //如果不是require定义的临时
       //执行请求队列
       if ( status ) {
-        requireQueue.dequeue( );
+        requireQueue.dequeue();
       }
 
       return ret;
@@ -1298,11 +1237,11 @@
 
     util.extend( define, {
       amd: ClassModule.maps,
-      noConflict: function( ) {
+      noConflict: function() {
         window.define = _define;
         return define;
       },
-      getModuleId: function( ) {
+      getModuleId: function() {
         return ClassModule.anonymousID;
       }
     } );
@@ -1318,14 +1257,14 @@
         } else {
           var de = module;
           module = "tempDefine:" + module.join( "," );
-          ret = ClassModule.getModule( module ) || define( module, de, function( ) {
+          ret = ClassModule.getModule( module ) || define( module, de, function() {
             return util.argToArray( arguments );
           } );
         }
       }
 
       if ( typeof fail != "function" ) {
-        fail = function( ) {
+        fail = function() {
           util.error( {
             fn: "require",
             msg: module + ":Could not load , Cannot fetch the file"
@@ -1333,7 +1272,7 @@
         };
       }
 
-      ret = ret || ClassModule.getModule( module ) || new ClassModule( module, [ module ], function( ) {
+      ret = ret || ClassModule.getModule( module ) || new ClassModule( module, [ module ], function() {
         return new String( module );
       }, 0, null, fail );
 
@@ -1356,7 +1295,7 @@
     };
 
     util.extend( require, {
-      noConflict: function( ) {
+      noConflict: function() {
         window.require = _require;
         return require;
       },
@@ -1459,14 +1398,14 @@
         if ( typeof fn == "string" ) {
           version = fn;
           fn = arg[ len - 2 ];
-          arg.pop( );
+          arg.pop();
         }
         $.module[ id ] = version;
         //                if (arg[1] && arg[1].constructor == Array) {
         //                    require.named(dependencies);
         //                }
         if ( typeof fn == "function" ) {
-          arg[ arg.length - 1 ] = function( ) {
+          arg[ arg.length - 1 ] = function() {
             var arg = util.argToArray( arguments, 0 );
             arg.splice( 0, 0, aQuery );
             if ( _config.amd.debug ) {
@@ -1478,7 +1417,7 @@
             }
           }
 
-          window.define ? window.define.apply( null, arg ) : fn( );
+          window.define ? window.define.apply( null, arg ) : fn();
         }
         return this;
       },
@@ -1492,7 +1431,7 @@
         /// <param name="fail" type="Function">失败的函数</param>
         /// <returns type="$" />
         // 将会在$ ready 后执行。这样便把sync实现起来了
-        window.require && $.ready( function( ) {
+        window.require && $.ready( function() {
           window.require( dependencies, success, fail )
         } );
         return this;
@@ -1504,7 +1443,7 @@
       return ClassModule
     }, "1.0.0" );
 
-  } )( );
+  } )();
 
   aQuery.define( "base/config", function( $ ) {
     $.config = _config;
@@ -1626,7 +1565,7 @@
         this.__promiseFlag = true;
         this.state = "todo";
         this.result = null;
-        this.thens = [ ];
+        this.thens = [];
         this.todo = arg[ 0 ] || function( obj ) {
           return obj;
         };
@@ -1638,20 +1577,20 @@
         this.asyncCount = 0;
         this.id = count++;
         this._branch = {};
-        this._back = [ ];
+        this._back = [];
         this._tag = {};
 
         return this;
       },
-      _clearProperty: function( ) {
+      _clearProperty: function() {
         this.result = null;
-        this.thens = [ ];
+        this.thens = [];
         this.todo = null;
         this.fail = null;
         this.progress = null;
         this.parent = null;
         this._branch = {};
-        this._back = [ ];
+        this._back = [];
         this._tag = {};
         return this;
       },
@@ -1668,17 +1607,17 @@
         if ( thens.length ) {
           for ( i = len - 1; i >= 0; i-- ) {
             then = thens[ i ];
-            then.destroy( );
-            then = thens.pop( );
-            then._clearProperty( );
+            then.destroy();
+            then = thens.pop();
+            then._clearProperty();
           }
         }
         return this;
       },
-      destroyFromRoot: function( ) {
+      destroyFromRoot: function() {
         /// <summary>删除根下的所有节点</summary>
         /// <returns type="self" />
-        return this.destroy( this.root( ) );
+        return this.destroy( this.root() );
       },
       resolve: function( obj ) {
         /// <summary>执行</summary>
@@ -1775,47 +1714,47 @@
         self, arg = checkArg.apply( this, arguments ),
           name = arg[ 3 ] ? arg[ 3 ] : "branch" + random++;
 
-        this.root( )._back.push( {
+        this.root()._back.push( {
           branch: name,
           promise: this
         } );
-        if ( self = this.root( )._branch[ name ] ) {} else {
-          this.root( )._branch[ name ] = self = this;
+        if ( self = this.root()._branch[ name ] ) {} else {
+          this.root()._branch[ name ] = self = this;
         }
 
         return self.then( arg[ 0 ], arg[ 1 ], arg[ 2 ], name );
       },
-      finished: function( ) {
+      finished: function() {
         return this.state === "done";
       },
-      unfinished: function( ) {
+      unfinished: function() {
         return this.state === "todo";
       },
-      reBranch: function( ) {
+      reBranch: function() {
         /// <summary>回到上一个分支</summary>
         /// <returns type="Promise" />
-        return this.root( )._back.pop( ).promise;
+        return this.root()._back.pop().promise;
       },
       tag: function( str ) {
         /// <summary>打上一标签便于管理</summary>
         /// <returns type="self/Promise" />
         var self;
-        if ( self = this.root( )._tag[ str ] ) {
+        if ( self = this.root()._tag[ str ] ) {
 
         } else {
-          this.root( )._tag[ str ] = self = this;
+          this.root()._tag[ str ] = self = this;
         }
         return self;
       },
-      master: function( ) {
+      master: function() {
         /// <summary>返回master路径</summary>
         /// <returns type="Promise" />
-        var master = this.root( )._branch[ 0 ].promise || this;
+        var master = this.root()._branch[ 0 ].promise || this;
 
         return master;
       },
 
-      root: function( ) {
+      root: function() {
         /// <summary>返回根</summary>
         /// <returns type="Promise" />
         var parent = this;
@@ -1827,10 +1766,10 @@
       rootResolve: function( obj ) {
         /// <summary>从根开始执行</summary>
         /// <returns type="Promise" />
-        this.root( ).resolve( obj );
+        this.root().resolve( obj );
         return this;
       },
-      checkout: function( ) {
+      checkout: function() {
         /// <summary>检查路径</summary>
         /// <returns type="Promise" />
         //                if (name) {
@@ -1854,12 +1793,12 @@
   aQuery.define( "base/ready", [ "base/Promise" ], function( $, Promise ) {
     "use strict"; //启用严格模式
     var ready = function( fn ) {
-      setTimeout( function( ) {
+      setTimeout( function() {
         rootPromise.and( fn );
       }, 0 );
     }, rootPromise;
 
-    rootPromise = new Promise( function( ) {
+    rootPromise = new Promise( function() {
       // 预处理设置
       if ( _config.app.src ) {
         var src = _config.app.src;
@@ -1870,12 +1809,12 @@
 
         require.variable( "app", src );
       }
-    } ).then( function( ) { //window.ready first to fix ie
+    } ).then( function() { //window.ready first to fix ie
       document.documentElement.style.position = "absolute";
       document.documentElement.style.left = "100000px";
       var promise = new Promise,
         ready = function( e ) {
-          setTimeout( function( ) {
+          setTimeout( function() {
             // define will be call before this ready
             promise.resolve( e );
           }, 0 );
@@ -1901,7 +1840,7 @@
       }
 
       return promise;
-    } ).then( function( ) {
+    } ).then( function() {
       if ( _config.app.src ) {
         var promise = new Promise;
         require( _config.app.src, function( Application ) {
@@ -1909,7 +1848,7 @@
         } );
         return promise;
       }
-    } ).then( function( ) {
+    } ).then( function() {
       if ( _config.ui.initWidget && !_config.app.src ) {
         var promise = new Promise;
         require( "module/initWidget", function( initWidget ) {
@@ -1917,10 +1856,10 @@
         } );
         return promise;
       }
-    } ).then( function( ) {
+    } ).then( function() {
       document.documentElement.style.left = "0px";
       document.documentElement.style.position = "";
-    } ).rootResolve( );
+    } ).rootResolve();
 
     return $.ready = ready;
   }, "1.0.0" );

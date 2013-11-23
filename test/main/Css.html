@@ -9,17 +9,17 @@
         $.require(["main/query","main/class"], function (query, css) {
             var test = $("#test");
             test.addClass("a");
-            console.log(test.containsClass("a"));
-            console.log(test.addClass("b"));
-            console.log(test.classLength());
-            console.log("index 1:" + test.getClassByIndex(1));
-            console.log("index 2:" + test.getClassByIndex(2));
+            $.logger(test.containsClass("a"));
+            $.logger(test.addClass("b"));
+            $.logger(test.classLength());
+            $.logger("index 1:" + test.getClassByIndex(1));
+            $.logger("index 2:" + test.getClassByIndex(2));
             test.toggleClass("c");
-            console.log("has c:" + test.containsClass("c"));
+            $.logger("has c:" + test.containsClass("c"));
             test.toggleClass("c");
-            console.log("has c:" + test.containsClass("c"));
+            $.logger("has c:" + test.containsClass("c"));
             test.removeClass("b");
-            console.log("has b:" + test.containsClass("b"));
+            $.logger("has b:" + test.containsClass("b"));
         })
     </script>
 </head>

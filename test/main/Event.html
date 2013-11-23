@@ -46,8 +46,8 @@
 
                 var test1 = $("#a");
                 var fn1 = function (str) {
-                    console.log(typed.isEvent(str))
-                    console.log({}.toString.call(str))
+                    $.logger(typed.isEvent(str))
+                    $.logger({}.toString.call(str))
 
                     // alert(str || "fn1");
                 },
@@ -95,7 +95,7 @@
                 // });
 
                 test1.once("testonce", function(){
-                  console.log("trigger once")
+                  $.logger("trigger once")
                 });
 
                 var obj = {

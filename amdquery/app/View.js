@@ -43,7 +43,7 @@ aQuery.define( "app/View", [
     init: function( contollerElement, src ) {
       this._super();
       this.topElement = this.initTopElement( src ).cloneNode( true );
-      config.app.debug && console.log( this.topElement );
+      config.app.debug && $.logger( "this.topElement", this.topElement );
       attr.setAttr( this.topElement, "html-src", this.htmlSrc );
       View.collection.add( this );
 
@@ -67,7 +67,7 @@ aQuery.define( "app/View", [
       //必须appendTo 或 replaceTo 才能触发ready
       parent.appendChild( this.topElement );
       this.initWidget();
-      config.app.debug && console.log( "View " + this.constructor._AMD.id + " appendTo" );
+      config.app.debug && $.logger( "View", this.constructor._AMD.id + " appendTo" );
       return this;
     },
     replaceTo: function( element ) {
@@ -85,7 +85,7 @@ aQuery.define( "app/View", [
 
       this.initWidget();
 
-      config.app.debug && console.log( "View " + this.constructor._AMD.id + " replaceTo" );
+      config.app.debug && $.logger( "View", this.constructor._AMD.id + " replaceTo" );
       return this;
     },
     remove: function() {
@@ -119,7 +119,7 @@ aQuery.define( "app/View", [
     htmlSrc: "",
     _timeout: 5000,
     _error: function() {
-      $.console.error( "get " + this.htmlSrc + " error" );
+      throw ( "get " + this.htmlSrc + " error" );
     }
   }, {
     getStyle: function( path ) {

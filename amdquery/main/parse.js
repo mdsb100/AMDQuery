@@ -126,7 +126,7 @@
             return xmldom;
           };
         } else {
-          $.console.error( "No XML parser available", "Error" );
+          throw ( "No XML parser available", "Error" );
         }
         return parseXML;
       } )( )

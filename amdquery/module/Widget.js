@@ -375,9 +375,9 @@
         return this.doSpecialGetter( key );
       } else {
         if ( this.options[ key ] !== undefined ) {
-          $.console.error( "widget:" + this.toString() + " can not get option " + key + "; please check getter" );
+          throw ( "widget:" + this.toString() + " can not get option " + key + "; please check getter" );
         } else {
-          $.console.error( "widget:" + this.toString() + " option " + key + " is undefined; please check options" );
+          throw ( "widget:" + this.toString() + " option " + key + " is undefined; please check options" );
         }
         return undefined;
       }
@@ -662,7 +662,7 @@
       if ( target ) {
         $( target ).parents().each( function( ele ) {
           if ( Widget.hasWidget( ele ) ) {
-            config.ui.debug && console.log( "triggerDetectToParent", ele );
+            config.ui.debug && $.logger( "triggerDetectToParent", ele );
             $( ele ).trigger( eventName, ele, {
               type: eventName
             } );

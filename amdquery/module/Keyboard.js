@@ -48,7 +48,7 @@
         ret = Keyboard.createOpt( obj );
         this._push( ret );
       }
-      config.amdquery.debug && console.log( "keyboard.addKey", "handlerName:", Keyboard.getHandlerName( ret ) );
+      config.amdquery.debug && $.logger( "keyboard.addKey", "handlerName:", Keyboard.getHandlerName( ret ) );
       ret.todo && this.on( Keyboard.getHandlerName( ret ), ret.todo );
       return this;
     },
@@ -88,7 +88,7 @@
         ret = Keyboard.createOpt( obj );
         if ( item = this.iterationKeyList( ret ) ) {
           this.keyList.splice( array.inArray( this.keyList, item ), 1 );
-          config.amdquery.debug && console.log( "keyboard.removeKey:", "handlerName:", Keyboard.getHandlerName( item ) );
+          config.amdquery.debug && $.logger( "keyboard.removeKey", "handlerName:", Keyboard.getHandlerName( item ) );
           this.clearHandlers( Keyboard.getHandlerName( item ) );
         }
       }
@@ -104,7 +104,7 @@
 
         item = keyList[ i ];
 
-        config.amdquery.debug && console.log( "keyboard.iterationKeyList", "type:code", e.type + ":" + code );
+        config.amdquery.debug && $.logger( "keyboard.iterationKeyList", "type:code", e.type + ":" + code );
 
         if ( e.type == "keyup" && code == 38 ) {
           debugger
@@ -126,7 +126,7 @@
       if ( item = this.iterationKeyList( e ) ) {
         //item.todo.call(this, e);i
         var type = Keyboard.getHandlerName( item );
-        config.amdquery.debug && console.log( "keyboard.routing", "handlerName", type );
+        config.amdquery.debug && $.logger( "keyboard.routing", "handlerName", type );
         this.trigger( type, target, {
           type: type,
           event: e,
