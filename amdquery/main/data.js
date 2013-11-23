@@ -20,11 +20,11 @@
 	// }
 
 	var
-	expando = "AMDQuery" + $.now( ),
+	expando = "AMDQuery" + $.now(),
 		uuid = 0,
 		windowData = {}, emptyObject = {},
 		data = {
-			cache: [ ],
+			cache: [],
 
 			data: function( ele, name, data ) {
 				/// <summary>获得或设置对象的数据
@@ -37,7 +37,7 @@
 				/// <returns type="thisCache/any/$" />
 
 				//quote from jQuery-1.4.1
-				if ( !ele || ( ele.nodeName && $.noData[ ele.nodeName.toLowerCase( ) ] ) )
+				if ( !ele || ( ele.nodeName && $.noData[ ele.nodeName.toLowerCase() ] ) )
 					return this;
 
 				ele = ele == window ?
@@ -87,7 +87,7 @@
 				/// <param name="ele" type="Object">对象</param>
 				/// <param name="name" type="String/undefined">如果为undefined则删除全部</param>
 				/// <returns type="self" />
-				if ( !ele || ( ele.nodeName && $.noData[ ele.nodeName.toLowerCase( ) ] ) )
+				if ( !ele || ( ele.nodeName && $.noData[ ele.nodeName.toLowerCase() ] ) )
 					return this;
 
 				ele = ele == window ?

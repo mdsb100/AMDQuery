@@ -309,7 +309,7 @@ aQuery.define( "main/css", [ "base/typed", "base/extend", "base/array", "base/su
 				style[ name ] = options[ name ];
 			}
 
-			ret = callback.apply( ele, args || [ ] );
+			ret = callback.apply( ele, args || [] );
 
 			// Revert the old values
 			utilExtend.easyExtend( style, old );
@@ -359,7 +359,7 @@ aQuery.define( "main/css", [ "base/typed", "base/extend", "base/array", "base/su
 
 			return $.style( this[ 0 ], type, head );
 		},
-		styleTable: function( ) {
+		styleTable: function() {
 			/// <summary>返回第一个元素样式表</summary>
 			/// <returns type="Object" />
 			return $.styleTable( this[ 0 ] );
@@ -369,8 +369,8 @@ aQuery.define( "main/css", [ "base/typed", "base/extend", "base/array", "base/su
 			/// <summary>添加兼容滚轮事件</summary>
 			/// <param name="a" type="Boolean">如果隐藏，隐藏的种类，true表示任然占据文档流</param>
 			/// <returns type="self" />
-			if ( this.isVisible( ) ) this.hide( a );
-			else this.show( );
+			if ( this.isVisible() ) this.hide( a );
+			else this.show();
 			return this;
 		},
 
@@ -398,7 +398,7 @@ aQuery.define( "main/css", [ "base/typed", "base/extend", "base/array", "base/su
 			}
 			return this;
 		},
-		isVisible: function( ) {
+		isVisible: function() {
 			/// <summary>返回元素是否可见</summary>
 			/// <returns type="Boolean" />
 			//            if (this.css("visibility") == "hidden")
@@ -420,7 +420,7 @@ aQuery.define( "main/css", [ "base/typed", "base/extend", "base/array", "base/su
 			} ) : $.getOpacity( this[ 0 ] );
 		},
 
-		show: function( ) {
+		show: function() {
 			/// <summary>显示所有元素</summary>
 			/// <returns type="self" />
 			//            if (this.css("visibility") == "hidden")
