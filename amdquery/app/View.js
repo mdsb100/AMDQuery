@@ -25,7 +25,6 @@ aQuery.define( "app/View", [
   Widget,
   src, undefined ) {
   //View need require depend on Widget
-  //get Style
   "use strict"; //启用严格模式
 
   function getHtmlSrc( id ) {
@@ -124,11 +123,11 @@ aQuery.define( "app/View", [
     }
   }, {
     getStyle: function( path ) {
-      // if ( config.amdquery.autoFetchCss && config.app.development ) {
+      if ( config.amdquery.autoFetchCss && config.app.development ) {
         src.link( {
           href: ClassModule.getPath( path, ".css" )
         } );
-      // }
+      }
     },
     getXML: function( htmlSrc ) {
       htmlSrc = ClassModule.variable( htmlSrc );
