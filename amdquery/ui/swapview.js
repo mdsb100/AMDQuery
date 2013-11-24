@@ -270,7 +270,7 @@ aQuery.define( "ui/swapview", [
 						self._acceptSwapBehavior( e );
 						break;
 					case "swap.none":
-						self.render( opt.index );
+						// self.render( opt.index );
 						break;
 					case "swapindicator.change":
 						self.render( e.index );
