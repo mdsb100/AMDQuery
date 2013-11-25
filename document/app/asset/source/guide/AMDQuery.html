@@ -35,6 +35,8 @@
               </li>
               <li><a href="#MainGuide" >Overview: main of module</a>
               </li>
+              <li><a href="#Directory" >Overview: Directory Structure</a>
+              </li>
             </ul>
             <h2 name="Overview" id="Overview">Overview</h2>
             <p>This guide provides basic instructions on understanding AMDQuery architecture and using AMDQuery.</p>
@@ -301,6 +303,28 @@
                   });
 
               } );
+            </pre>
+            <h3 name="Directory" id="Directory">Overview: Directory Structure</h3>
+            <pre class="prettyprint">
+              amdquery:
+                  --amdquery //root of project
+                      --app //application module
+                      --base //base module
+                      --ecma5 //ecma5 decoration
+                      --hash //save hash data
+                      --html5 //html5 decoration
+                      --json //save JSON data
+                      --lib //libraries
+                      --main //main module, main function
+                      --mobile //compatible js to adapt mobile
+                      --module //save some module which can not be classified
+                      --ui //ui widget
+                      --util //tools
+                      amdquery.js //base js
+                  --build //build directory
+                  --document //amdquery document
+                  --jsdoc //api document
+                  --test //test directory
             </pre>
             <a float="false" href="#AMDQuery" class="Top">Top</a>
           </div>
