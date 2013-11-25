@@ -1,7 +1,7 @@
-//Configurate amdquery.js
+//Configure amdquery.js
 exports.amdqueryPath = '../amdquery/';
 
-//Configurate project root path
+//Configure project root path
 exports.projectRootPath = '../../';
 
 //All build files will save to outputPath
@@ -30,15 +30,7 @@ exports.defines = {
   }
 }
 
-//Compress level of JS Minifier
-exports.levelOfJSMin = 3;
-/*
-minimal:1,//ratio:75%
-conservative:2,//ratio:68%
-agressive:3//ratio:67%
-*/
-
-//Compress configuration of UglifyJS
+//Compress configure of UglifyJS
 exports.uglifyOptions = {
   strict_semicolons: false,
   mangle_options: {

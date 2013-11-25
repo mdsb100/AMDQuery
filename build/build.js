@@ -8,7 +8,6 @@
    },
    apps: {},
    defines: {},
-   levelOfJSMin: 3,
    uglifyOptions: {
      strict_semicolons: false,
      mangle_options: {
