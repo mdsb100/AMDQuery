@@ -8,7 +8,7 @@
             opacity: 0.9;
         }
     </style>
-    <link href="../../css/reset.css" rel="stylesheet" type="text/css" />
+    <link href="../css/reset.css" rel="stylesheet" type="text/css" />
     <script src="../../amdquery/amdquery.js" type="text/javascript" amdquery="define:$;amd:0;"
         amd="detectCR:1;" module="transitionToAnimation:1"></script>
     <script type="text/javascript">
@@ -19,7 +19,7 @@
         , function (Thread, ThreadPool) {
             var count = document.getElementById("count"),
             info = document.getElementById("info");
-            var 
+            var
             thread1 = new Thread({ duration: 2000, delay: 1000, id: "thread1"
                 , fun: function (step, duration, o) {
                     //document.body.innerHTML = o.count++;
