@@ -2,6 +2,7 @@ aQuery.define( "ui/scrollableview", [
   "base/config",
   "base/client",
   "base/support",
+  "base/typed",
   "main/query",
   "main/css",
   "main/event",
@@ -22,6 +23,7 @@ aQuery.define( "ui/scrollableview", [
 	config,
 	client,
 	support,
+  typed,
 	query,
 	css,
 	event,
@@ -262,16 +264,16 @@ aQuery.define( "ui/scrollableview", [
 			};
 			return this;
 		},
-		animateToElement: function( ele ) {
+		animateToElement: function( ele, animationCallback ) {
 			var $toElement = $( ele );
 			if ( $toElement.length === 1 && query.contains( this.target[ 0 ], $toElement[ 0 ] ) ) {
 				var top = $toElement.getTopWithTranslate3d(),
 					left = $toElement.getLeftWithTranslate3d();
 				if ( this._isAllowedDirection( "V" ) ) {
-					this.animateY( Math.max( -top + this.viewportHeight > 0 ? 0 : -top, -this.scrollHeight + this.viewportHeight ), FX.normal );
+					this.animateY( Math.max( -top + this.viewportHeight > 0 ? 0 : -top, -this.scrollHeight + this.viewportHeight ), FX.normal, animationCallback );
 				}
 				if ( this._isAllowedDirection( "H" ) ) {
-					this.animateX( Math.max( -left + this.viewportHeight > 0 ? 0 : -left, -this.scrollWidth + this.viewportWidth ), FX.normal );
+					this.animateX( Math.max( -left + this.viewportHeight > 0 ? 0 : -left, -this.scrollWidth + this.viewportWidth ), FX.normal, animationCallback );
 				}
 			}
 		},
@@ -634,13 +636,13 @@ aQuery.define( "ui/scrollableview", [
 			return this;
 		},
 
-		toH: function( s, t, d ) {
-			return this._isAllowedDirection( "H" ) ? this.animateX( this.checkXBoundary( this.getLeft() - s ), t, d ) : this;
+		toH: function( s, t, d, animationCallback ) {
+			return this._isAllowedDirection( "H" ) ? this.animateX( this.checkXBoundary( this.getLeft() - s ), t, d, animationCallback ) : this;
 		},
-		toV: function( s, t, d ) {
-			return this._isAllowedDirection( "V" ) ? this.animateY( this.checkYBoundary( this.getTop() - s ), t, d ) : this;
+		toV: function( s, t, d, animationCallback ) {
+			return this._isAllowedDirection( "V" ) ? this.animateY( this.checkYBoundary( this.getTop() - s ), t, d, animationCallback ) : this;
 		},
-		animateY: function( y1, t ) {
+		animateY: function( y1, t, animationCallback ) {
 			var opt = $.getPositionAnimationOptionProxy( isTransform3d, undefined, y1 );
 			var self = this,
 				y2 = this.checkYStatusBar( parseFloat( opt.top ) );
@@ -651,6 +653,7 @@ aQuery.define( "ui/scrollableview", [
 				complete: function() {
 					self.toHBoundary( self.getLeft() ).toVBoundary( y1 );
 					self._triggerAnimate( "inner", self._direction, t, y1 );
+					if ( typed.isFun( animationCallback ) ) animationCallback.call( self.target, "V" );
 				}
 			} );
 
@@ -660,7 +663,7 @@ aQuery.define( "ui/scrollableview", [
 			} );
 			return this;
 		},
-		animateX: function( x1, t ) {
+		animateX: function( x1, t, animationCallback ) {
 			var opt = $.getPositionAnimationOptionProxy( isTransform3d, x1 );
 			//也有可能要移动之后
 			var self = this,
@@ -672,6 +675,7 @@ aQuery.define( "ui/scrollableview", [
 				complete: function() {
 					self.toHBoundary( x1 ).toVBoundary( self.getTop() );
 					self._triggerAnimate( "inner", self._direction, t, x1 );
+					if ( typed.isFun( animationCallback ) ) animationCallback.call( self.target, "H" );
 				}
 			} );
 
