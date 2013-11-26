@@ -163,7 +163,7 @@ aQuery.define( "ui/swapview", [
 			}
 			this.container.setPositionXY( isTransform3d, pos );
 		},
-		render: function( index ) {
+		render: function( index, animationCallback ) {
 			var opt = this.options,
 				originIndex = opt.index,
 				self = this;
@@ -217,14 +217,15 @@ aQuery.define( "ui/swapview", [
 							type: "active"
 						} );
 					}
+          if ( typed.isFun( animationCallback ) ) animationCallback.call( self.target );
 				}
 			} );
 		},
-		swapPrevious: function() {
-			return this.render( Math.max( 0, this.options.index - 1 ) );
+		swapPrevious: function( animationCallback ) {
+			return this.render( Math.max( 0, this.options.index - 1 ), animationCallback );
 		},
 		swapNext: function() {
-			return this.render( Math.min( this.options.index + 1, this.$views.length - 1 ) );
+			return this.render( Math.min( this.options.index + 1, this.$views.length - 1 ), animationCallback );
 		},
 		_setIndex: function( index ) {
 			this.render( index );
