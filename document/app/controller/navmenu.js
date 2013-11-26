@@ -14,10 +14,14 @@ aQuery.define( "@app/controller/navmenu", [ "hash/locationHash", "app/Controller
 				if ( ret.length > 1 ) {
 					ret.push( "source", "asset" );
 
-					path = $.pagePath + ret.reverse().join( "/" ) + ".html";
+					path = $.pagePath + ret.reverse().join( "/" ) + ".html#";
+
+					if ( locationHash.swapIndex ) {
+						path += "swapIndex=" + locationHash.swapIndex + "!";
+					}
 
 					if ( locationHash.scrollTo ) {
-						path += "#scrollTo=" + locationHash.scrollTo;
+						path += "scrollTo=" + locationHash.scrollTo + "!";
 					}
 
 					controller.trigger( "navmenu.select", controller, {
