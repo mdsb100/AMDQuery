@@ -1,7 +1,9 @@
-$.require( [ "main/query", "hash/locationHash", "ui/scrollableview", "module/initWidget" ], function( query, locationHash ) {
-	var scrollableview = $( "#scrollableview" );
-	if ( scrollableview.length ) {
-		scrollableview.uiScrollableview();
-		scrollableview.uiScrollableview( "animateToElement", locationHash.scrollTo );
+$.require( [ "main/query", "hash/locationHash", "ui/swapview", "ui/scrollableview", "module/initWidget" ], function( query, locationHash ) {
+	var swapview = $( "#swapview" );
+	if ( swapview.length ) {
+		swapview.uiSwapview();
+		swapview.uiSwapview( "render", parseInt( locationHash.swapIndex || 0 ), function() {
+			$( this ).findWidgets( "ui.scrollableview" ).uiScrollableview( "animateToElement", locationHash.scrollTo );
+		} );
 	}
 } );
