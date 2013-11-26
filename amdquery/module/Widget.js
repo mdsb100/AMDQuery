@@ -32,6 +32,8 @@
 		var widgetNames = [],
 			widgetMap = {};
 
+		eles = $( eles );
+
 		eles.each( function( ele ) {
 			var attrNames = Widget.getAttrWidgets( ele ),
 				len = attrNames.length,
@@ -587,7 +589,7 @@
 			return Widget[ tNameSpace ][ tName ];
 		},
 		findWidgets: function( parent ) {
-			return $( parent.parentNode || parent ).find( "*[" + prefix + "-widget]" );
+			return query.find( "*[" + prefix + "-widget]", parent.parentNode || parent );
 		},
 		getAttrWidgets: function( ele ) {
 			var value = attr.getAttr( ele, prefix + "-widget" ),
@@ -709,6 +711,26 @@
 	$.fn.extend( {
 		isWidget: function( widgetName ) {
 			return Widget.is( widgetName, this[ 0 ] );
+		},
+		findWidgets: function( widgetName, selector ) {
+			var widgetsEle = [],
+				i = 0,
+				ret = [],
+				item,
+				len;
+			this.each( function( ele ) {
+				widgetsEle = widgetsEle.concat( Widget.findWidgets( ele ) );
+			} );
+
+			widgetsEle = query.filter( selector || "*", widgetsEle );
+			len = widgetsEle.length;
+			for ( ; i < len; i++ ) {
+				item = widgetsEle[ i ];
+				if ( Widget.is( widgetName, item ) ) {
+					ret.push( item );
+				}
+			}
+			return $( ret );
 		}
 	} );
 
