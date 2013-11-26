@@ -31,6 +31,13 @@
 
 }
 
+.guide h4{
+  font-weight: bold;
+  color: #666;
+  font-size: 14px;
+  line-height: 14px;
+}
+
 a{
   color: #5d87a1;
   text-decoration: none;

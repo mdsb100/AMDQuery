@@ -12,7 +12,7 @@
     <script type="text/javascript" src="../js/scrollTo.js"></script>
     <script type="text/javascript">
       $.require(["main/query", "main/event", "ui/swapview"], function(query, event){
-        $("#swip_to_app").click(function(e){
+        $(".swip_to_app").click(function(e){
           $("#swapview").uiSwapview("option", "index", 1);
         });
       });
@@ -34,13 +34,7 @@
               </li>
               <li><a href="#Browser" >Broswer html</a>
               </li>
-              <li><a href="#Require_Define" >Require & Define</a>
-              </li>
-              <li><a href="#config" >config</a>
-              </li>
-              <li><a href="#BaseGuide" >Overview: base of module</a>
-              </li>
-              <li><a href="#MainGuide" >Overview: main of module</a>
+              <li><a href="#Config" >Config</a>
               </li>
             </ul>
 
@@ -49,16 +43,84 @@
             <p>The Building apply <a target="_blank" href="http://www.nodejs.org">nodejs</a> to build and conbine javascript. It load javascript according to <a target="_blank" href="http://en.wikipedia.org/wiki/Asynchronous_module_definition">AMD</a>
 standard.</p>
 
-            <h2 name="Quick" id="Quick">Quick Start</h2>
+            <h3 name="Quick" id="Quick">Quick Start</h3>
             <p>Download nodejs and install nodejs. Open terminal and cd directory of amdquery project, cd build. </p>
             <p>Input "npm install" in terminal before start building. NPM will download and install some node modules.</p>
             <p>Input "node build.js build_config.js" and watch the log. <p/>
             <p>Look the directory: build/output/defines. Look over "test.js" and "test.debug.js".<p/>
             <p>cd "output/apps/document/app", open the "app.html" with a web server. <p/>
 
-            <h2 name="Browser" id="Browser">Broswer html</h2>
+            <h3 name="Browser" id="Browser">Broswer html</h3>
             <p>Quick start a web server. Input "npm install -g <a target="_blank" href="https://github.com/senchalabs/connect">connect</a>" or "sudo npm install -g <a target="_blank" href="https://github.com/senchalabs/connect">connect</a>". cd root of amdquery directory, input "node server.js". Open browser and input <blod>"http://localhost:8080/document/app/app.html"</blod> or <blod>"http://localhost:8080/build/output/apps/document/app/app.html"</blod>. You should collect the address in browser.</p>
-            <p>The <a id="swip_to_app" ><img src="../images/right.png" width="13px" height="13px"/>"Build Application"</a> has detail guide.</p>
+            <p>The <a class="swip_to_app" ><img src="../images/right.png" width="13px" height="13px"/>"Build Application"</a> has detail guide.</p>
+
+            <h2 name="Config" id="Config" >Config</h2>
+            <p>This guide would explain how to config build. </p>
+            <p>cd "build/", open "build.js".</p>
+            <pre class="prettyprint">
+              Directory Structure
+              --amdquery //root
+                  --amdquery
+                      amdquery.js
+                  --build
+                      build.js
+                      build_config.js
+                      --output
+                          --defines
+                              test.debug.js
+                              test.js
+                      --test
+                          --test.js
+                  --document
+            </pre>
+            <ul class="guide">
+              <li>
+                <h4>amdqueryPath</h4>
+                <p>Configure amdquery.js path. It is relative of build.js .</p>
+                <p>exports.amdqueryPath = '../amdquery/'; (--amdquery)</p>
+              </li>
+              <li>
+                <h4>projectRootPath</h4>
+                <p>Configure project root path. It is relative of build.js .</p>
+                <p>exports.projectRootPath = '../../'; (--amdquery //root)</p>
+              </li>
+              <li>
+                <h4>outputPath</h4>
+                <p>All build files will save to outputPath. It is relative of build.js .</p>
+                <p>exports.outputPath = 'output/'; (--output)</p>
+              </li>
+              <li>
+                <h4>pathVariable</h4>
+                <p>exports path to load js</p>
+                <pre class="prettyprint">
+                  {
+                    "@app":"../document/app/app",
+                    "@mypath:":"../test/app/app",
+                  }
+                </pre>
+              </li>
+              <li>
+                <h4>debug</h4>
+                <p>whatever print log, true or false</p>
+              </li>
+              <li>
+                <h4>apps</h4>
+                <p>check detail<a class="swip_to_app" ><img src="../images/right.png" width="13px" height="13px"/>"Build Application"</a></p>
+              </li>
+              <li>
+                <h4>defines</h4>
+                <p></p>
+              </li>
+              <li>
+                <h4>uglifyOptions</h4>
+                <p></p>
+              </li>
+              <li>
+                <h4>cleanCssOptions</h4>
+                <p></p>
+              </li>
+            </ul>
+
             <a float="false" href="#Definition" class="Top">Top</a>
           </div>
         </li>
