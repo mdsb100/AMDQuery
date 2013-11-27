@@ -25,10 +25,22 @@
   margin-bottom: 4px;
 }
 
+p{
+  margin: 0 0 1em;
+  color: #484848;
+  font-size: 13px;
+  line-height: 13px;
+}
+
 .guide{
   list-style:disc inside;
   margin: 20px 20px 0 20px;
 
+}
+
+.guide span{
+  margin-left: 5px;
+  color: #484848;
 }
 
 .guide h4{
@@ -48,13 +60,6 @@ a{
   display: block;
   bottom:30px;
   right:30px;
-}
-
-p{
-  margin: 0 0 1em;
-  color: #484848;
-  font-size: 13px;
-  line-height: 13px;
 }
 
 .admonition-note {

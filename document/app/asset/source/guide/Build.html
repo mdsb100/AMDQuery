@@ -34,6 +34,8 @@
               </li>
               <li><a href="#Browser" >Broswer html</a>
               </li>
+              <li><a href="#Dependencies" >Build Dependencies</a>
+              </li>
               <li><a href="#Config" >Config</a>
               </li>
             </ul>
@@ -54,24 +56,46 @@ standard.</p>
             <p>Quick start a web server. Input "npm install -g <a target="_blank" href="https://github.com/senchalabs/connect">connect</a>" or "sudo npm install -g <a target="_blank" href="https://github.com/senchalabs/connect">connect</a>". cd root of amdquery directory, input "node server.js". Open browser and input <blod>"http://localhost:8080/document/app/app.html"</blod> or <blod>"http://localhost:8080/build/output/apps/document/app/app.html"</blod>. You should collect the address in browser.</p>
             <p>The <a class="swip_to_app" ><img src="../images/right.png" width="13px" height="13px"/>"Build Application"</a> has detail guide.</p>
 
+            <h3 name="Dependencies" id="Dependencies">Build Dependencies</h3>
+            <p>Node Modules:</p>
+            <ul class="guide" style="margin-top: 0">
+              <li><a target="_blank" href="https://github.com/isaacs/node-glob" >glob</a><span>>3.x.x</span>
+              </li>
+              <li><a target="_blank" href="https://github.com/caolan/async" >async</a><span>>0.0.0</span>
+              </li>
+              <li><a target="_blank" href="https://github.com/mishoo/UglifyJS" >uglify-js</a><span>~1.x.x</span>
+              </li>
+              <li><a target="_blank" href="https://github.com/GoalSmashers/clean-css" >clean-css</a><span>>0.0.0</span>
+              </li>
+              <li><a target="_blank" href="https://github.com/substack/node-trumpet" >trumpet</a><span>>0.0.0</span>
+              </li>
+              <li><a target="_blank" href="https://github.com/jashkenas/underscore" >underscore</a><span>>0.0.0</span>
+              </li>
+              <li><a target="_blank" href="https://github.com/jprichardson/node-fs-extra" >fs-extra</a><span>>0.0.0</span>
+              </li>
+              <li><a target="_blank" href="https://github.com/dominictarr/through" >through</a><span>~2.3.4</span>
+              </li>
+              <li><a target="_blank" href="https://github.com/maxogden/node-concat-stream" >concat-stream</a><span>~1.0.0</span>
+              </li>
+            </ul>
             <h2 name="Config" id="Config" >Config</h2>
             <p>This guide would explain how to config build. </p>
             <p>cd "build/", open "build.js".</p>
             <pre class="prettyprint">
-              Directory Structure
-              --amdquery //root
-                  --amdquery
-                      amdquery.js
-                  --build
-                      build.js
-                      build_config.js
-                      --output
-                          --defines
-                              test.debug.js
-                              test.js
-                      --test
-                          --test.js
-                  --document
+Directory Structure
+--amdquery //root
+    --amdquery
+        amdquery.js
+    --build
+        build.js
+        build_config.js
+        --output
+            --defines
+                test.debug.js
+                test.js
+        --test
+            --test.js
+    --document
             </pre>
             <ul class="guide">
               <li>
@@ -93,10 +117,10 @@ standard.</p>
                 <h4>pathVariable</h4>
                 <p>exports path to load js</p>
                 <pre class="prettyprint">
-                  {
-                    "@app":"../document/app/app",
-                    "@mypath:":"../test/app/app",
-                  }
+{
+  "@app":"../document/app/app",
+  "@mypath:":"../test/app/app"
+}
                 </pre>
               </li>
               <li>
@@ -109,7 +133,19 @@ standard.</p>
               </li>
               <li>
                 <h4>defines</h4>
-                <p></p>
+                <pre class="prettyprint">
+{
+  test: {
+    path: "../document/app/asset/source/js/scrollTo",
+    directory: [ "ui/" ],
+    complete: function( minPath, minContent, deubugPath, content ) {
+      var FSE = require( 'fs-extra' );
+      path = "../document/app/asset/source/js/amdquery.js";
+      FSE.writeFile( path, content );
+    }
+  }
+}
+                </pre>
               </li>
               <li>
                 <h4>uglifyOptions</h4>
