@@ -1,34 +1,18 @@
-aQuery.define( "@app/controller/navmenu", [ "hash/locationHash", "app/Controller", "@app/view/navmenu" ], function( $, locationHash, SuperController, NavmenuView ) {
+aQuery.define( "@app/controller/navmenu", [ "main/attr", "hash/locationHash", "app/Controller", "@app/view/navmenu" ], function( $, attr, locationHash, SuperController, NavmenuView ) {
 	"use strict"; //启用严格模式
 	var Controller = SuperController.extend( {
 		init: function( contollerElement, models ) {
 			this._super( new NavmenuView( contollerElement ), models );
 
+			this.navitem = null;
+			this.initSwapIndex = locationHash.swapIndex;
+			this.initsSrollTo = locationHash.scrollTo;
+
 			var controller = this;
 			this.$nav = $( this.view.topElement ).find( "#nav" );
 
 			this.$nav.on( "navmenu.select", function( e ) {
-				var target = $( e.navitem ),
-					ret = target.uiNavitem( "getOptionToRoot" ),
-					path;
-				if ( ret.length > 1 ) {
-					ret.push( "source", "asset" );
-
-					path = $.pagePath + ret.reverse().join( "/" ) + ".html#";
-
-					if ( locationHash.swapIndex ) {
-						path += "swapIndex=" + locationHash.swapIndex + "!";
-					}
-
-					if ( locationHash.scrollTo ) {
-						path += "scrollTo=" + locationHash.scrollTo + "!";
-					}
-
-					controller.trigger( "navmenu.select", controller, {
-						type: "navmenu.select",
-						path: path
-					} );
-				}
+				controller.selectNavitem( e.navitem );
 			} ).on( "dblclick", function( e ) {
 				controller.trigger( "navmenu.dblclick", controller, {
 					type: "navmenu.dblclick",
@@ -36,6 +20,46 @@ aQuery.define( "@app/controller/navmenu", [ "hash/locationHash", "app/Controller
 				} );
 			} );
 
+		},
+		selectNavitem: function( navitem ) {
+			var swapIndex, scrollTo;
+			if ( this.navitem === null ) {
+				swapIndex = this.initSwapIndex;
+				scrollTo = this.initsSrollTo;
+			} else {
+				swapIndex = attr.getAttr( navitem, "swap-index" );
+				swapIndex = attr.getAttr( navitem, "scroll-to" );
+			}
+
+			this.navitem = navitem;
+
+			var path = this._getPath( navitem, swapIndex, scrollTo );
+
+      if ( path != null ) {
+        this.trigger( "navmenu.select", this, {
+          type: "navmenu.select",
+          path: path
+        } );
+      }
+
+		},
+		_getPath: function( navitem, swapIndex, scrollTo ) {
+			var target = $( navitem ),
+				ret = target.uiNavitem( "getOptionToRoot" ),
+				path = null;
+			if ( ret.length > 1 ) {
+				ret.push( "source", "asset" );
+
+				path = $.pagePath + ret.reverse().join( "/" ) + ".html#";
+
+				if ( swapIndex != null ) {
+					path += "swapIndex=" + locationHash.swapIndex + "!";
+				}
+				if ( scrollTo != null ) {
+					path += "scrollTo=" + locationHash.scrollTo + "!";
+				}
+			}
+			return path;
 		},
 		selectDefaultNavmenu: function( target ) {
 			var ret = "index_navmenu";
