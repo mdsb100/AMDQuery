@@ -84,9 +84,17 @@
  logger( buildFileRootPath );
 
  //Uglify
- var uglify = require( './lib/uglify/uglify-js.js' );
- var minify = function( content ) {
- 	return uglify( content, buildConfig.uglifyOptions );
+ var uglify = require( 'uglify-js' );
+ var minify = function( orig_code ) {
+ 	var options = buildConfig.uglifyOptions;
+  var jsp = uglify.parser;
+  var pro = uglify.uglify;
+
+  var ast = jsp.parse(orig_code, options.strict_semicolons); // parse code and get the initial AST
+  ast = pro.ast_mangle(ast, options.mangle_options); // get a new AST with mangled names
+  ast = pro.ast_squeeze(ast, options.squeeze_options); // get an AST with compression optimizations
+  var final_code = pro.gen_code(ast, options.gen_options); // compressed code here
+  return final_code;
  };
 
  var glob = require( "glob" );

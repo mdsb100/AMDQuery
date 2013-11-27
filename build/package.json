@@ -17,7 +17,8 @@
     "underscore": ">0.0.0",
     "fs-extra": ">0.0.0",
     "through": "~2.3.4",
-    "concat-stream" : "~1.0.0"
+    "concat-stream" : "~1.0.0",
+    "uglify-js": "~1.x.x"
   },
   "engines": {
     "node": ">=0.8.0"
