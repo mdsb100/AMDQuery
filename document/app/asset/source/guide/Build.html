@@ -81,8 +81,8 @@ standard.</p>
             </ul>
             <h2 name="Config" id="Config" >Config</h2>
             <p>This guide would explain how to config build. </p>
-            <p>cd "build/", open "build.js".</p>
-            <pre class="prettyprint">
+            <p>cd "build/", open "build_config.js".</p>
+            <pre class="prettyprint" id="DirectoryStructure" name="DirectoryStructure">
 Directory Structure
 --root
     --amdquery
@@ -139,12 +139,15 @@ Directory Structure
   //The "test" is name of output javascript which will be create in directory "defines".
   //It also create "test.debug.js" which is not minify.
   test: {
-    path: "../document/app/asset/source/js/scrollTo",
+    //The "path" is main of the build-js.It is relative "amdquery.js".
+    path: "../document/app/asset/source/js/scrollTo.js",
+    //The "directory" is array of folder, Building would include all of js under the item-folder.It is relative "amdquery.js".
     directory: [ "ui/" ],
-    complete: function( minPath, minContent, deubugPath, content ) {
+    //The "complete" function will be call when building complete.
+    complete: function( minPath, minContent, deubugPath, debugContent ) {
       var FSE = require( 'fs-extra' );
       path = "../document/app/asset/source/js/amdquery.js";
-      FSE.writeFile( path, content );
+      FSE.writeFile( path, debugContent );
     }
   }
 }

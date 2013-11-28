@@ -28,12 +28,12 @@ exports.apps = [
 
 exports.defines = {
 	test: {
-		path: "../document/app/asset/source/js/scrollTo",
+		path: "../document/app/asset/source/js/scrollTo.js",
 		directory: [ "ui/" ],
-		complete: function( minPath, minContent, deubugPath, content ) {
+		complete: function( minPath, minContent, deubugPath, debugContent ) {
 			var FSE = require( 'fs-extra' );
 			path = "../document/app/asset/source/js/amdquery.js";
-			FSE.writeFile( path, content );
+			FSE.writeFile( path, debugContent );
 		}
 	}
 }
