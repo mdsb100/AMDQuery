@@ -32,10 +32,15 @@ p{
   line-height: 13px;
 }
 
+.ul{
+  list-style:disc inside;
+  margin: 20px 20px 0 20px;
+  color: #484848;
+}
+
 .guide{
   list-style:disc inside;
   margin: 20px 20px 0 20px;
-
 }
 
 .guide span{

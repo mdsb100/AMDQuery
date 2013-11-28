@@ -57,7 +57,8 @@ standard.</p>
             <p>The <a class="swip_to_app" ><img src="../images/right.png" width="13px" height="13px"/>"Build Application"</a> has detail guide.</p>
 
             <h3 name="Dependencies" id="Dependencies">Build Dependencies</h3>
-            <p>Node Modules:</p>
+            <p>There are node modules to support Build. The "UglifyJS" be used to minify js and detect syntax error. The clean-css be used to minify css. The "trumpet" be used to parse HTML and compile HTML. </p>
+            <p>If you want more infomation, please click the link and read "build.js". </p>
             <ul class="guide" style="margin-top: 0">
               <li><a target="_blank" href="https://github.com/isaacs/node-glob" >glob</a><span>>3.x.x</span>
               </li>
@@ -83,7 +84,7 @@ standard.</p>
             <p>cd "build/", open "build.js".</p>
             <pre class="prettyprint">
 Directory Structure
---amdquery //root
+--root
     --amdquery
         amdquery.js
     --build
@@ -97,7 +98,7 @@ Directory Structure
             --test.js
     --document
             </pre>
-            <ul class="guide">
+            <ul class="ul">
               <li>
                 <h4>amdqueryPath</h4>
                 <p>Configure amdquery.js path. It is relative of build.js .</p>
@@ -106,7 +107,7 @@ Directory Structure
               <li>
                 <h4>projectRootPath</h4>
                 <p>Configure project root path. It is relative of build.js .</p>
-                <p>exports.projectRootPath = '../../'; (--amdquery //root)</p>
+                <p>exports.projectRootPath = '../../'; (--root)</p>
               </li>
               <li>
                 <h4>outputPath</h4>
@@ -115,7 +116,7 @@ Directory Structure
               </li>
               <li>
                 <h4>pathVariable</h4>
-                <p>exports path to load js</p>
+                <p>exports path to load js. "@app" will parse to "../document/app/app" when you use "require(@app/index.js)"</p>
                 <pre class="prettyprint">
 {
   "@app":"../document/app/app",
@@ -129,12 +130,14 @@ Directory Structure
               </li>
               <li>
                 <h4>apps</h4>
-                <p>check detail<a class="swip_to_app" ><img src="../images/right.png" width="13px" height="13px"/>"Build Application"</a></p>
+                <p><a class="swip_to_app" ><img src="../images/right.png" width="13px" height="13px"/>"Build Application"</a></p>
               </li>
               <li>
                 <h4>defines</h4>
                 <pre class="prettyprint">
 {
+  //The "test" is name of output javascript which will be create in directory "defines".
+  //It also create "test.debug.js" which is not minify.
   test: {
     path: "../document/app/asset/source/js/scrollTo",
     directory: [ "ui/" ],
