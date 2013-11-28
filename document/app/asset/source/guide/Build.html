@@ -15,6 +15,9 @@
         $(".swip_to_app").click(function(e){
           $("#swapview").uiSwapview("option", "index", 1);
         });
+        $(".swip_to_options").click(function(event) {
+          $("#swapview").uiSwapview("option", "index", 2);
+        });
       });
     </script>
 </head>
@@ -155,11 +158,11 @@ Directory Structure
               </li>
               <li>
                 <h4>uglifyOptions</h4>
-                <p></p>
+                <p><a class="swip_to_options" ><img src="../images/right.png" width="13px" height="13px"/>"cleanCss And uglify options"</a></p>
               </li>
               <li>
                 <h4>cleanCssOptions</h4>
-                <p></p>
+                <p><a class="swip_to_options" ><img src="../images/right.png" width="13px" height="13px"/>"cleanCss And uglify options"</a></p>
               </li>
             </ul>
 
