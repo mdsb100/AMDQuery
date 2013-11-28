@@ -55,7 +55,7 @@
               This example: you can use "$" or "aQuery".
             </p>
             <pre class="prettyprint">
-              &ltscript src="../../amdquery/amdquery.js" type="text/javascript" amdquery="define:$;" &gt&lt/script&gt
+&ltscript src="../../amdquery/amdquery.js" type="text/javascript" amdquery="define:$;" &gt&lt/script&gt
             </pre>
 
             <div>
@@ -88,38 +88,38 @@
             </ul>
 
             <pre class="prettyprint">
-              &ltscript type="text/javascript" &gt
-                $.define( "myobject", [ "main/extend" ], function( $, utilExtend ) {
-                  return {
-                    dosth: function( ) {
-                      alert( $.toString() );
-                    };
-                  };
-                } );
-                $.require( [ "main/query", "myobject" ], function( query, myobject ) {
-                    $( "#someElement" ).find( "ohterElement" );
-                    myobject.dosth( );
-                } );
-              &lt/script&gt
+&ltscript type="text/javascript" &gt
+  $.define( "myobject", [ "main/extend" ], function( $, utilExtend ) {
+    return {
+      dosth: function( ) {
+        alert( $.toString() );
+      };
+    };
+  } );
+  $.require( [ "main/query", "myobject" ], function( query, myobject ) {
+      $( "#someElement" ).find( "ohterElement" );
+      myobject.dosth( );
+  } );
+&lt/script&gt
             </pre>
 
             <p>Equivalent</p>
             <pre class="prettyprint">
-              &ltscript type="text/javascript" &gt
-                define( "myobject", [ "main/extend" ], function( utilExtend ) {
-                  return {
-                    dosth: function( ) {
-                      alert( aQuery.toString() );
-                    };
-                  };
-                } );
-                require( [ "main/query", "myobject" ], function( query, myobject ) {
-                    aQuery.ready( function( ){
-                      $( "#someElement" ).find( "ohterElement" );
-                      myobject.dosth( );
-                    } );
-                } );
-              &lt/script&gt
+&ltscript type="text/javascript" &gt
+  define( "myobject", [ "main/extend" ], function( utilExtend ) {
+    return {
+      dosth: function( ) {
+        alert( aQuery.toString() );
+      };
+    };
+  } );
+  require( [ "main/query", "myobject" ], function( query, myobject ) {
+      aQuery.ready( function( ){
+        $( "#someElement" ).find( "ohterElement" );
+        myobject.dosth( );
+      } );
+  } );
+&lt/script&gt
             </pre>
             <div>
               <blod>Best Practices</blod>
@@ -137,7 +137,7 @@
                       set config in the script tag
                     </p>
                     <pre class="prettyprint">
-                      &ltscript src="amdquery.js" type="text/javascript" amdquery="define:$;" amd="detectCR:1;" ui="initWidget:false" module="compatibleEvent:1;" app="src:document/app/app;"&gt&lt/script&gt
+&ltscript src="amdquery.js" type="text/javascript" amdquery="define:$;" amd="detectCR:1;" ui="initWidget:false" module="compatibleEvent:1;" app="src:document/app/app;"&gt&lt/script&gt
                     </pre>
                   </li>
                   <li>
@@ -145,16 +145,16 @@
                       define object in global and named "aQueryConfig" before load script tag of "amdquery.js"
                     </p>
                     <pre class="prettyprint">
-                      &ltscript type="text/javascript" &gt
-                        var aQueryConfig = {
-                          amdquery : {
-                                        define : "$",
-                                        package: "json/package"
-                                     },
-                          amd : { detectCR : true }
-                        }
-                      &lt/script&gt
-                      &ltscript src="amdquery.js" type="text/javascript" &gt&lt/script&gt
+&ltscript type="text/javascript" &gt
+  var aQueryConfig = {
+    amdquery : {
+                  define : "$",
+                  package: "json/package"
+               },
+    amd : { detectCR : true }
+  }
+&lt/script&gt
+&ltscript src="amdquery.js" type="text/javascript" &gt&lt/script&gt
                     </pre>
                     <div class="admonition-note">
                       <blod style="color:red">If you define "aQueryConfig" before load script tag, the config which be defined in tag does not work!</blod>
@@ -164,13 +164,13 @@
               </li>
               <li>use config
                   <pre class="prettyprint">
-                    $.require( [ "base/config" ], function( config ) {
+$.require( [ "base/config" ], function( config ) {
 
-                    } );
-                    $.define( "my/moudle", [ "base/config" ], function( $, config ) {
-                      var mymoudle = {};
-                      return mymoudle;
-                    } );
+} );
+$.define( "my/moudle", [ "base/config" ], function( $, config ) {
+  var mymoudle = {};
+  return mymoudle;
+} );
                   </pre>
               </li>
             </ul>
@@ -210,121 +210,121 @@
             </ul>
             <h3 name="MainGuide" id="MainGuide" >Overview: main of module</h3>
             <pre class="prettyprint">
-              $.require( [
-                  "main/data",
-                  "main/CustomeEvent",
-                  "main/event",
-                  "main/attr",
-                  "main/class",
-                  "main/css",
-                  "main/position",
-                  "main/dom",
-                  "main/query",
-                  "main/object",
-                  "main/communicate",
-                  "main/parse"
-              ], function(
-                  CustomeEvent,
-                  data,
-                  event,
-                  attr,
-                  cls,
-                  css,
-                  position,
-                  dom,
-                  query,
-                  object,
-                  communicate,
-                  parse
-              ) {
-                  // require query to use
-                  $( "#someElement" ).find( "ohterElement" );
-                  query.find( "ohterElement", someElement );
+$.require( [
+    "main/data",
+    "main/CustomeEvent",
+    "main/event",
+    "main/attr",
+    "main/class",
+    "main/css",
+    "main/position",
+    "main/dom",
+    "main/query",
+    "main/object",
+    "main/communicate",
+    "main/parse"
+], function(
+    CustomeEvent,
+    data,
+    event,
+    attr,
+    cls,
+    css,
+    position,
+    dom,
+    query,
+    object,
+    communicate,
+    parse
+) {
+    // require query to use
+    $( "#someElement" ).find( "ohterElement" );
+    query.find( "ohterElement", someElement );
 
-                  // require Data to use
-                  $( "#someElement" ).data( "myName", "Jarry" );
-                  $.data( someElement, "myName", "Jarry" );
+    // require Data to use
+    $( "#someElement" ).data( "myName", "Jarry" );
+    $.data( someElement, "myName", "Jarry" );
 
-                  // require Event to use
-                  $( "#someElement" ).click( function( ) {} );
-                  event.on( someElement, "click", function( ) {} );
+    // require Event to use
+    $( "#someElement" ).click( function( ) {} );
+    event.on( someElement, "click", function( ) {} );
 
-                  // require attr to use
-                  $( "#someElement" ).attr( "id" );
-                  attr.getAttr( someElement, "id" );
+    // require attr to use
+    $( "#someElement" ).attr( "id" );
+    attr.getAttr( someElement, "id" );
 
-                  // require cls to use
-                  $( "#someElement" ).addClass( "pretty" );
-                  cls.addClass( someElement, "pretty" );
+    // require cls to use
+    $( "#someElement" ).addClass( "pretty" );
+    cls.addClass( someElement, "pretty" );
 
-                  // require position to use
-                  $( "#someElement" ).width( )
-                  position.getWidth( someElement )
+    // require position to use
+    $( "#someElement" ).width( )
+    position.getWidth( someElement )
 
-                  // require dom to use
-                  $( "#someElement" ).clone( )
-                  dom.clone( someElement )
+    // require dom to use
+    $( "#someElement" ).clone( )
+    dom.clone( someElement )
 
-                  // require css to use
-                  $( "#someElement" ).css( "background-color", "red" )
-                  css.css( someElement, "background-color", "red" )
+    // require css to use
+    $( "#someElement" ).css( "background-color", "red" )
+    css.css( someElement, "background-color", "red" )
 
-                  // Unrelated elements
-                  // require object to use
-                  var MyObject = object.extend( "MyObject", {
-                    init: function( ) {}
-                  }, {
-                    staticFn: function( ) {}
-                  } );
+    // Unrelated elements
+    // require object to use
+    var MyObject = object.extend( "MyObject", {
+      init: function( ) {}
+    }, {
+      staticFn: function( ) {}
+    } );
 
-                  // require object to use
-                  var MyObject = object.extend( "MyObject", {
-                    init: function( ) {}
-                  }, {
-                    staticFn: function( ) {}
-                  } );
+    // require object to use
+    var MyObject = object.extend( "MyObject", {
+      init: function( ) {}
+    }, {
+      staticFn: function( ) {}
+    } );
 
-                  // require communicate to use
-                  var MyObject = communicate.ajax( {
-                    url: "http://www.data.com",
-                    complete: function( ) {}
-                  } );
+    // require communicate to use
+    var MyObject = communicate.ajax( {
+      url: "http://www.data.com",
+      complete: function( ) {}
+    } );
 
-                  // require CustomEvent to use
-                  var myEvent = new CustomEvent( );
-                  myEvent.on( "dosth", function( ) {} );
-                  myEvent.trigger( "dosth", this, {
-                    type: "dosth"
-                  } );
+    // require CustomEvent to use
+    var myEvent = new CustomEvent( );
+    myEvent.on( "dosth", function( ) {} );
+    myEvent.trigger( "dosth", this, {
+      type: "dosth"
+    } );
 
-                  // require parse to use
-                  var json = parse.JSON({
-                    name: "abc"
-                  });
+    // require parse to use
+    var json = parse.JSON({
+      name: "abc"
+    });
 
-              } );
+} );
             </pre>
             <h3 name="Directory" id="Directory">Overview: Directory Structure</h3>
             <pre class="prettyprint">
-              --amdquery
-                  --amdquery //root of project
-                      --app //application module
-                      --base //base module
-                      --ecma5 //ecma5 decoration
-                      --hash //save hash data
-                      --html5 //html5 decoration
-                      --json //save JSON data
-                      --lib //libraries
-                      --main //main module, main function
-                      --mobile //compatible js to adapt mobile
-                      --module //save some module which can not be classified
-                      --ui //ui widget
-                      --util //tools
-                      amdquery.js //base js
-                  --build //build directory
-                  --document //amdquery document
-                  --jsdoc //api document
-                  --test //test directory
+--amdquery
+    --amdquery //root of project
+        --app //application module
+        --base //base module
+        --ecma5 //ecma5 decoration
+        --hash //save hash data
+        --html5 //html5 decoration
+        --json //save JSON data
+        --lib //libraries
+        --main //main module, main function
+        --mobile //compatible js to adapt mobile
+        --module //save some module which can not be classified
+        --ui //ui widget
+        --util //tools
+        amdquery.js //base js
+    --build //build directory
+    --document //amdquery document
+    --jsdoc //api document
+    --test //test directory
             </pre>
             <a float="false" href="#AMDQuery" class="Top">Top</a>
           </div>
