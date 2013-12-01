@@ -341,7 +341,7 @@
 			/// <summary>是否为$对象</summary>
 			/// <param name="a" type="any">任意对象</param>
 			/// <returns type="Boolean" />
-			return obj instanceof $ || ( obj && obj.toString() == "AMDQuery" )
+			return obj instanceof $ || ( obj && obj.toString() == "AMDQuery" );
 		},
 
 		merge: function( first, second ) {

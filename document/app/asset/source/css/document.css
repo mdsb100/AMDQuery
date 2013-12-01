@@ -55,6 +55,10 @@ p{
   line-height: 14px;
 }
 
+.value{
+  color: #5d87a1;
+}
+
 a{
   color: #5d87a1;
   text-decoration: none;

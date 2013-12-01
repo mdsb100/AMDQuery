@@ -175,7 +175,41 @@ Directory Structure
           <h1>Building Application</h1>
         </li>
         <li>
-          <h1>cleanCss And uglify options</h1>
+          <div id="scrollableview" style="width: 100%; height: 100%;" amdquery-widget="ui.scrollableview" ui-scrollableview="orientation:V;enableKeyboard:true;">
+            <h1>cleanCss And uglify options</h1>
+            <h2>uglifyOptions</h2>
+            <ul class="ul">
+              <li>
+                <bold><span class="value">strict_semicolons</span>:boolean[false]</bold>
+                <p>disable automatic semicolon insertion and support for trailing comma in arrays and objects.</p>
+              </li>
+              <li>
+                <bold>mangle_options</bold>
+                <ul class="ul">
+                  <li>
+                    <bold><span class="value">mangle</span>:boolean[true]</bold>
+                    <p>pass false to skip mangling names.</p>
+                  </li>
+                  <li>
+                    <bold><span class="value">toplevel</span>:boolean[false]</bold>
+                    <p> mangle toplevel names (by default we don’t touch them).</p>
+                  </li>
+                  <li>
+                    <bold><span class="value">defines</span>:array[null]</bold>
+                    <p>an object with properties named after symbols to replace.</p>
+                  </li>
+                  <li>
+                    <bold><span class="value">boolean except</span>:object[null]</bold>
+                    <p>an array of names to exclude from compression.</p>
+                  </li>
+                  <li>
+                    <bold><span class="value">no_functions</span>:boolean[false]</bold>
+                    <p>no mangle functions</p>
+                  </li>
+                </ul>
+              </li>
+            </ul>
+          </div>
         </li>
       </ol>
       <ol style="width:100px;height:20px;" amdquery-widget="ui.swapindicator" ui-swapindicator="orientation:H">
