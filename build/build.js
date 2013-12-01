@@ -283,7 +283,6 @@
  		"app/asset/": htmlInfo.appProjectPath + "asset/",
  		"app/css/": htmlInfo.appProjectPath + "css/",
  		"app/xml/": htmlInfo.appProjectPath + "xml/",
- 		"app/lib/": htmlInfo.appProjectPath + "lib/",
  		"amdquery/ui/css/": AMDQueryJSRootPath + "ui/css/",
  		"amdquery/ui/images/": AMDQueryJSRootPath + "ui/images/"
  	}, key, value;
