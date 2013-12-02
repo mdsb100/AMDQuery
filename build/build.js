@@ -283,14 +283,17 @@
  		"app/asset/": htmlInfo.appProjectPath + "asset/",
  		"app/css/": htmlInfo.appProjectPath + "css/",
  		"app/xml/": htmlInfo.appProjectPath + "xml/",
+ 		"app/lib/": htmlInfo.appProjectPath + "lib/",
  		"amdquery/ui/css/": AMDQueryJSRootPath + "ui/css/",
  		"amdquery/ui/images/": AMDQueryJSRootPath + "ui/images/"
  	}, key, value;
 
  	for ( key in copyDirMap ) {
  		value = copyDirMap[ key ];
- 		console.log( "copy \u001b[34m" + value + "\u001b[39m to \u001b[34m" + outputPath + key + "\u001b[39m" );
- 		FSE.copySync( value, outputPath + key );
+ 		if ( FSE.existsSync( value ) ) {
+ 			console.log( "copy \u001b[34m" + value + "\u001b[39m to \u001b[34m" + outputPath + key + "\u001b[39m" );
+ 			FSE.copySync( value, outputPath + key );
+ 		}
  	}
 
  	htmlInfo.projectOutputPath = outputPath;
@@ -332,11 +335,11 @@
 
  	for ( ; i < len; i++ ) {
  		xmlItem = xmlPathList[ i ];
- 		content += "<wrap key='" + xmlItem.key + "' >" + FSE.readFileSync( xmlItem.path );
- 		content += "</wrap>";
+ 		content += "\r<wrap key='" + xmlItem.key + "' >" + FSE.readFileSync( xmlItem.path );
+ 		content += "\r</wrap>";
  	}
 
- 	content += "</root>"
+ 	content += "\r</root>"
 
  	htmlInfo.appCombinationXMLRelativePath = "xml/" + "combination.xml";
 
