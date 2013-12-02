@@ -217,14 +217,14 @@ aQuery.define( "ui/swapview", [
 							type: "active"
 						} );
 					}
-          if ( typed.isFun( animationCallback ) ) animationCallback.call( self.target );
+					if ( typed.isFun( animationCallback ) ) animationCallback.call( self.target );
 				}
 			} );
 		},
 		swapPrevious: function( animationCallback ) {
 			return this.render( Math.max( 0, this.options.index - 1 ), animationCallback );
 		},
-		swapNext: function() {
+		swapNext: function( animationCallback ) {
 			return this.render( Math.min( this.options.index + 1, this.$views.length - 1 ), animationCallback );
 		},
 		_setIndex: function( index ) {
