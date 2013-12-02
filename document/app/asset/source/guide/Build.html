@@ -181,23 +181,19 @@ Directory Structure
               </li>
             </ul>
             <h2 name="Detail" id="Detail" >Build Detail</h2>
-            <blod>first step: read base amdquery.js</blod>
-            <p>we should get the content of amdquery.js, amdquery.js is basal. It began in the file.
+            <p>1.Read base amdquery.js . we should get the content of amdquery.js, amdquery.js is basal. It began in the file.
             <br />If you want to start using "AMDQuery", you must first load the "amdquery.js". So Build will be a top priority loaded and stored in the file start position.
             </p>
-            <blod>second step: build defines</blod>
-            <p>Get the main of js from config. Path is "../document/app/asset/source/js/scrollTo.js"
+            <p>2.Build defines. Get the main of js from config. Path is "../document/app/asset/source/js/scrollTo.js"
             <br />The "scrollTo.js" require "[ "main/query", "hash/locationHash", "ui/swapview", "ui/scrollableview", "module/initWidget" ]".
             <br />The "oye.node" will find and load these js file, detect dependencies of these js.
             <br />Finally, get the all of js then combine to a stream.
             </p>
-            <blod>third step: save js file</blod>
-            <p>According to config, to save js. For this example:
+            <p>3.Save js file.According to config, to save js. For this example:
             <br />save "test.debug.js" into "output/defines". "test.debug.js" is not compress, it could debug.
             <br />save "test.js" into "output/defines". "test.js" is compress.
             </P>
-            <blod>Another</blod>
-            <p>If you increase the "complete" function in the configuration, You can do some interesting things after the build is complete.
+            <p>4. If you increase the "complete" function in the configuration, You can do some interesting things after the build is complete.
             <br />For this example, I write the contents to a new file.
             </p>
             <a float="false" href="#Definition" class="Top">Top</a>
