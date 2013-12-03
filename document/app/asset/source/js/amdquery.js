@@ -16620,7 +16620,7 @@ aQuery.define( "ui/scrollableview", [
 	config,
 	client,
 	support,
-  typed,
+	typed,
 	query,
 	css,
 	event,
@@ -16839,10 +16839,8 @@ aQuery.define( "ui/scrollableview", [
 						self.refreshPosition();
 
 						var $a = $( this ),
-							href = ( $a.attr( "href" ) || "" ).replace( window.location.href, "" ).replace( "#", "" ),
-							//会找所有的 可能不好
-							$toElement = self.target.find( "[name=" + ( href || "__undefined" ) + "]" );
-						self.animateToElement( $toElement );
+							href = ( $a.attr( "href" ) || "" ).replace( window.location.href, "" ).replace( "#", "" );
+							self.animateToElement( self.getAnimationToElementByName( href ) );
 						break;
 
 					case keyType.Up:
@@ -16860,6 +16858,9 @@ aQuery.define( "ui/scrollableview", [
 				}
 			};
 			return this;
+		},
+		getAnimationToElementByName: function( name ) {
+			return this.target.find( "[name=" + ( name || "__undefined" ) + "]" );
 		},
 		animateToElement: function( ele, animationCallback ) {
 			var $toElement = $( ele );
@@ -16934,6 +16935,7 @@ aQuery.define( "ui/scrollableview", [
 			"showStatusBar": Widget.AllowPublic,
 			"hideStatusBar": Widget.AllowPublic,
 			"render": Widget.AllowPublic,
+      "getAnimationToElementByName": Widget.AllowReturn,
 			"animateToElement": Widget.AllowPublic,
 			"toH": Widget.AllowPublic,
 			"toV": Widget.AllowPublic,
