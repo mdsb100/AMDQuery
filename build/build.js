@@ -216,6 +216,7 @@
  }
 
  function openHtml( appConfig, createAppDirAndCopyFile ) {
+  console.log( '\u001b[34m' + '\r\nopen HTML and get parameter... \u001b[39m' );
  	var tr = trumpet();
  	var htmlInfo = {
  		appConfig: {},
@@ -227,6 +228,7 @@
 
  	tr.selectAll( 'link', function( link ) {
  		link.getAttribute( "href", function( value ) {
+      logger( "css link", value );
  			htmlInfo.cssPath.push( value );
  		} );
 
@@ -235,7 +237,7 @@
 
  	tr.selectAll( 'script[app]', function( script ) {
  		script.getAttribute( "app", function( value ) {
- 			console.log( "app", value );
+ 			// console.log( "app", value );
  			var list = value.split( /;|,/ ),
  				item, i, attr;
 
@@ -248,7 +250,7 @@
  					}
  				}
  			}
- 			logger( JSON.stringify( htmlInfo ) );
+ 			logger( "htmlInfo", JSON.stringify( htmlInfo ) );
  			createAppDirAndCopyFile( null, appConfig, htmlInfo );
  		} );
  		// script.createReadStream( {outer: true} ).pipe( process.stdout );
@@ -262,7 +264,7 @@
  		outputPath = buildConfig.outputPath + appOutputProjectPath;
 
  	if ( FSE.existsSync( outputPath ) ) {
- 		console.log( '\u001b[34m' + '\r\nClean app ' + htmlInfo.appName + ' directory \u001b[39m' );
+ 		console.log( '\u001b[34m' + '\r\nClean "' + htmlInfo.appName + '" directory \u001b[39m' );
  		FSE.removeSync( outputPath );
  	}
 
@@ -312,7 +314,7 @@
  	oye.require.variablePrefix( "@" );
  	oye.require.variable( "app", dirPath );
 
- 	console.log( '\u001b[34m' + '\r\nBuild app ' + htmlInfo.appName + ' js file \u001b[39m' );
+ 	console.log( '\u001b[34m' + '\r\nBuild "' + htmlInfo.appName + '" js file \u001b[39m' );
  	_buildjs( htmlInfo.appConfig.src, htmlInfo.appName, function( name, contentList, moduleList ) {
  		var obj = {};
  		obj.amdquery = contentList;
@@ -326,7 +328,7 @@
  }
 
  function buildAppXML( appConfig, htmlInfo, XMLAndCSSPathList, buildAppCss ) {
- 	console.log( '\u001b[34m' + '\r\nBuild xml ' + htmlInfo.appName + ' css file \u001b[39m' );
+ 	console.log( '\u001b[34m' + '\r\nBuild "' + htmlInfo.appName + '" xml file \u001b[39m' );
  	var content = "<root>",
  		xmlPathList = XMLAndCSSPathList.xmlPathList,
  		i = 0,
@@ -354,7 +356,7 @@
 
 
  function buildAppCss( appConfig, htmlInfo, XMLAndCSSPathList, buildUICss ) {
- 	console.log( '\u001b[34m' + '\r\nBuild app ' + htmlInfo.appName + ' css file \u001b[39m' );
+ 	console.log( '\u001b[34m' + '\r\nBuild "' + htmlInfo.appName + '" css file \u001b[39m' );
 
  	var
  	pathList = htmlInfo.cssPath,
@@ -465,7 +467,7 @@
  		if ( typeof appConfig.complete === "function" ) {
  			appConfig.complete.call( appConfig, htmlInfo );
  		}
- 		console.log( "build finish" );
+ 		console.log( '\u001b[31m\r\nbuilding finish... \u001b[39m' );
  		// buildUICss( null, htmlInfo );
  	} );
 
@@ -726,7 +728,7 @@
  		content = content.replace( /define\(/, 'define("' + module + '",' );
  	}
  	content += "\r\n\r\n/*=======================================================*/\r\n";
- 	logger( content );
+ 	// logger( content );
  	return content;
  }
 
