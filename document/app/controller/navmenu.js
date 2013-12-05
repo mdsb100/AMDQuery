@@ -62,11 +62,11 @@ aQuery.define( "@app/controller/navmenu", [ "main/attr", "hash/locationHash", "a
 			return path;
 		},
 		selectDefaultNavmenu: function( target ) {
-			var ret = "index_navmenu";
-			if ( target ) {
-				var navItem = this.$nav.uiNavmenu( "getNavItemsByHtmlPath", target.split( /\W/ ) )[ 0 ];
-				ret = navItem || ret;
-			}
+			var ret = $( target || "#AMDQuery");
+			// if ( target ) {
+				// var navItem = this.$nav.uiNavmenu( "getNavItemsByHtmlPath", target.split( /\W/ ) )[ 0 ];
+				// ret = navItem || ret;
+			// }
 			this.$nav.uiNavmenu( "selectNavItem", ret );
 		},
 		destroy: function() {
