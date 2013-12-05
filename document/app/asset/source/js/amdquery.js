@@ -9920,8 +9920,10 @@ aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "
 
 			this.each( function( ele ) {
 				$.each( $.posterity( ele ), function( child ) {
-					$.removeData( child );
-					$.remove( child );
+					if ( typed.isEle( child ) ) {
+						$.removeData( child );
+						$.remove( child );
+					}
 					//移除事件
 				} );
 				$.setHtml( ele, str, bool );

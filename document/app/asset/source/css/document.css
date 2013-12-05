@@ -43,11 +43,6 @@ p{
   margin: 20px 20px 0 20px;
 }
 
-.guide span{
-  margin-left: 5px;
-  color: #484848;
-}
-
 .guide h4{
   font-weight: bold;
   color: #666;
@@ -92,4 +87,12 @@ pre{
   background-image: url(../images/welcome.gif);
   background-position: center;
   background-repeat: no-repeat;
+}
+
+pre .linenumber{
+  border-right: 1px solid rgb(190,190,190);
+  background-color: rgb(239,239,239);
+  width: 20px;
+  display: inline-block;
+  text-align: right;
 }
