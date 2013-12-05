@@ -10,4 +10,4 @@ if [ $? != 0 ]; then
     exit
 fi
 
-jsdoc ../amdquery --template templates/default --destination ./../document/api/
+jsdoc ../../amdquery --template templates/default --destination ./../document/api/
