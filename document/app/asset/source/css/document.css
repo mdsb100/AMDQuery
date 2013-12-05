@@ -90,6 +90,7 @@ pre{
 }
 
 pre .linenumber{
+  margin-right: 12px;
   border-right: 1px solid rgb(190,190,190);
   background-color: rgb(239,239,239);
   width: 20px;
