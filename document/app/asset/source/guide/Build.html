@@ -266,7 +266,7 @@ Directory Structure
 
             <h2 name="Detail" >Build Detail</h2>
             <p>1.Open HTML. Get "HTML" path from the configuration.
-            <br />Use "trumpet" to parse html, Get an array of css links and script tag of application. Parse configuration of the tag.
+            <br />Use "trumpet" to parse html, Get an array of css hrefs and script tag of application. Parse configuration of the tag.
             </p>
             <img src="../images/build_open_html.png" />
             <p>2.Create application directory and copy file.
@@ -291,13 +291,20 @@ Directory Structure
             <br />The new XML will be saved as "combination.xml". Application will load it once and repeated use its contents.
             </p>
             <p>5.Build CSS of Application
-            <br />After the first step has been to get all the "CSS" link, this step will be to find those CSS file through the link and use the "clean-css" to merge them into a CSS file.
-            <br />The new CSS will be saved as "{#appName}.xml" moreover the final step will automatically add a "CSS" tag to "HTML" head, the properties link will be set "css/{#appName}.css".
+            <br />After the first step has been to get all the "CSS" href, this step will be to find those CSS file through the href and use the "clean-css" to merge them into a CSS file.
+            <br />The new CSS will be saved as "{#appName}.css" moreover the final step will automatically add a "CSS" tag to "HTML" head, the properties href will be set "css/{#appName}.css".
             </p>
             <p>6.Build CSS of AMDQuery UI
             <br />Build combine all the CSS of AMDQuery UI and save it as "amdquery-widget.css".
             </p>
             <img src="../images/build_build_XML_CSS.png" />
+            <p>7.Modify HTML
+            <br />Remove all CSS in head and add a new CSS into head, the new CSS href is "css/document.css".
+            <br />Modify "amdquery.js" script attribute:
+            <br />change "src" as "../app/app"
+            <br />change "development" to "false"
+            <br />change "debug" as you define in configuration
+            </p>
           </div>
         </li>
         <li>

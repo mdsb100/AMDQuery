@@ -3,8 +3,8 @@
       <ul>
           <li amdquery-widget="ui.navitem" ui-navitem="html:guide;img:file">
               <ul>
-                  <li id="index_navmenu" amdquery-widget="ui.navitem" ui-navitem="html:AMDQuery;img:file"></li>
-                  <li amdquery-widget="ui.navitem" ui-navitem="html:Build;img:file"></li>
+                  <li id="AMDQuery" amdquery-widget="ui.navitem" ui-navitem="html:AMDQuery;img:file"></li>
+                  <li id="Build" amdquery-widget="ui.navitem" ui-navitem="html:Build;img:file"></li>
               </ul>
           </li>
       </ul>
