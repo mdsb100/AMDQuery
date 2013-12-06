@@ -1,0 +1,1 @@
+jsdoc ../amdquery --template templates/default --destination ./../document/api/
