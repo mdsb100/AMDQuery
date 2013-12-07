@@ -89,32 +89,32 @@ standard.</p>
             <p>cd "build/", open "build_config.js".</p>
             <pre class="prettyprint" name="DirectoryStructure">
 Directory Structure
---root
-    --amdquery
-        amdquery.js
-    --build
-        build.js
-        build_config.js
-        --output
-            --apps
-              --document
-              --amdquery
-                --ui
-                  --css
-                  --iamges
-                amdquery.debug.js
-                amdquery.js
-              --app
-                --asset
-                --css
-                --xml
-                app.html
-            --defines
-                test.debug.js
-                test.js
-        --test
-            --test.js
-    --document
+root
+  |- amdquery
+  |   \- amdquery.js
+  |- document
+  |- build
+      |- build.js
+      |- build_config.js
+      |- test
+         \- test.js
+      \- output
+          |- defines
+          |   |- test.debug.js
+          |   \- test.js
+          |- apps
+              |- document
+              |   \- amdquery
+              |       |- amdquery.debug.js
+              |       |- amdquery.js
+              |       \- ui
+              |           |- css
+              |           \- iamges
+              |- app
+                  |- asset
+                  |- css
+                  |- xml
+                  \- app.html
             </pre>
             <ul class="ul">
               <li>
