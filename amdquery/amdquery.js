@@ -1,6 +1,7 @@
-/*!
- * AMDQuery JavaScript Library 1.0.0
- * Copyright 2012, Cao Jun
+/**
+ * @overview AMDQuery JavaScript Library
+ * @copyright 2012, Cao Jun
+ * @version 1.0.0
  */
 
 ( function( window, undefined ) {
@@ -131,7 +132,9 @@
 		}() ),
 		rootPath = basePath.replace( /((.*?\/){3}).*$/, "$1" ),
 		msgDiv, runTime;
-
+  /**
+   * @name _config
+   */
 	var _config = {
 		amdquery: {
 			define: "$",
@@ -1446,6 +1449,13 @@
 	} )();
 
 	aQuery.define( "base/config", function( $ ) {
+    /**
+    * config of amdquery.
+    * @module base/config
+    * @property {object}  amdquery               - The default values for parties.
+    * @property {number}  amdquery.define       - The default number of players.
+    * @see {@link _config}
+    */
 		$.config = _config;
 		return _config;
 	} );
