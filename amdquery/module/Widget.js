@@ -612,7 +612,7 @@
 			return ret;
 		},
 		fetchCSS: function( path ) {
-			if ( config.amdquery.autoFetchCss && config.app.development ) {
+			if ( config.ui.autoFetchCss && config.app.development ) {
 				src.link( {
 					href: $.getPath( path, ".css" )
 				} );
@@ -734,7 +734,7 @@
 		}
 	} );
 
-	if ( !config.app.development && config.amdquery.autoFetchCss ) {
+	if ( !config.app.development && config.ui.autoFetchCss ) {
 		src.link( {
 			href: $.getPath( "ui/css/amdquery-widget", ".css" )
 		} );

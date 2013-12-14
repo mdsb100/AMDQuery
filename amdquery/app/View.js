@@ -123,7 +123,7 @@ aQuery.define( "app/View", [
 		}
 	}, {
 		getStyle: function( path ) {
-			if ( config.amdquery.autoFetchCss && config.app.development ) {
+			if ( config.app.autoFetchCss && config.app.development ) {
 				src.link( {
 					href: ClassModule.getPath( path, ".css" )
 				} );

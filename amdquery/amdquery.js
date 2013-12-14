@@ -4,6 +4,8 @@
  * @version 1.0.0
  */
 
+
+
 ( function( window, undefined ) {
 	"use strict"; //启用严格模式
 	var
@@ -132,19 +134,49 @@
 		}() ),
 		rootPath = basePath.replace( /((.*?\/){3}).*$/, "$1" ),
 		msgDiv, runTime;
-  /**
-   * @name _config
-   */
+
+	/**
+	 * <h3>
+	 * config of amdquery. <br />
+	 * </h3>
+	 * @public
+	 * @module base/config
+	 * @property {object}  config                              - exports
+	 * @property {object}  config.amdquery                     - The amdquery Configuration.
+	 * @property {boolean} config.amdquery.debug               - Whether debug, it will be the output log if true.
+	 * @property {boolean} config.amdquery.development         - Whether it is a development environment.
+	 *
+	 * @property {object}  config.amd                          - The AMD Configuration.
+	 * @property {boolean} config.amd.detectCR                 - Detect circular dependencies, you should set it true when you develop.
+	 * @property {boolean} config.amd.debug                    - It will add "try-catch" when module load if false, so you could not see any error infomation.
+	 * @property {number}  config.amd.timeout                  - Timeout of the loading module.
+	 * @property {boolean} config.amd.console                  - It will be output log "module [id] ready" if true
+	 *
+	 * @property {object}  config.ui                           - The UI-Widget Configuration.
+	 * @property {boolean} config.ui.initWidget                - Automatic initialization UI.
+	 * @property {string}  config.ui.loadingClassName          - When loading UI, the mask layer using the CSS name.
+	 * @property {boolean} config.ui.autoFetchCss              - Automatic fetching CSS.
+	 * @property {boolean} config.ui.isTransform3d             - Whether to use transform3d.
+	 *
+	 * @property {object}  config.module                       - The module Configuration.
+	 *
+	 * @property {object}  config.app                          - The application Configuration.
+	 * @property {string}  config.app.src                      - A js file src, main of application.
+	 * @property {string}  config.app.loadingImage             - A image src will be show when application is loading.
+	 * @property {boolean} config.app.debug                    - Whether debug, it will be the output log if true.
+	 * @property {boolean} config.app.development              - Whether it is a development environment.
+	 * @property {boolean} config.app.autoFetchCss             - Automatic fetching CSS.
+	 * @property {string} config.app.xmlPath                   - Path of the combination XML, build could create it and set it.
+	 */
+
+	// _config be define "base/config".
 	var _config = {
 		amdquery: {
 			define: "$",
 			debug: false,
-			autoFetchCss: true,
 			development: true
 		},
 		amd: {
-			//同步
-			//检查循环依赖
 			detectCR: false,
 			debug: true,
 			timeout: 5000,
@@ -153,6 +185,7 @@
 		ui: {
 			initWidget: false,
 			loadingClassName: "widget-loading",
+			autoFetchCss: true,
 			isTransform3d: true
 		},
 		module: {
@@ -163,6 +196,7 @@
 			loadingImage: "",
 			debug: false,
 			development: true,
+			autoFetchCss: true,
 			xmlPath: "xml/combination.xml"
 		}
 	};
@@ -629,6 +663,16 @@
 
 	Queue.prototype = {
 		constructor: Queue,
+		/**
+		 * @public
+		 * @this module:base/queue.prototype
+		 * @method queue
+		 * @memberOf module:base/queue.prototype
+		 * @param {Function|Function[]} fn - do some thing
+		 * @param {Object} [context] - context of fn
+		 * @param {Array} [args] - args is arguments of fn
+		 * @returns {this}
+		 */
 		queue: function( fn, context, args ) {
 			if ( typeof fn == "function" ) {
 				this.list.push( fn );
@@ -640,6 +684,14 @@
 			}
 			return this;
 		},
+		/**
+		 * @public
+		 * @method dequeue
+		 * @memberOf module:base/queue.prototype
+		 * @param {Object} [context=null] - context of fn
+		 * @param {Array} [args=Array] args - args is arguments of fn
+		 * @returns {this}
+		 */
 		dequeue: function( context, args ) {
 			var fn = this.list.shift();
 			if ( fn && fn === "inprogress" ) {
@@ -653,6 +705,12 @@
 			return this;
 
 		},
+		/**
+		 * @public
+		 * @method clearQueue
+		 * @memberOf module:base/queue.prototype
+		 * @returns {this}
+		 */
 		clearQueue: function() {
 			return this.queue( [] );
 		}
@@ -1442,6 +1500,17 @@
 		} );
 
 		aQuery.define( "base/ClassModule", function( $ ) {
+			/**
+			 * Module Management
+			 * @public
+			 * @module base/ClassModule
+			 */
+
+			/**
+			 * @public
+			 * @constructor
+			 */
+       var exports = ClassModule;
 			$.ClassModule = ClassModule;
 			return ClassModule
 		}, "1.0.0" );
@@ -1449,20 +1518,24 @@
 	} )();
 
 	aQuery.define( "base/config", function( $ ) {
-    /**
-    * config of amdquery.
-    * @module base/config
-    * @property {object}  amdquery               - The default values for parties.
-    * @property {number}  amdquery.define       - The default number of players.
-    * @see {@link _config}
-    */
 		$.config = _config;
 		return _config;
 	} );
 
-	aQuery.define( "base/queue", function( $ ) {
+	aQuery.define( 'base/queue', function( $ ) {
+		/**
+		 * A module representing a queue.
+		 * @public
+		 * @module base/queue
+		 */
+
+		/**
+		 * @public
+		 * @constructor
+		 */
+		var exports = Queue;
 		$.Queue = Queue;
-		return Queue
+		return exports;
 	}, "1.0.0" );
 
 	aQuery.define( "base/Promise", function( $ ) {
