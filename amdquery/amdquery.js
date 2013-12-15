@@ -756,236 +756,351 @@
 			//this.check();
 		}
 
-		util.extend( ClassModule,
-			{
-				anonymousID: null,
-				requireQueue: requireQueue,
-				cache: {},
-				/**
-         * A map to path ofmodule file
-         * @type Object
-         * @memberOf module:base/ClassModule
-         */
-        container: {},
-        /**
-         * A map to module dependency
-         * @type Object
-         * @memberOf module:base/ClassModule
-         */
-				dependenciesMap: {},
-        /**
-         * Check the name is equal to anonymous name which assigned by "require"
-         * @inner
-         * @throws Will throw an error if the name is not equal anonymousID
-         * @method
-         * @memberOf module:base/ClassModule
-         * @param {String} - Module name
-         */
-				checkName: function( id ) {
-					if ( this.anonymousID != null && id.indexOf( "tempDefine" ) < 0 ) {
-						id !== this.anonymousID && util.error( {
-							fn: "define",
-							msg: "the named " + id + " is not equal require"
-						} );
-					}
-				},
-				contains: function( id ) {
-					id = ClassModule.variable( id );
-					return !!ClassModule.modules[ id ];
-				},
-				detectCR: function( md, dp ) {
-					/// <summary>检测模块是否存在循环引用,返回存在循环引用的模块名</summary>
-					/// <param name="md" type="String">要检测的模块名</param>
-					/// <param name="dp" type="Array:[String]">该模块的依赖模块</param>
-					/// <returns type="String" />
-					if ( !md ) {
-						return;
-					}
-					if ( dp && dp.constructor != Array ) {
-						return;
-					}
-					var i, DM, dm, result, l = dp.length,
-						dpm = ClassModule.dependenciesMap,
-						mdp = ClassModule.mapDependencies;
-					for ( i = 0; i < l; i++ ) {
-						dm = dp[ i ];
-						if ( dm === md ) {
-							return dm;
-						} //发现循环引用
-						if ( !dpm[ md ] ) {
-							dpm[ md ] = {};
-						}
-						if ( !mdp[ dm ] ) {
-							mdp[ dm ] = {};
-						}
-						dpm[ md ][ dm ] = 1;
-						mdp[ dm ][ md ] = 1; //建表
-					}
-					for ( DM in mdp[ md ] ) {
-						result = ClassModule.detectCR( DM, dp ); //反向寻找
-						if ( result ) {
-							return result;
-						}
-					}
-				},
-				funBody: function( md ) {
-					//将factory强制转换为function类型，供ClassModule使用
-					if ( !md ) {
-						md = "";
-					}
-					switch ( typeof md ) {
-						case "function":
-							return md;
-						case "string":
-							return function() {
-								return new String( md );
-							};
-						case "number":
-							return function() {
-								return new Number( md );
-							};
-						case "boolean":
-							return function() {
-								return new Boolean( md );
-							};
-						default:
-							return function() {
-								return md;
-							};
-					}
-				},
-				getContainer: function( id, a ) {
-					var src;
-					if ( ClassModule.container[ id ] ) {
-						src = ClassModule.container[ id ];
-					} else {
-						src = util.getJScriptConfig( [ "src" ], typeof a == "boolean" ? a : true ).src || "it is local"; //或者改成某个字段是 config里的
-						id && ( ClassModule.container[ id ] = src );
-					}
-					return src;
-				},
-				getPath: function( key, suffix ) {
-					var ret, path, ma;
-					key = ClassModule.variable( key );
-					if ( path = ClassModule.maps[ key ] ) {} //不需要匹配前部分
-					else {
-						path = key;
-					}
-
-					if ( _config.amd.rootPath ) {
-						ma = key.match( /\.[^\/\.]*$/g );
-						if ( !ma || ma[ ma.length - 1 ] != suffix ) {
-							key += suffix;
-						}
-						ret = _config.amd.rootPath + key;
-					} else {
-						ret = util.getPath( path, suffix );
-					}
-
-					return ret;
-				},
-				getModule: function( k ) {
-					k = ClassModule.variable( k );
-					return ClassModule.modules[ k ];
-				},
-				holdon: {},
-				loadDependencies: function( dependencies ) { //要改
-					var dep = dependencies,
-						i = 0,
-						len, item, module;
-					if ( !dep || dep.constructor == Array || dep.length ) {
-						return this;
-					}
-					setTimeout( function() {
-						for ( len = dep.length; i < length; i++ ) { //是否要用function 而不是for
-							item = dep[ i ];
-							module = ClassModule.getModule( item );
-							if ( !module ) {
-								require( item );
-							} else if ( module.getStatus() == 2 ) {
-								ClassModule.loadDependencies( module.dependencies );
-							}
-						}
-					}, 0 );
-					return this;
-				},
-				loadJs: function( url, id, error ) {
-					var module = ClassModule.getModule( id );
-					//该模块已经载入过，不再继续加载，主要用于require与define在同一文件
-					if ( ClassModule.resource[ url ] || ( module && ( module.getStatus() > 2 ) ) ) {
-						return this;
-					}
-
-					ClassModule.resource[ url ] = id;
-
-					var script = document.createElement( "script" ),
-						head = document.getElementsByTagName( "HEAD" )[ 0 ],
-						timeId;
-
-					error && ( script.onerror = function() {
-						clearTimeout( timeId );
-						error();
+		util.extend( ClassModule, {
+			anonymousID: null,
+			requireQueue: requireQueue,
+			cache: {},
+			/**
+			 * A map to path ofmodule file
+			 * @type Object
+			 * @memberOf module:base/ClassModule
+			 */
+			container: {},
+			/**
+			 * A map to module dependency
+			 * @type Object
+			 * @memberOf module:base/ClassModule
+			 */
+			dependenciesMap: {},
+			/**
+			 * Check the name is equal to anonymous name which assigned by "require"
+			 * @private
+			 * @method
+			 * @memberOf module:base/ClassModule
+			 * @param {String} - Module name
+			 * @throws Will throw an error if the name is not equal anonymousID
+			 * @returns {void}
+			 */
+			checkName: function( id ) {
+				if ( this.anonymousID != null && id.indexOf( "tempDefine" ) < 0 ) {
+					id !== this.anonymousID && util.error( {
+						fn: "define",
+						msg: "the named " + id + " is not equal require"
 					} );
+				}
+			},
+			/**
+			 * ClassModule contains the module
+			 * @method
+			 * @memberOf module:base/ClassModule
+			 * @param {String} - Module name
+			 * @returns {Boolean}
+			 */
+			contains: function( id ) {
+				id = ClassModule.variable( id );
+				return !!ClassModule.modules[ id ];
+			},
+			/**
+			 * Detect circle reference
+			 * @method
+			 * @memberOf module:base/ClassModule
+			 * @param {String} - Module name
+			 * @param {String[]} - Dependent modules
+			 * @returns {Boolean} - Module name
+			 */
+			detectCR: function( md, dp ) {
+				if ( !md ) {
+					return;
+				}
+				if ( dp && dp.constructor != Array ) {
+					return;
+				}
+				var i, DM, dm, result, l = dp.length,
+					dpm = ClassModule.dependenciesMap,
+					mdp = ClassModule.mapDependencies;
+				for ( i = 0; i < l; i++ ) {
+					dm = dp[ i ];
+					if ( dm === md ) {
+						return dm;
+					} //发现循环引用
+					if ( !dpm[ md ] ) {
+						dpm[ md ] = {};
+					}
+					if ( !mdp[ dm ] ) {
+						mdp[ dm ] = {};
+					}
+					dpm[ md ][ dm ] = 1;
+					mdp[ dm ][ md ] = 1; //建表
+				}
+				for ( DM in mdp[ md ] ) {
+					result = ClassModule.detectCR( DM, dp ); //反向寻找
+					if ( result ) {
+						return result;
+					}
+				}
+			},
+			/**
+			 * Wrap with a function
+			 * @method
+			 * @memberOf module:base/ClassModule
+			 * @param {*} - body
+			 * @returns {Function}
+			 */
+			funBody: function( body ) {
+				//将factory强制转换为function类型，供ClassModule使用
+				if ( !body ) {
+					body = "";
+				}
+				switch ( typeof body ) {
+					case "function":
+						return body;
+					case "string":
+						return function() {
+							return new String( body );
+						};
+					case "number":
+						return function() {
+							return new Number( body );
+						};
+					case "boolean":
+						return function() {
+							return new Boolean( body );
+						};
+					default:
+						return function() {
+							return body;
+						};
+				}
+			},
+			/**
+			 * Get src of module file
+			 * @method
+			 * @memberOf module:base/ClassModule
+			 * @param {String} - Module name
+			 * @param {Boolean} [asc=true] - getJScriptConfig option
+			 * @returns {String} - path
+			 */
+			getContainer: function( id, asc ) {
+				var src;
+				if ( ClassModule.container[ id ] ) {
+					src = ClassModule.container[ id ];
+				} else {
+					src = util.getJScriptConfig( [ "src" ], typeof asc == "boolean" ? asc : true ).src || "it is local"; //或者改成某个字段是 config里的
+					id && ( ClassModule.container[ id ] = src );
+				}
+				return src;
+			},
+			/**
+			 * modify module name to a file path
+			 * @method
+			 * @memberOf module:base/ClassModule
+			 * @param {String} - Module name
+			 * @param {String} [suffix=".js"]
+			 * @returns {String} - path
+			 */
+			getPath: function( key, suffix ) {
+				var ret, path, ma;
+				key = ClassModule.variable( key );
+				if ( path = ClassModule.maps[ key ] ) {} //do not match preffix
+				else {
+					path = key;
+				}
 
-					script.onload = script.onreadystatechange = function() {
-						if ( !this.readyState || this.readyState == "loaded" || this.readyState == "complete" ) {
-							clearTimeout( timeId );
-							head.removeChild( script );
-							head = null;
-							script = null;
-						}
-					};
+				if ( _config.amd.rootPath ) {
+					ma = key.match( /\.[^\/\.]*$/g );
+					if ( !ma || ma[ ma.length - 1 ] != suffix ) {
+						key += suffix;
+					}
+					ret = _config.amd.rootPath + key;
+				} else {
+					ret = util.getPath( path, suffix );
+				}
 
-					script.setAttribute( "src", url );
-					script.setAttribute( "type", "text/javascript" );
-					script.setAttribute( "language", "javascript" );
-
-					timeId = setTimeout( function() {
-						error && error();
-						head.removeChild( script );
-						script = script.onerror = script.onload = error = head = null;
-					}, _config.amd.timeout );
-
-					head.insertBefore( script, head.firstChild );
+				return ret;
+			},
+			/**
+			 * get Module with module
+			 * @method
+			 * @memberOf module:base/ClassModule
+			 * @param {String} - Module name
+			 * @returns {ClassModule}
+			 */
+			getModule: function( module ) {
+				module = ClassModule.variable( module );
+				return ClassModule.modules[ module ];
+			},
+			holdon: {},
+			/**
+			 * Load dependencies on asynchronous.
+			 * @method
+			 * @memberOf module:base/ClassModule
+			 * @param {String[]} - An array of module name
+			 * @returns {this}
+			 */
+			loadDependencies: function( dependencies ) {
+				var dep = dependencies,
+					i = 0,
+					len, item, module;
+				if ( !dep || dep.constructor == Array || dep.length ) {
 					return this;
-				},
-				mapDependencies: {},
-				maps: {},
-				modules: {},
-				namedModules: {},
-				resource: {},
-				rootPath: null,
-				variableMap: {},
-				variablePrefix: "@",
-				setModule: function( k, v ) {
-					!this.getModule( k ) && ( this.modules[ k ] = v );
-					return this;
-				},
-				statusReflect: {
-					0: "init",
-					1: "queue",
-					2: "require",
-					3: "define",
-					4: "ready"
-				},
-				variable: function( ret ) {
-					var variableReg = new RegExp( "\\" + ClassModule.variablePrefix + "[^\\/]+", "g" ),
-						variables = ret.match( variableReg );
-
-					if ( variables && variables.length ) {
-						for ( var i = variables.length - 1, path; i >= 0; i-- ) {
-							path = require.variable( variables[ i ] );
-							if ( path ) {
-								ret = ret.replace( variables[ i ], path );
-							}
+				}
+				setTimeout( function() {
+					for ( len = dep.length; i < length; i++ ) {
+						item = dep[ i ];
+						module = ClassModule.getModule( item );
+						if ( !module ) {
+							require( item );
+						} else if ( module.getStatus() == 2 ) {
+							ClassModule.loadDependencies( module.dependencies );
 						}
 					}
-
-					return ret;
+				}, 0 );
+				return this;
+			},
+			/**
+			 * Load js file on asynchronous.
+			 * @method
+			 * @memberOf module:base/ClassModule
+			 * @param {String} - url of js
+			 * @param {String} - Module name
+			 * @param {Function} - An function to the fail callback if loading moudle timeout or error
+			 * @returns {this}
+			 */
+			loadJs: function( url, id, error ) {
+				var module = ClassModule.getModule( id );
+				//该模块已经载入过，不再继续加载，主要用于require与define在同一文件
+				if ( ClassModule.resource[ url ] || ( module && ( module.getStatus() > 2 ) ) ) {
+					return this;
 				}
-			} );
 
-		ClassModule.prototype = {
+				ClassModule.resource[ url ] = id;
+
+				var script = document.createElement( "script" ),
+					head = document.getElementsByTagName( "HEAD" )[ 0 ],
+					timeId;
+
+				error && ( script.onerror = function() {
+					clearTimeout( timeId );
+					error();
+				} );
+
+				script.onload = script.onreadystatechange = function() {
+					if ( !this.readyState || this.readyState == "loaded" || this.readyState == "complete" ) {
+						clearTimeout( timeId );
+						head.removeChild( script );
+						head = null;
+						script = null;
+					}
+				};
+
+				script.setAttribute( "src", url );
+				script.setAttribute( "type", "text/javascript" );
+				script.setAttribute( "language", "javascript" );
+
+				timeId = setTimeout( function() {
+					error && error();
+					head.removeChild( script );
+					script = script.onerror = script.onload = error = head = null;
+				}, _config.amd.timeout );
+
+				head.insertBefore( script, head.firstChild );
+				return this;
+			},
+			/**
+			 * A map be depend
+			 * @type Object
+			 * @memberOf module:base/ClassModule
+			 */
+			mapDependencies: {},
+			maps: {},
+			modules: {},
+			namedModules: {},
+			resource: {},
+			rootPath: null,
+			/**
+			 * A map of path variable
+			 * @type Object
+			 * @memberOf module:base/ClassModule
+			 */
+			variableMap: {},
+			/**
+			 * variable prefix
+			 * @type String
+			 * @default "@"
+			 * @memberOf module:base/ClassModule
+			 */
+			variablePrefix: "@",
+			/**
+			 * Load js file on asynchronous.
+			 * @method
+			 * @memberOf module:base/ClassModule
+			 * @param {String} - url of js
+			 * @param {String} - Module name
+			 * @param {Function} - An function to the fail callback if loading moudle timeout or error
+			 * @returns {this}
+			 */
+			setModule: function( k, v ) {
+				!this.getModule( k ) && ( this.modules[ k ] = v );
+				return this;
+			},
+			/**
+			 * status map
+			 * @readonly
+			 * @enum {String}
+			 * @memberOf module:base/ClassModule
+			 */
+			statusReflect: {
+				/** module created */
+				0: "init",
+				/** module in queue */
+				1: "queue",
+				/** module load dependent */
+				2: "require",
+				/** module is defined */
+				3: "define",
+				/** module ready */
+				4: "ready"
+			},
+			/**
+			 * @desc "@app/controller" to "mypath/app/controller" if match the "@app" in {@link module:base/ClassModule.variableMap} else return self
+			 * @method
+			 * @memberOf module:base/ClassModule
+			 * @param {String} - Module name
+			 * @returns {String}
+			 */
+			variable: function( ret ) {
+				var variableReg = new RegExp( "\\" + ClassModule.variablePrefix + "[^\\/]+", "g" ),
+					variables = ret.match( variableReg );
+
+				if ( variables && variables.length ) {
+					for ( var i = variables.length - 1, path; i >= 0; i-- ) {
+						path = require.variable( variables[ i ] );
+						if ( path ) {
+							ret = ret.replace( variables[ i ], path );
+						}
+					}
+				}
+
+				return ret;
+			}
+		} );
+
+		/**
+		 * This callback is displayed as a global member.
+		 * @callback ClassModuleCallback
+		 * @this module:base/ClassModule
+		 * @param {...*} - An argument array of any object. Any one argument is defined in the module.
+		 */
+
+		ClassModule.prototype =
+		/** @lends module:base/ClassModule.prototype */
+		{
+			/**
+			 * When completed, the param fn is called
+			 * @method
+			 * @param {ClassModuleCallback} - handler
+			 * @returns {this}
+			 */
 			addHandler: function( fn ) {
 				if ( typeof fn == "function" ) {
 					if ( this.status == 4 ) {
@@ -998,6 +1113,12 @@
 				}
 				return this;
 			},
+			/**
+			 * check status then to do something
+			 * @method
+			 * @protected
+			 * @returns {this}
+			 */
 			check: function() {
 				var status = this.getStatus(),
 					dps = this.dependencies;
@@ -1057,13 +1178,24 @@
 				return this;
 			},
 			constructor: ClassModule,
-			getDependenciesMap: function() {
+			/**
+			 * Get an array of dependent modules
+			 * @method
+			 * @returns {Array.<ModuleInfo>}
+			 */
+			getDependenciesArray: function() {
 				var ret = [];
 				if ( _config.amd.detectCR ) {
 					var id = this.id,
 						MD = ClassModule.dependenciesMap[ id ],
 						DM, module = ClassModule.getModule( id );
-
+					/**
+					 * @typedef ModuleInfo
+					 * @type {object}
+					 * @property {String} name - Module name
+					 * @property {String} status - Module status
+					 * @property {String} container - Module path
+					 */
 					ret.push( {
 						name: id,
 						status: module.getStatus( 1 ),
@@ -1078,10 +1210,15 @@
 						} );
 					}
 				} else {
-					$.logger( "getDependenciesMap", "you had to set require.detectCR true for getting map list" );
+					$.logger( "getDependenciesArray", "you had to set require.detectCR true for getting map list" );
 				}
 				return ret;
 			},
+      /**
+       * Module ready and trigger handler
+       * @protected
+       * @method
+       */
 			getReady: function() {
 				if ( this.status == 4 ) {
 					return;
@@ -1116,7 +1253,7 @@
 					status: 4,
 					//, todo: this.todo
 					container: this.container,
-					getDependenciesMap: this.getDependenciesMap
+					getDependenciesArray: this.getDependenciesArray
 				};
 
 				if ( F && F.constructor != Array ) {
@@ -1129,6 +1266,12 @@
 				//当传入的模块是已准备好的，开启转正机会
 				this.holdReady().trigger();
 			},
+      /**
+       * Get stats of module
+       * @method
+       * @param {Boolean} - if true get string else get number.
+       * @returns {Number|String}
+       */
 			getStatus: function( isStr ) {
 				var s = this.status;
 				return isStr == true ? ClassModule.statusReflect[ s ] : s;
@@ -1535,6 +1678,10 @@
 			 */
 
 			/**
+			 * @typedef {module:base/ClassModule} ClassModule
+			 */
+
+			/**
 			 * @public
 			 * @constructor
 			 */
@@ -1555,6 +1702,10 @@
 		 * A module representing a queue.
 		 * @public
 		 * @module base/queue
+		 */
+
+		/**
+		 * @typedef {module:base/queue} Queue
 		 */
 
 		/**
