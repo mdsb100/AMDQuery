@@ -1214,11 +1214,11 @@
 				}
 				return ret;
 			},
-      /**
-       * Module ready and trigger handler
-       * @protected
-       * @method
-       */
+			/**
+			 * Module ready and trigger handler
+			 * @protected
+			 * @method
+			 */
 			getReady: function() {
 				if ( this.status == 4 ) {
 					return;
@@ -1228,7 +1228,7 @@
 					i = 0,
 					dplist = [],
 					id = this.id,
-					sdp, md, map, F;
+					sdp, md, map, exports;
 
 				for ( ; i < l; i++ ) {
 					md = ClassModule.getModule( dps[ i ] );
@@ -1240,14 +1240,14 @@
 				}
 				this.setStatus( 4 );
 				if ( _config.amd.debug ) {
-					F = this.factory.apply( null, dplist ) || {};
+					exports = this.factory.apply( this, dplist ) || {};
 				} else {
 					try {
-						F = this.factory.apply( null, dplist ) || {};
+						exports = this.factory.apply( this, dplist ) || {};
 					} catch ( e ) {}
 				}
 
-				F._AMD = {
+				exports._AMD = {
 					id: id,
 					dependencies: dps,
 					status: 4,
@@ -1256,25 +1256,33 @@
 					getDependenciesArray: this.getDependenciesArray
 				};
 
-				if ( F && F.constructor != Array ) {
-					F = [ F ];
+				if ( exports && exports.constructor != Array ) {
+					exports = [ exports ];
 				};
-				this.module = F;
-				this.first = F[ 0 ];
+				this.module = exports;
+				this.first = exports[ 0 ];
 				_config.amd.console && $.logger( "module " + id + " ready" );
-				//_getMoudule(id, F);
+				//_getMoudule(id, exports);
 				//当传入的模块是已准备好的，开启转正机会
 				this.holdReady().trigger();
 			},
-      /**
-       * Get stats of module
-       * @method
-       * @param {Boolean} - if true get string else get number.
-       * @returns {Number|String}
-       */
+			/**
+			 * Get stats of module
+			 * @method
+			 * @param {Boolean} - if true get string else get number.
+			 * @returns {Number|String}
+			 */
 			getStatus: function( isStr ) {
 				var s = this.status;
 				return isStr == true ? ClassModule.statusReflect[ s ] : s;
+			},
+			describe: function( content ) {
+				this.description = content;
+				$.module[ this.id ] = content;
+				return this;
+			},
+			valueOf: function() {
+				return this.description;
 			},
 			holdReady: function() {
 				var md, hd = ClassModule.holdon[ this.id ],
@@ -1295,6 +1303,7 @@
 				this.status = status || 0;
 				this.container = container;
 				this.fail = fail;
+				this.description = "empty";
 				return this;
 			},
 			load: function() {
@@ -1393,7 +1402,7 @@
 			}
 		}
 
-		window.define = function( id, dependencies, factory, info ) {
+		window.define = function( id, dependencies, factory ) {
 			var arg = arguments,
 				ret, deep, body, container, status;
 
@@ -1641,10 +1650,10 @@
 						var arg = util.argToArray( arguments, 0 );
 						arg.splice( 0, 0, aQuery );
 						if ( _config.amd.debug ) {
-							return fn.apply( null, arg );
+							return fn.apply( this, arg );
 						} else {
 							try {
-								return fn.apply( null, arg );
+								return fn.apply( this, arg );
 							} finally {}
 						}
 					}
@@ -1698,6 +1707,7 @@
 	} );
 
 	aQuery.define( 'base/queue', function( $ ) {
+    this.describe( "1.0.0" );
 		/**
 		 * A module representing a queue.
 		 * @public
@@ -1715,10 +1725,11 @@
 		var exports = Queue;
 		$.Queue = Queue;
 		return exports;
-	}, "1.0.0" );
+	} );
 
 	aQuery.define( "base/Promise", function( $ ) {
 		"use strict"; //启用严格模式
+    this.describe( "1.0.0" );
 		var checkArg = function( todo, fail, progress, name ) {
 			var arg = util.argToArray( arguments ),
 				len = arg.length,
@@ -2050,10 +2061,11 @@
 		}
 
 		return Promise;
-	}, "1.0.0" );
+	});
 
 	aQuery.define( "base/ready", [ "base/Promise" ], function( $, Promise ) {
 		"use strict"; //启用严格模式
+    this.describe( "1.0.0" );
 		var ready = function( fn ) {
 			setTimeout( function() {
 				rootPromise.and( fn );
@@ -2124,7 +2136,7 @@
 		} ).rootResolve();
 
 		return $.ready = ready;
-	}, "1.0.0" );
+	});
 
 	window.aQuery = $;
 
