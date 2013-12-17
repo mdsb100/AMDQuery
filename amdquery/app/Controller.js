@@ -20,6 +20,7 @@ aQuery.define( "app/Controller", [
 	View,
 	Model, undefined ) {
 	"use strict"; //启用严格模式
+  this.describe( "Super Controller Class" );
 	var Controller = CustomEvent.extend( "Controller", {
 		init: function( view, models ) {
 			this._super();

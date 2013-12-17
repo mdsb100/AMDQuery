@@ -21,7 +21,8 @@
 	cubicBezierTween,
 	undefined ) {
 	"use strict"; //启用严格模式
-	//无法识别em这种
+  this.describe( "Animation to HTML5 transition" );
+	//do not use em
 
 	$.extend( {
 		getPositionAnimationOptionProxy: function( isTransform3d, x, y ) {

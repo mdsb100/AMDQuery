@@ -1,5 +1,6 @@
 ﻿aQuery.define( "ecma5/array.compati", [ "base/array" ], function( $, array ) {
 	"use strict"; //启用严格模式
+  this.describe( "ECMA Array" );
 	var name, obj = {
 			every: function( fun, context ) {
 				var t = this,

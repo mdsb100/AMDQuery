@@ -1,6 +1,6 @@
 ﻿aQuery.define( "html5/Worker", function( $, undefined ) {
 	"use strict"; //启用严格模式
-
+  this.describe( "HTML5 Worker" );
 	function MyWorker( path ) {
 		if ( window.Worker ) {
 			this.worker = new window.Worker( path || $.getPath( "html5/_Worker" ) );

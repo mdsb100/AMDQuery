@@ -1,5 +1,6 @@
 aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "base/client", "main/css" ], function( $, typed, utilExtend, support, client, css, undefined ) {
 	"use strict"; //启用严格模式
+	this.describe( "consult JQuery1.9.1" );
 	var rnumnonpx = /^-?(?:\d*\.)?\d+(?!px)[^\d\s]+$/i,
 		rnumsplit = new RegExp( "^(" + $.core_pnum + ")(.*)$", "i" ),
 		cssExpand = [ "Top", "Right", "Bottom", "Left" ],
@@ -496,4 +497,4 @@ aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "
 
 
 	return position;
-}, "consult JQuery1.9.1" );
+} );

@@ -1303,7 +1303,7 @@
 				this.status = status || 0;
 				this.container = container;
 				this.fail = fail;
-				this.description = "empty";
+				this.description = "No description";
 				return this;
 			},
 			load: function() {
@@ -1636,15 +1636,8 @@
 					len = arg.length,
 					fn = arg[ len - 1 ],
 					version = "no signing version";
-				if ( typeof fn == "string" ) {
-					version = fn;
-					fn = arg[ len - 2 ];
-					arg.pop();
-				}
-				$.module[ id ] = version;
-				//                if (arg[1] && arg[1].constructor == Array) {
-				//                    require.named(dependencies);
-				//                }
+
+
 				if ( typeof fn == "function" ) {
 					arg[ arg.length - 1 ] = function() {
 						var arg = util.argToArray( arguments, 0 );
@@ -1697,17 +1690,17 @@
 			var exports = ClassModule;
 			$.ClassModule = ClassModule;
 			return ClassModule
-		}, "1.0.0" );
+		} );
 
 	} )();
 
 	aQuery.define( "base/config", function( $ ) {
+		this.describe( "config of amdquery" );
 		$.config = _config;
 		return _config;
 	} );
 
 	aQuery.define( 'base/queue', function( $ ) {
-    this.describe( "1.0.0" );
 		/**
 		 * A module representing a queue.
 		 * @public
@@ -1729,7 +1722,7 @@
 
 	aQuery.define( "base/Promise", function( $ ) {
 		"use strict"; //启用严格模式
-    this.describe( "1.0.0" );
+		this.describe( "Class Promise" );
 		var checkArg = function( todo, fail, progress, name ) {
 			var arg = util.argToArray( arguments ),
 				len = arg.length,
@@ -2061,11 +2054,11 @@
 		}
 
 		return Promise;
-	});
+	} );
 
 	aQuery.define( "base/ready", [ "base/Promise" ], function( $, Promise ) {
 		"use strict"; //启用严格模式
-    this.describe( "1.0.0" );
+		this.describe( "Life Cycle of AMDQuery" );
 		var ready = function( fn ) {
 			setTimeout( function() {
 				rootPromise.and( fn );
@@ -2136,7 +2129,7 @@
 		} ).rootResolve();
 
 		return $.ready = ready;
-	});
+	} );
 
 	window.aQuery = $;
 

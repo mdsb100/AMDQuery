@@ -1,4 +1,5 @@
 define( "hash/cubicBezier.tween", function() {
+  this.describe( "CubicBezier parameter" );
 	return {
 		"back.easeInOut": [ 0.680, -0.550, 0.265, 1.550 ],
 		"circ.easeInOut": [ 0.785, 0.135, 0.150, 0.860 ],

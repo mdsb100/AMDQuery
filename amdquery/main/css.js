@@ -1,5 +1,6 @@
 aQuery.define( "main/css", [ "base/typed", "base/extend", "base/array", "base/support", "base/client", "main/data", "main/query" ], function( $, typed, utilExtend, utilArray, support, client, data, query, undefined ) {
 	"use strict"; //启用严格模式
+	this.describe( "consult JQuery1.9.1" );
 	var rnumnonpx = /^-?(?:\d*\.)?\d+(?!px)[^\d\s]+$/i,
 		rmargin = /^margin/,
 		rposition = /^(top|right|bottom|left)$/,
@@ -472,4 +473,4 @@ aQuery.define( "main/css", [ "base/typed", "base/extend", "base/array", "base/su
 	} );
 
 	return css;
-}, "consult JQuery1.9.1" );
+} );

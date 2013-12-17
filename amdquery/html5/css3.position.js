@@ -1,4 +1,6 @@
 aQuery.define( "html5/css3.position", [ "base/support", "main/position", "html5/css3" ], function( $, support, position, css3 ) {
+  "use strict"; //启用严格模式
+  this.describe( "Get positionX: left + translateX" );
   var css3Position = {
     getPositionX: function( ele ) {
       var x = position.getOffsetL( ele );

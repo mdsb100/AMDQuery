@@ -26,7 +26,7 @@ aQuery.define( "app/View", [
 	src, undefined ) {
 	//View need require depend on Widget
 	"use strict"; //启用严格模式
-
+  this.describe( "Super View Class" );
 	function getHtmlSrc( id ) {
 		//都只能小写
 		var index = id.lastIndexOf( "view/" );

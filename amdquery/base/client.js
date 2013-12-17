@@ -1,5 +1,5 @@
-﻿// quote from colo.js by Andrew Brehaut, Tim Baumann
-aQuery.define( "base/client", [ "base/extend" ], function( $, extend ) {
+﻿aQuery.define( "base/client", [ "base/extend" ], function( $, extend ) {
+	this.describe( "Cline of Browser" );
 	var reg = RegExp,
 		client = {
 			browser: {
@@ -146,4 +146,4 @@ aQuery.define( "base/client", [ "base/extend" ], function( $, extend ) {
 	}
 
 	return client;
-}, "1.0.0" );
+} );

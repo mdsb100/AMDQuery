@@ -1,5 +1,6 @@
 aQuery.define( "base/array", [ "base/typed", "base/extend" ], function( $, typed, extend ) {
 	"use strict"; //启用严格模式
+  this.describe( "Array Util" );
 	var
 	indexOf = Array.prototype.indexOf || function( item, i ) {
 		var len = this.length;
@@ -139,4 +140,4 @@ aQuery.define( "base/array", [ "base/typed", "base/extend" ], function( $, typed
 		};
 
 	return array;
-}, "1.0.0" );
+} );

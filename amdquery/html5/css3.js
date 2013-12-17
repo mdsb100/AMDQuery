@@ -1,5 +1,6 @@
 ﻿aQuery.define( "html5/css3", [ "base/support", "base/extend", "base/typed", "base/client", "base/array", "main/css" ], function( $, support, utilExtend, typed, client, array, css2, undefined ) {
 	"use strict"; //启用严格模式
+  this.describe("HTML5 CSS3");
 	var css3Head = ( function() {
 		var head = "";
 		if ( client.engine.ie )

@@ -1,5 +1,6 @@
 aQuery.define( "base/extend", [ "base/typed" ], function( $, typed ) {
 	"use strict"; //启用严格模式
+	this.describe( "Extend Util" );
 	var extend = {
 		easyExtend: function( obj1, obj2 ) {
 			/// <summary>简单地把对象的属性复制到对象一</summary>
@@ -88,4 +89,4 @@ aQuery.define( "base/extend", [ "base/typed" ], function( $, typed ) {
 	};
 
 	return extend;
-}, "1.0.0" );
+} );

@@ -1,5 +1,6 @@
 aQuery.define( "base/typed", function( $ ) {
 	"use strict"; //启用严格模式
+  this.describe( "Support typeof function" );
 	var
 	class2type = {},
 		hasOwnProperty = class2type.hasOwnProperty,
@@ -242,4 +243,4 @@ aQuery.define( "base/typed", function( $ ) {
 	};
 
 	return typed;
-}, "1.0.0" );
+} );

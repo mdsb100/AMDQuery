@@ -1,11 +1,11 @@
 ﻿aQuery.define( "html5/animate.transform", [ "base/extend", "base/support", "main/object", "module/FX", "html5/css3", "module/animate" ], function( $, utilExtend, support, object, FX, css3, animate, undefined ) {
-
+  "use strict"; //启用严格模式
+  this.describe("Support transform to animation");
 	var getScale = function( r ) {
 		return r ? Math.max( r, 0 ) : 1;
 	}, transformCss = css3.getTransformStyleNameUnCamelCase();
 
 	//"-" + css3.css3Head + "-transform";
-	//给动画类添加一个自定义方法
 	if ( support.transform3d ) {
 		var Transfrom3dForFX = FX.extend( function Transfrom3dForFX( ele, options, value, name, type ) {
 			if ( this instanceof Transfrom3dForFX ) {

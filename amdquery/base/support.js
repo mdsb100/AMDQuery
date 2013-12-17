@@ -1,7 +1,6 @@
 ﻿aQuery.define( "base/support", [ "base/extend" ], function( $, utilExtend ) {
-	//consult from jquery-1.9.1
 	"use strict"; //启用严格模式
-
+  this.describe( "Consult from jquery-1.9.1" );
 	var support, all, a,
 		input, select, fragment,
 		opt, eventName, isSupported, i,
@@ -270,4 +269,4 @@
 	root = script = null;
 
 	return support;
-}, "JQuery1.9.1" );
+} );

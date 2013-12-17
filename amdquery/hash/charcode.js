@@ -1,5 +1,5 @@
 ﻿define( "hash/charcode", [ "base/client" ], function( client ) {
-	return {
+  return {
 		codeToStringReflect: {
 			108: "Enter",
 			112: "F1",

@@ -1,5 +1,6 @@
 ﻿aQuery.define( "html5/Storage", [ "module/parse" ], function( $, parse, undefined ) {
 	"use strict"; //启用严格模式
+  this.describe( "HTML5 Storage" );
 	var localStorage = window.localStorage || globalStorage[ location.host ],
 		sessionStorage = window.sessionStorage;
 
