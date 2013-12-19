@@ -547,7 +547,6 @@
 					var msg = e.message || "no message",
 						filename = e.filename || e.sourceURL || e.stacktrace || url;
 					line = e.lineno || e.lineNumber || e.number || e.lineNumber || e.line || line;
-					$.showMsg( [ "message:", msg, "<br/>", "filename:", filename, "<br/>", "line:", line ].join( "" ), isMsgDiv );
 				} );
 				return this;
 			},

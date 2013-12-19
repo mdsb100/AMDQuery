@@ -397,7 +397,6 @@ aQuery.define( "ui/turnBook", [ "base/support", "base/typed", "main/css", "main/
 						target.trigger( "turnbookmove", self, e );
 						break;
 					case "swap.pause":
-						//$.showMsg("pause");
 						e.type = "turnbookpause";
 						target.trigger( "turnbookpause", self, e );
 						break;

@@ -133,7 +133,7 @@
 			return ret;
 		}() ),
 		rootPath = basePath.replace( /((.*?\/){3}).*$/, "$1" ),
-		msgDiv, runTime;
+		runTime;
 
 	/**
 	 * <h3>
@@ -416,38 +416,6 @@
 		rootPath: rootPath,
 
 		pagePath: pagePath,
-
-		showMsg: function( str, bool ) {
-			/// <summary>设置浏览器标题或者显示个div 点击会自动消失</summary>
-			/// <param name="str" type="any">任何对象都将被toString显示</param>
-			/// <param name="bool" type="Boolean">为true的话使用div显示否则在title显示</param>
-			/// <returns type="self" />
-			str = str.toString();
-			if ( bool ) {
-				if ( msgDiv ) {
-					msgDiv.innerHTML = str;
-					msgDiv.style.display = "block";
-				} else {
-					msgDiv = document.createElement( "div" );
-					var s = msgDiv.style;
-					s.top = 0;
-					s.left = 0;
-					s.zIndex = 1001;
-					s.position = "absolute";
-					s.display = "block";
-					s.innerHTML = str;
-					s.fontSize = "18px";
-					msgDiv.onclick = function() {
-						this.style.display = "none";
-					};
-					document.body.appendChild( msgDiv );
-				}
-			} else {
-				document.title = str;
-			}
-			return this;
-
-		},
 
 		util: {
 			argToArray: util.argToArray,
@@ -749,8 +717,9 @@
 			this.handlers = {};
 			this.module = null;
 			this.first = null;
+			this.description = "No description";
 			this.id = ClassModule.variable( module );
-			this.init( dependencies, factory, status, container, fail );
+			this.reset( dependencies, factory, status, container, fail );
 			ClassModule.setModule( this.id, this );
 
 			//this.check();
@@ -1276,6 +1245,12 @@
 				var s = this.status;
 				return isStr == true ? ClassModule.statusReflect[ s ] : s;
 			},
+			/**
+			 * Describe module
+			 * @method
+			 * @param {String} - content
+			 * @returns {this}
+			 */
 			describe: function( content ) {
 				this.description = content;
 				$.module[ this.id ] = content;
@@ -1284,6 +1259,12 @@
 			valueOf: function() {
 				return this.description;
 			},
+			/**
+			 * Wait module get ready
+			 * @method
+			 * @protected
+			 * @returns {this}
+			 */
 			holdReady: function() {
 				var md, hd = ClassModule.holdon[ this.id ],
 					MD = ClassModule.modules;
@@ -1294,7 +1275,18 @@
 				}
 				return this;
 			},
-			init: function( dependencies, factory, status, container, fail ) {
+			/**
+			 * Reset property
+			 * @method
+			 * @protected
+			 * @param {Array} dependencies - Dependencies module
+			 * @param {Function|Object|String|Number|Boolean} [factory] - Module body
+			 * @param {Number} [status=0] - 0:init 1:queue 2:require 3:define 4:ready
+			 * @param {String} [container] - Path of js
+			 * @param {Function} [fail] - An function to the fail callback if loading moudle timeout or error
+			 * @returns {this}
+			 */
+			reset: function( dependencies, factory, status, container, fail ) {
 				for ( var i = dependencies.length - 1; i >= 0; i-- ) {
 					dependencies[ i ] = ClassModule.variable( dependencies[ i ] );
 				}
@@ -1303,27 +1295,23 @@
 				this.status = status || 0;
 				this.container = container;
 				this.fail = fail;
-				this.description = "No description";
 				return this;
 			},
+			/**
+			 * Go to load Module
+			 * @method
+			 * @returns {this}
+			 */
 			load: function() {
 				var id = this.id,
 					fail = this.fail,
 					status = this.getStatus(),
 					url;
 
-				// if ( status == 2 ) {
-				//   this.loadDependencies( );
-				//   return this;
-				// }
-				// if ( status > 1 ) {
-				//   return this;
-				// }
-
 				( url = ClassModule.getPath( id, ".js" ) ) || util.error( {
-					fn: "require",
-					msg: "Could not load module: " + id + ", Cannot match its URL"
-				} );
+						fn: "require",
+						msg: "Could not load module: " + id + ", Cannot match its URL"
+					} );
 				//如果当前模块不是已知的具名模块，则设定它为正在处理中的模块，直到它的定义体出现
 				//if (!namedModule) { ClassModule.anonymousID = id; } //这边赋值的时候应当是影射的
 				this.setStatus( 2 );
@@ -1338,6 +1326,11 @@
 				}
 				return this;
 			},
+			/**
+			 * Go to load Dependent
+			 * @method
+			 * @returns {this}
+			 */
 			loadDependencies: function() {
 				var dep = this.dependencies,
 					i = 0,
@@ -1354,7 +1347,13 @@
 				}
 				return this;
 			},
-			request: function( success ) {
+			/**
+			 * Module go to launch
+			 * @method
+			 * @param {Function} [success] - ready callback
+			 * @returns {this}
+			 */
+			launch: function( success ) {
 				this.addHandler( success );
 				switch ( this.status ) {
 					case 0:
@@ -1381,13 +1380,30 @@
 
 				return this;
 			},
+			/**
+			 * @method
+			 * @protected
+			 * @param {Number}
+			 * @returns {this}
+			 */
 			setStatus: function( status ) {
 				this.status = status;
 				return this;
 			},
+			/**
+			 * @method
+			 * @protected
+			 * @returns {Boolean}
+			 */
 			isReady: function() {
 				return this.status === 4;
 			},
+			/**
+			 * Trigger event
+			 * @method
+			 * @protected
+			 * @returns {this}
+			 */
 			trigger: function() {
 				var h = this.handlers[ this.id ],
 					item;
@@ -1402,6 +1418,17 @@
 			}
 		}
 
+		/**
+		 * AMD define
+		 * @class
+		 * @param {String} - Module
+		 * @param {String[]|*} - If arguments[2] is a factory, it can be any object
+		 * @param {*} [factory] - Usually, it is function(){} or {}
+		 * @returns {ClassModule}
+		 * @example
+		 * define( "config", { } );
+		 * define( "a/module", function( ) { } );
+		 */
 		window.define = function( id, dependencies, factory ) {
 			var arg = arguments,
 				ret, deep, body, container, status;
@@ -1452,7 +1479,7 @@
 			if ( ret = ClassModule.getModule( id ) ) {
 				deep = ret.getStatus();
 				//container = deep != 0 ? ClassModule.getContainer(id) : null;
-				ret.init( dependencies, factory, 3, container );
+				ret.reset( dependencies, factory, 3, container );
 			} else {
 				container = /tempDefine/.test( id ) ? "inner" : ClassModule.getContainer( id );
 				ret = new ClassModule( id, dependencies, factory, 3, container );
@@ -1476,16 +1503,8 @@
 
 		};
 
-		util.extend( define, {
-			amd: ClassModule.maps,
-			noConflict: function() {
-				window.define = _define;
-				return define;
-			},
-			getModuleId: function() {
-				return ClassModule.anonymousID;
-			}
-		} );
+		define.amd = ClassModule.maps;
+
 
 		function getTempDefine( module, fail ) {
 			//如果请求一组模块则转换为对一个临时模块的定义与请求处理
@@ -1520,6 +1539,19 @@
 			return ret;
 		}
 
+		/**
+		 * AMD require
+		 * @class
+		 * @global
+		 * @param {String} - Module
+		 * @param {ClassModuleCallback}
+		 * @param {Function} [fail] - An function to the fail callback if loading moudle timeout or error
+		 * @returns {ClassModule}
+		 * @example
+		 * require( [ "main/query", "hash/locationHash", "ui/swapview", "ui/scrollableview", "module/initWidget" ], function( query, locationHash ) { } );
+		 * require( "main/query", function( query ) { } );
+		 * require( "main/query" ).first // Maybe is null;
+		 */
 		window.require = function( module, success, fail ) {
 			if ( !module ) {
 				return;
@@ -1532,15 +1564,16 @@
 				msg: module + ":success should be a Function"
 			}, "TypeError" );
 
-			return ret.request( success );
+			return ret.launch( success );
 		};
 
 		util.extend( require, {
-			noConflict: function() {
-				window.require = _require;
-				return require;
-			},
-
+			/**
+			 * Cache the module
+			 * @memberof require
+			 * @param {Object.<String,Function>} - String: module name,Function: moudle factory
+			 * @returns {this}
+			 */
 			cache: function( cache ) {
 				var container = ClassModule.getContainer( null, ClassModule.amdAnonymousID ? true : false );
 				//util.extend(ClassModule.cache, a.cache);
@@ -1551,11 +1584,13 @@
 				}
 				return this;
 			},
-
+			/**
+			 * The module named, so we can load it by async.
+			 * @memberof require
+			 * @param {String|String[]|Object.<String,*>} - String: module name
+			 * @returns {this}
+			 */
 			named: function( name ) {
-				/// <summary>具名以用来可以异步加载</summary>
-				/// <param name="name" type="Array/Object/String">具名名单</param>
-				/// <returns type="self" />
 				var i, b, n = name;
 				if ( n && n.constructor == Array ) {
 					for ( i = 0; b = n[ i++ ]; ) {
@@ -1570,12 +1605,14 @@
 				}
 				return this;
 			},
-
+			/**
+			 * reflect path
+			 * @memberof require
+			 * @param {String|Object.<String,String>} - Module name | Object.<String,String>: <"module name", "js path">
+			 * @param {String} [path] - js path; If "name" is Object then "path" is optional
+			 * @returns {this}
+			 */
 			reflect: function( name, path ) {
-				/// <summary>映射路径</summary>
-				/// <param name="name" type="Object/String">映射名</param>
-				/// <param name="path" type="String/undefined">路径名</param>
-				/// <returns type="self" />
 				if ( typeof name == "object" ) {
 					for ( var i in name ) {
 						ClassModule.maps[ i ] = name[ i ];
@@ -1586,30 +1623,14 @@
 
 				return this;
 			},
-
-			config: function( a, b, c ) { //name, path, named
-				var len = arguments.length;
-				switch ( len ) {
-					case 1:
-						if ( typeof a == "string" || a && a.constructor == Array ) {
-							require.named( a );
-						} else if ( typeof a == "object" ) {
-							a.reflect && require.reflect( a.reflect );
-							a.named && a.named == true ? require.named( a.reflect ) : require.named( a.named );
-							//如果named=true其实就是映射a.reflect
-							a.amd && util.extend( _config.amd, a.amd );
-							a.cache && require.cache( a.cache );
-						}
-						break;
-					case 2:
-						require.reflect( a, b );
-						break;
-
-				}
-				return this;
-
-			},
-
+			/**
+			 * @memberof require
+			 * @param {String}
+			 * @param {String}
+			 * @returns {this}
+			 * @example
+			 * require.variable( "app", "my/path/to/app" )
+			 */
 			variable: function( name, path ) {
 				if ( name.indexOf( ClassModule.variablePrefix ) != 0 ) {
 					name = ClassModule.variablePrefix + name;
