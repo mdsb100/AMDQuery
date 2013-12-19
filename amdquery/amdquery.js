@@ -1423,9 +1423,6 @@
 		 * @param {String[]|*} - If arguments[2] is a factory, it can be any object
 		 * @param {*} [factory] - Usually, it is function(){} or {}
 		 * @returns {ClassModule}
-		 * @example
-		 * define( "config", { } );
-		 * define( "a/module", function( ) { } );
 		 */
 		window.define = function( id, dependencies, factory ) {
 			var arg = arguments,
@@ -1604,7 +1601,7 @@
 				return this;
 			},
 			/**
-			 * reflect path
+			 * Reflect path
 			 * @memberof require
 			 * @param {String|Object.<String,String>} - Module name | Object.<String,String>: <"module name", "js path">
 			 * @param {String} [path] - js path; If "name" is Object then "path" is optional
@@ -1762,9 +1759,13 @@
 			count = 0;
 
 		/**
-		 * {@link http://wiki.commonjs.org/wiki/Promises/A}
+		 * @see http://wiki.commonjs.org/wiki/Promises/A
 		 * @public
 		 * @module base/Promise
+		 * @example
+		 * new Promise(function(){}, function(){})
+		 * new Promise(function(){})
+		 * new Promise()
 		 */
 
 		/**
@@ -1774,27 +1775,20 @@
 		/**
 		 * @public
 		 * @alias module:base/Promise
-     * @constructor
+		 * @constructor
 		 */
-		var Promise = function( todo, fail, progress, name ) {
-			/// <summary>Promise模块</summary>
-			/// <param name="todo" type="Function">成功</param>
-			/// <param name="fail" type="Function">失败</param>
-			/// <param name="progress" type="Function">进度</param>
-			/// <param name="name" type="String">方法</param>
-			/// <para>new Promise(function(){},..,..,"origin")</para>
-			/// <para>new Promise(function(){},"origin")</para>
-			/// <para>new Promise()</para>
-			/// <returns type="self" />
-			this.init( todo, fail, progress, name );
+		var Promise = function( todo, fail, progress ) {
+			this.init( todo, fail, progress );
 		}
 
 
 		Promise.prototype = {
 			constructor: Promise,
+			/**
+			 * Do next
+			 * @private
+			 */
 			_next: function( result ) {
-				/// <summary>inner</summary>
-				/// <returns type="self" />
 				for ( var i = 0, len = this.thens.length, promise; i < len; i++ ) {
 					// 依次调用该任务的后续任务
 					promise = this.thens[ i ];
@@ -1802,18 +1796,21 @@
 				}
 				return this;
 			},
+			/**
+			 * Push promise
+			 * @private
+			 */
 			_push: function( nextPromise ) {
-				/// <summary>inner</summary>
-				/// <returns type="self" />
 				this.thens.push( nextPromise );
 				return this;
 			},
-			/** call it */
+			/**
+			 * Call todo, fail or progress
+			 * @param {String} - Function name
+			 * @param {*}
+			 * @returns {*}
+			 */
 			call: function( name, result ) {
-				/// <summary>调用某个方法</summary>
-				/// <param name="name" type="Function">成功</param>
-				/// <param name="result" type="any/arguments">参数，如果参数是argument则会使用apply</param>
-				/// <returns type="any" />
 				switch ( name ) {
 					case "fail":
 					case "progress":
@@ -1825,23 +1822,30 @@
 
 				return this[ name ].call( this.context, result );
 			},
+			/**
+			 * Get property
+			 * @param {String} - Property name
+			 * @returns {*}
+			 */
 			get: function( propertyName ) {
-				/// <summary>获得某个属性</summary>
-				/// <param name="propertyName" type="String">属性名称</param>
-				/// <returns type="any" />
 				return this[ propertyName ];
 			},
+			/**
+			 * @param {Object} - Context of Promise
+			 * @returns {this}
+			 */
 			withContext: function( context ) {
 				this.context = context;
 				return this;
 			},
+			/**
+			 * Then do...
+			 * @param {Function} - Todo
+			 * @param {Function} - Fail next
+			 * @param {Function} - Progress
+			 * @returns {Promise}
+			 */
 			then: function( nextToDo, nextFail, nextProgress ) {
-				/// <summary>然后执行</summary>
-				/// <param name="nextToDo" type="Function">成功</param>
-				/// <param name="nextFail" type="Function">失败</param>
-				/// <param name="nextProgress" type="Function">进度</param>
-				/// <para>then是不能传 path的</para>
-				/// <returns type="Promise" />
 				var promise = new Promise( nextToDo, nextFail, nextProgress );
 				if ( this.context !== this ) {
 					promise.withContext( this.context );
@@ -1856,13 +1860,13 @@
 				}
 				return promise;
 			},
-			init: function( todo, fail, progress, name ) {
-				/// <summary>初始化函数 和构造函数同一用法</summary>
-				/// <param name="todo" type="Function">成功</param>
-				/// <param name="fail" type="Function">失败</param>
-				/// <param name="progress" type="Function">进度</param>
-				/// <param name="name" type="String">方法</param>
-				/// <returns type="self" />
+			/**
+			 * @constructs
+			 * @param {Function=}
+			 * @param {Function=}
+			 * @param {Function=}
+			 */
+			init: function( todo, fail, progress ) {
 				var arg = checkArg.apply( this, arguments );
 
 				this.context = this;
@@ -1882,6 +1886,10 @@
 
 				return this;
 			},
+			/**
+			 * clear propery
+			 * @private
+			 */
 			_clearProperty: function() {
 				this.result = null;
 				this.thens = [];
@@ -1891,12 +1899,12 @@
 				this.parent = null;
 				return this;
 			},
-
-			destroy: function( parent ) {
-				/// <summary>删除节点下的promise</summary>
-				/// <param name="parent" type="Promise">undefined/Promise</param>
-				/// <returns type="self" />
-				var ancester = parent || this,
+			/**
+			 * Destroy self
+			 * @returns {void}
+			 */
+			destroy: function() {
+				var ancester = this,
 					thens = ancester.thens,
 					i, len = thens.length,
 					result = 0,
@@ -1909,12 +1917,7 @@
 						then._clearProperty();
 					}
 				}
-				return this;
-			},
-			destroyFromRoot: function() {
-				/// <summary>删除根下的所有节点</summary>
-				/// <returns type="self" />
-				return this.destroy( this.root() );
+				this._clearProperty();
 			},
 			resolve: function( obj ) {
 				/// <summary>执行</summary>
