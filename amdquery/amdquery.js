@@ -702,7 +702,7 @@
 
 		function ClassModule( module, dependencies, factory, status, container, fail ) {
 			/**
-			 * @memberOf module:base/ClassModule
+			 * @memberof module:base/ClassModule
 			 * @constructs module:base/ClassModule
 			 * @param {String} module - Module name
 			 * @param {Array} dependencies - Dependencies module
@@ -1061,9 +1061,7 @@
 		 * @param {...*} - An argument array of any object. Any one argument is defined in the module.
 		 */
 
-		ClassModule.prototype =
-		/** @lends module:base/ClassModule.prototype */
-		{
+		ClassModule.prototype = /** @lends module:base/ClassModule.prototype */ {
 			/**
 			 * When completed, the param fn is called
 			 * @method
@@ -1706,11 +1704,12 @@
 
 			/**
 			 * @public
+			 * @alias module:base/ClassModule
 			 * @constructor
 			 */
 			var exports = ClassModule;
 			$.ClassModule = ClassModule;
-			return ClassModule
+			return exports;
 		} );
 
 	} )();
@@ -1734,6 +1733,7 @@
 
 		/**
 		 * @public
+		 * @alias module:base/queue
 		 * @constructor
 		 */
 		var exports = Queue;
@@ -1761,7 +1761,22 @@
 			random = 0,
 			count = 0;
 
-		function Promise( todo, fail, progress, name ) {
+		/**
+		 * {@link http://wiki.commonjs.org/wiki/Promises/A}
+		 * @public
+		 * @module base/Promise
+		 */
+
+		/**
+		 * @typedef {module:base/Promise} Promise
+		 */
+
+		/**
+		 * @public
+		 * @alias module:base/Promise
+     * @constructor
+		 */
+		var Promise = function( todo, fail, progress, name ) {
 			/// <summary>Promise模块</summary>
 			/// <param name="todo" type="Function">成功</param>
 			/// <param name="fail" type="Function">失败</param>
@@ -1773,6 +1788,7 @@
 			/// <returns type="self" />
 			this.init( todo, fail, progress, name );
 		}
+
 
 		Promise.prototype = {
 			constructor: Promise,
@@ -1792,6 +1808,7 @@
 				this.thens.push( nextPromise );
 				return this;
 			},
+			/** call it */
 			call: function( name, result ) {
 				/// <summary>调用某个方法</summary>
 				/// <param name="name" type="Function">成功</param>
