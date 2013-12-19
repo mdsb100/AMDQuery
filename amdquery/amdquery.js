@@ -1825,7 +1825,7 @@
 				/// <param name="nextProgress" type="Function">进度</param>
 				/// <para>then是不能传 path的</para>
 				/// <returns type="Promise" />
-				var promise = new Promise( nextToDo, nextFail, nextProgress, arguments[ 3 ] || this.path );
+				var promise = new Promise( nextToDo, nextFail, nextProgress );
 				if ( this.context !== this ) {
 					promise.withContext( this.context );
 				}
@@ -1858,14 +1858,10 @@
 				};
 				this.fail = arg[ 1 ] || null;
 				this.progress = arg[ 2 ] || null;
-				this.path = arg[ 3 ] || "master";
 				this.parent = null;
 				this.friend = 0;
 				this.asyncCount = 0;
 				this.id = count++;
-				this._branch = {};
-				this._back = [];
-				this._tag = {};
 
 				return this;
 			},
@@ -1876,9 +1872,6 @@
 				this.fail = null;
 				this.progress = null;
 				this.parent = null;
-				this._branch = {};
-				this._back = [];
-				this._tag = {};
 				return this;
 			},
 
@@ -1989,58 +1982,12 @@
 				}
 				return this;
 			},
-
-			branch: function( todo, fail, progress, name ) {
-				/// <summary>打上分支</summary>
-				/// <param name="nextToDo" type="Function">成功</param>
-				/// <param name="nextFail" type="Function">失败</param>
-				/// <param name="nextProgress" type="Function">进度</param>
-				/// <param name="name" type="String">方法</param>
-				/// <returns type="Promise" />
-				var
-				self, arg = checkArg.apply( this, arguments ),
-					name = arg[ 3 ] ? arg[ 3 ] : "branch" + random++;
-
-				this.root()._back.push( {
-					branch: name,
-					promise: this
-				} );
-				if ( self = this.root()._branch[ name ] ) {} else {
-					this.root()._branch[ name ] = self = this;
-				}
-
-				return self.then( arg[ 0 ], arg[ 1 ], arg[ 2 ], name );
-			},
 			finished: function() {
 				return this.state === "done";
 			},
 			unfinished: function() {
 				return this.state === "todo";
 			},
-			reBranch: function() {
-				/// <summary>回到上一个分支</summary>
-				/// <returns type="Promise" />
-				return this.root()._back.pop().promise;
-			},
-			tag: function( str ) {
-				/// <summary>打上一标签便于管理</summary>
-				/// <returns type="self/Promise" />
-				var self;
-				if ( self = this.root()._tag[ str ] ) {
-
-				} else {
-					this.root()._tag[ str ] = self = this;
-				}
-				return self;
-			},
-			master: function() {
-				/// <summary>返回master路径</summary>
-				/// <returns type="Promise" />
-				var master = this.root()._branch[ 0 ].promise || this;
-
-				return master;
-			},
-
 			root: function() {
 				/// <summary>返回根</summary>
 				/// <returns type="Promise" />
@@ -2055,18 +2002,6 @@
 				/// <returns type="Promise" />
 				this.root().resolve( obj );
 				return this;
-			},
-			checkout: function() {
-				/// <summary>检查路径</summary>
-				/// <returns type="Promise" />
-				//                if (name) {
-				//                    if (name == this.root().path) {
-				//                        return
-				//                    }
-				//                    this.root()._branch[name]
-				//                } else {
-				return this.path;
-				//}
 			}
 		};
 
