@@ -84,7 +84,7 @@ aQuery.define( "app/Application", [
 
 			} );
 
-			this.promise.rootResolve();
+			this.promise.root().resolve();
 
 		},
 		getAppRelativePath: function( path ) {

@@ -1919,10 +1919,11 @@
 				}
 				this._clearProperty();
 			},
+			/**
+			 * @param {*=} - result
+			 * @returns {this}
+			 */
 			resolve: function( obj ) {
-				/// <summary>执行</summary>
-				/// <param name="obj" type="any/arguments">参数，如果参数是argument则会使用apply</param>
-				/// <returns type="self" />
 				if ( this.state != "todo" ) {
 					// util.error( {
 					//   fn: "Promise.resolve",
@@ -1968,19 +1969,40 @@
 				}
 				return this;
 			},
-
+			/**
+			 * The new promise is siblings
+			 * @param {Function=}
+			 * @param {Function=}
+			 * @param {Function=}
+			 * @returns {Promise}
+			 * @example
+			 * new Promise().and(todo).and(todo);
+			 */
 			and: function( todo, fail, progress ) {
-				/// <summary>并且执行</summary>
-				/// <param name="todo" type="Function">成功</param>
-				/// <param name="fail" type="Function">失败</param>
-				/// <param name="progress" type="Function">进度</param>
-				/// <returns type="self" />
 				var self = this.parent || this,
 					promise = self.then( todo, fail, progress );
 				promise.friend = 1;
 				self.asyncCount += 1;
 				return promise;
 			},
+			/**
+			 * Relative method "and"
+			 * @param {Promise} [promise=this]
+			 * @param {*=} - result
+			 * @returns {Promise}
+			 * @example
+			 * function delay(ms) {
+			 *   return function (obj) {
+			 *       var promise = new Promise;
+			 *       var self = this;
+			 *       setTimeout(function () {
+			 *           promise.together(self, obj);
+			 *       }, ms);
+			 *       return promise;
+			 *   };
+			 * };
+			 * new Promise().and(delay(1000)).and(delay(2000));
+			 */
 			together: function( promise, obj ) {
 				var i = 0,
 					parent = promise.parent || this.parent,
@@ -2002,29 +2024,38 @@
 				}
 				return this;
 			},
+			/**
+			 * finished
+			 * @returns {Boolean}
+			 */
 			finished: function() {
 				return this.state === "done";
 			},
+			/**
+			 * unfinished
+			 * @returns {Boolean}
+			 */
 			unfinished: function() {
 				return this.state === "todo";
 			},
+			/**
+			 * get root promise
+			 * @returns {Promise}
+			 */
 			root: function() {
-				/// <summary>返回根</summary>
-				/// <returns type="Promise" />
 				var parent = this;
 				while ( parent.parent ) {
 					parent = parent.parent;
 				}
 				return parent;
-			},
-			rootResolve: function( obj ) {
-				/// <summary>从根开始执行</summary>
-				/// <returns type="Promise" />
-				this.root().resolve( obj );
-				return this;
 			}
 		};
 
+		/**
+		 * Whether it is "Promise" instances
+     * @param {Promise}
+		 * @returns {Boolean}
+		 */
 		Promise.forinstance = function( promise ) {
 			return promise instanceof Promise || ( promise ? promise.__promiseFlag === true : false );
 		}
@@ -2102,7 +2133,7 @@
 		} ).then( function() {
 			document.documentElement.style.left = "0px";
 			document.documentElement.style.position = "";
-		} ).rootResolve();
+		} ).root().resolve();
 
 		return $.ready = ready;
 	} );
