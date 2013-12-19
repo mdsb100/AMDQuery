@@ -176,10 +176,17 @@ var _basePath = __filename.replace( /[^\\\/]*[\\\/]+[^\\\/]*$/i, '' ), //oye文�
   },
 
   matchDefine = function( content ) {
-    var r = /define\s*\(\s*([^,]*,)?\s*(\[[^\]]*\])/i,
+
+    var
+      notation = /("([^\\\"]*(\\.)?)*")|('([^\\\']*(\\.)?)*')|(\/{2,}.*?(\r|\n))|(\/\*(\n|.)*?\*\/)/g,
+      r = /define\s*\(\s*([^,]*,)?\s*(\[[^\]]*\])/i,
       match = /(define|require)\s*\([^\)]*\)/gm,
       rname = /(define|require)\s*\(\s*(['"]([^,\[\)]*)['"],?)?/i,
       rdepends = /\s*(\[[^\]]*\])/i;
+
+    content = content.replace(notation, function(word) { // 去除注释后的文本
+      return /^\/{2,}/.test(word) || /^\/\*/.test(word) ? "" : word;
+    } );
 
     var ret = content.match( match );
     var moduleAndDepends = [ ];
