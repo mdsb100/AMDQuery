@@ -215,7 +215,7 @@
 
 	/**
 	 * You can config global name. <a href="/document/app/asset/source/guide/AMDQuery.html#scrollTo=Reference_AMDQuery">AMDQuery.html</a> </br>
-   * aQuery("div") equivalent new aQuery("div")
+   * <strong>aQuery("div")</strong> equivalent to <strong>new aQuery("div")</strong>
    * @global
    * @class
    * @param {Object|String|Element|Element[]|Function}
