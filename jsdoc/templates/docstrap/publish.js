@@ -30,7 +30,7 @@ var navOptions = {
 	footer          : conf.footer || "",
 	copyright       : conf.copyright || "",
 	theme           : conf.theme || "simplex",
-	linenums        : conf.linenums,
+	linenums        : conf.linenums || true,
 	collapseSymbols : conf.collapseSymbols || false,
 	inverseNav      : conf.inverseNav
 };
