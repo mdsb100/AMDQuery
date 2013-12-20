@@ -467,9 +467,8 @@ aQuery.define( "main/css", [ "base/typed", "base/extend", "base/array", "base/su
 		return name;
 	};
 
-	$.interfaces.achieve( "constructorCSS", function( type, dollar, cssObj, ele, parentNode ) {
+	$.interfaces.achieve( "constructorCSS", function( type, dollar, cssObj, ele ) {
 		cssObj && dollar.css( cssObj );
-		parentNode && ( typed.isEle( parentNode ) || typed.is$( parentNode ) ) && dollar.appendTo( parentNode );
 	} );
 
 	return css;
