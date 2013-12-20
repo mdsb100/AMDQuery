@@ -213,6 +213,27 @@
 	util.extend( _config.module, defineConfig.module );
 	util.extend( _config.app, defineConfig.app );
 
+	/**
+	 * You can config global name. <a href="/document/app/asset/source/guide/AMDQuery.html#scrollTo=Reference_AMDQuery">AMDQuery.html</a> </br>
+   * aQuery("div") equivalent new aQuery("div")
+   * @global
+   * @class
+   * @param {Object|String|Element|Element[]|Function}
+   * @param {String}
+   * @param {Element}
+   * @example
+   * aQuery(function(){}); // Equivalent to ready(function(){}), see {@link module:base/ready}
+   * // should require("main/query")
+   * aQuery("div"); aQuery("#my"); aQuery(".title") // see {@link http://sizzlejs.com/}
+   * aQuery(div); aQuery([div, div]);
+   * aQuery(aQuery("div")); // another aQuery
+   * // should require("main/css")
+   * aQuery({height:100,width:100},"div"); // create a element "div", style is "height:100px;width:100px"
+   * aQuery(null,"a"); // create a element "a" without style
+   * // should require("main/dom")
+   * aQuery({height:100,width:100},"div", document.body); // create a element "div" and append to "body"
+   * aQuery(null,"div", document.body);
+	 */
 	var aQuery = function( a, b, c ) {
 		/// <summary>创造一个新$对象
 		/// <para>例:$(function(){将会在window.onload时执行})</para>
@@ -1932,7 +1953,7 @@
 					return this;
 				}
 
-				if ( Promise.forinstance( this.result ) ) {
+        if ( Promise.forinstance( this.result ) ) {
 					this.result.resolve( obj );
 					return this;
 				} else if ( this.fail ) {
