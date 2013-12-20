@@ -3,7 +3,7 @@ aQuery.define( "@app/controller/content", [ "base/client", "app/Controller", "@a
 	var Controller = SuperController.extend( {
 		init: function( contollerElement, models ) {
 			this._super( new ContentView( contollerElement ), models );
-			var $content = $( this.view.topElement ).find( "#content" );
+			var $content = $( this.view.topElement ).find( "iframe" );
 
 			this.$content = $content;
 		},
@@ -12,8 +12,11 @@ aQuery.define( "@app/controller/content", [ "base/client", "app/Controller", "@a
 				src: path
 			} )
 		},
+		getSrc: function() {
+			return this.$content.attr( "src" );
+		},
 		openWindow: function() {
-			var src = this.$content.attr( "src" );
+			var src = this.getSrc();
 			src && window.open( src );
 		}
 	}, {

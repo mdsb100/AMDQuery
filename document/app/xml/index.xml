@@ -14,7 +14,16 @@
       <div ui-flex="fillParentWidth:false;flex:1" widget="ui.flex;" style="width:200px;background-color:red">
       </div>
     </div>
-    <controller src="@app/controller/content.js" id="content"/>
+    <div id="contentview" amdquery-widget="ui.swapview;ui.flex" ui-flex="flex:1" ui-swapview="orientation:H">
+      <ol>
+        <li>
+          <controller src="@app/controller/content.js" id="document"/>
+        </li>
+        <li>
+          <controller src="@app/controller/content.js" id="api"/>
+        </li>
+      </ol>
+    </div>
   </div>
   <div style="width: 100%;height:50px;border-bottom:1px solid black;background-color:#CF301A;">
     <center style="line-height:50px;">

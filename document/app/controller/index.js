@@ -15,13 +15,28 @@ aQuery.define( "@app/controller/index", [
 			var self = this;
 
 			this.navmenu.on( "navmenu.select", function( e ) {
-				self.content.loadPath( e.path );
+				self.document.loadPath( e.path );
 			} );
 			this.navmenu.on( "navmenu.dblclick", function( e ) {
-				self.content.openWindow();
+				self.document.openWindow();
 			} );
 
 			this.navmenu.selectDefaultNavmenu( locationHash.navmenu );
+
+			// this.api.loadPath( "/document/api/index.html" );
+
+			var $swapview = $( this.view.topElement ).find( "#contentview" );
+
+			var loadAPIFlag = false;
+
+			$( "#tabview" ).on( "tabview.select", function( e ) {
+				$swapview.uiSwapview( "render", e.index, function() {
+					if ( e.index === 1 && loadAPIFlag === false ) {
+						loadAPIFlag = true;
+						self.api.loadPath( "/document/api/index.html" );
+					}
+				} );
+			} );
 		},
 		destroy: function() {
 			this.navmenu.clearHandlers();
