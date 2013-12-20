@@ -215,24 +215,24 @@
 
 	/**
 	 * You can config global name. <a href="/document/app/asset/source/guide/AMDQuery.html#scrollTo=Reference_AMDQuery">AMDQuery.html</a> </br>
-   * <strong>aQuery("div")</strong> equivalent to <strong>new aQuery("div")</strong>
-   * @global
-   * @class
-   * @param {Object|String|Element|Element[]|Function}
-   * @param {String}
-   * @param {Element}
-   * @example
-   * aQuery(function(){}); // Equivalent to ready(function(){}), see {@link module:base/ready}
-   * // should require("main/query")
-   * aQuery("div"); aQuery("#my"); aQuery(".title") // see {@link http://sizzlejs.com/}
-   * aQuery(div); aQuery([div, div]);
-   * aQuery(aQuery("div")); // another aQuery
-   * // should require("main/css")
-   * aQuery({height:100,width:100},"div"); // create a element "div", style is "height:100px;width:100px"
-   * aQuery(null,"a"); // create a element "a" without style
-   * // should require("main/dom")
-   * aQuery({height:100,width:100},"div", document.body); // create a element "div" and append to "body"
-   * aQuery(null,"div", document.body);
+	 * <strong>aQuery("div")</strong> equivalent to <strong>new aQuery("div")</strong>
+	 * @global
+	 * @class
+	 * @param {Object|String|Element|Element[]|Function}
+	 * @param {String}
+	 * @param {Element}
+	 * @example
+	 * aQuery(function(){}); // Equivalent to ready(function(){}), see {@link module:base/ready}
+	 * // should require("main/query")
+	 * aQuery("div"); aQuery("#my"); aQuery(".title") // see {@link http://sizzlejs.com/}
+	 * aQuery(div); aQuery([div, div]);
+	 * aQuery(aQuery("div")); // another aQuery
+	 * // should require("main/css")
+	 * aQuery({height:100,width:100},"div"); // create a element "div", style is "height:100px;width:100px"
+	 * aQuery(null,"a"); // create a element "a" without style
+	 * // should require("main/dom")
+	 * aQuery({height:100,width:100},"div", document.body); // create a element "div" and append to "body"
+	 * aQuery(null,"div", document.body);
 	 */
 	var aQuery = function( a, b, c ) {
 		/// <summary>创造一个新$对象
@@ -1439,7 +1439,8 @@
 
 		/**
 		 * AMD define
-		 * @class
+		 * @global
+		 * @method
 		 * @param {String} - Module
 		 * @param {String[]|*} - If arguments[2] is a factory, it can be any object
 		 * @param {*} [factory] - Usually, it is function(){} or {}
@@ -1556,8 +1557,15 @@
 		}
 
 		/**
+		 *
+		 * @public
+		 * @namespace require
+		 * @variation namespace
+		 */
+
+		/**
 		 * AMD require
-		 * @class
+		 * @method require
 		 * @global
 		 * @param {String} - Module
 		 * @param {ClassModuleCallback}
@@ -1586,7 +1594,7 @@
 		util.extend( require, {
 			/**
 			 * Cache the module
-			 * @memberof require
+			 * @memberof require(namespace)
 			 * @param {Object.<String,Function>} - String: module name,Function: moudle factory
 			 * @returns {this}
 			 */
@@ -1602,7 +1610,7 @@
 			},
 			/**
 			 * The module named, so we can load it by async.
-			 * @memberof require
+			 * @memberof require(namespace)
 			 * @param {String|String[]|Object.<String,*>} - String: module name
 			 * @returns {this}
 			 */
@@ -1623,7 +1631,7 @@
 			},
 			/**
 			 * Reflect path
-			 * @memberof require
+			 * @memberof require(namespace)
 			 * @param {String|Object.<String,String>} - Module name | Object.<String,String>: <"module name", "js path">
 			 * @param {String} [path] - js path; If "name" is Object then "path" is optional
 			 * @returns {this}
@@ -1640,7 +1648,7 @@
 				return this;
 			},
 			/**
-			 * @memberof require
+			 * @memberof require(namespace)
 			 * @param {String}
 			 * @param {String}
 			 * @returns {this}
@@ -1953,7 +1961,7 @@
 					return this;
 				}
 
-        if ( Promise.forinstance( this.result ) ) {
+				if ( Promise.forinstance( this.result ) ) {
 					this.result.resolve( obj );
 					return this;
 				} else if ( this.fail ) {
