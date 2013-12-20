@@ -2053,7 +2053,7 @@
 
 		/**
 		 * Whether it is "Promise" instances
-     * @param {Promise}
+		 * @param {Promise}
 		 * @returns {Boolean}
 		 */
 		Promise.forinstance = function( promise ) {
@@ -2066,6 +2066,29 @@
 	aQuery.define( "base/ready", [ "base/Promise" ], function( $, Promise ) {
 		"use strict"; //启用严格模式
 		this.describe( "Life Cycle of AMDQuery" );
+
+		/**
+		 * Life Cycle of AMDQuery
+		 * @public
+		 * @module base/ready
+		 */
+
+		/**
+		 * @typedef {module:base/ready} ready
+		 */
+
+		/**
+		 * @public
+		 * @alias module:base/ready
+		 * @method
+		 * @param {Function} - When AMDQuery ready to call the callback function
+		 * @example
+		 * require("base/ready", function( ready ) {
+		 *   ready(function(){
+		 *
+		 *   });
+		 * } );
+		 */
 		var ready = function( fn ) {
 			setTimeout( function() {
 				rootPromise.and( fn );
