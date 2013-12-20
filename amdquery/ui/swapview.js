@@ -330,7 +330,7 @@ aQuery.define( "ui/swapview", [
 			this.boardWidth = 0;
 			this.boardHeight = 0;
 			this.orientationLength = 0;
-			return this.create()._initHandler().enable().render( opt.index );
+			return this.create()._initHandler().enable().render( this.options.index );
 		},
 		customEventName: [ "beforeAnimation", "afterAnimation" ],
 		options: {
