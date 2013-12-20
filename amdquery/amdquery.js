@@ -214,7 +214,7 @@
 	util.extend( _config.app, defineConfig.app );
 
 	/**
-	 * You can config global name. <a href="/document/app/asset/source/guide/AMDQuery.html#scrollTo=Reference_AMDQuery">AMDQuery.html</a> </br>
+	 * You can config global name. <a target="_top" href="/document/app/asset/source/guide/AMDQuery.html#scrollTo=Reference_AMDQuery">AMDQuery.html</a> </br>
 	 * <strong>aQuery("div")</strong> equivalent to <strong>new aQuery("div")</strong>
 	 * @global
 	 * @class
