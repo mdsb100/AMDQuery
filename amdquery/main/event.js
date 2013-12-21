@@ -8,7 +8,6 @@
 		other = "resize scroll change select submit DomNodeInserted DomNodeRemoved".split( " " ),
 		_eventNameList = [].concat( mouse, mutation, html, key, other ),
 		_domEventList = {},
-		//, addHandler = $._redundance.addHandler
 		tools = {
 			editEventType: function( type ) {
 				/// <summary>兼容事件类型名</summary>
@@ -713,7 +712,6 @@
 		i = 0,
 		len;
 
-	//delete $._redundance.addHandler;
 	event.on = event.addHandler;
 	event.off = event.removeHandler;
 	event.clear = event.clearHandlers;

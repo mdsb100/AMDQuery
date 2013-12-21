@@ -219,8 +219,8 @@
 	 * @global
 	 * @class
 	 * @param {Object|String|Element|Element[]|Function}
-	 * @param {String}
-	 * @param {Element}
+	 * @param {String} [tagName="div"] - Tag name if a is a object
+	 * @param {Element} [parent] - Parent Element
 	 * @example
 	 * aQuery(function(){}); // Equivalent to ready(function(){}), see {@link module:base/ready}
 	 * // should require("main/query")
@@ -234,57 +234,47 @@
 	 * aQuery({height:100,width:100},"div", document.body); // create a element "div" and append to "body"
 	 * aQuery(null,"div", document.body);
 	 */
-	var aQuery = function( a, b, c ) {
-		/// <summary>创造一个新$对象
-		/// <para>例:$(function(){将会在window.onload时执行})</para>
-		/// <para>例:$("div")</para>
-		/// <para>例:$([ele,ele,ele])</para>
-		/// <para>以下依赖main/query</para>
-		/// <para>例:$($("#A"))</para>
-		/// <para>以下依赖main/dom</para>
-		/// <para>例:$({h:100,w:100},"div")</para>
-		/// <para>例:$(null,"div",document.body)</para>
-		/// <para>例:$({h:100,w:100},"div",document.body)</para>
-		/// <para>对于table的appendChild,removeChild可能不兼容低版本IE浏览器,table必须插入tbody</para>
-		/// <para>如果要直接写html应当使用parse调用它的parse.xml()</para>
-		/// </summary>
-		/// <param name="a" type="Object/String/Element/fun/$">可重载</param>
-		/// <param name="b" type="String">标签名 可选</param>
-		/// <param name="c" type="ele $">父元素 可选</param>
-		/// <returns type="$" />
+	var aQuery = function( elem, tagName, parent ) {
 		if ( $.forinstance( this ) ) {
-			if ( !a && !b ) return;
-			if ( ( typeof a == "object" || a == undefined || a == null ) && typeof b == "string" ) {
-				//if ($.css) {
+			if ( !elem && !tagName ) return;
+			if ( ( typeof elem === "object" || elem === undefined || elem === null ) && typeof tagName == "string" ) {
 				count++;
-				if ( b == undefined || b == null ) b = "div";
-				var obj = document.createElement( b );
+				if ( tagName === undefined || tagName === null ) tagName = "div";
+				var obj = document.createElement( tagName );
 				this.init( [ obj ] );
 
-				$.interfaces.trigger( "constructorCSS", this, a, b, c );
+				$.interfaces.trigger( "constructorCSS", this, elem, tagName, parent );
 
-				$.interfaces.trigger( "constructorDom", this, a, b, c );
+				$.interfaces.trigger( "constructorDom", this, elem, tagName, parent );
 
 				obj = null;
 
-			} else if ( a ) {
+			} else if ( elem ) {
 				var result;
-				if ( result = $.interfaces.trigger( "constructorQuery", a, b ) ) {
+				if ( result = $.interfaces.trigger( "constructorQuery", elem, tagName ) ) {
 					count++;
-					this.init( result, a );
+					this.init( result, elem );
 
 				}
 			}
-		} else if ( typeof a == "function" ) {
-			$.ready( a );
-		} else return new $( a, b, c );
+		} else if ( typeof elem == "function" ) {
+			$.ready( elem );
+		} else return new $( elem, tagName, parent );
 	},
+		/** @alias class:aQuery */
 		$ = aQuery;
 
-	util.extend( $, {
-		cabinet: {},
-		copyright: "2012 Cao Jun",
+	/**
+	 * @callback EachCallback
+	 * @param {*} - Item
+   * @param {String|Number} - If iterate array then parameter is index. If iterate object then parameter is key.
+	 */
 
+	util.extend( $, /** @lends aQuery */ {
+		/**
+		 * Interfaces namesapce of aQuery. See interfaces.
+		 * @private
+		 */
 		interfaces: {
 			achieve: function( name, fun ) {
 				/// <summary>实现一个接口</summary>
@@ -310,15 +300,19 @@
 			}
 
 		},
+		/** Module map */
 		module: {},
+		/**
+		 * The return value of this method will be used to determine whether an instance of "aQuery"
+		 * @returns "AMDQuery" */
 		toString: function() {
-			/// <summary></summary>
-			/// <returns type="String" />
 			return "AMDQuery";
 		},
+		/**
+		 * Return module infomation. see <a target="_top" href="/document/app/asset/source/guide/AMDQuery.html#scrollTo=AMD">AMDQuery.html</a>
+		 * @returns {String}
+		 */
 		valueOf: function() {
-			/// <summary>返回模块信息</summary>
-			/// <returns type="String" />
 			var info = [ version, "\n" ],
 				value, key;
 			for ( key in $.module ) {
@@ -327,62 +321,61 @@
 			}
 			return info.join( "" );
 		},
-		version: version,
-		_redundance: {
-			argToArray: util.argToArray
-		},
-
+		/** {string} - Directory path of amdquery.js*/
 		basePath: basePath,
+		/** Get number between min and max
+		 * @param {Number}
+		 * @param {Number}
+		 * @param {Number}
+		 * @returns {Number}
+		 * @example
+		 * aQuery.between( 1, 10, 5 ); // return 5
+		 * aQuery.between( 1, 10, 1 ); // return 1
+		 * aQuery.between( 1, 10, 123 ); // return 10
+		 */
 		between: function( min, max, num ) {
-			/// <summary>如果num在min和max区间内返回num否则返回min或max</summary>
-			/// <param name="min" type="Number">最小值</param>
-			/// <param name="max" type="Number">最大值</param>
-			/// <param name="num" type="Number">要比较的值</param>
-			/// <returns type="Number" />
 			return Math.max( min, Math.min( max, num ) );
 		},
+		/** Get number among number1 and number2
+		 * @param {Number}
+		 * @param {Number}
+		 * @param {Number}
+		 * @returns {Number}
+		 * @example
+		 * aQuery.among( 1, 10, 5 ); // return 5
+		 * aQuery.among( 10, 1, 7 ); // return 7
+		 * aQuery.among( 10, 1, 123 ); // return 123
+		 * aQuery.among( 10, 10, 15 ); // return 10
+		 */
 		among: function( num1, num2, num ) {
-			/// <summary>如果num在min和max区间内返回num否则返回min或max</summary>
-			/// <param name="num1" type="Number">值1</param>
-			/// <param name="num2" type="Number">值1</param>
-			/// <param name="num" type="Number">要比较的值</param>
-			/// <returns type="Number" />
 			return num2 > num1 ? $.between( num1, num2, num ) : $.between( num2, num1, num );
 		},
+		/** Bind context to function
+		 * @param {Function}
+		 * @param {Object}
+		 * @returns {Function}
+		 */
 		bind: function( fun, context ) {
-			/// <summary>绑定作用域</summary>
-			/// <param name="fun" type="Function">方法</param>
-			/// <param name="context" type="Object">context</param>
-			/// <returns type="Function" />
 			return function() {
 				return fun.apply( context || window, arguments );
 			};
 		},
-
+		/** wrap console.log */
 		logger: ( window.console ? ( console.log.bind ? console.log.bind( console ) : console.log ) : function() {} ),
+		/** Create a elemnt by tag name
+		 * @param {String}
+		 * @returns {Element}
+		 */
 		createEle: function( tag ) {
-			/// <summary>制造一个Dom元素</summary>
-			/// <param name="tag" type="String">标签名</param>
-			/// <returns type="Element" />
-			var ele, div;
-			// if ( /^(?:(<[\w\W]+>)[^>]*|#([\w-]*))$/.test( tag ) ) {
-			//   div = document.createElement( "div" );
-			//   div.innerHTML = tag;
-			//   ele = div.childNodes[0];
-			//   div = null;
-			// } else {
-			ele = document.createElement( tag );
-			// }
-			return ele;
+			return document.createElement( tag );
 		},
-
+		/** Iterate array or object
+		 * @param {Array|Object}
+		 * @param {EachCallback}
+		 * @param {Object=} - If context is undefinded, context of callback is each item.
+		 * @returns {this}
+		 */
 		each: function( obj, callback, context ) {
-			/// <summary>对象遍历</summary>
-			/// <param name="obj" type="Object">对象</param>
-			/// <param name="callback" type="Function">执行方法</param>
-			/// <param name="context" type="Object">作用域</param>
-			/// <returns type="self" />
-			//consult from jQuery-1.4.1
 			if ( !obj ) return this;
 			var i = 0,
 				item, len = obj.length,
@@ -394,20 +387,20 @@
 				for ( var value = obj[ 0 ]; i < len && callback.call( context || value, value, i ) !== false; value = obj[ ++i ] ) {}
 			return this;
 		},
-
+    /** Object is instance of {aQuery}
+     * @param {*}
+     * @returns {Boolean}
+     */
 		forinstance: function( obj ) {
-			/// <summary>是否为$对象</summary>
-			/// <param name="a" type="any">任意对象</param>
-			/// <returns type="Boolean" />
 			return obj instanceof $ || ( obj && obj.toString() == "AMDQuery" );
 		},
-
+    /**
+     * Merge second to first. Do not return a new Array but return "first" array.
+     * @param {Array}
+     * @param {Array}
+     * @returns {Array} Return "first"
+     */
 		merge: function( first, second ) {
-			/// <summary>把对象2 合并到 对象1</summary>
-			/// <param name="first" type="Array">对象</param>
-			/// <param name="second" type="Array">对象</param>
-			/// <returns type="Array" />
-			//consult from jQuery-1.9.1
 			var l = second.length,
 				i = first.length,
 				j = 0;
@@ -426,8 +419,6 @@
 
 			return first;
 		},
-
-		getJScriptConfig: util.getJScriptConfig,
 		getPath: util.getPath,
 
 		now: util.now,
@@ -1076,7 +1067,6 @@
 		} );
 
 		/**
-		 * This callback is displayed as a global member.
 		 * @callback ClassModuleCallback
 		 * @this module:base/ClassModule
 		 * @param {...*} - An argument array of any object. Any one argument is defined in the module.
