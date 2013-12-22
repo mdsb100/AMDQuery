@@ -14,16 +14,27 @@
 
 	var
 	version = "AMDQuery 1.0.0",
-		util = {
+		/**
+		 * @private
+		 * @namespace util
+		 */
+		util = /** @lends util */ {
+			/**
+			 * Arguments to Array
+			 * @param {Arguments}
+			 * @param {Number}
+			 * @param {Number}
+			 * @returns {Array}
+			 */
 			argToArray: function( arg, start, end ) {
-				/// <summary>把arguments变成数组</summary>
-				/// <param name="arg" type="arguments]">arguments</param>
-				/// <param name="start" type="Number">开始</param>
-				/// <param name="end" type="Number">结束</param>
-				/// <returns type="Array" />
 				return core_slice.call( arg, start || 0, end || arg.length );
 			},
-
+			/**
+			 * Throw error
+			 * @param {String} - Error message
+			 * @param {String} [type="Error"]
+			 * @returns {Error}
+			 */
 			error: function( info, type ) {
 				var s = "";
 				if ( info.fn && info.msg ) {
@@ -33,21 +44,24 @@
 				}
 				throw new window[ type || "Error" ]( s );
 			},
+			/**
+			 * b extend a. Return object "a".
+			 * @param {Object}
+			 * @param {Object}
+			 * @returns a
+			 */
 			extend: function( a, b ) {
-				/// <summary>把对象的属性复制到对象一</summary>
-				/// <param name="a" type="Object">对象</param>
-				/// <param name="b" type="Object">对象</param>
-				/// <returns type="a" />
 				for ( var i in b )
 					a[ i ] = b[ i ];
 				return a;
 			},
-
+			/**
+			 * Get config from current javascript tag
+			 * @param {String[]} - List of attribute name
+			 * @param {Boolean} - If true then asc
+			 * @returns {Object}
+			 */
 			getJScriptConfig: function( list, asc ) {
-				/// <summary>获得脚本配置属性</summary>
-				/// <param name="list" type="Array:[String]">参数名列表</param>
-				/// <param name="asc" type="Boolean">true为正序，兼容IE，意味着JS总是插入到第一个</param>
-				/// <returns type="Object" />
 				var _scripts = document.getElementsByTagName( "script" ),
 					_script = _scripts[ asc === true ? 0 : _scripts.length - 1 ],
 					i = 0,
@@ -67,19 +81,17 @@
 							attr[ 1 ].match( /false|true|1|0/ ) && ( attr[ 1 ] = eval( attr[ 1 ] ) );
 							result[ item ][ attr[ 0 ] ] = attr[ 1 ];
 						}
-						// else {
-						//   attr[ 1 ].match( /false|true|1|0/ ) && ( attr[ 0 ] = eval( attr[ 1 ] ) );
-						//   result[ item ] = attr[ 0 ];
-						// }
 					}
 				}
 				return result;
 			},
+			/**
+			 * Get path of file
+			 * @param {String} - like "myFile"
+			 * @param {String} [suffix=".js"] - like ".js"
+			 * @returns {String}
+			 */
 			getPath: function( key, suffix ) {
-				/// <summary>获的路径</summary>
-				/// <param name="list" type="Array:[String]">参数名列表</param>
-				/// <param name="asc" type="Boolean">true为正序，兼容IE，意味着JS总是插入到第一个</param>
-				/// <returns type="Object" />
 				var _key = key,
 					_suffix = suffix,
 					_aKey, _url, ma;
@@ -101,13 +113,18 @@
 				}
 				return _url;
 			},
-
+			/**
+			 * Get now in milliseconds
+			 * @returns {Number}
+			 */
 			now: function() {
-				/// <summary>返回当前时间的字符串形式</summary>
-				/// <returns type="String" />
-				return ( new Date() ).getTime();
+				return Date.now();
 			},
-
+      /**
+       * Remove file suffix. "myFile.js" ==> "myfile"
+       * @param {String}
+       * @returns {String}
+       */
 			removeSuffix: function( src ) {
 				src = src.replace( /\/$/, "" );
 				if ( src.match( /\.[^\/\.]*$/g ) ) {
@@ -221,6 +238,8 @@
 	 * @param {Object|String|Element|Element[]|Function}
 	 * @param {String} [tagName="div"] - Tag name if a is a object
 	 * @param {Element} [parent] - Parent Element
+   * @borrows util.getPath as getPath
+   * @borrows util.now as now
 	 * @example
 	 * aQuery(function(){}); // Equivalent to ready(function(){}), see {@link module:base/ready}
 	 * // should require("main/query")
@@ -267,7 +286,7 @@
 	/**
 	 * @callback EachCallback
 	 * @param {*} - Item
-   * @param {String|Number} - If iterate array then parameter is index. If iterate object then parameter is key.
+	 * @param {String|Number} - If iterate array then parameter is index. If iterate object then parameter is key.
 	 */
 
 	util.extend( $, /** @lends aQuery */ {
@@ -387,19 +406,19 @@
 				for ( var value = obj[ 0 ]; i < len && callback.call( context || value, value, i ) !== false; value = obj[ ++i ] ) {}
 			return this;
 		},
-    /** Object is instance of {aQuery}
-     * @param {*}
-     * @returns {Boolean}
-     */
+		/** Object is instance of {aQuery}
+		 * @param {*}
+		 * @returns {Boolean}
+		 */
 		forinstance: function( obj ) {
 			return obj instanceof $ || ( obj && obj.toString() == "AMDQuery" );
 		},
-    /**
-     * Merge second to first. Do not return a new Array but return "first" array.
-     * @param {Array}
-     * @param {Array}
-     * @returns {Array} Return "first"
-     */
+		/**
+		 * Merge second to first. Do not return a new Array but return "first" array.
+		 * @param {Array}
+		 * @param {Array}
+		 * @returns {Array} Return "first"
+		 */
 		merge: function( first, second ) {
 			var l = second.length,
 				i = first.length,
@@ -423,6 +442,7 @@
 
 		now: util.now,
 
+    /** Number RegExp */
 		core_pnum: /[+-]?(?:\d*\.|)\d+(?:[eE][+-]?\d+|)/.source,
 
 		rootPath: rootPath,
