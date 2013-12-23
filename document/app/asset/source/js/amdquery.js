@@ -1,8 +1,11 @@
 /*===================amdquery===========================*/
-/*!
- * AMDQuery JavaScript Library 1.0.0
- * Copyright 2012, Cao Jun
+/**
+ * @overview AMDQuery JavaScript Library
+ * @copyright 2012, Cao Jun
+ * @version 1.0.0
  */
+
+
 
 ( function( window, undefined ) {
 	"use strict"; //启用严格模式
@@ -12,16 +15,27 @@
 
 	var
 	version = "AMDQuery 1.0.0",
-		util = {
+		/**
+		 * @private
+		 * @namespace util
+		 */
+		util = /** @lends util */ {
+			/**
+			 * Arguments to Array
+			 * @param {Arguments}
+			 * @param {Number}
+			 * @param {Number}
+			 * @returns {Array}
+			 */
 			argToArray: function( arg, start, end ) {
-				/// <summary>把arguments变成数组</summary>
-				/// <param name="arg" type="arguments]">arguments</param>
-				/// <param name="start" type="Number">开始</param>
-				/// <param name="end" type="Number">结束</param>
-				/// <returns type="Array" />
 				return core_slice.call( arg, start || 0, end || arg.length );
 			},
-
+			/**
+			 * Throw error
+			 * @param {String} - Error message
+			 * @param {String} [type="Error"]
+			 * @returns {Error}
+			 */
 			error: function( info, type ) {
 				var s = "";
 				if ( info.fn && info.msg ) {
@@ -31,21 +45,24 @@
 				}
 				throw new window[ type || "Error" ]( s );
 			},
+			/**
+			 * b extend a. Return object "a".
+			 * @param {Object}
+			 * @param {Object}
+			 * @returns a
+			 */
 			extend: function( a, b ) {
-				/// <summary>把对象的属性复制到对象一</summary>
-				/// <param name="a" type="Object">对象</param>
-				/// <param name="b" type="Object">对象</param>
-				/// <returns type="a" />
 				for ( var i in b )
 					a[ i ] = b[ i ];
 				return a;
 			},
-
+			/**
+			 * Get config from current javascript tag
+			 * @param {String[]} - List of attribute name
+			 * @param {Boolean} - If true then asc
+			 * @returns {Object}
+			 */
 			getJScriptConfig: function( list, asc ) {
-				/// <summary>获得脚本配置属性</summary>
-				/// <param name="list" type="Array:[String]">参数名列表</param>
-				/// <param name="asc" type="Boolean">true为正序，兼容IE，意味着JS总是插入到第一个</param>
-				/// <returns type="Object" />
 				var _scripts = document.getElementsByTagName( "script" ),
 					_script = _scripts[ asc === true ? 0 : _scripts.length - 1 ],
 					i = 0,
@@ -65,19 +82,17 @@
 							attr[ 1 ].match( /false|true|1|0/ ) && ( attr[ 1 ] = eval( attr[ 1 ] ) );
 							result[ item ][ attr[ 0 ] ] = attr[ 1 ];
 						}
-						// else {
-						//   attr[ 1 ].match( /false|true|1|0/ ) && ( attr[ 0 ] = eval( attr[ 1 ] ) );
-						//   result[ item ] = attr[ 0 ];
-						// }
 					}
 				}
 				return result;
 			},
+			/**
+			 * Get path of file
+			 * @param {String} - like "myFile"
+			 * @param {String} [suffix=".js"] - like ".js"
+			 * @returns {String}
+			 */
 			getPath: function( key, suffix ) {
-				/// <summary>获的路径</summary>
-				/// <param name="list" type="Array:[String]">参数名列表</param>
-				/// <param name="asc" type="Boolean">true为正序，兼容IE，意味着JS总是插入到第一个</param>
-				/// <returns type="Object" />
 				var _key = key,
 					_suffix = suffix,
 					_aKey, _url, ma;
@@ -99,13 +114,18 @@
 				}
 				return _url;
 			},
-
+			/**
+			 * Get now in milliseconds
+			 * @returns {Number}
+			 */
 			now: function() {
-				/// <summary>返回当前时间的字符串形式</summary>
-				/// <returns type="String" />
-				return ( new Date() ).getTime();
+				return Date.now();
 			},
-
+			/**
+			 * Remove file suffix. "myFile.js" ==> "myfile"
+			 * @param {String}
+			 * @returns {String}
+			 */
 			removeSuffix: function( src ) {
 				src = src.replace( /\/$/, "" );
 				if ( src.match( /\.[^\/\.]*$/g ) ) {
@@ -130,19 +150,52 @@
 			}
 			return ret;
 		}() ),
+		/** {String} Project root path*/
 		rootPath = basePath.replace( /((.*?\/){3}).*$/, "$1" ),
-		msgDiv, runTime;
+		runTime;
 
+	/**
+	 * <h3>
+	 * Config of amdquery. <br />
+	 * </h3>
+	 * @public
+	 * @module base/config
+	 * @property {object}  config                              - exports
+	 * @property {object}  config.amdquery                     - The amdquery Configuration.
+	 * @property {boolean} config.amdquery.debug               - Whether debug, it will be the output log if true.
+	 * @property {boolean} config.amdquery.development         - Whether it is a development environment.
+	 *
+	 * @property {object}  config.amd                          - The AMD Configuration.
+	 * @property {boolean} config.amd.detectCR                 - Detect circular dependencies, you should set it true when you develop.
+	 * @property {boolean} config.amd.debug                    - It will add "try-catch" when module load if false, so you could not see any error infomation.
+	 * @property {number}  config.amd.timeout                  - Timeout of the loading module.
+	 * @property {boolean} config.amd.console                  - It will be output log "module [id] ready" if true
+	 *
+	 * @property {object}  config.ui                           - The UI-Widget Configuration.
+	 * @property {boolean} config.ui.initWidget                - Automatic initialization UI.
+	 * @property {string}  config.ui.loadingClassName          - When loading UI, the mask layer using the CSS name.
+	 * @property {boolean} config.ui.autoFetchCss              - Automatic fetching CSS.
+	 * @property {boolean} config.ui.isTransform3d             - Whether to use transform3d.
+	 *
+	 * @property {object}  config.module                       - The module Configuration.
+	 *
+	 * @property {object}  config.app                          - The application Configuration.
+	 * @property {string}  config.app.src                      - A js file src, main of application.
+	 * @property {string}  config.app.loadingImage             - A image src will be show when application is loading.
+	 * @property {boolean} config.app.debug                    - Whether debug, it will be the output log if true.
+	 * @property {boolean} config.app.development              - Whether it is a development environment.
+	 * @property {boolean} config.app.autoFetchCss             - Automatic fetching CSS.
+	 * @property {string} config.app.xmlPath                   - Path of the combination XML, build could create it and set it.
+	 */
+
+	// _config be define "base/config".
 	var _config = {
 		amdquery: {
 			define: "$",
 			debug: false,
-			autoFetchCss: true,
 			development: true
 		},
 		amd: {
-			//同步
-			//检查循环依赖
 			detectCR: false,
 			debug: true,
 			timeout: 5000,
@@ -151,6 +204,7 @@
 		ui: {
 			initWidget: false,
 			loadingClassName: "widget-loading",
+			autoFetchCss: true,
 			isTransform3d: true
 		},
 		module: {
@@ -161,6 +215,7 @@
 			loadingImage: "",
 			debug: false,
 			development: true,
+			autoFetchCss: true,
 			xmlPath: "xml/combination.xml"
 		}
 	};
@@ -177,57 +232,77 @@
 	util.extend( _config.module, defineConfig.module );
 	util.extend( _config.app, defineConfig.app );
 
-	var aQuery = function( a, b, c ) {
-		/// <summary>创造一个新$对象
-		/// <para>例:$(function(){将会在window.onload时执行})</para>
-		/// <para>例:$("div")</para>
-		/// <para>例:$([ele,ele,ele])</para>
-		/// <para>以下依赖main/query</para>
-		/// <para>例:$($("#A"))</para>
-		/// <para>以下依赖main/dom</para>
-		/// <para>例:$({h:100,w:100},"div")</para>
-		/// <para>例:$(null,"div",document.body)</para>
-		/// <para>例:$({h:100,w:100},"div",document.body)</para>
-		/// <para>对于table的appendChild,removeChild可能不兼容低版本IE浏览器,table必须插入tbody</para>
-		/// <para>如果要直接写html应当使用parse调用它的parse.xml()</para>
-		/// </summary>
-		/// <param name="a" type="Object/String/Element/fun/$">可重载</param>
-		/// <param name="b" type="String">标签名 可选</param>
-		/// <param name="c" type="ele $">父元素 可选</param>
-		/// <returns type="$" />
+	/**
+	 * You can config global name. <a target="_top" href="/document/app/asset/source/guide/AMDQuery.html#scrollTo=Reference_AMDQuery">AMDQuery.html</a> </br>
+	 * <strong>aQuery("div")</strong> equivalent to <strong>new aQuery("div")</strong>
+	 * @global
+	 * @class
+	 * @param {Object|String|Element|Element[]|Function}
+	 * @param {String} [tagName="div"] - Tag name if a is a object
+	 * @param {Element} [parent] - Parent Element
+	 * @borrows util.getPath as getPath
+	 * @borrows util.now as now
+	 * @example
+	 * aQuery(function(){}); // Equivalent to ready(function(){}), see {@link module:base/ready}
+	 * // should require("main/query")
+	 * aQuery("div"); aQuery("#my"); aQuery(".title") // see {@link http://sizzlejs.com/}
+	 * aQuery(div); aQuery([div, div]);
+	 * aQuery(aQuery("div")); // another aQuery
+	 * // should require("main/css")
+	 * aQuery({height:100,width:100},"div"); // create a element "div", style is "height:100px;width:100px"
+	 * aQuery(null,"a"); // create a element "a" without style
+	 * // should require("main/dom")
+	 * aQuery({height:100,width:100},"div", document.body); // create a element "div" and append to "body"
+	 * aQuery(null,"div", document.body);
+	 */
+	var aQuery = function( elem, tagName, parent ) {
 		if ( $.forinstance( this ) ) {
-			if ( !a && !b ) return;
-			if ( ( typeof a == "object" || a == undefined || a == null ) && typeof b == "string" ) {
-				//if ($.css) {
+			if ( !elem && !tagName ) return;
+			if ( ( typeof elem === "object" || elem === undefined || elem === null ) && typeof tagName == "string" ) {
 				count++;
-				if ( b == undefined || b == null ) b = "div";
-				var obj = document.createElement( b );
+				if ( tagName === undefined || tagName === null ) tagName = "div";
+				var obj = document.createElement( tagName );
 				this.init( [ obj ] );
 
-				$.interfaces.trigger( "constructorCSS", this, a, b, c );
+				$.interfaces.trigger( "constructorCSS", this, elem, tagName, parent );
 
-				$.interfaces.trigger( "constructorDom", this, a, b, c );
+				$.interfaces.trigger( "constructorDom", this, elem, tagName, parent );
 
 				obj = null;
 
-			} else if ( a ) {
+			} else if ( elem ) {
 				var result;
-				if ( result = $.interfaces.trigger( "constructorQuery", a, b ) ) {
+				if ( result = $.interfaces.trigger( "constructorQuery", elem, tagName ) ) {
 					count++;
-					this.init( result, a );
+					this.init( result, elem );
 
 				}
 			}
-		} else if ( typeof a == "function" ) {
-			$.ready( a );
-		} else return new $( a, b, c );
+		} else if ( typeof elem == "function" ) {
+			$.ready( elem );
+		} else return new $( elem, tagName, parent );
 	},
 		$ = aQuery;
 
-	util.extend( $, {
-		cabinet: {},
-		copyright: "2012 Cao Jun",
+	/**
+	 * @callback EachCallback
+	 * @param {*} - Item
+	 * @param {String|Number} - If iterate array then parameter is index. If iterate object then parameter is key.
+	 */
 
+	/**
+	 * this is aQuery
+	 * @callback AQueryEachCallback
+	 * @this aQuery
+	 * @param {Element} - element
+	 * @param {Number} - index
+	 */
+
+	util.extend( $, /** @lends aQuery */ {
+		/**
+		 * Interfaces namesapce of aQuery. See interfaces.
+		 * @private
+		 */
 		interfaces: {
 			achieve: function( name, fun ) {
 				/// <summary>实现一个接口</summary>
@@ -253,15 +328,19 @@
 			}
 
 		},
+		/** Module map */
 		module: {},
+		/**
+		 * The return value of this method will be used to determine whether an instance of "aQuery"
+		 * @returns "AMDQuery" */
 		toString: function() {
-			/// <summary></summary>
-			/// <returns type="String" />
 			return "AMDQuery";
 		},
+		/**
+		 * Return module infomation. see <a target="_top" href="/document/app/asset/source/guide/AMDQuery.html#scrollTo=AMD">AMDQuery.html</a>
+		 * @returns {String}
+		 */
 		valueOf: function() {
-			/// <summary>返回模块信息</summary>
-			/// <returns type="String" />
 			var info = [ version, "\n" ],
 				value, key;
 			for ( key in $.module ) {
@@ -270,62 +349,61 @@
 			}
 			return info.join( "" );
 		},
-		version: version,
-		_redundance: {
-			argToArray: util.argToArray
-		},
-
+		/** {string} - Directory path of amdquery.js*/
 		basePath: basePath,
+		/** Get number between min and max
+		 * @param {Number}
+		 * @param {Number}
+		 * @param {Number}
+		 * @returns {Number}
+		 * @example
+		 * aQuery.between( 1, 10, 5 ); // return 5
+		 * aQuery.between( 1, 10, 1 ); // return 1
+		 * aQuery.between( 1, 10, 123 ); // return 10
+		 */
 		between: function( min, max, num ) {
-			/// <summary>如果num在min和max区间内返回num否则返回min或max</summary>
-			/// <param name="min" type="Number">最小值</param>
-			/// <param name="max" type="Number">最大值</param>
-			/// <param name="num" type="Number">要比较的值</param>
-			/// <returns type="Number" />
 			return Math.max( min, Math.min( max, num ) );
 		},
+		/** Get number among number1 and number2
+		 * @param {Number}
+		 * @param {Number}
+		 * @param {Number}
+		 * @returns {Number}
+		 * @example
+		 * aQuery.among( 1, 10, 5 ); // return 5
+		 * aQuery.among( 10, 1, 7 ); // return 7
+		 * aQuery.among( 10, 1, 123 ); // return 123
+		 * aQuery.among( 10, 10, 15 ); // return 10
+		 */
 		among: function( num1, num2, num ) {
-			/// <summary>如果num在min和max区间内返回num否则返回min或max</summary>
-			/// <param name="num1" type="Number">值1</param>
-			/// <param name="num2" type="Number">值1</param>
-			/// <param name="num" type="Number">要比较的值</param>
-			/// <returns type="Number" />
 			return num2 > num1 ? $.between( num1, num2, num ) : $.between( num2, num1, num );
 		},
+		/** Bind context to function
+		 * @param {Function}
+		 * @param {Object}
+		 * @returns {Function}
+		 */
 		bind: function( fun, context ) {
-			/// <summary>绑定作用域</summary>
-			/// <param name="fun" type="Function">方法</param>
-			/// <param name="context" type="Object">context</param>
-			/// <returns type="Function" />
 			return function() {
 				return fun.apply( context || window, arguments );
 			};
 		},
-
+		/** wrap console.log */
 		logger: ( window.console ? ( console.log.bind ? console.log.bind( console ) : console.log ) : function() {} ),
+		/** Create a elemnt by tag name
+		 * @param {String}
+		 * @returns {Element}
+		 */
 		createEle: function( tag ) {
-			/// <summary>制造一个Dom元素</summary>
-			/// <param name="tag" type="String">标签名</param>
-			/// <returns type="Element" />
-			var ele, div;
-			// if ( /^(?:(<[\w\W]+>)[^>]*|#([\w-]*))$/.test( tag ) ) {
-			//   div = document.createElement( "div" );
-			//   div.innerHTML = tag;
-			//   ele = div.childNodes[0];
-			//   div = null;
-			// } else {
-			ele = document.createElement( tag );
-			// }
-			return ele;
+			return document.createElement( tag );
 		},
-
+		/** Iterate array or object
+		 * @param {Array|Object}
+		 * @param {EachCallback}
+		 * @param {Object=} - If context is undefinded, context of callback is each item.
+		 * @returns {this}
+		 */
 		each: function( obj, callback, context ) {
-			/// <summary>对象遍历</summary>
-			/// <param name="obj" type="Object">对象</param>
-			/// <param name="callback" type="Function">执行方法</param>
-			/// <param name="context" type="Object">作用域</param>
-			/// <returns type="self" />
-			//consult from jQuery-1.4.1
 			if ( !obj ) return this;
 			var i = 0,
 				item, len = obj.length,
@@ -337,20 +415,20 @@
 				for ( var value = obj[ 0 ]; i < len && callback.call( context || value, value, i ) !== false; value = obj[ ++i ] ) {}
 			return this;
 		},
-
+		/** Object is instance of {aQuery}
+		 * @param {*}
+		 * @returns {Boolean}
+		 */
 		forinstance: function( obj ) {
-			/// <summary>是否为$对象</summary>
-			/// <param name="a" type="any">任意对象</param>
-			/// <returns type="Boolean" />
 			return obj instanceof $ || ( obj && obj.toString() == "AMDQuery" );
 		},
-
+		/**
+		 * Merge second to first. Do not return a new Array but return "first" array.
+		 * @param {Array}
+		 * @param {Array}
+		 * @returns {Array} Return "first"
+		 */
 		merge: function( first, second ) {
-			/// <summary>把对象2 合并到 对象1</summary>
-			/// <param name="first" type="Array">对象</param>
-			/// <param name="second" type="Array">对象</param>
-			/// <returns type="Array" />
-			//consult from jQuery-1.9.1
 			var l = second.length,
 				i = first.length,
 				j = 0;
@@ -369,58 +447,32 @@
 
 			return first;
 		},
-
-		getJScriptConfig: util.getJScriptConfig,
 		getPath: util.getPath,
-
 		now: util.now,
-
+		/** Number RegExp */
 		core_pnum: /[+-]?(?:\d*\.|)\d+(?:[eE][+-]?\d+|)/.source,
-
+		/** {String} Project root path*/
 		rootPath: rootPath,
-
+		/** {String} Page path*/
 		pagePath: pagePath,
 
-		showMsg: function( str, bool ) {
-			/// <summary>设置浏览器标题或者显示个div 点击会自动消失</summary>
-			/// <param name="str" type="any">任何对象都将被toString显示</param>
-			/// <param name="bool" type="Boolean">为true的话使用div显示否则在title显示</param>
-			/// <returns type="self" />
-			str = str.toString();
-			if ( bool ) {
-				if ( msgDiv ) {
-					msgDiv.innerHTML = str;
-					msgDiv.style.display = "block";
-				} else {
-					msgDiv = document.createElement( "div" );
-					var s = msgDiv.style;
-					s.top = 0;
-					s.left = 0;
-					s.zIndex = 1001;
-					s.position = "absolute";
-					s.display = "block";
-					s.innerHTML = str;
-					s.fontSize = "18px";
-					msgDiv.onclick = function() {
-						this.style.display = "none";
-					};
-					document.body.appendChild( msgDiv );
-				}
-			} else {
-				document.title = str;
-			}
-			return this;
-
-		},
-
+		/**
+		 * @namespace
+		 * @borrows util.argToArray as argToArray
+		 * @borrows util.removeSuffix as removeSuffix
+		 */
 		util: {
 			argToArray: util.argToArray,
 
+			/**
+			 * @param {String}
+			 * @param {String}
+			 * @retusn {String}
+			 * @example
+			 * aQuery.util.camelCase("margin-left") // return "marginLeft"
+			 * aQuery.util.camelCase("border-redius", "webkit") // return "webkitBorderRedius"
+			 */
 			camelCase: function( name, head ) {
-				/// <summary>把"margin-left驼峰化"</summary>
-				/// <param name="name" type="String">字符串</param>
-				/// <param name="head" type="String">字符串头</param>
-				/// <returns type="String" />
 				name.indexOf( "-" ) > 0 ? name = name.toLowerCase().split( "-" ) : name = [ name ];
 
 				head && name.splice( 0, 0, head );
@@ -431,117 +483,143 @@
 				}
 				return name.join( "" );
 			},
-
+			/**
+			 * @param {String}
+			 * @retusn {String}
+			 */
 			trim: function( str ) {
-				/// <summary>去除前后的空格换行符等字符</summary>
-				/// <param name="str" type="String">长度 缺省为整个长度</param>
-				/// <returns type="String" />
 				return str.replace( /(^\s*)|(\s*$)/g, "" );
 			},
-
+			/**
+			 * @param {String}
+			 * @param {String}
+			 * @retusn {String}
+			 * @example
+			 * aQuery.util.unCamelCase("marginLeft") // return "margin-left"
+			 * aQuery.util.unCamelCase("webkitBorderRedius") // return "webkit-border-redius"
+			 */
 			unCamelCase: function( name, head ) {
-				/// <summary>反驼峰化</summary>
-				/// <para>marginLeft => margin-left</para>
-				/// <param name="name" type="String">字符串</param>
-				/// <param name="head" type="String">字符串头</param>
-				/// <returns type="String" />
 				name = name.replace( /([A-Z]|^ms)/g, "-$1" ).toLowerCase();
 				head && ( name = head + "-" + name );
 				return name;
 			},
-
-			removeSuffix: util.removeSuffix
+			removeSuffix: util.removeSuffix,
+      version: version
 		}
 	} );
 
-	$.fn = $.prototype = {
+	$.fn = $.prototype = /** @lends aQuery.prototype */ {
+		/**
+		 * Push element
+		 * @param {Element}
+		 * @returns {this}
+		 */
 		push: function( ele ) {
-			/// <summary>添加元素</summary>
-			/// <param name="ele" type="Element">元素</param>
-			/// <returns type="self" />
 			this.eles.push( ele );
 			return this.init( this.eles );
 		},
+		/**
+		 * Pop element
+		 * @returns {aQuery} return new aQuery(popElement)
+		 */
 		pop: function() {
-			/// <summary>删除返回元素</summary>
-			/// <returns type="Self" />
 			var ret = this.eles.pop();
 			this.init( this.eles );
 			return new $( ret );
 		},
+		/**
+		 * Shift element
+		 * @returns {aQuery} return new aQuery(shiftElement)
+		 */
 		shift: function() {
-			/// <summary>删除头部一个元素</summary>
-			/// <returns type="Self" />
 			var ret = this.eles.shift();
 			this.init( this.eles );
 			return new $( ret );
 		},
+		/**
+		 * Unshift element
+		 * @param {Element}
+		 * @returns {aQuery} return new aQuery(this.eles.unshift(element))
+		 */
 		unshift: function( ele ) {
-			/// <summary>增加头部第一个元素</summary>
-			/// <param name="ele" type="Element">元素</param>
-			/// <returns type="Self" />
 			return new $( this.eles.splice( 0, 0, ele ) );
 		},
+		/**
+		 * slice element
+		 * @returns {aQuery}
+		 */
 		slice: function() {
-			/// <summary>截取一段并返回新的$</summary>
-			/// <returns type="$" />
 			return new $( core_slice.call( this.eles, arguments ) );
 		},
+		/**
+		 * splice element
+		 * @returns {aQuery} return new $( ret )
+		 */
 		splice: function() {
-			/// <summary>删除插入一段并返回新的$</summary>
-			/// <returns type="$" />
 			var ret = core_splice.call( this.eles, arguments );
 			this.init( this.eles );
 			return new $( ret );
 		},
+		/**
+		 * @returns {this}
+		 */
 		reverse: function() {
-			/// <summary>反转</summary>
-			/// <returns type="self" />
 			this.eles.reverse();
 			return this.init( this.eles );
 		},
+		/**
+		 * @param {Function=}
+		 * @returns {this}
+		 */
 		sort: function( fn ) {
-			/// <summary>排序</summary>
-			/// <param name="fn" type="Function">筛选条件</param>
-			/// <returns type="self" />
 			this.eles.sort( fn );
 			return this.init( this.eles );
 		},
-
 		constructor: $,
-
+		/**
+		 * Iterate array of aQuery
+		 * @param {AQueryEachCallback}
+		 * @returns {this}
+		 */
 		each: function( callback ) {
-			/// <summary>遍历所有的元素</summary>
-			/// <param name="callback" type="Function">遍历中的操作</param>
-			/// <returns type="self" />
 			$.each( this.eles, callback, this );
 			return this;
 		},
+    /**
+     * Element container
+     * @instance
+     * @type {Array}
+     * @default null
+     */
 		eles: null,
-
+    /**
+     * Return new aQuery of first element
+     * @returns {aQuery}
+     */
 		first: function() {
-			/// <summary>返回第一个元素</summary>
-			/// <returns type="Element" />
-			return $( this.eles[ 0 ] || this.eles );
+			return $( this.eles[ 0 ] );
 		},
+    /**
+     * @param {Number} [index=0]
+     * @returns {Element}
+     */
 		getElement: function( index ) {
-			/// <summary>返回序号的元素</summary>
-			/// <param name="index" type="Number">序号</param>
-			/// <returns type="Element" />
 			if ( typeof index == "number" && index != 0 ) return this[ index ];
 			else return this[ 0 ];
 		},
+    /**
+     * Return new aQuery of last element
+     * @returns {aQuery}
+     */
 		last: function() {
-			/// <summary>返回最后个元素</summary>
-			/// <returns type="Element" />
 			return $( this.eles[ this.eles.length - 1 ] || this.eles );
 		},
-
+    /**
+     * @param {Element[]}
+     * @param {String=} -"#title", ".cls", "div"
+     * @returns {this}
+     */
 		init: function( eles, selector ) {
-			/// <summary>初始化$</summary>
-			/// <param name="eles" type="Array">内容为元素的数组</param>
-			/// <param name="selector" type="any"></param>
-			/// <returns type="self" />
 			this.eles = null;
 			this.context = null;
 			this.selector = "";
@@ -563,10 +641,11 @@
 			this.context = this[ 0 ] ? this[ 0 ].ownerDocument : document;
 			return this;
 		},
+    /**
+     * @param {Element}
+     * @returns {Number} - -1 means not found
+     */
 		indexOf: function( ele ) {
-			/// <summary>返回序号</summary>
-			/// <param name="ele" type="Element">dom元素</param>
-			/// <returns type="Number" />
 			var len;
 
 			for ( len = this.eles.length - 1; len >= 0; len-- ) {
@@ -577,37 +656,49 @@
 
 			return len;
 		},
-
+    /**
+     * Array length
+     * @type {Number}
+     * @default 0
+     * @instance
+     */
 		length: 0,
-
 		selector: "",
-
+    /**
+     * @param {Element[]}
+     * @returns {this}
+     */
 		setElement: function( eles ) {
-			/// <summary>设置元素组</summary>
-			/// <param name="eles" type="Array">内容为元素的数组</param>
-			/// <returns type="self" />
 			this.eles = eles;
 			return this.init( this.eles );
 		},
-
+    /**
+     * Array to stirng
+     * @returns {String}
+     */
 		toString: function() {
-			/// <summary>返回元素组的字符串形式</summary>
-			/// <returns type="String" />
 			return this.eles.toString();
 		},
-
+    /**
+     * Return count of aQuery be created
+     * @returns {Number}
+     */
 		valueOf: function() {
-			/// <summary>返回生成$对象的总数</summary>
-			/// <returns type="Number" />
 			return count;
 		},
-
+    /**
+     * Get a new array of this.eles
+     * @returns {Array}
+     */
 		toArray: function() {
 			return core_slice.call( this );
 		},
-
-		// Get the Nth element in the matched element set OR
-		// Get the whole matched element set as a clean array
+    /**
+     * Get the Nth element in the matched element set OR </br>
+     * Get the whole matched element set as a clean array
+     * @param {Number|null}
+     * @returns {Array|Element}
+     */
 		get: function( num ) {
 			return num == null ?
 
@@ -616,9 +707,7 @@
 
 			// Return just the object
 			( num < 0 ? this[ this.length + num ] : this[ num ] );
-		},
-
-		version: version
+		}
 	};
 
 	function Queue() {
@@ -627,6 +716,16 @@
 
 	Queue.prototype = {
 		constructor: Queue,
+		/**
+		 * @public
+		 * @this module:base/queue.prototype
+		 * @method queue
+		 * @memberOf module:base/queue.prototype
+		 * @param {Function|Function[]} fn - Do some thing
+		 * @param {Object} [context] - Context of fn
+		 * @param {Array} [args] - Args is arguments of fn
+		 * @returns {this}
+		 */
 		queue: function( fn, context, args ) {
 			if ( typeof fn == "function" ) {
 				this.list.push( fn );
@@ -638,6 +737,14 @@
 			}
 			return this;
 		},
+		/**
+		 * @public
+		 * @method dequeue
+		 * @memberOf module:base/queue.prototype
+		 * @param {Object} [context=null] - Context of fn
+		 * @param {Array} [args=Array] args - Args is arguments of fn
+		 * @returns {this}
+		 */
 		dequeue: function( context, args ) {
 			var fn = this.list.shift();
 			if ( fn && fn === "inprogress" ) {
@@ -651,6 +758,12 @@
 			return this;
 
 		},
+		/**
+		 * @public
+		 * @method clearQueue
+		 * @memberOf module:base/queue.prototype
+		 * @returns {this}
+		 */
 		clearQueue: function() {
 			return this.queue( [] );
 		}
@@ -673,27 +786,56 @@
 		var requireQueue = new Queue();
 
 		function ClassModule( module, dependencies, factory, status, container, fail ) {
+			/**
+			 * @memberof module:base/ClassModule
+			 * @constructs module:base/ClassModule
+			 * @param {String} module - Module name
+			 * @param {Array} dependencies - Dependencies module
+			 * @param {Function|Object|String|Number|Boolean} [factory] - Module body
+			 * @param {Number} [status=0] - 0:init 1:queue 2:require 3:define 4:ready
+			 * @param {String} [container] - Path of js
+			 * @param {Function} [fail] - An function to the fail callback if loading moudle timeout or error
+			 */
 			if ( !module ) {
 				return;
 			}
 			this.handlers = {};
 			this.module = null;
 			this.first = null;
+			this.description = "No description";
 			this.id = ClassModule.variable( module );
-			this.init( dependencies, factory, status, container, fail );
+			this.reset( dependencies, factory, status, container, fail );
 			ClassModule.setModule( this.id, this );
 
 			//this.check();
 		}
-		//0:init 1:queue 2:require 3:define 4:ready
-		//0 init 1 require 2define 3ready
+
 		util.extend( ClassModule, {
 			anonymousID: null,
 			requireQueue: requireQueue,
 			cache: {},
+			/**
+			 * A map to path ofmodule file
+			 * @type Object
+			 * @memberOf module:base/ClassModule
+			 */
 			container: {},
+			/**
+			 * A map to module dependency
+			 * @type Object
+			 * @memberOf module:base/ClassModule
+			 */
 			dependenciesMap: {},
-			checkNamed: function( id ) {
+			/**
+			 * Check the name is equal to anonymous name which assigned by "require"
+			 * @private
+			 * @method
+			 * @memberOf module:base/ClassModule
+			 * @param {String} - Module name
+			 * @throws Will throw an error if the name is not equal anonymousID
+			 * @returns {void}
+			 */
+			checkName: function( id ) {
 				if ( this.anonymousID != null && id.indexOf( "tempDefine" ) < 0 ) {
 					id !== this.anonymousID && util.error( {
 						fn: "define",
@@ -701,15 +843,26 @@
 					} );
 				}
 			},
+			/**
+			 * ClassModule contains the module
+			 * @method
+			 * @memberOf module:base/ClassModule
+			 * @param {String} - Module name
+			 * @returns {Boolean}
+			 */
 			contains: function( id ) {
 				id = ClassModule.variable( id );
 				return !!ClassModule.modules[ id ];
 			},
+			/**
+			 * Detect circle reference
+			 * @method
+			 * @memberOf module:base/ClassModule
+			 * @param {String} - Module name
+			 * @param {String[]} - Dependent modules
+			 * @returns {Boolean} - Module name
+			 */
 			detectCR: function( md, dp ) {
-				/// <summary>检测模块是否存在循环引用,返回存在循环引用的模块名</summary>
-				/// <param name="md" type="String">要检测的模块名</param>
-				/// <param name="dp" type="Array:[String]">该模块的依赖模块</param>
-				/// <returns type="String" />
 				if ( !md ) {
 					return;
 				}
@@ -740,46 +893,69 @@
 					}
 				}
 			},
-			funBody: function( md ) {
+			/**
+			 * Wrap with a function
+			 * @method
+			 * @memberOf module:base/ClassModule
+			 * @param {*} - body
+			 * @returns {Function}
+			 */
+			funBody: function( body ) {
 				//将factory强制转换为function类型，供ClassModule使用
-				if ( !md ) {
-					md = "";
+				if ( !body ) {
+					body = "";
 				}
-				switch ( typeof md ) {
+				switch ( typeof body ) {
 					case "function":
-						return md;
+						return body;
 					case "string":
 						return function() {
-							return new String( md );
+							return new String( body );
 						};
 					case "number":
 						return function() {
-							return new Number( md );
+							return new Number( body );
 						};
 					case "boolean":
 						return function() {
-							return new Boolean( md );
+							return new Boolean( body );
 						};
 					default:
 						return function() {
-							return md;
+							return body;
 						};
 				}
 			},
-			getContainer: function( id, a ) {
+			/**
+			 * Get src of module file
+			 * @method
+			 * @memberOf module:base/ClassModule
+			 * @param {String} - Module name
+			 * @param {Boolean} [asc=true] - getJScriptConfig option
+			 * @returns {String} - path
+			 */
+			getContainer: function( id, asc ) {
 				var src;
 				if ( ClassModule.container[ id ] ) {
 					src = ClassModule.container[ id ];
 				} else {
-					src = util.getJScriptConfig( [ "src" ], typeof a == "boolean" ? a : true ).src || "it is local"; //或者改成某个字段是 config里的
+					src = util.getJScriptConfig( [ "src" ], typeof asc == "boolean" ? asc : true ).src || "it is local"; //或者改成某个字段是 config里的
 					id && ( ClassModule.container[ id ] = src );
 				}
 				return src;
 			},
+			/**
+			 * modify module name to a file path
+			 * @method
+			 * @memberOf module:base/ClassModule
+			 * @param {String} - Module name
+			 * @param {String} [suffix=".js"]
+			 * @returns {String} - path
+			 */
 			getPath: function( key, suffix ) {
 				var ret, path, ma;
 				key = ClassModule.variable( key );
-				if ( path = ClassModule.maps[ key ] ) {} //不需要匹配前部分
+				if ( path = ClassModule.maps[ key ] ) {} //do not match preffix
 				else {
 					path = key;
 				}
@@ -796,12 +972,26 @@
 
 				return ret;
 			},
-			getModule: function( k ) {
-				k = ClassModule.variable( k );
-				return ClassModule.modules[ k ];
+			/**
+			 * get Module with module
+			 * @method
+			 * @memberOf module:base/ClassModule
+			 * @param {String} - Module name
+			 * @returns {ClassModule}
+			 */
+			getModule: function( module ) {
+				module = ClassModule.variable( module );
+				return ClassModule.modules[ module ];
 			},
 			holdon: {},
-			loadDependencies: function( dependencies ) { //要改
+			/**
+			 * Load dependencies on asynchronous.
+			 * @method
+			 * @memberOf module:base/ClassModule
+			 * @param {String[]} - An array of module name
+			 * @returns {this}
+			 */
+			loadDependencies: function( dependencies ) {
 				var dep = dependencies,
 					i = 0,
 					len, item, module;
@@ -809,7 +999,7 @@
 					return this;
 				}
 				setTimeout( function() {
-					for ( len = dep.length; i < length; i++ ) { //是否要用function 而不是for
+					for ( len = dep.length; i < length; i++ ) {
 						item = dep[ i ];
 						module = ClassModule.getModule( item );
 						if ( !module ) {
@@ -821,6 +1011,15 @@
 				}, 0 );
 				return this;
 			},
+			/**
+			 * Load js file on asynchronous.
+			 * @method
+			 * @memberOf module:base/ClassModule
+			 * @param {String} - url of js
+			 * @param {String} - Module name
+			 * @param {Function} - An function to the fail callback if loading moudle timeout or error
+			 * @returns {this}
+			 */
 			loadJs: function( url, id, error ) {
 				var module = ClassModule.getModule( id );
 				//该模块已经载入过，不再继续加载，主要用于require与define在同一文件
@@ -861,25 +1060,68 @@
 				head.insertBefore( script, head.firstChild );
 				return this;
 			},
+			/**
+			 * A map be depend
+			 * @type Object
+			 * @memberOf module:base/ClassModule
+			 */
 			mapDependencies: {},
 			maps: {},
 			modules: {},
 			namedModules: {},
 			resource: {},
 			rootPath: null,
+			/**
+			 * A map of path variable
+			 * @type Object
+			 * @memberOf module:base/ClassModule
+			 */
 			variableMap: {},
+			/**
+			 * variable prefix
+			 * @type String
+			 * @default "@"
+			 * @memberOf module:base/ClassModule
+			 */
 			variablePrefix: "@",
+			/**
+			 * Load js file on asynchronous.
+			 * @method
+			 * @memberOf module:base/ClassModule
+			 * @param {String} - url of js
+			 * @param {String} - Module name
+			 * @param {Function} - An function to the fail callback if loading moudle timeout or error
+			 * @returns {this}
+			 */
 			setModule: function( k, v ) {
 				!this.getModule( k ) && ( this.modules[ k ] = v );
 				return this;
 			},
+			/**
+			 * status map
+			 * @readonly
+			 * @enum {String}
+			 * @memberOf module:base/ClassModule
+			 */
 			statusReflect: {
+				/** module created */
 				0: "init",
+				/** module in queue */
 				1: "queue",
+				/** module load dependent */
 				2: "require",
+				/** module is defined */
 				3: "define",
+				/** module ready */
 				4: "ready"
 			},
+			/**
+			 * @desc "@app/controller" to "mypath/app/controller" if match the "@app" in {@link module:base/ClassModule.variableMap} else return self
+			 * @method
+			 * @memberOf module:base/ClassModule
+			 * @param {String} - Module name
+			 * @returns {String}
+			 */
 			variable: function( ret ) {
 				var variableReg = new RegExp( "\\" + ClassModule.variablePrefix + "[^\\/]+", "g" ),
 					variables = ret.match( variableReg );
@@ -897,7 +1139,19 @@
 			}
 		} );
 
-		ClassModule.prototype = {
+		/**
+		 * @callback ClassModuleCallback
+		 * @this module:base/ClassModule
+		 * @param {...*} - An argument array of any object. Any one argument is defined in the module.
+		 */
+
+		ClassModule.prototype = /** @lends module:base/ClassModule.prototype */ {
+			/**
+			 * When completed, the param fn is called
+			 * @method
+			 * @param {ClassModuleCallback} - handler
+			 * @returns {this}
+			 */
 			addHandler: function( fn ) {
 				if ( typeof fn == "function" ) {
 					if ( this.status == 4 ) {
@@ -910,6 +1164,12 @@
 				}
 				return this;
 			},
+			/**
+			 * check status then to do something
+			 * @method
+			 * @protected
+			 * @returns {this}
+			 */
 			check: function() {
 				var status = this.getStatus(),
 					dps = this.dependencies;
@@ -969,13 +1229,24 @@
 				return this;
 			},
 			constructor: ClassModule,
-			getDependenciesMap: function() {
+			/**
+			 * Get an array of dependent modules
+			 * @method
+			 * @returns {Array.<ModuleInfo>}
+			 */
+			getDependenciesArray: function() {
 				var ret = [];
 				if ( _config.amd.detectCR ) {
 					var id = this.id,
 						MD = ClassModule.dependenciesMap[ id ],
 						DM, module = ClassModule.getModule( id );
-
+					/**
+					 * @typedef ModuleInfo
+					 * @type {object}
+					 * @property {String} name - Module name
+					 * @property {String} status - Module status
+					 * @property {String} container - Module path
+					 */
 					ret.push( {
 						name: id,
 						status: module.getStatus( 1 ),
@@ -990,10 +1261,15 @@
 						} );
 					}
 				} else {
-					$.logger( "getDependenciesMap", "you had to set require.detectCR true for getting map list" );
+					$.logger( "getDependenciesArray", "you had to set require.detectCR true for getting map list" );
 				}
 				return ret;
 			},
+			/**
+			 * Module ready and trigger handler
+			 * @protected
+			 * @method
+			 */
 			getReady: function() {
 				if ( this.status == 4 ) {
 					return;
@@ -1003,7 +1279,7 @@
 					i = 0,
 					dplist = [],
 					id = this.id,
-					sdp, md, map, F;
+					sdp, md, map, exports;
 
 				for ( ; i < l; i++ ) {
 					md = ClassModule.getModule( dps[ i ] );
@@ -1015,36 +1291,62 @@
 				}
 				this.setStatus( 4 );
 				if ( _config.amd.debug ) {
-					F = this.factory.apply( null, dplist ) || {};
+					exports = this.factory.apply( this, dplist ) || {};
 				} else {
 					try {
-						F = this.factory.apply( null, dplist ) || {};
+						exports = this.factory.apply( this, dplist ) || {};
 					} catch ( e ) {}
 				}
 
-				F._AMD = {
+				exports._AMD = {
 					id: id,
 					dependencies: dps,
 					status: 4,
 					//, todo: this.todo
 					container: this.container,
-					getDependenciesMap: this.getDependenciesMap
+					getDependenciesArray: this.getDependenciesArray
 				};
 
-				if ( F && F.constructor != Array ) {
-					F = [ F ];
+				if ( exports && exports.constructor != Array ) {
+					exports = [ exports ];
 				};
-				this.module = F;
-				this.first = F[ 0 ];
+				this.module = exports;
+				this.first = exports[ 0 ];
 				_config.amd.console && $.logger( "module " + id + " ready" );
-				//_getMoudule(id, F);
+				//_getMoudule(id, exports);
 				//当传入的模块是已准备好的，开启转正机会
 				this.holdReady().trigger();
 			},
+			/**
+			 * Get stats of module
+			 * @method
+			 * @param {Boolean} - if true get string else get number.
+			 * @returns {Number|String}
+			 */
 			getStatus: function( isStr ) {
 				var s = this.status;
 				return isStr == true ? ClassModule.statusReflect[ s ] : s;
 			},
+			/**
+			 * Describe module
+			 * @method
+			 * @param {String} - content
+			 * @returns {this}
+			 */
+			describe: function( content ) {
+				this.description = content;
+				$.module[ this.id ] = content;
+				return this;
+			},
+			valueOf: function() {
+				return this.description;
+			},
+			/**
+			 * Wait module get ready
+			 * @method
+			 * @protected
+			 * @returns {this}
+			 */
 			holdReady: function() {
 				var md, hd = ClassModule.holdon[ this.id ],
 					MD = ClassModule.modules;
@@ -1055,7 +1357,18 @@
 				}
 				return this;
 			},
-			init: function( dependencies, factory, status, container, fail ) {
+			/**
+			 * Reset property
+			 * @method
+			 * @protected
+			 * @param {Array} dependencies - Dependencies module
+			 * @param {Function|Object|String|Number|Boolean} [factory] - Module body
+			 * @param {Number} [status=0] - 0:init 1:queue 2:require 3:define 4:ready
+			 * @param {String} [container] - Path of js
+			 * @param {Function} [fail] - An function to the fail callback if loading moudle timeout or error
+			 * @returns {this}
+			 */
+			reset: function( dependencies, factory, status, container, fail ) {
 				for ( var i = dependencies.length - 1; i >= 0; i-- ) {
 					dependencies[ i ] = ClassModule.variable( dependencies[ i ] );
 				}
@@ -1066,24 +1379,21 @@
 				this.fail = fail;
 				return this;
 			},
+			/**
+			 * Go to load Module
+			 * @method
+			 * @returns {this}
+			 */
 			load: function() {
 				var id = this.id,
 					fail = this.fail,
 					status = this.getStatus(),
 					url;
 
-				// if ( status == 2 ) {
-				//   this.loadDependencies( );
-				//   return this;
-				// }
-				// if ( status > 1 ) {
-				//   return this;
-				// }
-
 				( url = ClassModule.getPath( id, ".js" ) ) || util.error( {
-					fn: "require",
-					msg: "Could not load module: " + id + ", Cannot match its URL"
-				} );
+						fn: "require",
+						msg: "Could not load module: " + id + ", Cannot match its URL"
+					} );
 				//如果当前模块不是已知的具名模块，则设定它为正在处理中的模块，直到它的定义体出现
 				//if (!namedModule) { ClassModule.anonymousID = id; } //这边赋值的时候应当是影射的
 				this.setStatus( 2 );
@@ -1098,6 +1408,11 @@
 				}
 				return this;
 			},
+			/**
+			 * Go to load Dependent
+			 * @method
+			 * @returns {this}
+			 */
 			loadDependencies: function() {
 				var dep = this.dependencies,
 					i = 0,
@@ -1114,7 +1429,13 @@
 				}
 				return this;
 			},
-			request: function( success ) {
+			/**
+			 * Module go to launch
+			 * @method
+			 * @param {Function} [success] - ready callback
+			 * @returns {this}
+			 */
+			launch: function( success ) {
 				this.addHandler( success );
 				switch ( this.status ) {
 					case 0:
@@ -1141,13 +1462,30 @@
 
 				return this;
 			},
+			/**
+			 * @method
+			 * @protected
+			 * @param {Number}
+			 * @returns {this}
+			 */
 			setStatus: function( status ) {
 				this.status = status;
 				return this;
 			},
+			/**
+			 * @method
+			 * @protected
+			 * @returns {Boolean}
+			 */
 			isReady: function() {
 				return this.status === 4;
 			},
+			/**
+			 * Trigger event
+			 * @method
+			 * @protected
+			 * @returns {this}
+			 */
 			trigger: function() {
 				var h = this.handlers[ this.id ],
 					item;
@@ -1162,7 +1500,16 @@
 			}
 		}
 
-		window.define = function( id, dependencies, factory, info ) {
+		/**
+		 * AMD define
+		 * @global
+		 * @method
+		 * @param {String} - Module
+		 * @param {String[]|*} - If arguments[2] is a factory, it can be any object
+		 * @param {*} [factory] - Usually, it is function(){} or {}
+		 * @returns {ClassModule}
+		 */
+		window.define = function( id, dependencies, factory ) {
 			var arg = arguments,
 				ret, deep, body, container, status;
 
@@ -1207,12 +1554,12 @@
 					factory = ClassModule.funBody( arg[ 2 ] );
 			}
 			id = ClassModule.variable( id );
-			ClassModule.checkNamed( id );
+			ClassModule.checkName( id );
 			container = ClassModule.getContainer( id );
 			if ( ret = ClassModule.getModule( id ) ) {
 				deep = ret.getStatus();
 				//container = deep != 0 ? ClassModule.getContainer(id) : null;
-				ret.init( dependencies, factory, 3, container );
+				ret.reset( dependencies, factory, 3, container );
 			} else {
 				container = /tempDefine/.test( id ) ? "inner" : ClassModule.getContainer( id );
 				ret = new ClassModule( id, dependencies, factory, 3, container );
@@ -1236,16 +1583,8 @@
 
 		};
 
-		util.extend( define, {
-			amd: ClassModule.maps,
-			noConflict: function() {
-				window.define = _define;
-				return define;
-			},
-			getModuleId: function() {
-				return ClassModule.anonymousID;
-			}
-		} );
+		define.amd = ClassModule.maps;
+
 
 		function getTempDefine( module, fail ) {
 			//如果请求一组模块则转换为对一个临时模块的定义与请求处理
@@ -1280,6 +1619,26 @@
 			return ret;
 		}
 
+		/**
+		 *
+		 * @public
+		 * @namespace require
+		 * @variation namespace
+		 */
+
+		/**
+		 * AMD require
+		 * @method require
+		 * @global
+		 * @param {String} - Module
+		 * @param {ClassModuleCallback}
+		 * @param {Function} [fail] - An function to the fail callback if loading moudle timeout or error
+		 * @returns {ClassModule}
+		 * @example
+		 * require( [ "main/query", "hash/locationHash", "ui/swapview", "ui/scrollableview", "module/initWidget" ], function( query, locationHash ) { } );
+		 * require( "main/query", function( query ) { } );
+		 * require( "main/query" ).first // Maybe is null;
+		 */
 		window.require = function( module, success, fail ) {
 			if ( !module ) {
 				return;
@@ -1292,15 +1651,16 @@
 				msg: module + ":success should be a Function"
 			}, "TypeError" );
 
-			return ret.request( success );
+			return ret.launch( success );
 		};
 
 		util.extend( require, {
-			noConflict: function() {
-				window.require = _require;
-				return require;
-			},
-
+			/**
+			 * Cache the module
+			 * @memberof require(namespace)
+			 * @param {Object.<String,Function>} - String: module name,Function: moudle factory
+			 * @returns {this}
+			 */
 			cache: function( cache ) {
 				var container = ClassModule.getContainer( null, ClassModule.amdAnonymousID ? true : false );
 				//util.extend(ClassModule.cache, a.cache);
@@ -1311,11 +1671,13 @@
 				}
 				return this;
 			},
-
+			/**
+			 * The module named, so we can load it by async.
+			 * @memberof require(namespace)
+			 * @param {String|String[]|Object.<String,*>} - String: module name
+			 * @returns {this}
+			 */
 			named: function( name ) {
-				/// <summary>具名以用来可以异步加载</summary>
-				/// <param name="name" type="Array/Object/String">具名名单</param>
-				/// <returns type="self" />
 				var i, b, n = name;
 				if ( n && n.constructor == Array ) {
 					for ( i = 0; b = n[ i++ ]; ) {
@@ -1330,12 +1692,14 @@
 				}
 				return this;
 			},
-
+			/**
+			 * Reflect path
+			 * @memberof require(namespace)
+			 * @param {String|Object.<String,String>} - Module name | Object.<String,String>: <"module name", "js path">
+			 * @param {String} [path] - js path; If "name" is Object then "path" is optional
+			 * @returns {this}
+			 */
 			reflect: function( name, path ) {
-				/// <summary>映射路径</summary>
-				/// <param name="name" type="Object/String">映射名</param>
-				/// <param name="path" type="String/undefined">路径名</param>
-				/// <returns type="self" />
 				if ( typeof name == "object" ) {
 					for ( var i in name ) {
 						ClassModule.maps[ i ] = name[ i ];
@@ -1346,30 +1710,14 @@
 
 				return this;
 			},
-
-			config: function( a, b, c ) { //name, path, named
-				var len = arguments.length;
-				switch ( len ) {
-					case 1:
-						if ( typeof a == "string" || a && a.constructor == Array ) {
-							require.named( a );
-						} else if ( typeof a == "object" ) {
-							a.reflect && require.reflect( a.reflect );
-							a.named && a.named == true ? require.named( a.reflect ) : require.named( a.named );
-							//如果named=true其实就是映射a.reflect
-							a.amd && util.extend( _config.amd, a.amd );
-							a.cache && require.cache( a.cache );
-						}
-						break;
-					case 2:
-						require.reflect( a, b );
-						break;
-
-				}
-				return this;
-
-			},
-
+			/**
+			 * @memberof require(namespace)
+			 * @param {String}
+			 * @param {String}
+			 * @returns {this}
+			 * @example
+			 * require.variable( "app", "my/path/to/app" )
+			 */
 			variable: function( name, path ) {
 				if ( name.indexOf( ClassModule.variablePrefix ) != 0 ) {
 					name = ClassModule.variablePrefix + name;
@@ -1396,24 +1744,17 @@
 					len = arg.length,
 					fn = arg[ len - 1 ],
 					version = "no signing version";
-				if ( typeof fn == "string" ) {
-					version = fn;
-					fn = arg[ len - 2 ];
-					arg.pop();
-				}
-				$.module[ id ] = version;
-				//                if (arg[1] && arg[1].constructor == Array) {
-				//                    require.named(dependencies);
-				//                }
+
+
 				if ( typeof fn == "function" ) {
 					arg[ arg.length - 1 ] = function() {
 						var arg = util.argToArray( arguments, 0 );
 						arg.splice( 0, 0, aQuery );
 						if ( _config.amd.debug ) {
-							return fn.apply( null, arg );
+							return fn.apply( this, arg );
 						} else {
 							try {
-								return fn.apply( null, arg );
+								return fn.apply( this, arg );
 							} finally {}
 						}
 					}
@@ -1440,24 +1781,58 @@
 		} );
 
 		aQuery.define( "base/ClassModule", function( $ ) {
+			/**
+			 * Module Management
+			 * @public
+			 * @module base/ClassModule
+			 */
+
+			/**
+			 * @typedef {module:base/ClassModule} ClassModule
+			 */
+
+			/**
+			 * @public
+			 * @alias module:base/ClassModule
+			 * @constructor
+			 */
+			var exports = ClassModule;
 			$.ClassModule = ClassModule;
-			return ClassModule
-		}, "1.0.0" );
+			return exports;
+		} );
 
 	} )();
 
 	aQuery.define( "base/config", function( $ ) {
+		this.describe( "config of amdquery" );
 		$.config = _config;
 		return _config;
 	} );
 
-	aQuery.define( "base/queue", function( $ ) {
+	aQuery.define( 'base/queue', function( $ ) {
+		/**
+		 * A module representing a queue.
+		 * @public
+		 * @module base/queue
+		 */
+
+		/**
+		 * @typedef {module:base/queue} Queue
+		 */
+
+		/**
+		 * @public
+		 * @alias module:base/queue
+		 * @constructor
+		 */
+		var exports = Queue;
 		$.Queue = Queue;
-		return Queue
-	}, "1.0.0" );
+		return exports;
+	} );
 
 	aQuery.define( "base/Promise", function( $ ) {
 		"use strict"; //启用严格模式
+		this.describe( "Class Promise" );
 		var checkArg = function( todo, fail, progress, name ) {
 			var arg = util.argToArray( arguments ),
 				len = arg.length,
@@ -1475,24 +1850,37 @@
 			random = 0,
 			count = 0;
 
-		function Promise( todo, fail, progress, name ) {
-			/// <summary>Promise模块</summary>
-			/// <param name="todo" type="Function">成功</param>
-			/// <param name="fail" type="Function">失败</param>
-			/// <param name="progress" type="Function">进度</param>
-			/// <param name="name" type="String">方法</param>
-			/// <para>new Promise(function(){},..,..,"origin")</para>
-			/// <para>new Promise(function(){},"origin")</para>
-			/// <para>new Promise()</para>
-			/// <returns type="self" />
-			this.init( todo, fail, progress, name );
+		/**
+		 * @see http://wiki.commonjs.org/wiki/Promises/A
+		 * @public
+		 * @module base/Promise
+		 * @example
+		 * new Promise(function(){}, function(){})
+		 * new Promise(function(){})
+		 * new Promise()
+		 */
+
+		/**
+		 * @typedef {module:base/Promise} Promise
+		 */
+
+		/**
+		 * @public
+		 * @alias module:base/Promise
+		 * @constructor
+		 */
+		var Promise = function( todo, fail, progress ) {
+			this.init( todo, fail, progress );
 		}
+
 
 		Promise.prototype = {
 			constructor: Promise,
+			/**
+			 * Do next
+			 * @private
+			 */
 			_next: function( result ) {
-				/// <summary>inner</summary>
-				/// <returns type="self" />
 				for ( var i = 0, len = this.thens.length, promise; i < len; i++ ) {
 					// 依次调用该任务的后续任务
 					promise = this.thens[ i ];
@@ -1500,17 +1888,21 @@
 				}
 				return this;
 			},
+			/**
+			 * Push promise
+			 * @private
+			 */
 			_push: function( nextPromise ) {
-				/// <summary>inner</summary>
-				/// <returns type="self" />
 				this.thens.push( nextPromise );
 				return this;
 			},
+			/**
+			 * Call todo, fail or progress
+			 * @param {String} - Function name
+			 * @param {*}
+			 * @returns {*}
+			 */
 			call: function( name, result ) {
-				/// <summary>调用某个方法</summary>
-				/// <param name="name" type="Function">成功</param>
-				/// <param name="result" type="any/arguments">参数，如果参数是argument则会使用apply</param>
-				/// <returns type="any" />
 				switch ( name ) {
 					case "fail":
 					case "progress":
@@ -1522,24 +1914,31 @@
 
 				return this[ name ].call( this.context, result );
 			},
+			/**
+			 * Get property
+			 * @param {String} - Property name
+			 * @returns {*}
+			 */
 			get: function( propertyName ) {
-				/// <summary>获得某个属性</summary>
-				/// <param name="propertyName" type="String">属性名称</param>
-				/// <returns type="any" />
 				return this[ propertyName ];
 			},
+			/**
+			 * @param {Object} - Context of Promise
+			 * @returns {this}
+			 */
 			withContext: function( context ) {
 				this.context = context;
 				return this;
 			},
+			/**
+			 * Then do...
+			 * @param {Function} - Todo
+			 * @param {Function} - Fail next
+			 * @param {Function} - Progress
+			 * @returns {Promise}
+			 */
 			then: function( nextToDo, nextFail, nextProgress ) {
-				/// <summary>然后执行</summary>
-				/// <param name="nextToDo" type="Function">成功</param>
-				/// <param name="nextFail" type="Function">失败</param>
-				/// <param name="nextProgress" type="Function">进度</param>
-				/// <para>then是不能传 path的</para>
-				/// <returns type="Promise" />
-				var promise = new Promise( nextToDo, nextFail, nextProgress, arguments[ 3 ] || this.path );
+				var promise = new Promise( nextToDo, nextFail, nextProgress );
 				if ( this.context !== this ) {
 					promise.withContext( this.context );
 				}
@@ -1553,13 +1952,13 @@
 				}
 				return promise;
 			},
-			init: function( todo, fail, progress, name ) {
-				/// <summary>初始化函数 和构造函数同一用法</summary>
-				/// <param name="todo" type="Function">成功</param>
-				/// <param name="fail" type="Function">失败</param>
-				/// <param name="progress" type="Function">进度</param>
-				/// <param name="name" type="String">方法</param>
-				/// <returns type="self" />
+			/**
+			 * @constructs
+			 * @param {Function=}
+			 * @param {Function=}
+			 * @param {Function=}
+			 */
+			init: function( todo, fail, progress ) {
 				var arg = checkArg.apply( this, arguments );
 
 				this.context = this;
@@ -1572,17 +1971,17 @@
 				};
 				this.fail = arg[ 1 ] || null;
 				this.progress = arg[ 2 ] || null;
-				this.path = arg[ 3 ] || "master";
 				this.parent = null;
 				this.friend = 0;
 				this.asyncCount = 0;
 				this.id = count++;
-				this._branch = {};
-				this._back = [];
-				this._tag = {};
 
 				return this;
 			},
+			/**
+			 * clear propery
+			 * @private
+			 */
 			_clearProperty: function() {
 				this.result = null;
 				this.thens = [];
@@ -1590,17 +1989,14 @@
 				this.fail = null;
 				this.progress = null;
 				this.parent = null;
-				this._branch = {};
-				this._back = [];
-				this._tag = {};
 				return this;
 			},
-
-			destroy: function( parent ) {
-				/// <summary>删除节点下的promise</summary>
-				/// <param name="parent" type="Promise">undefined/Promise</param>
-				/// <returns type="self" />
-				var ancester = parent || this,
+			/**
+			 * Destroy self
+			 * @returns {void}
+			 */
+			destroy: function() {
+				var ancester = this,
 					thens = ancester.thens,
 					i, len = thens.length,
 					result = 0,
@@ -1613,17 +2009,13 @@
 						then._clearProperty();
 					}
 				}
-				return this;
+				this._clearProperty();
 			},
-			destroyFromRoot: function() {
-				/// <summary>删除根下的所有节点</summary>
-				/// <returns type="self" />
-				return this.destroy( this.root() );
-			},
+			/**
+			 * @param {*=} - result
+			 * @returns {this}
+			 */
 			resolve: function( obj ) {
-				/// <summary>执行</summary>
-				/// <param name="obj" type="any/arguments">参数，如果参数是argument则会使用apply</param>
-				/// <returns type="self" />
 				if ( this.state != "todo" ) {
 					// util.error( {
 					//   fn: "Promise.resolve",
@@ -1669,19 +2061,40 @@
 				}
 				return this;
 			},
-
+			/**
+			 * The new promise is siblings
+			 * @param {Function=}
+			 * @param {Function=}
+			 * @param {Function=}
+			 * @returns {Promise}
+			 * @example
+			 * new Promise().and(todo).and(todo);
+			 */
 			and: function( todo, fail, progress ) {
-				/// <summary>并且执行</summary>
-				/// <param name="todo" type="Function">成功</param>
-				/// <param name="fail" type="Function">失败</param>
-				/// <param name="progress" type="Function">进度</param>
-				/// <returns type="self" />
 				var self = this.parent || this,
 					promise = self.then( todo, fail, progress );
 				promise.friend = 1;
 				self.asyncCount += 1;
 				return promise;
 			},
+			/**
+			 * Relative method "and"
+			 * @param {Promise} [promise=this]
+			 * @param {*=} - result
+			 * @returns {Promise}
+			 * @example
+			 * function delay(ms) {
+			 *   return function (obj) {
+			 *       var promise = new Promise;
+			 *       var self = this;
+			 *       setTimeout(function () {
+			 *           promise.together(self, obj);
+			 *       }, ms);
+			 *       return promise;
+			 *   };
+			 * };
+			 * new Promise().and(delay(1000)).and(delay(2000));
+			 */
 			together: function( promise, obj ) {
 				var i = 0,
 					parent = promise.parent || this.parent,
@@ -1703,96 +2116,71 @@
 				}
 				return this;
 			},
-
-			branch: function( todo, fail, progress, name ) {
-				/// <summary>打上分支</summary>
-				/// <param name="nextToDo" type="Function">成功</param>
-				/// <param name="nextFail" type="Function">失败</param>
-				/// <param name="nextProgress" type="Function">进度</param>
-				/// <param name="name" type="String">方法</param>
-				/// <returns type="Promise" />
-				var
-				self, arg = checkArg.apply( this, arguments ),
-					name = arg[ 3 ] ? arg[ 3 ] : "branch" + random++;
-
-				this.root()._back.push( {
-					branch: name,
-					promise: this
-				} );
-				if ( self = this.root()._branch[ name ] ) {} else {
-					this.root()._branch[ name ] = self = this;
-				}
-
-				return self.then( arg[ 0 ], arg[ 1 ], arg[ 2 ], name );
-			},
+			/**
+			 * finished
+			 * @returns {Boolean}
+			 */
 			finished: function() {
 				return this.state === "done";
 			},
+			/**
+			 * unfinished
+			 * @returns {Boolean}
+			 */
 			unfinished: function() {
 				return this.state === "todo";
 			},
-			reBranch: function() {
-				/// <summary>回到上一个分支</summary>
-				/// <returns type="Promise" />
-				return this.root()._back.pop().promise;
-			},
-			tag: function( str ) {
-				/// <summary>打上一标签便于管理</summary>
-				/// <returns type="self/Promise" />
-				var self;
-				if ( self = this.root()._tag[ str ] ) {
-
-				} else {
-					this.root()._tag[ str ] = self = this;
-				}
-				return self;
-			},
-			master: function() {
-				/// <summary>返回master路径</summary>
-				/// <returns type="Promise" />
-				var master = this.root()._branch[ 0 ].promise || this;
-
-				return master;
-			},
-
+			/**
+			 * get root promise
+			 * @returns {Promise}
+			 */
 			root: function() {
-				/// <summary>返回根</summary>
-				/// <returns type="Promise" />
 				var parent = this;
 				while ( parent.parent ) {
 					parent = parent.parent;
 				}
 				return parent;
-			},
-			rootResolve: function( obj ) {
-				/// <summary>从根开始执行</summary>
-				/// <returns type="Promise" />
-				this.root().resolve( obj );
-				return this;
-			},
-			checkout: function() {
-				/// <summary>检查路径</summary>
-				/// <returns type="Promise" />
-				//                if (name) {
-				//                    if (name == this.root().path) {
-				//                        return
-				//                    }
-				//                    this.root()._branch[name]
-				//                } else {
-				return this.path;
-				//}
 			}
 		};
 
+		/**
+		 * Whether it is "Promise" instances
+		 * @param {Promise}
+		 * @returns {Boolean}
+		 */
 		Promise.forinstance = function( promise ) {
 			return promise instanceof Promise || ( promise ? promise.__promiseFlag === true : false );
 		}
 
 		return Promise;
-	}, "1.0.0" );
+	} );
 
 	aQuery.define( "base/ready", [ "base/Promise" ], function( $, Promise ) {
 		"use strict"; //启用严格模式
+		this.describe( "Life Cycle of AMDQuery" );
+
+		/**
+		 * Life Cycle of AMDQuery
+		 * @public
+		 * @module base/ready
+		 */
+
+		/**
+		 * @typedef {module:base/ready} ready
+		 */
+
+		/**
+		 * @public
+		 * @alias module:base/ready
+		 * @method
+		 * @param {Function} - When AMDQuery ready to call the callback function
+		 * @example
+		 * require("base/ready", function( ready ) {
+		 *   ready(function(){
+		 *
+		 *   });
+		 * } );
+		 */
 		var ready = function( fn ) {
 			setTimeout( function() {
 				rootPromise.and( fn );
@@ -1860,10 +2248,10 @@
 		} ).then( function() {
 			document.documentElement.style.left = "0px";
 			document.documentElement.style.position = "";
-		} ).rootResolve();
+		} ).root().resolve();
 
 		return $.ready = ready;
-	}, "1.0.0" );
+	} );
 
 	window.aQuery = $;
 
@@ -1880,6 +2268,7 @@
 /*===================base/typed===========================*/
 aQuery.define( "base/typed", function( $ ) {
 	"use strict"; //启用严格模式
+  this.describe( "Support typeof function" );
 	var
 	class2type = {},
 		hasOwnProperty = class2type.hasOwnProperty,
@@ -2122,13 +2511,14 @@ aQuery.define( "base/typed", function( $ ) {
 	};
 
 	return typed;
-}, "1.0.0" );
+} );
 
 /*=======================================================*/
 
 /*===================base/extend===========================*/
 aQuery.define( "base/extend", [ "base/typed" ], function( $, typed ) {
 	"use strict"; //启用严格模式
+	this.describe( "Extend Util" );
 	var extend = {
 		easyExtend: function( obj1, obj2 ) {
 			/// <summary>简单地把对象的属性复制到对象一</summary>
@@ -2217,13 +2607,14 @@ aQuery.define( "base/extend", [ "base/typed" ], function( $, typed ) {
 	};
 
 	return extend;
-}, "1.0.0" );
+} );
 
 /*=======================================================*/
 
 /*===================base/array===========================*/
 aQuery.define( "base/array", [ "base/typed", "base/extend" ], function( $, typed, extend ) {
 	"use strict"; //启用严格模式
+  this.describe( "Array Util" );
 	var
 	indexOf = Array.prototype.indexOf || function( item, i ) {
 		var len = this.length;
@@ -2363,15 +2754,14 @@ aQuery.define( "base/array", [ "base/typed", "base/extend" ], function( $, typed
 		};
 
 	return array;
-}, "1.0.0" );
+} );
 
 /*=======================================================*/
 
 /*===================main/object===========================*/
 ﻿aQuery.define( "main/object", [ "base/typed", "base/array", "base/extend" ], function( $, typed, array, utilExtend ) {
-	//依赖extend
 	"use strict"; //启用严格模式
-
+	this.describe( "Define Class" );
 	var
 	pushSuperStack = function( self ) {
 		var stack;
@@ -2782,15 +3172,14 @@ aQuery.define( "base/array", [ "base/typed", "base/extend" ], function( $, typed
 	$.object = object;
 
 	return object;
-}, "1.0.0" );
+} );
 
 /*=======================================================*/
 
 /*===================base/support===========================*/
 ﻿aQuery.define( "base/support", [ "base/extend" ], function( $, utilExtend ) {
-	//consult from jquery-1.9.1
 	"use strict"; //启用严格模式
-
+  this.describe( "Consult from jquery-1.9.1" );
 	var support, all, a,
 		input, select, fragment,
 		opt, eventName, isSupported, i,
@@ -3059,7 +3448,7 @@ aQuery.define( "base/array", [ "base/typed", "base/extend" ], function( $, typed
 	root = script = null;
 
 	return support;
-}, "JQuery1.9.1" );
+} );
 
 /*=======================================================*/
 
@@ -5216,7 +5605,7 @@ if ( typeof define === "function" && define.amd ) {
 /*===================main/query===========================*/
 ﻿aQuery.define( "main/query", [ "lib/js/sizzle", "base/extend", "base/typed", "base/array" ], function( $, Sizzle, utilExtend, typed, array, undefined ) {
 	"use strict"; //启用严格模式
-
+	this.describe( "Depend Sizzle1.10.3" );
 	$.module[ "lib/js/sizzle" ] = "Sizzle1.10.3";
 
 	var core_deletedIds = [],
@@ -5644,13 +6033,13 @@ if ( typeof define === "function" && define.amd ) {
 	} );
 
 	return query;
-}, "JQuery1.9.1" );
+} );
 
 /*=======================================================*/
 
 /*===================base/client===========================*/
-﻿// quote from colo.js by Andrew Brehaut, Tim Baumann
-aQuery.define( "base/client", [ "base/extend" ], function( $, extend ) {
+﻿aQuery.define( "base/client", [ "base/extend" ], function( $, extend ) {
+	this.describe( "Cline of Browser" );
 	var reg = RegExp,
 		client = {
 			browser: {
@@ -5797,7 +6186,7 @@ aQuery.define( "base/client", [ "base/extend" ], function( $, extend ) {
 	}
 
 	return client;
-}, "1.0.0" );
+} );
 
 /*=======================================================*/
 
@@ -5976,7 +6365,6 @@ aQuery.define( "base/client", [ "base/extend" ], function( $, extend ) {
 		other = "resize scroll change select submit DomNodeInserted DomNodeRemoved".split( " " ),
 		_eventNameList = [].concat( mouse, mutation, html, key, other ),
 		_domEventList = {},
-		//, addHandler = $._redundance.addHandler
 		tools = {
 			editEventType: function( type ) {
 				/// <summary>兼容事件类型名</summary>
@@ -6515,7 +6903,6 @@ aQuery.define( "base/client", [ "base/extend" ], function( $, extend ) {
 					var msg = e.message || "no message",
 						filename = e.filename || e.sourceURL || e.stacktrace || url;
 					line = e.lineno || e.lineNumber || e.number || e.lineNumber || e.line || line;
-					$.showMsg( [ "message:", msg, "<br/>", "filename:", filename, "<br/>", "line:", line ].join( "" ), isMsgDiv );
 				} );
 				return this;
 			},
@@ -6682,7 +7069,6 @@ aQuery.define( "base/client", [ "base/extend" ], function( $, extend ) {
 		i = 0,
 		len;
 
-	//delete $._redundance.addHandler;
 	event.on = event.addHandler;
 	event.off = event.removeHandler;
 	event.clear = event.clearHandlers;
@@ -8081,7 +8467,7 @@ aQuery.define( "base/client", [ "base/extend" ], function( $, extend ) {
 			return ret;
 		},
 		fetchCSS: function( path ) {
-			if ( config.amdquery.autoFetchCss && config.app.development ) {
+			if ( config.ui.autoFetchCss && config.app.development ) {
 				src.link( {
 					href: $.getPath( path, ".css" )
 				} );
@@ -8203,11 +8589,11 @@ aQuery.define( "base/client", [ "base/extend" ], function( $, extend ) {
 		}
 	} );
 
-	if ( !config.app.development && config.amdquery.autoFetchCss ) {
-		src.link( {
-			href: $.getPath( "ui/css/amdquery-widget", ".css" )
-		} );
-	}
+	// if ( !config.app.development && config.ui.autoFetchCss ) {
+	// 	src.link( {
+	// 		href: $.getPath( "ui/css/amdquery-widget", ".css" )
+	// 	} );
+	// }
 
 	$.Widget = Widget;
 
@@ -8399,6 +8785,7 @@ aQuery.define( "base/client", [ "base/extend" ], function( $, extend ) {
 /*===================main/css===========================*/
 aQuery.define( "main/css", [ "base/typed", "base/extend", "base/array", "base/support", "base/client", "main/data", "main/query" ], function( $, typed, utilExtend, utilArray, support, client, data, query, undefined ) {
 	"use strict"; //启用严格模式
+	this.describe( "consult JQuery1.9.1" );
 	var rnumnonpx = /^-?(?:\d*\.)?\d+(?!px)[^\d\s]+$/i,
 		rmargin = /^margin/,
 		rposition = /^(top|right|bottom|left)$/,
@@ -8865,19 +9252,19 @@ aQuery.define( "main/css", [ "base/typed", "base/extend", "base/array", "base/su
 		return name;
 	};
 
-	$.interfaces.achieve( "constructorCSS", function( type, dollar, cssObj, ele, parentNode ) {
+	$.interfaces.achieve( "constructorCSS", function( type, dollar, cssObj, ele ) {
 		cssObj && dollar.css( cssObj );
-		parentNode && ( typed.isEle( parentNode ) || typed.is$( parentNode ) ) && dollar.appendTo( parentNode );
 	} );
 
 	return css;
-}, "consult JQuery1.9.1" );
+} );
 
 /*=======================================================*/
 
 /*===================main/position===========================*/
 aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "base/client", "main/css" ], function( $, typed, utilExtend, support, client, css, undefined ) {
 	"use strict"; //启用严格模式
+	this.describe( "consult JQuery1.9.1" );
 	var rnumnonpx = /^-?(?:\d*\.)?\d+(?!px)[^\d\s]+$/i,
 		rnumsplit = new RegExp( "^(" + $.core_pnum + ")(.*)$", "i" ),
 		cssExpand = [ "Top", "Right", "Bottom", "Left" ],
@@ -9374,14 +9761,14 @@ aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "
 
 
 	return position;
-}, "consult JQuery1.9.1" );
+} );
 
 /*=======================================================*/
 
 /*===================main/dom===========================*/
 ﻿aQuery.define( "main/dom", [ "base/typed", "base/extend", "base/array", "base/support", "main/data", "main/event", "main/query" ], function( $, typed, utilExtend, utilArray, support, data, event, query, undefined ) {
 	"use strict"; //启用严格模式
-
+  this.describe( "consult JQuery1.9.1" );
 	var nodeNames = "abbr|article|aside|audio|bdi|canvas|data|datalist|details|figcaption|figure|footer|" +
 		"header|hgroup|mark|meter|nav|output|progress|section|summary|time|video",
 		rinlineaQuery = / aQuery\d+="(?:null|\d+)"/g,
@@ -10314,7 +10701,7 @@ aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "
 	} );
 
 	return dom;
-}, "consult JQuery1.9.1" );
+} );
 
 /*=======================================================*/
 
@@ -11279,6 +11666,7 @@ aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "
 /*===================html5/css3===========================*/
 ﻿aQuery.define( "html5/css3", [ "base/support", "base/extend", "base/typed", "base/client", "base/array", "main/css" ], function( $, support, utilExtend, typed, client, array, css2, undefined ) {
 	"use strict"; //启用严格模式
+  this.describe("HTML5 CSS3");
 	var css3Head = ( function() {
 		var head = "";
 		if ( client.engine.ie )
@@ -12453,13 +12841,13 @@ aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "
 
 /*===================html5/animate.transform===========================*/
 ﻿aQuery.define( "html5/animate.transform", [ "base/extend", "base/support", "main/object", "module/FX", "html5/css3", "module/animate" ], function( $, utilExtend, support, object, FX, css3, animate, undefined ) {
-
+  "use strict"; //启用严格模式
+  this.describe("Support transform to animation");
 	var getScale = function( r ) {
 		return r ? Math.max( r, 0 ) : 1;
 	}, transformCss = css3.getTransformStyleNameUnCamelCase();
 
 	//"-" + css3.css3Head + "-transform";
-	//给动画类添加一个自定义方法
 	if ( support.transform3d ) {
 		var Transfrom3dForFX = FX.extend( function Transfrom3dForFX( ele, options, value, name, type ) {
 			if ( this instanceof Transfrom3dForFX ) {
@@ -12577,6 +12965,7 @@ aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "
 
 /*===================hash/cubicBezier.tween===========================*/
 define( "hash/cubicBezier.tween", function() {
+  this.describe( "CubicBezier parameter" );
 	return {
 		"back.easeInOut": [ 0.680, -0.550, 0.265, 1.550 ],
 		"circ.easeInOut": [ 0.785, 0.135, 0.150, 0.860 ],
@@ -12633,7 +13022,8 @@ define( "hash/cubicBezier.tween", function() {
 	cubicBezierTween,
 	undefined ) {
 	"use strict"; //启用严格模式
-	//无法识别em这种
+  this.describe( "Animation to HTML5 transition" );
+	//do not use em
 
 	$.extend( {
 		getPositionAnimationOptionProxy: function( isTransform3d, x, y ) {
@@ -13849,6 +14239,8 @@ aQuery.define( "ui/button", [
 
 /*===================html5/css3.position===========================*/
 aQuery.define( "html5/css3.position", [ "base/support", "main/position", "html5/css3" ], function( $, support, position, css3 ) {
+  "use strict"; //启用严格模式
+  this.describe( "Get positionX: left + translateX" );
   var css3Position = {
     getPositionX: function( ele ) {
       var x = position.getOffsetL( ele );
@@ -14492,6 +14884,7 @@ aQuery.define( "html5/css3.position", [ "base/support", "main/position", "html5/
 /*===================util/function.extend===========================*/
 aQuery.define( "util/function.extend", [ "base/extend" ], function( $, utilExtend ) {
 	"use strict"; //启用严格模式
+	this.describe( "consult underscore" );
 	utilExtend.easyExtend( $.util, {
 		compose: function() {
 			var funcs = arguments;
@@ -14570,7 +14963,7 @@ aQuery.define( "util/function.extend", [ "base/extend" ], function( $, utilExten
 		}
 	} );
 	return $.util;
-}, "consult underscore" );
+} );
 
 /*=======================================================*/
 
@@ -15062,7 +15455,7 @@ aQuery.define( "ui/flex", [
 
 /*===================hash/charcode===========================*/
 ﻿define( "hash/charcode", [ "base/client" ], function( client ) {
-	return {
+  return {
 		codeToStringReflect: {
 			108: "Enter",
 			112: "F1",
@@ -15816,6 +16209,7 @@ aQuery.define( "ui/navitem", [
 /*===================ecma5/array.compati===========================*/
 ﻿aQuery.define( "ecma5/array.compati", [ "base/array" ], function( $, array ) {
 	"use strict"; //启用严格模式
+  this.describe( "ECMA Array" );
 	var name, obj = {
 			every: function( fun, context ) {
 				var t = this,
@@ -17579,7 +17973,6 @@ aQuery.define( "ui/swapview", [
 				container: this.target,
 				overflow: true
 			} );
-
 			this.resize();
 
 			return this;
@@ -17838,7 +18231,7 @@ aQuery.define( "ui/swapview", [
 			this.boardWidth = 0;
 			this.boardHeight = 0;
 			this.orientationLength = 0;
-			return this.create()._initHandler().enable().render( opt.index );
+			return this.create()._initHandler().enable().render( this.options.index );
 		},
 		customEventName: [ "beforeAnimation", "afterAnimation" ],
 		options: {
@@ -17849,6 +18242,7 @@ aQuery.define( "ui/swapview", [
 			detectFlexResize: true
 		},
 		publics: {
+			resize: Widget.AllowPublic,
 			render: Widget.AllowPublic,
 			swapPrevious: Widget.AllowPublic,
 			swapNext: Widget.AllowPublic,
@@ -18242,7 +18636,7 @@ aQuery.define( "ui/tabview", [
 /*=======================================================*/
 
 /*===================ui/turnBook===========================*/
-﻿/*deprecated*/
+﻿/** @deprecated */
 aQuery.define( "ui/turnBook", [ "base/support", "base/typed", "main/css", "main/position", "main/dom", "main/class", "html5/css3", "ui/swappable", "module/Widget" ], function( $, support, typed, css1, position, dom, cls, css3, swappable, Widget, undefined ) {
 	"use strict"; //启用严格模式
 	var turnBook = Widget.extend( "ui.turnBook", {
@@ -18641,7 +19035,6 @@ aQuery.define( "ui/turnBook", [ "base/support", "base/typed", "main/css", "main/
 						target.trigger( "turnbookmove", self, e );
 						break;
 					case "swap.pause":
-						//$.showMsg("pause");
 						e.type = "turnbookpause";
 						target.trigger( "turnbookpause", self, e );
 						break;
@@ -19118,6 +19511,7 @@ aQuery.define( "ui/turnBook", [ "base/support", "base/typed", "main/css", "main/
 
 /*===================hash/locationHash===========================*/
 aQuery.define( "hash/locationHash", [ "main/parse" ], function( $, parse ) {
+	this.describe( "Location to Hash" );
 	var str = window.location.hash.replace( "#", "" ),
 		hash = parse.QueryString( str, "!", "=" );
 

@@ -216,7 +216,7 @@
  }
 
  function openHtml( appConfig, createAppDirAndCopyFile ) {
-  console.log( '\u001b[34m' + '\r\nopen HTML and get parameter... \u001b[39m' );
+ 	console.log( '\u001b[34m' + '\r\nopen HTML and get parameter... \u001b[39m' );
  	var tr = trumpet();
  	var htmlInfo = {
  		appConfig: {},
@@ -228,7 +228,7 @@
 
  	tr.selectAll( 'link', function( link ) {
  		link.getAttribute( "href", function( value ) {
-      logger( "css link", value );
+ 			logger( "css link", value );
  			htmlInfo.cssPath.push( value );
  		} );
 
@@ -399,9 +399,9 @@
  		},
  		cssFileList = glob.sync( "*.css", globOpt );
 
- 	htmlInfo.uiCombinationCssPath = htmlInfo.projectOutputPath + "amdquery/ui/css/amdquery-widget.css";
+ 	htmlInfo.uiCombinationCssPath = "amdquery/ui/css/amdquery-widget.css";
 
- 	_buildCssAndSave( cssFileList, htmlInfo.uiCombinationCssPath, cwd );
+ 	_buildCssAndSave( cssFileList, htmlInfo.projectOutputPath + htmlInfo.uiCombinationCssPath, cwd );
 
  	console.log( '\r\nSave UI amdquery-widget.css: ' + htmlInfo.uiCombinationCssPath );
 
@@ -434,7 +434,8 @@
  		append = "";
  		if ( !first ) {
  			first = true;
- 			append = '<link href="' + htmlInfo.appCombinationCssRelativePath + '" rel="stylesheet" type="text/css" />';
+ 			append = '<link href="' + htmlInfo.appCombinationCssRelativePath + '" rel="stylesheet" type="text/css" />' + "\n";
+ 			append += '<link href="' + "../" + htmlInfo.uiCombinationCssPath + '" rel="stylesheet" type="text/css" />';
  			logger( "add combinationCss", append );
  		}
 

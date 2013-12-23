@@ -734,11 +734,11 @@
 		}
 	} );
 
-	if ( !config.app.development && config.ui.autoFetchCss ) {
-		src.link( {
-			href: $.getPath( "ui/css/amdquery-widget", ".css" )
-		} );
-	}
+	// if ( !config.app.development && config.ui.autoFetchCss ) {
+	// 	src.link( {
+	// 		href: $.getPath( "ui/css/amdquery-widget", ".css" )
+	// 	} );
+	// }
 
 	$.Widget = Widget;
 

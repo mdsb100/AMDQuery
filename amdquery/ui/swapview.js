@@ -341,6 +341,7 @@ aQuery.define( "ui/swapview", [
 			detectFlexResize: true
 		},
 		publics: {
+			resize: Widget.AllowPublic,
 			render: Widget.AllowPublic,
 			swapPrevious: Widget.AllowPublic,
 			swapNext: Widget.AllowPublic,
