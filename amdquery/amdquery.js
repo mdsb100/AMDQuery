@@ -120,11 +120,11 @@
 			now: function() {
 				return Date.now();
 			},
-      /**
-       * Remove file suffix. "myFile.js" ==> "myfile"
-       * @param {String}
-       * @returns {String}
-       */
+			/**
+			 * Remove file suffix. "myFile.js" ==> "myfile"
+			 * @param {String}
+			 * @returns {String}
+			 */
 			removeSuffix: function( src ) {
 				src = src.replace( /\/$/, "" );
 				if ( src.match( /\.[^\/\.]*$/g ) ) {
@@ -149,6 +149,7 @@
 			}
 			return ret;
 		}() ),
+		/** {String} Project root path*/
 		rootPath = basePath.replace( /((.*?\/){3}).*$/, "$1" ),
 		runTime;
 
@@ -238,8 +239,8 @@
 	 * @param {Object|String|Element|Element[]|Function}
 	 * @param {String} [tagName="div"] - Tag name if a is a object
 	 * @param {Element} [parent] - Parent Element
-   * @borrows util.getPath as getPath
-   * @borrows util.now as now
+	 * @borrows util.getPath as getPath
+	 * @borrows util.now as now
 	 * @example
 	 * aQuery(function(){}); // Equivalent to ready(function(){}), see {@link module:base/ready}
 	 * // should require("main/query")
@@ -280,7 +281,6 @@
 			$.ready( elem );
 		} else return new $( elem, tagName, parent );
 	},
-		/** @alias class:aQuery */
 		$ = aQuery;
 
 	/**
@@ -439,19 +439,30 @@
 			return first;
 		},
 		getPath: util.getPath,
-
 		now: util.now,
-
-    /** Number RegExp */
+		/** Number RegExp */
 		core_pnum: /[+-]?(?:\d*\.|)\d+(?:[eE][+-]?\d+|)/.source,
-
+		/** {String} Project root path*/
 		rootPath: rootPath,
-
+		/** {String} Page path*/
 		pagePath: pagePath,
 
+		/**
+		 * @namespace
+		 * @borrows util.argToArray as argToArray
+     * @borrows util.removeSuffix as removeSuffix
+		 */
 		util: {
 			argToArray: util.argToArray,
 
+			/**
+			 * @param {String}
+			 * @param {String}
+			 * @retusn {String}
+			 * @example
+			 * aQuery.util.camelCase("margin-left") // return "marginLeft"
+			 * aQuery.util.camelCase("border-redius", "webkit") // return "webkitBorderRedius"
+			 */
 			camelCase: function( name, head ) {
 				/// <summary>把"margin-left驼峰化"</summary>
 				/// <param name="name" type="String">字符串</param>
@@ -467,14 +478,24 @@
 				}
 				return name.join( "" );
 			},
-
+			/**
+			 * @param {String}
+			 * @retusn {String}
+			 */
 			trim: function( str ) {
 				/// <summary>去除前后的空格换行符等字符</summary>
 				/// <param name="str" type="String">长度 缺省为整个长度</param>
 				/// <returns type="String" />
 				return str.replace( /(^\s*)|(\s*$)/g, "" );
 			},
-
+      /**
+       * @param {String}
+       * @param {String}
+       * @retusn {String}
+       * @example
+       * aQuery.util.unCamelCase("marginLeft") // return "margin-left"
+       * aQuery.util.unCamelCase("webkitBorderRedius") // return "webkit-border-redius"
+       */
 			unCamelCase: function( name, head ) {
 				/// <summary>反驼峰化</summary>
 				/// <para>marginLeft => margin-left</para>
@@ -485,7 +506,6 @@
 				head && ( name = head + "-" + name );
 				return name;
 			},
-
 			removeSuffix: util.removeSuffix
 		}
 	} );
