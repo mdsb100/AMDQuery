@@ -289,6 +289,14 @@
 	 * @param {String|Number} - If iterate array then parameter is index. If iterate object then parameter is key.
 	 */
 
+	/**
+	 * this is aQuery
+	 * @callback AQueryEachCallback
+	 * @this aQuery
+	 * @param {Element} - element
+	 * @param {Number} - index
+	 */
+
 	util.extend( $, /** @lends aQuery */ {
 		/**
 		 * Interfaces namesapce of aQuery. See interfaces.
@@ -450,7 +458,7 @@
 		/**
 		 * @namespace
 		 * @borrows util.argToArray as argToArray
-     * @borrows util.removeSuffix as removeSuffix
+		 * @borrows util.removeSuffix as removeSuffix
 		 */
 		util: {
 			argToArray: util.argToArray,
@@ -464,10 +472,6 @@
 			 * aQuery.util.camelCase("border-redius", "webkit") // return "webkitBorderRedius"
 			 */
 			camelCase: function( name, head ) {
-				/// <summary>把"margin-left驼峰化"</summary>
-				/// <param name="name" type="String">字符串</param>
-				/// <param name="head" type="String">字符串头</param>
-				/// <returns type="String" />
 				name.indexOf( "-" ) > 0 ? name = name.toLowerCase().split( "-" ) : name = [ name ];
 
 				head && name.splice( 0, 0, head );
@@ -483,121 +487,138 @@
 			 * @retusn {String}
 			 */
 			trim: function( str ) {
-				/// <summary>去除前后的空格换行符等字符</summary>
-				/// <param name="str" type="String">长度 缺省为整个长度</param>
-				/// <returns type="String" />
 				return str.replace( /(^\s*)|(\s*$)/g, "" );
 			},
-      /**
-       * @param {String}
-       * @param {String}
-       * @retusn {String}
-       * @example
-       * aQuery.util.unCamelCase("marginLeft") // return "margin-left"
-       * aQuery.util.unCamelCase("webkitBorderRedius") // return "webkit-border-redius"
-       */
+			/**
+			 * @param {String}
+			 * @param {String}
+			 * @retusn {String}
+			 * @example
+			 * aQuery.util.unCamelCase("marginLeft") // return "margin-left"
+			 * aQuery.util.unCamelCase("webkitBorderRedius") // return "webkit-border-redius"
+			 */
 			unCamelCase: function( name, head ) {
-				/// <summary>反驼峰化</summary>
-				/// <para>marginLeft => margin-left</para>
-				/// <param name="name" type="String">字符串</param>
-				/// <param name="head" type="String">字符串头</param>
-				/// <returns type="String" />
 				name = name.replace( /([A-Z]|^ms)/g, "-$1" ).toLowerCase();
 				head && ( name = head + "-" + name );
 				return name;
 			},
-			removeSuffix: util.removeSuffix
+			removeSuffix: util.removeSuffix,
+      version: version
 		}
 	} );
 
-	$.fn = $.prototype = {
+	$.fn = $.prototype = /** @lends aQuery.prototype */ {
+		/**
+		 * Push element
+		 * @param {Element}
+		 * @returns {this}
+		 */
 		push: function( ele ) {
-			/// <summary>添加元素</summary>
-			/// <param name="ele" type="Element">元素</param>
-			/// <returns type="self" />
 			this.eles.push( ele );
 			return this.init( this.eles );
 		},
+		/**
+		 * Pop element
+		 * @returns {aQuery} return new aQuery(popElement)
+		 */
 		pop: function() {
-			/// <summary>删除返回元素</summary>
-			/// <returns type="Self" />
 			var ret = this.eles.pop();
 			this.init( this.eles );
 			return new $( ret );
 		},
+		/**
+		 * Shift element
+		 * @returns {aQuery} return new aQuery(shiftElement)
+		 */
 		shift: function() {
-			/// <summary>删除头部一个元素</summary>
-			/// <returns type="Self" />
 			var ret = this.eles.shift();
 			this.init( this.eles );
 			return new $( ret );
 		},
+		/**
+		 * Unshift element
+		 * @param {Element}
+		 * @returns {aQuery} return new aQuery(this.eles.unshift(element))
+		 */
 		unshift: function( ele ) {
-			/// <summary>增加头部第一个元素</summary>
-			/// <param name="ele" type="Element">元素</param>
-			/// <returns type="Self" />
 			return new $( this.eles.splice( 0, 0, ele ) );
 		},
+		/**
+		 * slice element
+		 * @returns {aQuery}
+		 */
 		slice: function() {
-			/// <summary>截取一段并返回新的$</summary>
-			/// <returns type="$" />
 			return new $( core_slice.call( this.eles, arguments ) );
 		},
+		/**
+		 * splice element
+		 * @returns {aQuery} return new $( ret )
+		 */
 		splice: function() {
-			/// <summary>删除插入一段并返回新的$</summary>
-			/// <returns type="$" />
 			var ret = core_splice.call( this.eles, arguments );
 			this.init( this.eles );
 			return new $( ret );
 		},
+		/**
+		 * @returns {this}
+		 */
 		reverse: function() {
-			/// <summary>反转</summary>
-			/// <returns type="self" />
 			this.eles.reverse();
 			return this.init( this.eles );
 		},
+		/**
+		 * @param {Function=}
+		 * @returns {this}
+		 */
 		sort: function( fn ) {
-			/// <summary>排序</summary>
-			/// <param name="fn" type="Function">筛选条件</param>
-			/// <returns type="self" />
 			this.eles.sort( fn );
 			return this.init( this.eles );
 		},
-
 		constructor: $,
-
+		/**
+		 * Iterate array of aQuery
+		 * @param {AQueryEachCallback}
+		 * @returns {this}
+		 */
 		each: function( callback ) {
-			/// <summary>遍历所有的元素</summary>
-			/// <param name="callback" type="Function">遍历中的操作</param>
-			/// <returns type="self" />
 			$.each( this.eles, callback, this );
 			return this;
 		},
+    /**
+     * Element container
+     * @instance
+     * @type {Array}
+     * @default null
+     */
 		eles: null,
-
+    /**
+     * Return new aQuery of first element
+     * @returns {aQuery}
+     */
 		first: function() {
-			/// <summary>返回第一个元素</summary>
-			/// <returns type="Element" />
-			return $( this.eles[ 0 ] || this.eles );
+			return $( this.eles[ 0 ] );
 		},
+    /**
+     * @param {Number} [index=0]
+     * @returns {Element}
+     */
 		getElement: function( index ) {
-			/// <summary>返回序号的元素</summary>
-			/// <param name="index" type="Number">序号</param>
-			/// <returns type="Element" />
 			if ( typeof index == "number" && index != 0 ) return this[ index ];
 			else return this[ 0 ];
 		},
+    /**
+     * Return new aQuery of last element
+     * @returns {aQuery}
+     */
 		last: function() {
-			/// <summary>返回最后个元素</summary>
-			/// <returns type="Element" />
 			return $( this.eles[ this.eles.length - 1 ] || this.eles );
 		},
-
+    /**
+     * @param {Element[]}
+     * @param {String=} -"#title", ".cls", "div"
+     * @returns {this}
+     */
 		init: function( eles, selector ) {
-			/// <summary>初始化$</summary>
-			/// <param name="eles" type="Array">内容为元素的数组</param>
-			/// <param name="selector" type="any"></param>
-			/// <returns type="self" />
 			this.eles = null;
 			this.context = null;
 			this.selector = "";
@@ -619,10 +640,11 @@
 			this.context = this[ 0 ] ? this[ 0 ].ownerDocument : document;
 			return this;
 		},
+    /**
+     * @param {Element}
+     * @returns {Number} - -1 means not found
+     */
 		indexOf: function( ele ) {
-			/// <summary>返回序号</summary>
-			/// <param name="ele" type="Element">dom元素</param>
-			/// <returns type="Number" />
 			var len;
 
 			for ( len = this.eles.length - 1; len >= 0; len-- ) {
@@ -633,37 +655,49 @@
 
 			return len;
 		},
-
+    /**
+     * Array length
+     * @type {Number}
+     * @default 0
+     * @instance
+     */
 		length: 0,
-
 		selector: "",
-
+    /**
+     * @param {Element[]}
+     * @returns {this}
+     */
 		setElement: function( eles ) {
-			/// <summary>设置元素组</summary>
-			/// <param name="eles" type="Array">内容为元素的数组</param>
-			/// <returns type="self" />
 			this.eles = eles;
 			return this.init( this.eles );
 		},
-
+    /**
+     * Array to stirng
+     * @returns {String}
+     */
 		toString: function() {
-			/// <summary>返回元素组的字符串形式</summary>
-			/// <returns type="String" />
 			return this.eles.toString();
 		},
-
+    /**
+     * Return count of aQuery be created
+     * @returns {Number}
+     */
 		valueOf: function() {
-			/// <summary>返回生成$对象的总数</summary>
-			/// <returns type="Number" />
 			return count;
 		},
-
+    /**
+     * Get a new array of this.eles
+     * @returns {Array}
+     */
 		toArray: function() {
 			return core_slice.call( this );
 		},
-
-		// Get the Nth element in the matched element set OR
-		// Get the whole matched element set as a clean array
+    /**
+     * Get the Nth element in the matched element set OR </br>
+     * Get the whole matched element set as a clean array
+     * @param {Number|null}
+     * @returns {Array|Element}
+     */
 		get: function( num ) {
 			return num == null ?
 
@@ -672,9 +706,7 @@
 
 			// Return just the object
 			( num < 0 ? this[ this.length + num ] : this[ num ] );
-		},
-
-		version: version
+		}
 	};
 
 	function Queue() {
