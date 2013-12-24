@@ -160,20 +160,20 @@
 	 * </h3>
 	 * @public
 	 * @module base/config
-	 * @property {object}  config                              - exports
+	 * @property {object}  config                              - exports.
 	 * @property {object}  config.amdquery                     - The amdquery Configuration.
 	 * @property {boolean} config.amdquery.debug               - Whether debug, it will be the output log if true.
 	 * @property {boolean} config.amdquery.development         - Whether it is a development environment.
+	 * @property {string}  config.amdquery.loadingImage        - A image src will be show when amdquery is loading.
 	 *
 	 * @property {object}  config.amd                          - The AMD Configuration.
 	 * @property {boolean} config.amd.detectCR                 - Detect circular dependencies, you should set it true when you develop.
 	 * @property {boolean} config.amd.debug                    - It will add "try-catch" when module load if false, so you could not see any error infomation.
 	 * @property {number}  config.amd.timeout                  - Timeout of the loading module.
-	 * @property {boolean} config.amd.console                  - It will be output log "module [id] ready" if true
+	 * @property {boolean} config.amd.console                  - It will be output log "module [id] ready" if true.
 	 *
 	 * @property {object}  config.ui                           - The UI-Widget Configuration.
 	 * @property {boolean} config.ui.initWidget                - Automatic initialization UI.
-	 * @property {string}  config.ui.loadingClassName          - When loading UI, the mask layer using the CSS name.
 	 * @property {boolean} config.ui.autoFetchCss              - Automatic fetching CSS.
 	 * @property {boolean} config.ui.isTransform3d             - Whether to use transform3d.
 	 *
@@ -181,19 +181,18 @@
 	 *
 	 * @property {object}  config.app                          - The application Configuration.
 	 * @property {string}  config.app.src                      - A js file src, main of application.
-	 * @property {string}  config.app.loadingImage             - A image src will be show when application is loading.
 	 * @property {boolean} config.app.debug                    - Whether debug, it will be the output log if true.
 	 * @property {boolean} config.app.development              - Whether it is a development environment.
 	 * @property {boolean} config.app.autoFetchCss             - Automatic fetching CSS.
 	 * @property {string} config.app.xmlPath                   - Path of the combination XML, build could create it and set it.
 	 */
 
-	// _config be define "base/config".
 	var _config = {
 		amdquery: {
 			define: "$",
 			debug: false,
-			development: true
+			development: true,
+			loadingImage: ""
 		},
 		amd: {
 			detectCR: false,
@@ -203,7 +202,6 @@
 		},
 		ui: {
 			initWidget: false,
-			loadingClassName: "widget-loading",
 			autoFetchCss: true,
 			isTransform3d: true
 		},
@@ -212,7 +210,6 @@
 		},
 		app: {
 			src: "",
-			loadingImage: "",
 			debug: false,
 			development: true,
 			autoFetchCss: true,
@@ -233,13 +230,13 @@
 	util.extend( _config.app, defineConfig.app );
 
 	/**
-	 * You can config global name. <a target="_top" href="/document/app/asset/source/guide/AMDQuery.html#scrollTo=Reference_AMDQuery">AMDQuery.html</a> </br>
-	 * <strong>aQuery("div")</strong> equivalent to <strong>new aQuery("div")</strong>
+	 * You can config global name. See <a target="_top" href="/document/app/asset/source/guide/AMDQuery.html#scrollTo=Reference_AMDQuery">AMDQuery.html</a> </br>
+	 * <strong>aQuery("div")</strong> equivalent to <strong>new aQuery("div")</strong>.
 	 * @global
 	 * @class
 	 * @param {Object|String|Element|Element[]|Function}
-	 * @param {String} [tagName="div"] - Tag name if a is a object
-	 * @param {Element} [parent] - Parent Element
+	 * @param {String} [tagName="div"] - Tag name if a is a object.
+	 * @param {Element} [parent] - Parent Element.
 	 * @borrows util.getPath as getPath
 	 * @borrows util.now as now
 	 * @example
@@ -286,7 +283,7 @@
 
 	/**
 	 * @callback EachCallback
-	 * @param {*} - Item
+	 * @param {*} - Item.
 	 * @param {String|Number} - If iterate array then parameter is index. If iterate object then parameter is key.
 	 */
 
@@ -328,10 +325,10 @@
 			}
 
 		},
-		/** Module map */
+		/** Module map. */
 		module: {},
 		/**
-		 * The return value of this method will be used to determine whether an instance of "aQuery"
+		 * The return value of this method will be used to determine whether an instance of "aQuery".
 		 * @returns "AMDQuery" */
 		toString: function() {
 			return "AMDQuery";
@@ -351,7 +348,7 @@
 		},
 		/** {string} - Directory path of amdquery.js*/
 		basePath: basePath,
-		/** Get number between min and max
+		/** Get number between min and max.
 		 * @param {Number}
 		 * @param {Number}
 		 * @param {Number}
@@ -364,7 +361,7 @@
 		between: function( min, max, num ) {
 			return Math.max( min, Math.min( max, num ) );
 		},
-		/** Get number among number1 and number2
+		/** Get number among number1 and number2.
 		 * @param {Number}
 		 * @param {Number}
 		 * @param {Number}
@@ -378,7 +375,7 @@
 		among: function( num1, num2, num ) {
 			return num2 > num1 ? $.between( num1, num2, num ) : $.between( num2, num1, num );
 		},
-		/** Bind context to function
+		/** Bind context to function.
 		 * @param {Function}
 		 * @param {Object}
 		 * @returns {Function}
@@ -388,16 +385,16 @@
 				return fun.apply( context || window, arguments );
 			};
 		},
-		/** wrap console.log */
+		/** wrap console.log. */
 		logger: ( window.console ? ( console.log.bind ? console.log.bind( console ) : console.log ) : function() {} ),
-		/** Create a elemnt by tag name
+		/** Create a elemnt by tag name.
 		 * @param {String}
 		 * @returns {Element}
 		 */
 		createEle: function( tag ) {
 			return document.createElement( tag );
 		},
-		/** Iterate array or object
+		/** Iterate array or object.
 		 * @param {Array|Object}
 		 * @param {EachCallback}
 		 * @param {Object=} - If context is undefinded, context of callback is each item.
@@ -415,7 +412,8 @@
 				for ( var value = obj[ 0 ]; i < len && callback.call( context || value, value, i ) !== false; value = obj[ ++i ] ) {}
 			return this;
 		},
-		/** Object is instance of {aQuery}
+		/**
+		 * Object is instance of {aQuery}.
 		 * @param {*}
 		 * @returns {Boolean}
 		 */
@@ -449,11 +447,11 @@
 		},
 		getPath: util.getPath,
 		now: util.now,
-		/** Number RegExp */
+		/** Number RegExp. */
 		core_pnum: /[+-]?(?:\d*\.|)\d+(?:[eE][+-]?\d+|)/.source,
-		/** {String} Project root path*/
+		/** {String} Project root path. */
 		rootPath: rootPath,
-		/** {String} Page path*/
+		/** {String} Page path. */
 		pagePath: pagePath,
 
 		/**
@@ -504,13 +502,13 @@
 				return name;
 			},
 			removeSuffix: util.removeSuffix,
-      version: version
+			version: version
 		}
 	} );
 
 	$.fn = $.prototype = /** @lends aQuery.prototype */ {
 		/**
-		 * Push element
+		 * Push element.
 		 * @param {Element}
 		 * @returns {this}
 		 */
@@ -519,7 +517,7 @@
 			return this.init( this.eles );
 		},
 		/**
-		 * Pop element
+		 * Pop element.
 		 * @returns {aQuery} return new aQuery(popElement)
 		 */
 		pop: function() {
@@ -528,7 +526,7 @@
 			return new $( ret );
 		},
 		/**
-		 * Shift element
+		 * Shift element.
 		 * @returns {aQuery} return new aQuery(shiftElement)
 		 */
 		shift: function() {
@@ -537,7 +535,7 @@
 			return new $( ret );
 		},
 		/**
-		 * Unshift element
+		 * Unshift element.
 		 * @param {Element}
 		 * @returns {aQuery} return new aQuery(this.eles.unshift(element))
 		 */
@@ -545,14 +543,14 @@
 			return new $( this.eles.splice( 0, 0, ele ) );
 		},
 		/**
-		 * slice element
+		 * Slice element.
 		 * @returns {aQuery}
 		 */
 		slice: function() {
 			return new $( core_slice.call( this.eles, arguments ) );
 		},
 		/**
-		 * splice element
+		 * Splice element.
 		 * @returns {aQuery} return new $( ret )
 		 */
 		splice: function() {
@@ -577,7 +575,7 @@
 		},
 		constructor: $,
 		/**
-		 * Iterate array of aQuery
+		 * Iterate array of aQuery.
 		 * @param {AQueryEachCallback}
 		 * @returns {this}
 		 */
@@ -585,40 +583,40 @@
 			$.each( this.eles, callback, this );
 			return this;
 		},
-    /**
-     * Element container
-     * @instance
-     * @type {Array}
-     * @default null
-     */
+		/**
+		 * Element container.
+		 * @instance
+		 * @type {Array}
+		 * @default null
+		 */
 		eles: null,
-    /**
-     * Return new aQuery of first element
-     * @returns {aQuery}
-     */
+		/**
+		 * Return new aQuery of first element.
+		 * @returns {aQuery}
+		 */
 		first: function() {
 			return $( this.eles[ 0 ] );
 		},
-    /**
-     * @param {Number} [index=0]
-     * @returns {Element}
-     */
+		/**
+		 * @param {Number} [index=0]
+		 * @returns {Element}
+		 */
 		getElement: function( index ) {
 			if ( typeof index == "number" && index != 0 ) return this[ index ];
 			else return this[ 0 ];
 		},
-    /**
-     * Return new aQuery of last element
-     * @returns {aQuery}
-     */
+		/**
+		 * Return new aQuery of last element.
+		 * @returns {aQuery}
+		 */
 		last: function() {
 			return $( this.eles[ this.eles.length - 1 ] || this.eles );
 		},
-    /**
-     * @param {Element[]}
-     * @param {String=} -"#title", ".cls", "div"
-     * @returns {this}
-     */
+		/**
+		 * @param {Element[]}
+		 * @param {String=} -"#title", ".cls", "div".
+		 * @returns {this}
+		 */
 		init: function( eles, selector ) {
 			this.eles = null;
 			this.context = null;
@@ -641,10 +639,10 @@
 			this.context = this[ 0 ] ? this[ 0 ].ownerDocument : document;
 			return this;
 		},
-    /**
-     * @param {Element}
-     * @returns {Number} - -1 means not found
-     */
+		/**
+		 * @param {Element}
+		 * @returns {Number} - -1 means not found.
+		 */
 		indexOf: function( ele ) {
 			var len;
 
@@ -656,49 +654,49 @@
 
 			return len;
 		},
-    /**
-     * Array length
-     * @type {Number}
-     * @default 0
-     * @instance
-     */
+		/**
+		 * Array length
+		 * @type {Number}
+		 * @default 0
+		 * @instance
+		 */
 		length: 0,
 		selector: "",
-    /**
-     * @param {Element[]}
-     * @returns {this}
-     */
+		/**
+		 * @param {Element[]}
+		 * @returns {this}
+		 */
 		setElement: function( eles ) {
 			this.eles = eles;
 			return this.init( this.eles );
 		},
-    /**
-     * Array to stirng
-     * @returns {String}
-     */
+		/**
+		 * Array to stirng.
+		 * @returns {String}
+		 */
 		toString: function() {
 			return this.eles.toString();
 		},
-    /**
-     * Return count of aQuery be created
-     * @returns {Number}
-     */
+		/**
+		 * Return count of aQuery be created.
+		 * @returns {Number}
+		 */
 		valueOf: function() {
 			return count;
 		},
-    /**
-     * Get a new array of this.eles
-     * @returns {Array}
-     */
+		/**
+		 * Get a new array of this.eles .
+		 * @returns {Array}
+		 */
 		toArray: function() {
 			return core_slice.call( this );
 		},
-    /**
-     * Get the Nth element in the matched element set OR </br>
-     * Get the whole matched element set as a clean array
-     * @param {Number|null}
-     * @returns {Array|Element}
-     */
+		/**
+		 * Get the Nth element in the matched element set OR. </br>
+		 * Get the whole matched element set as a clean array.
+		 * @param {Number|null}
+		 * @returns {Array|Element}
+		 */
 		get: function( num ) {
 			return num == null ?
 
@@ -721,9 +719,9 @@
 		 * @this module:base/queue.prototype
 		 * @method queue
 		 * @memberOf module:base/queue.prototype
-		 * @param {Function|Function[]} fn - Do some thing
-		 * @param {Object} [context] - Context of fn
-		 * @param {Array} [args] - Args is arguments of fn
+		 * @param {Function|Function[]} fn - Do some thing.
+		 * @param {Object} [context] - Context of fn.
+		 * @param {Array} [args] - Args is arguments of fn.
 		 * @returns {this}
 		 */
 		queue: function( fn, context, args ) {
@@ -741,8 +739,8 @@
 		 * @public
 		 * @method dequeue
 		 * @memberOf module:base/queue.prototype
-		 * @param {Object} [context=null] - Context of fn
-		 * @param {Array} [args=Array] args - Args is arguments of fn
+		 * @param {Object} [context=null] - Context of fn.
+		 * @param {Array} [args=Array] args - Args is arguments of fn.
 		 * @returns {this}
 		 */
 		dequeue: function( context, args ) {
@@ -789,12 +787,12 @@
 			/**
 			 * @memberof module:base/ClassModule
 			 * @constructs module:base/ClassModule
-			 * @param {String} module - Module name
-			 * @param {Array} dependencies - Dependencies module
-			 * @param {Function|Object|String|Number|Boolean} [factory] - Module body
+			 * @param {String} module - Module name.
+			 * @param {Array} dependencies - Dependencies module.
+			 * @param {Function|Object|String|Number|Boolean} [factory] - Module body.
 			 * @param {Number} [status=0] - 0:init 1:queue 2:require 3:define 4:ready
-			 * @param {String} [container] - Path of js
-			 * @param {Function} [fail] - An function to the fail callback if loading moudle timeout or error
+			 * @param {String} [container] - Path of js.
+			 * @param {Function} [fail] - An function to the fail callback if loading moudle timeout or error.
 			 */
 			if ( !module ) {
 				return;
@@ -815,24 +813,24 @@
 			requireQueue: requireQueue,
 			cache: {},
 			/**
-			 * A map to path ofmodule file
+			 * A map to path ofmodule file.
 			 * @type Object
 			 * @memberOf module:base/ClassModule
 			 */
 			container: {},
 			/**
-			 * A map to module dependency
+			 * A map to module dependency.
 			 * @type Object
 			 * @memberOf module:base/ClassModule
 			 */
 			dependenciesMap: {},
 			/**
-			 * Check the name is equal to anonymous name which assigned by "require"
+			 * Check the name is equal to anonymous name which assigned by "require".
 			 * @private
 			 * @method
 			 * @memberOf module:base/ClassModule
-			 * @param {String} - Module name
-			 * @throws Will throw an error if the name is not equal anonymousID
+			 * @param {String} - Module name.
+			 * @throws Will throw an error if the name is not equal anonymousID.
 			 * @returns {void}
 			 */
 			checkName: function( id ) {
@@ -844,10 +842,10 @@
 				}
 			},
 			/**
-			 * ClassModule contains the module
+			 * ClassModule contains the module.
 			 * @method
 			 * @memberOf module:base/ClassModule
-			 * @param {String} - Module name
+			 * @param {String} - Module name.
 			 * @returns {Boolean}
 			 */
 			contains: function( id ) {
@@ -855,12 +853,12 @@
 				return !!ClassModule.modules[ id ];
 			},
 			/**
-			 * Detect circle reference
+			 * Detect circle reference.
 			 * @method
 			 * @memberOf module:base/ClassModule
-			 * @param {String} - Module name
-			 * @param {String[]} - Dependent modules
-			 * @returns {Boolean} - Module name
+			 * @param {String} - Module name.
+			 * @param {String[]} - Dependent modules.
+			 * @returns {String} - Module name.
 			 */
 			detectCR: function( md, dp ) {
 				if ( !md ) {
@@ -894,10 +892,10 @@
 				}
 			},
 			/**
-			 * Wrap with a function
+			 * Wrap with a function.
 			 * @method
 			 * @memberOf module:base/ClassModule
-			 * @param {*} - body
+			 * @param {*} - body.
 			 * @returns {Function}
 			 */
 			funBody: function( body ) {
@@ -927,12 +925,12 @@
 				}
 			},
 			/**
-			 * Get src of module file
+			 * Get src of module file.
 			 * @method
 			 * @memberOf module:base/ClassModule
-			 * @param {String} - Module name
-			 * @param {Boolean} [asc=true] - getJScriptConfig option
-			 * @returns {String} - path
+			 * @param {String} - Module name.
+			 * @param {Boolean} [asc=true] - getJScriptConfig option.
+			 * @returns {String} - Path.
 			 */
 			getContainer: function( id, asc ) {
 				var src;
@@ -945,12 +943,12 @@
 				return src;
 			},
 			/**
-			 * modify module name to a file path
+			 * modify module name to a file path.
 			 * @method
 			 * @memberOf module:base/ClassModule
-			 * @param {String} - Module name
+			 * @param {String} - Module name.
 			 * @param {String} [suffix=".js"]
-			 * @returns {String} - path
+			 * @returns {String} - Path.
 			 */
 			getPath: function( key, suffix ) {
 				var ret, path, ma;
@@ -973,10 +971,10 @@
 				return ret;
 			},
 			/**
-			 * get Module with module
+			 * Get Module with module.
 			 * @method
 			 * @memberOf module:base/ClassModule
-			 * @param {String} - Module name
+			 * @param {String} - Module name.
 			 * @returns {ClassModule}
 			 */
 			getModule: function( module ) {
@@ -988,7 +986,7 @@
 			 * Load dependencies on asynchronous.
 			 * @method
 			 * @memberOf module:base/ClassModule
-			 * @param {String[]} - An array of module name
+			 * @param {String[]} - An array of module name.
 			 * @returns {this}
 			 */
 			loadDependencies: function( dependencies ) {
@@ -1015,9 +1013,9 @@
 			 * Load js file on asynchronous.
 			 * @method
 			 * @memberOf module:base/ClassModule
-			 * @param {String} - url of js
-			 * @param {String} - Module name
-			 * @param {Function} - An function to the fail callback if loading moudle timeout or error
+			 * @param {String} - Url of js.
+			 * @param {String} - Module name.
+			 * @param {Function} - An function to the fail callback if loading moudle timeout or error.
 			 * @returns {this}
 			 */
 			loadJs: function( url, id, error ) {
@@ -1061,7 +1059,7 @@
 				return this;
 			},
 			/**
-			 * A map be depend
+			 * A map be depend.
 			 * @type Object
 			 * @memberOf module:base/ClassModule
 			 */
@@ -1072,13 +1070,13 @@
 			resource: {},
 			rootPath: null,
 			/**
-			 * A map of path variable
+			 * A map of path variable.
 			 * @type Object
 			 * @memberOf module:base/ClassModule
 			 */
 			variableMap: {},
 			/**
-			 * variable prefix
+			 * Variable prefix.
 			 * @type String
 			 * @default "@"
 			 * @memberOf module:base/ClassModule
@@ -1088,9 +1086,9 @@
 			 * Load js file on asynchronous.
 			 * @method
 			 * @memberOf module:base/ClassModule
-			 * @param {String} - url of js
-			 * @param {String} - Module name
-			 * @param {Function} - An function to the fail callback if loading moudle timeout or error
+			 * @param {String} - Url of js.
+			 * @param {String} - Module name.
+			 * @param {Function} - An function to the fail callback if loading moudle timeout or error.
 			 * @returns {this}
 			 */
 			setModule: function( k, v ) {
@@ -1098,7 +1096,7 @@
 				return this;
 			},
 			/**
-			 * status map
+			 * Status map.
 			 * @readonly
 			 * @enum {String}
 			 * @memberOf module:base/ClassModule
@@ -1119,7 +1117,7 @@
 			 * @desc "@app/controller" to "mypath/app/controller" if match the "@app" in {@link module:base/ClassModule.variableMap} else return self
 			 * @method
 			 * @memberOf module:base/ClassModule
-			 * @param {String} - Module name
+			 * @param {String} - Module name.
 			 * @returns {String}
 			 */
 			variable: function( ret ) {
@@ -1147,9 +1145,9 @@
 
 		ClassModule.prototype = /** @lends module:base/ClassModule.prototype */ {
 			/**
-			 * When completed, the param fn is called
+			 * When completed, the param fn is called.
 			 * @method
-			 * @param {ClassModuleCallback} - handler
+			 * @param {ClassModuleCallback} - Handler.
 			 * @returns {this}
 			 */
 			addHandler: function( fn ) {
@@ -1165,7 +1163,7 @@
 				return this;
 			},
 			/**
-			 * check status then to do something
+			 * Check status then to do something.
 			 * @method
 			 * @protected
 			 * @returns {this}
@@ -1230,7 +1228,7 @@
 			},
 			constructor: ClassModule,
 			/**
-			 * Get an array of dependent modules
+			 * Get an array of dependent modules.
 			 * @method
 			 * @returns {Array.<ModuleInfo>}
 			 */
@@ -1266,7 +1264,7 @@
 				return ret;
 			},
 			/**
-			 * Module ready and trigger handler
+			 * Module ready and trigger handler.
 			 * @protected
 			 * @method
 			 */
@@ -1318,9 +1316,9 @@
 				this.holdReady().trigger();
 			},
 			/**
-			 * Get stats of module
+			 * Get stats of module.
 			 * @method
-			 * @param {Boolean} - if true get string else get number.
+			 * @param {Boolean} - If true get string else get number.
 			 * @returns {Number|String}
 			 */
 			getStatus: function( isStr ) {
@@ -1328,9 +1326,9 @@
 				return isStr == true ? ClassModule.statusReflect[ s ] : s;
 			},
 			/**
-			 * Describe module
+			 * Describe module.
 			 * @method
-			 * @param {String} - content
+			 * @param {String}
 			 * @returns {this}
 			 */
 			describe: function( content ) {
@@ -1342,7 +1340,7 @@
 				return this.description;
 			},
 			/**
-			 * Wait module get ready
+			 * Wait module get ready.
 			 * @method
 			 * @protected
 			 * @returns {this}
@@ -1358,14 +1356,14 @@
 				return this;
 			},
 			/**
-			 * Reset property
+			 * Reset property.
 			 * @method
 			 * @protected
-			 * @param {Array} dependencies - Dependencies module
-			 * @param {Function|Object|String|Number|Boolean} [factory] - Module body
+			 * @param {Array} dependencies - Dependencies module.
+			 * @param {Function|Object|String|Number|Boolean} [factory] - Module body.
 			 * @param {Number} [status=0] - 0:init 1:queue 2:require 3:define 4:ready
-			 * @param {String} [container] - Path of js
-			 * @param {Function} [fail] - An function to the fail callback if loading moudle timeout or error
+			 * @param {String} [container] - Path of js.
+			 * @param {Function} [fail] - An function to the fail callback if loading moudle timeout or error.
 			 * @returns {this}
 			 */
 			reset: function( dependencies, factory, status, container, fail ) {
@@ -1380,7 +1378,7 @@
 				return this;
 			},
 			/**
-			 * Go to load Module
+			 * Go to load Module/
 			 * @method
 			 * @returns {this}
 			 */
@@ -1409,7 +1407,7 @@
 				return this;
 			},
 			/**
-			 * Go to load Dependent
+			 * Go to load Dependent.
 			 * @method
 			 * @returns {this}
 			 */
@@ -1430,9 +1428,9 @@
 				return this;
 			},
 			/**
-			 * Module go to launch
+			 * Module go to launch.
 			 * @method
-			 * @param {Function} [success] - ready callback
+			 * @param {Function} [success] - Ready callback.
 			 * @returns {this}
 			 */
 			launch: function( success ) {
@@ -1481,7 +1479,7 @@
 				return this.status === 4;
 			},
 			/**
-			 * Trigger event
+			 * Trigger event.
 			 * @method
 			 * @protected
 			 * @returns {this}
@@ -1501,12 +1499,12 @@
 		}
 
 		/**
-		 * AMD define
+		 * AMD define.
 		 * @global
 		 * @method
-		 * @param {String} - Module
-		 * @param {String[]|*} - If arguments[2] is a factory, it can be any object
-		 * @param {*} [factory] - Usually, it is function(){} or {}
+		 * @param {String} - Module.
+		 * @param {String[]|*} - If arguments[2] is a factory, it can be any object.
+		 * @param {*} [factory] - Usually, it is function(){} or {}.
 		 * @returns {ClassModule}
 		 */
 		window.define = function( id, dependencies, factory ) {
@@ -1627,15 +1625,15 @@
 		 */
 
 		/**
-		 * AMD require
+		 * AMD require.
 		 * @method require
 		 * @global
-		 * @param {String} - Module
+		 * @param {String} - Module.
 		 * @param {ClassModuleCallback}
-		 * @param {Function} [fail] - An function to the fail callback if loading moudle timeout or error
+		 * @param {Function} [fail] - An function to the fail callback if loading moudle timeout or error.
 		 * @returns {ClassModule}
 		 * @example
-		 * require( [ "main/query", "hash/locationHash", "ui/swapview", "ui/scrollableview", "module/initWidget" ], function( query, locationHash ) { } );
+		 * require( [ "main/query", "hash/locationHash", "ui/swapview", "ui/scrollableview" ], function( query, locationHash ) { } );
 		 * require( "main/query", function( query ) { } );
 		 * require( "main/query" ).first // Maybe is null;
 		 */
@@ -1656,9 +1654,9 @@
 
 		util.extend( require, {
 			/**
-			 * Cache the module
+			 * Cache the module.
 			 * @memberof require(namespace)
-			 * @param {Object.<String,Function>} - String: module name,Function: moudle factory
+			 * @param {Object.<String,Function>} - String: module name,Function: moudle factory.
 			 * @returns {this}
 			 */
 			cache: function( cache ) {
@@ -1674,7 +1672,7 @@
 			/**
 			 * The module named, so we can load it by async.
 			 * @memberof require(namespace)
-			 * @param {String|String[]|Object.<String,*>} - String: module name
+			 * @param {String|String[]|Object.<String,*>} - String: module name.
 			 * @returns {this}
 			 */
 			named: function( name ) {
@@ -1693,10 +1691,10 @@
 				return this;
 			},
 			/**
-			 * Reflect path
+			 * Reflect path.
 			 * @memberof require(namespace)
-			 * @param {String|Object.<String,String>} - Module name | Object.<String,String>: <"module name", "js path">
-			 * @param {String} [path] - js path; If "name" is Object then "path" is optional
+			 * @param {String|Object.<String,String>} - Module name | Object.<String,String>: <"module name", "js path">.
+			 * @param {String} [path] - JS path; If "name" is Object then "path" is optional.
 			 * @returns {this}
 			 */
 			reflect: function( name, path ) {
@@ -1730,21 +1728,21 @@
 			}
 		} );
 
-		util.extend( $, {
+		util.extend( $, /** @lends aQuery */ {
+
+			/**
+			 * aQuery define.</br>
+			 * If the last parameter is a function, then first argument of the function is aQuery(namespace).</br>
+			 * <a href="/document/app/app.html#navmenu=#AMDQuery!scrollTo=Require_Define" target="_top">See also.</a>
+			 * @param {String} - Module name
+			 * @param {String[]|*} - If arguments[2] is a factory, it can be any object.
+			 * @param {*} [factory] - Usually, it is function(){} or {}.
+			 * @returns {this}
+			 */
 			define: function( id, dependencies, factory ) {
-				/// <summary>aQuery的define对象定义
-				/// <para>遵循AMD规范重载</para>
-				/// <para>只是aQuery.define默认会载入aQuery对象</para>
-				/// </summary>
-				/// <param name="id" type="String">对象名</param>
-				/// <param name="dependencies" type="Array">依赖列表</param>
-				/// <param name="factory" type="Function">对象工厂</param>
-				/// <returns type="self" />
 				var arg = util.argToArray( arguments, 0 ),
 					len = arg.length,
-					fn = arg[ len - 1 ],
-					version = "no signing version";
-
+					fn = arg[ len - 1 ];
 
 				if ( typeof fn == "function" ) {
 					arg[ arg.length - 1 ] = function() {
@@ -1763,16 +1761,15 @@
 				}
 				return this;
 			},
+			/**
+			 * aQuery require.</br>
+			 * <a href="/document/app/app.html#navmenu=#AMDQuery!scrollTo=Require_Define" target="_top">See also.</a>
+			 * @param {String} - Module.
+			 * @param {ClassModuleCallback} - The callback Be call when aQuery ready.
+			 * @param {Function} [fail] - An function to the fail callback if loading moudle timeout or error.
+			 * @returns {this}
+			 */
 			require: function( dependencies, success, fail ) {
-				/// <summary>aQuery的require对象定义
-				/// <para>遵循AMD规范重载</para>
-				/// <para>会自动调用ready确定window和指定package准备完毕</para>
-				/// </summary>
-				/// <param name="dependencies" type="Array">依赖列表</param>
-				/// <param name="success" type="Function">回调函数</param>
-				/// <param name="fail" type="Function">失败的函数</param>
-				/// <returns type="$" />
-				// 将会在$ ready 后执行。这样便把sync实现起来了
 				window.require && $.ready( function() {
 					window.require( dependencies, success, fail )
 				} );
@@ -1889,7 +1886,7 @@
 				return this;
 			},
 			/**
-			 * Push promise
+			 * Push promise.
 			 * @private
 			 */
 			_push: function( nextPromise ) {
@@ -1897,8 +1894,8 @@
 				return this;
 			},
 			/**
-			 * Call todo, fail or progress
-			 * @param {String} - Function name
+			 * Call todo, fail or progress.
+			 * @param {String} - Function name.
 			 * @param {*}
 			 * @returns {*}
 			 */
@@ -1916,14 +1913,14 @@
 			},
 			/**
 			 * Get property
-			 * @param {String} - Property name
+			 * @param {String} - Property name.
 			 * @returns {*}
 			 */
 			get: function( propertyName ) {
 				return this[ propertyName ];
 			},
 			/**
-			 * @param {Object} - Context of Promise
+			 * @param {Object} - Context of Promise.
 			 * @returns {this}
 			 */
 			withContext: function( context ) {
@@ -1932,9 +1929,9 @@
 			},
 			/**
 			 * Then do...
-			 * @param {Function} - Todo
-			 * @param {Function} - Fail next
-			 * @param {Function} - Progress
+			 * @param {Function} - Todo.
+			 * @param {Function} - Fail next.
+			 * @param {Function} - Progress.
 			 * @returns {Promise}
 			 */
 			then: function( nextToDo, nextFail, nextProgress ) {
@@ -1979,7 +1976,7 @@
 				return this;
 			},
 			/**
-			 * clear propery
+			 * Clear propery.
 			 * @private
 			 */
 			_clearProperty: function() {
@@ -1992,7 +1989,7 @@
 				return this;
 			},
 			/**
-			 * Destroy self
+			 * Destroy self.
 			 * @returns {void}
 			 */
 			destroy: function() {
@@ -2012,7 +2009,7 @@
 				this._clearProperty();
 			},
 			/**
-			 * @param {*=} - result
+			 * @param {*=} - result.
 			 * @returns {this}
 			 */
 			resolve: function( obj ) {
@@ -2062,7 +2059,7 @@
 				return this;
 			},
 			/**
-			 * The new promise is siblings
+			 * The new promise is siblings.
 			 * @param {Function=}
 			 * @param {Function=}
 			 * @param {Function=}
@@ -2078,7 +2075,7 @@
 				return promise;
 			},
 			/**
-			 * Relative method "and"
+			 * Relative method "and".
 			 * @param {Promise} [promise=this]
 			 * @param {*=} - result
 			 * @returns {Promise}
@@ -2117,21 +2114,19 @@
 				return this;
 			},
 			/**
-			 * finished
 			 * @returns {Boolean}
 			 */
 			finished: function() {
 				return this.state === "done";
 			},
 			/**
-			 * unfinished
 			 * @returns {Boolean}
 			 */
 			unfinished: function() {
 				return this.state === "todo";
 			},
 			/**
-			 * get root promise
+			 * Get root promise.
 			 * @returns {Promise}
 			 */
 			root: function() {
@@ -2144,7 +2139,7 @@
 		};
 
 		/**
-		 * Whether it is "Promise" instances
+		 * Whether it is "Promise" instances.
 		 * @param {Promise}
 		 * @returns {Boolean}
 		 */
@@ -2160,7 +2155,7 @@
 		this.describe( "Life Cycle of AMDQuery" );
 
 		/**
-		 * Life Cycle of AMDQuery
+		 * Life Cycle of AMDQuery.
 		 * @public
 		 * @module base/ready
 		 */
@@ -2187,6 +2182,16 @@
 			}, 0 );
 		}, rootPromise;
 
+		var loadingImage = _config.amdquery.loadingImage,
+			image = $.createEle( "img" ),
+			cover = $.createEle( "div" );
+
+		image.style.cssText = "position:absolute;top:50%;left:50%";
+		cover.style.cssText = "width:100%;height:100%;position:absolute;top:0;left:0;zIndex:10001;backgroundColor:white";
+
+		cover.appendChild( image );
+
+
 		rootPromise = new Promise( function() {
 			// 预处理设置
 			if ( _config.app.src ) {
@@ -2201,12 +2206,26 @@
 		} ).then( function() { //window.ready first to fix ie
 			document.documentElement.style.position = "absolute";
 			document.documentElement.style.left = "100000px";
+
 			var promise = new Promise,
 				ready = function( e ) {
+					document.documentElement.style.left = "0px";
+					document.documentElement.style.position = "";
+					// maybe insertBefore
+					document.body.appendChild( cover );
+
+					if ( loadingImage ) {
+						image.setAttribute( "src", loadingImage );
+					}
+
+					image.style.marginTop = ( -image.offsetHeight ) + "px";
+					image.style.marginLeft = ( -image.offsetWidth ) + "px";
+
 					setTimeout( function() {
 						// define will be call before this ready
 						promise.resolve( e );
-					}, 0 );
+					}, _config.amdquery.amdquery ? 500 : 0 );
+
 					if ( document.addEventListener ) {
 						document.removeEventListener( "DOMContentLoaded", ready );
 					} else if ( document.attachEvent ) {
@@ -2230,24 +2249,25 @@
 
 			return promise;
 		} ).then( function() {
+			var promise = new Promise;
 			if ( _config.app.src ) {
-				var promise = new Promise;
 				require( _config.app.src, function( Application ) {
 					new Application( promise );
 				} );
 				return promise;
-			}
-		} ).then( function() {
-			if ( _config.ui.initWidget && !_config.app.src ) {
-				var promise = new Promise;
-				require( "module/initWidget", function( initWidget ) {
-					initWidget.renderWidget( promise, document.body );
+			} else if ( _config.ui.initWidget ) {
+				require( "module/Widget", function( Widget ) {
+					Widget.initWidgets( document.body, function() {
+						promise.resolve();
+					} );
 				} );
 				return promise;
 			}
 		} ).then( function() {
-			document.documentElement.style.left = "0px";
-			document.documentElement.style.position = "";
+			document.body.removeChild( cover );
+			cover = null;
+			image = null;
+
 		} ).root().resolve();
 
 		return $.ready = ready;
@@ -17973,6 +17993,7 @@ aQuery.define( "ui/swapview", [
 				container: this.target,
 				overflow: true
 			} );
+
 			this.resize();
 
 			return this;
@@ -19516,51 +19537,6 @@ aQuery.define( "hash/locationHash", [ "main/parse" ], function( $, parse ) {
 		hash = parse.QueryString( str, "!", "=" );
 
 	return hash;
-} );
-
-/*=======================================================*/
-
-/*===================module/initWidget===========================*/
-aQuery.define( "module/initWidget", [ "base/config", "base/typed", "main/query", "main/css", "main/position", "main/dom", "main/attr", "main/class", "module/Widget" ], function( $, config, typed, query, css, position, dom, attr, cls, Widget, undefinded ) {
-	"use strict"; //启用严格模式
-
-	var body = $( "body" ),
-		loadingClassName = config.ui.loadingClassName,
-		$cover = $( {
-			width: "100%",
-			height: "100%",
-			position: "absolute",
-			top: 0,
-			left: 0,
-			zIndex: 10001,
-			backgroundColor: "white"
-		}, "div" ).insertBefore( body.children() );
-
-	if ( loadingClassName ) {
-		$cover.addClass( loadingClassName );
-	}
-
-	var initWidget = {
-		renderWidget: function( promise, parent ) {
-			var self = this;
-			Widget.initWidgets( document.body, function() {
-				if ( promise ) {
-					self.showIndex();
-					promise.resolve();
-				}
-			} );
-			return this;
-		},
-		showIndex: function() {
-			setTimeout( function() {
-				$cover.remove();
-				$cover = null;
-			}, 200 );
-			return this;
-		}
-	};
-
-	return initWidget;
 } );
 
 /*=======================================================*/

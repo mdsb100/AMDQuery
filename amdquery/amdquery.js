@@ -163,6 +163,7 @@
 	 * @property {object}  config.amdquery                     - The amdquery Configuration.
 	 * @property {boolean} config.amdquery.debug               - Whether debug, it will be the output log if true.
 	 * @property {boolean} config.amdquery.development         - Whether it is a development environment.
+	 * @property {string}  config.amdquery.loadingImage        - A image src will be show when amdquery is loading.
 	 *
 	 * @property {object}  config.amd                          - The AMD Configuration.
 	 * @property {boolean} config.amd.detectCR                 - Detect circular dependencies, you should set it true when you develop.
@@ -172,7 +173,6 @@
 	 *
 	 * @property {object}  config.ui                           - The UI-Widget Configuration.
 	 * @property {boolean} config.ui.initWidget                - Automatic initialization UI.
-	 * @property {string}  config.ui.loadingClassName          - When loading UI, the mask layer using the CSS name.
 	 * @property {boolean} config.ui.autoFetchCss              - Automatic fetching CSS.
 	 * @property {boolean} config.ui.isTransform3d             - Whether to use transform3d.
 	 *
@@ -180,7 +180,6 @@
 	 *
 	 * @property {object}  config.app                          - The application Configuration.
 	 * @property {string}  config.app.src                      - A js file src, main of application.
-	 * @property {string}  config.app.loadingImage             - A image src will be show when application is loading.
 	 * @property {boolean} config.app.debug                    - Whether debug, it will be the output log if true.
 	 * @property {boolean} config.app.development              - Whether it is a development environment.
 	 * @property {boolean} config.app.autoFetchCss             - Automatic fetching CSS.
@@ -191,7 +190,8 @@
 		amdquery: {
 			define: "$",
 			debug: false,
-			development: true
+			development: true,
+			loadingImage: ""
 		},
 		amd: {
 			detectCR: false,
@@ -201,7 +201,6 @@
 		},
 		ui: {
 			initWidget: false,
-			loadingClassName: "widget-loading",
 			autoFetchCss: true,
 			isTransform3d: true
 		},
@@ -210,7 +209,6 @@
 		},
 		app: {
 			src: "",
-			loadingImage: "",
 			debug: false,
 			development: true,
 			autoFetchCss: true,
@@ -414,7 +412,7 @@
 			return this;
 		},
 		/**
-     * Object is instance of {aQuery}.
+		 * Object is instance of {aQuery}.
 		 * @param {*}
 		 * @returns {Boolean}
 		 */
@@ -1634,7 +1632,7 @@
 		 * @param {Function} [fail] - An function to the fail callback if loading moudle timeout or error.
 		 * @returns {ClassModule}
 		 * @example
-		 * require( [ "main/query", "hash/locationHash", "ui/swapview", "ui/scrollableview", "module/initWidget" ], function( query, locationHash ) { } );
+		 * require( [ "main/query", "hash/locationHash", "ui/swapview", "ui/scrollableview" ], function( query, locationHash ) { } );
 		 * require( "main/query", function( query ) { } );
 		 * require( "main/query" ).first // Maybe is null;
 		 */
@@ -1733,16 +1731,12 @@
 
 			/**
 			 * aQuery define.</br>
-       * If the last parameter is a function, then first argument of the function is aQuery(namespace).</br>
-       * <a href="/document/app/app.html#navmenu=#AMDQuery!scrollTo=Require_Define" target="_top">See also.</a>
+			 * If the last parameter is a function, then first argument of the function is aQuery(namespace).</br>
+			 * <a href="/document/app/app.html#navmenu=#AMDQuery!scrollTo=Require_Define" target="_top">See also.</a>
 			 * @param {String} - Module name
 			 * @param {String[]|*} - If arguments[2] is a factory, it can be any object.
 			 * @param {*} [factory] - Usually, it is function(){} or {}.
 			 * @returns {this}
-       * @example
-       * aQuery.define("mymodule", function( $ ){
-       *   // $ is aQuery
-       * })
 			 */
 			define: function( id, dependencies, factory ) {
 				var arg = util.argToArray( arguments, 0 ),
@@ -1766,16 +1760,15 @@
 				}
 				return this;
 			},
+			/**
+			 * aQuery require.</br>
+			 * <a href="/document/app/app.html#navmenu=#AMDQuery!scrollTo=Require_Define" target="_top">See also.</a>
+			 * @param {String} - Module.
+			 * @param {ClassModuleCallback} - The callback Be call when aQuery ready.
+			 * @param {Function} [fail] - An function to the fail callback if loading moudle timeout or error.
+			 * @returns {this}
+			 */
 			require: function( dependencies, success, fail ) {
-				/// <summary>aQuery的require对象定义
-				/// <para>遵循AMD规范重载</para>
-				/// <para>会自动调用ready确定window和指定package准备完毕</para>
-				/// </summary>
-				/// <param name="dependencies" type="Array">依赖列表</param>
-				/// <param name="success" type="Function">回调函数</param>
-				/// <param name="fail" type="Function">失败的函数</param>
-				/// <returns type="$" />
-				// 将会在$ ready 后执行。这样便把sync实现起来了
 				window.require && $.ready( function() {
 					window.require( dependencies, success, fail )
 				} );
@@ -2188,6 +2181,16 @@
 			}, 0 );
 		}, rootPromise;
 
+		var loadingImage = _config.amdquery.loadingImage,
+			image = $.createEle( "img" ),
+			cover = $.createEle( "div" );
+
+		image.style.cssText = "position:absolute;top:50%;left:50%";
+		cover.style.cssText = "width:100%;height:100%;position:absolute;top:0;left:0;zIndex:10001;backgroundColor:white";
+
+		cover.appendChild( image );
+
+
 		rootPromise = new Promise( function() {
 			// 预处理设置
 			if ( _config.app.src ) {
@@ -2202,12 +2205,26 @@
 		} ).then( function() { //window.ready first to fix ie
 			document.documentElement.style.position = "absolute";
 			document.documentElement.style.left = "100000px";
+
 			var promise = new Promise,
 				ready = function( e ) {
+					document.documentElement.style.left = "0px";
+					document.documentElement.style.position = "";
+					// maybe insertBefore
+					document.body.appendChild( cover );
+
+					if ( loadingImage ) {
+						image.setAttribute( "src", loadingImage );
+					}
+
+					image.style.marginTop = ( -image.offsetHeight ) + "px";
+					image.style.marginLeft = ( -image.offsetWidth ) + "px";
+
 					setTimeout( function() {
 						// define will be call before this ready
 						promise.resolve( e );
-					}, 0 );
+					}, _config.amdquery.amdquery ? 500 : 0 );
+
 					if ( document.addEventListener ) {
 						document.removeEventListener( "DOMContentLoaded", ready );
 					} else if ( document.attachEvent ) {
@@ -2231,24 +2248,25 @@
 
 			return promise;
 		} ).then( function() {
+			var promise = new Promise;
 			if ( _config.app.src ) {
-				var promise = new Promise;
 				require( _config.app.src, function( Application ) {
 					new Application( promise );
 				} );
 				return promise;
-			}
-		} ).then( function() {
-			if ( _config.ui.initWidget && !_config.app.src ) {
-				var promise = new Promise;
-				require( "module/initWidget", function( initWidget ) {
-					initWidget.renderWidget( promise, document.body );
+			} else if ( _config.ui.initWidget ) {
+				require( "module/Widget", function( Widget ) {
+					Widget.initWidgets( document.body, function() {
+						promise.resolve();
+					} );
 				} );
 				return promise;
 			}
 		} ).then( function() {
-			document.documentElement.style.left = "0px";
-			document.documentElement.style.position = "";
+			document.body.removeChild( cover );
+			cover = null;
+			image = null;
+
 		} ).root().resolve();
 
 		return $.ready = ready;
