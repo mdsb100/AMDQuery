@@ -411,8 +411,7 @@
  function modifyHTML( appConfig, htmlInfo ) {
  	var linkTr1 = trumpet(),
  		linkTr2 = trumpet(),
- 		scriptTr3 = trumpet(),
- 		s = through();
+ 		scriptTr3 = trumpet();
 
  	htmlInfo.outputHtmlPath = htmlInfo.projectOutputPath + "app/app.html";
 
@@ -435,7 +434,6 @@
  		if ( !first ) {
  			first = true;
  			append = '<link href="' + htmlInfo.appCombinationCssRelativePath + '" rel="stylesheet" type="text/css" />' + "\n";
- 			append += '<link href="' + "../" + htmlInfo.uiCombinationCssPath + '" rel="stylesheet" type="text/css" />';
  			logger( "add combinationCss", append );
  		}
 
@@ -461,6 +459,15 @@
 
  		script.setAttribute( "app", formatToAttr( config ) );
  	} );
+
+ 	var ts = script.createStream( {
+ 		outer: true
+ 	} );
+ 	ts.pipe( through( function( buf ) {
+ 		this.queue( buf );
+ 	}, function() {
+ 		this.queue( '\n<link href="' + "../" + htmlInfo.uiCombinationCssPath + '" rel="stylesheet" type="text/css" />' );
+ 	} ) ).pipe( ts );
 
  	var write = FSE.createWriteStream( htmlInfo.outputHtmlPath );
 
