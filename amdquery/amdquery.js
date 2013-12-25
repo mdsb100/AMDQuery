@@ -183,7 +183,7 @@
 	 * @property {boolean} config.app.debug                    - Whether debug, it will be the output log if true.
 	 * @property {boolean} config.app.development              - Whether it is a development environment.
 	 * @property {boolean} config.app.autoFetchCss             - Automatic fetching CSS.
-	 * @property {string} config.app.xmlPath                   - Path of the combination XML, build could create it and set it.
+	 * @property {string}  config.app.viewContentID            - ID of view content. "View.js" use it after build and set "config.app.development" false.
 	 */
 
 	var _config = {
@@ -212,7 +212,7 @@
 			debug: false,
 			development: true,
 			autoFetchCss: true,
-			xmlPath: "xml/combination.xml"
+			viewContentID: ""
 		}
 	};
 	var defineConfig = {};

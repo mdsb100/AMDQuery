@@ -329,7 +329,8 @@
 
  function buildAppXML( appConfig, htmlInfo, XMLAndCSSPathList, buildAppCss ) {
  	console.log( '\u001b[34m' + '\r\nBuild "' + htmlInfo.appName + '" xml file \u001b[39m' );
- 	var content = "<root>",
+ 	htmlInfo.viewContentID = "aQueryViewContentKey";
+ 	var content = "<div id='" + htmlInfo.viewContentID + "' >",
  		xmlPathList = XMLAndCSSPathList.xmlPathList,
  		i = 0,
  		xmlItem = null,
@@ -337,11 +338,11 @@
 
  	for ( ; i < len; i++ ) {
  		xmlItem = xmlPathList[ i ];
- 		content += "\r<wrap key='" + xmlItem.key + "' >" + FSE.readFileSync( xmlItem.path );
- 		content += "\r</wrap>";
+ 		content += "\n<div " + htmlInfo.viewContentID + "='" + xmlItem.key + "' >" + FSE.readFileSync( xmlItem.path );
+ 		content += "\n</div>";
  	}
 
- 	content += "\r</root>"
+ 	content += "\n</div>"
 
  	htmlInfo.appCombinationXMLRelativePath = "xml/" + "combination.xml";
 
@@ -411,7 +412,10 @@
  function modifyHTML( appConfig, htmlInfo ) {
  	var linkTr1 = trumpet(),
  		linkTr2 = trumpet(),
- 		scriptTr3 = trumpet();
+ 		scriptTr1 = trumpet(),
+ 		scriptTr2 = trumpet(),
+ 		bodyTr = trumpet();
+
 
  	htmlInfo.outputHtmlPath = htmlInfo.projectOutputPath + "app/app.html";
 
@@ -441,13 +445,13 @@
  	} );
 
  	//必须需要有app这个属性
- 	var script = scriptTr3.select( "script[app]" );
+ 	var script1 = scriptTr1.select( "script[app]" );
 
  	var src = htmlInfo.AMDQueryJSRelativeHTMLPath + ( appConfig.debug ? ".debug" : "" ) + ".js";
- 	script.setAttribute( "src", src );
+ 	script1.setAttribute( "src", src );
  	logger( "script setAttribute src", src );
 
- 	script.getAttribute( "app", function( value ) {
+ 	script1.getAttribute( "app", function( value ) {
  		var config = splitAttrToObject( value );
 
  		config.src = "../app/app";
@@ -456,18 +460,34 @@
  		logger( "script setAttribute app", "development = " + config.development );
  		config.debug = !! appConfig.debug;
  		logger( "script setAttribute app", "debug = " + config.debug );
+ 		config.viewContentID = htmlInfo.viewContentID
+ 		logger( "script setAttribute app", "viewContentID = " + config.viewContentID );
 
- 		script.setAttribute( "app", formatToAttr( config ) );
+ 		script1.setAttribute( "app", formatToAttr( config ) );
  	} );
 
- 	var ts = script.createStream( {
+ 	var script2 = scriptTr2.select( "script[app]" );
+
+ 	var scriptStream = script2.createStream( {
  		outer: true
  	} );
- 	ts.pipe( through( function( buf ) {
+ 	scriptStream.pipe( through( function( buf ) {
  		this.queue( buf );
  	}, function() {
  		this.queue( '\n<link href="' + "../" + htmlInfo.uiCombinationCssPath + '" rel="stylesheet" type="text/css" />' );
- 	} ) ).pipe( ts );
+ 	} ) ).pipe( scriptStream );
+
+ 	var body = bodyTr.select( "body" );
+
+ 	var bodyStream = body.createStream( {
+ 		outer: true
+ 	} );
+
+ 	bodyStream.pipe( through( function( buf ) {
+ 		this.queue( buf );
+ 	}, function() {
+ 		this.queue( '\n' + FSE.readFileSync( htmlInfo.appCombinationXMLPath ) );
+ 	} ) ).pipe( bodyStream );
 
  	var write = FSE.createWriteStream( htmlInfo.outputHtmlPath );
 
@@ -479,7 +499,7 @@
  		// buildUICss( null, htmlInfo );
  	} );
 
- 	FSE.createReadStream( htmlInfo.htmlPath ).pipe( linkTr1 ).pipe( linkTr2 ).pipe( scriptTr3 ).pipe( write );
+ 	FSE.createReadStream( htmlInfo.htmlPath ).pipe( linkTr1 ).pipe( linkTr2 ).pipe( scriptTr1 ).pipe( scriptTr2 ).pipe( bodyTr ).pipe( write );
  }
 
  function main() {

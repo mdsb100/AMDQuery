@@ -209,6 +209,8 @@ root
               </li>
               <li><a href="#Detail" >Detail</a>
               </li>
+              <li><a href="#APP" >APP</a>
+              </li>
             </ul>
 
             <h2 name="Overview">Overview</h2>
@@ -246,6 +248,7 @@ root
     debug: '1',
     src: '../document/app/app'
   },
+  viewContentID; "aQueryViewContentKey",
   cssPath: [ 'css/reset.css' ],
   htmlPath: '/Users/apple/project/my/amdquery/build/../amdquery/../document/app/app.html',
   appProjectPath: '/Users/apple/project/my/amdquery/build/../amdquery/../document/app/',
@@ -288,7 +291,8 @@ root
             <img src="../images/build_build_js.png" />
             <p>4.Build XML of Application
             <br />Put all the XML merged into one XML. Root tag is "<root>". Each original XML will be wrapped in "<wrag>" tag within
-            <br />The new XML will be saved as "combination.xml". Application will load it once and repeated use its contents.
+            <br />The new XML will be saved as "combination.xml". "combination.xml" is easy for reading.
+            <br />Content of new XML will append into "app.html"
             </p>
             <p>5.Build CSS of Application
             <br />After the first step has been to get all the "CSS" href, this step will be to find those CSS file through the href and use the "clean-css" to merge them into a CSS file.
@@ -304,7 +308,18 @@ root
             <br />change "src" as "../app/app"
             <br />change "development" to "false"
             <br />change "debug" as you define in configuration
+            <br />XML append into "app.html".
             </p>
+
+            <h2 name="APP">APP</h2>
+            <div class="admonition-note">
+              <strong>
+                <p>Build set the configuration of the "viewContentID" property to "aQueryViewContentKey" and add combination "XML" into "app.html" body in order to synchronize the contents of loaded view.
+                <br />This property is used to tell the Application how to find the content view in a non-development model. After building the application development model is false.
+                <br />When the view is loading, it look for ID as "viewContentID" of "div" after look for property as "viewContentID" of sub-elements.
+                </p>
+              </strong>
+            </div>
           </div>
         </li>
         <li>

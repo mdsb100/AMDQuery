@@ -26,7 +26,8 @@ aQuery.define( "app/View", [
 	src, undefined ) {
 	//View need require depend on Widget
 	"use strict"; //启用严格模式
-  this.describe( "Super View Class" );
+	this.describe( "Super View Class" );
+
 	function getHtmlSrc( id ) {
 		//都只能小写
 		var index = id.lastIndexOf( "view/" );
@@ -140,32 +141,38 @@ aQuery.define( "app/View", [
 	} );
 
 	if ( !config.app.development ) {
-		var combinationXML = null;
+		var $combinationXML = null;
 
-		communicate.ajax( {
-			url: config.app.xmlPath,
-			async: false,
-			dataType: "string",
-			complete: function( xml ) {
-				combinationXML = parse.HTML( xml );
-			},
-			timeout: View.timeout,
-			timeoutFun: View.error
-		} );
+		// communicate.ajax( {
+		// 	url: config.app.xmlPath,
+		// 	async: false,
+		// 	dataType: "string",
+		// 	complete: function( xml ) {
+		// 		$combinationXML = parse.HTML( xml );
+		// 	},
+		// 	timeout: View.timeout,
+		// 	timeoutFun: View.error
+		// } );
 
 		View.getXML = function( htmlSrc ) {
 			var key = "",
 				xml,
 				$xml;
-			if ( !ClassModule.contains( htmlSrc ) && /xml\/(.*)/.test( htmlSrc ) ) {
+
+			if ( !$combinationXML ) {
+				$combinationXML = $( "#" + config.app.viewContentID );
+				$combinationXML.remove();
+			}
+
+			if ( !ClassModule.contains( htmlSrc ) && /xml\/(.*)/.test( htmlSrc ) && $combinationXML && $combinationXML.length ) {
 				key = RegExp.$1;
-				$xml = $( combinationXML[ 0 ] ).find( "wrap[key=" + key + "]" );
+				$xml = $combinationXML.find( "div[" + config.app.viewContentID + "=" + key + "]" );
 				xml = $xml.children()[ 0 ];
 				define( htmlSrc, xml );
 				$xml.remove();
 				$xml = null;
-				if ( !combinationXML[ 0 ].childNodes.length ) {
-					combinationXML = null;
+				if ( !$combinationXML.children().length ) {
+					$combinationXML = null;
 				}
 			}
 			return require( htmlSrc ).first;
