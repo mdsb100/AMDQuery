@@ -1,56 +1,56 @@
 <div id="navmenu" amdquery-widget="ui.scrollableview" ui-scrollableview="overflow:V" style="width:200px;height:100%;border-right:1px solid black;">
-  <div id="nav" amdquery-widget="ui.navmenu">
-      <ul>
-          <li amdquery-widget="ui.navitem" ui-navitem="html:app;img:module">
-              <ul>
-                  <li amdquery-widget="ui.navitem" ui-navitem="html:app;img:class"></li>
-              </ul>
-          </li>
-          <li amdquery-widget="ui.navitem" ui-navitem="html:base;img:module">
-              <ul>
-                  <li amdquery-widget="ui.navitem" ui-navitem="html:AMDQuery;img:class"></li>
-                  <li amdquery-widget="ui.navitem" ui-navitem="html:Ready;img:class"></li>
-                  <li amdquery-widget="ui.navitem" ui-navitem="html:Require;img:class"></li>
-              </ul>
-          </li>
-          <li amdquery-widget="ui.navitem" ui-navitem="html:html5;img:module">
-              <ul>
-                  <li amdquery-widget="ui.navitem" ui-navitem="html:html5;img:class"></li>
-              </ul>
-          </li>
-          <li amdquery-widget="ui.navitem" ui-navitem="html:main;img:module">
-              <ul>
-                  <li amdquery-widget="ui.navitem" ui-navitem="html:Query;img:class"></li>
-                  <li amdquery-widget="ui.navitem" ui-navitem="html:Communicate;img:class"></li>
-                  <li amdquery-widget="ui.navitem" ui-navitem="html:Css;img:class"></li>
-                  <li amdquery-widget="ui.navitem" ui-navitem="html:Dom;img:class"></li>
-                  <li amdquery-widget="ui.navitem" ui-navitem="html:Event;img:class"></li>
-                  <li amdquery-widget="ui.navitem" ui-navitem="html:Object;img:class"></li>
-              </ul>
-          </li>
-          <li amdquery-widget="ui.navitem" ui-navitem="html:module;img:module">
-              <ul>
-                  <li amdquery-widget="ui.navitem" ui-navitem="html:Animate;img:class"></li>
-                  <li amdquery-widget="ui.navitem" ui-navitem="html:Color;img:class"></li>
-                  <li amdquery-widget="ui.navitem" ui-navitem="html:Promise;img:class"></li>
-                  <li amdquery-widget="ui.navitem" ui-navitem="html:Thread;img:class"></li>
-              </ul>
-          </li>
-          <li amdquery-widget="ui.navitem" ui-navitem="html:ui;img:module">
-              <ul>
-                  <li amdquery-widget="ui.navitem" ui-navitem="html:Book;img:class"></li>
-                  <li amdquery-widget="ui.navitem" ui-navitem="html:TabBar;img:class"></li>
-                  <li amdquery-widget="ui.navitem" ui-navitem="html:Button;img:class"></li>
-                  <li amdquery-widget="ui.navitem" ui-navitem="html:Drag;img:class"></li>
-                  <li amdquery-widget="ui.navitem" ui-navitem="html:Keyboard;img:class"></li>
-                  <li amdquery-widget="ui.navitem" ui-navitem="html:swapview;img:class"></li>
-                  <li id="ScrollableView-navItem" amdquery-widget="ui.navitem" ui-navitem="html:ScrollableView;img:class"></li>
-                  <li amdquery-widget="ui.navitem" ui-navitem="html:Widget;img:class"></li>
-                  <li amdquery-widget="ui.navitem" ui-navitem="html:flex;img:class"></li>
-                  <li amdquery-widget="ui.navitem" ui-navitem="html:TabView;img:class"></li>
-                  <!-- <li amdquery-widget="ui.navitem" ui-navitem="html:destroyWidget;img:class"></li> -->
-              </ul>
-          </li>
-      </ul>
-  </div>
+    <div id="nav" amdquery-widget="ui.navmenu">
+        <ul>
+            <li amdquery-widget="ui.navitem" ui-navitem="html:app;img:module">
+                <ul>
+                    <li amdquery-widget="ui.navitem" ui-navitem="html:app;img:class"></li>
+                </ul>
+            </li>
+            <li amdquery-widget="ui.navitem" ui-navitem="html:base;img:module">
+                <ul>
+                    <li amdquery-widget="ui.navitem" ui-navitem="html:AMDQuery;img:class"></li>
+                    <li amdquery-widget="ui.navitem" ui-navitem="html:Ready;img:class"></li>
+                    <li amdquery-widget="ui.navitem" ui-navitem="html:Require;img:class"></li>
+                </ul>
+            </li>
+            <li amdquery-widget="ui.navitem" ui-navitem="html:html5;img:module">
+                <ul>
+                    <li amdquery-widget="ui.navitem" ui-navitem="html:html5;img:class"></li>
+                </ul>
+            </li>
+            <li amdquery-widget="ui.navitem" ui-navitem="html:main;img:module">
+                <ul>
+                    <li amdquery-widget="ui.navitem" ui-navitem="html:Query;img:class"></li>
+                    <li amdquery-widget="ui.navitem" ui-navitem="html:Communicate;img:class"></li>
+                    <li amdquery-widget="ui.navitem" ui-navitem="html:Css;img:class"></li>
+                    <li amdquery-widget="ui.navitem" ui-navitem="html:Dom;img:class"></li>
+                    <li amdquery-widget="ui.navitem" ui-navitem="html:Event;img:class"></li>
+                    <li amdquery-widget="ui.navitem" ui-navitem="html:Object;img:class"></li>
+                </ul>
+            </li>
+            <li amdquery-widget="ui.navitem" ui-navitem="html:module;img:module">
+                <ul>
+                    <li amdquery-widget="ui.navitem" ui-navitem="html:Animate;img:class"></li>
+                    <li amdquery-widget="ui.navitem" ui-navitem="html:Color;img:class"></li>
+                    <li amdquery-widget="ui.navitem" ui-navitem="html:Promise;img:class"></li>
+                    <li amdquery-widget="ui.navitem" ui-navitem="html:Thread;img:class"></li>
+                </ul>
+            </li>
+            <li amdquery-widget="ui.navitem" ui-navitem="html:ui;img:module">
+                <ul>
+                    <li amdquery-widget="ui.navitem" ui-navitem="html:Book;img:class"></li>
+                    <li amdquery-widget="ui.navitem" ui-navitem="html:TabBar;img:class"></li>
+                    <li amdquery-widget="ui.navitem" ui-navitem="html:Button;img:class"></li>
+                    <li amdquery-widget="ui.navitem" ui-navitem="html:Drag;img:class"></li>
+                    <li amdquery-widget="ui.navitem" ui-navitem="html:Keyboard;img:class"></li>
+                    <li amdquery-widget="ui.navitem" ui-navitem="html:swapview;img:class"></li>
+                    <li id="ScrollableView-navItem" amdquery-widget="ui.navitem" ui-navitem="html:ScrollableView;img:class"></li>
+                    <li amdquery-widget="ui.navitem" ui-navitem="html:Widget;img:class"></li>
+                    <li amdquery-widget="ui.navitem" ui-navitem="html:flex;img:class"></li>
+                    <li amdquery-widget="ui.navitem" ui-navitem="html:TabView;img:class"></li>
+                    <!-- <li amdquery-widget="ui.navitem" ui-navitem="html:destroyWidget;img:class"></li> -->
+                </ul>
+            </li>
+        </ul>
+    </div>
 </div>
