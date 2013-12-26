@@ -102,6 +102,7 @@
  var trumpet = require( "trumpet" );
  var through = require( "through" );
  var concat = require( 'concat-stream' );
+ var beautify_html = require( 'js-beautify' ).html;
  var _ = require( "underscore" );
 
  var loadedModule = 'loaded' + ( -new Date() );
@@ -493,6 +494,7 @@
 
  	write.on( 'close', function() {
  		if ( typeof appConfig.complete === "function" ) {
+ 			FSE.writeFileSync( htmlInfo.outputHtmlPath, beautify_html( FSE.readFileSync( htmlInfo.outputHtmlPath ).toString(), {} ) );
  			appConfig.complete.call( appConfig, htmlInfo );
  		}
  		console.log( '\u001b[31m\r\nbuilding finish... \u001b[39m' );
