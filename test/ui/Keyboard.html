@@ -1,121 +1,115 @@
-﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+﻿
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
+
 <head>
     <title>Keyboard</title>
     <meta charset="utf-8" />
     <link href="../css/reset.css" rel="stylesheet" type="text/css" />
-    <script src="../../amdquery/amdquery.js" type="text/javascript" amdquery="debug:true" ></script>
+    <script src="../../amdquery/amdquery.js" type="text/javascript" amdquery="debug:true"></script>
     <script type="text/javascript">
-        $.require(["ui/keyboard", "main/query", "main/event"], function (keyboard, query, event) {
+        $.require(["ui/keyboard", "main/query", "main/event"], function(keyboard, query, event) {
             //$.ready(function () {
             var con = $("#container");
 
             con.keyboard();
 
-            con.uiKeyboard( "addKey", {
-              type: "keyup",
-              keyCode: [ "Up", "Right", "Down", "Left" ],
-              combinationKey: ["ctrl"],
-              todo: function( e ) {
-                alert( e.type );
-              }
-            } );
-
-            con.uiKeyboard( "removeKey", {
-              type: "keyup",
-              keyCode: [ "Up", "Right", "Down", "Left" ],
-              combinationKey: ["ctrl"],
-              todo: event
-            } );
-
-            con.keyboard({
-                keyList: [
-                    { type: "keyup", keyCode: "Up"
-                        , todo: function (e) {
-                            alert("Up")
-                        }
-                    },
-                    { type: "keyup", keyCode: "Down"
-                        , todo: function (e) {
-                            alert("Down")
-                        }
-                    }
-                ]
+            con.uiKeyboard("addKey", {
+                type: "keyup",
+                keyCode: ["Up", "Right", "Down", "Left"],
+                combinationKey: ["ctrl"],
+                todo: function(e) {
+                    alert(e.type);
+                }
             });
 
-            var deleteTodo = function (e) {
-              alert("cmd+E+delete");
+            con.uiKeyboard("removeKey", {
+                type: "keyup",
+                keyCode: ["Up", "Right", "Down", "Left"],
+                combinationKey: ["ctrl"],
+                todo: event
+            });
+
+            con.keyboard({
+                keyList: [{
+                    type: "keyup",
+                    keyCode: "Up",
+                    todo: function(e) {
+                        alert("Up")
+                    }
+                }, {
+                    type: "keyup",
+                    keyCode: "Down",
+                    todo: function(e) {
+                        alert("Down")
+                    }
+                }]
+            });
+
+            var deleteTodo = function(e) {
+                alert("cmd+E+delete");
             }
 
             con.keyboard({
-              keyList: [
-                  {
+                keyList: [{
                     type: "keyup",
                     keyCode: "E",
-                    todo: function (e) {
+                    todo: function(e) {
                         alert("cmd+E");
                     },
                     combinationKey: ["cmd"]
-                  },
-                  {
+                }, {
                     type: "keyup",
                     keyCode: "E",
                     todo: deleteTodo,
                     combinationKey: ["cmd"]
-                  },
-                  {
+                }, {
                     type: "keyup",
                     keyCode: "E",
-                    todo: function (e) {
+                    todo: function(e) {
                         alert("cmd+shift+E");
                     },
                     combinationKey: ["cmd", "shift"]
-                  }
-              ]
+                }]
             });
 
             con.keyboard("removeTodo", {
-              type: "keyup",
-              keyCode: "E",
-              todo: deleteTodo,
-              combinationKey: ["cmd"]
+                type: "keyup",
+                keyCode: "E",
+                todo: deleteTodo,
+                combinationKey: ["cmd"]
             });
 
             con.keyboard("removeKey", {
-              type: "keyup",
-              keyCode: "E",
-              combinationKey: ["cmd"]
+                type: "keyup",
+                keyCode: "E",
+                combinationKey: ["cmd"]
             });
 
-            con.keyboard("addKeys",
-                [{
-                    type: "keyup",
-                    keyCode: "J",
-                    todo: function (e) {
-                        alert("ctrl+alt+J");
-                    },
-                    combinationKey: ["ctrl", "alt"]
+            con.keyboard("addKeys", [{
+                type: "keyup",
+                keyCode: "J",
+                todo: function(e) {
+                    alert("ctrl+alt+J");
                 },
-                {
-                    type: "keydown",
-                    keyCode: "J",
-                    todo: function (e) {
-                        alert("alt+J");
-                    },
-                    combinationKey: ["alt"]
-                }]
-            );
+                combinationKey: ["ctrl", "alt"]
+            }, {
+                type: "keydown",
+                keyCode: "J",
+                todo: function(e) {
+                    alert("alt+J");
+                },
+                combinationKey: ["alt"]
+            }]);
 
-            con.keyboard("addKey",
-                {
-                    type: "keyup",
-                    keyCode: "K",
-                    todo: function (e) {
-                        alert("ctrl+alt+K");
-                    },
-                    combinationKey: ["ctrl", "alt"]
-                }
-            );
+            con.keyboard("addKey", {
+                type: "keyup",
+                keyCode: "K",
+                todo: function(e) {
+                    alert("ctrl+alt+K");
+                },
+                combinationKey: ["ctrl", "alt"]
+            });
 
             con.keyboard("removeKey", {
                 type: "keyup",
@@ -126,18 +120,19 @@
             $.keyboard({
                 type: "keydown",
                 keyCode: 13, //["enter", "Enter"],
-                todo: function (e) {
+                todo: function(e) {
                     alert("Enter");
                 }
             });
 
         });
-
     </script>
 </head>
+
 <body style="width: 100%; height: 100%;">
     <div style="left: 100px; top: 300px; width: 300px; height: 300px; background-color: Green;
         position: relative" id="container">
     </div>
 </body>
+
 </html>

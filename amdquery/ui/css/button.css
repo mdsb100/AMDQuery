@@ -1,44 +1,28 @@
-.aquery-button
-{
-	float: left;
-	cursor: pointer;
-	background-color: White;
-	overflow:hidden;
-  vertical-align: middle;
-  -moz-border-radius: 8px;
-  -webkit-border-radius: 8px;
-  -o-border-radius: 8px;
-  -ms-border-radius: 8px;
-  border-radius:8px;
+.aquery-button {
+    float: left;
+    cursor: pointer;
+    background-color: White;
+    overflow: hidden;
+    vertical-align: middle;
+    -moz-border-radius: 8px;
+    -webkit-border-radius: 8px;
+    -o-border-radius: 8px;
+    -ms-border-radius: 8px;
+    border-radius: 8px;
 }
-
-.aquery-button .back{
-	background: url(../images/tabs.png) 0px -173px repeat-x;
+.aquery-button .back {
+    background: url(../images/tabs.png) 0px -173px repeat-x;
 }
-.aquery-button .back:link {}
-.aquery-button .back:visited {}
-.aquery-button .back:hover {}
-.aquery-button .back:active {}
-
-.aquery-button .img{
-
+.aquery-button .back: link {} .aquery-button .back: visited {} .aquery-button .back: hover {} .aquery-button .back: active {} .aquery-button .img {} .aquery-button .text {
+    font: 12px Arial, "\5FAE\8F6F\96C5\9ED1";
+    text-align: center;
+    vertical-align: middle;
+    line-height: 200%;
+    font-family: 宋体;
+    font-weight: bold;
+    font-size: 14px;
+    color: #6B573B;
 }
-
-.aquery-button .text{
-	font: 12px Arial, "\5FAE\8F6F\96C5\9ED1";
-	text-align: center;
-	vertical-align: middle;
-  line-height: 200%;
-	font-family: 宋体;
-	font-weight: bold;
-	font-size: 14px;
-	color: #6B573B;
-}
-.aquery-button .text:link {}
-.aquery-button .text:visited {}
-.aquery-button .text:hover {
-
-}
-.aquery-button .text:active {
+.aquery-button .text: link {} .aquery-button .text: visited {} .aquery-button .text: hover {} .aquery-button .text: active {
     color: #FF0000;
 }

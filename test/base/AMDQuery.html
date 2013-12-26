@@ -1,26 +1,24 @@
-﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+﻿
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
+
 <head>
     <title>自己写的JQuery测试</title>
     <meta content="utf-8" />
     <style type="text/css">
-        .css1
-        {
+        .css1 {
             border: 1px solid black;
         }
-        .class1
-        {
+        .class1 {
             background-color: Red;
         }
-        .class2
-        {
+        .class2 {
             background-color: Yellow;
         }
     </style>
     <link href="../css/reset.css" rel="stylesheet" type="text/css" />
     <style type="text/css">
-        #offset
-        {
+        #offset {
             display: inline-block;
         }
     </style>
@@ -28,10 +26,10 @@
     <script type="text/javascript">
         //table的删除和添加行值得注意
 
-        //var a = $.parseQueryString();
+         //var a = $.parseQueryString();
 
-        $.require(["base/extend", "main/data", "main/event", "main/attr", "main/class", "main/css", "main/position", "main/dom", "main/query"], function () {
-            $(function (event) {
+        $.require(["base/extend", "main/data", "main/event", "main/attr", "main/class", "main/css", "main/position", "main/dom", "main/query"], function() {
+            $(function(event) {
                 //                var a = $.parseXML(
                 //                '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">' +
                 //                '<html>' +
@@ -44,7 +42,8 @@
 
                 var bbb = $.find("input", a[0]);
 
-                var div = $.createEle("div"), divChild = $.createEle("span");
+                var div = $.createEle("div"),
+                    divChild = $.createEle("span");
                 divChild.id = "bspan"
                 div.appendChild(divChild);
                 $(div).append("<div><input id='bbb' /><input id='ccc' /></div>");
@@ -72,9 +71,9 @@
                 var property3 = $("ol *[id$='i2']");
                 var property4 = $("ol *[id*='i']");
 
-                $(document.body).keydown(function (e) {
+                $(document.body).keydown(function(e) {
                     $.showMsg(e.charCode);
-                }).keypress(function (e, str) {
+                }).keypress(function(e, str) {
                     //alert(str);
                 });
 
@@ -118,18 +117,32 @@
                 select.val([0, 2]);
                 var result = select.data("mytest1", 50);
                 result = select.data("mytest1");
-                result = select.data({ mytest1: { type: 1, result: true }, mytest2: 100 });
+                result = select.data({
+                    mytest1: {
+                        type: 1,
+                        result: true
+                    },
+                    mytest2: 100
+                });
                 result = select.data();
                 $.removeData(select[0], "mytest1");
 
                 var empty = {};
-                var defaults = { validate: false, limit: 5, name: "foo" };
-                var options = { validate: true, name: "bar" };
+                var defaults = {
+                    validate: false,
+                    limit: 5,
+                    name: "foo"
+                };
+                var options = {
+                    validate: true,
+                    name: "bar"
+                };
                 var settings = $.extend(true, empty, defaults, options);
 
-                $.extend({ pic: function () {
-                    $.showMsg("自己写的JQuery测试extend");
-                }
+                $.extend({
+                    pic: function() {
+                        $.showMsg("自己写的JQuery测试extend");
+                    }
                 })
                 $.pic();
 
@@ -155,21 +168,29 @@
                 var n = $(":text");
 
                 var fa = $('#A')
-            .html('abc')
-            .css({ i: 'bcd' })
-            .addClass("css1")
-            .attr({ name: 'aaa' })
+                    .html('abc')
+                    .css({
+                        i: 'bcd'
+                    })
+                    .addClass("css1")
+                    .attr({
+                        name: 'aaa'
+                    })
                 //.opacity(0.5);
                 var tmp = fa.opacity();
-                var di = $('div').addClass('css1').addHandler('click', function () {
+                var di = $('div').addClass('css1').addHandler('click', function() {
                     alert(true);
                 })
-            .attr('pic', "p1")
-            .mousewheel(function (detal) {
-                document.title = detal;
-            })
+                    .attr('pic', "p1")
+                    .mousewheel(function(detal) {
+                        document.title = detal;
+                    })
 
-            .append($({ width: 50 + "px", height: 50 + "px", backgroundColor: 'blue' }, 'div'));
+                .append($({
+                    width: 50 + "px",
+                    height: 50 + "px",
+                    backgroundColor: 'blue'
+                }, 'div'));
                 di.append('<span>内容</span>');
                 di.css("b");
                 //di.append('<input type="radio" />');
@@ -183,15 +204,22 @@
                 var tmp = $("#A,#B,#C");
                 var tmpB = tmp.eq(1);
 
-                var son = $({ width: 100 + "px", height: 100 + "px", "background-color": 'yellow', display: 'inline-table', float: 'left' }, 'div', document.body)
-                        .addClass('css2')
-                        .addHandler('click', function () {
-                            di.antonymVisible();
-                            var j = $("div:hidden");
-                            var k = $("div:visible");
-                        }).data("test1", "500");
+                var son = $({
+                    width: 100 + "px",
+                    height: 100 + "px",
+                    "background-color": 'yellow',
+                    display: 'inline-table',
+                    float: 'left'
+                }, 'div', document.body)
+                    .addClass('css2')
+                    .addHandler('click', function() {
+                        di.antonymVisible();
+                        var j = $("div:hidden");
+                        var k = $("div:visible");
+                    }).data("test1", "500");
 
-                var first = di.getFirst(), last = di.getLast();
+                var first = di.getFirst(),
+                    last = di.getLast();
                 var left = di.eq(2).offsetLeft();
                 var top = di.eq(1).getTop();
                 var ol = $("ol");
@@ -200,27 +228,28 @@
                 son.remove();
                 $('#D').replace(son);
                 var li = $('li').html('replace', true)[0];
-                $('ol').eq(1).replaceChild($({ i: 'ABC' }, 'li'), 2);
+                $('ol').eq(1).replaceChild($({
+                    i: 'ABC'
+                }, 'li'), 2);
 
                 var clone = $('#C').clone();
                 var collection = $($.getEleByTag('div'));
                 var list = [];
                 var table = document.createElement('table');
 
-                var handler = function (e) {
+                var handler = function(e) {
                     alert(e)
-                }
-            , testHandler = $("#C").addHandler("click", handler).removeHandler('click', handler).insertText("插入一个值");
+                }, testHandler = $("#C").addHandler("click", handler).removeHandler('click', handler).insertText("插入一个值");
 
-                $("div").filter(function (ele) {
+                $("div").filter(function(ele) {
                     return ele.id == "A"
                 });
                 //$.filter("same", [1, 1, 2, 3, 4, 5, 5, 6, 7, 8, 8]);
 
                 $("#A").is(":visible");
-                $("#A,#B").toggle(function () {
+                $("#A,#B").toggle(function() {
                     var a = 0;
-                }, function () {
+                }, function() {
                     var a = 1;
                 });
                 $("#A,#B").toggleClass("class1", "class2");
@@ -234,9 +263,9 @@
 
             });
         });
-
     </script>
 </head>
+
 <body style="width: 100%; height: 100%; overflow: scroll;">
     <div id="offset" style="padding: 10px 10px 10px 10px; width: 50px; height: 50px;
         border-bottom: 1px solid black; margin: 10px 10px 10px 10px; background-color: red;">
@@ -244,7 +273,8 @@
     <ol class="parent">
         <li>1</li>
         <li id='li2'>2</li>
-        <li>3<span></span></li>
+        <li>3<span></span>
+        </li>
         123
     </ol>
     <ol>
@@ -252,17 +282,14 @@
         <li id='li1'>5</li>
         <li>6</li>
     </ol>
-    <div style="width: 200px; height: 200px; float: left; display: inline-block;" id='A'
-        class='abc'>
+    <div style="width: 200px; height: 200px; float: left; display: inline-block;" id='A' class='abc'>
         <input type="button" />
     </div>
-    <div style="width: 100px; height: 100px; background-color: Red; float: left; display: inline-block;"
-        id='B'>
+    <div style="width: 100px; height: 100px; background-color: Red; float: left; display: inline-block;" id='B'>
         <button>
         </button>
     </div>
-    <div style="width: 100px; height: 100px; background-color: Red; float: left; display: inline-block;"
-        id='C'>
+    <div style="width: 100px; height: 100px; background-color: Red; float: left; display: inline-block;" id='C'>
         <select multiple="MUltiple">
             <option>1</option>
             <optgroup label="分组">
@@ -278,12 +305,10 @@
             </div>
         </div>
     </div>
-    <div style="width: 100px; height: 100px; background-color: Red; float: left; display: inline-block;"
-        id='D'>
+    <div style="width: 100px; height: 100px; background-color: Red; float: left; display: inline-block;" id='D'>
         I`m D
     </div>
-    <div style="width: 100px; height: 100px; background-color: blue; float: left; display: inline-block;"
-        id="F">
+    <div style="width: 100px; height: 100px; background-color: blue; float: left; display: inline-block;" id="F">
         <div class="test1">
             <ul class="test1" id="search">
             </ul>
@@ -299,4 +324,5 @@
         <input id="text" type="text" value="我的值啊" />
     </div>
 </body>
+
 </html>

@@ -1,1 +1,231 @@
-.aquery-accordion{text-align:center;cursor:pointer;background-color:#fff;border:1px solid #e7d5b4;height:auto;overflow:hidden;border-top:2px solid #a8680e}.aquery-accordion .shell{height:auto;width:100%;font:24px Arial,"\5FAE\8F6F\96C5\9ED1"}.aquery-accordion .title{width:100%;height:28px;text-align:left;cursor:pointer;line-height:28px;font-family:宋体;font-weight:700;font-size:14px;color:#6B573B}.aquery-accordion .title_select{background:url(../images/accordion_typeSelect.jpg) repeat-x}.aquery-accordion .title_unselect{background:url(../images/accordion_typeUnselect.jpg) repeat-x}.aquery-accordion .arrowRight{width:32px;height:100%;background:url(../images/accordion_arrowRight.jpg) 50% 50% no-repeat}.aquery-accordion .arrowBottom{width:32px;height:100%;background:url(../images/accordion_arrowBottom.jpg) 50% 50% no-repeat}.aquery-accordion .text{height:100%;font-size:14px}.aquery-accordion .board{width:100%;background:url(../images/accordion_bottomBackground.jpg) bottom repeat-x}.aquery-accordion .key{width:100%;height:28px;line-height:28px}.aquery-accordion .board .select{color:#d30000}.aquery-accordion .board .unselect{color:#6B573B}.aquery-accordion .key .a{width:100%;height:100%;font-family:宋体;font-size:12px;padding-left:30px;text-align:left}.aquery-accordion .key .a:hover{color:#d30000;background-color:#fff9ef}.aquery-button{float:left;cursor:pointer;background-color:#fff;overflow:hidden;vertical-align:middle;-moz-border-radius:8px;-webkit-border-radius:8px;-o-border-radius:8px;-ms-border-radius:8px;border-radius:8px}.aquery-button .back{background:url(../images/tabs.png) 0 -173px repeat-x}.aquery-button .text{font:12px Arial,"\5FAE\8F6F\96C5\9ED1";text-align:center;vertical-align:middle;line-height:200%;font-family:宋体;font-weight:700;font-size:14px;color:#6B573B}.aquery-button .text:active{color:red}.aquery-flex{display:-moz-box;display:-webkit-flexbox;display:-ms-flexbox;display:-webkit-flex;display:-moz-flex;display:-o-flex;display:flex;position:relative}.aquery-navmenu{background-color:#fff;height:auto;overflow:hidden}.aquery-navmenu ul{float:left}.aquery-navmenu .img{width:16px;height:28px;cursor:pointer}.aquery-navmenu .module{background:url(../images/icons.png) 0 -35px no-repeat}.aquery-navmenu .class{background:url(../images/icons.png) 0 -74px no-repeat}.aquery-navmenu .file{background:url(../images/icons.png) -2px -472px no-repeat}.aquery-navmenu .item{height:auto;font:24px Arial,"\5FAE\8F6F\96C5\9ED1"}.aquery-navmenu .title:hover{color:#d30000}.aquery-navmenu .title{height:28px;text-align:left;line-height:28px;font-family:宋体;font-weight:700;font-size:14px;color:#6B573B}.aquery-navmenu .arrow{width:16px;height:28px;cursor:pointer}.aquery-navmenu .arrowRight{width:16px;height:28px;background:url(../images/navmenu_arrows.png) 2px 5px no-repeat}.aquery-navmenu .arrowBottom{width:16px;height:28px;background:url(../images/navmenu_arrows.png) -12px 5px no-repeat}.aquery-navmenu .text{height:100%;font-size:14px;cursor:pointer}.aquery-navmenu .text_select{color:#d30000}.aquery-navmenu .board{margin-left:16px;background:url(../images/navmenu_bottomBackground.jpg) bottom repeat-x}.aquery-navmenu .board .select{color:#d30000}.aquery-navmenu .board .unselect{color:#6B573B}.aquery-scrollableViewStatusBar{opacity:.8;filter:Alpha(opacity=80);background-color:#585858;border-radius:5px}.aquery-swapindicator .active{background:url(../images/swapindicator_active.png) center no-repeat}.aquery-swapindicator li{background:url(../images/swapindicator_deactive.png) center no-repeat}.aquery-tabButton{border-left:1px solid #000;-moz-border-radius:0;-webkit-border-radius:0;-o-border-radius:0;-ms-border-radius:0;border-radius:0}.aquery-defaultTabButton .back{background:#292727}.aquery-defaultTabButton .text{font:14px Arial,"\5FAE\8F6F\96C5\9ED1";text-align:center;vertical-align:middle;font-family:宋体;font-weight:700;color:#b5b1b1;line-height:200%}.aquery-defaultTabButton .text:active{color:red}.aquery-selectTabButton .back{background:#1f1d1d}.aquery-selectTabButton .text{font:14px Arial,"\5FAE\8F6F\96C5\9ED1";text-align:center;vertical-align:middle;font-family:宋体;font-weight:700;color:#FFF;line-height:200%}.aquery-selectTabButton .text:active{color:red}
+.aquery-accordion {
+    text-align: center;
+    cursor: pointer;
+    background-color: #fff;
+    border: 1px solid #e7d5b4;
+    height: auto;
+    overflow: hidden;
+    border-top: 2px solid #a8680e
+}
+.aquery-accordion .shell {
+    height: auto;
+    width: 100%;
+    font: 24px Arial, "\5FAE\8F6F\96C5\9ED1"
+}
+.aquery-accordion .title {
+    width: 100%;
+    height: 28px;
+    text-align: left;
+    cursor: pointer;
+    line-height: 28px;
+    font-family: 宋体;
+    font-weight: 700;
+    font-size: 14px;
+    color: #6B573B
+}
+.aquery-accordion .title_select {
+    background: url(../images/accordion_typeSelect.jpg) repeat-x
+}
+.aquery-accordion .title_unselect {
+    background: url(../images/accordion_typeUnselect.jpg) repeat-x
+}
+.aquery-accordion .arrowRight {
+    width: 32px;
+    height: 100%;
+    background: url(../images/accordion_arrowRight.jpg) 50% 50% no-repeat
+}
+.aquery-accordion .arrowBottom {
+    width: 32px;
+    height: 100%;
+    background: url(../images/accordion_arrowBottom.jpg) 50% 50% no-repeat
+}
+.aquery-accordion .text {
+    height: 100%;
+    font-size: 14px
+}
+.aquery-accordion .board {
+    width: 100%;
+    background: url(../images/accordion_bottomBackground.jpg) bottom repeat-x
+}
+.aquery-accordion .key {
+    width: 100%;
+    height: 28px;
+    line-height: 28px
+}
+.aquery-accordion .board .select {
+    color: #d30000
+}
+.aquery-accordion .board .unselect {
+    color: #6B573B
+}
+.aquery-accordion .key .a {
+    width: 100%;
+    height: 100%;
+    font-family: 宋体;
+    font-size: 12px;
+    padding-left: 30px;
+    text-align: left
+}
+.aquery-accordion .key .a: hover {
+    color: #d30000;
+    background-color: #fff9ef
+}
+.aquery-button {
+    float: left;
+    cursor: pointer;
+    background-color: #fff;
+    overflow: hidden;
+    vertical-align: middle;
+    -moz-border-radius: 8px;
+    -webkit-border-radius: 8px;
+    -o-border-radius: 8px;
+    -ms-border-radius: 8px;
+    border-radius: 8px
+}
+.aquery-button .back {
+    background: url(../images/tabs.png) 0 -173px repeat-x
+}
+.aquery-button .text {
+    font: 12px Arial, "\5FAE\8F6F\96C5\9ED1";
+    text-align: center;
+    vertical-align: middle;
+    line-height: 200%;
+    font-family: 宋体;
+    font-weight: 700;
+    font-size: 14px;
+    color: #6B573B
+}
+.aquery-button .text: active {
+    color: red
+}
+.aquery-flex {
+    display: -moz-box;
+    display: -webkit-flexbox;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display: -moz-flex;
+    display: -o-flex;
+    display: flex;
+    position: relative
+}
+.aquery-navmenu {
+    background-color: #fff;
+    height: auto;
+    overflow: hidden
+}
+.aquery-navmenu ul {
+    float: left
+}
+.aquery-navmenu .img {
+    width: 16px;
+    height: 28px;
+    cursor: pointer
+}
+.aquery-navmenu .module {
+    background: url(../images/icons.png) 0 -35px no-repeat
+}
+.aquery-navmenu .class {
+    background: url(../images/icons.png) 0 -74px no-repeat
+}
+.aquery-navmenu .file {
+    background: url(../images/icons.png) -2px -472px no-repeat
+}
+.aquery-navmenu .item {
+    height: auto;
+    font: 24px Arial, "\5FAE\8F6F\96C5\9ED1"
+}
+.aquery-navmenu .title: hover {
+    color: #d30000
+}
+.aquery-navmenu .title {
+    height: 28px;
+    text-align: left;
+    line-height: 28px;
+    font-family: 宋体;
+    font-weight: 700;
+    font-size: 14px;
+    color: #6B573B
+}
+.aquery-navmenu .arrow {
+    width: 16px;
+    height: 28px;
+    cursor: pointer
+}
+.aquery-navmenu .arrowRight {
+    width: 16px;
+    height: 28px;
+    background: url(../images/navmenu_arrows.png) 2px 5px no-repeat
+}
+.aquery-navmenu .arrowBottom {
+    width: 16px;
+    height: 28px;
+    background: url(../images/navmenu_arrows.png) -12px 5px no-repeat
+}
+.aquery-navmenu .text {
+    height: 100%;
+    font-size: 14px;
+    cursor: pointer
+}
+.aquery-navmenu .text_select {
+    color: #d30000
+}
+.aquery-navmenu .board {
+    margin-left: 16px;
+    background: url(../images/navmenu_bottomBackground.jpg) bottom repeat-x
+}
+.aquery-navmenu .board .select {
+    color: #d30000
+}
+.aquery-navmenu .board .unselect {
+    color: #6B573B
+}
+.aquery-scrollableViewStatusBar {
+    opacity: .8;
+    filter: Alpha(opacity=80);
+    background-color: #585858;
+    border-radius: 5px
+}
+.aquery-swapindicator .active {
+    background: url(../images/swapindicator_active.png) center no-repeat
+}
+.aquery-swapindicator li {
+    background: url(../images/swapindicator_deactive.png) center no-repeat
+}
+.aquery-tabButton {
+    border-left: 1px solid #000;
+    -moz-border-radius: 0;
+    -webkit-border-radius: 0;
+    -o-border-radius: 0;
+    -ms-border-radius: 0;
+    border-radius: 0
+}
+.aquery-defaultTabButton .back {
+    background: #292727
+}
+.aquery-defaultTabButton .text {
+    font: 14px Arial, "\5FAE\8F6F\96C5\9ED1";
+    text-align: center;
+    vertical-align: middle;
+    font-family: 宋体;
+    font-weight: 700;
+    color: #b5b1b1;
+    line-height: 200%
+}
+.aquery-defaultTabButton .text: active {
+    color: red
+}
+.aquery-selectTabButton .back {
+    background: #1f1d1d
+}
+.aquery-selectTabButton .text {
+    font: 14px Arial, "\5FAE\8F6F\96C5\9ED1";
+    text-align: center;
+    vertical-align: middle;
+    font-family: 宋体;
+    font-weight: 700;
+    color: #FFF;
+    line-height: 200%
+}
+.aquery-selectTabButton .text: active {
+    color: red
+}

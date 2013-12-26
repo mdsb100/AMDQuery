@@ -1,44 +1,45 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
+
 <head>
     <title>滚动条</title>
     <meta charset="utf-8" />
     <link href="../css/reset.css" rel="stylesheet" type="text/css" />
     <script src="../../amdquery/amdquery.js" type="text/javascript" amd="detectCR=1" module="transitionToAnimation:0" ui="initWidget:1;isTransform3d:1"></script>
     <script type="text/javascript">
-        $.require(["ui/scrollableview", "main/query", "main/dom", "main/css"], function (scrollableview, query, dom, css) {
+        $.require(["ui/scrollableview", "main/query", "main/dom", "main/css"], function(scrollableview, query, dom, css) {
             var container1 = $("#container1");
 
-            container1.on("scrollableview.pulldown", function(){
+            container1.on("scrollableview.pulldown", function() {
                 $.showMsg("1")
-            }).on("scrollableview.pullup", function(){
+            }).on("scrollableview.pullup", function() {
                 $.showMsg("2")
-            }).on("scrollableview.pullleft", function(){
+            }).on("scrollableview.pullleft", function() {
                 $.showMsg("3")
-            }).on("scrollableview.pullright", function(){
+            }).on("scrollableview.pullright", function() {
                 $.showMsg("4")
-            }).on("scrollableview.animationEnd", function(e){
+            }).on("scrollableview.animationEnd", function(e) {
                 $.showMsg(e.scene)
             });
 
             var div = $.createEle("div");
             $(div).css({
-              width: "1000px",
-              height: "1000px",
-              "background-color": "pink"
+                width: "1000px",
+                height: "1000px",
+                "background-color": "pink"
             });
 
-            container1.uiScrollableview( "append", div );
+            container1.uiScrollableview("append", div);
 
-            container1.uiScrollableview( "remove", div );
+            container1.uiScrollableview("remove", div);
 
-            container1.uiScrollableview("replace", $("#inner")[0], div );
+            container1.uiScrollableview("replace", $("#inner")[0], div);
 
 
         });
-
     </script>
 </head>
+
 <body style="width: 100%; height: 100%;">
     <div style="left: 50px; top: 50px; width: 500px; height: 500px; background-color: Black;position: absolute;overflow: hidden;overflow-y: hidden;overflow-x:hidden;" id="container1" amdquery-widget="ui.scrollableview">
         <div id="inner" style="width:3000px;height:3000px;background-color: red;">
@@ -51,4 +52,5 @@
         </div>
     </div>
 </body>
+
 </html>

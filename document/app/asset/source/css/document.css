@@ -1,99 +1,84 @@
-.document{}
-.document h1{
-  color:#9b1c1f;
-  padding-top: 7px;
-  margin-bottom: 16px;
+.document {} .document h1 {
+    color: #9b1c1f;
+    padding-top: 7px;
+    margin-bottom: 16px;
 }
-
-.document h2{
-  border-bottom: 1px solid #f1f1f1;
-  margin:30px 0 15px 0;
-  padding-bottom: 5px;
-  font-weight: bold;
-  line-height: 20px;
-  letter-spacing: -1px;
-  color: #666;
+.document h2 {
+    border-bottom: 1px solid #f1f1f1;
+    margin: 30px 0 15px 0;
+    padding-bottom: 5px;
+    font-weight: bold;
+    line-height: 20px;
+    letter-spacing: -1px;
+    color: #666;
 }
-
-.document h3{
-  font-weight: bold;
-  color: #666;
-  margin-top: .5em;
-  padding-top: 16px;
-  font-size: 16px;
-  line-height: 16px;
-  margin-bottom: 4px;
+.document h3 {
+    font-weight: bold;
+    color: #666;
+    margin-top: .5em;
+    padding-top: 16px;
+    font-size: 16px;
+    line-height: 16px;
+    margin-bottom: 4px;
 }
-
-p{
-  margin: 0 0 1em;
-  color: #484848;
-  font-size: 13px;
-  line-height: 13px;
+p {
+    margin: 0 0 1em;
+    color: #484848;
+    font-size: 13px;
+    line-height: 13px;
 }
-
-.ul{
-  list-style:disc inside;
-  margin: 20px 20px 0 20px;
-  color: #484848;
+.ul {
+    list-style: disc inside;
+    margin: 20px 20px 0 20px;
+    color: #484848;
 }
-
-.guide{
-  list-style:disc inside;
-  margin: 20px 20px 0 20px;
+.guide {
+    list-style: disc inside;
+    margin: 20px 20px 0 20px;
 }
-
-.guide h4{
-  font-weight: bold;
-  color: #666;
-  font-size: 14px;
-  line-height: 14px;
+.guide h4 {
+    font-weight: bold;
+    color: #666;
+    font-size: 14px;
+    line-height: 14px;
 }
-
-.value{
-  color: #5d87a1;
+.value {
+    color: #5d87a1;
 }
-
-a{
-  color: #5d87a1;
-  text-decoration: none;
+a {
+    color: #5d87a1;
+    text-decoration: none;
 }
-
-.Top{
-  text-align:center;
-  display: block;
-  bottom:30px;
-  right:30px;
+.Top {
+    text-align: center;
+    display: block;
+    bottom: 30px;
+    right: 30px;
 }
-
 .admonition-note {
-  padding: 1em 1em 1em 3em;
-  background-color: #FFFFDD;
-  border-color: #F7DF92;
+    padding: 1em 1em 1em 3em;
+    background-color: #FFFFDD;
+    border-color: #F7DF92;
 }
-
-.admonition-note p{
-  background-color: #FFFFDD;
-  border-color: #F7DF92;
-  margin: auto;
+.admonition-note p {
+    background-color: #FFFFDD;
+    border-color: #F7DF92;
+    margin: auto;
 }
-
-pre{
-  margin-bottom: 1em;
-  letter-spacing: 1px;
+pre {
+    margin-bottom: 1em;
+    letter-spacing: 1px;
 }
-
 .widget-loading {
-  background-image: url(../images/welcome.gif);
-  background-position: center;
-  background-repeat: no-repeat;
+    background-image: url(../images/welcome.gif);
+    background-position: center;
+    background-repeat: no-repeat;
 }
-
-pre .linenumber{
-  margin-right: 12px;
-  border-right: 1px solid rgb(190,190,190);
-  background-color: rgb(239,239,239);
-  width: 30px;
-  display: inline-block;
-  text-align: right;
+pre .linenumber {
+    margin-right: 12px;
+    border-right: 1px solid rgb(190, 190, 190);
+    background-color: rgb(239, 239, 239);
+    width: 30px;
+    display: inline-block;
+    text-align: right;
 }

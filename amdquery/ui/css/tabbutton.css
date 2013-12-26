@@ -1,98 +1,57 @@
-.aquery-tabButton
-{
-	border-left: 1px solid black;
-  -moz-border-radius: 0;
-  -webkit-border-radius: 0;
-  -o-border-radius: 0;
-  -ms-border-radius: 0;
-  border-radius: 0;
+.aquery-tabButton {
+    border-left: 1px solid black;
+    -moz-border-radius: 0;
+    -webkit-border-radius: 0;
+    -o-border-radius: 0;
+    -ms-border-radius: 0;
+    border-radius: 0;
 }
-
-.aquery-defaultTabButton
-{
-
-}
-
-.aquery-defaultTabButton .back{
-	background: #292727;
-  /*url(../images/tabs.png) 0px -173px repeat-x;*/
-	/*-moz-border-radius: 8px;
+.aquery-defaultTabButton {} .aquery-defaultTabButton .back {
+    background: #292727;
+    /*url(../images/tabs.png) 0px -173px repeat-x;*/
+    /*-moz-border-radius: 8px;
 	-webkit-border-radius: 8px;
 	-o-border-radius: 8px;
 	-ms-border-radius: 8px;
 	border-radius:8px;  */
 }
-.aquery-defaultTabButton .back:link {}
-.aquery-defaultTabButton .back:visited {}
-.aquery-defaultTabButton .back:hover {}
-.aquery-defaultTabButton .back:active {}
-
-.aquery-defaultTabButton .img{
-	/*background: url(../images/tabs.png) 0px -173px repeat-x;*/
+.aquery-defaultTabButton .back: link {} .aquery-defaultTabButton .back: visited {} .aquery-defaultTabButton .back: hover {} .aquery-defaultTabButton .back: active {} .aquery-defaultTabButton .img {
+    /*background: url(../images/tabs.png) 0px -173px repeat-x;*/
 }
-
-.aquery-defaultTabButton .text{
-	font: 14px Arial, "\5FAE\8F6F\96C5\9ED1";
-	text-align: center;
-	vertical-align: middle;
-	font-family: 宋体;
-	font-weight: bold;
-	color: #b5b1b1;
-  line-height: 200%;
+.aquery-defaultTabButton .text {
+    font: 14px Arial, "\5FAE\8F6F\96C5\9ED1";
+    text-align: center;
+    vertical-align: middle;
+    font-family: 宋体;
+    font-weight: bold;
+    color: #b5b1b1;
+    line-height: 200%;
 }
-.aquery-defaultTabButton .text:link {}
-.aquery-defaultTabButton .text:visited {}
-.aquery-defaultTabButton .text:hover {
-
-}
-.aquery-defaultTabButton .text:active {
+.aquery-defaultTabButton .text: link {} .aquery-defaultTabButton .text: visited {} .aquery-defaultTabButton .text: hover {} .aquery-defaultTabButton .text: active {
     color: #FF0000;
 }
-
-
-
-.aquery-selectTabButton
-{
-
-}
-
-.aquery-selectTabButton .back{
-	background: #1f1d1d;
-  /*red;*/
-	/*background: url(../images/tabs.png) 0px -173px repeat-x;*/
-	/*-moz-border-radius: 8px;
+.aquery-selectTabButton {} .aquery-selectTabButton .back {
+    background: #1f1d1d;
+    /*red;*/
+    /*background: url(../images/tabs.png) 0px -173px repeat-x;*/
+    /*-moz-border-radius: 8px;
 	-webkit-border-radius: 8px;
 	-o-border-radius: 8px;
 	-ms-border-radius: 8px;
 	border-radius:8px;  */
 }
-.aquery-selectTabButton .back:link {}
-.aquery-selectTabButton .back:visited {}
-.aquery-selectTabButton .back:hover {}
-.aquery-selectTabButton .back:active {}
-
-.aquery-selectTabButton .img{
-	/*background: url(../images/tabs.png) 0px -173px repeat-x;*/
+.aquery-selectTabButton .back: link {} .aquery-selectTabButton .back: visited {} .aquery-selectTabButton .back: hover {} .aquery-selectTabButton .back: active {} .aquery-selectTabButton .img {
+    /*background: url(../images/tabs.png) 0px -173px repeat-x;*/
 }
-.aquery-selectTabButton .img:link {}
-.aquery-selectTabButton .img:visited {}
-.aquery-selectTabButton .img:hover {}
-.aquery-selectTabButton .img:active {}
-
-.aquery-selectTabButton .text{
-	font: 14px Arial, "\5FAE\8F6F\96C5\9ED1";
-	text-align: center;
-	vertical-align: middle;
-	font-family: 宋体;
-	font-weight: bold;
-	color: #FFFFFF;
-  line-height: 200%;
+.aquery-selectTabButton .img: link {} .aquery-selectTabButton .img: visited {} .aquery-selectTabButton .img: hover {} .aquery-selectTabButton .img: active {} .aquery-selectTabButton .text {
+    font: 14px Arial, "\5FAE\8F6F\96C5\9ED1";
+    text-align: center;
+    vertical-align: middle;
+    font-family: 宋体;
+    font-weight: bold;
+    color: #FFFFFF;
+    line-height: 200%;
 }
-.aquery-selectTabButton .text:link {}
-.aquery-selectTabButton .text:visited {}
-.aquery-selectTabButton .text:hover {
-
-}
-.aquery-selectTabButton .text:active {
+.aquery-selectTabButton .text: link {} .aquery-selectTabButton .text: visited {} .aquery-selectTabButton .text: hover {} .aquery-selectTabButton .text: active {
     color: #FF0000;
 }

@@ -1,36 +1,36 @@
-﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+﻿
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
+
 <head>
     <title></title>
     <link href="../css/reset.css" rel="stylesheet" type="text/css" />
     <!-- <script src="http://192.168.1.102:8080/package/../../amdquery/amdquery.js" type="text/javascript" amdquery="define:$;amd:false"></script>-->
-    <script src="../../amdquery/amdquery.js" type="text/javascript" amdquery="define:$;amd:0;"
-        amd="detectCR:1;console:0;sync:0"></script>
+    <script src="../../amdquery/amdquery.js" type="text/javascript" amdquery="define:$;amd:0;" amd="detectCR:1;console:0;sync:0"></script>
     <!--<script src="../../amdquery/oye.js" type="text/javascript"></script>-->
     <script type="text/javascript">
-      define("forTest", function(){
-        return {
-          name: "forTest"
-        };
-      });
+        define("forTest", function() {
+            return {
+                name: "forTest"
+            };
+        });
     </script>
     <script type="text/javascript">
-
         require.variable("@variable", "../test");
 
         var forTest = require("forTest").module;
 
-        aQuery.require(["@variable/base/requireTest1", "main/attr", "main/attr", "module/utilEval", "module/FX"], function(test1, attr, attr, utilEval){
+        aQuery.require(["@variable/base/requireTest1", "main/attr", "main/attr", "module/utilEval", "module/FX"], function(test1, attr, attr, utilEval) {
             utilEval.globalEval("window.bbc = function(){ var a = 1; }");
 
             $.logger("~~~~~~~~~~~variable is work")
-            require(["module/FX"], function(){
-              $.logger("~~~~~~~~~module/FX")
-              window.bbc();
+            require(["module/FX"], function() {
+                $.logger("~~~~~~~~~module/FX")
+                window.bbc();
             });
             $.logger("~~~~~~~~~~~do do do")
-            require("module/animate", function(){
-              $.logger("~~~~~~~~~module/animate")
+            require("module/animate", function() {
+                $.logger("~~~~~~~~~module/animate")
             })
 
 
@@ -40,55 +40,55 @@
 
         });
 
-//        $.require(["main/attr"], function (query, main) {
-//            $(function () {
-//                $.logger(query);
-//                var index = $("#b").index();
-//                $("#b").attr("a", 3);
-//                $("#b").removeAttr("a");
-//            });
-//            //alert($("#b").attr("a"));
-//            //            $.setAttr($("#b")[0], "a", 3);
+         //        $.require(["main/attr"], function (query, main) {
+         //            $(function () {
+         //                $.logger(query);
+         //                var index = $("#b").index();
+         //                $("#b").attr("a", 3);
+         //                $("#b").removeAttr("a");
+         //            });
+         //            //alert($("#b").attr("a"));
+         //            //            $.setAttr($("#b")[0], "a", 3);
 
-//            //            $.removeAttr($("#b")[0], "a");
-//            //            alert($.getAttr($("#b")[0], "a"));
-//        })
+         //            //            $.removeAttr($("#b")[0], "a");
+         //            //            alert($.getAttr($("#b")[0], "a"));
+         //        })
 
-        //        define('abc', ['util'], function (util) {
-        //            var ret = {
-        //                isString: function (str) {
-        //                    //对依赖模块的调用
-        //                    return util.isString(str);
-        //                }
-        //            };
-        //            return ret;
-        //        });
-        //        //定义一个没有依赖的模块"util"，它的实体可以是任意形式，比如，直接就是一个Object对象
-        //        define('util', {
-        //            isString: function (str) {
-        //                return str && typeof str === 'string';
-        //            }
-        //        });
+         //        define('abc', ['util'], function (util) {
+         //            var ret = {
+         //                isString: function (str) {
+         //                    //对依赖模块的调用
+         //                    return util.isString(str);
+         //                }
+         //            };
+         //            return ret;
+         //        });
+         //        //定义一个没有依赖的模块"util"，它的实体可以是任意形式，比如，直接就是一个Object对象
+         //        define('util', {
+         //            isString: function (str) {
+         //                return str && typeof str === 'string';
+         //            }
+         //        });
 
-        //        require(["test/pp", "abc"], function (pp, abc) {
-        //            // alert(test2.AMD.getDependenciesMap());
-        //            pp.alert();
-        //            alert(abc.isString);
+         //        require(["test/pp", "abc"], function (pp, abc) {
+         //            // alert(test2.AMD.getDependenciesMap());
+         //            pp.alert();
+         //            alert(abc.isString);
 
-        //        });
+         //        });
 
-        //        require(["test/test1"], function (test1) {
-        //            // alert(test2.AMD.getDependenciesMap());
-        //            test1.alert();
-        //        });
-
-
+         //        require(["test/test1"], function (test1) {
+         //            // alert(test2.AMD.getDependenciesMap());
+         //            test1.alert();
+         //        });
     </script>
 </head>
+
 <body style="overflow: auto">
     <div id="a" class="amdquery_turnbook_content">
     </div>
     <div id="b">
     </div>
 </body>
+
 </html>

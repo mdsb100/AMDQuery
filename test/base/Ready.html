@@ -1,31 +1,32 @@
-﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+﻿
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
+
 <head>
     <title></title>
     <link href="../css/reset.css" rel="stylesheet" type="text/css" />
     <!-- <script src="http://192.168.1.102:8080/package/../../amdquery/amdquery.js" type="text/javascript" amdquery="define:$;amd:false"></script>-->
-    <script src="../../amdquery/amdquery.js" type="text/javascript" amdquery="define:$;"
-        amd="detectCR:1;" module="compatibleEvent:1;"></script>
+    <script src="../../amdquery/amdquery.js" type="text/javascript" amdquery="define:$;" amd="detectCR:1;" module="compatibleEvent:1;"></script>
     <script type="text/javascript">
         require([
             "base/ready"
-        //,"module/Thread"
-        ], function (ready) {
-            ready(function () {
-                var div = document.getElementsByTagName("div")
-                , write = function (s) {
-                    div[0].innerHTML = div[0].innerHTML += s + "<br>";
-                }
+            //,"module/Thread"
+        ], function(ready) {
+            ready(function() {
+                var div = document.getElementsByTagName("div"),
+                    write = function(s) {
+                        div[0].innerHTML = div[0].innerHTML += s + "<br>";
+                    }
                 write("");
                 write("");
                 write("ready 1");
             });
 
-            ready(function () {
-                var div = document.getElementsByTagName("div")
-                , write = function (s) {
-                    div[0].innerHTML = div[0].innerHTML += s + "<br>";
-                }
+            ready(function() {
+                var div = document.getElementsByTagName("div"),
+                    write = function(s) {
+                        div[0].innerHTML = div[0].innerHTML += s + "<br>";
+                    }
                 write("");
                 write("ready 2");
             });
@@ -34,9 +35,9 @@
         $.require([
             "base/ready",
             "hash/cssColors"
-        ], function (ready, cssColors) {
-            var div = document.getElementsByTagName("div")
-                , write = function (s) {
+        ], function(ready, cssColors) {
+            var div = document.getElementsByTagName("div"),
+                write = function(s) {
                     div[0].innerHTML = div[0].innerHTML += s + "<br>";
                 }
             write("");
@@ -44,9 +45,11 @@
         });
     </script>
 </head>
+
 <body style="overflow: auto">
     <div>
         require:package/main
     </div>
 </body>
+
 </html>

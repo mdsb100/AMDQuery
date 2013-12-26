@@ -1,62 +1,64 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
+
 <head>
     <title>swapview</title>
     <meta charset="utf-8" />
     <link href="../css/reset.css" rel="stylesheet" type="text/css" />
     <script src="../../amdquery/amdquery.js" type="text/javascript" amd="detectCR=1" module="transitionToAnimation:1" ui="initWidget:1;isTransform3d:1"></script>
     <script type="text/javascript">
-        $.require(["ui/swapview", "main/query", "main/css"], function (swapview, query, css) {
-          $("#swapview").uiSwapview();
-          var view = $.createEle("li");
-          $(view).css({
-            "background-color": "red"
-          }).html("add");
-          $("#swapview").uiSwapview( "append", view);
-          setTimeout(function(){
-            // $("#swapview").uiSwapview("option", "index", 1);
-            $("#swapview").uiSwapview("remove", 4, 1);
-          },2000)
+        $.require(["ui/swapview", "main/query", "main/css"], function(swapview, query, css) {
+            $("#swapview").uiSwapview();
+            var view = $.createEle("li");
+            $(view).css({
+                "background-color": "red"
+            }).html("add");
+            $("#swapview").uiSwapview("append", view);
+            setTimeout(function() {
+                // $("#swapview").uiSwapview("option", "index", 1);
+                $("#swapview").uiSwapview("remove", 4, 1);
+            }, 2000)
 
         });
-
     </script>
 </head>
+
 <body style="width: 100%; height: 100%;">
     <div style="width:100%;height:20%;"></div>
     <div id="swapview" style="width:100%; height:80%;" amdquery-widget="ui.swapview" ui-swapview="orientation:H">
-      <ol>
-        <li style="background-color:red;">
-          this is one
-        </li>
-        <li style="">
-          <div id="v" style="width:100%; height:100%;" amdquery-widget="ui.swapview" ui-swapview="orientation:V">
-            <ol>
-              <li style="background-color:coral;">
+        <ol>
+            <li style="background-color:red;">
                 this is one
-              </li>
-              <li style="background-color:pink;">
-                this is two
-              </li>
-              <li style="background-color:green;">
+            </li>
+            <li style="">
+                <div id="v" style="width:100%; height:100%;" amdquery-widget="ui.swapview" ui-swapview="orientation:V">
+                    <ol>
+                        <li style="background-color:coral;">
+                            this is one
+                        </li>
+                        <li style="background-color:pink;">
+                            this is two
+                        </li>
+                        <li style="background-color:green;">
+                            this is three
+                        </li>
+                    </ol>
+                </div>
+            </li>
+            <li style="background-color:yellow;">
                 this is three
-              </li>
-            </ol>
-          </div>
-        </li>
-        <li style="background-color:yellow;">
-          this is three
-        </li>
-        <li style="background-color:blue">
-          this is four
-        </li>
-      </ol>
-      <ol style="width:100px;height:20px;" amdquery-widget="ui.swapindicator" ui-swapindicator="orientation:H">
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-      </ol>
+            </li>
+            <li style="background-color:blue">
+                this is four
+            </li>
+        </ol>
+        <ol style="width:100px;height:20px;" amdquery-widget="ui.swapindicator" ui-swapindicator="orientation:H">
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+        </ol>
     </div>
 </body>
+
 </html>
