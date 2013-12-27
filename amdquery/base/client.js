@@ -1,28 +1,80 @@
 ﻿aQuery.define( "base/client", [ "base/extend" ], function( $, extend ) {
 	this.describe( "Cline of Browser" );
+	/**
+	 * @public
+	 * @module base/client
+	 * @property {object} browser
+   * @property {Boolean} [browser.opera=false]
+   * @property {Boolean} [browser.chrome=false]
+   * @property {Boolean} [browser.safari=false]
+   * @property {Boolean} [browser.kong=false]
+   * @property {Boolean} [browser.firefox=false]
+   * @property {Boolean} [browser.ie=false]
+   * @property {Boolean} [browser.ie678=false]
+   *
+   * @property {object} engine
+   * @property {Boolean} [engine.opera=false]
+   * @property {Boolean} [engine.webkit=false]
+   * @property {Boolean} [engine.khtml=false]
+   * @property {Boolean} [engine.gecko=false]
+   * @property {Boolean} [engine.ie=false]
+   * @property {Boolean} [engine.ie678=false]
+   *
+   * @property {object} system
+   * @property {Boolean} [system.win=null]
+   * @property {Boolean} [system.mac=null]
+   * @property {Boolean} [system.linux=null]
+   * @property {Boolean} [system.iphone=null]
+   * @property {Boolean} [system.ipod=null]
+   * @property {Boolean} [system.ipad=null]
+   * @property {Boolean} [system.pad=null]
+   * @property {Boolean} [system.nokian=null]
+   * @property {Boolean} [system.winMobile=null]
+   * @property {Boolean} [system.androidMobile=null]
+   * @property {Boolean} [system.ios=null]
+   * @property {Boolean} [system.wii=null]
+   * @property {Boolean} [system.ps=null]
+   * @example
+   * if (client.system.win){}
+	 */
+	var client = {
+		browser: {
+			opera: false,
+			chrome: false,
+			safari: false,
+			kong: false,
+			firefox: false,
+			ie: false,
+			ie678: "v" == "/v"
+		},
+		engine: {
+			opera: false,
+			webkit: false,
+			khtml: false,
+			gecko: false,
+			ie: false,
+			ie678: "v" == "/v"
+		},
+		system: {
+			win: null,
+			mac: null,
+			linux: null,
+			iphone: null,
+			ipod: null,
+			ipad: null,
+			pad: null,
+			nokian: null,
+			winMobile: null,
+			androidMobile: null,
+			ios: null,
+			wii: null,
+			ps: null
+		},
+		language: ""
+	};
+
 	var reg = RegExp,
-		client = {
-			browser: {
-				opera: false,
-				chrome: false,
-				safari: false,
-				kong: false,
-				firefox: false,
-				ie: false,
-				ie678: "v" == "/v"
-			},
-			engine: {
-				opera: false,
-				webkit: false,
-				khtml: false,
-				gecko: false,
-				ie: false,
-				ie678: "v" == "/v"
-			},
-			system: {},
-			language: ""
-		};
-	var ua = navigator.userAgent,
+		ua = navigator.userAgent,
 		p = navigator.platform || "",
 		_browser = client.browser,
 		_engine = client.engine,

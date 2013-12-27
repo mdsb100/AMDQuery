@@ -1975,7 +1975,7 @@
 				return this;
 			},
 			/**
-			 * Clear propery.
+			 * Clear property.
 			 * @private
 			 */
 			_clearProperty: function() {
