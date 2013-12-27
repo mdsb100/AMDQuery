@@ -2634,7 +2634,12 @@ aQuery.define( "base/extend", [ "base/typed" ], function( $, typed ) {
 /*===================base/array===========================*/
 aQuery.define( "base/array", [ "base/typed", "base/extend" ], function( $, typed, extend ) {
 	"use strict"; //启用严格模式
-  this.describe( "Array Util" );
+	this.describe( "Array Util" );
+
+	/**
+	 * @module base/array
+	 */
+
 	var
 	indexOf = Array.prototype.indexOf || function( item, i ) {
 		var len = this.length;
@@ -2651,7 +2656,7 @@ aQuery.define( "base/array", [ "base/typed", "base/extend" ], function( $, typed
 			if ( i in this && this[ i ] === item ) break;
 		return i;
 	}, push = Array.prototype.push,
-		array = {
+		array = /** @alias module:base/Promise */ {
 			grep: function( arr, callback, inv ) {
 				var retVal,
 					ret = [],

@@ -342,14 +342,6 @@
 
 		not: function( selector ) {
 			return $( winnow( this, selector, false ) );
-		},
-
-		slice: function( num, len ) {
-			/// <summary>返回元素序号的新$</summary>
-			/// <param name="num1" type="Number/null">序号 缺省返回第一个</param>
-			/// <param name="num2" type="Number/null">长度 返回当前序号后几个元素 缺省返回当前序号</param>
-			/// <returns type="$" />
-			return $( array.slice( this, num, len ) );
 		}
 	} );
 
