@@ -1,4 +1,4 @@
-﻿aQuery.define( "main/communicate", [ "base/typed", "base/extend", "main/event", "main/parse" ], function( $, typed, extend, parse, undefined ) {
+﻿aQuery.define( "main/communicate", [ "base/typed", "base/extend", "main/event", "main/parse" ], function( $, typed, utilExtend, parse, undefined ) {
 	"use strict"; //启用严格模式
 	var communicate = {
 		ajax: function( options ) {
@@ -26,7 +26,7 @@
 
 				if ( _ajax ) {
 
-					o = $.extend( {}, $.ajaxSetting, options );
+					o = utilExtend.extend( {}, $.ajaxSetting, options );
 
 					o.data = $.getURLParam( o.data );
 
@@ -172,7 +172,7 @@
 
 			var _scripts = document.createElement( "script" ),
 				_head = document.getElementsByTagName( "HEAD" ).item( 0 ),
-				o = $.extend( {}, $.jsonpSetting, options ),
+				o = utilExtend.extend( {}, $.jsonpSetting, options ),
 				_data = "",
 				_timeId, random = "";
 			//            , _checkString = o.checkString

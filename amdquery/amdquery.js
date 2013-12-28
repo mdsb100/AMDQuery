@@ -44,12 +44,12 @@
 				}
 				throw new window[ type || "Error" ]( s );
 			},
-			/**
-			 * b extend a. Return object "a".
-			 * @param {Object}
-			 * @param {Object}
-			 * @returns a
-			 */
+      /**
+       * b extend a. Return object "a".
+       * @param {Object}
+       * @param {Object}
+       * @returns a
+       */
 			extend: function( a, b ) {
 				for ( var i in b )
 					a[ i ] = b[ i ];
@@ -295,6 +295,20 @@
 	 */
 
 	util.extend( $, /** @lends aQuery */ {
+		/**
+		 * Extend aQuery from Object.
+		 * @param {Object}
+		 * @returns {this}
+     * @example
+     * aQuery.extend( {
+     *   myFun: function(){}
+     * } );
+     * aQuery.myFun();
+		 */
+		extend: function( obj ) {
+			util.extend( $, obj );
+			return this;
+		},
 		/**
 		 * Interfaces namesapce of aQuery. See interfaces.
 		 * @private
@@ -581,6 +595,23 @@
 		each: function( callback ) {
 			$.each( this.eles, callback, this );
 			return this;
+		},
+		/**
+     * Extend aQuery prototype from parameters.
+		 * @param [Object...]
+     * @returns {aQuery.prototype}
+     * @example
+     * aQuery.fn.extend( {
+     *   myFun: function(){}
+     * } );
+     * new aQuery().myFun();
+		 */
+		extend: function( params ) {
+			for ( var i = 0, len = arguments.length, obj; i < len; i++ ) {
+				obj = arguments[ i ];
+				util.extend( $.prototype, obj );
+			}
+			return $.fn;
 		},
 		/**
 		 * Element container.

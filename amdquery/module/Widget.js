@@ -104,7 +104,7 @@
 				if ( booleanCheck ) {
 					extend = booleanExtend;
 				} else {
-					extend = $.easyExtend;
+					extend = utilExtend.easyExtend;
 				}
 				extend( newValue, subValue );
 			}

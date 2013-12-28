@@ -1,35 +1,68 @@
 aQuery.define( "base/extend", [ "base/typed" ], function( $, typed ) {
 	"use strict"; //启用严格模式
 	this.describe( "Extend Util" );
-	var extend = {
-		easyExtend: function( obj1, obj2 ) {
-			/// <summary>简单地把对象的属性复制到对象一</summary>
-			/// <param name="a" type="Object">对象</param>
-			/// <param name="b" type="Object">对象</param>
-			/// <returns type="self" />
-			for ( var i in obj2 )
-				obj1[ i ] = obj2[ i ];
+	/**
+	 * @pubilc
+	 * @exports base/extend
+	 */
+	var utilExtend = {
+		/**
+		 * b extend a. Return object "a".
+		 * @param {Object}
+		 * @param {Object}
+		 * @returns {this}
+		 */
+		easyExtend: function( a, b ) {
+			for ( var i in b )
+				a[ i ] = b[ i ];
 			return this;
 		},
+		/**
+		 *
+		 * @param {Object|Boolean} - If parameter is true then recursion.
+		 * @param {...Object}
+		 * @returns {Object}
+		 * @example
+		 * var object1 = {
+		 *   apple: 0,
+		 *   banana: { weight: 52, price: 100 },
+		 *   cherry: 97
+		 * };
+		 * var object2 = {
+		 *   banana: { price: 200 },
+		 *   durian: 100
+		 * };
+		 * //Merge object2 into object1
+		 * $.extend( object1, object2 );
+		 * // output {"apple":0,"banana":{"price":200},"cherry":97,"durian":100}
+		 *
+		 * var object1 = {
+		 *   apple: 0,
+		 *   banana: { weight: 52, price: 100 },
+		 *   cherry: 97
+		 * };
+		 * var object2 = {
+		 *   banana: { price: 200 },
+		 *   durian: 100
+		 * };
+		 * // Merge object2 into object1, recursively
+		 * $.extend( true, object1, object2 );
+		 * // output {"apple":0,"banana":{"weight":52,"price":200},"cherry":97,"durian":100}
+		 *
+		 * var defaults = { validate: false, limit: 5, name: "foo" };
+		 * var options = { validate: true, name: "bar" };
+		 * // Merge defaults and options, without modifying defaults
+		 * var settings = $.extend( {}, defaults, options );
+		 * // defaults -- {"validate":false,"limit":5,"name":"foo"}
+		 * // options -- {"validate":true,"name":"bar"}
+		 * // settings -- {"validate":true,"limit":5,"name":"bar"}
+		 */
 		extend: function( a ) {
-			/// <summary>制造一个Object元素
-			/// <para>第二个参数：待修改对象。如果deep为obj,则以后的参数都应该是纯obj。</para>
-			/// <para>第N+2个参数：待合并到target对象的对象。</para>
-			/// <para>返回最后被合并的目标Object</para>
-			/// </summary>
-			/// <param name="a" type="Boolean/Object">如果设为true，则递归合并。如果为纯obj则添加到$中</param>
-			/// <returns type="Object" />
-			//quote from jQuery-1.4.1
 			var target = arguments[ 0 ] || {},
 				i = 1,
 				length = arguments.length,
 				deep = false,
 				options, name, src, copy;
-
-			if ( length == 1 && typed.isObj( target ) ) {
-				extend.easyExtend( $, target );
-				return this;
-			}
 
 			if ( typed.isBol( target ) ) {
 				deep = target;
@@ -60,7 +93,7 @@ aQuery.define( "base/extend", [ "base/typed" ], function( $, typed ) {
 							if ( deep && copy && ( typed.isPlainObj( copy ) || typed.isArr( copy ) ) ) {
 								var clone = src && ( typed.isPlainObj( src ) || typed.isArr( src ) ) ? src : typed.isArr( copy ) ? [] : {};
 
-								target[ name ] = $.extend( deep, clone, copy );
+								target[ name ] = utilExtend.extend( deep, clone, copy );
 
 							} else if ( copy !== undefined ) {
 								target[ name ] = copy;
@@ -75,18 +108,6 @@ aQuery.define( "base/extend", [ "base/typed" ], function( $, typed ) {
 		}
 	};
 
-	extend.easyExtend( $, extend );
 
-	$.fn.extend = function( params ) {
-		/// <summary>把对象属性复制$.prototype上</summary>
-		/// <param name="params" type="params:obj">params形式的纯Object对象</param>
-		/// <returns type="self" />
-		for ( var i = 0, len = arguments.length, obj; i < len; i++ ) {
-			obj = arguments[ i ];
-			typed.isPlainObj( obj ) && extend.easyExtend( $.prototype, obj );
-		}
-		return $.fn;
-	};
-
-	return extend;
+	return utilExtend;
 } );

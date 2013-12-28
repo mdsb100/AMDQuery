@@ -45,12 +45,12 @@
 				}
 				throw new window[ type || "Error" ]( s );
 			},
-			/**
-			 * b extend a. Return object "a".
-			 * @param {Object}
-			 * @param {Object}
-			 * @returns a
-			 */
+      /**
+       * b extend a. Return object "a".
+       * @param {Object}
+       * @param {Object}
+       * @returns a
+       */
 			extend: function( a, b ) {
 				for ( var i in b )
 					a[ i ] = b[ i ];
@@ -296,6 +296,20 @@
 	 */
 
 	util.extend( $, /** @lends aQuery */ {
+		/**
+		 * Extend aQuery from Object.
+		 * @param {Object}
+		 * @returns {this}
+     * @example
+     * aQuery.extend( {
+     *   myFun: function(){}
+     * } );
+     * aQuery.myFun();
+		 */
+		extend: function( obj ) {
+			util.extend( $, obj );
+			return this;
+		},
 		/**
 		 * Interfaces namesapce of aQuery. See interfaces.
 		 * @private
@@ -582,6 +596,23 @@
 		each: function( callback ) {
 			$.each( this.eles, callback, this );
 			return this;
+		},
+		/**
+     * Extend aQuery prototype from parameters.
+		 * @param [Object...]
+     * @returns {aQuery.prototype}
+     * @example
+     * aQuery.fn.extend( {
+     *   myFun: function(){}
+     * } );
+     * new aQuery().myFun();
+		 */
+		extend: function( params ) {
+			for ( var i = 0, len = arguments.length, obj; i < len; i++ ) {
+				obj = arguments[ i ];
+				util.extend( $.prototype, obj );
+			}
+			return $.fn;
 		},
 		/**
 		 * Element container.
@@ -1976,7 +2007,7 @@
 				return this;
 			},
 			/**
-			 * Clear propery.
+			 * Clear property.
 			 * @private
 			 */
 			_clearProperty: function() {
@@ -2539,35 +2570,68 @@ aQuery.define( "base/typed", function( $ ) {
 aQuery.define( "base/extend", [ "base/typed" ], function( $, typed ) {
 	"use strict"; //启用严格模式
 	this.describe( "Extend Util" );
-	var extend = {
-		easyExtend: function( obj1, obj2 ) {
-			/// <summary>简单地把对象的属性复制到对象一</summary>
-			/// <param name="a" type="Object">对象</param>
-			/// <param name="b" type="Object">对象</param>
-			/// <returns type="self" />
-			for ( var i in obj2 )
-				obj1[ i ] = obj2[ i ];
+	/**
+	 * @pubilc
+	 * @exports base/extend
+	 */
+	var utilExtend = {
+		/**
+		 * b extend a. Return object "a".
+		 * @param {Object}
+		 * @param {Object}
+		 * @returns {this}
+		 */
+		easyExtend: function( a, b ) {
+			for ( var i in b )
+				a[ i ] = b[ i ];
 			return this;
 		},
+		/**
+		 *
+		 * @param {Object|Boolean} - If parameter is true then recursion.
+		 * @param {...Object}
+		 * @returns {Object}
+		 * @example
+		 * var object1 = {
+		 *   apple: 0,
+		 *   banana: { weight: 52, price: 100 },
+		 *   cherry: 97
+		 * };
+		 * var object2 = {
+		 *   banana: { price: 200 },
+		 *   durian: 100
+		 * };
+		 * //Merge object2 into object1
+		 * $.extend( object1, object2 );
+		 * // output {"apple":0,"banana":{"price":200},"cherry":97,"durian":100}
+		 *
+		 * var object1 = {
+		 *   apple: 0,
+		 *   banana: { weight: 52, price: 100 },
+		 *   cherry: 97
+		 * };
+		 * var object2 = {
+		 *   banana: { price: 200 },
+		 *   durian: 100
+		 * };
+		 * // Merge object2 into object1, recursively
+		 * $.extend( true, object1, object2 );
+		 * // output {"apple":0,"banana":{"weight":52,"price":200},"cherry":97,"durian":100}
+		 *
+		 * var defaults = { validate: false, limit: 5, name: "foo" };
+		 * var options = { validate: true, name: "bar" };
+		 * // Merge defaults and options, without modifying defaults
+		 * var settings = $.extend( {}, defaults, options );
+		 * // defaults -- {"validate":false,"limit":5,"name":"foo"}
+		 * // options -- {"validate":true,"name":"bar"}
+		 * // settings -- {"validate":true,"limit":5,"name":"bar"}
+		 */
 		extend: function( a ) {
-			/// <summary>制造一个Object元素
-			/// <para>第二个参数：待修改对象。如果deep为obj,则以后的参数都应该是纯obj。</para>
-			/// <para>第N+2个参数：待合并到target对象的对象。</para>
-			/// <para>返回最后被合并的目标Object</para>
-			/// </summary>
-			/// <param name="a" type="Boolean/Object">如果设为true，则递归合并。如果为纯obj则添加到$中</param>
-			/// <returns type="Object" />
-			//quote from jQuery-1.4.1
 			var target = arguments[ 0 ] || {},
 				i = 1,
 				length = arguments.length,
 				deep = false,
 				options, name, src, copy;
-
-			if ( length == 1 && typed.isObj( target ) ) {
-				extend.easyExtend( $, target );
-				return this;
-			}
 
 			if ( typed.isBol( target ) ) {
 				deep = target;
@@ -2598,7 +2662,7 @@ aQuery.define( "base/extend", [ "base/typed" ], function( $, typed ) {
 							if ( deep && copy && ( typed.isPlainObj( copy ) || typed.isArr( copy ) ) ) {
 								var clone = src && ( typed.isPlainObj( src ) || typed.isArr( src ) ) ? src : typed.isArr( copy ) ? [] : {};
 
-								target[ name ] = $.extend( deep, clone, copy );
+								target[ name ] = utilExtend.extend( deep, clone, copy );
 
 							} else if ( copy !== undefined ) {
 								target[ name ] = copy;
@@ -2613,20 +2677,8 @@ aQuery.define( "base/extend", [ "base/typed" ], function( $, typed ) {
 		}
 	};
 
-	extend.easyExtend( $, extend );
 
-	$.fn.extend = function( params ) {
-		/// <summary>把对象属性复制$.prototype上</summary>
-		/// <param name="params" type="params:obj">params形式的纯Object对象</param>
-		/// <returns type="self" />
-		for ( var i = 0, len = arguments.length, obj; i < len; i++ ) {
-			obj = arguments[ i ];
-			typed.isPlainObj( obj ) && extend.easyExtend( $.prototype, obj );
-		}
-		return $.fn;
-	};
-
-	return extend;
+	return utilExtend;
 } );
 
 /*=======================================================*/
@@ -2635,10 +2687,6 @@ aQuery.define( "base/extend", [ "base/typed" ], function( $, typed ) {
 aQuery.define( "base/array", [ "base/typed", "base/extend" ], function( $, typed, extend ) {
 	"use strict"; //启用严格模式
 	this.describe( "Array Util" );
-
-	/**
-	 * @module base/array
-	 */
 
 	var
 	indexOf = Array.prototype.indexOf || function( item, i ) {
@@ -2655,128 +2703,152 @@ aQuery.define( "base/array", [ "base/typed", "base/extend" ], function( $, typed
 		for ( ; i > -1; i-- )
 			if ( i in this && this[ i ] === item ) break;
 		return i;
-	}, push = Array.prototype.push,
-		array = /** @alias module:base/Promise */ {
-			grep: function( arr, callback, inv ) {
-				var retVal,
-					ret = [],
-					i = 0,
-					length = arr.length;
-				inv = !! inv;
+	}, push = Array.prototype.push;
 
-				// Go through the array, only saving the items
-				// that pass the validator function
-				for ( ; i < length; i++ ) {
-					retVal = !! callback( arr[ i ], i );
-					if ( inv !== retVal ) {
-						ret.push( arr[ i ] );
-					}
+	/**
+	 * @callback grepCallback
+	 * @param {*} - Item.
+	 * @param {Number} - Index.
+	 * @returns {Boolean}
+	 */
+
+	/**
+	 * This callback context is parameter of filterArray.
+	 * @this {Object}
+	 * @callback filterArrayCallback
+	 * @param {*} - Item
+	 * @param {Number} - Index
+	 * @param {Array}
+	 * @returns {Boolean}
+	 */
+
+	/**
+	 * @pubilc
+	 * @exports base/array
+	 */
+	var array = {
+		/**
+		 * Filter Array
+		 * @param {Array}
+		 * @param {grepCallback}
+		 * @param {Boolean} [inv=false] - If inv !== grepCallback() then push.
+		 * @param {Array}
+		 */
+		grep: function( arr, callback, inv ) {
+			var retVal,
+				ret = [],
+				i = 0,
+				length = arr.length;
+			inv = !! inv;
+
+			// Go through the array, only saving the items
+			// that pass the validator function
+			for ( ; i < length; i++ ) {
+				retVal = !! callback( arr[ i ], i );
+				if ( inv !== retVal ) {
+					ret.push( arr[ i ] );
 				}
-
-				return ret;
-			},
-
-			filterArray: function( arr, fun, context ) {
-				/// <summary>删选数组</summary>
-				/// <param name="arr" type="Array">数组</param>
-				/// <param name="fun" type="Function">回调函数</param>
-				/// <param name="context" type="Object">作用域</param>
-				/// <returns type="Array" />
-				var ret = [];
-				for ( var i = 0, len = arr.length, item; i < len; i++ ) {
-					item = arr[ i ];
-					fun.call( context, item, i, arr ) === true && ret.push( item );
-				}
-				return ret;
-			},
-
-			filterSame: function( arr ) {
-				/// <summary>剔除数组中相同的对象</summary>
-				/// <param name="arr" type="Array">数组</param>
-				/// <param name="item" type="any">任意对象</param>
-				/// <param name="i" type="Number/null">序号 可选</param>
-				/// <returns type="Array" />
-				if ( arr.length > 1 ) {
-					for ( var len = arr.length, list = [ arr[ 0 ] ], result = true, i = 1, j = 0; i < len; i++ ) {
-						j = 0;
-						for ( ; j < list.length; j++ ) {
-							if ( arr[ i ] === list[ j ] ) {
-								result = false;
-								break;
-							}
-						}
-						result && list.push( arr[ i ] );
-						result = true;
-					}
-					return list;
-				} else {
-					return arr;
-				}
-			},
-
-			inArray: function( arr, item, i ) {
-				/// <summary>返回数组中于此对象相同的序号</summary>
-				/// <param name="arr" type="Array">数组</param>
-				/// <param name="item" type="any">任意对象</param>
-				/// <param name="i" type="Number/null">序号 可选</param>
-				/// <returns type="Number" />
-				return indexOf.call( arr, item, i );
-			},
-
-			lastInArray: function( arr, item, i ) {
-				/// <summary>从后开始遍历返回数组中于此对象相同的序号</summary>
-				/// <param name="arr" type="Array">数组</param>
-				/// <param name="item" type="any">任意对象</param>
-				/// <param name="i" type="Number/null">序号 可选</param>
-				/// <returns type="Number" />
-				return lastIndexOf.call( arr, item, i );
-			},
-
-			makeArray: function( array, results ) {
-				/// <summary>制造一个数组</summary>
-				/// <param name="array" type="any">任意</param>
-				/// <param name="results" type="Array">数组 可缺省</param>
-				/// <returns type="Array" />
-				//quote from jQuery-1.4.1
-				var result = results || [];
-
-				if ( array ) {
-					if ( typed.isNul( array.length ) || typed.isStr( array ) || typed.isFun( array ) || array.setInterval ) {
-						push.call( result, array );
-					} else {
-						result = array.toArray( array );
-					}
-				}
-
-				return result;
-			},
-
-			slice: function( list, num, len ) {
-				/// <summary>数组的slice方法</summary>
-				/// <param name="list" type="Array">数组</param>
-				/// <param name="num" type="Number/null">序号 缺省返回第一个</param>
-				/// <param name="len" type="Number/null">长度 返回当前序号后几个元素 缺省返回当前序号</param>
-				/// <returns type="Array" />
-				return list.slice( typed.isNum( num ) ? num : 0, typed.isNum( len ) ? len + num : 1 + num );
-			},
-
-			toArray: function( obj, num1, num2 ) {
-				/// <summary>转换成数组</summary>
-				/// <param name="num1" type="Number/null">序号 缺省从零开始</param>
-				/// <param name="num2" type="Number/null">长度 缺省为整个长度</param>
-				/// <returns type="Array" />
-				var i = 0,
-					list = [],
-					len = obj.length;
-				if ( !( typed.isNum( len ) && typed.isFun( obj ) ) ) {
-					for ( var value = obj[ 0 ]; i < len; value = obj[ ++i ] ) {
-						list.push( value );
-					}
-				}
-				return list.slice( num1 || 0, num2 || len );
-
 			}
-		};
+
+			return ret;
+		},
+		/**
+		 * Filter Array. If callback return true then push.
+		 * @param {Array}
+		 * @param {filterArrayCallback}
+		 * @param {Object} - filterArrayCallback context.
+		 * @returns {Array}
+		 */
+		filterArray: function( arr, callback, context ) {
+			var ret = [];
+			for ( var i = 0, len = arr.length, item; i < len; i++ ) {
+				item = arr[ i ];
+				callback.call( context, item, i, arr ) === true && ret.push( item );
+			}
+			return ret;
+		},
+		/**
+		 * Excluding the same element in the array
+		 * @param {Array}
+		 * @returns {Array}
+		 */
+		filterSame: function( arr ) {
+			if ( arr.length > 1 ) {
+				for ( var len = arr.length, list = [ arr[ 0 ] ], result = true, i = 1, j = 0; i < len; i++ ) {
+					j = 0;
+					for ( ; j < list.length; j++ ) {
+						if ( arr[ i ] === list[ j ] ) {
+							result = false;
+							break;
+						}
+					}
+					result && list.push( arr[ i ] );
+					result = true;
+				}
+				return list;
+			} else {
+				return arr;
+			}
+		},
+		/**
+		 * Search the index of elements in the array. -1 means not found.
+		 * @param {Array}
+		 * @param {*}
+		 * @param {Number} [i=0] - Starting Index.
+		 * @returns {Number}
+		 */
+		inArray: function( arr, item, i ) {
+			return indexOf.call( arr, item, i );
+		},
+		/**
+		 * Search the index of elements in the array by descending. -1 means not found.
+		 * @param {Array}
+		 * @param {*}
+		 * @param {Number} [i=arr.length-1] - Starting Index.
+		 * @returns {Array}
+		 */
+		lastInArray: function( arr, item, i ) {
+			return lastIndexOf.call( arr, item, i );
+		},
+    /**
+     * Make array.
+     * @param {Array}
+     * @param {Array} [results=Array]
+     * @returns {Array}
+     */
+		makeArray: function( array, results ) {
+			var result = results || [];
+
+			if ( array ) {
+				if ( typed.isNul( array.length ) || typed.isStr( array ) || typed.isFun( array ) || array.setInterval ) {
+					push.call( result, array );
+				} else {
+					result = array.toArray( array );
+				}
+			}
+
+			return result;
+		},
+    /**
+     * Some object which has length change to array.
+     * @param {*} - Not a function but has length.
+     * @param {Number} [start=0]
+     * @param {Number} [end=obj.length]
+     * @returns {Array}
+     */
+		toArray: function( obj, start, end ) {
+			var i = 0,
+				list = [],
+				len = obj.length;
+			if ( !( typed.isNum( len ) && typed.isFun( obj ) ) ) {
+				for ( var value = obj[ 0 ]; i < len; value = obj[ ++i ] ) {
+					list.push( value );
+				}
+			}
+			return list.slice( startIndex || 0, num2 || len );
+
+		}
+	};
 
 	return array;
 } );
@@ -5972,14 +6044,6 @@ if ( typeof define === "function" && define.amd ) {
 
 		not: function( selector ) {
 			return $( winnow( this, selector, false ) );
-		},
-
-		slice: function( num, len ) {
-			/// <summary>返回元素序号的新$</summary>
-			/// <param name="num1" type="Number/null">序号 缺省返回第一个</param>
-			/// <param name="num2" type="Number/null">长度 返回当前序号后几个元素 缺省返回当前序号</param>
-			/// <returns type="$" />
-			return $( array.slice( this, num, len ) );
 		}
 	} );
 
@@ -6065,29 +6129,81 @@ if ( typeof define === "function" && define.amd ) {
 /*===================base/client===========================*/
 ﻿aQuery.define( "base/client", [ "base/extend" ], function( $, extend ) {
 	this.describe( "Cline of Browser" );
+	/**
+	 * @public
+	 * @module base/client
+	 * @property {object} browser
+   * @property {Boolean} [browser.opera=false]
+   * @property {Boolean} [browser.chrome=false]
+   * @property {Boolean} [browser.safari=false]
+   * @property {Boolean} [browser.kong=false]
+   * @property {Boolean} [browser.firefox=false]
+   * @property {Boolean} [browser.ie=false]
+   * @property {Boolean} [browser.ie678=false]
+   *
+   * @property {object} engine
+   * @property {Boolean} [engine.opera=false]
+   * @property {Boolean} [engine.webkit=false]
+   * @property {Boolean} [engine.khtml=false]
+   * @property {Boolean} [engine.gecko=false]
+   * @property {Boolean} [engine.ie=false]
+   * @property {Boolean} [engine.ie678=false]
+   *
+   * @property {object} system
+   * @property {Boolean} [system.win=null]
+   * @property {Boolean} [system.mac=null]
+   * @property {Boolean} [system.linux=null]
+   * @property {Boolean} [system.iphone=null]
+   * @property {Boolean} [system.ipod=null]
+   * @property {Boolean} [system.ipad=null]
+   * @property {Boolean} [system.pad=null]
+   * @property {Boolean} [system.nokian=null]
+   * @property {Boolean} [system.winMobile=null]
+   * @property {Boolean} [system.androidMobile=null]
+   * @property {Boolean} [system.ios=null]
+   * @property {Boolean} [system.wii=null]
+   * @property {Boolean} [system.ps=null]
+   * @example
+   * if (client.system.win){}
+	 */
+	var client = {
+		browser: {
+			opera: false,
+			chrome: false,
+			safari: false,
+			kong: false,
+			firefox: false,
+			ie: false,
+			ie678: "v" == "/v"
+		},
+		engine: {
+			opera: false,
+			webkit: false,
+			khtml: false,
+			gecko: false,
+			ie: false,
+			ie678: "v" == "/v"
+		},
+		system: {
+			win: null,
+			mac: null,
+			linux: null,
+			iphone: null,
+			ipod: null,
+			ipad: null,
+			pad: null,
+			nokian: null,
+			winMobile: null,
+			androidMobile: null,
+			ios: null,
+			wii: null,
+			ps: null
+		},
+		language: ""
+	};
+
 	var reg = RegExp,
-		client = {
-			browser: {
-				opera: false,
-				chrome: false,
-				safari: false,
-				kong: false,
-				firefox: false,
-				ie: false,
-				ie678: "v" == "/v"
-			},
-			engine: {
-				opera: false,
-				webkit: false,
-				khtml: false,
-				gecko: false,
-				ie: false,
-				ie678: "v" == "/v"
-			},
-			system: {},
-			language: ""
-		};
-	var ua = navigator.userAgent,
+		ua = navigator.userAgent,
 		p = navigator.platform || "",
 		_browser = client.browser,
 		_engine = client.engine,
@@ -7984,7 +8100,7 @@ if ( typeof define === "function" && define.amd ) {
 				if ( booleanCheck ) {
 					extend = booleanExtend;
 				} else {
-					extend = $.easyExtend;
+					extend = utilExtend.easyExtend;
 				}
 				extend( newValue, subValue );
 			}
