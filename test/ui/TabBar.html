@@ -2,27 +2,27 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 
 <head>
-    <title>按钮</title>
-    <meta charset="utf-8" />
-    <link href="../css/reset.css" rel="stylesheet" type="text/css" />
-    <script src="../../amdquery/amdquery.js" type="text/javascript" amd="detectCR=1" module="transitionToAnimation:1" ui="initWidget:1"></script>
-    <script type="text/javascript">
-        $.require(["ui/tabbar", "main/query"], function(TabBar, query) {
-            $.ready(function() {
-                $("#TabBar").on("tabbar.click", function() {
-                    alert()
-                });
-            });
+  <title>按钮</title>
+  <meta charset="utf-8" />
+  <link href="../css/reset.css" rel="stylesheet" type="text/css" />
+  <script src="../../amdquery/amdquery.js" type="text/javascript" amd="detectCR=1" module="transitionToAnimation:1" ui="initWidget:1"></script>
+  <script type="text/javascript">
+    $.require(["ui/tabbar", "main/query"], function(TabBar, query) {
+      $.ready(function() {
+        $("#TabBar").on("tabbar.click", function() {
+          alert()
         });
-    </script>
+      });
+    });
+  </script>
 </head>
 
 <body style="width: 100%; height: 100%;">
-    <div id="TabBar" amdquery-widget="ui.tabbar" style="width:100px;height:30px;margin-left:50px;margin-top:20px;">
-        <div style="width:32px;height:30px;" id="button1" amdquery-widget="ui.tabbutton" ui-tabbutton="text:tab1;title:tab1"></div>
-        <div style="width:33px;height:30px;" id="button2" amdquery-widget="ui.tabbutton" ui-tabbutton="text:tab2;title:tab2;select:true"></div>
-        <div style="width:32px;height:30px;" id="button3" amdquery-widget="ui.tabbutton" ui-tabbutton="text:tab3;title:tab3"></div>
-    </div>
+  <div id="TabBar" amdquery-widget="ui.tabbar" style="width:100px;height:30px;margin-left:50px;margin-top:20px;">
+    <div style="width:32px;height:30px;" id="button1" amdquery-widget="ui.tabbutton" ui-tabbutton="text:tab1;title:tab1"></div>
+    <div style="width:33px;height:30px;" id="button2" amdquery-widget="ui.tabbutton" ui-tabbutton="text:tab2;title:tab2;select:true"></div>
+    <div style="width:32px;height:30px;" id="button3" amdquery-widget="ui.tabbutton" ui-tabbutton="text:tab3;title:tab3"></div>
+  </div>
 </body>
 
 </html>

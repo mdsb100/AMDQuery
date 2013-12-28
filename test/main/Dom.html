@@ -3,64 +3,64 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 
 <head>
-    <title></title>
-    <link href="../css/reset.css" rel="stylesheet" type="text/css" />
-    <style>
-        #test {
-            background-color: red;
-        }
-    </style>
-    <script src="../../amdquery/amdquery.js" type="text/javascript" amdquery="define:$;" amd="detectCR:1;"></script>
-    <script type="text/javascript">
-        $.require(["main/query", "main/css", "main/position", "main/dom", "html5/css3", "module/parse"], function(query, css, position, dom, css3, parse) {
-            $.ready(function() {
-                var test = $("#test");
-                var color = test.css("background-color");
-                test.css("animation");
-                $("div").css("margin-right");
-                // var innerWidth = test.innerWidth();
-                // test.innerWidth(150);
-                // innerWidth = test.innerWidth();
+  <title></title>
+  <link href="../css/reset.css" rel="stylesheet" type="text/css" />
+  <style>
+    #test {
+      background-color: red;
+    }
+  </style>
+  <script src="../../amdquery/amdquery.js" type="text/javascript" amdquery="define:$;" amd="detectCR:1;"></script>
+  <script type="text/javascript">
+    $.require(["main/query", "main/css", "main/position", "main/dom", "html5/css3", "module/parse"], function(query, css, position, dom, css3, parse) {
+      $.ready(function() {
+        var test = $("#test");
+        var color = test.css("background-color");
+        test.css("animation");
+        $("div").css("margin-right");
+        // var innerWidth = test.innerWidth();
+        // test.innerWidth(150);
+        // innerWidth = test.innerWidth();
 
-                var outerWidth = test.outerWidth();
-                var marginWidth = test.outerWidth(true);
-                test.outerWidth(200);
-                outterWidth1 = test.outerWidth();
-                outterWidth2 = test.outerWidth(true);
-                test.outerWidth(200, true);
-                outterWidth2 = test.outerWidth(true);
-                outterWidth1 = test.outerWidth();
+        var outerWidth = test.outerWidth();
+        var marginWidth = test.outerWidth(true);
+        test.outerWidth(200);
+        outterWidth1 = test.outerWidth();
+        outterWidth2 = test.outerWidth(true);
+        test.outerWidth(200, true);
+        outterWidth2 = test.outerWidth(true);
+        outterWidth1 = test.outerWidth();
 
-                var wrap = $("#wrap");
+        var wrap = $("#wrap");
 
-                wrap.wrap(parse.HTML("<div style='dispaly:block;clear:left;width:400px;height:400px;background-color: red;'></div>"));
+        wrap.wrap(parse.HTML("<div style='dispaly:block;clear:left;width:400px;height:400px;background-color: red;'></div>"));
 
-                var clone = $(parse.HTML("<div id='clone' style='dispaly:block;clear:left;width:200px;height:200px;background-color: blue;'></div>")).click(function() {
-                    alert("click");
-                }).data("test", 50).clone(true);
+        var clone = $(parse.HTML("<div id='clone' style='dispaly:block;clear:left;width:200px;height:200px;background-color: blue;'></div>")).click(function() {
+          alert("click");
+        }).data("test", 50).clone(true);
 
-                wrap.after(clone);
+        wrap.after(clone);
 
-                var div = $($.createEle("div")).prependTo(wrap).css({
-                    "width": "20px",
-                    "height": "20px",
-                    border: "2px solid black"
-                });
+        var div = $($.createEle("div")).prependTo(wrap).css({
+          "width": "20px",
+          "height": "20px",
+          border: "2px solid black"
+        });
 
-                $.logger(clone.data("test"))
-            });
-        })
-    </script>
+        $.logger(clone.data("test"))
+      });
+    })
+  </script>
 </head>
 
 <body style="overflow: auto">
-    <div id="test" style="dispaly:block;clear:left;border:10px solid green;width:100px;height:100px;padding-left:20px;margin-right:40px;background-color: red;">
+  <div id="test" style="dispaly:block;clear:left;border:10px solid green;width:100px;height:100px;padding-left:20px;margin-right:40px;background-color: red;">
 
-    </div>
-    <hr style="clear:left" />
-    <div id="wrap" style="dispaly:block;clear:left;width:100px;height:100px;background-color: green;">
+  </div>
+  <hr style="clear:left" />
+  <div id="wrap" style="dispaly:block;clear:left;width:100px;height:100px;background-color: green;">
 
-    </div>
+  </div>
 </body>
 
 </html>

@@ -2,45 +2,45 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 
 <head>
-    <title></title>
-    <link href="../css/reset.css" rel="stylesheet" type="text/css" />
-    <script src="../../amdquery/amdquery.js" type="text/javascript" amdquery="define:$;" amd="detectCR:1;"></script>
+  <title></title>
+  <link href="../css/reset.css" rel="stylesheet" type="text/css" />
+  <script src="../../amdquery/amdquery.js" type="text/javascript" amdquery="define:$;" amd="detectCR:1;"></script>
 
-    <script type="text/javascript">
-        $.require(["main/query"], function(query) {
-            //var a = sizzle("#a");
-            var div = $("div[attrText]");
-            var find = div.find("div[attrText]");
-            var c = $("div").eq(-1);
-            var a = $("div").eq(0);
-            var b = a.next();
-            var index0 = c.index();
-            var index1 = c.index("div");
-            var index2 = c.index($("#c"));
-            var parents = c.parents();
+  <script type="text/javascript">
+    $.require(["main/query"], function(query) {
+      //var a = sizzle("#a");
+      var div = $("div[attrText]");
+      var find = div.find("div[attrText]");
+      var c = $("div").eq(-1);
+      var a = $("div").eq(0);
+      var b = a.next();
+      var index0 = c.index();
+      var index1 = c.index("div");
+      var index2 = c.index($("#c"));
+      var parents = c.parents();
 
-            var testUntil = a.nextUntil("#c");
+      var testUntil = a.nextUntil("#c");
 
-            var testGetId = $.getEleById("a");
-            var testGetTag = $.getEleByTag("div");
-            var testGetClass = $.getEleByClass("cls");
-        });
-         // $(function(){
-         //     var c = $("div").eq(-1);
-         //     var index = c.index("div")
+      var testGetId = $.getEleById("a");
+      var testGetTag = $.getEleByTag("div");
+      var testGetClass = $.getEleByClass("cls");
+    });
+     // $(function(){
+     //     var c = $("div").eq(-1);
+     //     var index = c.index("div")
 
-         // });
-    </script>
+     // });
+  </script>
 </head>
 
 <body style="overflow: auto">
-    <div class="cls" id="a" attrText="1" style="width: 100px; height: 100px; background-color: Red;">
-        <div id="d" attrText="1"></div>
-    </div>
-    <div id="b" style="width: 100px; height: 100px; background-color: Green;">
-    </div>
-    <div id="c" style="width: 100px; height: 100px; background-color: Green;">
-    </div>
+  <div class="cls" id="a" attrText="1" style="width: 100px; height: 100px; background-color: Red;">
+    <div id="d" attrText="1"></div>
+  </div>
+  <div id="b" style="width: 100px; height: 100px; background-color: Green;">
+  </div>
+  <div id="c" style="width: 100px; height: 100px; background-color: Green;">
+  </div>
 </body>
 
 </html>

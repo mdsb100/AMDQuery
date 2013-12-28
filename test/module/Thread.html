@@ -3,62 +3,62 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 
 <head>
-    <title></title>
-    <style>
-        #go1 {
-            opacity: 0.9;
+  <title></title>
+  <style>
+    #go1 {
+      opacity: 0.9;
+    }
+  </style>
+  <link href="../css/reset.css" rel="stylesheet" type="text/css" />
+  <script src="../../amdquery/amdquery.js" type="text/javascript" amdquery="define:$;amd:0;" amd="detectCR:1;" module="transitionToAnimation:1"></script>
+  <script type="text/javascript">
+    $.require([
+      "module/Thread",
+      "module/Threadpool"
+    ], function(Thread, ThreadPool) {
+      var count = document.getElementById("count"),
+        info = document.getElementById("info");
+      var
+      thread1 = new Thread({
+        duration: 2000,
+        delay: 1000,
+        id: "thread1",
+        fun: function(step, duration, o) {
+          //document.body.innerHTML = o.count++;
         }
-    </style>
-    <link href="../css/reset.css" rel="stylesheet" type="text/css" />
-    <script src="../../amdquery/amdquery.js" type="text/javascript" amdquery="define:$;amd:0;" amd="detectCR:1;" module="transitionToAnimation:1"></script>
-    <script type="text/javascript">
-        $.require([
-            "module/Thread",
-            "module/Threadpool"
-        ], function(Thread, ThreadPool) {
-            var count = document.getElementById("count"),
-                info = document.getElementById("info");
-            var
-            thread1 = new Thread({
-                duration: 2000,
-                delay: 1000,
-                id: "thread1",
-                fun: function(step, duration, o) {
-                    //document.body.innerHTML = o.count++;
-                }
-            }, {
-                count: 0
-            }),
-                thread2 = new Thread({
-                    duration: NaN,
-                    delay: 3000,
-                    id: "thread2",
-                    fun: function(step, duration, o) {
-                        count.innerHTML = o.count++;
-                    }
-                }, {
-                    count: 0
-                });
-            var threadpool = new ThreadPool(thread1, thread2)
-                .on("start", function() {
-                    info.innerHTML += this.id + " ready <br>";
-                }).start();
-
-            ThreadPool.prototype.constructor;
-
-            threadpool instanceof ThreadPool;
-
-            threadpool.remove("thread2");
-
+      }, {
+        count: 0
+      }),
+        thread2 = new Thread({
+          duration: NaN,
+          delay: 3000,
+          id: "thread2",
+          fun: function(step, duration, o) {
+            count.innerHTML = o.count++;
+          }
+        }, {
+          count: 0
         });
-    </script>
+      var threadpool = new ThreadPool(thread1, thread2)
+        .on("start", function() {
+          info.innerHTML += this.id + " ready <br>";
+        }).start();
+
+      ThreadPool.prototype.constructor;
+
+      threadpool instanceof ThreadPool;
+
+      threadpool.remove("thread2");
+
+    });
+  </script>
 </head>
 
 <body>
-    <div id="count">
-    </div>
-    <div id="info">
-    </div>
+  <div id="count">
+  </div>
+  <div id="info">
+  </div>
 </body>
 
 </html>

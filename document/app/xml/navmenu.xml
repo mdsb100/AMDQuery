@@ -1,12 +1,12 @@
 <div amdquery-widget="ui.flex;ui.scrollableview" ui-flex="fillParentWidth:false;flex:1" ui-scrollableview="overflow:V" style="width:200px;border-right:1px solid black;">
-    <div id="nav" amdquery-widget="ui.navmenu">
+  <div id="nav" amdquery-widget="ui.navmenu">
+    <ul>
+      <li amdquery-widget="ui.navitem" ui-navitem="html:guide;img:file">
         <ul>
-            <li amdquery-widget="ui.navitem" ui-navitem="html:guide;img:file">
-                <ul>
-                    <li id="AMDQuery" amdquery-widget="ui.navitem" ui-navitem="html:AMDQuery;img:file"></li>
-                    <li id="Build" amdquery-widget="ui.navitem" ui-navitem="html:Build;img:file"></li>
-                </ul>
-            </li>
+          <li id="AMDQuery" amdquery-widget="ui.navitem" ui-navitem="html:AMDQuery;img:file"></li>
+          <li id="Build" amdquery-widget="ui.navitem" ui-navitem="html:Build;img:file"></li>
         </ul>
-    </div>
+      </li>
+    </ul>
+  </div>
 </div>

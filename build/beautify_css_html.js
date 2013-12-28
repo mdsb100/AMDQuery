@@ -34,5 +34,9 @@ function beautify( pattern, ignorePatternList, toDo, opt ) {
 }
 
 beautify( "**/*.css", [ "build/", "jsdoc/", "document/api" ], beautify_css )
-beautify( "**/*.xml", [ "build/", "jsdoc/", "document/api" ], beautify_html )
-beautify( "**/*.html", [ "build/", "jsdoc/", "document/api" ], beautify_html )
+beautify( "**/*.xml", [ "build/", "jsdoc/", "document/api" ], beautify_html, {
+	"indent_size": 2
+} )
+beautify( "**/*.html", [ "build/", "jsdoc/", "document/api" ], beautify_html, {
+	"indent_size": 2
+} )
