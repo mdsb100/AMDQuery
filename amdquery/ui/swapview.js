@@ -201,7 +201,7 @@ aQuery.define( "ui/swapview", [
 				} );
 			}
 
-			this.container.animate( animationOpt, {
+			this.container.stopAnimation().animate( animationOpt, {
 				duration: opt.animationDuration,
 				easing: opt.animationEasing,
 				queue: false,
