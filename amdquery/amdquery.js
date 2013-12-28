@@ -2210,21 +2210,21 @@
 		 */
 		var ready = function( fn ) {
 			setTimeout( function() {
-				rootPromise.and( fn );
+				readyPromise.and( fn );
 			}, 0 );
-		}, rootPromise;
+		}, readyPromise;
 
 		var loadingImage = _config.amdquery.loadingImage,
 			image = $.createEle( "img" ),
 			cover = $.createEle( "div" );
 
 		image.style.cssText = "position:absolute;top:50%;left:50%";
-		cover.style.cssText = "width:100%;height:100%;position:absolute;top:0;left:0;zIndex:10001;backgroundColor:white";
+		cover.style.cssText = "width:100%;height:100%;position:absolute;top:0;left:0;zIndex:10001;background-color:white";
 
 		cover.appendChild( image );
 
 
-		rootPromise = new Promise( function() {
+		readyPromise = new Promise( function() {
 			// 预处理设置
 			if ( _config.app.src ) {
 				var src = _config.app.src;
@@ -2241,10 +2241,10 @@
 
 			var promise = new Promise,
 				ready = function( e ) {
+					document.body.appendChild( cover );
 					document.documentElement.style.left = "0px";
 					document.documentElement.style.position = "";
 					// maybe insertBefore
-					document.body.appendChild( cover );
 
 					if ( loadingImage ) {
 						image.setAttribute( "src", loadingImage );
@@ -2256,7 +2256,7 @@
 					setTimeout( function() {
 						// define will be call before this ready
 						promise.resolve( e );
-					}, _config.amdquery.amdquery ? 500 : 0 );
+					}, 0 );
 
 					if ( document.addEventListener ) {
 						document.removeEventListener( "DOMContentLoaded", ready );
@@ -2299,8 +2299,9 @@
 			document.body.removeChild( cover );
 			cover = null;
 			image = null;
+		} );
 
-		} ).root().resolve();
+		readyPromise.root().resolve();
 
 		return $.ready = ready;
 	} );
