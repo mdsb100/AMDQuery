@@ -316,17 +316,17 @@
 		interfaces: {
 			/**
 			 * @param {String}
-       * @param {Function}
-       * @returns {this}
+			 * @param {Function}
+			 * @returns {this}
 			 */
 			achieve: function( name, fun ) {
 				$.interfaces.handlers[ name ] = fun;
 				return this;
 			},
-      /**
-       * @param {String}
-       * @returns {*}
-       */
+			/**
+			 * @param {String}
+			 * @returns {*}
+			 */
 			trigger: function( name ) {
 				var item = $.interfaces.handlers[ name ];
 				return item && item.apply( this, arguments );
