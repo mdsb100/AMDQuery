@@ -300,11 +300,11 @@
 		 * Extend aQuery from Object.
 		 * @param {Object}
 		 * @returns {this}
-     * @example
-     * aQuery.extend( {
-     *   myFun: function(){}
-     * } );
-     * aQuery.myFun();
+		 * @example
+		 * aQuery.extend( {
+		 *   myFun: function(){}
+		 * } );
+		 * aQuery.myFun();
 		 */
 		extend: function( obj ) {
 			util.extend( $, obj );
