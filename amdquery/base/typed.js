@@ -1,6 +1,6 @@
 aQuery.define( "base/typed", function( $ ) {
 	"use strict"; //启用严格模式
-  this.describe( "Support typeof function" );
+	this.describe( "Support typeof function" );
 	var
 	class2type = {},
 		hasOwnProperty = class2type.hasOwnProperty,
@@ -9,34 +9,55 @@ aQuery.define( "base/typed", function( $ ) {
 	$.each( "Boolean Number String Function Array Date RegExp Object Error".split( " " ), function( name, i ) {
 		class2type[ "[object " + name + "]" ] = name.toLowerCase();
 	} );
-
+	/**
+	 * Determine the type of object。
+	 * @public
+	 * @exports base/typed
+   * @borrows aQuery.forinstance as forinstance
+	 */
 	var typed = {
+		/**
+		 * Is it an element collection?
+		 * @param {*}
+		 * @returns {Boolean}
+		 */
 		isEleConllection: function( a ) {
-			/// <summary>是否为DOM元素的集合</summary>
-			/// <param name="a" type="any">任意对象</param>
-			/// <returns type="Boolean" />
 			return typed.isType( a, "[object NodeList]" ) ||
 				typed.isType( a, "[object HTMLCollection]" ) ||
 				( typed.isNum( a.length ) && !typed.isArr( a.length ) &&
 				( a.length > 0 ? typed.isEle( a[ 0 ] ) : true ) &&
 				( typed.isObj( a.item ) || typed.isStr( a.item ) ) );
 		},
+		/**
+		 * Is an event of Dom?
+		 * @param {*}
+		 * @returns {Boolean}
+		 */
 		isEvent: function( a ) {
 			return a && !! ( toString.call( a ).indexOf( "Event" ) > -1 || ( a.type && a.srcElement && a.cancelBubble !== undefined ) || ( a.type && a.target && a.bubbles !== undefined ) )
 		},
+		/**
+		 * Is it arguments?
+		 * @param {*}
+		 * @returns {Boolean}
+		 */
 		isArguments: function( a ) {
 			return !!a && "callee" in a && this.isNum( a.length );
 		},
+		/**
+		 * Is it a array?
+		 * @param {*}
+		 * @returns {Boolean}
+		 */
 		isArr: function( a ) {
-			/// <summary>是否为数组</summary>
-			/// <param name="a" type="any">任意对象</param>
-			/// <returns type="Boolean" />
 			return typed.isType( a, "[object Array]" );
 		},
+		/**
+		 * Does it like a array?
+		 * @param {*}
+		 * @returns {Boolean}
+		 */
 		isArrlike: function( obj ) {
-			/// <summary>是否像一个数组</summary>
-			/// <param name="obj" type="any">任意对象</param>
-			/// <returns type="Boolean" />
 			var length = obj.length,
 				type = typed.type( obj );
 
@@ -52,46 +73,36 @@ aQuery.define( "base/typed", function( $ ) {
 				( length === 0 ||
 				typeof length === "number" && length > 0 && ( length - 1 ) in obj );
 		},
-
-		isArrOf: function( a, type ) {
-			/// <summary>是否为某种特定类型数组</summary>
-			/// <param name="a" type="any">任意对象</param>
-			/// <param name="type" type="Function">检查的方法 可以是typed.isStr</param>
-			/// <returns type="Boolean" />
-			var result = true;
-			if ( typed.isArr( a ) ) {
-				$.each( a, function( item ) {
-					if ( !( result = type( item ) ) ) {
-						return false;
-					}
-				} );
-			} else {
-				result = false;
-			}
-			return result;
-		},
+		/**
+		 * Is it Boolean?
+		 * @param {*}
+		 * @returns {Boolean}
+		 */
 		isBol: function( a ) {
-			/// <summary>是否为数组</summary>
-			/// <param name="a" type="any">任意对象</param>
-			/// <returns type="Boolean" />
 			return typed.isType( a, "[object Boolean]" );
 		},
+		/**
+		 * Is it Date?
+		 * @param {*}
+		 * @returns {Boolean}
+		 */
 		isDate: function( a ) {
-			/// <summary>是否为日期</summary>
-			/// <param name="a" type="any">任意对象</param>
-			/// <returns type="Boolean" />
 			return typed.isType( a, "[object Date]" );
 		},
+		/**
+		 * Is it Document?
+		 * @param {*}
+		 * @returns {Boolean}
+		 */
 		isDoc: function( a ) {
-			/// <summary>是否为Document</summary>
-			/// <param name="a" type="any">任意对象</param>
-			/// <returns type="Boolean" />
 			return !!toString.call( a ).match( /document/i );
 		},
+		/**
+		 * Is it Element?
+		 * @param {*}
+		 * @returns {Boolean}
+		 */
 		isEle: function( a ) {
-			/// <summary>是否为DOM元素</summary>
-			/// <param name="a" type="any">任意对象</param>
-			/// <returns type="Boolean" />
 			if ( !a || a === document ) return false;
 			var str = ( a.constructor && a.constructor.toString() ) + Object.prototype.toString.call( a )
 			if ( ( str.indexOf( "HTML" ) > -1 && str.indexOf( "Collection" ) == -1 ) || a.nodeType === 1 ) {
@@ -99,6 +110,18 @@ aQuery.define( "base/typed", function( $ ) {
 			}
 			return false;
 		},
+		/**
+		 * Is it empty?
+		 * @param {*}
+		 * @returns {Boolean}
+		 * @example
+		 * var a = null, b = undefined, c = [], d = {}, e = "";
+		 * typed.isEmpty(a); // true
+		 * typed.isEmpty(b); // true
+		 * typed.isEmpty(c); // true
+		 * typed.isEmpty(d); // true
+		 * typed.isEmpty(e); // true
+		 */
 		isEmpty: function( a ) {
 			/// <summary>是否为空</summary>
 			/// <param name="a" type="any">任意对象</param>
@@ -107,77 +130,111 @@ aQuery.define( "base/typed", function( $ ) {
 			if ( typed.isArr( a ) || typed.isStr( a ) ) return a.length == 0;
 			return typed.isEmptyObj( a );
 		},
+		/**
+		 * Is it empty object?
+		 * @param {*}
+		 * @returns {Boolean}
+		 * @example
+		 * var a = [], b = {};
+		 * typed.isEmpty(a); // true
+		 * typed.isEmpty(b); // true
+		 */
 		isEmptyObj: function( obj ) {
-			/// <summary>是否为空的Object</summary>
-			/// <param name="a" type="any">任意对象</param>
-			/// <returns type="Boolean" />
 			for ( var name in obj ) {
 				return false;
 			}
 			return true;
 		},
+		/**
+		 * Is it Error?
+		 * @param {*}
+		 * @returns {Boolean}
+		 */
 		isError: function( a ) {
-			/// <summary>是否为日期</summary>
-			/// <param name="a" type="any">任意对象</param>
-			/// <returns type="Boolean" />
 			return typed.isType( a, "[object Error]" );
 		},
+		/**
+		 * Is it Finite?
+		 * @param {*}
+		 * @returns {Boolean}
+		 */
 		isFinite: function( a ) {
-			/// <summary>是否为Finite</summary>
-			/// <param name="a" type="any">任意对象</param>
-			/// <returns type="Boolean" />
 			return isFinite( a ) && !isNaN( parseFloat( a ) );
 		},
+		/**
+		 * Is it Function?
+		 * @param {*}
+		 * @returns {Boolean}
+		 */
 		isFun: function( a ) {
-			/// <summary>是否为方法</summary>
-			/// <param name="a" type="any">任意对象</param>
-			/// <returns type="Boolean" />
 			return typed.isType( a, "[object Function]" );
 		},
+		/**
+		 * Is it native JSON?
+		 * @param {*}
+		 * @returns {Boolean}
+		 */
 		isNativeJSON: function( a ) {
-			/// <summary>是否为本地JSON</summary>
-			/// <param name="a" type="any">任意对象</param>
-			/// <returns type="Boolean" />
 			return window.json && typed.isType( a, "object JSON" );
 		},
+		/**
+		 * Is it not a Number?
+		 * @param {*}
+		 * @returns {Boolean}
+		 */
 		isNaN: function( a ) {
-			/// <summary>是否为NaN</summary>
-			/// <param name="a" type="any">任意对象</param>
-			/// <returns type="Boolean" />
 			return typed.isNum( a ) && a != +a;
 		},
+		/**
+		 * Is it a Number?
+		 * @param {*}
+		 * @returns {Boolean}
+		 */
 		isNum: function( a ) {
-			/// <summary>是否为数字</summary>
-			/// <param name="a" type="any">任意对象</param>
-			/// <returns type="Boolean" />
 			return typed.isType( a, "[object Number]" );
 		},
+		/**
+		 * Is it a Numeric?
+		 * @param {*}
+		 * @returns {Boolean}
+		 * @example
+		 * typed.isNum("5"); // false
+		 * typed.isNumeric("5"); // true
+		 */
 		isNumeric: function( a ) {
 			return !isNaN( parseFloat( a ) ) && isFinite( a );
 		},
+		/**
+		 * Is it null? "undefined", "null" and "NaN" return true.
+		 * @param {*}
+		 * @returns {Boolean}
+		 */
 		isNul: function( a ) {
-			/// <summary>是否为不存在</summary>
-			/// <param name="a" type="any">任意对象</param>
-			/// <returns type="Boolean" />
 			return a === undefined || a === null || a === NaN;
 		},
+		/**
+		 * Is it element node?
+		 * @param {*}
+		 * @param {String} - Name of node.
+		 * @returns {Boolean}
+		 */
 		isNode: function( ele, name ) {
-			/// <summary>判断是不是这个dom元素</summary>
-			/// <param name="ele" type="Element">dom元素</param>
-			/// <param name="name" type="String">名字</param>
-			/// <returns type="Boolean" />
 			return typed.isEle( ele ) ? ( ele.nodeName && ele.nodeName.toUpperCase() === name.toUpperCase() ) : false;
 		},
+		/**
+		 * Is it Object? "undefined" is not Object.
+		 * @param {*}
+		 * @returns {Boolean}
+		 */
 		isObj: function( a ) {
-			/// <summary>是否为对象</summary>
-			/// <param name="a" type="any">任意对象</param>
-			/// <returns type="Boolean" />
 			return a !== undefined ? typed.isType( a, "[object Object]" ) : false;
 		},
+		/**
+		 * Is it plain Object?
+		 * @param {*}
+		 * @returns {Boolean}
+		 */
 		isPlainObj: function( obj ) {
-			/// <summary>是否为纯obj</summary>
-			/// <param name="obj" type="any">任意对象</param>
-			/// <returns type="Boolean" />
 			if ( !obj || !typed.isObj( obj ) || obj.nodeType || obj.setInterval ) {
 				return false;
 			}
@@ -196,42 +253,58 @@ aQuery.define( "base/typed", function( $ ) {
 
 			return key === undefined || hasOwnProperty.call( obj, key );
 		},
-		isRegExp: function() {
-			/// <summary>是否为字符产</summary>
-			/// <param name="a" type="any">任意对象</param>
-			/// <returns type="Boolean" />
+		/**
+		 * Is it a RegExp?
+		 * @param {*}
+		 * @returns {Boolean}
+		 */
+		isRegExp: function( a ) {
 			return typed.isType( a, "[object RegExp]" );
 		},
+    /**
+     * Is it a String?
+     * @param {*}
+     * @returns {Boolean}
+     */
 		isStr: function( a ) {
-			/// <summary>是否为字符产</summary>
-			/// <param name="a" type="any">任意对象</param>
-			/// <returns type="Boolean" />
 			return typed.isType( a, "[object String]" );
 		},
+    /**
+     * @param {*}
+     * @param {String} - like "[object Number]", "[object String]"
+     * @returns {Boolean}
+     * @example
+     * typed.isType( 5, "[object Number]" ) // true
+     */
 		isType: function( a, b ) {
-			/// <summary>判断对象类型</summary>
-			/// <param name="a" type="any">任意对象</param>
-			/// <param name="b" type="String">例:"[object Function]"</param>
-			/// <returns type="Boolean" />
 			return toString.call( a ) == b;
 		},
+    /**
+     * It is XML?
+     * @param {*}
+     * @returns {Boolean}
+     */
 		isXML: function( ele ) {
-			/// <summary>是否是XML</summary>
-			/// <param name="ele" type="any">任意对象</param>
-			/// <returns type="Boolean" />
 			// documentElement is verified for cases where it doesn't yet exist
 			// (such as loading iframes in IE - #4833)
 			var documentElement = ( ele ? ele.ownerDocument || ele : 0 ).documentElement;
 
 			return documentElement ? documentElement.nodeName !== "HTML" : false;
 		},
+    /**
+     * It is window?
+     * @param {*}
+     * @returns {Boolean}
+     */
 		isWindow: function( a ) {
-			/// <summary>是否为window对象</summary>
-			/// <param name="a" type="any">任意对象</param>
-			/// <returns type="Boolean" />
 			return a != null && a == a.window;
 		},
 		is$: $.forinstance,
+    /**
+     * Return object type.
+     * @param {*}
+     * @returns {String}
+     */
 		type: function( obj ) {
 			if ( obj == null ) {
 				return String( obj );

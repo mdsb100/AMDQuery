@@ -44,12 +44,12 @@
 				}
 				throw new window[ type || "Error" ]( s );
 			},
-      /**
-       * b extend a. Return object "a".
-       * @param {Object}
-       * @param {Object}
-       * @returns a
-       */
+			/**
+			 * b extend a. Return object "a".
+			 * @param {Object}
+			 * @param {Object}
+			 * @returns a
+			 */
 			extend: function( a, b ) {
 				for ( var i in b )
 					a[ i ] = b[ i ];
@@ -314,18 +314,20 @@
 		 * @private
 		 */
 		interfaces: {
+			/**
+			 * @param {String}
+       * @param {Function}
+       * @returns {this}
+			 */
 			achieve: function( name, fun ) {
-				/// <summary>实现一个接口</summary>
-				/// <param name="name" type="String">接口名</param>
-				/// <param name="name" type="String">要实现的方法</param>
-				/// <returns type="Self" />
 				$.interfaces.handlers[ name ] = fun;
 				return this;
 			},
+      /**
+       * @param {String}
+       * @returns {*}
+       */
 			trigger: function( name ) {
-				/// <summary>对外接口调用 内部的</summary>
-				/// <param name="name" type="String">接口名</param>
-				/// <returns type="any" />
 				var item = $.interfaces.handlers[ name ];
 				return item && item.apply( this, arguments );
 			},
@@ -426,7 +428,7 @@
 			return this;
 		},
 		/**
-		 * Object is instance of {aQuery}.
+		 * Object is instance of aQuery.
 		 * @param {*}
 		 * @returns {Boolean}
 		 */
@@ -597,14 +599,14 @@
 			return this;
 		},
 		/**
-     * Extend aQuery prototype from parameters.
+		 * Extend aQuery prototype from parameters.
 		 * @param [Object...]
-     * @returns {aQuery.prototype}
-     * @example
-     * aQuery.fn.extend( {
-     *   myFun: function(){}
-     * } );
-     * new aQuery().myFun();
+		 * @returns {aQuery.prototype}
+		 * @example
+		 * aQuery.fn.extend( {
+		 *   myFun: function(){}
+		 * } );
+		 * new aQuery().myFun();
 		 */
 		extend: function( params ) {
 			for ( var i = 0, len = arguments.length, obj; i < len; i++ ) {
