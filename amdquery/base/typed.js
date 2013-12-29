@@ -13,7 +13,7 @@ aQuery.define( "base/typed", function( $ ) {
 	 * Determine the type of object。
 	 * @public
 	 * @exports base/typed
-   * @borrows aQuery.forinstance as forinstance
+	 * @borrows aQuery.forinstance as forinstance
 	 */
 	var typed = {
 		/**
@@ -210,7 +210,7 @@ aQuery.define( "base/typed", function( $ ) {
 		 * @returns {Boolean}
 		 */
 		isNul: function( a ) {
-			return a === undefined || a === null || a === NaN;
+			return a === undefined || a === null || typed.isNaN( a );
 		},
 		/**
 		 * Is it element node?
@@ -261,29 +261,29 @@ aQuery.define( "base/typed", function( $ ) {
 		isRegExp: function( a ) {
 			return typed.isType( a, "[object RegExp]" );
 		},
-    /**
-     * Is it a String?
-     * @param {*}
-     * @returns {Boolean}
-     */
+		/**
+		 * Is it a String?
+		 * @param {*}
+		 * @returns {Boolean}
+		 */
 		isStr: function( a ) {
 			return typed.isType( a, "[object String]" );
 		},
-    /**
-     * @param {*}
-     * @param {String} - like "[object Number]", "[object String]"
-     * @returns {Boolean}
-     * @example
-     * typed.isType( 5, "[object Number]" ) // true
-     */
+		/**
+		 * @param {*}
+		 * @param {String} - like "[object Number]", "[object String]"
+		 * @returns {Boolean}
+		 * @example
+		 * typed.isType( 5, "[object Number]" ) // true
+		 */
 		isType: function( a, b ) {
 			return toString.call( a ) == b;
 		},
-    /**
-     * It is XML?
-     * @param {*}
-     * @returns {Boolean}
-     */
+		/**
+		 * It is XML?
+		 * @param {*}
+		 * @returns {Boolean}
+		 */
 		isXML: function( ele ) {
 			// documentElement is verified for cases where it doesn't yet exist
 			// (such as loading iframes in IE - #4833)
@@ -291,20 +291,20 @@ aQuery.define( "base/typed", function( $ ) {
 
 			return documentElement ? documentElement.nodeName !== "HTML" : false;
 		},
-    /**
-     * It is window?
-     * @param {*}
-     * @returns {Boolean}
-     */
+		/**
+		 * It is window?
+		 * @param {*}
+		 * @returns {Boolean}
+		 */
 		isWindow: function( a ) {
 			return a != null && a == a.window;
 		},
 		is$: $.forinstance,
-    /**
-     * Return object type.
-     * @param {*}
-     * @returns {String}
-     */
+		/**
+		 * Return object type.
+		 * @param {*}
+		 * @returns {String}
+		 */
 		type: function( obj ) {
 			if ( obj == null ) {
 				return String( obj );
