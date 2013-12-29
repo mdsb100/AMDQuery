@@ -1,4 +1,4 @@
-﻿aQuery.define( "module/AnimateColor", [ "base/config", "base/support", "base/extend", "main/object", "module/color", "main/css", "module/FX" ], function( $, support, config, utilExtend, object, color, css, FX ) {
+﻿aQuery.define( "module/AnimateColor", [ "base/config", "base/support", "base/extend", "main/object", "module/color", "main/css", "module/FX" ], function( $, config, support, utilExtend, object, color, css, FX ) {
 	"use strict"; //启用严格模式
 	var AnimateColor = FX.extend( function AnimateColor( ele, options, value, name, type ) {
 		if ( this instanceof AnimateColor ) {
