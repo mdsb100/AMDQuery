@@ -2335,7 +2335,7 @@ aQuery.define( "base/typed", function( $ ) {
 	 * Determine the type of object。
 	 * @public
 	 * @exports base/typed
-   * @borrows aQuery.forinstance as forinstance
+	 * @borrows aQuery.forinstance as forinstance
 	 */
 	var typed = {
 		/**
@@ -2532,7 +2532,7 @@ aQuery.define( "base/typed", function( $ ) {
 		 * @returns {Boolean}
 		 */
 		isNul: function( a ) {
-			return a === undefined || a === null || a === NaN;
+			return a === undefined || a === null || typed.isNaN( a );
 		},
 		/**
 		 * Is it element node?
@@ -2583,29 +2583,29 @@ aQuery.define( "base/typed", function( $ ) {
 		isRegExp: function( a ) {
 			return typed.isType( a, "[object RegExp]" );
 		},
-    /**
-     * Is it a String?
-     * @param {*}
-     * @returns {Boolean}
-     */
+		/**
+		 * Is it a String?
+		 * @param {*}
+		 * @returns {Boolean}
+		 */
 		isStr: function( a ) {
 			return typed.isType( a, "[object String]" );
 		},
-    /**
-     * @param {*}
-     * @param {String} - like "[object Number]", "[object String]"
-     * @returns {Boolean}
-     * @example
-     * typed.isType( 5, "[object Number]" ) // true
-     */
+		/**
+		 * @param {*}
+		 * @param {String} - like "[object Number]", "[object String]"
+		 * @returns {Boolean}
+		 * @example
+		 * typed.isType( 5, "[object Number]" ) // true
+		 */
 		isType: function( a, b ) {
 			return toString.call( a ) == b;
 		},
-    /**
-     * It is XML?
-     * @param {*}
-     * @returns {Boolean}
-     */
+		/**
+		 * It is XML?
+		 * @param {*}
+		 * @returns {Boolean}
+		 */
 		isXML: function( ele ) {
 			// documentElement is verified for cases where it doesn't yet exist
 			// (such as loading iframes in IE - #4833)
@@ -2613,20 +2613,20 @@ aQuery.define( "base/typed", function( $ ) {
 
 			return documentElement ? documentElement.nodeName !== "HTML" : false;
 		},
-    /**
-     * It is window?
-     * @param {*}
-     * @returns {Boolean}
-     */
+		/**
+		 * It is window?
+		 * @param {*}
+		 * @returns {Boolean}
+		 */
 		isWindow: function( a ) {
 			return a != null && a == a.window;
 		},
 		is$: $.forinstance,
-    /**
-     * Return object type.
-     * @param {*}
-     * @returns {String}
-     */
+		/**
+		 * Return object type.
+		 * @param {*}
+		 * @returns {String}
+		 */
 		type: function( obj ) {
 			if ( obj == null ) {
 				return String( obj );
@@ -10975,7 +10975,7 @@ aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "
 			var t = $.now() - pauseTime,
 				opt = this.options;
 
-			if ( goToEnd === true || t > this.startTime + this.delay + this.duration ) {
+			if ( goToEnd === true || t > this.startTime + this.delay + this.duration || this.end === this.from ) {
 				//this.tick = opt.duration;
 				this.nowPos = this.end;
 				//opt.curCount -= 1;
@@ -13057,9 +13057,9 @@ aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "
 /*=======================================================*/
 
 /*===================html5/animate.transform===========================*/
-﻿aQuery.define( "html5/animate.transform", [ "base/extend", "base/support", "main/object", "module/FX", "html5/css3", "module/animate" ], function( $, utilExtend, support, object, FX, css3, animate, undefined ) {
-  "use strict"; //启用严格模式
-  this.describe("Support transform to animation");
+﻿aQuery.define( "html5/animate.transform", [ "base/typed", "base/extend", "base/support", "main/object", "module/FX", "html5/css3", "module/animate" ], function( $, typed, utilExtend, support, object, FX, css3, animate, undefined ) {
+	"use strict"; //启用严格模式
+	this.describe( "Support transform to animation" );
 	var getScale = function( r ) {
 		return r ? Math.max( r, 0 ) : 1;
 	}, transformCss = css3.getTransformStyleNameUnCamelCase();
@@ -13093,7 +13093,7 @@ aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "
 				transform = transform || css3.getTransform3d( this.ele );
 
 				value = value != undefined ? value : parseFloat( this.nowPos );
-				if ( value != undefined && value !== NaN ) {
+				if ( value != undefined && !typed.isNaN( value ) ) {
 					transform[ this.type ] = value + this.unit;
 					css3[ this.name ]( this.ele, transform );
 				}
@@ -13147,7 +13147,7 @@ aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "
 			update: function( transform, value ) {
 				transform = transform || $.getTransform( this.ele, this.type[ 0 ] )[ 0 ] || [];
 				value = value != undefined ? value : parseFloat( this.nowPos );
-				if ( value != undefined && value !== NaN ) {
+				if ( value != undefined && !typed.isNaN( value ) ) {
 					transform[ 0 ] = this.type[ 0 ];
 
 					for ( var i = 1, item = transform[ i ], len = this.type.length; i < len; i++ ) {
@@ -13239,7 +13239,7 @@ define( "hash/cubicBezier.tween", function() {
 	cubicBezierTween,
 	undefined ) {
 	"use strict"; //启用严格模式
-  this.describe( "Animation to HTML5 transition" );
+	this.describe( "Animation to HTML5 transition" );
 	//do not use em
 
 	$.extend( {
@@ -13345,9 +13345,8 @@ define( "hash/cubicBezier.tween", function() {
 				if ( opt.overflow != null ) {
 					ele.style.overflow = "hidden";
 				}
-
+				var equalFlag = true;
 				ele.addEventListener( transitionEndType, opt._transitionEnd, false );
-
 				$.each( property, function( value, key ) {
 					var ret, i, temp, tran = [],
 						duration = opt.duration / 1000,
@@ -13367,8 +13366,11 @@ define( "hash/cubicBezier.tween", function() {
 						startTime = new Date();
 						for ( i = 0; i < ret.length; i++ ) {
 							item = ret[ i ];
-							value = item.update( value, item.end );
-							item.startTime = startTime;
+							if ( item.end !== item.from ) {
+								equalFlag = false;
+								value = item.update( value, item.end );
+								item.startTime = startTime;
+							}
 						}
 						if ( !transitionList[ temp ] ) {
 							transitionList[ temp ] = [];
@@ -13379,17 +13381,22 @@ define( "hash/cubicBezier.tween", function() {
 						//opt._transitionList.push(key);
 						//temp = $.util.camelCase(key);
 						//ele.style[temp] = ret.from + ret.unit;
-						tran.push( key, duration + "s", easing );
-						opt.delay && tran.push( delay + "s" );
+						if ( ele.style[ $.util.camelCase( key ) ] !== ( ret.end + ret.unit ) ) {
+							equalFlag = false;
+							tran.push( key, duration + "s", easing );
+							opt.delay && tran.push( delay + "s" );
+							css3.addTransition( ele, tran.join( " " ) );
+							ele.style[ $.util.camelCase( key ) ] = ret.end + ret.unit;
+							ret.startTime = new Date();
+							transitionList[ key ] = ret;
+						}
 
-						css3.addTransition( ele, tran.join( " " ) );
-						ele.style[ $.util.camelCase( key ) ] = ret.end + ret.unit;
-						ret.startTime = new Date();
-						transitionList[ key ] = ret;
 					}
 				} );
-
 				$.data( ele, "_transitionList", transitionList );
+				if ( equalFlag ) {
+					opt._transitionEnd.call( ele );
+				}
 
 			},
 			easingList = {
@@ -15695,8 +15702,8 @@ aQuery.define( "ui/flex", [
 			20: "Caps Lock",
 			27: "Escape",
 			32: "space",
-			33: "Prior",
-			34: "Next",
+			33: "PageUp",
+			34: "PageDown",
 			35: "End",
 			36: "Home",
 			37: "Left",
@@ -15734,8 +15741,8 @@ aQuery.define( "ui/flex", [
 			"Caps Lock": 20,
 			"Escape": 27,
 			"space": 32,
-			"Prior": 33,
-			"Next": 34,
+			"PageUp": 33,
+			"PageDown": 34,
 			"End": 35,
 			"Home": 36,
 			"Left": 37,
@@ -15864,10 +15871,6 @@ aQuery.define( "ui/flex", [
 				item = keyList[ i ];
 
 				config.amdquery.debug && $.logger( "keyboard.iterationKeyList", "type:code", e.type + ":" + code );
-
-				if ( e.type == "keyup" && code == 38 ) {
-					debugger
-				}
 
 				if (
 					e.type == item.type &&
@@ -17257,6 +17260,8 @@ aQuery.define( "ui/scrollableview", [
 
 	var scrollableview = Widget.extend( "ui.scrollableview", {
 		container: null,
+		_keyList: [ "Up", "Down", "Left", "Right", "Home", "End", "PageUp", "PageDown" ],
+		_combintionKeyList: [ "Up", "Right", "Down", "Left" ],
 		create: function() {
 			var opt = this.options;
 			this.positionParent = $( {
@@ -17321,8 +17326,12 @@ aQuery.define( "ui/scrollableview", [
 			if ( opt.enableKeyboard ) {
 				this.target.uiKeyboard( "addKey", {
 					type: "keyup",
-					keyCode: [ "Up", "Right", "Down", "Left" ],
+					keyCode: this._combintionKeyList,
 					combinationKey: opt.combinationKey.split( /;|,/ ),
+					todo: event
+				} ).uiKeyboard( "addKey", {
+					type: "keydown",
+					keyCode: this._keyList,
 					todo: event
 				} );
 				this.target.uiKeyboard( "enable" );
@@ -17343,8 +17352,12 @@ aQuery.define( "ui/scrollableview", [
 			if ( opt.enableKeyboard ) {
 				this.target.uiKeyboard( "removeKey", {
 					type: "keyup",
-					keyCode: [ "Up", "Right", "Down", "Left" ],
+					keyCode: this._combintionKeyList,
 					combinationKey: opt.combinationKey.split( /;|,/ ),
+					todo: event
+				} ).uiKeyboard( "removedKey", {
+					type: "keydown",
+					keyCode: this._keyList,
 					todo: event
 				} );
 				this.target.uiKeyboard( "disable" );
@@ -17359,20 +17372,41 @@ aQuery.define( "ui/scrollableview", [
 				opt = self.options,
 				check = function() {
 					self.toHBoundary( self.getLeft() ).toVBoundary( self.getTop() ).hideStatusBar();
+				},
+				keyToMove = function( x, y ) {
+					clearTimeout( self.keyTimeId );
+					self.keyTimeId = setTimeout( check, 500 );
+					self.render( x, y, true, 0 );
+					self.showStatusBar();
+				},
+				keyToAnimate = function( name, value, statusBar ) {
+					self.showStatusBar();
+					self.container.stopAnimation( true );
+					statusBar.stopAnimation( true );
+					self[ name ]( value, FX.normal );
 				};
 
 			var
-			keyItem = {
+			combinationKeyItem = {
 				type: "keyup",
 				keyCode: "Up",
 				combinationKey: opt.combinationKey.split( /;|,/ )
 			},
-				keyList = [ "Up", "Right", "Down", "Left" ],
+				KeyItem = {
+					type: "keydown",
+					keyCode: "Up"
+				},
+				i,
 				keyType = {};
 
-			for ( var i = keyList.length - 1; i >= 0; i-- ) {
-				keyItem.keyCode = keyList[ i ];
-				keyType[ keyList[ i ] ] = Keyboard.getHandlerName( keyItem );
+			for ( i = this._combintionKeyList.length - 1; i >= 0; i-- ) {
+				combinationKeyItem.keyCode = this._combintionKeyList[ i ];
+				keyType[ "Combination" + combinationKeyItem.keyCode ] = Keyboard.getHandlerName( combinationKeyItem );
+			}
+
+			for ( i = this._keyList.length - 1; i >= 0; i-- ) {
+				KeyItem.keyCode = this._keyList[ i ];
+				keyType[ KeyItem.keyCode ] = Keyboard.getHandlerName( KeyItem );
 			}
 
 			this.scrollableviewEvent = function( e ) {
@@ -17453,20 +17487,44 @@ aQuery.define( "ui/scrollableview", [
 
 						var $a = $( this ),
 							href = ( $a.attr( "href" ) || "" ).replace( window.location.href, "" ).replace( "#", "" );
-							self.animateToElement( self.getAnimationToElementByName( href ) );
+						self.animateToElement( self.getAnimationToElementByName( href ) );
 						break;
 
-					case keyType.Up:
-						self.animateY( 0, FX.normal );
+					case keyType.CombinationLeft:
+						keyToAnimate( "animateX", 0, self.statusBarX );
 						break;
-					case keyType.Right:
-						self.animateX( -self.scrollWidth + self.viewportWidth, FX.normal );
+					case keyType.CombinationUp:
+						keyToAnimate( "animateY", 0, self.statusBarY );
+						break;
+					case keyType.CombinationRight:
+						keyToAnimate( "animateX", -self.scrollWidth + self.viewportWidth, self.statusBarX );
+						break;
+					case keyType.CombinationDown:
+						keyToAnimate( "animateY", -self.scrollHeight + self.viewportHeight, self.statusBarY );
+						break;
+					case keyType.Up:
+						keyToMove( 0, opt.keyVerticalDistance );
 						break;
 					case keyType.Down:
-						self.animateY( -self.scrollHeight + self.viewportHeight, FX.normal );
+						keyToMove( 0, -opt.keyVerticalDistance );
 						break;
 					case keyType.Left:
-						self.animateX( 0, FX.normal );
+						keyToMove( opt.keyHorizontalDistance, 0 );
+						break;
+					case keyType.Right:
+						keyToMove( -opt.keyHorizontalDistance, 0 );
+						break;
+					case keyType.PageUp:
+						keyToAnimate( "animateY", Math.min( opt.boundary, self.getTop() + self.viewportHeight ), self.statusBarY );
+						break;
+					case keyType.PageDown:
+						keyToAnimate( "animateY", Math.max( -self.scrollHeight + self.viewportHeight - opt.boundary, self.getTop() - self.viewportHeight ), self.statusBarY );
+						break;
+					case keyType.Home:
+						keyToAnimate( "animateY", 0, self.statusBarY );
+						break;
+					case keyType.End:
+						keyToAnimate( "animateY", -self.scrollHeight + self.viewportHeight, self.statusBarY );
 						break;
 				}
 			};
@@ -17489,18 +17547,20 @@ aQuery.define( "ui/scrollableview", [
 			}
 		},
 		destroy: function() {
-			if ( key ) {
-				this.target.destroyUiSwappable();
-				this.container.destroyUiDraggable();
-				this.target.children().remove();
-				this.positionParent.children().appendTo( this.target );
-				Widget.invoke( "destroy", this );
-			}
+			this.target.destroyUiSwappable();
+			this.container.destroyUiDraggable();
+			this.target.children().remove();
+			this.positionParent.children().appendTo( this.target );
+			Widget.invoke( "destroy", this );
 		},
 		init: function( opt, target ) {
 			this._super( opt, target );
 
 			this._direction = null;
+
+			this.wheelTimeId = null;
+
+			this.keyTimeId = null;
 
 			this.originOverflow = this.target.css( "overflow" );
 
@@ -17536,7 +17596,9 @@ aQuery.define( "ui/scrollableview", [
 			"pullDistance": 50,
 			"enableKeyboard": false,
 			"combinationKey": client.system.mac ? "cmd" : "ctrl",
-			"firstToElement": ""
+			"firstToElement": "",
+			"keyVerticalDistance": 40,
+			"keyHorizontalDistance": 40
 		},
 		setter: {
 			"enableKeyboard": Widget.initFirst,
@@ -17548,7 +17610,7 @@ aQuery.define( "ui/scrollableview", [
 			"showStatusBar": Widget.AllowPublic,
 			"hideStatusBar": Widget.AllowPublic,
 			"render": Widget.AllowPublic,
-      "getAnimationToElementByName": Widget.AllowReturn,
+			"getAnimationToElementByName": Widget.AllowReturn,
 			"animateToElement": Widget.AllowPublic,
 			"toH": Widget.AllowPublic,
 			"toV": Widget.AllowPublic,
@@ -17564,6 +17626,8 @@ aQuery.define( "ui/scrollableview", [
 				originX = 0,
 				originY = 0,
 				statusX, statusY;
+
+			boundary = boundary == null ? this.options.boundary : boundary;
 
 			if ( addtion ) {
 				position = this.getContainerPosition();
