@@ -39,6 +39,8 @@
               </li>
               <li><a href="#Directory">Directory Structure</a>
               </li>
+              <li><a href="#Life_Cycle">Life cycle of AMDQuery</a>
+              </li>
             </ul>
             <h2 name="Overview" id="Overview">Overview</h2>
             <p>This guide provides basic instructions on understanding AMDQuery architecture and using AMDQuery.</p>
@@ -320,35 +322,23 @@ amdquery
   |- test //test directory
   \ - amdquery.js //base js
             </pre>
+            <h3 name="Life_Cycle" id="Life_Cycle">Life cycle of AMDQuery</h3>
+            <p>We only load "amdquery.js". The "amdquery.js" defines some base module and class aQuery. The module "base/ready" control process of AMDQuery depend on "Promise".
+            </br>One of the process is asynchronous or synchronous, so we make use of "Promise" to control process by order.
+            </p>
+            <p>Why we should move out document element from view? Because AMDQuery.js need time to initialize widget or application.
+            </br>When document ready, we append a cover image in the current view above after moving in document element. You could modify <strong>"config.amdquery.loadingImage"</strong> to set image src.
+            </p>
+            <p>If <strong>"config.app.src"</strong> has a path then create an application, else if <strong>"config.ui.initWidget"</strong> is true then initialize widget.
+            </p>
+            <p>Remove cover image. AMDQuery is ready for showing. Function of "aQuery.require" not only load module, but also is called after AMDQuery read.
+            </p>
             <a float="false" href="#AMDQuery" class="Top">Top</a>
           </div>
           </li>
           <li>
             <div style="width: 100%; height: 100%;" amdquery-widget="ui.scrollableview" ui-scrollableview="orientation:V;enableKeyboard:true;">
-              <h1 name="Life_Cycle">Life cycle of AMDQuery</h1>
-              <ul class="guide">
-                <li><a href="#Overview">Overview</a>
-                </li>
-                <li><a href="#Quick">Quick Start</a>
-                </li>
-                <li><a href="#Browser">Broswer html</a>
-                </li>
-                <li><a href="#Dependencies">Build Dependencies</a>
-                </li>
-                <li><a href="#Config">Config</a>
-                </li>
-                <li><a href="#Detail">Build Detail</a>
-                </li>
-              </ul>
-              <h3>Load base "amdquery.js"</h3>
-              <p>We only load "amdquery.js". The "amdquery.js" defines some base module and class aQuery. The module "base/ready" control process of AMDQuery depend on "Promise".
-                </br>One of the process is asynchronous or synchronous, so we make use of "Promise" to control process by order.
-              </p>
-              <h3>Fitst step: Move out document element from view</h3>
-              <p>Why we should move out docuemnt element from view? Because AMDQuery.js need time to initialize widget of application.
-              </br>When document body ready, we append a cover image in the current view above. You could modify config to set image src.
-              </p>
-              <a float="false" href="#Life_Cycle" class="Top">Top</a>
+
             </div>
           </li>
           <li>
