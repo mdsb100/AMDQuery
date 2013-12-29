@@ -47,6 +47,8 @@ aQuery.define( "ui/scrollableview", [
 
 	var scrollableview = Widget.extend( "ui.scrollableview", {
 		container: null,
+		_keyList: [ "Up", "Down", "Left", "Right", "Home", "End", "PageUp", "PageDown" ],
+		_combintionKeyList: [ "Up", "Right", "Down", "Left" ],
 		create: function() {
 			var opt = this.options;
 			this.positionParent = $( {
@@ -111,8 +113,12 @@ aQuery.define( "ui/scrollableview", [
 			if ( opt.enableKeyboard ) {
 				this.target.uiKeyboard( "addKey", {
 					type: "keyup",
-					keyCode: [ "Up", "Right", "Down", "Left" ],
+					keyCode: this._combintionKeyList,
 					combinationKey: opt.combinationKey.split( /;|,/ ),
+					todo: event
+				} ).uiKeyboard( "addKey", {
+					type: "keydown",
+					keyCode: this._keyList,
 					todo: event
 				} );
 				this.target.uiKeyboard( "enable" );
@@ -133,8 +139,12 @@ aQuery.define( "ui/scrollableview", [
 			if ( opt.enableKeyboard ) {
 				this.target.uiKeyboard( "removeKey", {
 					type: "keyup",
-					keyCode: [ "Up", "Right", "Down", "Left" ],
+					keyCode: this._combintionKeyList,
 					combinationKey: opt.combinationKey.split( /;|,/ ),
+					todo: event
+				} ).uiKeyboard( "removedKey", {
+					type: "keydown",
+					keyCode: this._keyList,
 					todo: event
 				} );
 				this.target.uiKeyboard( "disable" );
@@ -149,20 +159,41 @@ aQuery.define( "ui/scrollableview", [
 				opt = self.options,
 				check = function() {
 					self.toHBoundary( self.getLeft() ).toVBoundary( self.getTop() ).hideStatusBar();
+				},
+				keyToMove = function( x, y ) {
+					clearTimeout( self.keyTimeId );
+					self.keyTimeId = setTimeout( check, 500 );
+					self.render( x, y, true, 0 );
+					self.showStatusBar();
+				},
+				keyToAnimate = function( name, value, statusBar ) {
+					self.showStatusBar();
+					self.container.stopAnimation( true );
+					statusBar.stopAnimation( true );
+					self[ name ]( value, FX.normal );
 				};
 
 			var
-			keyItem = {
+			combinationKeyItem = {
 				type: "keyup",
 				keyCode: "Up",
 				combinationKey: opt.combinationKey.split( /;|,/ )
 			},
-				keyList = [ "Up", "Right", "Down", "Left" ],
+				KeyItem = {
+					type: "keydown",
+					keyCode: "Up"
+				},
+				i,
 				keyType = {};
 
-			for ( var i = keyList.length - 1; i >= 0; i-- ) {
-				keyItem.keyCode = keyList[ i ];
-				keyType[ keyList[ i ] ] = Keyboard.getHandlerName( keyItem );
+			for ( i = this._combintionKeyList.length - 1; i >= 0; i-- ) {
+				combinationKeyItem.keyCode = this._combintionKeyList[ i ];
+				keyType[ "Combination" + combinationKeyItem.keyCode ] = Keyboard.getHandlerName( combinationKeyItem );
+			}
+
+			for ( i = this._keyList.length - 1; i >= 0; i-- ) {
+				KeyItem.keyCode = this._keyList[ i ];
+				keyType[ KeyItem.keyCode ] = Keyboard.getHandlerName( KeyItem );
 			}
 
 			this.scrollableviewEvent = function( e ) {
@@ -243,20 +274,44 @@ aQuery.define( "ui/scrollableview", [
 
 						var $a = $( this ),
 							href = ( $a.attr( "href" ) || "" ).replace( window.location.href, "" ).replace( "#", "" );
-							self.animateToElement( self.getAnimationToElementByName( href ) );
+						self.animateToElement( self.getAnimationToElementByName( href ) );
 						break;
 
-					case keyType.Up:
-						self.animateY( 0, FX.normal );
+					case keyType.CombinationLeft:
+						keyToAnimate( "animateX", 0, self.statusBarX );
 						break;
-					case keyType.Right:
-						self.animateX( -self.scrollWidth + self.viewportWidth, FX.normal );
+					case keyType.CombinationUp:
+						keyToAnimate( "animateY", 0, self.statusBarY );
+						break;
+					case keyType.CombinationRight:
+						keyToAnimate( "animateX", -self.scrollWidth + self.viewportWidth, self.statusBarX );
+						break;
+					case keyType.CombinationDown:
+						keyToAnimate( "animateY", -self.scrollHeight + self.viewportHeight, self.statusBarY );
+						break;
+					case keyType.Up:
+						keyToMove( 0, opt.keyVerticalDistance );
 						break;
 					case keyType.Down:
-						self.animateY( -self.scrollHeight + self.viewportHeight, FX.normal );
+						keyToMove( 0, -opt.keyVerticalDistance );
 						break;
 					case keyType.Left:
-						self.animateX( 0, FX.normal );
+						keyToMove( opt.keyHorizontalDistance, 0 );
+						break;
+					case keyType.Right:
+						keyToMove( -opt.keyHorizontalDistance, 0 );
+						break;
+					case keyType.PageUp:
+						keyToAnimate( "animateY", Math.min( opt.boundary, self.getTop() + self.viewportHeight ), self.statusBarY );
+						break;
+					case keyType.PageDown:
+						keyToAnimate( "animateY", Math.max( -self.scrollHeight + self.viewportHeight - opt.boundary, self.getTop() - self.viewportHeight ), self.statusBarY );
+						break;
+					case keyType.Home:
+						keyToAnimate( "animateY", 0, self.statusBarY );
+						break;
+					case keyType.End:
+						keyToAnimate( "animateY", -self.scrollHeight + self.viewportHeight, self.statusBarY );
 						break;
 				}
 			};
@@ -279,18 +334,20 @@ aQuery.define( "ui/scrollableview", [
 			}
 		},
 		destroy: function() {
-			if ( key ) {
-				this.target.destroyUiSwappable();
-				this.container.destroyUiDraggable();
-				this.target.children().remove();
-				this.positionParent.children().appendTo( this.target );
-				Widget.invoke( "destroy", this );
-			}
+			this.target.destroyUiSwappable();
+			this.container.destroyUiDraggable();
+			this.target.children().remove();
+			this.positionParent.children().appendTo( this.target );
+			Widget.invoke( "destroy", this );
 		},
 		init: function( opt, target ) {
 			this._super( opt, target );
 
 			this._direction = null;
+
+			this.wheelTimeId = null;
+
+			this.keyTimeId = null;
 
 			this.originOverflow = this.target.css( "overflow" );
 
@@ -326,7 +383,9 @@ aQuery.define( "ui/scrollableview", [
 			"pullDistance": 50,
 			"enableKeyboard": false,
 			"combinationKey": client.system.mac ? "cmd" : "ctrl",
-			"firstToElement": ""
+			"firstToElement": "",
+			"keyVerticalDistance": 40,
+			"keyHorizontalDistance": 40
 		},
 		setter: {
 			"enableKeyboard": Widget.initFirst,
@@ -338,7 +397,7 @@ aQuery.define( "ui/scrollableview", [
 			"showStatusBar": Widget.AllowPublic,
 			"hideStatusBar": Widget.AllowPublic,
 			"render": Widget.AllowPublic,
-      "getAnimationToElementByName": Widget.AllowReturn,
+			"getAnimationToElementByName": Widget.AllowReturn,
 			"animateToElement": Widget.AllowPublic,
 			"toH": Widget.AllowPublic,
 			"toV": Widget.AllowPublic,
@@ -354,6 +413,8 @@ aQuery.define( "ui/scrollableview", [
 				originX = 0,
 				originY = 0,
 				statusX, statusY;
+
+			boundary = boundary == null ? this.options.boundary : boundary;
 
 			if ( addtion ) {
 				position = this.getContainerPosition();
