@@ -50,7 +50,7 @@
 			var t = $.now() - pauseTime,
 				opt = this.options;
 
-			if ( goToEnd === true || t > this.startTime + this.delay + this.duration ) {
+			if ( goToEnd === true || t > this.startTime + this.delay + this.duration || this.end === this.from ) {
 				//this.tick = opt.duration;
 				this.nowPos = this.end;
 				//opt.curCount -= 1;

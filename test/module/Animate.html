@@ -224,6 +224,21 @@
         go1.stopAnimation();
       });
 
+      var button14 = $("#button14").on("click", function() {
+        go1.animate({
+          width:"100px",
+          height: "100px",
+          transform: [
+            ["translate", "250px", "250px"],
+            ["scale", "2", "2"]
+          ]
+        }, {
+          complete: function() {
+            alert("do at once");
+          }
+        });
+      });
+
       //            var b = go1.styleTable();
       //            var v = go1.style("MozTransform");
       //            var c = 0
@@ -277,6 +292,9 @@
     </button>
     <button id="button13">
       stop
+    </button>
+    <button id="button14">
+      doAtOnce
     </button>
   </div>
 </body>

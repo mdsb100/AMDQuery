@@ -1,6 +1,6 @@
-﻿aQuery.define( "html5/animate.transform", [ "base/extend", "base/support", "main/object", "module/FX", "html5/css3", "module/animate" ], function( $, utilExtend, support, object, FX, css3, animate, undefined ) {
-  "use strict"; //启用严格模式
-  this.describe("Support transform to animation");
+﻿aQuery.define( "html5/animate.transform", [ "base/typed", "base/extend", "base/support", "main/object", "module/FX", "html5/css3", "module/animate" ], function( $, typed, utilExtend, support, object, FX, css3, animate, undefined ) {
+	"use strict"; //启用严格模式
+	this.describe( "Support transform to animation" );
 	var getScale = function( r ) {
 		return r ? Math.max( r, 0 ) : 1;
 	}, transformCss = css3.getTransformStyleNameUnCamelCase();
@@ -34,7 +34,7 @@
 				transform = transform || css3.getTransform3d( this.ele );
 
 				value = value != undefined ? value : parseFloat( this.nowPos );
-				if ( value != undefined && value !== NaN ) {
+				if ( value != undefined && !typed.isNaN( value ) ) {
 					transform[ this.type ] = value + this.unit;
 					css3[ this.name ]( this.ele, transform );
 				}
@@ -88,7 +88,7 @@
 			update: function( transform, value ) {
 				transform = transform || $.getTransform( this.ele, this.type[ 0 ] )[ 0 ] || [];
 				value = value != undefined ? value : parseFloat( this.nowPos );
-				if ( value != undefined && value !== NaN ) {
+				if ( value != undefined && !typed.isNaN( value ) ) {
 					transform[ 0 ] = this.type[ 0 ];
 
 					for ( var i = 1, item = transform[ i ], len = this.type.length; i < len; i++ ) {

@@ -21,7 +21,7 @@
 	cubicBezierTween,
 	undefined ) {
 	"use strict"; //启用严格模式
-  this.describe( "Animation to HTML5 transition" );
+	this.describe( "Animation to HTML5 transition" );
 	//do not use em
 
 	$.extend( {
@@ -127,9 +127,8 @@
 				if ( opt.overflow != null ) {
 					ele.style.overflow = "hidden";
 				}
-
+				var equalFlag = true;
 				ele.addEventListener( transitionEndType, opt._transitionEnd, false );
-
 				$.each( property, function( value, key ) {
 					var ret, i, temp, tran = [],
 						duration = opt.duration / 1000,
@@ -149,8 +148,11 @@
 						startTime = new Date();
 						for ( i = 0; i < ret.length; i++ ) {
 							item = ret[ i ];
-							value = item.update( value, item.end );
-							item.startTime = startTime;
+							if ( item.end !== item.from ) {
+								equalFlag = false;
+								value = item.update( value, item.end );
+								item.startTime = startTime;
+							}
 						}
 						if ( !transitionList[ temp ] ) {
 							transitionList[ temp ] = [];
@@ -161,17 +163,22 @@
 						//opt._transitionList.push(key);
 						//temp = $.util.camelCase(key);
 						//ele.style[temp] = ret.from + ret.unit;
-						tran.push( key, duration + "s", easing );
-						opt.delay && tran.push( delay + "s" );
+						if ( ele.style[ $.util.camelCase( key ) ] !== ( ret.end + ret.unit ) ) {
+							equalFlag = false;
+							tran.push( key, duration + "s", easing );
+							opt.delay && tran.push( delay + "s" );
+							css3.addTransition( ele, tran.join( " " ) );
+							ele.style[ $.util.camelCase( key ) ] = ret.end + ret.unit;
+							ret.startTime = new Date();
+							transitionList[ key ] = ret;
+						}
 
-						css3.addTransition( ele, tran.join( " " ) );
-						ele.style[ $.util.camelCase( key ) ] = ret.end + ret.unit;
-						ret.startTime = new Date();
-						transitionList[ key ] = ret;
 					}
 				} );
-
 				$.data( ele, "_transitionList", transitionList );
+				if ( equalFlag ) {
+					opt._transitionEnd.call( ele );
+				}
 
 			},
 			easingList = {
