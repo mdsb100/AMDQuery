@@ -106,10 +106,6 @@
 
 				config.amdquery.debug && $.logger( "keyboard.iterationKeyList", "type:code", e.type + ":" + code );
 
-				if ( e.type == "keyup" && code == 38 ) {
-					debugger
-				}
-
 				if (
 					e.type == item.type &&
 					code == item.keyCode &&
