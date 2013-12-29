@@ -10,7 +10,7 @@
     }
   </style>
   <link href="../css/reset.css" rel="stylesheet" type="text/css" />
-  <script src="../../amdquery/amdquery.js" type="text/javascript" amdquery="define:$;" amd="detectCR:1;" module="transitionToAnimation:0"></script>
+  <script src="../../amdquery/amdquery.js" type="text/javascript" amdquery="define:$;" amd="detectCR:1;" module="transitionToAnimation:1"></script>
   <script type="text/javascript">
     $.require([
       "main/query",
@@ -50,7 +50,6 @@
               //                        setTimeout(function () {
               //                            $.animationPower.resume();
               //                        }, 1000)
-              $.showMsg("1")
               //alert("")
             },
             specialEasing: {
@@ -65,7 +64,6 @@
             duration: 2000,
             easing: "linear",
             complete: function() {
-              $.showMsg("2")
               //alert("2")
             }
           })
@@ -76,7 +74,6 @@
             duration: 2000,
             easing: "linear",
             complete: function() {
-              $.showMsg("3")
               //alert("2")
             }
           });
