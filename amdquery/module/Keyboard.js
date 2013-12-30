@@ -1,5 +1,5 @@
 ﻿aQuery.define( "module/Keyboard", [ "base/config", "base/typed", "base/extend", "base/array", "main/event", "main/CustomEvent", "main/object", "hash/charcode" ], function( $, config, typed, utilExtend, array, event, CustomEvent, object, charcode ) {
-	"use strict"; //启用严格模式
+	"use strict";
 	var Keyboard = CustomEvent.extend( "Keyboard", {
 		constructor: Keyboard,
 		init: function( container, keyList ) {

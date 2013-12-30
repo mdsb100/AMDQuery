@@ -1,5 +1,5 @@
 aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "base/client", "main/css" ], function( $, typed, utilExtend, support, client, css, undefined ) {
-	"use strict"; //启用严格模式
+	"use strict";
 	this.describe( "consult JQuery1.9.1" );
 	var rnumnonpx = /^-?(?:\d*\.)?\d+(?!px)[^\d\s]+$/i,
 		rnumsplit = new RegExp( "^(" + $.core_pnum + ")(.*)$", "i" ),

@@ -324,10 +324,10 @@ amdquery
             </pre>
             <h3 name="Life_Cycle" id="Life_Cycle">Life cycle of AMDQuery</h3>
             <p>We only load "amdquery.js". The "amdquery.js" defines some base module and class aQuery. The module "base/ready" control process of AMDQuery depend on "Promise".
-            </br>One of the process is asynchronous or synchronous, so we make use of "Promise" to control process by order.
+            <br/>One of the process is asynchronous or synchronous, so we make use of "Promise" to control process by order.
             </p>
             <p>Why we should move out document element from view? Because AMDQuery.js need time to initialize widget or application.
-            </br>When document ready, we append a cover image in the current view above after moving in document element. You could modify <strong>"config.amdquery.loadingImage"</strong> to set image src.
+            <br/>When document ready, we append a cover image in the current view above after moving in document element. You could modify <strong>"config.amdquery.loadingImage"</strong> to set image src.
             </p>
             <p>If <strong>"config.app.src"</strong> has a path then create an application, else if <strong>"config.ui.initWidget"</strong> is true then initialize widget.
             </p>

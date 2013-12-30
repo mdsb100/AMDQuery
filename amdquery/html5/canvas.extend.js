@@ -1,5 +1,5 @@
 ﻿aQuery.define( "html5/canvas.extend", [ "base/extend", "html5/canvas" ], function( $, utilExtend, canvas, undefined ) {
-	"use strict"; //启用严格模式
+	"use strict";
 	if ( canvas ) {
 		var R = Math.round,
 			PI = Math.PI,

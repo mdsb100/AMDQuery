@@ -1,5 +1,5 @@
 ﻿aQuery.define( "main/communicate", [ "base/typed", "base/extend", "main/event", "main/parse" ], function( $, typed, utilExtend, parse, undefined ) {
-	"use strict"; //启用严格模式
+	"use strict";
 	var communicate = {
 		ajax: function( options ) {
 			/// <summary>AJAX数据请求

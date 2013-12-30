@@ -1,5 +1,5 @@
 ﻿aQuery.define( "module/FX", [ "base/typed", "base/array", "main/css", "main/object" ], function( $, typed, array, css, object, undefined ) {
-	"use strict"; //启用严格模式
+	"use strict";
 	var rfxnum = /^([+-]=)?([\d+-.]+)(.*)$/;
 
 	var FX = object.extend( "FX", {

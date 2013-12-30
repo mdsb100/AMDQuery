@@ -1,6 +1,6 @@
 ﻿/** @deprecated */
 aQuery.define( "ui/turnBook", [ "base/support", "base/typed", "main/css", "main/position", "main/dom", "main/class", "html5/css3", "ui/swappable", "module/Widget" ], function( $, support, typed, css1, position, dom, cls, css3, swappable, Widget, undefined ) {
-	"use strict"; //启用严格模式
+	"use strict";
 	var turnBook = Widget.extend( "ui.turnBook", {
 		appendTo: function( index ) {
 			var box = this.getBox( index );

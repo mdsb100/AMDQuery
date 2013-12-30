@@ -1,5 +1,5 @@
 ﻿aQuery.define( "main/CustomEvent", [ "main/object" ], function( $, object, undefined ) {
-	"use strict"; //启用严格模式
+	"use strict";
 	var CustomEvent = object.extend( "CustomEvent", {
 		constructor: CustomEvent,
 		init: function() {

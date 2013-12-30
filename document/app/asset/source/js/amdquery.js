@@ -8,7 +8,7 @@
 
 
 ( function( window, undefined ) {
-	"use strict"; //启用严格模式
+	"use strict";
 	var
 	core_slice = [].slice,
 		core_splice = [].splice;
@@ -230,7 +230,7 @@
 	util.extend( _config.app, defineConfig.app );
 
 	/**
-	 * You can config global name. See <a target="_top" href="/document/app/asset/source/guide/AMDQuery.html#scrollTo=Reference_AMDQuery">AMDQuery.html</a> </br>
+	 * You can config global name. See <a target="_top" href="/document/app/asset/source/guide/AMDQuery.html#scrollTo=Reference_AMDQuery">AMDQuery.html</a> <br/>
 	 * <strong>aQuery("div")</strong> equivalent to <strong>new aQuery("div")</strong>.
 	 * @global
 	 * @class
@@ -725,7 +725,7 @@
 			return core_slice.call( this );
 		},
 		/**
-		 * Get the Nth element in the matched element set OR. </br>
+		 * Get the Nth element in the matched element set OR. <br/>
 		 * Get the whole matched element set as a clean array.
 		 * @param {Number|null}
 		 * @returns {Array|Element}
@@ -801,7 +801,7 @@
 	};
 
 	( function( /*require*/) {
-		"use strict"; //启用严格模式
+		"use strict";
 		$.module.require = "1.0.0";
 
 		var _define, _require;
@@ -1764,8 +1764,8 @@
 		util.extend( $, /** @lends aQuery */ {
 
 			/**
-			 * aQuery define.</br>
-			 * If the last parameter is a function, then first argument of the function is aQuery(namespace).</br>
+			 * aQuery define.<br/>
+			 * If the last parameter is a function, then first argument of the function is aQuery(namespace).<br/>
 			 * <a href="/document/app/app.html#navmenu=#AMDQuery!scrollTo=Require_Define" target="_top">See also.</a>
 			 * @param {String} - Module name
 			 * @param {String[]|*} - If arguments[2] is a factory, it can be any object.
@@ -1795,7 +1795,7 @@
 				return this;
 			},
 			/**
-			 * aQuery require.</br>
+			 * aQuery require.<br/>
 			 * <a href="/document/app/app.html#navmenu=#AMDQuery!scrollTo=Require_Define" target="_top">See also.</a>
 			 * @param {String} - Module.
 			 * @param {ClassModuleCallback} - The callback Be call when aQuery ready.
@@ -1861,7 +1861,7 @@
 	} );
 
 	aQuery.define( "base/Promise", function( $ ) {
-		"use strict"; //启用严格模式
+		"use strict";
 		this.describe( "Class Promise" );
 		var checkArg = function( todo, fail, progress, name ) {
 			var arg = util.argToArray( arguments ),
@@ -2184,7 +2184,7 @@
 	} );
 
 	aQuery.define( "base/ready", [ "base/Promise" ], function( $, Promise ) {
-		"use strict"; //启用严格模式
+		"use strict";
 		this.describe( "Life Cycle of AMDQuery" );
 
 		/**
@@ -2237,14 +2237,11 @@
 				require.variable( "app", src );
 			}
 		} ).then( function() { //window.ready first to fix ie
-			document.documentElement.style.position = "absolute";
-			document.documentElement.style.left = "100000px";
-
+      document.documentElement.style.cssText = "left:100000px;position:absolute";
 			var promise = new Promise,
 				ready = function( e ) {
 					document.body.appendChild( cover );
-					document.documentElement.style.left = "0px";
-					document.documentElement.style.position = "";
+					document.documentElement.style.cssText = "left:0px";
 					// maybe insertBefore
 
 					if ( loadingImage ) {
@@ -2321,7 +2318,7 @@
 
 /*===================base/typed===========================*/
 aQuery.define( "base/typed", function( $ ) {
-	"use strict"; //启用严格模式
+	"use strict";
 	this.describe( "Support typeof function" );
 	var
 	class2type = {},
@@ -2644,7 +2641,7 @@ aQuery.define( "base/typed", function( $ ) {
 
 /*===================base/extend===========================*/
 aQuery.define( "base/extend", [ "base/typed" ], function( $, typed ) {
-	"use strict"; //启用严格模式
+	"use strict";
 	this.describe( "Extend Util" );
 	/**
 	 * @pubilc
@@ -2761,7 +2758,7 @@ aQuery.define( "base/extend", [ "base/typed" ], function( $, typed ) {
 
 /*===================base/array===========================*/
 aQuery.define( "base/array", [ "base/typed", "base/extend" ], function( $, typed, extend ) {
-	"use strict"; //启用严格模式
+	"use strict";
 	this.describe( "Array Util" );
 
 	var
@@ -2933,7 +2930,7 @@ aQuery.define( "base/array", [ "base/typed", "base/extend" ], function( $, typed
 
 /*===================main/object===========================*/
 ﻿aQuery.define( "main/object", [ "base/typed", "base/array", "base/extend" ], function( $, typed, array, utilExtend ) {
-	"use strict"; //启用严格模式
+	"use strict";
 	this.describe( "Define Class" );
 	var
 	pushSuperStack = function( self ) {
@@ -3351,8 +3348,8 @@ aQuery.define( "base/array", [ "base/typed", "base/extend" ], function( $, typed
 
 /*===================base/support===========================*/
 ﻿aQuery.define( "base/support", [ "base/extend" ], function( $, utilExtend ) {
-	"use strict"; //启用严格模式
-  this.describe( "Consult from jquery-1.9.1" );
+	"use strict";
+	this.describe( "Consult from jquery-1.9.1" );
 	var support, all, a,
 		input, select, fragment,
 		opt, eventName, isSupported, i,
@@ -3375,54 +3372,90 @@ aQuery.define( "base/array", [ "base/typed", "base/extend" ], function( $, typed
 	input = div.getElementsByTagName( "input" )[ 0 ];
 
 	a.style.cssText = "top:1px;float:left;opacity:.5";
-	support = {
+	/**
+	 * @pubilc
+	 * @exports base/support
+	 */
+	var support = {
+		/**
+		 * Support canvas
+		 * @type {Boolean}
+		 */
 		canvas: typeof CanvasRenderingContext2D !== "undefined",
-
+		/**
+		 * Support script eval
+		 * @type {Boolean}
+		 * @default false
+		 */
 		scriptEval: false,
-
-		// Test setAttribute on camelCase class. If it works, we need attrFixes when doing get/setAttribute (ie6/7)
+		/**
+		 * Test setAttribute on camelCase class. If it works, we need attrFixes when doing get/setAttribute (ie6/7).
+		 * @type {Boolean}
+		 */
 		getSetAttribute: div.className !== "t",
-
-		// IE strips leading whitespace when .innerHTML is used
+		/**
+		 * IE strips leading whitespace when .innerHTML is used.
+		 * @type {Boolean}
+		 */
 		leadingWhitespace: div.firstChild.nodeType === 3,
-
-		// Make sure that tbody elements aren't automatically inserted
-		// IE will insert them into empty tables
+		/**
+		 * IE will insert them into empty tables.<br/>
+		 * Make sure that tbody elements aren't automatically inserted.
+		 * @type {Boolean}
+		 */
 		tbody: !div.getElementsByTagName( "tbody" ).length,
-
-		// Make sure that link elements get serialized correctly by innerHTML
-		// This requires a wrapper element in IE
+		/**
+		 * Make sure that link elements get serialized correctly by innerHTML.<br/>
+		 * This requires a wrapper element in IE.
+		 * @type {Boolean}
+		 */
 		htmlSerialize: !! div.getElementsByTagName( "link" ).length,
-
-		// Get the style information from getAttribute
-		// (IE uses .cssText instead)
+		/**
+		 * Get the style information from getAttribute.<br/>
+		 * (IE uses .cssText instead)
+		 * @type {Boolean}
+		 */
 		style: /top/.test( a.getAttribute( "style" ) ),
-
-		// Make sure that URLs aren't manipulated
-		// (IE normalizes it by default)
+		/**
+		 * Make sure that URLs aren't manipulated.<br/>
+		 * (IE normalizes it by default).
+		 * @type {Boolean}
+		 */
 		hrefNormalized: a.getAttribute( "href" ) === "/a",
-
-		// Make sure that element opacity exists
-		// (IE uses filter instead)
-		// Use a regex to work around a WebKit issue. See #5145
+		/**
+		 * Make sure that element opacity exists.<br/>
+		 * (IE uses filter instead).<br/>
+		 * Use a regex to work around a WebKit issue.
+		 * @type {Boolean}
+		 */
 		opacity: /^0.5/.test( a.style.opacity ),
-
-		// Verify style float existence
-		// (IE uses styleFloat instead of cssFloat)
+		/**
+		 * Verify style float existence.<br/>
+		 * (IE uses styleFloat instead of cssFloat).
+		 * @type {Boolean}
+		 */
 		cssFloat: !! a.style.cssFloat,
-
-		// Check the default checkbox/radio value ("" on WebKit; "on" elsewhere)
+		/**
+		 * Check the default checkbox/radio value ("" on WebKit; "on" elsewhere)
+		 * @type {Boolean}
+		 */
 		checkOn: !! input.value,
-
-		// Make sure that a selected-by-default option has a working selected property.
-		// (WebKit defaults to false instead of true, IE too, if it's in an optgroup)
+		/**
+		 * Make sure that a selected-by-default option has a working selected property.<br/>
+		 * (WebKit defaults to false instead of true, IE too, if it's in an optgroup).
+		 * @type {Boolean}
+		 */
 		optSelected: opt.selected,
-
-		// Tests for enctype support on a form (#6743)
+		/**
+		 * Tests for enctype support on a form.
+		 * @type {Boolean}
+		 */
 		enctype: !! document.createElement( "form" ).enctype,
-
-		// Makes sure cloning an html5 element does not cause problems
-		// Where outerHTML is undefined, this still works
+		/**
+		 * Makes sure cloning an html5 element does not cause problems.<br/>
+		 * Where outerHTML is undefined, this still works.
+		 * @type {Boolean}
+		 */
 		html5Clone: document.createElement( "nav" ).cloneNode( true ).outerHTML !== "<:nav></:nav>",
 
 		// jQuery.support.boxModel DEPRECATED in 1.8 since we don't support Quirks Mode
@@ -3438,30 +3471,47 @@ aQuery.define( "base/array", [ "base/typed", "base/extend" ], function( $, typed
 		pixelPosition: false
 	};
 
-	// Make sure checked status is properly cloned
 	input.checked = true;
+	/**
+	 * Make sure checked status is properly cloned.
+	 * @type {Boolean}
+	 */
 	support.noCloneChecked = input.cloneNode( true ).checked;
 
-	// Make sure that the options inside disabled selects aren't marked as disabled
-	// (WebKit marks them as disabled)
+
 	select.disabled = true;
+	/**
+	 * Make sure that the options inside disabled selects aren't marked as disabled.<br/>
+	 * (WebKit marks them as disabled).
+	 * @type {Boolean}
+	 */
 	support.optDisabled = !opt.disabled;
 
 	// Support: IE<9
 	try {
 		delete div.test;
 	} catch ( e ) {
+		/**
+		 * Delete Expando
+		 * @type {Boolean}
+		 */
 		support.deleteExpando = false;
 	}
 
-	// Check if we can trust getAttribute("value")
 	input = document.createElement( "input" );
 	input.setAttribute( "value", "" );
+	/**
+	 * Check if we can trust getAttribute("value").
+	 * @type {Boolean}
+	 */
 	support.input = input.getAttribute( "value" ) === "";
 
-	// Check if an input maintains its value after becoming a radio
 	input.value = "t";
 	input.setAttribute( "type", "radio" );
+	/**
+	 * Check if an input maintains its value after becoming a radio.
+	 * @type {Boolean}
+	 */
 	support.radioValue = input.value === "t";
 
 	// #11217 - WebKit loses check when the name is after the checked attribute
@@ -3471,26 +3521,54 @@ aQuery.define( "base/array", [ "base/typed", "base/extend" ], function( $, typed
 	fragment = document.createDocumentFragment();
 	fragment.appendChild( input );
 
-	// Check if a disconnected checkbox will retain its checked
-	// value of true after appended to the DOM (IE6/7)
+	/**
+	 * Check if a disconnected checkbox will retain its checked.<br/>
+	 * Value of true after appended to the DOM (IE6/7)
+	 * @type {Boolean}
+	 */
 	support.appendChecked = input.checked;
 
-	// WebKit doesn't clone checked state correctly in fragments
+	/**
+	 * WebKit doesn't clone checked state correctly in fragments
+	 * @type {Boolean}
+	 */
 	support.checkClone = fragment.cloneNode( true ).cloneNode( true ).lastChild.checked;
 
-	// Support: IE<9
-	// Opera does not clone events (and typeof div.attachEvent === undefined).
-	// IE9-10 clones events bound via attachEvent, but they don't trigger with .click()
 	if ( div.attachEvent ) {
 		div.attachEvent( "onclick", function() {
+			/**
+			 * Support: IE<9<br/>
+			 * Opera does not clone events (and typeof div.attachEvent === undefined).<br/>
+			 * IE9-10 clones events bound via attachEvent, but they don't trigger with .click().<br/>
+			 * @type {Boolean}
+			 */
 			support.noCloneEvent = false;
 		} );
 
 		div.cloneNode( true ).click();
 	}
 
-	// Support: IE<9 (lack submit/change bubble), Firefox 17+ (lack focusin event)
-	// Beware of CSP restrictions (https://developer.mozilla.org/en/Security/CSP), test/csp.php
+	/**
+	 * Support: IE<9 (lack submit/change bubble), Firefox 17+ (lack focusin event).<br/>
+	 * Beware of CSP restrictions (https://developer.mozilla.org/en/Security/CSP), test/csp.php
+	 * @type {Boolean}
+	 * @name submit
+	 * @memberof module:base/support
+	 */
+	/**
+	 * Support: IE<9 (lack submit/change bubble), Firefox 17+ (lack focusin event).<br/>
+	 * Beware of CSP restrictions (https://developer.mozilla.org/en/Security/CSP), test/csp.php
+	 * @type {Boolean}
+	 * @name change
+	 * @memberof module:base/support
+	 */
+	/**
+	 * Support: IE<9 (lack submit/change bubble), Firefox 17+ (lack focusin event).<br/>
+	 * Beware of CSP restrictions (https://developer.mozilla.org/en/Security/CSP), test/csp.php
+	 * @type {Boolean}
+	 * @name focusin
+	 * @memberof module:base/support
+	 */
 	for ( i in {
 		submit: true,
 		change: true,
@@ -3503,6 +3581,10 @@ aQuery.define( "base/array", [ "base/typed", "base/extend" ], function( $, typed
 
 	div.style.backgroundClip = "content-box";
 	div.cloneNode( true ).style.backgroundClip = "";
+	/**
+	 * Clear clone style.
+	 * @type {Boolean}
+	 */
 	support.clearCloneStyle = div.style.backgroundClip === "content-box";
 
 	$.ready( function() {
@@ -3538,49 +3620,72 @@ aQuery.define( "base/array", [ "base/typed", "base/extend" ], function( $, typed
 		tds[ 0 ].style.display = "";
 		tds[ 1 ].style.display = "none";
 
-		// Support: IE8
-		// Check if empty table cells still have offsetWidth/Height
+		/**
+		 * Support: IE8.<br/>
+		 * Check if empty table cells still have offsetWidth/Height
+		 * @type {Boolean}
+		 */
 		support.reliableHiddenOffsets = isSupported && ( tds[ 0 ].offsetHeight === 0 );
 
 		// Check box-sizing and margin behavior
 		div.innerHTML = "";
 		div.style.cssText = "box-sizing:border-box;-moz-box-sizing:border-box;-webkit-box-sizing:border-box;padding:1px;border:1px;display:block;width:4px;margin-top:1%;position:absolute;top:1%;";
+		/**
+		 * @type {Boolean}
+		 */
 		support.boxSizing = ( div.offsetWidth === 4 );
+		/**
+		 * @type {Boolean}
+		 */
 		support.doesNotIncludeMarginInBodyOffset = ( body.offsetTop !== 1 );
 
 		// Use window.getComputedStyle because jsdom on node.js will break without it.
 		if ( window.getComputedStyle ) {
+			/**
+			 * @type {Boolean}
+			 */
 			support.pixelPosition = ( window.getComputedStyle( div, null ) || {} ).top !== "1%";
+			/**
+			 * @type {Boolean}
+			 */
 			support.boxSizingReliable = ( window.getComputedStyle( div, null ) || {
 				width: "4px"
 			} ).width === "4px";
 
-			// Check if div with explicit width and no margin-right incorrectly
-			// gets computed margin-right based on width of container. (#3333)
-			// Fails in WebKit before Feb 2011 nightlies
-			// WebKit Bug 13343 - getComputedStyle returns wrong value for margin-right
 			marginDiv = div.appendChild( document.createElement( "div" ) );
 			marginDiv.style.cssText = div.style.cssText = divReset;
 			marginDiv.style.marginRight = marginDiv.style.width = "0";
 			div.style.width = "1px";
-
+			/**
+			 * Check if div with explicit width and no margin-right incorrectly
+			 * gets computed margin-right based on width of container.<br/>
+			 * Fails in WebKit before Feb 2011 nightlies.<br/>
+			 * WebKit Bug 13343 - getComputedStyle returns wrong value for margin-right.
+			 * @type {Boolean}
+			 */
 			support.reliableMarginRight = !parseFloat( ( window.getComputedStyle( marginDiv, null ) || {} ).marginRight );
 		}
 
 		if ( typeof div.style.zoom !== "undefined" ) {
-			// Support: IE<8
-			// Check if natively block-level elements act like inline-block
-			// elements when setting their display to 'inline' and giving
-			// them layout
 			div.innerHTML = "";
 			div.style.cssText = divReset + "width:1px;padding:1px;display:inline;zoom:1";
+			/**
+			 * Support: IE<8.<br/>
+			 * Check if natively block-level elements act like inline-block
+			 * elements when setting their display to 'inline' and giving
+			 * them layout.
+			 * @type {Boolean}
+			 */
 			support.inlineBlockNeedsLayout = ( div.offsetWidth === 3 );
 
-			// Support: IE6
-			// Check if elements with layout shrink-wrap their children
 			div.style.display = "block";
 			div.innerHTML = "<div></div>";
 			div.firstChild.style.width = "5px";
+			/**
+			 * Support: IE6.<br/>
+			 * Check if elements with layout shrink-wrap their children.
+			 * @type {Boolean}
+			 */
 			support.shrinkWrapBlocks = ( div.offsetWidth !== 3 );
 
 			if ( support.inlineBlockNeedsLayout ) {
@@ -3627,7 +3732,7 @@ aQuery.define( "base/array", [ "base/typed", "base/extend" ], function( $, typed
 
 /*===================main/data===========================*/
 ﻿aQuery.define( "main/data", [ "base/extend", "base/typed", "base/support" ], function( $, utilExtend, typed, support, undefined ) {
-	"use strict"; //启用严格模式
+	"use strict";
 
 	// checks a cache object for emptiness
 
@@ -5777,7 +5882,7 @@ if ( typeof define === "function" && define.amd ) {
 
 /*===================main/query===========================*/
 ﻿aQuery.define( "main/query", [ "lib/js/sizzle", "base/extend", "base/typed", "base/array" ], function( $, Sizzle, utilExtend, typed, array, undefined ) {
-	"use strict"; //启用严格模式
+	"use strict";
 	this.describe( "Depend Sizzle1.10.3" );
 	$.module[ "lib/js/sizzle" ] = "Sizzle1.10.3";
 
@@ -6409,7 +6514,7 @@ if ( typeof define === "function" && define.amd ) {
 
 /*===================main/CustomEvent===========================*/
 ﻿aQuery.define( "main/CustomEvent", [ "main/object" ], function( $, object, undefined ) {
-	"use strict"; //启用严格模式
+	"use strict";
 	var CustomEvent = object.extend( "CustomEvent", {
 		constructor: CustomEvent,
 		init: function() {
@@ -6573,7 +6678,7 @@ if ( typeof define === "function" && define.amd ) {
 
 /*===================main/event===========================*/
 ﻿aQuery.define( "main/event", [ "base/config", "base/typed", "base/extend", "base/client", "base/array", "main/CustomEvent", "main/data" ], function( $, config, typed, utilExtend, client, array, CustomEvent, data, undefined ) {
-	"use strict"; //启用严格模式
+	"use strict";
 	var mouse = "contextmenu click dblclick mousedown mouseup mousemove mouseover mouseout mouseenter mouseleave mousewheel DOMMouseScroll".split( " " ),
 		/*DOMMouseScroll firefox*/
 		mutation = "load unload error".split( " " ),
@@ -7689,7 +7794,7 @@ if ( typeof define === "function" && define.amd ) {
 
 /*===================main/attr===========================*/
 ﻿aQuery.define( "main/attr", [ "base/typed", "base/extend", "base/support" ], function( $, typed, utilExtend, support, undefined ) {
-	"use strict"; //启用严格模式
+	"use strict";
 	//暂不要那么多hooks
 	var fixSpecified = {
 		name: true,
@@ -7713,12 +7818,12 @@ if ( typeof define === "function" && define.amd ) {
 		attr = {
 			getAttr: function( ele, name ) {
 				var ret;
-				//                if (!support.getSetAttribute) {
-				//                    ret = ele.getAttributeNode(name);
-				//                    return ret && (fixSpecified[name] ? ret.nodeValue !== "" : ret.specified) ?
-				//				    ret.nodeValue :
-				//				    undefined;
-				//                }
+      if ( !support.getSetAttribute ) {
+        ret = ele.getAttributeNode( name );
+        return ret && ( fixSpecified[ name ] ? ret.nodeValue !== "" : ret.specified ) ?
+          ret.nodeValue :
+          undefined;
+      }
 				return ( ret = ele.getAttributeNode( name ) ) ? ret.nodeValue : undefined;
 			},
 			getVal: function( ele ) {
@@ -7880,7 +7985,7 @@ if ( typeof define === "function" && define.amd ) {
 
 /*===================module/src===========================*/
 ﻿aQuery.define( "module/src", [ "base/typed", "base/extend", "base/client" ], function( $, typed, utilExtend, client, undefined ) {
-	"use strict"; //启用严格模式
+	"use strict";
 	var
 	hasOwnProperty = Object.prototype.hasOwnProperty,
 		src = {
@@ -8096,7 +8201,7 @@ if ( typeof define === "function" && define.amd ) {
 	src,
 	utilEval,
 	undefined ) {
-	"use strict"; //启用严格模式
+	"use strict";
 
 	var prefix = "amdquery";
 
@@ -8821,7 +8926,7 @@ if ( typeof define === "function" && define.amd ) {
 
 /*===================main/class===========================*/
 ﻿aQuery.define( "main/class", [ "base/extend", "base/support" ], function( $, utilExtend, support, undefined ) {
-	"use strict"; //启用严格模式
+	"use strict";
 	var cls,
 		replaceClass = function( ele, oldClassName, newClassName ) {
 			/// <summary>清空所有样式表</summary>
@@ -9001,7 +9106,7 @@ if ( typeof define === "function" && define.amd ) {
 
 /*===================main/css===========================*/
 aQuery.define( "main/css", [ "base/typed", "base/extend", "base/array", "base/support", "base/client", "main/data", "main/query" ], function( $, typed, utilExtend, utilArray, support, client, data, query, undefined ) {
-	"use strict"; //启用严格模式
+	"use strict";
 	this.describe( "consult JQuery1.9.1" );
 	var rnumnonpx = /^-?(?:\d*\.)?\d+(?!px)[^\d\s]+$/i,
 		rmargin = /^margin/,
@@ -9480,7 +9585,7 @@ aQuery.define( "main/css", [ "base/typed", "base/extend", "base/array", "base/su
 
 /*===================main/position===========================*/
 aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "base/client", "main/css" ], function( $, typed, utilExtend, support, client, css, undefined ) {
-	"use strict"; //启用严格模式
+	"use strict";
 	this.describe( "consult JQuery1.9.1" );
 	var rnumnonpx = /^-?(?:\d*\.)?\d+(?!px)[^\d\s]+$/i,
 		rnumsplit = new RegExp( "^(" + $.core_pnum + ")(.*)$", "i" ),
@@ -9984,7 +10089,7 @@ aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "
 
 /*===================main/dom===========================*/
 ﻿aQuery.define( "main/dom", [ "base/typed", "base/extend", "base/array", "base/support", "main/data", "main/event", "main/query" ], function( $, typed, utilExtend, utilArray, support, data, event, query, undefined ) {
-	"use strict"; //启用严格模式
+	"use strict";
   this.describe( "consult JQuery1.9.1" );
 	var nodeNames = "abbr|article|aside|audio|bdi|canvas|data|datalist|details|figcaption|figure|footer|" +
 		"header|hgroup|mark|meter|nav|output|progress|section|summary|time|video",
@@ -10924,7 +11029,7 @@ aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "
 
 /*===================module/FX===========================*/
 ﻿aQuery.define( "module/FX", [ "base/typed", "base/array", "main/css", "main/object" ], function( $, typed, array, css, object, undefined ) {
-	"use strict"; //启用严格模式
+	"use strict";
 	var rfxnum = /^([+-]=)?([\d+-.]+)(.*)$/;
 
 	var FX = object.extend( "FX", {
@@ -11114,7 +11219,7 @@ aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "
 
 /*===================module/Thread===========================*/
 ﻿aQuery.define( "module/Thread", [ "main/CustomEvent", "base/extend", "main/object" ], function( $, CustomEvent, utilExtend, object ) {
-	"use strict"; //启用严格模式
+	"use strict";
 	/// <summary>创造一个新进程
 	/// <para>num obj.delay:延迟多少毫秒</para>
 	/// <para>num obj.duration:持续多少毫米</para>
@@ -11456,7 +11561,7 @@ aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "
 
 /*===================module/tween===========================*/
 ﻿aQuery.define( "module/tween", [ "base/typed" ], function( $, typed, undefined ) {
-	"use strict"; //启用严格模式
+	"use strict";
 	var math = Math,
 		// pi = math.PI,
 		pow = math.pow,
@@ -11591,7 +11696,7 @@ aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "
 
 /*===================module/animate===========================*/
 ﻿aQuery.define( "module/animate", [ "base/typed", "base/extend", "base/queue", "main/data", "module/FX", "module/Thread", "module/tween" ], function( $, typed, utilExtend, Queue, data, FX, Thread, tween, undefined ) {
-	"use strict"; //启用严格模式
+	"use strict";
 	FX.tick = function() {
 		if ( thread.getStatus() === "run" ) return;
 		thread.start();
@@ -11882,7 +11987,7 @@ aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "
 
 /*===================html5/css3===========================*/
 ﻿aQuery.define( "html5/css3", [ "base/support", "base/extend", "base/typed", "base/client", "base/array", "main/css" ], function( $, support, utilExtend, typed, client, array, css2, undefined ) {
-	"use strict"; //启用严格模式
+	"use strict";
   this.describe("HTML5 CSS3");
 	var css3Head = ( function() {
 		var head = "";
@@ -13058,7 +13163,7 @@ aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "
 
 /*===================html5/animate.transform===========================*/
 ﻿aQuery.define( "html5/animate.transform", [ "base/typed", "base/extend", "base/support", "main/object", "module/FX", "html5/css3", "module/animate" ], function( $, typed, utilExtend, support, object, FX, css3, animate, undefined ) {
-	"use strict"; //启用严格模式
+	"use strict";
 	this.describe( "Support transform to animation" );
 	var getScale = function( r ) {
 		return r ? Math.max( r, 0 ) : 1;
@@ -13238,7 +13343,7 @@ define( "hash/cubicBezier.tween", function() {
 	transform,
 	cubicBezierTween,
 	undefined ) {
-	"use strict"; //启用严格模式
+	"use strict";
 	this.describe( "Animation to HTML5 transition" );
 	//do not use em
 
@@ -13556,7 +13661,7 @@ define( "hash/cubicBezier.tween", function() {
 
 /*===================module/effect===========================*/
 ﻿aQuery.define( "module/effect", [ "base/typed", "module/animate" ], function( $, typed, animate, undefined ) {
-	"use strict"; //启用严格模式
+	"use strict";
 	var slideDownComplete = function() {
 		$.data( this, "slideOriginHeight", null );
 	},
@@ -13769,7 +13874,7 @@ define( "hash/cubicBezier.tween", function() {
   "html5/css3.transition.animate",
   "module/effect"
  ], function( $, typed, utilExtend, object, Widget, cls, event, CustomEvent, css, position, dom ) {
-	"use strict"; //启用严格模式
+	"use strict";
 	Widget.fetchCSS( "ui/css/accordion" );
 
 	var Key = CustomEvent.extend( "Key", {
@@ -14334,7 +14439,7 @@ aQuery.define( "ui/button", [
   ],
 
 	function( $, client, Widget, query, cls, event, css, position, dom, attr, css3 ) {
-		"use strict"; //启用严格模式
+		"use strict";
 
 		Widget.fetchCSS( "ui/css/button" );
 
@@ -14463,7 +14568,7 @@ aQuery.define( "ui/button", [
 
 /*===================html5/css3.position===========================*/
 aQuery.define( "html5/css3.position", [ "base/support", "main/position", "html5/css3" ], function( $, support, position, css3 ) {
-  "use strict"; //启用严格模式
+  "use strict";
   this.describe( "Get positionX: left + translateX" );
   var css3Position = {
     getPositionX: function( ele ) {
@@ -14582,7 +14687,7 @@ aQuery.define( "html5/css3.position", [ "base/support", "main/position", "html5/
 
 /*===================module/tween.extend===========================*/
 ﻿aQuery.define( "module/tween.extend", [ "base/extend", "module/tween" ], function( $, utilExtend, tween, undefined ) {
-	"use strict"; //启用严格模式
+	"use strict";
 	var math = Math;
 	utilExtend.easyExtend( tween, {
 		quad: {
@@ -14785,7 +14890,7 @@ aQuery.define( "html5/css3.position", [ "base/support", "main/position", "html5/
 	query,
 	tween,
 	undefined ) {
-	"use strict"; //启用严格模式
+	"use strict";
 	var isTransform3d = !! config.ui.isTransform3d && support.transform3d;
 
 	var initPositionParent, getPositionX, getPositionY;
@@ -15107,7 +15212,7 @@ aQuery.define( "html5/css3.position", [ "base/support", "main/position", "html5/
 
 /*===================util/function.extend===========================*/
 aQuery.define( "util/function.extend", [ "base/extend" ], function( $, utilExtend ) {
-	"use strict"; //启用严格模式
+	"use strict";
 	this.describe( "consult underscore" );
 	utilExtend.easyExtend( $.util, {
 		compose: function() {
@@ -15208,7 +15313,7 @@ aQuery.define( "ui/flex", [
     "util/function.extend"
   ],
 	function( $, client, typed, support, Widget, query, cls, event, css, position, dom, attr, css3, functionExtend ) {
-		"use strict"; //启用严格模式
+		"use strict";
 
 		Widget.fetchCSS( "ui/css/flex" );
 
@@ -15765,7 +15870,7 @@ aQuery.define( "ui/flex", [
 
 /*===================module/Keyboard===========================*/
 ﻿aQuery.define( "module/Keyboard", [ "base/config", "base/typed", "base/extend", "base/array", "main/event", "main/CustomEvent", "main/object", "hash/charcode" ], function( $, config, typed, utilExtend, array, event, CustomEvent, object, charcode ) {
-	"use strict"; //启用严格模式
+	"use strict";
 	var Keyboard = CustomEvent.extend( "Keyboard", {
 		constructor: Keyboard,
 		init: function( container, keyList ) {
@@ -16018,7 +16123,7 @@ aQuery.define( "ui/flex", [
 
 /*===================ui/keyboard===========================*/
 ﻿aQuery.define( "ui/keyboard", [ "main/object", "module/Widget", "module/Keyboard" ], function( $, object, Widget, Keyboard, undefined ) {
-	"use strict"; //启用严格模式
+	"use strict";
 	var allowPublic = Widget.AllowPublic;
 	var keyboard = Widget.extend( "ui.keyboard", {
 		container: null,
@@ -16115,7 +16220,7 @@ aQuery.define( "ui/navitem", [
     "module/effect"
   ],
 	function( $, typed, client, Widget, cls, event, css, position, dom, attr, src, animate ) {
-		"use strict"; //启用严格模式
+		"use strict";
 
 		var complete = function() {
 			css.css( this, "height", "auto" );
@@ -16428,7 +16533,7 @@ aQuery.define( "ui/navitem", [
 
 /*===================ecma5/array.compati===========================*/
 ﻿aQuery.define( "ecma5/array.compati", [ "base/array" ], function( $, array ) {
-	"use strict"; //启用严格模式
+	"use strict";
   this.describe( "ECMA Array" );
 	var name, obj = {
 			every: function( fun, context ) {
@@ -16570,7 +16675,7 @@ aQuery.define( "ui/navmenu", [
     "ecma5/array.compati"
   ],
 	function( $, typed, utilExtend, NavItem, Widget, query, cls, event, css, position, dom, attr, Array ) {
-		"use strict"; //启用严格模式
+		"use strict";
 
 		Widget.fetchCSS( "ui/css/navmenu" );
 
@@ -16784,7 +16889,7 @@ aQuery.define( "ui/navmenu", [
 
 /*===================module/math===========================*/
 ﻿aQuery.define( 'module/math', [ "base/extend" ], function( $, utilExtend, undefined ) {
-	"use strict"; //启用严格模式
+	"use strict";
 	var M = Math,
 		pi = M.PI,
 		martrix = function( a, b, c ) {
@@ -16991,7 +17096,7 @@ aQuery.define( "ui/navmenu", [
 
 /*===================ui/swappable===========================*/
 ﻿aQuery.define( "ui/swappable", [ "base/typed", "base/client", "main/event", "module/math", "module/Widget", "html5/css3.position" ], function( $, typed, client, event, math, Widget, css3Position, undefined ) {
-	"use strict"; //启用严格模式
+	"use strict";
 	var swappable = Widget.extend( "ui.swappable", {
 		container: null,
 		create: function() {
@@ -17254,7 +17359,7 @@ aQuery.define( "ui/scrollableview", [
 	swappable,
 	draggable,
 	keyboard, undefined ) {
-	"use strict"; //启用严格模式
+	"use strict";
 	Widget.fetchCSS( "ui/css/scrollableview" );
 	var isTransform3d = !! config.ui.isTransform3d && support.transform3d;
 
@@ -18561,7 +18666,7 @@ aQuery.define( "ui/tabbutton", [
     "html5/css3"
   ],
 	function( $, Widget, Button, query, cls, event, css, position, dom, css3, src ) {
-		"use strict"; //启用严格模式
+		"use strict";
 
 		Widget.fetchCSS( "ui/css/tabbutton" );
 
@@ -18666,7 +18771,7 @@ aQuery.define( "ui/tabbar", [
     "main/attr"
   ],
 	function( $, typed, Widget, tabbutton, query, cls, event, css, position, dom, attr ) {
-		"use strict"; //启用严格模式
+		"use strict";
 
 		Widget.fetchCSS( "ui/css/tabbar" );
 
@@ -18790,7 +18895,7 @@ aQuery.define( "ui/tabview", [
     "ui/tabbutton"
   ],
 	function( $, query, cls, event, css, position, dom, attr, Widget, tabbar, tabbutton ) {
-		"use strict"; //启用严格模式
+		"use strict";
 
 		// Widget.fetchCSS( "ui/css/tabview" );
 
@@ -18920,7 +19025,7 @@ aQuery.define( "ui/tabview", [
 /*===================ui/turnBook===========================*/
 ﻿/** @deprecated */
 aQuery.define( "ui/turnBook", [ "base/support", "base/typed", "main/css", "main/position", "main/dom", "main/class", "html5/css3", "ui/swappable", "module/Widget" ], function( $, support, typed, css1, position, dom, cls, css3, swappable, Widget, undefined ) {
-	"use strict"; //启用严格模式
+	"use strict";
 	var turnBook = Widget.extend( "ui.turnBook", {
 		appendTo: function( index ) {
 			var box = this.getBox( index );
@@ -19653,7 +19758,7 @@ aQuery.define( "ui/turnBook", [ "base/support", "base/typed", "main/css", "main/
 
 /*===================main/parse===========================*/
 ﻿aQuery.define( "main/parse", [ "main/dom" ], function( $, dom ) {
-	"use strict"; //启用严格模式
+	"use strict";
 	var rsingleTag = /^<(\w+)\s*\/?>(?:<\/\1>|)$/;
 
 	var

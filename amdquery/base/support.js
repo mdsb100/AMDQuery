@@ -1,5 +1,5 @@
 ﻿aQuery.define( "base/support", [ "base/extend" ], function( $, utilExtend ) {
-	"use strict"; //启用严格模式
+	"use strict";
 	this.describe( "Consult from jquery-1.9.1" );
 	var support, all, a,
 		input, select, fragment,
@@ -50,38 +50,38 @@
 		 */
 		leadingWhitespace: div.firstChild.nodeType === 3,
 		/**
-		 * IE will insert them into empty tables.</br>
+		 * IE will insert them into empty tables.<br/>
 		 * Make sure that tbody elements aren't automatically inserted.
 		 * @type {Boolean}
 		 */
 		tbody: !div.getElementsByTagName( "tbody" ).length,
 		/**
-		 * Make sure that link elements get serialized correctly by innerHTML.</br>
+		 * Make sure that link elements get serialized correctly by innerHTML.<br/>
 		 * This requires a wrapper element in IE.
 		 * @type {Boolean}
 		 */
 		htmlSerialize: !! div.getElementsByTagName( "link" ).length,
 		/**
-		 * Get the style information from getAttribute.</br>
+		 * Get the style information from getAttribute.<br/>
 		 * (IE uses .cssText instead)
 		 * @type {Boolean}
 		 */
 		style: /top/.test( a.getAttribute( "style" ) ),
 		/**
-		 * Make sure that URLs aren't manipulated.</br>
+		 * Make sure that URLs aren't manipulated.<br/>
 		 * (IE normalizes it by default).
 		 * @type {Boolean}
 		 */
 		hrefNormalized: a.getAttribute( "href" ) === "/a",
 		/**
-		 * Make sure that element opacity exists.</br>
-		 * (IE uses filter instead).</br>
+		 * Make sure that element opacity exists.<br/>
+		 * (IE uses filter instead).<br/>
 		 * Use a regex to work around a WebKit issue.
 		 * @type {Boolean}
 		 */
 		opacity: /^0.5/.test( a.style.opacity ),
 		/**
-		 * Verify style float existence.</br>
+		 * Verify style float existence.<br/>
 		 * (IE uses styleFloat instead of cssFloat).
 		 * @type {Boolean}
 		 */
@@ -92,7 +92,7 @@
 		 */
 		checkOn: !! input.value,
 		/**
-		 * Make sure that a selected-by-default option has a working selected property.</br>
+		 * Make sure that a selected-by-default option has a working selected property.<br/>
 		 * (WebKit defaults to false instead of true, IE too, if it's in an optgroup).
 		 * @type {Boolean}
 		 */
@@ -103,7 +103,7 @@
 		 */
 		enctype: !! document.createElement( "form" ).enctype,
 		/**
-		 * Makes sure cloning an html5 element does not cause problems.</br>
+		 * Makes sure cloning an html5 element does not cause problems.<br/>
 		 * Where outerHTML is undefined, this still works.
 		 * @type {Boolean}
 		 */
@@ -132,7 +132,7 @@
 
 	select.disabled = true;
 	/**
-	 * Make sure that the options inside disabled selects aren't marked as disabled.</br>
+	 * Make sure that the options inside disabled selects aren't marked as disabled.<br/>
 	 * (WebKit marks them as disabled).
 	 * @type {Boolean}
 	 */
@@ -173,7 +173,7 @@
 	fragment.appendChild( input );
 
 	/**
-	 * Check if a disconnected checkbox will retain its checked.</br>
+	 * Check if a disconnected checkbox will retain its checked.<br/>
 	 * Value of true after appended to the DOM (IE6/7)
 	 * @type {Boolean}
 	 */
@@ -188,9 +188,9 @@
 	if ( div.attachEvent ) {
 		div.attachEvent( "onclick", function() {
 			/**
-			 * Support: IE<9</br>
-			 * Opera does not clone events (and typeof div.attachEvent === undefined).</br>
-			 * IE9-10 clones events bound via attachEvent, but they don't trigger with .click().</br>
+			 * Support: IE<9<br/>
+			 * Opera does not clone events (and typeof div.attachEvent === undefined).<br/>
+			 * IE9-10 clones events bound via attachEvent, but they don't trigger with .click().<br/>
 			 * @type {Boolean}
 			 */
 			support.noCloneEvent = false;
@@ -200,21 +200,21 @@
 	}
 
 	/**
-	 * Support: IE<9 (lack submit/change bubble), Firefox 17+ (lack focusin event).</br>
+	 * Support: IE<9 (lack submit/change bubble), Firefox 17+ (lack focusin event).<br/>
 	 * Beware of CSP restrictions (https://developer.mozilla.org/en/Security/CSP), test/csp.php
 	 * @type {Boolean}
 	 * @name submit
 	 * @memberof module:base/support
 	 */
 	/**
-	 * Support: IE<9 (lack submit/change bubble), Firefox 17+ (lack focusin event).</br>
+	 * Support: IE<9 (lack submit/change bubble), Firefox 17+ (lack focusin event).<br/>
 	 * Beware of CSP restrictions (https://developer.mozilla.org/en/Security/CSP), test/csp.php
 	 * @type {Boolean}
 	 * @name change
 	 * @memberof module:base/support
 	 */
 	/**
-	 * Support: IE<9 (lack submit/change bubble), Firefox 17+ (lack focusin event).</br>
+	 * Support: IE<9 (lack submit/change bubble), Firefox 17+ (lack focusin event).<br/>
 	 * Beware of CSP restrictions (https://developer.mozilla.org/en/Security/CSP), test/csp.php
 	 * @type {Boolean}
 	 * @name focusin
@@ -272,7 +272,7 @@
 		tds[ 1 ].style.display = "none";
 
 		/**
-		 * Support: IE8.</br>
+		 * Support: IE8.<br/>
 		 * Check if empty table cells still have offsetWidth/Height
 		 * @type {Boolean}
 		 */
@@ -309,8 +309,8 @@
 			div.style.width = "1px";
 			/**
 			 * Check if div with explicit width and no margin-right incorrectly
-			 * gets computed margin-right based on width of container.</br>
-			 * Fails in WebKit before Feb 2011 nightlies.</br>
+			 * gets computed margin-right based on width of container.<br/>
+			 * Fails in WebKit before Feb 2011 nightlies.<br/>
 			 * WebKit Bug 13343 - getComputedStyle returns wrong value for margin-right.
 			 * @type {Boolean}
 			 */
@@ -321,7 +321,7 @@
 			div.innerHTML = "";
 			div.style.cssText = divReset + "width:1px;padding:1px;display:inline;zoom:1";
 			/**
-			 * Support: IE<8.</br>
+			 * Support: IE<8.<br/>
 			 * Check if natively block-level elements act like inline-block
 			 * elements when setting their display to 'inline' and giving
 			 * them layout.
@@ -333,7 +333,7 @@
 			div.innerHTML = "<div></div>";
 			div.firstChild.style.width = "5px";
 			/**
-			 * Support: IE6.</br>
+			 * Support: IE6.<br/>
 			 * Check if elements with layout shrink-wrap their children.
 			 * @type {Boolean}
 			 */

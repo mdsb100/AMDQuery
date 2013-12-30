@@ -11,7 +11,7 @@ aQuery.define( "ui/tabview", [
     "ui/tabbutton"
   ],
 	function( $, query, cls, event, css, position, dom, attr, Widget, tabbar, tabbutton ) {
-		"use strict"; //启用严格模式
+		"use strict";
 
 		// Widget.fetchCSS( "ui/css/tabview" );
 

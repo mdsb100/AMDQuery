@@ -41,7 +41,7 @@ aQuery.define( "ui/scrollableview", [
 	swappable,
 	draggable,
 	keyboard, undefined ) {
-	"use strict"; //启用严格模式
+	"use strict";
 	Widget.fetchCSS( "ui/css/scrollableview" );
 	var isTransform3d = !! config.ui.isTransform3d && support.transform3d;
 

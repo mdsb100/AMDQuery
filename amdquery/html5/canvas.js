@@ -1,5 +1,5 @@
 ﻿aQuery.define( "html5/canvas", [ "base/extend", "module/color" ], function( $, utilExtend, color, undefined ) {
-	"use strict"; //启用严格模式
+	"use strict";
 	var canvas = null;
 	if ( typeof CanvasRenderingContext2D != "undefined" ) {
 		canvas = CanvasRenderingContext2D;

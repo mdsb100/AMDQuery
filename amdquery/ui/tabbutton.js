@@ -10,7 +10,7 @@ aQuery.define( "ui/tabbutton", [
     "html5/css3"
   ],
 	function( $, Widget, Button, query, cls, event, css, position, dom, css3, src ) {
-		"use strict"; //启用严格模式
+		"use strict";
 
 		Widget.fetchCSS( "ui/css/tabbutton" );
 

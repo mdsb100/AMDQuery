@@ -1,5 +1,5 @@
 ﻿aQuery.define( "module/threed", [ "main/event", "module/math" ], function( $, event, math ) {
-	"use strict"; //启用严格模式
+	"use strict";
 
 	var
 	M = Math,

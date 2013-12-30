@@ -1,6 +1,6 @@
 ﻿aQuery.define( "module/color", [ "base/extend", "main/object", "hash/cssColors" ], function( $, utilExtend, object, cssColors, undefined ) {
 	this.describe( "quote from colo.js by Andrew Brehaut, Tim Baumann" );
-	"use strict"; //启用严格模式
+	"use strict";
 
 	var css_integer = "(?:\\+|-)?\\d+",
 		css_float = "(?:\\+|-)?\\d*\\.\\d+",

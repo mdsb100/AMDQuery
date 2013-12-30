@@ -1,5 +1,5 @@
 aQuery.define( "base/array", [ "base/typed", "base/extend" ], function( $, typed, extend ) {
-	"use strict"; //启用严格模式
+	"use strict";
 	this.describe( "Array Util" );
 
 	var

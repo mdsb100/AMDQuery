@@ -1,5 +1,5 @@
 ﻿aQuery.define( function( $, undefined ) {
-	"use strict"; //启用严格模式
+	"use strict";
 	var date = {
 		pattern: function( date, fmt ) {
 			var o = {

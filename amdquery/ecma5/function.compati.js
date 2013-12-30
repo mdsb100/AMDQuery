@@ -1,5 +1,5 @@
 ﻿define( "ecma5/function.compati", function() {
-	"use strict"; //启用严格模式
+	"use strict";
   this.describe( "ECMA Function" );
 	if ( !Function.prototype.bind ) {
 		Function.prototype.bind = function( context ) {

@@ -1,5 +1,5 @@
 ﻿define( "ecma5/objcet.compati", function() {
-	"use strict"; //启用严格模式
+	"use strict";
   this.describe( "ECMA Object" );
 	var fun = function() {}, obj = {
 			getPrototypeOf: fun,

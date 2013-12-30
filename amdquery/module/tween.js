@@ -1,5 +1,5 @@
 ﻿aQuery.define( "module/tween", [ "base/typed" ], function( $, typed, undefined ) {
-	"use strict"; //启用严格模式
+	"use strict";
 	var math = Math,
 		// pi = math.PI,
 		pow = math.pow,

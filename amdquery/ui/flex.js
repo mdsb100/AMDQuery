@@ -14,7 +14,7 @@ aQuery.define( "ui/flex", [
     "util/function.extend"
   ],
 	function( $, client, typed, support, Widget, query, cls, event, css, position, dom, attr, css3, functionExtend ) {
-		"use strict"; //启用严格模式
+		"use strict";
 
 		Widget.fetchCSS( "ui/css/flex" );
 

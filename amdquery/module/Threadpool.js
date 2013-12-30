@@ -1,5 +1,5 @@
 ﻿aQuery.define( "module/Threadpool", [ "main/object", "module/Thread" ], function( $, object, Thread, undefined ) {
-	"use strict"; //启用严格模式
+	"use strict";
 	var ThreadPool = object.Collection( "ThreadPool", {
 		addHandler: function( type, fn ) {
 			/// <summary>为所有进程添加事件</summary>

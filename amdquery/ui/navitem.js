@@ -14,7 +14,7 @@ aQuery.define( "ui/navitem", [
     "module/effect"
   ],
 	function( $, typed, client, Widget, cls, event, css, position, dom, attr, src, animate ) {
-		"use strict"; //启用严格模式
+		"use strict";
 
 		var complete = function() {
 			css.css( this, "height", "auto" );

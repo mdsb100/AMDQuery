@@ -1,5 +1,5 @@
 ﻿aQuery.define( "main/event", [ "base/config", "base/typed", "base/extend", "base/client", "base/array", "main/CustomEvent", "main/data" ], function( $, config, typed, utilExtend, client, array, CustomEvent, data, undefined ) {
-	"use strict"; //启用严格模式
+	"use strict";
 	var mouse = "contextmenu click dblclick mousedown mouseup mousemove mouseover mouseout mouseenter mouseleave mousewheel DOMMouseScroll".split( " " ),
 		/*DOMMouseScroll firefox*/
 		mutation = "load unload error".split( " " ),

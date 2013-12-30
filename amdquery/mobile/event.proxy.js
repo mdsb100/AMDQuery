@@ -1,5 +1,5 @@
 ﻿aQuery.define( "mobile/event.proxy", [ "base/extend", "base/client", "main.event" ], function( $, utilExtend, client, event, undefined ) {
-	"use strict"; //启用严格模式
+	"use strict";
 	if ( client.system.mobile ) {
 		$.interfaces.achieve( "editEventType", function( name, type ) {
 			var str = "";

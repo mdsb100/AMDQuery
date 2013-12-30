@@ -1,5 +1,5 @@
 ﻿aQuery.define( "main/class", [ "base/extend", "base/support" ], function( $, utilExtend, support, undefined ) {
-	"use strict"; //启用严格模式
+	"use strict";
 	var cls,
 		replaceClass = function( ele, oldClassName, newClassName ) {
 			/// <summary>清空所有样式表</summary>

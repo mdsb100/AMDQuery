@@ -1,5 +1,5 @@
 ﻿aQuery.define( "main/object", [ "base/typed", "base/array", "base/extend" ], function( $, typed, array, utilExtend ) {
-	"use strict"; //启用严格模式
+	"use strict";
 	this.describe( "Define Class" );
 	var
 	pushSuperStack = function( self ) {

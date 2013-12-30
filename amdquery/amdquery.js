@@ -7,7 +7,7 @@
 
 
 ( function( window, undefined ) {
-	"use strict"; //启用严格模式
+	"use strict";
 	var
 	core_slice = [].slice,
 		core_splice = [].splice;
@@ -229,7 +229,7 @@
 	util.extend( _config.app, defineConfig.app );
 
 	/**
-	 * You can config global name. See <a target="_top" href="/document/app/asset/source/guide/AMDQuery.html#scrollTo=Reference_AMDQuery">AMDQuery.html</a> </br>
+	 * You can config global name. See <a target="_top" href="/document/app/asset/source/guide/AMDQuery.html#scrollTo=Reference_AMDQuery">AMDQuery.html</a> <br/>
 	 * <strong>aQuery("div")</strong> equivalent to <strong>new aQuery("div")</strong>.
 	 * @global
 	 * @class
@@ -724,7 +724,7 @@
 			return core_slice.call( this );
 		},
 		/**
-		 * Get the Nth element in the matched element set OR. </br>
+		 * Get the Nth element in the matched element set OR. <br/>
 		 * Get the whole matched element set as a clean array.
 		 * @param {Number|null}
 		 * @returns {Array|Element}
@@ -800,7 +800,7 @@
 	};
 
 	( function( /*require*/) {
-		"use strict"; //启用严格模式
+		"use strict";
 		$.module.require = "1.0.0";
 
 		var _define, _require;
@@ -1763,8 +1763,8 @@
 		util.extend( $, /** @lends aQuery */ {
 
 			/**
-			 * aQuery define.</br>
-			 * If the last parameter is a function, then first argument of the function is aQuery(namespace).</br>
+			 * aQuery define.<br/>
+			 * If the last parameter is a function, then first argument of the function is aQuery(namespace).<br/>
 			 * <a href="/document/app/app.html#navmenu=#AMDQuery!scrollTo=Require_Define" target="_top">See also.</a>
 			 * @param {String} - Module name
 			 * @param {String[]|*} - If arguments[2] is a factory, it can be any object.
@@ -1794,7 +1794,7 @@
 				return this;
 			},
 			/**
-			 * aQuery require.</br>
+			 * aQuery require.<br/>
 			 * <a href="/document/app/app.html#navmenu=#AMDQuery!scrollTo=Require_Define" target="_top">See also.</a>
 			 * @param {String} - Module.
 			 * @param {ClassModuleCallback} - The callback Be call when aQuery ready.
@@ -1860,7 +1860,7 @@
 	} );
 
 	aQuery.define( "base/Promise", function( $ ) {
-		"use strict"; //启用严格模式
+		"use strict";
 		this.describe( "Class Promise" );
 		var checkArg = function( todo, fail, progress, name ) {
 			var arg = util.argToArray( arguments ),
@@ -2183,7 +2183,7 @@
 	} );
 
 	aQuery.define( "base/ready", [ "base/Promise" ], function( $, Promise ) {
-		"use strict"; //启用严格模式
+		"use strict";
 		this.describe( "Life Cycle of AMDQuery" );
 
 		/**
@@ -2236,14 +2236,11 @@
 				require.variable( "app", src );
 			}
 		} ).then( function() { //window.ready first to fix ie
-			document.documentElement.style.position = "absolute";
-			document.documentElement.style.left = "100000px";
-
+      document.documentElement.style.cssText = "left:100000px;position:absolute";
 			var promise = new Promise,
 				ready = function( e ) {
 					document.body.appendChild( cover );
-					document.documentElement.style.left = "0px";
-					document.documentElement.style.position = "";
+					document.documentElement.style.cssText = "left:0px";
 					// maybe insertBefore
 
 					if ( loadingImage ) {

@@ -1,5 +1,5 @@
 ﻿aQuery.define( 'module/math', [ "base/extend" ], function( $, utilExtend, undefined ) {
-	"use strict"; //启用严格模式
+	"use strict";
 	var M = Math,
 		pi = M.PI,
 		martrix = function( a, b, c ) {

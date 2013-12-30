@@ -1,5 +1,5 @@
 ﻿aQuery.define( "main/query", [ "lib/js/sizzle", "base/extend", "base/typed", "base/array" ], function( $, Sizzle, utilExtend, typed, array, undefined ) {
-	"use strict"; //启用严格模式
+	"use strict";
 	this.describe( "Depend Sizzle1.10.3" );
 	$.module[ "lib/js/sizzle" ] = "Sizzle1.10.3";
 

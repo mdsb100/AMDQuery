@@ -1,5 +1,5 @@
 ﻿aQuery.define( "ui/keyboard", [ "main/object", "module/Widget", "module/Keyboard" ], function( $, object, Widget, Keyboard, undefined ) {
-	"use strict"; //启用严格模式
+	"use strict";
 	var allowPublic = Widget.AllowPublic;
 	var keyboard = Widget.extend( "ui.keyboard", {
 		container: null,

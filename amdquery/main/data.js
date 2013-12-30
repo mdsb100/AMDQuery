@@ -1,5 +1,5 @@
 ﻿aQuery.define( "main/data", [ "base/extend", "base/typed", "base/support" ], function( $, utilExtend, typed, support, undefined ) {
-	"use strict"; //启用严格模式
+	"use strict";
 
 	// checks a cache object for emptiness
 

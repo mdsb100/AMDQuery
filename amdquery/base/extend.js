@@ -1,5 +1,5 @@
 aQuery.define( "base/extend", [ "base/typed" ], function( $, typed ) {
-	"use strict"; //启用严格模式
+	"use strict";
 	this.describe( "Extend Util" );
 	/**
 	 * @pubilc

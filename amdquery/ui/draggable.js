@@ -30,7 +30,7 @@
 	query,
 	tween,
 	undefined ) {
-	"use strict"; //启用严格模式
+	"use strict";
 	var isTransform3d = !! config.ui.isTransform3d && support.transform3d;
 
 	var initPositionParent, getPositionX, getPositionY;

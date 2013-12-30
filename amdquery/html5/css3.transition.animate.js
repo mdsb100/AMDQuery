@@ -20,7 +20,7 @@
 	transform,
 	cubicBezierTween,
 	undefined ) {
-	"use strict"; //启用严格模式
+	"use strict";
 	this.describe( "Animation to HTML5 transition" );
 	//do not use em
 

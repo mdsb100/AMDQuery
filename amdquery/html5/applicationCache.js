@@ -1,5 +1,5 @@
 ﻿aQuery.define( "html5/applicationCache", function( $, undefined ) {
-	"use strict"; //启用严格模式
+	"use strict";
   this.describe("HTML5 applicationCache");
 	if ( window.applicationCache ) {
 		var aCache = applicationCache;

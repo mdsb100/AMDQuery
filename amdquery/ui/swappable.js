@@ -1,5 +1,5 @@
 ﻿aQuery.define( "ui/swappable", [ "base/typed", "base/client", "main/event", "module/math", "module/Widget", "html5/css3.position" ], function( $, typed, client, event, math, Widget, css3Position, undefined ) {
-	"use strict"; //启用严格模式
+	"use strict";
 	var swappable = Widget.extend( "ui.swappable", {
 		container: null,
 		create: function() {

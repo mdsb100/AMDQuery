@@ -12,7 +12,7 @@ aQuery.define( "ui/button", [
   ],
 
 	function( $, client, Widget, query, cls, event, css, position, dom, attr, css3 ) {
-		"use strict"; //启用严格模式
+		"use strict";
 
 		Widget.fetchCSS( "ui/css/button" );
 

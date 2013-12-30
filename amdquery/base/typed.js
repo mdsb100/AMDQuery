@@ -1,5 +1,5 @@
 aQuery.define( "base/typed", function( $ ) {
-	"use strict"; //启用严格模式
+	"use strict";
 	this.describe( "Support typeof function" );
 	var
 	class2type = {},

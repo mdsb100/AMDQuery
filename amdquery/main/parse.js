@@ -1,5 +1,5 @@
 ﻿aQuery.define( "main/parse", [ "main/dom" ], function( $, dom ) {
-	"use strict"; //启用严格模式
+	"use strict";
 	var rsingleTag = /^<(\w+)\s*\/?>(?:<\/\1>|)$/;
 
 	var

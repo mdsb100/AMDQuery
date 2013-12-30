@@ -25,7 +25,7 @@ aQuery.define( "app/View", [
 	Widget,
 	src, undefined ) {
 	//View need require depend on Widget
-	"use strict"; //启用严格模式
+	"use strict";
 	this.describe( "Super View Class" );
 
 	function getHtmlSrc( id ) {

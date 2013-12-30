@@ -1,5 +1,5 @@
 ﻿aQuery.define( "module/src", [ "base/typed", "base/extend", "base/client" ], function( $, typed, utilExtend, client, undefined ) {
-	"use strict"; //启用严格模式
+	"use strict";
 	var
 	hasOwnProperty = Object.prototype.hasOwnProperty,
 		src = {

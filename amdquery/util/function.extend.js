@@ -1,5 +1,5 @@
 aQuery.define( "util/function.extend", [ "base/extend" ], function( $, utilExtend ) {
-	"use strict"; //启用严格模式
+	"use strict";
 	this.describe( "consult underscore" );
 	utilExtend.easyExtend( $.util, {
 		compose: function() {

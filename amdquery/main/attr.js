@@ -1,5 +1,5 @@
 ﻿aQuery.define( "main/attr", [ "base/typed", "base/extend", "base/support" ], function( $, typed, utilExtend, support, undefined ) {
-	"use strict"; //启用严格模式
+	"use strict";
 	//暂不要那么多hooks
 	var fixSpecified = {
 		name: true,
@@ -23,12 +23,12 @@
 		attr = {
 			getAttr: function( ele, name ) {
 				var ret;
-				//                if (!support.getSetAttribute) {
-				//                    ret = ele.getAttributeNode(name);
-				//                    return ret && (fixSpecified[name] ? ret.nodeValue !== "" : ret.specified) ?
-				//				    ret.nodeValue :
-				//				    undefined;
-				//                }
+      if ( !support.getSetAttribute ) {
+        ret = ele.getAttributeNode( name );
+        return ret && ( fixSpecified[ name ] ? ret.nodeValue !== "" : ret.specified ) ?
+          ret.nodeValue :
+          undefined;
+      }
 				return ( ret = ele.getAttributeNode( name ) ) ? ret.nodeValue : undefined;
 			},
 			getVal: function( ele ) {

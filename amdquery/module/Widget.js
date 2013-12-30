@@ -24,7 +24,7 @@
 	src,
 	utilEval,
 	undefined ) {
-	"use strict"; //启用严格模式
+	"use strict";
 
 	var prefix = "amdquery";
 

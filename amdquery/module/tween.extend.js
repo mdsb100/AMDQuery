@@ -1,5 +1,5 @@
 ﻿aQuery.define( "module/tween.extend", [ "base/extend", "module/tween" ], function( $, utilExtend, tween, undefined ) {
-	"use strict"; //启用严格模式
+	"use strict";
 	var math = Math;
 	utilExtend.easyExtend( tween, {
 		quad: {

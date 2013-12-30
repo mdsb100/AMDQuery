@@ -13,7 +13,7 @@ aQuery.define( "ui/navmenu", [
     "ecma5/array.compati"
   ],
 	function( $, typed, utilExtend, NavItem, Widget, query, cls, event, css, position, dom, attr, Array ) {
-		"use strict"; //启用严格模式
+		"use strict";
 
 		Widget.fetchCSS( "ui/css/navmenu" );
 
