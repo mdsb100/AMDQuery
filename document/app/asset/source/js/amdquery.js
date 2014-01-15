@@ -17682,14 +17682,28 @@ aQuery.define( "ui/scrollableview", [
 				this.target.css( "position", "relative" );
 			}
 
+			var self = this;
+
 			if ( this.options.firstToElement ) {
-				var self = this;
 				setTimeout( function() {
 					self.animateToElement( self.options.firstToElement );
 				}, 0 );
 			}
 
-			return this.create()._initHandler().enable().render( 0, 0 );
+			this.create()._initHandler().enable().render( 0, 0 );
+
+			if ( this.options.focus ) {
+
+				setTimeout( function() {
+					try {
+						self.refreshPosition();
+						self.target[ 0 ].focus();
+					} catch ( e ) {}
+				}, 0 );
+
+			}
+
+			return this;
 		},
 		customEventName: [ "pulldown", "pullup", "pullleft", "pullright", "animationEnd" ],
 		options: {
@@ -17703,7 +17717,8 @@ aQuery.define( "ui/scrollableview", [
 			"combinationKey": client.system.mac ? "cmd" : "ctrl",
 			"firstToElement": "",
 			"keyVerticalDistance": 40,
-			"keyHorizontalDistance": 40
+			"keyHorizontalDistance": 40,
+			"focus": false
 		},
 		setter: {
 			"enableKeyboard": Widget.initFirst,
