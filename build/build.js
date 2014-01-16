@@ -43,6 +43,7 @@
  		selectorsMergeMode: "*"
  	}
  };
+ var _ = require( "underscore" );
 
  var argvs = process.argv;
 
@@ -54,9 +55,7 @@
  		buildConfigFile = './' + buildConfigFile;
  	}
  	buildConfigFile = require( buildConfigFile );
- 	for ( var i in buildConfigFile ) {
- 		buildConfig[ i ] = buildConfigFile[ i ];
- 	}
+ 	buildConfig = _.extend( buildConfig, buildConfigFile );
  }
 
 
@@ -103,7 +102,6 @@
  var through = require( "through" );
  var concat = require( 'concat-stream' );
  var beautify_html = require( 'js-beautify' ).html;
- var _ = require( "underscore" );
 
  var loadedModule = 'loaded' + ( -new Date() );
  var fileStack = {};
