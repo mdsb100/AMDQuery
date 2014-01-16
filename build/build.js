@@ -2,7 +2,7 @@
  	debug: false,
  	amdqueryPath: '../amdquery/',
  	projectRootPath: '../../',
- 	outputPath: 'output/',
+ 	distPath: 'dist/',
  	pathVariable: {
 
  	},
@@ -164,7 +164,7 @@
  }
 
  function saveJSFile( result, dirPath, next ) {
- 	dirPath = buildConfig.outputPath + dirPath;
+ 	dirPath = buildConfig.distPath + dirPath;
  	var list,
  		i = 0,
  		len,
@@ -261,15 +261,15 @@
  }
 
  function createAppDirAndCopyFile( appConfig, htmlInfo, buildAppJS ) {
- 	var appOutputProjectPath = "apps/" + htmlInfo.appName + "/",
- 		outputPath = buildConfig.outputPath + appOutputProjectPath;
+ 	var appDistProjectPath = "apps/" + htmlInfo.appName + "/",
+ 		distPath = buildConfig.distPath + appDistProjectPath;
 
- 	if ( FSE.existsSync( outputPath ) ) {
+ 	if ( FSE.existsSync( distPath ) ) {
  		console.log( '\u001b[34m' + '\r\nClean "' + htmlInfo.appName + '" directory \u001b[39m' );
- 		FSE.removeSync( outputPath );
+ 		FSE.removeSync( distPath );
  	}
 
- 	mkdirSync( outputPath );
+ 	mkdirSync( distPath );
 
  	var dirNameList = [ "amdquery/ui/" ],
  		len = dirNameList.length,
@@ -277,7 +277,7 @@
 
  	for ( i = 0; i < len; i++ ) {
  		console.log( "make directory: " + "\u001b[34m" + dirNameList[ i ] + "\u001b[39m" );
- 		mkdirSync( outputPath + dirNameList[ i ] );
+ 		mkdirSync( distPath + dirNameList[ i ] );
  	}
 
  	logger( htmlInfo.appProjectPath );
@@ -294,14 +294,14 @@
  	for ( key in copyDirMap ) {
  		value = copyDirMap[ key ];
  		if ( FSE.existsSync( value ) ) {
- 			console.log( "copy \u001b[34m" + value + "\u001b[39m to \u001b[34m" + outputPath + key + "\u001b[39m" );
- 			FSE.copySync( value, outputPath + key );
+ 			console.log( "copy \u001b[34m" + value + "\u001b[39m to \u001b[34m" + distPath + key + "\u001b[39m" );
+ 			FSE.copySync( value, distPath + key );
  		}
  	}
 
- 	htmlInfo.projectOutputPath = outputPath;
+ 	htmlInfo.projectDistPath = distPath;
 
- 	buildAppJS( null, appConfig, htmlInfo, appOutputProjectPath + "amdquery/" );
+ 	buildAppJS( null, appConfig, htmlInfo, appDistProjectPath + "amdquery/" );
  }
 
  function buildAppJS( appConfig, htmlInfo, AMDQueryPath, buildAppXML ) {
@@ -347,7 +347,7 @@
 
  	htmlInfo.appCombinationXMLRelativePath = "xml/" + "combination.xml";
 
- 	htmlInfo.appCombinationXMLPath = htmlInfo.projectOutputPath + "app/" + htmlInfo.appCombinationXMLRelativePath;
+ 	htmlInfo.appCombinationXMLPath = htmlInfo.projectDistPath + "app/" + htmlInfo.appCombinationXMLRelativePath;
 
  	console.log( '\r\nSave app Combination xml: ' + htmlInfo.appCombinationXMLPath );
 
@@ -383,7 +383,7 @@
 
  	htmlInfo.appCombinationCssRelativePath = "css/" + htmlInfo.appName + ".css";
 
- 	htmlInfo.appCombinationCssPath = htmlInfo.projectOutputPath + "app/" + htmlInfo.appCombinationCssRelativePath;
+ 	htmlInfo.appCombinationCssPath = htmlInfo.projectDistPath + "app/" + htmlInfo.appCombinationCssRelativePath;
 
  	_buildCssAndSave( resultPath, htmlInfo.appCombinationCssPath );
 
@@ -403,7 +403,7 @@
 
  	htmlInfo.uiCombinationCssPath = "amdquery/ui/css/amdquery-widget.css";
 
- 	_buildCssAndSave( cssFileList, htmlInfo.projectOutputPath + htmlInfo.uiCombinationCssPath, cwd );
+ 	_buildCssAndSave( cssFileList, htmlInfo.projectDistPath + htmlInfo.uiCombinationCssPath, cwd );
 
  	console.log( '\r\nSave UI amdquery-widget.css: ' + htmlInfo.uiCombinationCssPath );
 
@@ -418,7 +418,7 @@
  		bodyTr = trumpet();
 
 
- 	htmlInfo.outputHtmlPath = htmlInfo.projectOutputPath + "app/app.html";
+ 	htmlInfo.distHtmlPath = htmlInfo.projectDistPath + "app/app.html";
 
  	var cssList = [],
  		first = false,
@@ -490,11 +490,11 @@
  		this.queue( '\n' + FSE.readFileSync( htmlInfo.appCombinationXMLPath ) );
  	} ) ).pipe( bodyStream );
 
- 	var write = FSE.createWriteStream( htmlInfo.outputHtmlPath );
+ 	var write = FSE.createWriteStream( htmlInfo.distHtmlPath );
 
  	write.on( 'close', function() {
  		if ( typeof appConfig.complete === "function" ) {
- 			FSE.writeFileSync( htmlInfo.outputHtmlPath, beautify_html( FSE.readFileSync( htmlInfo.outputHtmlPath ).toString(), {} ) );
+ 			FSE.writeFileSync( htmlInfo.distHtmlPath, beautify_html( FSE.readFileSync( htmlInfo.distHtmlPath ).toString(), {} ) );
  			appConfig.complete.call( appConfig, htmlInfo );
  		}
  		console.log( '\u001b[31m\r\nbuilding finish... \u001b[39m' );
@@ -682,7 +682,7 @@
  	} );
  }
 
- function _buildCssAndSave( cssPathList, output, cwd ) {
+ function _buildCssAndSave( cssPathList, dist, cwd ) {
  	var
  	len = cssPathList.length,
  		i = 0,
@@ -697,9 +697,9 @@
  	var minimized = new CleanCSS( buildConfig.cleanCssOptions )
  		.minify( cssTxt );
 
- 	FSE.writeFileSync( output, minimized.toString() );
+ 	FSE.writeFileSync( dist, minimized.toString() );
 
- 	return output;
+ 	return dist;
  }
 
  function splitAttrToObject( str ) {

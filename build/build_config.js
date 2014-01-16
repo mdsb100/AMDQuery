@@ -4,8 +4,8 @@ exports.amdqueryPath = '../amdquery/';
 //Configure project root path
 exports.projectRootPath = '../../';
 
-//All build files will save to outputPath
-exports.outputPath = 'output/';
+//All build files will save to distPath
+exports.distPath = 'dist/';
 
 //mapping of path for AMD
 exports.pathVariable = {

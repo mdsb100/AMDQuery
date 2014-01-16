@@ -54,20 +54,20 @@
             </p>
 
             <h3 name="Quick">Quick Start</h3>
-            <p>Download nodejs and install nodejs. Open terminal and cd directory of amdquery project, cd build.</p>
-            <p>Input "npm install" in terminal before start building. NPM will download and install some node modules.</p>
-            <p>Input "node build.js build_config.js" and watch the log.
+            <p>Download nodejs and install nodejs. Open terminal and cd directory of amdquery project, <strong>cd build</strong>.</p>
+            <p>Input <strong>"npm install"</strong> in terminal before start building. NPM will download and install some node modules.</p>
+            <p>Input <strong>"node build.js build_config.js"</strong> and watch the log.
               <p/>
-              <p>Look the directory: build/output/defines. Look over "test.js" and "test.debug.js".
+              <p>Look the directory: build/dist/defines. Look over "test.js" and "test.debug.js".
                 <p/>
-                <p>cd "output/apps/document/app", open the "app.html" with a web server.
+                <p>cd "dist/apps/document/app", open the "app.html" with a web server.
                   <p/>
 
                   <h3 name="Browser">Broswer html</h3>
                   <p>Quick start a web server. Input "npm install -g <a target="_blank" href="https://github.com/senchalabs/connect">connect</a>" or "sudo npm install -g <a target="_blank" href="https://github.com/senchalabs/connect">connect</a>". cd root
                     of amdquery directory, input "node server.js". Open browser and input
                     <Strong>"http://localhost:8080/document/app/app.html"</Strong> or
-                    <Strong>"http://localhost:8080/build/output/apps/document/app/app.html"</Strong>. You should collect the address in browser.</p>
+                    <Strong>"http://localhost:8080/build/dist/apps/document/app/app.html"</Strong>. You should collect the address in browser.</p>
                   <p>The
                     <a class="swip_to_app">
                       <img src="../images/right.png" width="13px" height="13px" />"Build Application"</a>has detail guide.</p>
@@ -109,7 +109,7 @@ root
       |- build_config.js
       |- test
          \- test.js
-      \- output
+      \- dist
           |- defines
           |   |- test.debug.js
           |   \- test.js
@@ -139,9 +139,9 @@ root
                       <p>exports.projectRootPath = '../../'; (--root)</p>
                     </li>
                     <li>
-                      <h4>outputPath</h4>
-                      <p>All build files will save to outputPath. It is relative of build.js .</p>
-                      <p>exports.outputPath = 'output/'; (--output)</p>
+                      <h4>distPath</h4>
+                      <p>All build files will save to distPath. It is relative of build.js .</p>
+                      <p>exports.distPath = 'dist/'; (--dist)</p>
                     </li>
                     <li>
                       <h4>pathVariable</h4>
@@ -168,7 +168,7 @@ root
                       <h4>defines</h4>
                       <pre class="prettyprint">
 {
-  //The "test" is name of output javascript which will be create in directory "defines".
+  //The "test" is name of dist javascript which will be create in directory "defines".
   //It also create "test.debug.js" which is not minify.
   test: {
     //The "path" is main of the build-js.It is relative "amdquery.js".
@@ -210,8 +210,8 @@ root
                     <br />Finally, get the all of js then combine to a stream.
                   </p>
                   <p>3.Save js file.According to config, to save js. For this example:
-                    <br />save "test.debug.js" into "output/defines". "test.debug.js" is not compress, it could debug.
-                    <br />save "test.js" into "output/defines". "test.js" is compress.
+                    <br />save "test.debug.js" into "dist/defines". "test.debug.js" is not compress, it could debug.
+                    <br />save "test.js" into "dist/defines". "test.js" is compress.
                   </P>
                   <p>4. If you increase the "complete" function in the configuration, You can do some interesting things after the build is completed.
                     <br />For this example, I write the contents to a new file.
@@ -273,15 +273,15 @@ root
   htmlPath: '/Users/apple/project/my/amdquery/build/../amdquery/../document/app/app.html',
   appProjectPath: '/Users/apple/project/my/amdquery/build/../amdquery/../document/app/',
   appName: 'document',
-  projectOutputPath: 'output/apps/document/',
+  projectDistPath: 'dist/apps/document/',
   AMDQueryJSPath: 'apps/document/amdquery/amdquery',
   AMDQueryJSRelativeHTMLPath: '../amdquery/amdquery',
   appCombinationXMLRelativePath: 'xml/combination.xml',
-  appCombinationXMLPath: 'output/apps/document/app/xml/combination.xml',
+  appCombinationXMLPath: 'dist/apps/document/app/xml/combination.xml',
   appCombinationCssRelativePath: 'css/document.css',
-  appCombinationCssPath: 'output/apps/document/app/css/document.css',
-  uiCombinationCssPath: 'output/apps/document/amdquery/ui/css/amdquery-widget.css',
-  outputHtmlPath: 'output/apps/document/app/app.html'
+  appCombinationCssPath: 'dist/apps/document/app/css/document.css',
+  uiCombinationCssPath: 'dist/apps/document/amdquery/ui/css/amdquery-widget.css',
+  distHtmlPath: 'dist/apps/document/app/app.html'
 }
                 </pre>
               </li>
@@ -293,7 +293,7 @@ root
             </p>
             <img src="../images/build_open_html.png" />
             <p>2.Create application directory and copy file.
-              <br />Create application directory. In this example, path of directory is "output/apps/document/". If the path of directory exists then remove it.
+              <br />Create application directory. In this example, path of directory is "dist/apps/document/". If the path of directory exists then remove it.
               <br />Copy directory:
               <br />(This example: AMDQueryJSRootPath is "/Users/apple/project/my/amdquery/build/../amdquery/" or "/Users/apple/project/my/amdquery/")
               <br />Copy appProjectPath + "asset/" to "app/asset/"
@@ -306,7 +306,7 @@ root
             <img src="../images/build_create_and_copy.png" width="628px" height="97px" />
             <p>3.Build Javascript of Application
               <br />Get "app.js" path to the directory. Set "require" parameter with the path. ("@app" ==> "../document/app/app")
-              <br />"oye.node" could load all js after setting "require" parameter. Then build save the js files to the output directory. You also can see then log in terminal.
+              <br />"oye.node" could load all js after setting "require" parameter. Then build save the js files to the dist directory. You also can see then log in terminal.
             </p>
             <img src="../images/build_build_js.png" />
             <p>4.Build XML of Application
@@ -391,7 +391,7 @@ root
                   </li>
                   <li>
                     <bold><span class="value">no_warnings</span>:boolean[false]</bold>
-                    <p>whether output warnings.</p>
+                    <p>whether dist warnings.</p>
                   </li>
                   <li>
                     <bold><span class="value">keep_comps</span>:boolean[true]</bold>
@@ -428,7 +428,7 @@ root
                   </li>
                   <li>
                     <bold><span class="value">beautify</span>:boolean[false]</bold>
-                    <p>pass true if you want indented output.</p>
+                    <p>pass true if you want indented dist.</p>
                   </li>
                   <li>
                     <bold><span class="value">ascii_only</span>:boolean[false]</bold>

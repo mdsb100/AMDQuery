@@ -1,5 +1,5 @@
 .DS_Store
-build/output/
-build/output/*.*
+build/dist/
+build/dist/*.*
 build/node_modules
 document/api/
