@@ -1,6 +1,13 @@
-﻿define( "ecma5/objcet.compati", function() {
+﻿define( "ecma5/objcet", function() {
 	"use strict";
+  /**
+   * Extend Object.prototype
+   * @pubilc
+   * @module ecma5/object
+   */
+
   this.describe( "ECMA Object" );
+
 	var fun = function() {}, obj = {
 			getPrototypeOf: fun,
 			getOwnPropertyDescriptor: fun,

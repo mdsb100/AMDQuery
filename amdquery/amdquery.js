@@ -2236,7 +2236,7 @@
 				require.variable( "app", src );
 			}
 		} ).then( function() { //window.ready first to fix ie
-      document.documentElement.style.cssText = "left:100000px;position:absolute";
+			document.documentElement.style.cssText = "left:100000px;position:absolute";
 			var promise = new Promise,
 				ready = function( e ) {
 					document.body.appendChild( cover );

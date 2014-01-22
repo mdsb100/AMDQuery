@@ -10,9 +10,9 @@ aQuery.define( "ui/navmenu", [
     "main/position",
     "main/dom",
     "main/attr",
-    "ecma5/array.compati"
+    "ecma5/array"
   ],
-	function( $, typed, utilExtend, NavItem, Widget, query, cls, event, css, position, dom, attr, Array ) {
+	function( $, typed, utilExtend, NavItem, Widget, query, cls, event, css, position, dom, attr, uitlArray ) {
 		"use strict";
 
 		Widget.fetchCSS( "ui/css/navmenu" );

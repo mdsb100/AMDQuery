@@ -2237,7 +2237,7 @@
 				require.variable( "app", src );
 			}
 		} ).then( function() { //window.ready first to fix ie
-      document.documentElement.style.cssText = "left:100000px;position:absolute";
+			document.documentElement.style.cssText = "left:100000px;position:absolute";
 			var promise = new Promise,
 				ready = function( e ) {
 					document.body.appendChild( cover );
@@ -2332,7 +2332,7 @@ aQuery.define( "base/typed", function( $ ) {
 	 * Determine the type of object。
 	 * @public
 	 * @exports base/typed
-	 * @borrows aQuery.forinstance as forinstance
+	 * @borrows aQuery.forinstance as is$
 	 */
 	var typed = {
 		/**
@@ -2646,6 +2646,7 @@ aQuery.define( "base/extend", [ "base/typed" ], function( $, typed ) {
 	/**
 	 * @pubilc
 	 * @exports base/extend
+	 * @requires module:base/typed
 	 */
 	var utilExtend = {
 		/**
@@ -2798,6 +2799,8 @@ aQuery.define( "base/array", [ "base/typed", "base/extend" ], function( $, typed
 	/**
 	 * @pubilc
 	 * @exports base/array
+	 * @requires module:base/typed
+	 * @requires module:base/extend
 	 */
 	var array = {
 		/**
@@ -2883,12 +2886,12 @@ aQuery.define( "base/array", [ "base/typed", "base/extend" ], function( $, typed
 		lastInArray: function( arr, item, i ) {
 			return lastIndexOf.call( arr, item, i );
 		},
-    /**
-     * Make array.
-     * @param {Array}
-     * @param {Array} [results=Array]
-     * @returns {Array}
-     */
+		/**
+		 * Make array.
+		 * @param {Array}
+		 * @param {Array} [results=Array]
+		 * @returns {Array}
+		 */
 		makeArray: function( array, results ) {
 			var result = results || [];
 
@@ -2902,13 +2905,13 @@ aQuery.define( "base/array", [ "base/typed", "base/extend" ], function( $, typed
 
 			return result;
 		},
-    /**
-     * Some object which has length change to array.
-     * @param {*} - Not a function but has length.
-     * @param {Number} [start=0]
-     * @param {Number} [end=obj.length]
-     * @returns {Array}
-     */
+		/**
+		 * Some object which has length change to array.
+		 * @param {*} - Not a function but has length.
+		 * @param {Number} [start=0]
+		 * @param {Number} [end=obj.length]
+		 * @returns {Array}
+		 */
 		toArray: function( obj, start, end ) {
 			var i = 0,
 				list = [],
@@ -3375,6 +3378,7 @@ aQuery.define( "base/array", [ "base/typed", "base/extend" ], function( $, typed
 	/**
 	 * @pubilc
 	 * @exports base/support
+	 * @requires module:base/extend
 	 */
 	var support = {
 		/**
@@ -6312,40 +6316,41 @@ if ( typeof define === "function" && define.amd ) {
 	this.describe( "Cline of Browser" );
 	/**
 	 * @public
+	 * @requires module:base/extend
 	 * @module base/client
 	 * @property {object} browser
-   * @property {Boolean} [browser.opera=false]
-   * @property {Boolean} [browser.chrome=false]
-   * @property {Boolean} [browser.safari=false]
-   * @property {Boolean} [browser.kong=false]
-   * @property {Boolean} [browser.firefox=false]
-   * @property {Boolean} [browser.ie=false]
-   * @property {Boolean} [browser.ie678=false]
-   *
-   * @property {object} engine
-   * @property {Boolean} [engine.opera=false]
-   * @property {Boolean} [engine.webkit=false]
-   * @property {Boolean} [engine.khtml=false]
-   * @property {Boolean} [engine.gecko=false]
-   * @property {Boolean} [engine.ie=false]
-   * @property {Boolean} [engine.ie678=false]
-   *
-   * @property {object} system
-   * @property {Boolean} [system.win=null]
-   * @property {Boolean} [system.mac=null]
-   * @property {Boolean} [system.linux=null]
-   * @property {Boolean} [system.iphone=null]
-   * @property {Boolean} [system.ipod=null]
-   * @property {Boolean} [system.ipad=null]
-   * @property {Boolean} [system.pad=null]
-   * @property {Boolean} [system.nokian=null]
-   * @property {Boolean} [system.winMobile=null]
-   * @property {Boolean} [system.androidMobile=null]
-   * @property {Boolean} [system.ios=null]
-   * @property {Boolean} [system.wii=null]
-   * @property {Boolean} [system.ps=null]
-   * @example
-   * if (client.system.win){}
+	 * @property {Boolean} [browser.opera=false]
+	 * @property {Boolean} [browser.chrome=false]
+	 * @property {Boolean} [browser.safari=false]
+	 * @property {Boolean} [browser.kong=false]
+	 * @property {Boolean} [browser.firefox=false]
+	 * @property {Boolean} [browser.ie=false]
+	 * @property {Boolean} [browser.ie678=false]
+	 *
+	 * @property {object} engine
+	 * @property {Boolean} [engine.opera=false]
+	 * @property {Boolean} [engine.webkit=false]
+	 * @property {Boolean} [engine.khtml=false]
+	 * @property {Boolean} [engine.gecko=false]
+	 * @property {Boolean} [engine.ie=false]
+	 * @property {Boolean} [engine.ie678=false]
+	 *
+	 * @property {object} system
+	 * @property {Boolean} [system.win=null]
+	 * @property {Boolean} [system.mac=null]
+	 * @property {Boolean} [system.linux=null]
+	 * @property {Boolean} [system.iphone=null]
+	 * @property {Boolean} [system.ipod=null]
+	 * @property {Boolean} [system.ipad=null]
+	 * @property {Boolean} [system.pad=null]
+	 * @property {Boolean} [system.nokian=null]
+	 * @property {Boolean} [system.winMobile=null]
+	 * @property {Boolean} [system.androidMobile=null]
+	 * @property {Boolean} [system.ios=null]
+	 * @property {Boolean} [system.wii=null]
+	 * @property {Boolean} [system.ps=null]
+	 * @example
+	 * if (client.system.win){}
 	 */
 	var client = {
 		browser: {
@@ -16531,129 +16536,187 @@ aQuery.define( "ui/navitem", [
 
 /*=======================================================*/
 
-/*===================ecma5/array.compati===========================*/
-﻿aQuery.define( "ecma5/array.compati", [ "base/array" ], function( $, array ) {
+/*===================ecma5/array===========================*/
+﻿aQuery.define( "ecma5/array", [ "base/array" ], function( $, array ) {
 	"use strict";
-  this.describe( "ECMA Array" );
-	var name, obj = {
-			every: function( fun, context ) {
-				var t = this,
-					ret = true;
+	this.describe( "ECMA Array" );
 
-				this.forEach( function( item, index ) {
-					if ( fun.call( context, item, index, this ) !== true ) {
-						ret = false;
-						return false;
-					}
-				}, t );
-				return ret;
-			},
+	/**
+	 * @callback arrayCallback
+	 * @param {*} item - Element of array.
+	 * @param {Number} index - Index of element.
+	 * @param {Array} array
+	 * @returns {Boolean|*}
+	 */
 
-			forEach: function( fun, context ) {
-				for ( var i = 0, len = this.length; i < len; i++ ) {
-					if ( i in this && fun.call( context, this[ i ], i, this ) === false ) {
+	/**
+	 * @describe .
+	 * @callback arrayReduceCallback
+	 * @param {*} rv - Previous result.
+	 * @param {*} item - Element of array.
+	 * @param {Number} index - Index of element.
+	 * @param {Array} array
+	 * @returns {Boolean|*}
+	 */
+
+	/**
+	 * Extend Array.prototype if the context not support ecma5.
+	 * @pubilc
+	 * @requires module:base/array
+	 * @exports ecma5/array
+	 * @borrows module:base/array.filterArray as filter
+	 * @borrows module:base/array.inArray as indexOf
+	 * @borrows module:base/array.lastInArray as lastIndexOf
+	 */
+	var uitl = {
+		/**
+		 * Iterate each item, if item do not conform to some condition then return false else return true.
+		 * @param {arrayCallback} fn - Callback.
+		 * @param {Object} [context] - Context of callback.
+		 * @returns {Boolean}
+		 */
+		every: function( fn, context ) {
+			var t = this,
+				ret = true;
+
+			this.forEach( function( item, index ) {
+				if ( fn.call( context, item, index, this ) !== true ) {
+					ret = false;
+					return false;
+				}
+			}, t );
+			return ret;
+		},
+		/**
+		 * Iterate each item, if the return value is false then break.
+		 * @param {arrayCallback} fn - Callback.
+		 * @param {Object} [context] - Context of callback.
+		 * @returns {this}
+		 */
+		forEach: function( fn, context ) {
+			for ( var i = 0, len = this.length; i < len; i++ ) {
+				if ( i in this && fn.call( context, this[ i ], i, this ) === false ) {
+					break;
+				}
+
+			}
+			return this;
+		},
+		filter: function( fn, context ) {
+			return array.filterArray( this, fn, context );
+		},
+
+		indexOf: function( item, index ) {
+			return array.inArray( this, item, index );
+		},
+
+		lastIndexOf: function( item, index ) {
+			return array.lastInArray( this, item, index );
+		},
+		/**
+		 * Iterate each item, and return new.
+		 * @param {arrayCallback} fn - Callback.
+		 * @param {Object} [context] - Context of callback.
+		 * @returns {Array} - A new array.
+		 */
+		map: function( fn, context ) {
+			var t = this,
+				len = t.length;
+			var ret = new Array( len );
+			for ( var i = 0; i < len; i++ ) {
+				if ( i in t ) {
+					ret[ i ] = fn.call( context, t[ i ], i, t );
+				}
+			}
+			return ret;
+		},
+		/**
+		 * Iterate each item, and return lastest.
+		 * @param {arrayReduceCallback} fn - Callback.
+		 * @param {*} [initialValue] - Initial value.
+		 * @returns {*} - Lastest result.
+		 */
+		reduce: function( fn, initialValue ) {
+			var t = this,
+				len = t.length,
+				i = 0,
+				rv;
+			if ( initialValue ) {
+				rv = initialValue;
+			} else {
+				do {
+					if ( i in t ) {
+						rv = t[ i++ ];
 						break;
 					}
-
+					if ( ++i >= len ) throw new Error( "array contains no values, no initial value to return" );
 				}
-				return this;
-			},
-			filter: function( fun, context ) {
-				return array.filterArray( this, fun, context );
-			},
-
-			indexOf: function( item, index ) {
-				return array.inArray( this, item, index );
-			},
-
-
-			lastIndexOf: function( item, index ) {
-				return array.lastInArray( this, item, index );
-			},
-
-			map: function( fun, context ) {
-				var t = this,
-					len = t.length;
-				var ret = new Array( len ); //区别在于这里，forEach不会生成新的数组
-				for ( var i = 0; i < len; i++ ) {
-					if ( i in t ) {
-						ret[ i ] = fun.call( context, t[ i ], i, t );
-					}
-				}
-				return ret;
-			},
-
-			reduce: function( fun, initialValue ) {
-				var t = this,
-					len = t.length,
-					i = 0,
-					rv;
-				if ( initialValue ) {
-					rv = initialValue;
-				} else {
-					do {
-						if ( i in t ) {
-							rv = t[ i++ ];
-							break;
-						}
-						if ( ++i >= len ) throw new Error( "array contains no values, no initial value to return" );
-					}
-					while ( true );
-				}
-
-				for ( ; i < len; i++ ) {
-					if ( i in t ) rv = fun.call( null, rv, t[ i ], i, t );
-				}
-
-				return rv;
-			},
-
-			reduceRight: function( fun, initialValue ) {
-				var
-				t = this,
-					len = t.length,
-					i = len - 1,
-					rv;
-				if ( initialValue ) {
-					rv = initialValue;
-				} else {
-					do {
-						if ( i in t ) {
-							rv = t[ i-- ];
-							break;
-						}
-						if ( --i < 0 ) throw new Error( "array contains no values, no initial value to return" );
-					}
-					while ( true );
-				}
-
-				while ( i >= 0 ) {
-					if ( i in t ) rv = fun.call( null, rv, t[ i ], i, t );
-					i--;
-				}
-
-				return rv;
-			},
-
-			some: function( fun, context ) {
-				var ret = false;
-				this.forEach( function( item, index ) {
-					if ( fun.call( context, item, index, this ) === true ) {
-						ret = true;
-						return false;
-					}
-				}, this );
-				return ret;
+				while ( true );
 			}
-		};
 
-	for ( name in obj ) {
+			for ( ; i < len; i++ ) {
+				if ( i in t ) rv = fn.call( null, rv, t[ i ], i, t );
+			}
+
+			return rv;
+		},
+		/**
+		 * Iterate each item by descending, and return lastest.
+		 * @param {arrayReduceCallback} fn - Callback.
+		 * @param {*} [initialValue] - Initial value.
+		 * @returns {*} - Lastest result.
+		 */
+		reduceRight: function( fn, initialValue ) {
+			var
+			t = this,
+				len = t.length,
+				i = len - 1,
+				rv;
+			if ( initialValue ) {
+				rv = initialValue;
+			} else {
+				do {
+					if ( i in t ) {
+						rv = t[ i-- ];
+						break;
+					}
+					if ( --i < 0 ) throw new Error( "array contains no values, no initial value to return" );
+				}
+				while ( true );
+			}
+
+			while ( i >= 0 ) {
+				if ( i in t ) rv = fn.call( null, rv, t[ i ], i, t );
+				i--;
+			}
+
+			return rv;
+		},
+		/**
+		 * Iterate each item, if item conform to some condition then return true else return false.
+		 * @param {arrayCallback} fn - Callback.
+		 * @param {Object} [context] - Context of callback.
+		 * @returns {Boolean}
+		 */
+		some: function( fn, context ) {
+			var ret = false;
+			this.forEach( function( item, index ) {
+				if ( fn.call( context, item, index, this ) === true ) {
+					ret = true;
+					return false;
+				}
+			}, this );
+			return ret;
+		}
+	};
+
+	for ( var name in uitl ) {
 		if ( !Array.prototype[ name ] ) {
-			Array.prototype[ name ] = obj[ name ];
+			Array.prototype[ name ] = uitl[ name ];
 		}
 	}
 
-	return Array;
+	return uitl;
 
 } );
 
@@ -16672,9 +16735,9 @@ aQuery.define( "ui/navmenu", [
     "main/position",
     "main/dom",
     "main/attr",
-    "ecma5/array.compati"
+    "ecma5/array"
   ],
-	function( $, typed, utilExtend, NavItem, Widget, query, cls, event, css, position, dom, attr, Array ) {
+	function( $, typed, utilExtend, NavItem, Widget, query, cls, event, css, position, dom, attr, uitlArray ) {
 		"use strict";
 
 		Widget.fetchCSS( "ui/css/navmenu" );

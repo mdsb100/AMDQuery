@@ -26,6 +26,7 @@
 	/**
 	 * @pubilc
 	 * @exports base/support
+	 * @requires module:base/extend
 	 */
 	var support = {
 		/**

@@ -39,6 +39,8 @@ aQuery.define( "base/array", [ "base/typed", "base/extend" ], function( $, typed
 	/**
 	 * @pubilc
 	 * @exports base/array
+	 * @requires module:base/typed
+	 * @requires module:base/extend
 	 */
 	var array = {
 		/**
@@ -124,12 +126,12 @@ aQuery.define( "base/array", [ "base/typed", "base/extend" ], function( $, typed
 		lastInArray: function( arr, item, i ) {
 			return lastIndexOf.call( arr, item, i );
 		},
-    /**
-     * Make array.
-     * @param {Array}
-     * @param {Array} [results=Array]
-     * @returns {Array}
-     */
+		/**
+		 * Make array.
+		 * @param {Array}
+		 * @param {Array} [results=Array]
+		 * @returns {Array}
+		 */
 		makeArray: function( array, results ) {
 			var result = results || [];
 
@@ -143,13 +145,13 @@ aQuery.define( "base/array", [ "base/typed", "base/extend" ], function( $, typed
 
 			return result;
 		},
-    /**
-     * Some object which has length change to array.
-     * @param {*} - Not a function but has length.
-     * @param {Number} [start=0]
-     * @param {Number} [end=obj.length]
-     * @returns {Array}
-     */
+		/**
+		 * Some object which has length change to array.
+		 * @param {*} - Not a function but has length.
+		 * @param {Number} [start=0]
+		 * @param {Number} [end=obj.length]
+		 * @returns {Array}
+		 */
 		toArray: function( obj, start, end ) {
 			var i = 0,
 				list = [],

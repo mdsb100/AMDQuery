@@ -2,40 +2,41 @@
 	this.describe( "Cline of Browser" );
 	/**
 	 * @public
+	 * @requires module:base/extend
 	 * @module base/client
 	 * @property {object} browser
-   * @property {Boolean} [browser.opera=false]
-   * @property {Boolean} [browser.chrome=false]
-   * @property {Boolean} [browser.safari=false]
-   * @property {Boolean} [browser.kong=false]
-   * @property {Boolean} [browser.firefox=false]
-   * @property {Boolean} [browser.ie=false]
-   * @property {Boolean} [browser.ie678=false]
-   *
-   * @property {object} engine
-   * @property {Boolean} [engine.opera=false]
-   * @property {Boolean} [engine.webkit=false]
-   * @property {Boolean} [engine.khtml=false]
-   * @property {Boolean} [engine.gecko=false]
-   * @property {Boolean} [engine.ie=false]
-   * @property {Boolean} [engine.ie678=false]
-   *
-   * @property {object} system
-   * @property {Boolean} [system.win=null]
-   * @property {Boolean} [system.mac=null]
-   * @property {Boolean} [system.linux=null]
-   * @property {Boolean} [system.iphone=null]
-   * @property {Boolean} [system.ipod=null]
-   * @property {Boolean} [system.ipad=null]
-   * @property {Boolean} [system.pad=null]
-   * @property {Boolean} [system.nokian=null]
-   * @property {Boolean} [system.winMobile=null]
-   * @property {Boolean} [system.androidMobile=null]
-   * @property {Boolean} [system.ios=null]
-   * @property {Boolean} [system.wii=null]
-   * @property {Boolean} [system.ps=null]
-   * @example
-   * if (client.system.win){}
+	 * @property {Boolean} [browser.opera=false]
+	 * @property {Boolean} [browser.chrome=false]
+	 * @property {Boolean} [browser.safari=false]
+	 * @property {Boolean} [browser.kong=false]
+	 * @property {Boolean} [browser.firefox=false]
+	 * @property {Boolean} [browser.ie=false]
+	 * @property {Boolean} [browser.ie678=false]
+	 *
+	 * @property {object} engine
+	 * @property {Boolean} [engine.opera=false]
+	 * @property {Boolean} [engine.webkit=false]
+	 * @property {Boolean} [engine.khtml=false]
+	 * @property {Boolean} [engine.gecko=false]
+	 * @property {Boolean} [engine.ie=false]
+	 * @property {Boolean} [engine.ie678=false]
+	 *
+	 * @property {object} system
+	 * @property {Boolean} [system.win=null]
+	 * @property {Boolean} [system.mac=null]
+	 * @property {Boolean} [system.linux=null]
+	 * @property {Boolean} [system.iphone=null]
+	 * @property {Boolean} [system.ipod=null]
+	 * @property {Boolean} [system.ipad=null]
+	 * @property {Boolean} [system.pad=null]
+	 * @property {Boolean} [system.nokian=null]
+	 * @property {Boolean} [system.winMobile=null]
+	 * @property {Boolean} [system.androidMobile=null]
+	 * @property {Boolean} [system.ios=null]
+	 * @property {Boolean} [system.wii=null]
+	 * @property {Boolean} [system.ps=null]
+	 * @example
+	 * if (client.system.win){}
 	 */
 	var client = {
 		browser: {

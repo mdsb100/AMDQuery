@@ -11,7 +11,7 @@ aQuery.define( "app/Application", [
   "app/Model",
   "app/View",
   "app/Controller",
-  "ecma5/array.compati" ], function( $, config, ClassModule, Promise, typed, utilExtend, CustomEvent, object, query, attr, BaseModel, BaseView, BaseController, Array, undefined ) {
+  "ecma5/array" ], function( $, config, ClassModule, Promise, typed, utilExtend, CustomEvent, object, query, attr, BaseModel, BaseView, BaseController, utilArray, undefined ) {
 	"use strict";
   this.describe( "Super Application Class" );
 	var Application = CustomEvent.extend( "Application", {

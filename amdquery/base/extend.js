@@ -4,6 +4,7 @@ aQuery.define( "base/extend", [ "base/typed" ], function( $, typed ) {
 	/**
 	 * @pubilc
 	 * @exports base/extend
+	 * @requires module:base/typed
 	 */
 	var utilExtend = {
 		/**

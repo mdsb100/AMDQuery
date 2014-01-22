@@ -1,9 +1,15 @@
-﻿aQuery.define( "ecma5/string.compati", function( $, undefinded ) {
+﻿aQuery.define( "ecma5/string", function( $, undefinded ) {
 	"use strict";
+	/**
+   * Extend Function.prototype.trim
+   * @pubilc
+   * @module ecma5/string
+   */
   this.describe( "ECMA String" );
+
 	var obj = {
 		trim: function() {
-			return this.replace( /(^\s*)|(\s*$)/g, "" );
+			return $.trim( this );
 		}
 	}, i;
 	for ( i in obj ) {
