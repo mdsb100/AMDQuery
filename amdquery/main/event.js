@@ -8,8 +8,8 @@
 		other = "resize scroll change select submit DomNodeInserted DomNodeRemoved".split( " " ),
 		_eventNameList = [].concat( mouse, mutation, html, key, other ),
 		_domEventList = {},
-		tools = {
-			editEventType: function( type ) {
+		eventHooks = {
+			type: function( type ) {
 				/// <summary>兼容事件类型名</summary>
 				/// <param name="type" type="String"></param>
 				/// <returns type="String" />
@@ -29,7 +29,7 @@
 						if ( client.browser.firefox ) type = "DOMMouseScroll";
 						break;
 				}
-				if ( ( temp = $.interfaces.trigger( "editEventType", type ) ) ) type = temp;
+				if ( ( temp = $.interfaces.trigger( "eventHooks", type ) ) ) type = temp;
 				return type;
 			},
 			compatibleEvent: function( e ) {
@@ -63,7 +63,7 @@
 								evt = temp.event;
 								target = temp.target;
 							}
-							config.module.compatibleEvent && tools.compatibleEvent( evt );
+							config.module.compatibleEvent && eventHooks.compatibleEvent( evt );
 						}
 
 						fun.call( target, evt || {} );
@@ -92,12 +92,12 @@
 					if ( !( data = $.data( ele, "_handlers_" ) ) ) {
 						data = $.data( ele, "_handlers_", new CustomEvent() );
 					}
-					proxy = tools.proxy( fun, this );
+					proxy = eventHooks.proxy( fun, this );
 
 					for ( ; i >= 0; i-- ) {
 						item = types[ i ];
 						if ( data.hasHandler( item, fun ) == -1 && _domEventList[ item ] ) {
-							item = tools.editEventType( item );
+							item = eventHooks.type( item );
 							$.event.document._addHandler( ele, item, proxy );
 						}
 					}
@@ -116,12 +116,12 @@
 					if ( !( data = $.data( ele, "_handlers_" ) ) ) {
 						data = $.data( ele, "_handlers_", new CustomEvent() );
 					}
-					proxy = tools.proxy( fun, this );
+					proxy = eventHooks.proxy( fun, this );
 
 					for ( ; i >= 0; i-- ) {
 						item = types[ i ];
 						if ( data.hasHandler( item, fun ) == -1 && _domEventList[ item ] ) {
-							item = tools.editEventType( item );
+							item = eventHooks.type( item );
 							$.event.document.once( ele, item, proxy );
 						}
 					}
@@ -243,7 +243,7 @@
 					var proxy;
 					if ( _domEventList[ type ] ) {
 						proxy = fun.__guid || fun;
-						type = tools.editEventType( type );
+						type = eventHooks.type( type );
 						return $.event.document.hasHandler( ele, type, proxy );
 					}
 
@@ -575,7 +575,7 @@
 					for ( ; i >= 0; i-- ) {
 						item = types[ i ];
 						if ( _domEventList[ item ] ) {
-							item = tools.editEventType( item );
+							item = eventHooks.type( item );
 							$.event.document._removeHandler( ele, item, proxy );
 						}
 					}
@@ -698,7 +698,7 @@
 				if ( typed.isEle( ele ) || typed.isWindow( ele ) ) {
 					var data;
 					if ( data = _domEventList[ type ] ) {
-						type = tools.editEventType( type );
+						type = eventHooks.type( type );
 						typed.isFun( data ) ? data( ele, type, context ) : $.logger( "trigger", "triggering" + type + " is not supported" );
 					} else {
 						( data = $.data( ele, "_handlers_" ) ) && data.trigger.apply( data, [ type, context ].concat( $.util.argToArray( arguments, 3 ) ) );
@@ -726,14 +726,14 @@
 			/// <returns type="self" />
 			if ( !typed.isStr( type ) || !( typed.isFun( fun ) || fun === null ) ) return this;
 			return this.each( function( ele ) {
-				//                    fun = tools.proxy(fun, this);
+				//                    fun = eventHooks.proxy(fun, this);
 				//                    var key, result
 				//                if ((key = $.searchCustomEvent(type))) {//直接绑定在 container ele上的事件
 				//                    key = $.data(ele, key);
 				//                    key && key.addHandler(type, fun);
 				//                    return;
 				//                }
-				//type = tools.editEventType(type);
+				//type = eventHooks.type(type);
 				$.addHandler( ele, type, fun );
 			} );
 		},
@@ -789,7 +789,7 @@
 				//                    key && key.removeHandler(type, fun);
 				//                    return;
 				//                }
-				//type = tools.editEventType(type);
+				//type = eventHooks.type(type);
 				$.removeHandler( ele, type, fun );
 			} );
 		},

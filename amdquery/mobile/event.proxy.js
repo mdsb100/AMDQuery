@@ -1,7 +1,7 @@
 ﻿aQuery.define( "mobile/event.proxy", [ "base/extend", "base/client", "main.event" ], function( $, utilExtend, client, event, undefined ) {
 	"use strict";
 	if ( client.system.mobile ) {
-		$.interfaces.achieve( "editEventType", function( name, type ) {
+		$.interfaces.achieve( "eventHooks", function( name, type ) {
 			var str = "";
 			switch ( type ) {
 				case "mousedown":

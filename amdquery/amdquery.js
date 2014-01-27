@@ -332,7 +332,7 @@
 				return item && item.apply( this, arguments );
 			},
 			handlers: {
-				editEventType: null,
+				eventHooks: null,
 				proxy: null,
 				constructorCSS: null,
 				constructorDom: null,
