@@ -1,5 +1,13 @@
-﻿aQuery.define( "mobile/event.proxy", [ "base/extend", "base/client", "main.event" ], function( $, utilExtend, client, event, undefined ) {
+﻿aQuery.define( "mobile/event", [ "base/extend", "base/client", "main.event" ], function( $, utilExtend, client, event, undefined ) {
 	"use strict";
+
+	/**
+	 * @desc A mobile event proxy.If context is mobile then return true.<br/>
+	 * Extend aQuery.prototype. You must requrie this module.
+	 * @public
+	 * @module mobile/event
+	 */
+
 	if ( client.system.mobile ) {
 		$.interfaces.achieve( "eventHooks", function( name, type ) {
 			var str = "";
@@ -83,7 +91,7 @@
 				eventF.dispatchEvent( ele, e, type );
 			},
 			_gestureSettings = {},
-			gestureImitation = function( /*还不知道如何实现*/) {};
+			gestureImitation = function( /*unfinished*/) {};
 
 		event.event.document.imitation._touchSettings = _touchSettings;
 		event.event.document.imitation.touch = touch;
@@ -99,60 +107,85 @@
 		}
 
 		$.fn.extend( {
-			touchstart: function( fun ) {
-				/// <summary>绑定或触发touchstart事件</summary>
-				/// <param name="fun" type="Function/Object/undefined">不存在则触发</param>
-				/// <returns type="self" />
-				return this.blur( fun, "touchstart" );
+			/**
+			 * Bind or trigger touchstart.
+			 * @public
+			 * @memberof aQuery.prototype
+			 * @param {Function|Object} [fn]
+			 * @returns {this}
+			 */
+			touchstart: function( fn ) {
+				return this.blur( fn, "touchstart" );
 			},
-
-			touchmove: function( fun ) {
-				/// <summary>绑定或触发touchmovep事件</summary>
-				/// <param name="fun" type="Function/Object/undefined">不存在则触发</param>
-				/// <returns type="self" />
-				return this.blur( fun, "touchmove" );
+			/**
+			 * Bind or trigger touchmove.
+			 * @public
+			 * @memberof aQuery.prototype
+			 * @param {Function|Object} [fn]
+			 * @returns {this}
+			 */
+			touchmove: function( fn ) {
+				return this.blur( fn, "touchmove" );
 			},
-
-			touchend: function( fun ) {
-				/// <summary>绑定或触发touchend事件</summary>
-				/// <param name="fun" type="Function/Object/undefined">不存在则触发</param>
-				/// <returns type="self" />
-				return this.blur( fun, "touchend" );
+			/**
+			 * Bind or trigger touchend.
+			 * @public
+			 * @memberof aQuery.prototype
+			 * @param {Function|Object} [fn]
+			 * @returns {this}
+			 */
+			touchend: function( fn ) {
+				return this.blur( fn, "touchend" );
 			},
-
-			touchcancel: function( fun ) {
-				/// <summary>绑定或触发touchcancel事件</summary>
-				/// <param name="fun" type="Function/Object/undefined">不存在则触发</param>
-				/// <returns type="self" />
-				return this.blur( fun, "touchcancel" );
+			/**
+			 * Bind or trigger touchcancel.
+			 * @public
+			 * @memberof aQuery.prototype
+			 * @param {Function|Object} [fn]
+			 * @returns {this}
+			 */
+			touchcancel: function( fn ) {
+				return this.blur( fn, "touchcancel" );
 			},
-
-			gesturestart: function( fun ) {
-				/// <summary>绑定或触发gesturestart事件</summary>
-				/// <param name="fun" type="Function/Object/undefined">不存在则触发</param>
-				/// <returns type="self" />
-				return this.blur( fun, "gesturestart" );
+			/**
+			 * Bind or trigger gesturestart.
+			 * @public
+			 * @memberof aQuery.prototype
+			 * @param {Function|Object} [fn]
+			 * @returns {this}
+			 */
+			gesturestart: function( fn ) {
+				return this.blur( fn, "gesturestart" );
 			},
-
-			gesturechange: function( fun ) {
-				/// <summary>绑定或触发gesturechange事件</summary>
-				/// <param name="fun" type="Function/Object/undefined">不存在则触发</param>
-				/// <returns type="self" />
-				return this.blur( fun, "gesturechange" );
+			/**
+			 * Bind or trigger gesturechange.
+			 * @public
+			 * @memberof aQuery.prototype
+			 * @param {Function|Object} [fn]
+			 * @returns {this}
+			 */
+			gesturechange: function( fn ) {
+				return this.blur( fn, "gesturechange" );
 			},
-
-			gestureend: function( fun ) {
-				/// <summary>绑定或触发gestureend事件</summary>
-				/// <param name="fun" type="Function/Object/undefined">不存在则触发</param>
-				/// <returns type="self" />
-				return this.blur( fun, "gestureend" );
+			/**
+			 * Bind or trigger gestureend.
+			 * @public
+			 * @memberof aQuery.prototype
+			 * @param {Function|Object} [fn]
+			 * @returns {this}
+			 */
+			gestureend: function( fn ) {
+				return this.blur( fn, "gestureend" );
 			},
-
-			orientationchange: function( fun ) {
-				/// <summary>绑定或触发orientationchange事件</summary>
-				/// <param name="fun" type="Function/Object/undefined">不存在则触发</param>
-				/// <returns type="self" />
-				return this.blur( fun, "orientationchange" );
+			/**
+			 * Bind or trigger orientationchange.
+			 * @public
+			 * @memberof aQuery.prototype
+			 * @param {Function|Object} [fn]
+			 * @returns {this}
+			 */
+			orientationchange: function( fn ) {
+				return this.blur( fn, "orientationchange" );
 			}
 
 
