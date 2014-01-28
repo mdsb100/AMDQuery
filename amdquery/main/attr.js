@@ -19,129 +19,159 @@
 			usemap: "useMap",
 			frameborder: "frameBorder",
 			contenteditable: "contentEditable"
-		}, rboolean = /^(?:autofocus|autoplay|async|checked|controls|defer|disabled|hidden|loop|multiple|open|readonly|required|scoped|selected)$/i,
-		attr = {
-			getAttr: function( ele, name ) {
-				var ret;
-      if ( !support.getSetAttribute ) {
-        ret = ele.getAttributeNode( name );
-        return ret && ( fixSpecified[ name ] ? ret.nodeValue !== "" : ret.specified ) ?
-          ret.nodeValue :
-          undefined;
-      }
-				return ( ret = ele.getAttributeNode( name ) ) ? ret.nodeValue : undefined;
-			},
-			getVal: function( ele ) {
-				/// <summary>获得第元素的value属性
-				/// <para>select、checkbox、radio例外</para>
-				/// <para>select多选情况，获得是选中项的innerHTML集合用|分隔</para>
-				/// <param name="ele" type="Element">element元素</param>
-				/// </summary>
-				/// <returns type="String" />
-				var type = ele.type.toUpperCase(),
-					result;
-				if ( typed.isNode( ele, "select" ) ) {
-					result = ele.value;
-					if ( typed.isNul( result ) || ele.multiple == true ) {
-						result = [];
-						$( ele ).posterity( ":selected" ).each( function( ele ) {
-							result.push( ele.innerHTML );
-						} );
-						result = result.join( "|" );
-					}
-					return result;
-				} else if ( typed.isNode( ele, "select" ) && ( type == "CHECKBOX" || type == "RADIO" ) )
-					return ele.checked.toString();
-				else
-					return ele.value.toString();
-			},
+		}, rboolean = /^(?:autofocus|autoplay|async|checked|controls|defer|disabled|hidden|loop|multiple|open|readonly|required|scoped|selected)$/i;
+	/**
+	 * @pubilc
+	 * @exports main/attr
+	 * @requires module:base/typed
+	 * @requires module:base/extend
+	 * @requires module:base/support
+	 */
+	var attr = {
+		/**
+		 * @param {Element}
+		 * @param {String}
+		 * @returns {String}
+		 */
+		getAttr: function( ele, name ) {
+			var ret;
+			if ( !support.getSetAttribute ) {
+				ret = ele.getAttributeNode( name );
+				return ret && ( fixSpecified[ name ] ? ret.nodeValue !== "" : ret.specified ) ?
+					ret.nodeValue :
+					undefined;
+			}
+			return ( ret = ele.getAttributeNode( name ) ) ? ret.nodeValue : undefined;
+		},
+		/**
+		 * Exception select, checkbox, radio. <br/>
+		 * If select is multiple choice, then return "America|England"
+		 * @param {Element}
+		 * @returns {String}
+		 */
+		getVal: function( ele ) {
+			var type = ele.type.toUpperCase(),
+				result;
+			if ( typed.isNode( ele, "select" ) ) {
+				result = ele.value;
+				if ( typed.isNul( result ) || ele.multiple == true ) {
+					result = [];
+					$( ele ).posterity( ":selected" ).each( function( ele ) {
+						result.push( ele.innerHTML );
+					} );
+					result = result.join( "|" );
+				}
+				return result;
+			} else if ( typed.isNode( ele, "select" ) && ( type == "CHECKBOX" || type == "RADIO" ) )
+				return ele.checked.toString();
+			else
+				return ele.value.toString();
+		},
+		/**
+		 * @param {Element}
+		 * @param {String}
+		 * @returns {this}
+		 */
+		removeAttr: function( ele, key ) {
+			var propName, attrNames, name, l, isBool, i = 0;
 
-			removeAttr: function( ele, value ) {
-				var propName, attrNames, name, l, isBool, i = 0;
+			if ( key && ele.nodeType === 1 ) {
+				attrNames = key.toLowerCase().split( /\s+/ );
+				l = attrNames.length;
 
-				if ( value && ele.nodeType === 1 ) {
-					attrNames = value.toLowerCase().split( /\s+/ );
-					l = attrNames.length;
+				for ( ; i < l; i++ ) {
+					name = attrNames[ i ];
 
-					for ( ; i < l; i++ ) {
-						name = attrNames[ i ];
+					if ( name ) {
+						propName = propFix[ name ] || name;
+						isBool = rboolean.test( name );
 
-						if ( name ) {
-							propName = propFix[ name ] || name;
-							isBool = rboolean.test( name );
+						if ( !isBool ) {
+							$.setAttr( ele, name, "" );
+						}
+						ele.removeAttribute( support.getSetAttribute ? name : propName );
 
-							if ( !isBool ) {
-								$.setAttr( ele, name, "" );
-							}
-							ele.removeAttribute( support.getSetAttribute ? name : propName );
-
-							if ( isBool && propName in ele ) {
-								ele[ propName ] = false;
-							}
+						if ( isBool && propName in ele ) {
+							ele[ propName ] = false;
 						}
 					}
 				}
-				return this;
-			},
-
-			setAttr: function( ele, name, value ) {
-				if ( value == null ) {
-					return $.removeAttr( ele, name );
-				}
-				//                if (!support.getSetAttribute) {
-				//                    var ret = ele.getAttributeNode(name);
-				//                    if (!ret) {
-				//                        ret = document.createAttribute(name);
-				//                        ele.setAttributeNode(ret);
-				//                    }
-				//                    ret.nodeValue = value + "";
-				//                }
-				//                else {
-				ele.setAttribute( name, value );
-				//}
-				return this;
-			},
-			setVal: function( ele, value ) {
-				/// <summary>设置第元素的value属性
-				/// <para>select、checkbox、radio例外</para>
-				/// <para>select多选情况，可以用数组来设置。当数组的每一项的string或num与option的innerHTML匹配时则被设置为true</para>
-				/// <param name="ele" type="Element">element元素</param>
-				/// <param name="value" type="Number/String/Boolean">值</param>
-				/// </summary>
-				/// <returns type="self" />
-				var type = ele.type.toUpperCase();
-				if ( typed.isNode( ele, "select" ) ) {
-					if ( typed.isStr( value ) || typed.isNum( value ) )
-						value = [ value ];
-					$( ele ).find( "option" ).each( function( ele ) {
-						ele.selected = false;
-					} ).each( function( ele, index ) {
-						$.each( value, function( val ) {
-							if ( index === val || ele.innerHTML === val )
-								ele.selected = true;
-						}, this );
-					} );
-				} else if ( typed.isNode( ele, "input" ) && ( type == "CHECKBOX" || type == "RADIO" ) ) { //将来可能用$.setAttr()
-					if ( value === "checked" || value === "true" || value === true )
-						ele.checked = true;
-					else
-						ele.value = value.toString();
-				} else
-					ele.value = value.toString();
-				return this;
 			}
-		};
+			return this;
+		},
+		/**
+		 * @param {Element}
+		 * @param {String}
+     * @param {String|Number}
+		 * @returns {this}
+		 */
+		setAttr: function( ele, name, value ) {
+			if ( value == null ) {
+				return $.removeAttr( ele, name );
+			}
+			if ( !support.getSetAttribute ) {
+				var ret = ele.getAttributeNode( name );
+				if ( !ret ) {
+					ret = document.createAttribute( name );
+					ele.setAttributeNode( ret );
+				}
+				ret.nodeValue = value + "";
+			} else {
+				ele.setAttribute( name, value );
+			}
+			return this;
+		},
+		/**
+		 * Exception select, checkbox, radio. <br/>
+		 * If select is multiple choice and value equals inner HTML of one element.
+		 * @param {Element}
+		 * @param {String|Boolean|Number}
+		 * @returns {this}
+		 */
+		setVal: function( ele, value ) {
+			var type = ele.type.toUpperCase();
+			if ( typed.isNode( ele, "select" ) ) {
+				if ( typed.isStr( value ) || typed.isNum( value ) )
+					value = [ value ];
+				$( ele ).find( "option" ).each( function( ele ) {
+					ele.selected = false;
+				} ).each( function( ele, index ) {
+					$.each( value, function( val ) {
+						if ( index === val || ele.innerHTML === val )
+							ele.selected = true;
+					}, this );
+				} );
+			} else if ( typed.isNode( ele, "input" ) && ( type == "CHECKBOX" || type == "RADIO" ) ) {
+				if ( value === "checked" || value === "true" || value === true )
+					ele.checked = true;
+				else
+					ele.value = value.toString();
+			} else
+				ele.value = value.toString();
+			return this;
+		}
+	};
 
 	$.extend( attr );
 
 	$.fn.extend( {
+    /**
+     * Set or get attribute.
+     * @example
+     * $("#img").attr({
+     *   width: "100px",
+     *   height: "100px"
+     * }).attr("title", "Flower");
+     * $("#div1").attr("title", "Hello");
+     * $("#div2").attr("title", "World");
+     * $("#div1, #div2").attr("title"); // return "Hello"
+     * @public
+     * @memberof aQuery.prototype
+     * @param {String|Object}
+     * @param {String|Number} [value]
+     * @returns {this|String}
+     */
 		attr: function( attr, value ) {
-			/// <summary>添加或获得属性
-			/// <para>如果要获得样式 返回为any</para>
-			/// </summary>
-			/// <param name="attr" type="Object/String">obj为赋属性 str为获得一个属性</param>
-			/// <param name="value" type="String/Number/undefined">当style是字符串，并且value存在</param>
-			/// <returns type="self" />
 			if ( typed.isObj( attr ) ) {
 				for ( var i in attr ) {
 					this.each( function( ele ) {
@@ -159,24 +189,26 @@
 			}
 			return this;
 		},
-
+    /**
+     * Remove attribute.
+     * @public
+     * @memberof aQuery.prototype
+     * @param {String}
+     * @returns {this}
+     */
 		removeAttr: function( name ) {
-			/// <summary>移除属性值</summary>
-			/// <param name="name" type="String">obj为赋属性 str为获得一个属性</param>
-			/// <returns type="self" />
-
 			return this.each( function( ele ) {
 				$.removeAttr( ele, name );
 			} );
 		},
-
+    /**
+     * Get or set value.
+     * @public
+     * @memberof aQuery.prototype
+     * @param {String|Boolean|Number} [value]
+     * @returns {this|String}
+     */
 		val: function( value ) {
-			/// <summary>设置第一个元素的value属性
-			/// <para>select、checkbox、radio例外</para>
-			/// <para>select多选情况，可以用数组来设置。当数组的每一项的string或num与option的innerHTML匹配时则被设置为true</para>
-			/// <param name="value" type="Number/String">值</param>
-			/// </summary>
-			/// <returns type="self" />
 			return value ? this.each( function( ele ) {
 				$.setVal( ele, value );
 			} ) : $.getVal( this[ 0 ] );
