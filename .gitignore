@@ -2,4 +2,4 @@
 build/dist/
 build/dist/*.*
 build/node_modules
-document/api/
+document/app/asset/api/

@@ -1,1 +1,1 @@
-rm -fr ./../document/api/ && jsdoc ../amdquery/ ../amdquery/**/*.js --template templates/docstrap --destination ./../document/api/
+rm -fr ./../document/app/asset/api/ && jsdoc ../amdquery/ ../amdquery/**/*.js --template templates/docstrap --destination ./../document/app/asset/api/

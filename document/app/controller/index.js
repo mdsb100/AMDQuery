@@ -33,7 +33,7 @@ aQuery.define( "@app/controller/index", [
 				$swapview.uiSwapview( "render", e.index, function() {
 					if ( e.index === 1 && loadAPIFlag === false ) {
 						loadAPIFlag = true;
-						self.api.loadPath( "/document/api/index.html" );
+						self.api.loadPath( "asset/api/index.html" );
 					}
 				} );
 			} );
