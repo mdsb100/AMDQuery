@@ -7819,129 +7819,159 @@ if ( typeof define === "function" && define.amd ) {
 			usemap: "useMap",
 			frameborder: "frameBorder",
 			contenteditable: "contentEditable"
-		}, rboolean = /^(?:autofocus|autoplay|async|checked|controls|defer|disabled|hidden|loop|multiple|open|readonly|required|scoped|selected)$/i,
-		attr = {
-			getAttr: function( ele, name ) {
-				var ret;
-      if ( !support.getSetAttribute ) {
-        ret = ele.getAttributeNode( name );
-        return ret && ( fixSpecified[ name ] ? ret.nodeValue !== "" : ret.specified ) ?
-          ret.nodeValue :
-          undefined;
-      }
-				return ( ret = ele.getAttributeNode( name ) ) ? ret.nodeValue : undefined;
-			},
-			getVal: function( ele ) {
-				/// <summary>获得第元素的value属性
-				/// <para>select、checkbox、radio例外</para>
-				/// <para>select多选情况，获得是选中项的innerHTML集合用|分隔</para>
-				/// <param name="ele" type="Element">element元素</param>
-				/// </summary>
-				/// <returns type="String" />
-				var type = ele.type.toUpperCase(),
-					result;
-				if ( typed.isNode( ele, "select" ) ) {
-					result = ele.value;
-					if ( typed.isNul( result ) || ele.multiple == true ) {
-						result = [];
-						$( ele ).posterity( ":selected" ).each( function( ele ) {
-							result.push( ele.innerHTML );
-						} );
-						result = result.join( "|" );
-					}
-					return result;
-				} else if ( typed.isNode( ele, "select" ) && ( type == "CHECKBOX" || type == "RADIO" ) )
-					return ele.checked.toString();
-				else
-					return ele.value.toString();
-			},
+		}, rboolean = /^(?:autofocus|autoplay|async|checked|controls|defer|disabled|hidden|loop|multiple|open|readonly|required|scoped|selected)$/i;
+	/**
+	 * @pubilc
+	 * @exports main/attr
+	 * @requires module:base/typed
+	 * @requires module:base/extend
+	 * @requires module:base/support
+	 */
+	var attr = {
+		/**
+		 * @param {Element}
+		 * @param {String}
+		 * @returns {String}
+		 */
+		getAttr: function( ele, name ) {
+			var ret;
+			if ( !support.getSetAttribute ) {
+				ret = ele.getAttributeNode( name );
+				return ret && ( fixSpecified[ name ] ? ret.nodeValue !== "" : ret.specified ) ?
+					ret.nodeValue :
+					undefined;
+			}
+			return ( ret = ele.getAttributeNode( name ) ) ? ret.nodeValue : undefined;
+		},
+		/**
+		 * Exception select, checkbox, radio. <br/>
+		 * If select is multiple choice, then return "America|England"
+		 * @param {Element}
+		 * @returns {String}
+		 */
+		getVal: function( ele ) {
+			var type = ele.type.toUpperCase(),
+				result;
+			if ( typed.isNode( ele, "select" ) ) {
+				result = ele.value;
+				if ( typed.isNul( result ) || ele.multiple == true ) {
+					result = [];
+					$( ele ).posterity( ":selected" ).each( function( ele ) {
+						result.push( ele.innerHTML );
+					} );
+					result = result.join( "|" );
+				}
+				return result;
+			} else if ( typed.isNode( ele, "select" ) && ( type == "CHECKBOX" || type == "RADIO" ) )
+				return ele.checked.toString();
+			else
+				return ele.value.toString();
+		},
+		/**
+		 * @param {Element}
+		 * @param {String}
+		 * @returns {this}
+		 */
+		removeAttr: function( ele, key ) {
+			var propName, attrNames, name, l, isBool, i = 0;
 
-			removeAttr: function( ele, value ) {
-				var propName, attrNames, name, l, isBool, i = 0;
+			if ( key && ele.nodeType === 1 ) {
+				attrNames = key.toLowerCase().split( /\s+/ );
+				l = attrNames.length;
 
-				if ( value && ele.nodeType === 1 ) {
-					attrNames = value.toLowerCase().split( /\s+/ );
-					l = attrNames.length;
+				for ( ; i < l; i++ ) {
+					name = attrNames[ i ];
 
-					for ( ; i < l; i++ ) {
-						name = attrNames[ i ];
+					if ( name ) {
+						propName = propFix[ name ] || name;
+						isBool = rboolean.test( name );
 
-						if ( name ) {
-							propName = propFix[ name ] || name;
-							isBool = rboolean.test( name );
+						if ( !isBool ) {
+							$.setAttr( ele, name, "" );
+						}
+						ele.removeAttribute( support.getSetAttribute ? name : propName );
 
-							if ( !isBool ) {
-								$.setAttr( ele, name, "" );
-							}
-							ele.removeAttribute( support.getSetAttribute ? name : propName );
-
-							if ( isBool && propName in ele ) {
-								ele[ propName ] = false;
-							}
+						if ( isBool && propName in ele ) {
+							ele[ propName ] = false;
 						}
 					}
 				}
-				return this;
-			},
-
-			setAttr: function( ele, name, value ) {
-				if ( value == null ) {
-					return $.removeAttr( ele, name );
-				}
-				//                if (!support.getSetAttribute) {
-				//                    var ret = ele.getAttributeNode(name);
-				//                    if (!ret) {
-				//                        ret = document.createAttribute(name);
-				//                        ele.setAttributeNode(ret);
-				//                    }
-				//                    ret.nodeValue = value + "";
-				//                }
-				//                else {
-				ele.setAttribute( name, value );
-				//}
-				return this;
-			},
-			setVal: function( ele, value ) {
-				/// <summary>设置第元素的value属性
-				/// <para>select、checkbox、radio例外</para>
-				/// <para>select多选情况，可以用数组来设置。当数组的每一项的string或num与option的innerHTML匹配时则被设置为true</para>
-				/// <param name="ele" type="Element">element元素</param>
-				/// <param name="value" type="Number/String/Boolean">值</param>
-				/// </summary>
-				/// <returns type="self" />
-				var type = ele.type.toUpperCase();
-				if ( typed.isNode( ele, "select" ) ) {
-					if ( typed.isStr( value ) || typed.isNum( value ) )
-						value = [ value ];
-					$( ele ).find( "option" ).each( function( ele ) {
-						ele.selected = false;
-					} ).each( function( ele, index ) {
-						$.each( value, function( val ) {
-							if ( index === val || ele.innerHTML === val )
-								ele.selected = true;
-						}, this );
-					} );
-				} else if ( typed.isNode( ele, "input" ) && ( type == "CHECKBOX" || type == "RADIO" ) ) { //将来可能用$.setAttr()
-					if ( value === "checked" || value === "true" || value === true )
-						ele.checked = true;
-					else
-						ele.value = value.toString();
-				} else
-					ele.value = value.toString();
-				return this;
 			}
-		};
+			return this;
+		},
+		/**
+		 * @param {Element}
+		 * @param {String}
+     * @param {String|Number}
+		 * @returns {this}
+		 */
+		setAttr: function( ele, name, value ) {
+			if ( value == null ) {
+				return $.removeAttr( ele, name );
+			}
+			if ( !support.getSetAttribute ) {
+				var ret = ele.getAttributeNode( name );
+				if ( !ret ) {
+					ret = document.createAttribute( name );
+					ele.setAttributeNode( ret );
+				}
+				ret.nodeValue = value + "";
+			} else {
+				ele.setAttribute( name, value );
+			}
+			return this;
+		},
+		/**
+		 * Exception select, checkbox, radio. <br/>
+		 * If select is multiple choice and value equals inner HTML of one element.
+		 * @param {Element}
+		 * @param {String|Boolean|Number}
+		 * @returns {this}
+		 */
+		setVal: function( ele, value ) {
+			var type = ele.type.toUpperCase();
+			if ( typed.isNode( ele, "select" ) ) {
+				if ( typed.isStr( value ) || typed.isNum( value ) )
+					value = [ value ];
+				$( ele ).find( "option" ).each( function( ele ) {
+					ele.selected = false;
+				} ).each( function( ele, index ) {
+					$.each( value, function( val ) {
+						if ( index === val || ele.innerHTML === val )
+							ele.selected = true;
+					}, this );
+				} );
+			} else if ( typed.isNode( ele, "input" ) && ( type == "CHECKBOX" || type == "RADIO" ) ) {
+				if ( value === "checked" || value === "true" || value === true )
+					ele.checked = true;
+				else
+					ele.value = value.toString();
+			} else
+				ele.value = value.toString();
+			return this;
+		}
+	};
 
 	$.extend( attr );
 
 	$.fn.extend( {
+    /**
+     * Set or get attribute.
+     * @example
+     * $("#img").attr({
+     *   width: "100px",
+     *   height: "100px"
+     * }).attr("title", "Flower");
+     * $("#div1").attr("title", "Hello");
+     * $("#div2").attr("title", "World");
+     * $("#div1, #div2").attr("title"); // return "Hello"
+     * @public
+     * @memberof aQuery.prototype
+     * @param {String|Object}
+     * @param {String|Number} [value]
+     * @returns {this|String}
+     */
 		attr: function( attr, value ) {
-			/// <summary>添加或获得属性
-			/// <para>如果要获得样式 返回为any</para>
-			/// </summary>
-			/// <param name="attr" type="Object/String">obj为赋属性 str为获得一个属性</param>
-			/// <param name="value" type="String/Number/undefined">当style是字符串，并且value存在</param>
-			/// <returns type="self" />
 			if ( typed.isObj( attr ) ) {
 				for ( var i in attr ) {
 					this.each( function( ele ) {
@@ -7959,24 +7989,26 @@ if ( typeof define === "function" && define.amd ) {
 			}
 			return this;
 		},
-
+    /**
+     * Remove attribute.
+     * @public
+     * @memberof aQuery.prototype
+     * @param {String}
+     * @returns {this}
+     */
 		removeAttr: function( name ) {
-			/// <summary>移除属性值</summary>
-			/// <param name="name" type="String">obj为赋属性 str为获得一个属性</param>
-			/// <returns type="self" />
-
 			return this.each( function( ele ) {
 				$.removeAttr( ele, name );
 			} );
 		},
-
+    /**
+     * Get or set value.
+     * @public
+     * @memberof aQuery.prototype
+     * @param {String|Boolean|Number} [value]
+     * @returns {this|String}
+     */
 		val: function( value ) {
-			/// <summary>设置第一个元素的value属性
-			/// <para>select、checkbox、radio例外</para>
-			/// <para>select多选情况，可以用数组来设置。当数组的每一项的string或num与option的innerHTML匹配时则被设置为true</para>
-			/// <param name="value" type="Number/String">值</param>
-			/// </summary>
-			/// <returns type="self" />
 			return value ? this.each( function( ele ) {
 				$.setVal( ele, value );
 			} ) : $.getVal( this[ 0 ] );
@@ -8932,70 +8964,88 @@ if ( typeof define === "function" && define.amd ) {
 /*===================main/class===========================*/
 ﻿aQuery.define( "main/class", [ "base/extend", "base/support" ], function( $, utilExtend, support, undefined ) {
 	"use strict";
-	var cls,
-		replaceClass = function( ele, oldClassName, newClassName ) {
-			/// <summary>清空所有样式表</summary>
-			/// <param name="ele" type="Element">ele元素</param>
-			/// <param name="className" type="String">替换整个样式表 缺省为空</param>
-			/// <returns type="self" />
-			oldClassName && ( ele.className = ele.className.replace( oldClassName, newClassName ) );
-			return this;
-		};
+	/**
+	 * @name replaceClass
+	 * @method
+	 * @param {Element} ele
+	 * @param {String} oldClassName
+	 * @param {String} newClassName
+	 * @returns {this}
+	 */
+	function replaceClass( ele, oldClassName, newClassName ) {
+		oldClassName && ( ele.className = ele.className.replace( oldClassName, newClassName ) );
+		return this;
+	};
+
+	/**
+	 * @pubilc
+	 * @exports main/class
+	 * @requires module:base/extend
+	 * @requires module:base/support
+	 * @borrows replaceClass as replaceClass
+	 */
+	var cls;
+
 	if ( support.classList ) {
-		cls = {
+		cls = /** @lends module:main/class */ {
+			/**
+			 * @param {Element}
+			 * @param {String}
+			 * @returns {this}
+			 */
 			addClass: function( ele, className ) {
-				/// <summary>给DOM元素添加样式表</summary>
-				/// <param name="ele" type="Element">ele元素</param>
-				/// <param name="className" type="String">样式表</param>
-				/// <returns type="self" />
 				className != "" && ele.classList.add( className );
 				return this;
 			},
+			/**
+			 * @param {Element}
+			 * @param {String}
+			 * @returns {Boolean}
+			 */
 			containsClass: function( ele, className ) {
-				/// <summary>获得指定的DOM元素的样式名</summary>
-				/// <param name="ele" type="Element">dom元素</param>
-				/// <param name="className" type="String">样式名</param>
-				/// <returns type="Boolean" />
 				return ele.classList.contains( className );
 			},
+			/**
+			 * @param {Element}
+			 * @param {String}
+			 * @returns {this}
+			 */
 			removeClass: function( ele, className ) {
-				/// <summary>对元素删除一个样式类</summary>
-				/// <param name="ele" type="Object">对象</param>
-				/// <param name="className" type="String">样式名</param>
-				/// <returns type="self" />
 				className != "" && ele.classList.remove( className );
 				return this;
 			},
+			/**
+			 * If className exists then remove, if className does not exists then add.
+			 * @param {Element}
+			 * @param {String}
+			 * @returns {this}
+			 */
 			toggleClass: function( ele, className ) {
-				/// <summary>切换元素样式</summary>
-				/// <param name="ele" type="Object">对象</param>
-				/// <param name="className" type="String">样式名</param>
-				/// <returns type="self" />
 				className != "" && ele.classList.toggle( className );
 				return this;
 			},
 			replaceClass: replaceClass,
+			/**
+			 * return class length.
+			 * @param {Element}
+			 * @returns {Number}
+			 */
 			classLength: function( ele ) {
-				/// <summary>获得Class的个数</summary>
-				/// <param name="ele" type="Object">对象</param>
-				/// <returns type="Number" />
 				return ele.classList.length;
 			},
+			/**
+			 * If className exists then remove, if className does not exists then add.
+			 * @param {Element}
+			 * @param {Number}
+			 * @returns {String}
+			 */
 			getClassByIndex: function( ele, index ) {
-				/// <summary>获得样式在元素的索引</summary>
-				/// <param name="ele" type="Object">对象</param>
-				/// <param name="index" type="Number">样式名</param>
-				/// <returns type="String" />
 				return ele.classList.item( index );
 			}
 		};
 	} else {
 		cls = {
 			addClass: function( ele, className ) {
-				/// <summary>给DOM元素添加样式表</summary>
-				/// <param name="ele" type="Element">ele元素</param>
-				/// <param name="className" type="String">样式表</param>
-				/// <returns type="self" />
 				if ( !$.containsClass( ele, className ) ) {
 					var str = " ";
 					if ( ele.className.length == 0 ) str = "";
@@ -9005,19 +9055,11 @@ if ( typeof define === "function" && define.amd ) {
 				return this;
 			},
 			containsClass: function( ele, className ) {
-				/// <summary>获得指定的DOM元素的样式名</summary>
-				/// <param name="ele" type="Element">dom元素</param>
-				/// <param name="className" type="String">样式名</param>
-				/// <returns type="String" />
 				var reg = new RegExp( "(\\s|^)" + className + "(\\s|$)" ),
 					result = ele.className.match( reg );
 				return !!( result && result[ 0 ] );
 			},
 			removeClass: function( ele, className ) {
-				/// <summary>对元素删除一个样式类</summary>
-				/// <param name="ele" type="Object">对象</param>
-				/// <param name="className" type="String">样式名</param>
-				/// <returns type="self" />
 				if ( $.containsClass( ele, className ) ) {
 					var reg = new RegExp( "(\\s|^)" + className + "(\\s|$)" );
 					ele.className = ele.className.replace( reg, " " );
@@ -9025,25 +9067,14 @@ if ( typeof define === "function" && define.amd ) {
 				return this;
 			},
 			toggleClass: function( ele, className ) {
-				/// <summary>切换元素样式</summary>
-				/// <param name="ele" type="Object">对象</param>
-				/// <param name="className" type="String">样式名</param>
-				/// <returns type="self" />
 				$.containsClass( ele, className ) ? $.removeClass( ele, className ) : $.addClass( ele, className );
 				return this;
 			},
 			replaceClass: replaceClass,
 			classLength: function( ele ) {
-				/// <summary>获得Class的个数</summary>
-				/// <param name="ele" type="Object">对象</param>
-				/// <returns type="Number" />
 				return ( $.util.trim( ele.className ).split( " " ) ).length;
 			},
 			getClassByIndex: function( ele, index ) {
-				/// <summary>获得样式在元素的索引</summary>
-				/// <param name="ele" type="Object">对象</param>
-				/// <param name="index" type="Number">样式名</param>
-				/// <returns type="String" />
 				return ( $.util.trim( ele.className ).split( " " ) )[ index ] || null;
 			}
 		};
@@ -9052,55 +9083,76 @@ if ( typeof define === "function" && define.amd ) {
 	$.extend( cls );
 
 	$.fn.extend( {
+		/**
+		 * @public
+		 * @memberof aQuery.prototype
+		 * @param {String}
+		 * @returns {this}
+		 */
 		addClass: function( className ) {
-			/// <summary>给所有DOM元素添加样式表</summary>
-			/// <param name="className" type="String">样式表</param>
-			/// <returns type="self" />
 			return this.each( function( ele ) {
-				$.addClass( ele, className );
+				cls.addClass( ele, className );
 			}, this );
 		},
+    /**
+     * @public
+     * @memberof aQuery.prototype
+     * @param {String}
+     * @returns {Boolean}
+     */
 		containsClass: function( className ) {
-			/// <summary>第一个元素是否有个样式名</summary>
-			/// <param name="className" type="String">样式名</param>
-			/// <returns type="Boolean" />
-			return $.containsClass( this[ 0 ], className );
+			return cls.containsClass( this[ 0 ], className );
 		},
+    /**
+     * @public
+     * @memberof aQuery.prototype
+     * @param {String}
+     * @returns {this}
+     */
 		removeClass: function( className ) {
-			/// <summary>对所有元素删除一个样式类</summary>
-			/// <param name="className" type="String">样式名</param>
-			/// <returns type="self" />
 			return this.each( function( ele ) {
-				$.removeClass( ele, className );
+				cls.removeClass( ele, className );
 			} );
 		},
+    /**
+     * @public
+     * @memberof aQuery.prototype
+     * @param {String}
+     * @returns {this}
+     */
 		toggleClass: function( className ) {
-			/// <summary>切换元素样式</summary>
-			/// <param name="className" type="String">样式名</param>
-			/// <returns type="Number" />
 			return this.each( function( ele ) {
-				$.toggleClass( ele, className );
+				cls.toggleClass( ele, className );
 			} );
 		},
+    /**
+     * @public
+     * @memberof aQuery.prototype
+     * @param {String}
+     * @param {String}
+     * @returns {this}
+     */
 		replaceClass: function( oldClassName, newClassName ) {
-			/// <summary>替换元素所有样式</summary>
-			/// <param name="className" type="String">样式名</param>
-			/// <returns type="self" />
 			return this.each( function( ele ) {
-				$.replaceClass( ele, oldClassName, newClassName );
+				cls.replaceClass( ele, oldClassName, newClassName );
 			} );
 		},
+    /**
+     * @public
+     * @memberof aQuery.prototype
+     * @returns {Number}
+     */
 		classLength: function() {
-			/// <summary>获得Class的个数</summary>
-			/// <returns type="Number" />
-			return $.classLength( this[ 0 ] );
+			return cls.classLength( this[ 0 ] );
 		},
+    /**
+     * @public
+     * @memberof aQuery.prototype
+     * @param {Number}
+     * @returns {String}
+     */
 		getClassByIndex: function( index ) {
-			/// <summary>获得样式在元素的索引</summary>
-			/// <param name="ele" type="Object">对象</param>
-			/// <param name="index" type="Number">样式名</param>
-			/// <returns type="String" />
-			return $.getClassByIndex( this[ 0 ], index );
+			return cls.getClassByIndex( this[ 0 ], index );
 		}
 	} );
 
