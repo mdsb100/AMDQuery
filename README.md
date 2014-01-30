@@ -1,7 +1,7 @@
 # AMDQuery
 
-AMDQuery like JQuery.AMDQuery provide AMD and decoupling
+It is a whole website development library.
 
 ## Usage
 
-Open the "document/app/app.html" in browser
+See http://mdsb100.github.io/homepage/
