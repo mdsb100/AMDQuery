@@ -15,7 +15,7 @@ aQuery.define( "ui/scrollableview", [
   "module/Widget",
   "module/FX",
   "module/animate",
-  "module/tween.extend",
+  "animation/tween.extend",
   "module/Keyboard",
   "ui/swappable",
   "ui/draggable",

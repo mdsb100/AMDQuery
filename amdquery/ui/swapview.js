@@ -14,7 +14,7 @@ aQuery.define( "ui/swapview", [
   "module/Widget",
   "module/animate",
   "module/FX",
-  "module/tween.extend",
+  "animation/tween.extend",
   "ui/swappable",
   "ui/draggable",
   "ui/swapindicator"

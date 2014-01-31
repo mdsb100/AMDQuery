@@ -180,7 +180,6 @@
 
 		tick: function() {}
 	} );
-	$.fx = FX;
 
 	return FX;
 } );

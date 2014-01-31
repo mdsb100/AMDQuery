@@ -137,8 +137,8 @@
 					//para肯定要在这里用
 					easing = opt.specialEasing && opt.specialEasing[ key ] ? $.getTransitionEasing( opt.specialEasing[ key ] ) : defaultEasing;
 					opt.easing = opt.originEasing;
-					if ( typed.isFun( $.fx.hooks[ key ] ) ) {
-						ret = $.fx.hooks[ key ]( ele, opt, value, key );
+					if ( typed.isFun( FX.hooks[ key ] ) ) {
+						ret = FX.hooks[ key ]( ele, opt, value, key );
 						temp = ret[ 0 ]._originCss;
 						//opt._transitionList.push(temp);
 						tran.push( temp, duration + "s", easing );

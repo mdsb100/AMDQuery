@@ -13,7 +13,7 @@
   "html5/css3",
   "html5/css3.position",
   "main/query",
-  "module/tween.extend" ], function( $,
+  "animation/tween.extend" ], function( $,
 	config,
 	support,
 	Widget,

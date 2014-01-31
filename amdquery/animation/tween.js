@@ -1,4 +1,4 @@
-﻿aQuery.define( "module/tween", [ "base/typed" ], function( $, typed, undefined ) {
+﻿aQuery.define( "animation/tween", [ "base/typed" ], function( $, typed, undefined ) {
 	"use strict";
 	var math = Math,
 		// pi = math.PI,

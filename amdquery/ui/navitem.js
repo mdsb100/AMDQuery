@@ -10,7 +10,7 @@ aQuery.define( "ui/navitem", [
     "main/attr",
     "module/animate",
     "html5/css3.transition.animate",
-    "module/tween.extend",
+    "animation/tween.extend",
     "module/effect"
   ],
 	function( $, typed, client, Widget, cls, event, css, position, dom, attr, src, animate ) {

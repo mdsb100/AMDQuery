@@ -43,7 +43,7 @@
 	} );
 
 	if ( !( config.module.transitionToAnimation && support.transition ) ) {
-		utilExtend.easyExtend( fx.hooks, {
+		utilExtend.easyExtend( FX.hooks, {
 			backgroundColor: AnimatationColor,
 			borderColor: AnimatationColor,
 			color: AnimatationColor

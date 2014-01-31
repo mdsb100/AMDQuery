@@ -1,4 +1,4 @@
-﻿aQuery.define( "module/animate", [ "base/typed", "base/extend", "base/queue", "main/data", "module/FX", "module/Thread", "module/tween" ], function( $, typed, utilExtend, Queue, data, FX, Thread, tween, undefined ) {
+﻿aQuery.define( "module/animate", [ "base/typed", "base/extend", "base/queue", "main/data", "module/FX", "module/Thread", "animation/tween" ], function( $, typed, utilExtend, Queue, data, FX, Thread, tween, undefined ) {
 	"use strict";
 	FX.tick = function() {
 		if ( thread.getStatus() === "run" ) return;
@@ -74,10 +74,10 @@
 
 			$.each( property, function( value, key ) {
 				opt.easing = opt.specialEasing && opt.specialEasing[ key ] ? $.getAnimationEasing( opt.specialEasing[ key ] ) : defaultEasing;
-				if ( typed.isFun( $.fx.hooks[ key ] ) ) {
-					return $.fx.hooks[ key ]( ele, opt, value, key );
+				if ( typed.isFun( FX.hooks[ key ] ) ) {
+					return FX.hooks[ key ]( ele, opt, value, key );
 				}
-				new $.fx( ele, opt, value, key );
+				new FX( ele, opt, value, key );
 			} );
 
 			return true;

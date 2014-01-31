@@ -1,4 +1,4 @@
-﻿aQuery.define( "module/tween.extend", [ "base/extend", "module/tween" ], function( $, utilExtend, tween, undefined ) {
+﻿aQuery.define( "animation/tween.extend", [ "base/extend", "animation/tween" ], function( $, utilExtend, tween, undefined ) {
 	"use strict";
 	var math = Math;
 	utilExtend.easyExtend( tween, {

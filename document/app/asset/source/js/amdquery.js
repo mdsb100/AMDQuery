@@ -11268,7 +11268,6 @@ aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "
 
 		tick: function() {}
 	} );
-	$.fx = FX;
 
 	return FX;
 } );
@@ -11617,8 +11616,8 @@ aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "
 
 /*=======================================================*/
 
-/*===================module/tween===========================*/
-﻿aQuery.define( "module/tween", [ "base/typed" ], function( $, typed, undefined ) {
+/*===================animation/tween===========================*/
+﻿aQuery.define( "animation/tween", [ "base/typed" ], function( $, typed, undefined ) {
 	"use strict";
 	var math = Math,
 		// pi = math.PI,
@@ -11753,7 +11752,7 @@ aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "
 /*=======================================================*/
 
 /*===================module/animate===========================*/
-﻿aQuery.define( "module/animate", [ "base/typed", "base/extend", "base/queue", "main/data", "module/FX", "module/Thread", "module/tween" ], function( $, typed, utilExtend, Queue, data, FX, Thread, tween, undefined ) {
+﻿aQuery.define( "module/animate", [ "base/typed", "base/extend", "base/queue", "main/data", "module/FX", "module/Thread", "animation/tween" ], function( $, typed, utilExtend, Queue, data, FX, Thread, tween, undefined ) {
 	"use strict";
 	FX.tick = function() {
 		if ( thread.getStatus() === "run" ) return;
@@ -11829,10 +11828,10 @@ aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "
 
 			$.each( property, function( value, key ) {
 				opt.easing = opt.specialEasing && opt.specialEasing[ key ] ? $.getAnimationEasing( opt.specialEasing[ key ] ) : defaultEasing;
-				if ( typed.isFun( $.fx.hooks[ key ] ) ) {
-					return $.fx.hooks[ key ]( ele, opt, value, key );
+				if ( typed.isFun( FX.hooks[ key ] ) ) {
+					return FX.hooks[ key ]( ele, opt, value, key );
 				}
-				new $.fx( ele, opt, value, key );
+				new FX( ele, opt, value, key );
 			} );
 
 			return true;
@@ -13272,7 +13271,7 @@ aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "
 			}
 		} );
 
-		utilExtend.easyExtend( $.fx.hooks, {
+		utilExtend.easyExtend( FX.hooks, {
 			setRotate3d: Transfrom3dForFX,
 			setScale: Transfrom3dForFX,
 			transform3d: Transfrom3dForFX,
@@ -13334,7 +13333,7 @@ aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "
 
 		} );
 
-		utilExtend.easyExtend( $.fx.hooks, {
+		utilExtend.easyExtend( FX.hooks, {
 			transform: TransfromForFX
 		} );
 	}
@@ -13548,8 +13547,8 @@ define( "hash/cubicBezier.tween", function() {
 					//para肯定要在这里用
 					easing = opt.specialEasing && opt.specialEasing[ key ] ? $.getTransitionEasing( opt.specialEasing[ key ] ) : defaultEasing;
 					opt.easing = opt.originEasing;
-					if ( typed.isFun( $.fx.hooks[ key ] ) ) {
-						ret = $.fx.hooks[ key ]( ele, opt, value, key );
+					if ( typed.isFun( FX.hooks[ key ] ) ) {
+						ret = FX.hooks[ key ]( ele, opt, value, key );
 						temp = ret[ 0 ]._originCss;
 						//opt._transitionList.push(temp);
 						tran.push( temp, duration + "s", easing );
@@ -14773,8 +14772,8 @@ aQuery.define( "html5/css3.position", [ "base/support", "main/position", "html5/
 
 /*=======================================================*/
 
-/*===================module/tween.extend===========================*/
-﻿aQuery.define( "module/tween.extend", [ "base/extend", "module/tween" ], function( $, utilExtend, tween, undefined ) {
+/*===================animation/tween.extend===========================*/
+﻿aQuery.define( "animation/tween.extend", [ "base/extend", "animation/tween" ], function( $, utilExtend, tween, undefined ) {
 	"use strict";
 	var math = Math;
 	utilExtend.easyExtend( tween, {
@@ -14961,7 +14960,7 @@ aQuery.define( "html5/css3.position", [ "base/support", "main/position", "html5/
   "html5/css3",
   "html5/css3.position",
   "main/query",
-  "module/tween.extend" ], function( $,
+  "animation/tween.extend" ], function( $,
 	config,
 	support,
 	Widget,
@@ -16385,7 +16384,7 @@ aQuery.define( "ui/navitem", [
     "main/attr",
     "module/animate",
     "html5/css3.transition.animate",
-    "module/tween.extend",
+    "animation/tween.extend",
     "module/effect"
   ],
 	function( $, typed, client, Widget, cls, event, css, position, dom, attr, src, animate ) {
@@ -17560,7 +17559,7 @@ aQuery.define( "ui/scrollableview", [
   "module/Widget",
   "module/FX",
   "module/animate",
-  "module/tween.extend",
+  "animation/tween.extend",
   "module/Keyboard",
   "ui/swappable",
   "ui/draggable",
@@ -18544,7 +18543,7 @@ aQuery.define( "ui/swapview", [
   "module/Widget",
   "module/animate",
   "module/FX",
-  "module/tween.extend",
+  "animation/tween.extend",
   "ui/swappable",
   "ui/draggable",
   "ui/swapindicator"
