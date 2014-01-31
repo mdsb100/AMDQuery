@@ -11751,8 +11751,8 @@ aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "
 
 /*=======================================================*/
 
-/*===================module/animate===========================*/
-﻿aQuery.define( "module/animate", [ "base/typed", "base/extend", "base/queue", "main/data", "animation/FX", "module/Thread", "animation/tween" ], function( $, typed, utilExtend, Queue, data, FX, Thread, tween, undefined ) {
+/*===================animation/animate===========================*/
+﻿aQuery.define( "animation/animate", [ "base/typed", "base/extend", "base/queue", "main/data", "animation/FX", "module/Thread", "animation/tween" ], function( $, typed, utilExtend, Queue, data, FX, Thread, tween, undefined ) {
 	"use strict";
 	FX.tick = function() {
 		if ( thread.getStatus() === "run" ) return;
@@ -13219,7 +13219,7 @@ aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "
 /*=======================================================*/
 
 /*===================html5/animate.transform===========================*/
-﻿aQuery.define( "html5/animate.transform", [ "base/typed", "base/extend", "base/support", "main/object", "animation/FX", "html5/css3", "module/animate" ], function( $, typed, utilExtend, support, object, FX, css3, animate, undefined ) {
+﻿aQuery.define( "html5/animate.transform", [ "base/typed", "base/extend", "base/support", "main/object", "animation/FX", "html5/css3", "animation/animate" ], function( $, typed, utilExtend, support, object, FX, css3, animate, undefined ) {
 	"use strict";
 	this.describe( "Support transform to animation" );
 	var getScale = function( r ) {
@@ -13747,7 +13747,7 @@ define( "hash/cubicBezier.tween", function() {
 /*=======================================================*/
 
 /*===================animation/effect===========================*/
-﻿aQuery.define( "animation/effect", [ "base/typed", "module/animate" ], function( $, typed, animate, undefined ) {
+﻿aQuery.define( "animation/effect", [ "base/typed", "animation/animate" ], function( $, typed, animate, undefined ) {
 	"use strict";
 	var slideDownComplete = function() {
 		$.data( this, "slideOriginHeight", null );
@@ -13957,7 +13957,7 @@ define( "hash/cubicBezier.tween", function() {
   "main/css",
   "main/position",
   "main/dom",
-  "module/animate",
+  "animation/animate",
   "html5/css3.transition.animate",
   "animation/effect"
  ], function( $, typed, utilExtend, object, Widget, cls, event, CustomEvent, css, position, dom ) {
@@ -14954,7 +14954,7 @@ aQuery.define( "html5/css3.position", [ "base/support", "main/position", "html5/
   "main/position",
   "main/dom",
   "animation/FX",
-  "module/animate",
+  "animation/animate",
   "html5/animate.transform",
   "html5/css3.transition.animate",
   "html5/css3",
@@ -16382,7 +16382,7 @@ aQuery.define( "ui/navitem", [
     "main/position",
     "main/dom",
     "main/attr",
-    "module/animate",
+    "animation/animate",
     "html5/css3.transition.animate",
     "animation/tween.extend",
     "animation/effect"
@@ -17558,7 +17558,7 @@ aQuery.define( "ui/scrollableview", [
   "html5/css3.transition.animate",
   "module/Widget",
   "animation/FX",
-  "module/animate",
+  "animation/animate",
   "animation/tween.extend",
   "module/Keyboard",
   "ui/swappable",
@@ -18541,7 +18541,7 @@ aQuery.define( "ui/swapview", [
   "html5/animate.transform",
   "html5/css3.transition.animate",
   "module/Widget",
-  "module/animate",
+  "animation/animate",
   "animation/FX",
   "animation/tween.extend",
   "ui/swappable",
