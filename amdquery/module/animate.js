@@ -74,8 +74,8 @@
 
 			$.each( property, function( value, key ) {
 				opt.easing = opt.specialEasing && opt.specialEasing[ key ] ? $.getAnimationEasing( opt.specialEasing[ key ] ) : defaultEasing;
-				if ( typed.isFun( $.fx.custom[ key ] ) ) {
-					return $.fx.custom[ key ]( ele, opt, value, key );
+				if ( typed.isFun( $.fx.hooks[ key ] ) ) {
+					return $.fx.hooks[ key ]( ele, opt, value, key );
 				}
 				new $.fx( ele, opt, value, key );
 			} );

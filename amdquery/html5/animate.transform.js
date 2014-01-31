@@ -50,7 +50,7 @@
 			}
 		} );
 
-		utilExtend.easyExtend( $.fx.custom, {
+		utilExtend.easyExtend( $.fx.hooks, {
 			setRotate3d: Transfrom3dForFX,
 			setScale: Transfrom3dForFX,
 			transform3d: Transfrom3dForFX,
@@ -112,7 +112,7 @@
 
 		} );
 
-		utilExtend.easyExtend( $.fx.custom, {
+		utilExtend.easyExtend( $.fx.hooks, {
 			transform: TransfromForFX
 		} );
 	}

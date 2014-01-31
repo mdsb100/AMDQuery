@@ -114,7 +114,7 @@
 			}
 		},
 
-		custom: {},
+		hooks: {},
 
 		cur: function( ele, name ) {
 			//var ele = this.ele;

@@ -11202,7 +11202,7 @@ aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "
 			}
 		},
 
-		custom: {},
+		hooks: {},
 
 		cur: function( ele, name ) {
 			//var ele = this.ele;
@@ -11829,8 +11829,8 @@ aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "
 
 			$.each( property, function( value, key ) {
 				opt.easing = opt.specialEasing && opt.specialEasing[ key ] ? $.getAnimationEasing( opt.specialEasing[ key ] ) : defaultEasing;
-				if ( typed.isFun( $.fx.custom[ key ] ) ) {
-					return $.fx.custom[ key ]( ele, opt, value, key );
+				if ( typed.isFun( $.fx.hooks[ key ] ) ) {
+					return $.fx.hooks[ key ]( ele, opt, value, key );
 				}
 				new $.fx( ele, opt, value, key );
 			} );
@@ -13272,7 +13272,7 @@ aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "
 			}
 		} );
 
-		utilExtend.easyExtend( $.fx.custom, {
+		utilExtend.easyExtend( $.fx.hooks, {
 			setRotate3d: Transfrom3dForFX,
 			setScale: Transfrom3dForFX,
 			transform3d: Transfrom3dForFX,
@@ -13334,7 +13334,7 @@ aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "
 
 		} );
 
-		utilExtend.easyExtend( $.fx.custom, {
+		utilExtend.easyExtend( $.fx.hooks, {
 			transform: TransfromForFX
 		} );
 	}
@@ -13548,8 +13548,8 @@ define( "hash/cubicBezier.tween", function() {
 					//para肯定要在这里用
 					easing = opt.specialEasing && opt.specialEasing[ key ] ? $.getTransitionEasing( opt.specialEasing[ key ] ) : defaultEasing;
 					opt.easing = opt.originEasing;
-					if ( typed.isFun( $.fx.custom[ key ] ) ) {
-						ret = $.fx.custom[ key ]( ele, opt, value, key );
+					if ( typed.isFun( $.fx.hooks[ key ] ) ) {
+						ret = $.fx.hooks[ key ]( ele, opt, value, key );
 						temp = ret[ 0 ]._originCss;
 						//opt._transitionList.push(temp);
 						tran.push( temp, duration + "s", easing );
