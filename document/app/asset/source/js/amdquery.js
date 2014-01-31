@@ -13746,8 +13746,8 @@ define( "hash/cubicBezier.tween", function() {
 
 /*=======================================================*/
 
-/*===================module/effect===========================*/
-﻿aQuery.define( "module/effect", [ "base/typed", "module/animate" ], function( $, typed, animate, undefined ) {
+/*===================animation/effect===========================*/
+﻿aQuery.define( "animation/effect", [ "base/typed", "module/animate" ], function( $, typed, animate, undefined ) {
 	"use strict";
 	var slideDownComplete = function() {
 		$.data( this, "slideOriginHeight", null );
@@ -13959,7 +13959,7 @@ define( "hash/cubicBezier.tween", function() {
   "main/dom",
   "module/animate",
   "html5/css3.transition.animate",
-  "module/effect"
+  "animation/effect"
  ], function( $, typed, utilExtend, object, Widget, cls, event, CustomEvent, css, position, dom ) {
 	"use strict";
 	Widget.fetchCSS( "ui/css/accordion" );
@@ -16385,7 +16385,7 @@ aQuery.define( "ui/navitem", [
     "module/animate",
     "html5/css3.transition.animate",
     "animation/tween.extend",
-    "module/effect"
+    "animation/effect"
   ],
 	function( $, typed, client, Widget, cls, event, css, position, dom, attr, src, animate ) {
 		"use strict";

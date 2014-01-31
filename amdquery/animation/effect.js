@@ -1,4 +1,4 @@
-﻿aQuery.define( "module/effect", [ "base/typed", "module/animate" ], function( $, typed, animate, undefined ) {
+﻿aQuery.define( "animation/effect", [ "base/typed", "module/animate" ], function( $, typed, animate, undefined ) {
 	"use strict";
 	var slideDownComplete = function() {
 		$.data( this, "slideOriginHeight", null );

@@ -11,7 +11,7 @@
   "main/dom",
   "module/animate",
   "html5/css3.transition.animate",
-  "module/effect"
+  "animation/effect"
  ], function( $, typed, utilExtend, object, Widget, cls, event, CustomEvent, css, position, dom ) {
 	"use strict";
 	Widget.fetchCSS( "ui/css/accordion" );
