@@ -1,4 +1,4 @@
-﻿aQuery.define( "module/AnimatationColor", [ "base/config", "base/support", "base/extend", "main/object", "module/color", "main/css", "animation/FX" ], function( $, config, support, utilExtend, object, color, css, FX ) {
+﻿aQuery.define( "animation/AnimationColor", [ "base/config", "base/support", "base/extend", "main/object", "module/color", "main/css", "animation/FX" ], function( $, config, support, utilExtend, object, color, css, FX ) {
 	"use strict";
 	var AnimatationColor = FX.extend( function AnimatationColor( ele, options, value, name, type ) {
 		if ( this instanceof AnimatationColor ) {
