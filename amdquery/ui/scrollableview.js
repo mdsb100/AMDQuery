@@ -14,7 +14,7 @@ aQuery.define( "ui/scrollableview", [
   "html5/css3.transition.animate",
   "module/Widget",
   "animation/FX",
-  "module/animate",
+  "animation/animate",
   "animation/tween.extend",
   "module/Keyboard",
   "ui/swappable",

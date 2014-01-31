@@ -8,7 +8,7 @@ aQuery.define( "ui/navitem", [
     "main/position",
     "main/dom",
     "main/attr",
-    "module/animate",
+    "animation/animate",
     "html5/css3.transition.animate",
     "animation/tween.extend",
     "animation/effect"

@@ -9,7 +9,7 @@
   "main/css",
   "main/position",
   "main/dom",
-  "module/animate",
+  "animation/animate",
   "html5/css3.transition.animate",
   "animation/effect"
  ], function( $, typed, utilExtend, object, Widget, cls, event, CustomEvent, css, position, dom ) {
