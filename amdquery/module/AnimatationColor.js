@@ -1,7 +1,7 @@
-﻿aQuery.define( "module/AnimateColor", [ "base/config", "base/support", "base/extend", "main/object", "module/color", "main/css", "module/FX" ], function( $, config, support, utilExtend, object, color, css, FX ) {
+﻿aQuery.define( "module/AnimatationColor", [ "base/config", "base/support", "base/extend", "main/object", "module/color", "main/css", "module/FX" ], function( $, config, support, utilExtend, object, color, css, FX ) {
 	"use strict";
-	var AnimateColor = FX.extend( function AnimateColor( ele, options, value, name, type ) {
-		if ( this instanceof AnimateColor ) {
+	var AnimatationColor = FX.extend( function AnimatationColor( ele, options, value, name, type ) {
+		if ( this instanceof AnimatationColor ) {
 			this.type = type;
 			/*this.type一定要放在前面*/
 			this._super( ele, options, value, name );
@@ -15,9 +15,9 @@
 			var _color = color( value );
 			options.curCount = 3;
 			return [
-				new AnimateColor( ele, options, _color.red, name, "red" ),
-				new AnimateColor( ele, options, _color.green, name, "green" ),
-				new AnimateColor( ele, options, _color.blue, name, "blue" )
+				new AnimatationColor( ele, options, _color.red, name, "red" ),
+				new AnimatationColor( ele, options, _color.green, name, "green" ),
+				new AnimatationColor( ele, options, _color.blue, name, "blue" )
 				];
 		}
 	}, {
@@ -44,11 +44,11 @@
 
 	if ( !( config.module.transitionToAnimation && support.transition ) ) {
 		utilExtend.easyExtend( FX.custom, {
-			backgroundColor: AnimateColor,
-			borderColor: AnimateColor,
-			color: AnimateColor
+			backgroundColor: AnimatationColor,
+			borderColor: AnimatationColor,
+			color: AnimatationColor
 		} );
 	}
 
-	return AnimateColor;
+	return AnimatationColor;
 } );

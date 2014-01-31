@@ -8966,6 +8966,7 @@ if ( typeof define === "function" && define.amd ) {
 	"use strict";
 	/**
 	 * @name replaceClass
+	 * @private
 	 * @method
 	 * @param {Element} ele
 	 * @param {String} oldClassName
@@ -9094,63 +9095,63 @@ if ( typeof define === "function" && define.amd ) {
 				cls.addClass( ele, className );
 			}, this );
 		},
-    /**
-     * @public
-     * @memberof aQuery.prototype
-     * @param {String}
-     * @returns {Boolean}
-     */
+		/**
+		 * @public
+		 * @memberof aQuery.prototype
+		 * @param {String}
+		 * @returns {Boolean}
+		 */
 		containsClass: function( className ) {
 			return cls.containsClass( this[ 0 ], className );
 		},
-    /**
-     * @public
-     * @memberof aQuery.prototype
-     * @param {String}
-     * @returns {this}
-     */
+		/**
+		 * @public
+		 * @memberof aQuery.prototype
+		 * @param {String}
+		 * @returns {this}
+		 */
 		removeClass: function( className ) {
 			return this.each( function( ele ) {
 				cls.removeClass( ele, className );
 			} );
 		},
-    /**
-     * @public
-     * @memberof aQuery.prototype
-     * @param {String}
-     * @returns {this}
-     */
+		/**
+		 * @public
+		 * @memberof aQuery.prototype
+		 * @param {String}
+		 * @returns {this}
+		 */
 		toggleClass: function( className ) {
 			return this.each( function( ele ) {
 				cls.toggleClass( ele, className );
 			} );
 		},
-    /**
-     * @public
-     * @memberof aQuery.prototype
-     * @param {String}
-     * @param {String}
-     * @returns {this}
-     */
+		/**
+		 * @public
+		 * @memberof aQuery.prototype
+		 * @param {String}
+		 * @param {String}
+		 * @returns {this}
+		 */
 		replaceClass: function( oldClassName, newClassName ) {
 			return this.each( function( ele ) {
 				cls.replaceClass( ele, oldClassName, newClassName );
 			} );
 		},
-    /**
-     * @public
-     * @memberof aQuery.prototype
-     * @returns {Number}
-     */
+		/**
+		 * @public
+		 * @memberof aQuery.prototype
+		 * @returns {Number}
+		 */
 		classLength: function() {
 			return cls.classLength( this[ 0 ] );
 		},
-    /**
-     * @public
-     * @memberof aQuery.prototype
-     * @param {Number}
-     * @returns {String}
-     */
+		/**
+		 * @public
+		 * @memberof aQuery.prototype
+		 * @param {Number}
+		 * @returns {String}
+		 */
 		getClassByIndex: function( index ) {
 			return cls.getClassByIndex( this[ 0 ], index );
 		}
