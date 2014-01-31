@@ -6,7 +6,7 @@
   "base/client",
   "main/event",
   "html5/css3",
-  "module/FX",
+  "animation/FX",
   "html5/animate.transform",
   "hash/cubicBezier.tween" ], function( $,
 	config,

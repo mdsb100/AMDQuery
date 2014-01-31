@@ -6,7 +6,7 @@
   "main/css",
   "main/position",
   "main/dom",
-  "module/FX",
+  "animation/FX",
   "module/animate",
   "html5/animate.transform",
   "html5/css3.transition.animate",

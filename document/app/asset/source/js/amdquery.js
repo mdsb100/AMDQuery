@@ -11085,8 +11085,8 @@ aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "
 
 /*=======================================================*/
 
-/*===================module/FX===========================*/
-﻿aQuery.define( "module/FX", [ "base/typed", "base/array", "main/css", "main/object" ], function( $, typed, array, css, object, undefined ) {
+/*===================animation/FX===========================*/
+﻿aQuery.define( "animation/FX", [ "base/typed", "base/array", "main/css", "main/object" ], function( $, typed, array, css, object, undefined ) {
 	"use strict";
 	var rfxnum = /^([+-]=)?([\d+-.]+)(.*)$/;
 
@@ -11752,7 +11752,7 @@ aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "
 /*=======================================================*/
 
 /*===================module/animate===========================*/
-﻿aQuery.define( "module/animate", [ "base/typed", "base/extend", "base/queue", "main/data", "module/FX", "module/Thread", "animation/tween" ], function( $, typed, utilExtend, Queue, data, FX, Thread, tween, undefined ) {
+﻿aQuery.define( "module/animate", [ "base/typed", "base/extend", "base/queue", "main/data", "animation/FX", "module/Thread", "animation/tween" ], function( $, typed, utilExtend, Queue, data, FX, Thread, tween, undefined ) {
 	"use strict";
 	FX.tick = function() {
 		if ( thread.getStatus() === "run" ) return;
@@ -13219,7 +13219,7 @@ aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "
 /*=======================================================*/
 
 /*===================html5/animate.transform===========================*/
-﻿aQuery.define( "html5/animate.transform", [ "base/typed", "base/extend", "base/support", "main/object", "module/FX", "html5/css3", "module/animate" ], function( $, typed, utilExtend, support, object, FX, css3, animate, undefined ) {
+﻿aQuery.define( "html5/animate.transform", [ "base/typed", "base/extend", "base/support", "main/object", "animation/FX", "html5/css3", "module/animate" ], function( $, typed, utilExtend, support, object, FX, css3, animate, undefined ) {
 	"use strict";
 	this.describe( "Support transform to animation" );
 	var getScale = function( r ) {
@@ -13416,7 +13416,7 @@ define( "hash/cubicBezier.tween", function() {
   "base/client",
   "main/event",
   "html5/css3",
-  "module/FX",
+  "animation/FX",
   "html5/animate.transform",
   "hash/cubicBezier.tween" ], function( $,
 	config,
@@ -14953,7 +14953,7 @@ aQuery.define( "html5/css3.position", [ "base/support", "main/position", "html5/
   "main/css",
   "main/position",
   "main/dom",
-  "module/FX",
+  "animation/FX",
   "module/animate",
   "html5/animate.transform",
   "html5/css3.transition.animate",
@@ -17557,7 +17557,7 @@ aQuery.define( "ui/scrollableview", [
   "html5/animate.transform",
   "html5/css3.transition.animate",
   "module/Widget",
-  "module/FX",
+  "animation/FX",
   "module/animate",
   "animation/tween.extend",
   "module/Keyboard",
@@ -18542,7 +18542,7 @@ aQuery.define( "ui/swapview", [
   "html5/css3.transition.animate",
   "module/Widget",
   "module/animate",
-  "module/FX",
+  "animation/FX",
   "animation/tween.extend",
   "ui/swappable",
   "ui/draggable",

@@ -13,7 +13,7 @@ aQuery.define( "ui/swapview", [
   "html5/css3.transition.animate",
   "module/Widget",
   "module/animate",
-  "module/FX",
+  "animation/FX",
   "animation/tween.extend",
   "ui/swappable",
   "ui/draggable",

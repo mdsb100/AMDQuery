@@ -1,4 +1,4 @@
-﻿aQuery.define( "module/FX", [ "base/typed", "base/array", "main/css", "main/object" ], function( $, typed, array, css, object, undefined ) {
+﻿aQuery.define( "animation/FX", [ "base/typed", "base/array", "main/css", "main/object" ], function( $, typed, array, css, object, undefined ) {
 	"use strict";
 	var rfxnum = /^([+-]=)?([\d+-.]+)(.*)$/;
 
