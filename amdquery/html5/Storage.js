@@ -1,72 +1,95 @@
-﻿aQuery.define( "html5/Storage", [ "module/parse" ], function( $, parse, undefined ) {
+﻿define( "html5/Storage", [ "main/event", "module/parse" ], function( event, parse, undefined ) {
 	"use strict";
-  this.describe( "HTML5 Storage" );
-	var localStorage = window.localStorage || globalStorage[ location.host ],
-		sessionStorage = window.sessionStorage;
+	this.describe( "HTML5 Storage" );
+	/**
+	 * @callback StorageCallback
+	 * @param event {Object} - callback event.
+	 * @param event.key {String} - Key of Storage.
+	 * @param event.newValue {String}.
+	 * @param event.oldValue {String}.
+	 * @param event.url {String}.
+	 * @param event.storageArea
+	 */
 
-	$.Storage = {};
+	/**
+	 * @public
+	 * @module html5/Storage
+	 */
 
+	/**
+	 * Wrap Storage.
+	 * @constructor
+	 * @alias module:html5/Storage
+	 * @param {Object} storage - window.localStorage or window.sessionStorage
+	 */
 	var Storage = function( storage ) {
 		this.storage = storage;
 	};
-	Storage.prototype = {
+	Storage.prototype = /** @lends module:html5/Storage.prototype */ {
 		constructor: Storage,
+		/**
+		 * @param {StorageCallback}
+		 * @returns {this}
+		 */
 		addChangeHandler: function( fun ) {
-			/// <summary>绑定storge改变事件</summary>
-			/// <para>e.key</para>
-			/// <para>e.newValue</para>
-			/// <para>e.oldValue</para>
-			/// <para>e.url</para>
-			/// <para>e.storageArea</para>
-			/// <param name="fun" type="Function">方法</param>
-			/// <returns type="self" />
-
-			return $.event.document.addHandler( window, "storage", fun );
+			return event.event.document.addHandler( window, "storage", fun );
 		},
+		/**
+		 * Clear storage
+		 * @returns {this}
+		 */
 		clear: function() {
-			/// <summary>删除所有storge</summary>
-			/// <returns type="this" />
-			this.storge.clear();
+			this.storage.clear();
 			return this;
 		},
+		/**
+		 * Get data by key.
+		 * @param {String}
+		 * @returns {JSON}
+		 */
 		get: function( key ) {
-			/// <summary>获得本地数据</summary>
-			/// <param name="key" type="String">键</param>
-			/// <returns type="self" />
 			var value = this.storage.getItem( key );
 			return value ? parse.parseJSON( value ) : value;
 		},
-		set: function( key, value ) {
-			/// <summary>储存到本地数据</summary>
-			/// <param name="key" type="String">键</param>
-			/// <param name="value" type="any">值</param>
-			/// <returns type="self" />
-			this.storage.setItem( key, JSON.stringify( value ) );
+		/**
+		 * Set data.
+		 * @param {String}
+		 * @param {*} data - Stringify data.
+		 * @returns {this}
+		 */
+		set: function( key, data ) {
+			this.storage.setItem( key, JSON.stringify( data ) );
 			return this;
 		},
+		/**
+		 * Get data by list.
+		 * @param {Array<String>}
+		 * @returns {Object<String, JSON>}
+		 */
 		getByList: function( keyList ) {
-			/// <summary>获得本地数据</summary>
-			/// <param name="keyList" type="Array<String>">字符串数组</param>
-			/// <returns type="Object" />
-			var valueList = {};
-			$.each( keyList, function( key ) {
+			var valueList = {}, i = 0,
+				key,
+				len = keyList.length;
+			for ( ; i < len; i++ ) {
+				key = keyList[ i ];
 				valueList[ key ] = this.get( key );
-			}, this );
+			}
 			return valueList;
 		},
+		/**
+		 * Get data by Object.
+		 * @param {Object<String, JSON>}
+		 * @returns {this}
+		 */
 		setByObject: function( object ) {
-			/// <summary>通过Object储存到本地数据</summary>
-			/// <param name="object" type="Object">键值对的形式</param>
-			/// <returns type="self" />
-			$.each( object, function( value, key ) {
+			var key, value;
+			for ( key in object ) {
+				value = object[ key ];
 				this.set( key, value );
-			}, this );
+			}
 			return this;
 		}
 	};
 
-	localStorage && ( $.Storage.local = new Storage( localStorage ) );
-	sessionStorage && ( $.Storage.session = new Storage( sessionStorage ) );
-
-	return $.Storage;
+	return Storage;
 } );
