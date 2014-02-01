@@ -45,6 +45,8 @@
  };
  var _ = require( "underscore" );
 
+ var PATH = require( 'path' );
+
  var argvs = process.argv;
 
  var buildFileRootPath = process.argv[ 1 ].replace( /([\\\/])[^\\\/]*$/, '$1' );
@@ -59,15 +61,13 @@
  }
 
 
-
  var FSE = require( 'fs-extra' );
- var PATH = require( 'path' );
 
  //Configurate oye.js
- amdqueryPath = buildConfig.amdqueryPath;
+ amdqueryPath = PATH.join( buildFileRootPath, buildConfig.amdqueryPath );
 
  //Configurate project root path
- projectRootPath = buildConfig.projectRootPath;
+ projectRootPath = PATH.join( buildFileRootPath, buildConfig.projectRootPath );
 
  var oye = require( './lib/oye.node.js' );
 
@@ -108,8 +108,9 @@
  fileStack[ loadedModule ] = {};
  var baseFileStack = [];
  var amdqueryContent = "";
- var AMDQueryJSPath = buildConfig.amdqueryPath + "amdquery.js";
- var AMDQueryJSRootPath = buildFileRootPath + buildConfig.amdqueryPath;
+ var AMDQueryJSPath = PATH.join( buildFileRootPath, buildConfig.amdqueryPath, "amdquery.js" );
+ var AMDQueryJSRootPath = PATH.join( buildFileRootPath, buildConfig.amdqueryPath );
+ var projectDistPath = PATH.join( buildFileRootPath, buildConfig.distPath );
 
  function readBaseAMDQueryJS( next, result ) {
  	oye.readFile( AMDQueryJSPath, function( content ) {
@@ -119,9 +120,9 @@
  }
 
  function buildDefines( content, next ) {
-
+ 	var distPath = PATH.join( projectDistPath, "defines" );
  	if ( !buildConfig.defines ) {
- 		return next( null, {}, "defines/" );
+ 		return next( null, {}, distPath );
  	}
  	var l = 0,
  		i = 0,
@@ -132,7 +133,7 @@
  	}
 
  	if ( l === 0 ) {
- 		next( null, {}, "defines/" );
+ 		next( null, {}, distPath );
  	}
  	//Process all defines
  	var n = l,
@@ -147,7 +148,7 @@
  			result[ name ] = list;
 
  			if ( n <= 0 ) {
- 				next( null, result, "defines/" );
+ 				next( null, result, distPath );
  			}
  		};
 
@@ -162,7 +163,7 @@
  }
 
  function saveJSFile( result, dirPath, next ) {
- 	dirPath = buildConfig.distPath + dirPath;
+
  	var list,
  		i = 0,
  		len,
@@ -189,9 +190,9 @@
  		defineConfig = buildConfig.defines[ name ];
  		len = list.length;
  		name = name.replace( /^\/+/, '' );
- 		path = dirPath + name.replace( /[^\/]*$/, '' );
- 		deubugPath = dirPath + name + '.debug.js';
- 		minPath = dirPath + name + '.js';
+ 		path = PATH.join( dirPath, name.replace( /[^\/]*$/, '' ) );
+ 		deubugPath = PATH.join( dirPath, name + '.debug.js' );
+ 		minPath = PATH.join( dirPath, name + '.js' );
 
  		content = list.join( "\r\n" );
  		minContent = minifyContent( content );
@@ -217,11 +218,12 @@
  function openHtml( appConfig, createAppDirAndCopyFile ) {
  	console.log( '\u001b[34m' + '\r\nopen HTML and get parameter... \u001b[39m' );
  	var tr = trumpet();
+ 	var appPath = PATH.join( AMDQueryJSRootPath, appConfig.path );
  	var htmlInfo = {
  		appConfig: {},
  		cssPath: [],
- 		htmlPath: AMDQueryJSRootPath + appConfig.path,
- 		appProjectPath: getFileParentDirectoryPath( AMDQueryJSRootPath + appConfig.path ),
+ 		htmlPath: appPath,
+ 		appProjectPath: getFileParentDirectoryPath( appPath ),
  		appName: appConfig.name
  	};
 
@@ -255,12 +257,12 @@
  		// script.createReadStream( {outer: true} ).pipe( process.stdout );
  	} );
 
- 	FSE.createReadStream( AMDQueryJSRootPath + appConfig.path ).pipe( tr );
+ 	FSE.createReadStream( appPath ).pipe( tr );
  }
 
  function createAppDirAndCopyFile( appConfig, htmlInfo, buildAppJS ) {
- 	var appDistProjectPath = "apps/" + htmlInfo.appName + "/",
- 		distPath = buildConfig.distPath + appDistProjectPath;
+ 	var appDistProjectPath = PATH.join( "apps", htmlInfo.appName ),
+ 		distPath = PATH.join( projectDistPath, appDistProjectPath );
 
  	if ( FSE.existsSync( distPath ) ) {
  		console.log( '\u001b[34m' + '\r\nClean "' + htmlInfo.appName + '" directory \u001b[39m' );
@@ -269,37 +271,39 @@
 
  	mkdirSync( distPath );
 
- 	var dirNameList = [ "amdquery/ui/" ],
+ 	var dirNameList = [ "amdquery/ui" ],
+ 		dirName,
  		len = dirNameList.length,
  		i;
 
  	for ( i = 0; i < len; i++ ) {
- 		console.log( "make directory: " + "\u001b[34m" + dirNameList[ i ] + "\u001b[39m" );
- 		mkdirSync( distPath + dirNameList[ i ] );
+ 		dirName = PATH.join( distPath, dirNameList[ i ] );
+ 		console.log( "make directory: " + "\u001b[34m" + dirName + "\u001b[39m" );
+ 		mkdirSync( dirName );
  	}
 
  	logger( htmlInfo.appProjectPath );
 
  	var copyDirMap = {
- 		"app/asset/": htmlInfo.appProjectPath + "asset/",
- 		"app/css/": htmlInfo.appProjectPath + "css/",
- 		"app/xml/": htmlInfo.appProjectPath + "xml/",
- 		"app/lib/": htmlInfo.appProjectPath + "lib/",
- 		"amdquery/ui/css/": AMDQueryJSRootPath + "ui/css/",
- 		"amdquery/ui/images/": AMDQueryJSRootPath + "ui/images/"
+ 		"app/asset": PATH.join( htmlInfo.appProjectPath, "asset" ),
+ 		"app/css": PATH.join( htmlInfo.appProjectPath, "css" ),
+ 		"app/xml": PATH.join( htmlInfo.appProjectPath, "xml" ),
+ 		"app/lib": PATH.join( htmlInfo.appProjectPath, "lib" ),
+ 		"amdquery/ui/css": PATH.join( AMDQueryJSRootPath, "ui", "css" ),
+ 		"amdquery/ui/images": PATH.join( AMDQueryJSRootPath, "ui", "images" )
  	}, key, value;
 
  	for ( key in copyDirMap ) {
  		value = copyDirMap[ key ];
  		if ( FSE.existsSync( value ) ) {
- 			console.log( "copy \u001b[34m" + value + "\u001b[39m to \u001b[34m" + distPath + key + "\u001b[39m" );
- 			FSE.copySync( value, distPath + key );
+ 			console.log( "copy \u001b[34m" + value + "\u001b[39m to \u001b[34m" + PATH.join( distPath, key ) + "\u001b[39m" );
+ 			FSE.copySync( value, PATH.join( distPath, key ) );
  		}
  	}
 
  	htmlInfo.projectDistPath = distPath;
 
- 	buildAppJS( null, appConfig, htmlInfo, appDistProjectPath + "amdquery/" );
+ 	buildAppJS( null, appConfig, htmlInfo, PATH.join( projectDistPath, appDistProjectPath, "amdquery" ) );
  }
 
  function buildAppJS( appConfig, htmlInfo, AMDQueryPath, buildAppXML ) {
@@ -319,7 +323,7 @@
  		obj.amdquery = contentList;
  		var XMLAndCSSPathList = getXMLAndCSS( htmlInfo, moduleList );
  		saveJSFile( obj, AMDQueryPath, function() {
- 			htmlInfo.AMDQueryJSPath = AMDQueryPath + "amdquery";
+ 			htmlInfo.AMDQueryJSPath = PATH.join( AMDQueryPath, "amdquery" );
  			htmlInfo.AMDQueryJSRelativeHTMLPath = "../amdquery/amdquery";
  			buildAppXML( null, appConfig, htmlInfo, XMLAndCSSPathList );
  		} );
@@ -343,9 +347,7 @@
 
  	content += "\n</div>"
 
- 	htmlInfo.appCombinationXMLRelativePath = "xml/" + "combination.xml";
-
- 	htmlInfo.appCombinationXMLPath = htmlInfo.projectDistPath + "app/" + htmlInfo.appCombinationXMLRelativePath;
+ 	htmlInfo.appCombinationXMLPath = PATH.join( htmlInfo.projectDistPath, "app", "xml", "combination.xml" );
 
  	console.log( '\r\nSave app Combination xml: ' + htmlInfo.appCombinationXMLPath );
 
@@ -367,9 +369,9 @@
  		var path = "";
  		//绝对路径 项目路径下
  		if ( /^\//.test( item ) ) {
- 			path = buildFileRootPath + projectRootPath + item.replace( /^\//, "" );
+ 			path = PATH.join( buildFileRootPath, projectRootPath, item.replace( /^\//, "" ) );
  		} else {
- 			path = getFileParentDirectoryPath( htmlInfo.htmlPath ) + item;
+ 			path = PATH.join( getFileParentDirectoryPath( htmlInfo.htmlPath ), item );
  		}
  		console.log( "buildAppCss css path:", path );
  		resultPath.push( path );
@@ -379,9 +381,9 @@
  		resultPath.push( item.path );
  	} );
 
- 	htmlInfo.appCombinationCssRelativePath = "css/" + htmlInfo.appName + ".css";
+ 	htmlInfo.appCombinationCssRelativePath = PATH.join( "css", htmlInfo.appName + ".css" );
 
- 	htmlInfo.appCombinationCssPath = htmlInfo.projectDistPath + "app/" + htmlInfo.appCombinationCssRelativePath;
+ 	htmlInfo.appCombinationCssPath = PATH.join( htmlInfo.projectDistPath, "app", htmlInfo.appCombinationCssRelativePath );
 
  	_buildCssAndSave( resultPath, htmlInfo.appCombinationCssPath );
 
@@ -393,17 +395,19 @@
  function buildUICss( appConfig, htmlInfo, modifyHTML ) {
  	console.log( '\u001b[34m' + '\r\nBuild css of AMDQuery-UI \u001b[39m' );
  	var
- 	cwd = AMDQueryJSRootPath + "ui/css/",
+ 	cwd = PATH.join( AMDQueryJSRootPath, "ui", "css" ),
  		globOpt = {
  			cwd: cwd
  		},
  		cssFileList = glob.sync( "*.css", globOpt );
 
- 	htmlInfo.uiCombinationCssPath = "amdquery/ui/css/amdquery-widget.css";
+ 	htmlInfo.uiCombinationRelativeCssPath = "amdquery/ui/css/amdquery-widget.css";
 
- 	_buildCssAndSave( cssFileList, htmlInfo.projectDistPath + htmlInfo.uiCombinationCssPath, cwd );
+ 	var uiCombinationCssPath = PATH.join( htmlInfo.projectDistPath, htmlInfo.uiCombinationRelativeCssPath );
 
- 	console.log( '\r\nSave UI amdquery-widget.css: ' + htmlInfo.uiCombinationCssPath );
+ 	_buildCssAndSave( cssFileList, uiCombinationCssPath, cwd );
+
+ 	console.log( '\r\nSave UI amdquery-widget.css: ', uiCombinationCssPath );
 
  	modifyHTML( null, appConfig, htmlInfo );
  }
@@ -416,7 +420,7 @@
  		bodyTr = trumpet();
 
 
- 	htmlInfo.distHtmlPath = htmlInfo.projectDistPath + "app/app.html";
+ 	htmlInfo.distHtmlPath = PATH.join( htmlInfo.projectDistPath, "app/app.html" );
 
  	var cssList = [],
  		first = false,
@@ -473,7 +477,7 @@
  	scriptStream.pipe( through( function( buf ) {
  		this.queue( buf );
  	}, function() {
- 		this.queue( '\n<link href="' + "../" + htmlInfo.uiCombinationCssPath + '" rel="stylesheet" type="text/css" />' );
+ 		this.queue( '\n<link href="' + "../" + htmlInfo.uiCombinationRelativeCssPath + '" rel="stylesheet" type="text/css" />' );
  	} ) ).pipe( scriptStream );
 
  	var body = bodyTr.select( "body" );
@@ -580,7 +584,7 @@
 
  function filterDependencies( url ) {
  	var result = [],
- 		content = FSE.readFileSync( buildConfig.amdqueryPath + url + ".js" )
+ 		content = FSE.readFileSync( PATH.join( buildConfig.amdqueryPath, url + ".js" ) )
  			.toString(),
  		moduleList = oye.matchDefine( content ),
  		moduleInfo,
@@ -612,8 +616,8 @@
  		mdItem = moduleList[ i ];
 
  		if ( /app\/view\/(.*)/.test( mdItem.name ) ) {
- 			xmlPath = htmlInfo.appProjectPath + "xml/" + RegExp.$1 + ".xml";
- 			cssPath = htmlInfo.appProjectPath + "css/" + RegExp.$1 + ".css";
+ 			xmlPath = PATH.join( htmlInfo.appProjectPath, "xml", RegExp.$1 + ".xml" );
+ 			cssPath = PATH.join( htmlInfo.appProjectPath, "css", RegExp.$1 + ".css" );
  			if ( FSE.existsSync( xmlPath ) ) {
  				xmlPathList.push( {
  					key: RegExp.$1,
@@ -688,7 +692,7 @@
  	cwd = ( cwd ? cwd : "" );
 
  	for ( ; i < len; i++ ) {
- 		cssTxt += FSE.readFileSync( cwd + cssPathList[ i ] );
+ 		cssTxt += FSE.readFileSync( PATH.join( cwd, cssPathList[ i ] ) );
  	}
 
  	var CleanCSS = require( 'clean-css' );
@@ -795,11 +799,11 @@
  	for ( i = 0; i < l; i++ ) {
  		directory = directoryList[ i ];
  		globOpt = {
- 			cwd: AMDQueryJSRootPath + directory
+ 			cwd: PATH.join( AMDQueryJSRootPath, directory )
  		};
  		resultDirectory = resultDirectory.concat( glob.sync( suffix, globOpt ) );
  		for ( j = 0, m = resultDirectory.length; j < m; j++ ) {
- 			content = FSE.readFileSync( AMDQueryJSRootPath + directory + resultDirectory[ j ] );
+ 			content = FSE.readFileSync( PATH.join( globOpt.cwd, resultDirectory[ j ] ) );
  			moduleAndDepends = oye.matchDefine( content.toString() );
  			for ( k = 0, n = moduleAndDepends.length; k < n; k++ ) {
  				if ( moduleAndDepends[ k ].module ) {
