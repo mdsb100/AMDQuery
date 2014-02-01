@@ -54,7 +54,7 @@
  var buildConfigFile = process.argv[ 2 ];
  if ( buildConfigFile && /\.js/.test( buildConfigFile ) ) {
  	if ( !( /^\.*\//.test( buildConfigFile ) ) ) {
- 		buildConfigFile = './' + buildConfigFile;
+ 		buildConfigFile = PATH.join( buildFileRootPath, "build_config.js" );
  	}
  	buildConfigFile = require( buildConfigFile );
  	buildConfig = _.extend( buildConfig, buildConfigFile );
@@ -584,7 +584,7 @@
 
  function filterDependencies( url ) {
  	var result = [],
- 		content = FSE.readFileSync( PATH.join( buildConfig.amdqueryPath, url + ".js" ) )
+ 		content = FSE.readFileSync( PATH.join( buildFileRootPath, buildConfig.amdqueryPath, url + ".js" ) )
  			.toString(),
  		moduleList = oye.matchDefine( content ),
  		moduleInfo,
