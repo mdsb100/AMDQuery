@@ -346,8 +346,8 @@
  	}
 
  	content += "\n</div>"
-
- 	htmlInfo.appCombinationXMLPath = PATH.join( htmlInfo.projectDistPath, "app", "xml", "combination.xml" );
+ 	htmlInfo.appCombinationXMLRelativePath = "app/xml/combination.xml";
+ 	htmlInfo.appCombinationXMLPath = PATH.join( htmlInfo.projectDistPath, htmlInfo.appCombinationXMLRelativePath );
 
  	console.log( '\r\nSave app Combination xml: ' + htmlInfo.appCombinationXMLPath );
 
