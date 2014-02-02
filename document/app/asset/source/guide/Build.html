@@ -66,8 +66,8 @@
                   <h3 name="Browser">Broswer html</h3>
                   <p>Quick start a web server. Input "npm install -g <a target="_blank" href="https://github.com/senchalabs/connect">connect</a>" or "sudo npm install -g <a target="_blank" href="https://github.com/senchalabs/connect">connect</a>". cd root
                     of amdquery directory, input "node server.js". Open browser and input
-                    <Strong>"http://localhost:8080/document/app/app.html"</Strong> or
-                    <Strong>"http://localhost:8080/build/dist/apps/document/app/app.html"</Strong>. You should collect the address in browser.</p>
+                    <Strong>"http://localhost:8080/document/app/app.html"</Strong> or open
+                    <Strong>"build/dist/apps/document/app/app.html"</Strong> by browser after built. You should collect the address in browser.</p>
                   <p>The
                     <a class="swip_to_app">
                       <img src="../images/right.png" width="13px" height="13px" />"Build Application"</a>has detail guide.</p>
@@ -263,25 +263,21 @@ root
                 <pre class="prettyprint">
 //The argument in "complete"
 {
-  appConfig:
-  {
-    debug: '1',
-    src: '../document/app/app'
-  },
-  viewContentID; "aQueryViewContentKey",
+  appConfig: { debug: '1', src: '../document/app/app' },
   cssPath: [ 'css/reset.css' ],
-  htmlPath: '/Users/apple/project/my/amdquery/build/../amdquery/../document/app/app.html',
-  appProjectPath: '/Users/apple/project/my/amdquery/build/../amdquery/../document/app/',
+  htmlPath: '/Users/apple/project/my/amdquery/document/app/app.html',
+  appProjectPath: '/Users/apple/project/my/amdquery/document/app/',
   appName: 'document',
-  projectDistPath: 'dist/apps/document/',
-  AMDQueryJSPath: 'apps/document/amdquery/amdquery',
+  projectDistPath: '/Users/apple/project/my/amdquery/build/dist/apps/document',
+  AMDQueryJSPath: '/Users/apple/project/my/amdquery/build/dist/apps/document/amdquery/amdquery',
   AMDQueryJSRelativeHTMLPath: '../amdquery/amdquery',
-  appCombinationXMLRelativePath: 'xml/combination.xml',
-  appCombinationXMLPath: 'dist/apps/document/app/xml/combination.xml',
+  viewContentID: 'aQueryViewContentKey',
+  appCombinationXMLRelativePath: 'app/xml/combination.xml',
+  appCombinationXMLPath: '/Users/apple/project/my/amdquery/build/dist/apps/document/app/xml/combination.xml',
   appCombinationCssRelativePath: 'css/document.css',
-  appCombinationCssPath: 'dist/apps/document/app/css/document.css',
-  uiCombinationCssPath: 'dist/apps/document/amdquery/ui/css/amdquery-widget.css',
-  distHtmlPath: 'dist/apps/document/app/app.html'
+  appCombinationCssPath: '/Users/apple/project/my/amdquery/build/dist/apps/document/app/css/document.css',
+  uiCombinationRelativeCssPath: 'amdquery/ui/css/amdquery-widget.css',
+  distHtmlPath: '/Users/apple/project/my/amdquery/build/dist/apps/document/app/app.html'
 }
                 </pre>
               </li>
@@ -291,30 +287,29 @@ root
             <p>1.Open HTML. Get "HTML" path from the configuration.
               <br />Use "trumpet" to parse html, Get an array of css hrefs and script tag of application. Parse configuration of the tag.
             </p>
-            <img src="../images/build_open_html.png" />
             <p>2.Create application directory and copy file.
               <br />Create application directory. In this example, path of directory is "dist/apps/document/". If the path of directory exists then remove it.
               <br />Copy directory:
-              <br />(This example: AMDQueryJSRootPath is "/Users/apple/project/my/amdquery/build/../amdquery/" or "/Users/apple/project/my/amdquery/")
-              <br />Copy appProjectPath + "asset/" to "app/asset/"
-              <br />Copy appProjectPath + "css/" to "app/css/"
-              <br />Copy appProjectPath + "xml/" to "app/xml/"
-              <br />Copy appProjectPath + "lib/" to "app/lib/"
-              <br />Copy AMDQueryJSRootPath + "ui/css/" to "amdquery/ui/css/"
-              <br />Copy AMDQueryJSRootPath + "ui/images/" to "amdquery/ui/images/"
+              <br />(This example: AMDQueryJSRootPath is "/Users/apple/project/my/amdquery/")
+              <br />(This example: appProjectPath is "/Users/apple/project/my/amdquery/document/app/")
+              <br />(This example: distPath is "/Users/apple/project/my/amdquery/build/dist/apps/document/". "document" is application name)
+              <br />Copy appProjectPath + "asset" to distPath + "app/asset"
+              <br />Copy appProjectPath + "css" to distPath + "app/css"
+              <br />Copy appProjectPath + "xml" to distPath + "app/xml"
+              <br />Copy appProjectPath + "lib" to distPath + "app/lib"
+              <br />Copy AMDQueryJSRootPath + "ui/css" to distPath + "amdquery/ui/css"
+              <br />Copy AMDQueryJSRootPath + "ui/images" to distPath + "amdquery/ui/images"
             </p>
-            <img src="../images/build_create_and_copy.png" width="628px" height="97px" />
             <p>3.Build Javascript of Application
               <br />Get "app.js" path to the directory. Set "require" parameter with the path. ("@app" ==> "../document/app/app")
               <br />"oye.node" could load all js after setting "require" parameter. Then build save the js files to the dist directory. You also can see then log in terminal.
+              <br />Save file: /Users/apple/project/my/amdquery/build/dist/apps/document/amdquery/amdquery.js
+              <br />Save file: /Users/apple/project/my/amdquery/build/dist/apps/document/amdquery/amdquery.debug.js
             </p>
-            <img src="../images/build_build_js.png" />
             <p>4.Build XML of Application
-              <br />Put all the XML merged into one XML. Root tag is "
-              <root>". Each original XML will be wrapped in "
-                <wrag>" tag within
-                  <br />The new XML will be saved as "combination.xml". "combination.xml" is easy for reading.
-                  <br />Content of new XML will append into "app.html"
+              <br />Put all the XML merged into one XML. Root tag is "&ltroot&gt". Each original XML will be wrapped in "&ltwrag&gt" tag within
+              <br />The new XML will be saved as "combination.xml". "combination.xml" is easy for reading.
+              <br />Content of new XML will append into "app.html"
             </p>
             <p>5.Build CSS of Application
               <br />After the first step has been to get all the "CSS" href, this step will be to find those CSS file through the href and use the "clean-css" to merge them into a CSS file.
@@ -322,8 +317,20 @@ root
             </p>
             <p>6.Build CSS of AMDQuery UI
               <br />Build combine all the CSS of AMDQuery UI and save it as "amdquery-widget.css".
+              <br />
+              <br />Build "document" xml file
+              <br />
+              <br />Save app Combination xml: /Users/apple/project/my/amdquery/build/dist/apps/document/app/xml/combination.xml
+              <br />
+              <br />Build "document" css file
+              <br />buildAppCss css path: /Users/apple/project/my/amdquery/document/app/css/reset.css
+              <br />
+              <br />Save app Combination css: /Users/apple/project/my/amdquery/build/dist/apps/document/app/css/document.css
+              <br />
+              <br />Build css of AMDQuery-UI
+              <br />
+              <br />Save UI amdquery-widget.css:  /Users/apple/project/my/amdquery/build/dist/apps/document/amdquery/ui/css/amdquery-widget.css
             </p>
-            <img src="../images/build_build_XML_CSS.png" />
             <p>7.Modify HTML
               <br />Remove all CSS in head and add a new CSS into head, the new CSS href is "css/document.css".
               <br />Modify "amdquery.js" script attribute:
