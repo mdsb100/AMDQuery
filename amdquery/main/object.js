@@ -99,7 +99,7 @@
 			return 1;
 		},
 		inerit = function( Sub, Super, name ) {
-			$.object.inheritProtypeWithParasitic( Sub, Super, name );
+			object.inheritProtypeWithParasitic( Sub, Super, name );
 			Sub.prototype.__superConstructor = Super;
 			Sub.prototype._super = _superInit;
 			if ( !Super.invoke ) {
@@ -160,7 +160,7 @@
 				inerit( anonymous, Super );
 			}
 
-			prototype = utilExtend.extend( {}, $.object._defaultPrototype, prototype );
+			prototype = utilExtend.extend( {}, object._defaultPrototype, prototype );
 			prototype.constructor = anonymous;
 			utilExtend.easyExtend( anonymous.prototype, prototype );
 
@@ -407,8 +407,6 @@
 			}, obj.prototype );
 		}
 	};
-
-	$.object = object;
 
 	return object;
 } );
