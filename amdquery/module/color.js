@@ -1,5 +1,5 @@
 ﻿aQuery.define( "module/color", [ "base/extend", "main/object", "hash/cssColors" ], function( $, utilExtend, object, cssColors, undefined ) {
-	this.describe( "quote from colo.js by Andrew Brehaut, Tim Baumann" );
+	this.describe( "quote from color.js by Andrew Brehaut, Tim Baumann" );
 	"use strict";
 
 	var css_integer = "(?:\\+|-)?\\d+",
@@ -23,7 +23,6 @@
       "^rgb(a?)\\(", css_percentage, ",", css_percentage, ",", css_percentage, "(,", css_number, ")?\\)$"
     ].join( css_whitespace ) );
 
-	//tools
 	var between = $.between;
 
 	function pad( val, len ) {
@@ -38,12 +37,13 @@
 		return padded.join( "" );
 	}
 
-	function color( type ) { //工厂方法
+	function color( type ) { //factory
 		if ( !( this instanceof color ) ) {
 			return color.prototype.create( type );
 		}
 	}
-	color.prototype = {
+
+	object.extend( color, {
 		create: function( o ) {
 			if ( !o ) {
 				return new color();
@@ -75,9 +75,7 @@
 		toString: function() {
 			return this.toCSS();
 		}
-	};
-
-	utilExtend.easyExtend( color, {
+	}, {
 		toRGBA: function( c, a ) {
 			if ( c.indexOf( "#" ) == 0 ) {
 				var
@@ -102,8 +100,7 @@
 		this.init( r, g, b );
 	}
 
-	object.inheritProtypeWithCombination( RGB, color );
-	utilExtend.easyExtend( RGB.prototype, {
+	color.extend( RGB, {
 		red: 0,
 		green: 0,
 		blue: 0,
@@ -183,7 +180,6 @@
 			return rgb;
 		},
 
-		constructor: RGB,
 		create: function( o ) {
 			if ( "string" == typeof o ) {
 				return this._fromCSS( $.util.trim( o ) );
@@ -253,6 +249,7 @@
 		}
 
 	} );
+
 	object.providePropertyGetSet( RGB, RGB.prototype._propertys );
 
 	function HSV( hue, saturation, value ) {
@@ -262,8 +259,7 @@
 		this.init( hue, saturation, value );
 	}
 
-	object.inheritProtypeWithCombination( HSV, color );
-	utilExtend.easyExtend( HSV.prototype, {
+	color.extend( HSV, {
 		hue: 0,
 		saturation: 0,
 		value: 1,
@@ -278,7 +274,6 @@
 			return this.desaturateByAmount( a );
 		},
 
-		constructor: HSV,
 		create: function( h, s, v ) {
 			if ( h.hasOwnProperty( "hue" ) && h.hasOwnProperty( "saturation" ) && h.hasOwnProperty( "value" ) ) {
 				return new HSV( h.hue, h.saturation, h.value );
@@ -494,6 +489,7 @@
 		}
 
 	} );
+
 	object.providePropertyGetSet( HSV, HSV.prototype._propertys );
 
 	function HSL( hue, saturation, lightness ) {
@@ -503,8 +499,7 @@
 		this.init( hue, saturation, lightness );
 	}
 
-	object.inheritProtypeWithCombination( HSL, color );
-	utilExtend.easyExtend( HSL.prototype, {
+	object.extend( HSL, {
 		hue: 0,
 		saturation: 0,
 		lightness: 0,
@@ -515,7 +510,6 @@
 			this.lightness = between( 0, 1, this.lightness );
 		},
 
-		constructor: HSL,
 		create: function( h, s, l ) {
 			if ( "string" == typeof h ) {
 				var cg = $.util.trim( h ).match( hsl_hsla_regex );
@@ -561,9 +555,8 @@
 		}
 
 	} );
-	object.providePropertyGetSet( HSL, HSL.prototype._propertys );
 
-	$.color = color;
+	object.providePropertyGetSet( HSL, HSL.prototype._propertys );
 
 	return color;
 
