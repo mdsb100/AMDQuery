@@ -324,7 +324,7 @@
 		}
 	} );
 
-	object.providePropertyGetSet( Thread, {
+	object.createPropertyGetterSetter( Thread, {
 		args: "-pu -r -w",
 		timeId: "-pa -r",
 		sleepId: "-pa -r",
@@ -332,7 +332,6 @@
 		isAnimFrame: "-pu -r",
 		id: "-pu -r"
 	} );
-	$.thread = Thread;
 
 	return Thread;
 } );

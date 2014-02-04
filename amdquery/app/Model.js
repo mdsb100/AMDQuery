@@ -31,7 +31,7 @@ aQuery.define( "app/Model", [ "main/attr", "main/object", "main/CustomEvent" ], 
 
 	Model.collection = new ModelCollection;
 
-	object.providePropertyGetSet( Model, {
+	object.createPropertyGetterSetter( Model, {
 		element: "-pu -r",
 		id: "-pu -r",
 		src: "-pu -r"

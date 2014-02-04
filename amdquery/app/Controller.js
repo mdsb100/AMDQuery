@@ -106,7 +106,7 @@ aQuery.define( "app/Controller", [
 
 	Controller.collection = new ControllerCollection();
 
-	object.providePropertyGetSet( Controller, {
+	object.createPropertyGetterSetter( Controller, {
 		id: "-pu -r -w"
 	} );
 

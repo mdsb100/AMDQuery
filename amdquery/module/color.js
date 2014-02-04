@@ -250,7 +250,7 @@
 
 	} );
 
-	object.providePropertyGetSet( RGB, RGB.prototype._propertys );
+	object.createPropertyGetterSetter( RGB, RGB.prototype._propertys );
 
 	function HSV( hue, saturation, value ) {
 		if ( !( this instanceof HSV ) ) {
@@ -490,7 +490,7 @@
 
 	} );
 
-	object.providePropertyGetSet( HSV, HSV.prototype._propertys );
+	object.createPropertyGetterSetter( HSV, HSV.prototype._propertys );
 
 	function HSL( hue, saturation, lightness ) {
 		if ( !( this instanceof HSL ) ) {
@@ -556,7 +556,7 @@
 
 	} );
 
-	object.providePropertyGetSet( HSL, HSL.prototype._propertys );
+	object.createPropertyGetterSetter( HSL, HSL.prototype._propertys );
 
 	return color;
 

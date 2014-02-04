@@ -136,7 +136,7 @@ aQuery.define( "app/View", [
 
 	View.collection = new ViewCollection;
 
-	object.providePropertyGetSet( View, {
+	object.createPropertyGetterSetter( View, {
 		id: "-pu -r -w"
 	} );
 
