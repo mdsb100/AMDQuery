@@ -237,7 +237,7 @@ aQuery.define( "main/css", [ "base/typed", "base/extend", "base/array", "base/su
 			if ( visible ) {
 				ele.style.visibility = "hidden";
 			} else {
-				ele.style.dispaly && utilData.data( ele, "_visible_display", ele.style.dispaly );
+				ele.style.dispaly && utilData.set( ele, "_visible_display", ele.style.dispaly );
 				ele.style.display = "none";
 			}
 
@@ -279,7 +279,7 @@ aQuery.define( "main/css", [ "base/typed", "base/extend", "base/array", "base/su
 				h = "hidden",
 				nEle, v;
 			if ( $.curCss( ele, "display" ) == n ) {
-				v = utilData.data( ele, "_visible_display" );
+				v = utilData.get( ele, "_visible_display" );
 				if ( !v ) {
 					nEle = $.createEle( ele.tagName );
 					if ( ele.parentNode ) {

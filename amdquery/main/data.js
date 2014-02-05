@@ -90,8 +90,8 @@
 					cache = exports.cache,
 					thisCache;
 
-				if ( name && id && cache[ id ] ) {
-					return cache[ id ][ name ];
+				if ( id && cache[ id ] ) {
+					return name ? cache[ id ][ name ] : cache[ id ];
 				} else {
 					return undefined;
 				}
@@ -194,14 +194,14 @@
 			/// <param name="value" type="any">数据</param>
 			/// <returns type="thisCache/any/$" />
 			if ( key === undefined && this.length ) {
-				return exports.data( this[ 0 ] );
+				return exports.get( this[ 0 ] );
 			} else if ( typed.isObj( key ) ) {
 				return this.each( function( ele ) {
-					exports.data( ele, key );
+					exports.get( ele, key );
 				} );
 			}
-			return value === undefined ? exports.data( this[ 0 ], key ) : this.each( function( ele ) {
-				exports.data( ele, key, value );
+			return value === undefined ? exports.get( this[ 0 ], key ) : this.each( function( ele ) {
+				exports.set( ele, key, value );
 			} );
 		},
 		removeData: function( key ) {

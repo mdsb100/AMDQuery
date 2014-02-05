@@ -1,4 +1,4 @@
-﻿aQuery.define( "main/dom", [ "base/typed", "base/extend", "base/array", "base/support", "main/data", "main/event", "main/query" ], function( $, typed, utilExtend, utilArray, support, data, event, query, undefined ) {
+﻿aQuery.define( "main/dom", [ "base/typed", "base/extend", "base/array", "base/support", "main/data", "main/event", "main/query" ], function( $, typed, utilExtend, utilArray, support, utilData, event, query, undefined ) {
 	"use strict";
   this.describe( "consult JQuery1.9.1" );
 	var nodeNames = "abbr|article|aside|audio|bdi|canvas|data|datalist|details|figcaption|figure|footer|" +
@@ -86,7 +86,7 @@
 			i = 0;
 		for ( ;
 			( elem = elems[ i ] ) != null; i++ ) {
-			data.data( elem, "globalEval", !refElements || data.data( refElements[ i ], "globalEval" ) );
+			utilData.set( elem, "globalEval", !refElements || utilData.get( refElements[ i ], "globalEval" ) );
 		}
 	}
 
@@ -125,7 +125,7 @@
 			event.clearHandlers( dest );
 
 			// Event data gets referenced instead of copied if the expando gets copied too
-			//dest.removeAttribute( data.expando );
+			//dest.removeAttribute( utilData.expando );
 		}
 
 		// IE blanks contents when cloning scripts, and tries to evaluate newly-set text
@@ -175,12 +175,12 @@
 
 	function cloneCopyEvent( src, dest ) {
 
-		if ( dest.nodeType !== 1 || !data.hasData( src ) ) {
+		if ( dest.nodeType !== 1 || !utilData.hasData( src ) ) {
 			return;
 		}
 
-		var oldData = data.data( src );
-		var curData = data.data( dest, oldData );
+		var oldData = utilData.get( src );
+		var curData = utilData.set( dest, oldData );
 
 		event.cloneHandlers( dest, src );
 
@@ -419,7 +419,7 @@
 				if ( !keepData && ele.nodeType === 1 ) {
 					$.each( getAll( ele ), function( ele ) {
 						event.clearHandlers( ele );
-						data.removeData( ele );
+						utilData.removeData( ele );
 					} );
 				}
 

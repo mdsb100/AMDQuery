@@ -208,10 +208,11 @@
 			}
 
 			type = ( type || "fx" ) + "queue";
-			var q = utilData.data( ele, type );
+			var q = utilData.get( ele, type );
 
 			if ( !q ) {
-				q = utilData.data( ele, type, new Queue() );
+				q = new Queue()
+				utilData.set( ele, type, q );
 			}
 
 			return q.queue( fn, ele, [ ele ] );

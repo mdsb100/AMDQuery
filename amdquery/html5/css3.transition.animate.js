@@ -81,7 +81,7 @@
 				var opt = {},
 					p,
 					defaultEasing = option.easing,
-					easing, transitionList = utilData.data( ele, "_transitionList" );
+					easing, transitionList = utilData.get( ele, "_transitionList" );
 
 				if ( !transitionList ) {
 					transitionList = {};
@@ -92,7 +92,7 @@
 				opt._transitionEnd = function( event ) {
 					var i, ele = this,
 						item,
-						transitionList = utilData.data( ele, "_transitionList" );
+						transitionList = utilData.get( ele, "_transitionList" );
 
 					for ( i in transitionList ) {
 						css3.removeTransition( ele, i );
@@ -177,7 +177,7 @@
 
 					}
 				} );
-				utilData.data( ele, "_transitionList", transitionList );
+				utilData.set( ele, "_transitionList", transitionList );
 				if ( equalFlag ) {
 					opt._transitionEnd.call( ele );
 				}
@@ -213,7 +213,7 @@
 				return this;
 			},
 			stopAnimationByTransition: function( ele, isDequeue ) {
-				var transitionList = utilData.data( ele, "_transitionList" ),
+				var transitionList = utilData.get( ele, "_transitionList" ),
 					type, fx, i, item;
 				for ( type in transitionList ) {
 					fx = transitionList[ type ];

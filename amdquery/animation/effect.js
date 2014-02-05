@@ -1,18 +1,18 @@
 ﻿aQuery.define( "animation/effect", [ "base/typed", "main/data", "animation/animate" ], function( $, typed, utilData, animate, undefined ) {
 	"use strict";
 	var slideDownComplete = function() {
-		utilData.data( this, "slideOriginHeight", null );
+		utilData.set( this, "slideOriginHeight", null );
 	},
 		slideUpComplete = function( opt ) {
-			$._hide( this, opt.visible ).css( this, "height", utilData.data( this, "slideOriginHeight" ) );
-			utilData.data( this, "slideOriginHeight", null );
+			$._hide( this, opt.visible ).css( this, "height", utilData.get( this, "slideOriginHeight" ) );
+			utilData.set( this, "slideOriginHeight", null );
 		},
 		fadeInComplete = function() {
-			utilData.data( this, "slideOriginOpacity", null );
+			utilData.set( this, "slideOriginOpacity", null );
 		},
 		fadeOutComplete = function( opt ) {
-			$._hide( this, opt.visible ).setOpacity( this, utilData.data( this, "slideOriginOpacity" ) );
-			utilData.data( this, "slideOriginOpacity", null );
+			$._hide( this, opt.visible ).setOpacity( this, utilData.get( this, "slideOriginOpacity" ) );
+			utilData.set( this, "slideOriginOpacity", null );
 		};
 
 	var effect = {
@@ -29,10 +29,10 @@
 			}
 
 			var o, opt = $._getAnimateOpt( option );
-			o = utilData.data( ele, "slideOriginOpacity" );
+			o = utilData.get( ele, "slideOriginOpacity" );
 			o = o != null ? o : ( $.css( ele, "opacity" ) || 1 );
 
-			utilData.data( ele, "slideOriginOpacity", o );
+			utilData.set( ele, "slideOriginOpacity", o );
 			opt.complete = fadeInComplete;
 			return $.setOpacity( ele, 0 )._show( ele ).animate( ele, {
 				opacity: o
@@ -51,10 +51,10 @@
 			};
 
 			var o, opt = $._getAnimateOpt( option );
-			o = utilData.data( ele, "slideOriginOpacity" );
+			o = utilData.get( ele, "slideOriginOpacity" );
 			o = o != null ? o : $.css( ele, "opacity" );
 
-			utilData.data( ele, "slideOriginOpacity", o );
+			utilData.set( ele, "slideOriginOpacity", o );
 			opt.complete = fadeOutComplete;
 			return $._show( ele ).animate( ele, {
 				opacity: 0
@@ -102,9 +102,9 @@
 				return this;
 			}
 
-			var h = utilData.data( ele, "slideOriginHeight" ) || $.css( ele, "height" ),
+			var h = utilData.get( ele, "slideOriginHeight" ) || $.css( ele, "height" ),
 				opt = $._getAnimateOpt( option );
-			utilData.data( ele, "slideOriginHeight", h );
+			utilData.set( ele, "slideOriginHeight", h );
 			$.css( ele, "height", 0 );
 			opt.complete.push( slideDownComplete );
 			return $.css( ele, "height", 0 )._show( ele ).animate( ele, {
@@ -116,14 +116,14 @@
 			/// <param name="ele" type="Element">dom元素</param>
 			/// <param name="option" type="Object">动画选项</param>
 			/// <returns type="self" />
-			if ( !$.isVisible( ele ) || utilData.data( ele, "_sliedeDown" ) ) {
+			if ( !$.isVisible( ele ) || utilData.get( ele, "_sliedeDown" ) ) {
 				return this;
 			}
 
-			var h = utilData.data( ele, "slideOriginHeight" ) || $.css( ele, "height" ),
+			var h = utilData.get( ele, "slideOriginHeight" ) || $.css( ele, "height" ),
 				opt = $._getAnimateOpt( option );
 			$.css( ele, "height", h );
-			utilData.data( ele, "slideOriginHeight", h );
+			utilData.set( ele, "slideOriginHeight", h );
 			opt.complete.push( slideUpComplete );
 			return $._show( ele ).animate( ele, {
 				height: "0px"

@@ -72,6 +72,14 @@
 				return fun.__guid;
 			}
 		},
+		_initCustomEvent = function( ele, type ) {
+			var data;
+			if ( !( data = utilData.get( ele, type ) ) ) {
+				data = new CustomEvent();
+				utilData.set( ele, type, data );
+			}
+			return data;
+		},
 		event = {
 			addHandler: function( ele, type, fun ) {
 				/// <summary>给aQuery或元素添加事件</summary>
@@ -89,9 +97,7 @@
 					var data, proxy, item, types = type.split( " " ),
 						i = types.length - 1;
 
-					if ( !( data = utilData.data( ele, "_handlers_" ) ) ) {
-						data = utilData.data( ele, "_handlers_", new CustomEvent() );
-					}
+					data = _initCustomEvent( ele, "_handlers_" );
 					proxy = eventHooks.proxy( fun, this );
 
 					for ( ; i >= 0; i-- ) {
@@ -113,9 +119,7 @@
 					var data, proxy, item, types = type.split( " " ),
 						i = types.length - 1;
 
-					if ( !( data = utilData.data( ele, "_handlers_" ) ) ) {
-						data = utilData.data( ele, "_handlers_", new CustomEvent() );
-					}
+					data = _initCustomEvent( ele, "_handlers_" );
 					proxy = eventHooks.proxy( fun, this );
 
 					for ( ; i >= 0; i-- ) {
@@ -160,7 +164,7 @@
 				/// <param name="type" type="String/undefinded">事件类型</param>
 				/// <returns type="self" />
 				if ( typed.isEle( ele ) || typed.isWindow( ele ) ) {
-					var data = utilData.data( ele, "_handlers_" );
+					var data = utilData.get( ele, "_handlers_" );
 					if ( !data ) {
 						return this;
 					}
@@ -196,7 +200,7 @@
 			},
 
 			cloneHandlers: function( ele, handlerEve ) {
-				var customEvent = data.data( handlerEve, "_handlers_" );
+				var customEvent = data.set( handlerEve, "_handlers_" );
 				if ( customEvent ) {
 					var handlerMap = customEvent._handlerMap,
 						j = 0,
@@ -210,7 +214,7 @@
 							_domEventList[ i ] && $.event.document._addHandler( ele, i, fun.__guid || fun );
 						}
 					}
-					data.data( ele, "_handlers_", customEvent );
+					data.set( ele, "_handlers_", customEvent );
 				}
 			},
 
@@ -554,7 +558,11 @@
 				/// <summary>初始化事件集</summary>
 				/// <param name="ele" type="Element/undefined">元素</param>
 				/// <private/>
-				utilData.data( ele, "_handlers_" ) || utilData.data( ele, "_handlers_", new CustomEvent() );
+				var data = utilData.get( ele, "_handlers_" );
+				if ( !data ) {
+					data = new CustomEvent();
+					utilData.set( ele, "_handlers_", data )
+				}
 				return this;
 			},
 
@@ -580,10 +588,7 @@
 						}
 					}
 
-					if ( !( data = utilData.data( ele, "_handlers_" ) ) ) {
-						data = utilData.data( ele, "_handlers_", new CustomEvent() );
-					}
-
+					data = _initCustomEvent( ele, "_handlers_" );
 					type && fun && data.removeHandler( type, fun );
 
 				} else {
@@ -617,12 +622,12 @@
 					index = 0,
 					data;
 				if ( arg.length > 1 ) {
-					if ( data = utilData.data( ele, "_toggle_" ) ) {
+					if ( data = utilData.get( ele, "_toggle_" ) ) {
 						arg = data.arg.concat( arg );
 						index = data.index;
 					}
 
-					utilData.data( ele, "_toggle_", {
+					utilData.set( ele, "_toggle_", {
 						index: index,
 						arg: arg
 					} );
@@ -637,55 +642,18 @@
 			},
 			_toggle: function( e ) {
 				var self = $.event.document.getTarget( e ),
-					data = utilData.data( self, "_toggle_" ),
+					data = utilData.get( self, "_toggle_" ),
 					arg = data.arg,
 					len = arg.length,
 					index = data.index % len;
 
 				arg[ index ].call( self, e );
-				utilData.data( self, "_toggle_", {
+				utilData.set( self, "_toggle_", {
 					index: index + 1,
 					arg: arg
 				} );
 			},
 
-			// toggleClass: function(ele, classParas) {
-			//     /// <summary>切换样式</summary>
-			//     /// <param name="ele" type="Element">element元素</param>
-			//     /// <param name="classParas" type="String:[]">样式名</param>
-			//     /// <returns type="self" />
-			//     var arg = $.util.argToArray(arguments, 1),
-			//         index = 0,
-			//         data;
-			//     if(arg.length) {
-			//         if(data = utilData.data(ele, "_toggleClass_")) {
-			//             arg = data.arg.concat(arg);
-			//             index = data.index;
-			//         }
-
-			//         utilData.data(ele, "_toggleClass_", {
-			//             index: index,
-			//             arg: arg
-			//         });
-
-			//         $.addHandler(ele, "click", function(e) {
-			//             var self = $.event.document.getTarget(e),
-			//                 data = utilData.data(self, "_toggleClass_"),
-			//                 index = data.index,
-			//                 arg = data.arg,
-			//                 len = arg.length;
-
-			//             $.addClass(self, arg[index % len]);
-			//             $.removeClass(self, arg[index % len - 1] || arg[index % len + 1]);
-			//             utilData.data(self, "_toggleClass_", {
-			//                 index: index + 1,
-			//                 arg: arg
-			//             });
-			//         });
-			//     }
-			//     //移除事件 添加至event 移除arg len
-			//     return this;
-			// },
 			trigger: function( ele, type, context, paras ) {
 				/// <summary>
 				/// 触发自定义或者原生事件
@@ -701,7 +669,7 @@
 						type = eventHooks.type( type );
 						typed.isFun( data ) ? data( ele, type, context ) : $.logger( "trigger", "triggering" + type + " is not supported" );
 					} else {
-						( data = utilData.data( ele, "_handlers_" ) ) && data.trigger.apply( data, [ type, context ].concat( $.util.argToArray( arguments, 3 ) ) );
+						( data = utilData.get( ele, "_handlers_" ) ) && data.trigger.apply( data, [ type, context ].concat( $.util.argToArray( arguments, 3 ) ) );
 					}
 				} else {
 					$.bus.trigger.apply( $.bus, arguments );
@@ -729,7 +697,7 @@
 				//                    fun = eventHooks.proxy(fun, this);
 				//                    var key, result
 				//                if ((key = $.searchCustomEvent(type))) {//直接绑定在 container ele上的事件
-				//                    key = utilData.data(ele, key);
+				//                    key = utilData.get(ele, key);
 				//                    key && key.addHandler(type, fun);
 				//                    return;
 				//                }
@@ -785,7 +753,7 @@
 				//fun = fun.__guid || fun;
 				//                var key, result
 				//                if ((key = $.searchCustomEvent(type))) {
-				//                    key = utilData.data(ele, key);
+				//                    key = utilData.get(ele, key);
 				//                    key && key.removeHandler(type, fun);
 				//                    return;
 				//                }

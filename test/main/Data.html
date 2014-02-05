@@ -31,7 +31,7 @@
       utilData.set( test, { name: "test", id: "101" } );
       console.log( "name value", utilData.get( test, "name" ) );
       console.log( "id value", utilData.get( test, "id" ) );
-
+      console.log( "object", utilData.get( test ) );
       utilData.removeData( test );
       console.log( "hasData", utilData.hasData( test ) );
 
