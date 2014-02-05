@@ -45,7 +45,6 @@
             easing: "linear" //["cubicBezier", 1, 1]
             ,
             complete: function() {
-              ///$.showMsg()
               //                        $.animationPower.sleep(2000);
               //                        setTimeout(function () {
               //                            $.animationPower.resume();
@@ -64,7 +63,7 @@
             duration: 2000,
             easing: "linear",
             complete: function() {
-              //alert("2")
+              $.logger("2")
             }
           })
           .animate({
@@ -74,7 +73,7 @@
             duration: 2000,
             easing: "linear",
             complete: function() {
-              //alert("2")
+              $.logger("2")
             }
           });
       });
@@ -164,7 +163,7 @@
           delay: 0,
           easing: "linear",
           complete: function() {
-            $.showMsg("1")
+
           }
         }).animate(go1[0], {
           height: "+=100px",
@@ -173,8 +172,8 @@
           duration: 4000,
           easing: "linear",
           complete: function() {
-            $.showMsg("2")
-            //alert("2")
+
+
           }
         });
       });

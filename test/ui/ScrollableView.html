@@ -11,15 +11,15 @@
       var container1 = $("#container1");
 
       container1.on("scrollableview.pulldown", function() {
-        $.showMsg("1")
+        alert("1")
       }).on("scrollableview.pullup", function() {
-        $.showMsg("2")
+        alert("2")
       }).on("scrollableview.pullleft", function() {
-        $.showMsg("3")
+        alert("3")
       }).on("scrollableview.pullright", function() {
-        $.showMsg("4")
+        alert("4")
       }).on("scrollableview.animationEnd", function(e) {
-        $.showMsg(e.scene)
+        alert(e.scene)
       });
 
       var div = $.createEle("div");

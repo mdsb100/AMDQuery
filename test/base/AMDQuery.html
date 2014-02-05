@@ -72,9 +72,9 @@
         var property4 = $("ol *[id*='i']");
 
         $(document.body).keydown(function(e) {
-          $.showMsg(e.charCode);
+          $.logger(e.charCode);
         }).keypress(function(e, str) {
-          //alert(str);
+          $.logger(str);
         });
 
         var value = $(".parent").posterity();
@@ -86,14 +86,14 @@
         //ele.style.visibility = "hidden";
         //$.setOffsetW(ele, 50);
         return;
-        //alert($(ele).attr("id"));
+        $.logger($(ele).attr("id"));
         $(ele).attr("id", "p");
-        //alert($(ele).attr("id"));
+        $.logger($(ele).attr("id"));
 
         var value = $("#offset");
-        $.showMsg(value[0].offsetHeight + ":" + value[0].clientHeight);
+        $.logger(value[0].offsetHeight + ":" + value[0].clientHeight);
         value.offsetH(30)
-        $.showMsg(value[0].offsetHeight + ":" + value[0].clientHeight);
+        $.logger(value[0].offsetHeight + ":" + value[0].clientHeight);
 
         var next = $("#B~%+")
 
@@ -179,7 +179,7 @@
         //.opacity(0.5);
         var tmp = fa.opacity();
         var di = $('div').addClass('css1').addHandler('click', function() {
-          alert(true);
+          $.logger(true);
         })
           .attr('pic', "p1")
           .mousewheel(function(detal) {
@@ -238,7 +238,7 @@
         var table = document.createElement('table');
 
         var handler = function(e) {
-          alert(e)
+          $.logger(e)
         }, testHandler = $("#C").addHandler("click", handler).removeHandler('click', handler).insertText("插入一个值");
 
         $("div").filter(function(ele) {

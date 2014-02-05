@@ -35,13 +35,13 @@
 
       $("#container2").accordion({
         "shell.select": function(target) {
-          $.showMsg(target);
+          alert(target);
         },
         "shell.context2": function() {
-          $.showMsg("shell.select and trigger customHandler");
+          alert("shell.select and trigger customHandler");
         }
       }).on("accordion.key.select", function(target, e) {
-        target.routing("abc") && $.showMsg("abc");
+        target.routing("abc") && $.logger("abc");
       }).on("accordion.key.context2", function(target, e) {
         alert(target);
       });
