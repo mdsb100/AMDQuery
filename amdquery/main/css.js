@@ -1,4 +1,4 @@
-aQuery.define( "main/css", [ "base/typed", "base/extend", "base/array", "base/support", "base/client", "main/data", "main/query" ], function( $, typed, utilExtend, utilArray, support, client, data, query, undefined ) {
+aQuery.define( "main/css", [ "base/typed", "base/extend", "base/array", "base/support", "base/client", "main/data", "main/query" ], function( $, typed, utilExtend, utilArray, support, client, utilData, query, undefined ) {
 	"use strict";
 	this.describe( "consult JQuery1.9.1" );
 	var rnumnonpx = /^-?(?:\d*\.)?\d+(?!px)[^\d\s]+$/i,
@@ -237,7 +237,7 @@ aQuery.define( "main/css", [ "base/typed", "base/extend", "base/array", "base/su
 			if ( visible ) {
 				ele.style.visibility = "hidden";
 			} else {
-				ele.style.dispaly && $.data( ele, "_visible_display", ele.style.dispaly );
+				ele.style.dispaly && utilData.data( ele, "_visible_display", ele.style.dispaly );
 				ele.style.display = "none";
 			}
 
@@ -279,7 +279,7 @@ aQuery.define( "main/css", [ "base/typed", "base/extend", "base/array", "base/su
 				h = "hidden",
 				nEle, v;
 			if ( $.curCss( ele, "display" ) == n ) {
-				v = $.data( ele, "_visible_display" );
+				v = utilData.data( ele, "_visible_display" );
 				if ( !v ) {
 					nEle = $.createEle( ele.tagName );
 					if ( ele.parentNode ) {

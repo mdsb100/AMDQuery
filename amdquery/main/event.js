@@ -1,4 +1,4 @@
-﻿aQuery.define( "main/event", [ "base/config", "base/typed", "base/extend", "base/client", "base/array", "main/CustomEvent", "main/data" ], function( $, config, typed, utilExtend, client, array, CustomEvent, data, undefined ) {
+﻿aQuery.define( "main/event", [ "base/config", "base/typed", "base/extend", "base/client", "base/array", "main/CustomEvent", "main/data" ], function( $, config, typed, utilExtend, client, array, CustomEvent, utilData, undefined ) {
 	"use strict";
 	var mouse = "contextmenu click dblclick mousedown mouseup mousemove mouseover mouseout mouseenter mouseleave mousewheel DOMMouseScroll".split( " " ),
 		/*DOMMouseScroll firefox*/
@@ -89,8 +89,8 @@
 					var data, proxy, item, types = type.split( " " ),
 						i = types.length - 1;
 
-					if ( !( data = $.data( ele, "_handlers_" ) ) ) {
-						data = $.data( ele, "_handlers_", new CustomEvent() );
+					if ( !( data = utilData.data( ele, "_handlers_" ) ) ) {
+						data = utilData.data( ele, "_handlers_", new CustomEvent() );
 					}
 					proxy = eventHooks.proxy( fun, this );
 
@@ -113,8 +113,8 @@
 					var data, proxy, item, types = type.split( " " ),
 						i = types.length - 1;
 
-					if ( !( data = $.data( ele, "_handlers_" ) ) ) {
-						data = $.data( ele, "_handlers_", new CustomEvent() );
+					if ( !( data = utilData.data( ele, "_handlers_" ) ) ) {
+						data = utilData.data( ele, "_handlers_", new CustomEvent() );
 					}
 					proxy = eventHooks.proxy( fun, this );
 
@@ -160,7 +160,7 @@
 				/// <param name="type" type="String/undefinded">事件类型</param>
 				/// <returns type="self" />
 				if ( typed.isEle( ele ) || typed.isWindow( ele ) ) {
-					var data = $.data( ele, "_handlers_" );
+					var data = utilData.data( ele, "_handlers_" );
 					if ( !data ) {
 						return this;
 					}
@@ -554,7 +554,7 @@
 				/// <summary>初始化事件集</summary>
 				/// <param name="ele" type="Element/undefined">元素</param>
 				/// <private/>
-				$.data( ele, "_handlers_" ) || $.data( ele, "_handlers_", new CustomEvent() );
+				utilData.data( ele, "_handlers_" ) || utilData.data( ele, "_handlers_", new CustomEvent() );
 				return this;
 			},
 
@@ -580,8 +580,8 @@
 						}
 					}
 
-					if ( !( data = $.data( ele, "_handlers_" ) ) ) {
-						data = $.data( ele, "_handlers_", new CustomEvent() );
+					if ( !( data = utilData.data( ele, "_handlers_" ) ) ) {
+						data = utilData.data( ele, "_handlers_", new CustomEvent() );
 					}
 
 					type && fun && data.removeHandler( type, fun );
@@ -617,12 +617,12 @@
 					index = 0,
 					data;
 				if ( arg.length > 1 ) {
-					if ( data = $.data( ele, "_toggle_" ) ) {
+					if ( data = utilData.data( ele, "_toggle_" ) ) {
 						arg = data.arg.concat( arg );
 						index = data.index;
 					}
 
-					$.data( ele, "_toggle_", {
+					utilData.data( ele, "_toggle_", {
 						index: index,
 						arg: arg
 					} );
@@ -637,13 +637,13 @@
 			},
 			_toggle: function( e ) {
 				var self = $.event.document.getTarget( e ),
-					data = $.data( self, "_toggle_" ),
+					data = utilData.data( self, "_toggle_" ),
 					arg = data.arg,
 					len = arg.length,
 					index = data.index % len;
 
 				arg[ index ].call( self, e );
-				$.data( self, "_toggle_", {
+				utilData.data( self, "_toggle_", {
 					index: index + 1,
 					arg: arg
 				} );
@@ -658,26 +658,26 @@
 			//         index = 0,
 			//         data;
 			//     if(arg.length) {
-			//         if(data = $.data(ele, "_toggleClass_")) {
+			//         if(data = utilData.data(ele, "_toggleClass_")) {
 			//             arg = data.arg.concat(arg);
 			//             index = data.index;
 			//         }
 
-			//         $.data(ele, "_toggleClass_", {
+			//         utilData.data(ele, "_toggleClass_", {
 			//             index: index,
 			//             arg: arg
 			//         });
 
 			//         $.addHandler(ele, "click", function(e) {
 			//             var self = $.event.document.getTarget(e),
-			//                 data = $.data(self, "_toggleClass_"),
+			//                 data = utilData.data(self, "_toggleClass_"),
 			//                 index = data.index,
 			//                 arg = data.arg,
 			//                 len = arg.length;
 
 			//             $.addClass(self, arg[index % len]);
 			//             $.removeClass(self, arg[index % len - 1] || arg[index % len + 1]);
-			//             $.data(self, "_toggleClass_", {
+			//             utilData.data(self, "_toggleClass_", {
 			//                 index: index + 1,
 			//                 arg: arg
 			//             });
@@ -701,7 +701,7 @@
 						type = eventHooks.type( type );
 						typed.isFun( data ) ? data( ele, type, context ) : $.logger( "trigger", "triggering" + type + " is not supported" );
 					} else {
-						( data = $.data( ele, "_handlers_" ) ) && data.trigger.apply( data, [ type, context ].concat( $.util.argToArray( arguments, 3 ) ) );
+						( data = utilData.data( ele, "_handlers_" ) ) && data.trigger.apply( data, [ type, context ].concat( $.util.argToArray( arguments, 3 ) ) );
 					}
 				} else {
 					$.bus.trigger.apply( $.bus, arguments );
@@ -729,7 +729,7 @@
 				//                    fun = eventHooks.proxy(fun, this);
 				//                    var key, result
 				//                if ((key = $.searchCustomEvent(type))) {//直接绑定在 container ele上的事件
-				//                    key = $.data(ele, key);
+				//                    key = utilData.data(ele, key);
 				//                    key && key.addHandler(type, fun);
 				//                    return;
 				//                }
@@ -785,7 +785,7 @@
 				//fun = fun.__guid || fun;
 				//                var key, result
 				//                if ((key = $.searchCustomEvent(type))) {
-				//                    key = $.data(ele, key);
+				//                    key = utilData.data(ele, key);
 				//                    key && key.removeHandler(type, fun);
 				//                    return;
 				//                }

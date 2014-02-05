@@ -1,4 +1,4 @@
-﻿aQuery.define( "animation/animate", [ "base/typed", "base/extend", "base/queue", "main/data", "animation/FX", "module/Thread", "animation/tween" ], function( $, typed, utilExtend, Queue, data, FX, Thread, tween, undefined ) {
+﻿aQuery.define( "animation/animate", [ "base/typed", "base/extend", "base/queue", "main/data", "animation/FX", "module/Thread", "animation/tween" ], function( $, typed, utilExtend, Queue, utilData, FX, Thread, tween, undefined ) {
 	"use strict";
 	FX.tick = function() {
 		if ( thread.getStatus() === "run" ) return;
@@ -208,10 +208,10 @@
 			}
 
 			type = ( type || "fx" ) + "queue";
-			var q = $.data( ele, type );
+			var q = utilData.data( ele, type );
 
 			if ( !q ) {
-				q = $.data( ele, type, new Queue() );
+				q = utilData.data( ele, type, new Queue() );
 			}
 
 			return q.queue( fn, ele, [ ele ] );

@@ -23,7 +23,7 @@
 	expando = "AMDQuery" + $.now(),
 		uuid = 0,
 		windowData = {}, emptyObject = {},
-		data = {
+		exports = {
 			cache: [],
 
 			data: function( ele, name, data ) {
@@ -121,12 +121,10 @@
 			},
 
 			hasData: function( ele ) {
-				ele = ele.nodeType ? data.cache[ ele[ data.expando ] ] : ele[ data.expando ];
+				ele = ele.nodeType ? exports.cache[ ele[ exports.expando ] ] : ele[ exports.expando ];
 				return !!ele && !isEmptyDataObject( ele );
 			}
 		};
-
-	$.extend( data );
 
 	$.fn.extend( {
 		data: function( key, value ) {
@@ -138,14 +136,14 @@
 			/// <param name="value" type="any">数据</param>
 			/// <returns type="thisCache/any/$" />
 			if ( key === undefined && this.length ) {
-				return $.data( this[ 0 ] );
+				return exports.data( this[ 0 ] );
 			} else if ( typed.isObj( key ) ) {
 				return this.each( function( ele ) {
-					$.data( ele, key );
+					exports.data( ele, key );
 				} );
 			}
-			return value === undefined ? $.data( this[ 0 ], key ) : this.each( function( ele ) {
-				$.data( ele, key, value );
+			return value === undefined ? exports.data( this[ 0 ], key ) : this.each( function( ele ) {
+				exports.data( ele, key, value );
 			} );
 		},
 		removeData: function( key ) {
@@ -161,5 +159,5 @@
 		}
 	} );
 
-	return data;
+	return exports;
 } );

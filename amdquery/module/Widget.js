@@ -16,7 +16,7 @@
 	typed,
 	utilExtend,
 	array,
-	data,
+	utilData,
 	query,
 	event,
 	attr,
@@ -493,11 +493,11 @@
 				var result = this,
 					arg = arguments;
 				this.each( function( ele ) {
-					var data = $.data( ele, key ); //key = nameSpace + "." + name,
+					var data = utilData.data( ele, key ); //key = nameSpace + "." + name,
 					if ( data === undefined || data === null ) {
 						//完全调用基类的构造函数 不应当在构造函数 create render
 						if ( a !== "destroy" ) {
-							data = $.data( ele, key, new Ctor( a, $( ele ) ) );
+							data = utilData.data( ele, key, new Ctor( a, $( ele ) ) );
 							data._doAfterInit(); //跳出堆栈，在flex这种会用到
 						}
 					} else {
@@ -542,7 +542,7 @@
 
 			var destroyWidget = function() {
 				this.each( function( ele ) {
-					var data = $.data( ele, key );
+					var data = utilData.data( ele, key );
 					if ( data ) {
 						data.destroy.call( data );
 						$.removeData( ele, key );

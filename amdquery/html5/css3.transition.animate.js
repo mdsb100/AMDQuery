@@ -5,6 +5,7 @@
   "base/extend",
   "base/client",
   "main/event",
+  "main/data",
   "html5/css3",
   "animation/FX",
   "html5/animate.transform",
@@ -15,6 +16,7 @@
 	utilExtend,
 	client,
 	event,
+  utilData,
 	css3,
 	FX,
 	transform,
@@ -79,7 +81,7 @@
 				var opt = {},
 					p,
 					defaultEasing = option.easing,
-					easing, transitionList = $.data( ele, "_transitionList" );
+					easing, transitionList = utilData.data( ele, "_transitionList" );
 
 				if ( !transitionList ) {
 					transitionList = {};
@@ -90,7 +92,7 @@
 				opt._transitionEnd = function( event ) {
 					var i, ele = this,
 						item,
-						transitionList = $.data( ele, "_transitionList" );
+						transitionList = utilData.data( ele, "_transitionList" );
 
 					for ( i in transitionList ) {
 						css3.removeTransition( ele, i );
@@ -175,7 +177,7 @@
 
 					}
 				} );
-				$.data( ele, "_transitionList", transitionList );
+				utilData.data( ele, "_transitionList", transitionList );
 				if ( equalFlag ) {
 					opt._transitionEnd.call( ele );
 				}
@@ -211,7 +213,7 @@
 				return this;
 			},
 			stopAnimationByTransition: function( ele, isDequeue ) {
-				var transitionList = $.data( ele, "_transitionList" ),
+				var transitionList = utilData.data( ele, "_transitionList" ),
 					type, fx, i, item;
 				for ( type in transitionList ) {
 					fx = transitionList[ type ];
