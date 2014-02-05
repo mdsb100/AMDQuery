@@ -73,6 +73,64 @@
 				return typed.isStr( name ) ? thisCache[ name ] : thisCache;
 			},
 
+			_getTarget: function( ele ) {
+				if ( !ele || ( ele.nodeName && exports.noData[ ele.nodeName.toLowerCase() ] ) )
+					return null;
+				return ele == window ?
+					windowData :
+					ele;
+			},
+
+			get: function( ele, name ) {
+				ele = exports._getTarget( ele );
+				if ( !ele ) {
+					return undefined;
+				}
+				var id = ele[ expando ],
+					cache = exports.cache,
+					thisCache;
+
+				if ( name && id && cache[ id ] ) {
+					return cache[ id ][ name ];
+				} else {
+					return undefined;
+				}
+			},
+
+			set: function( ele, name, data ) {
+				ele = exports._getTarget( ele );
+				if ( !ele ) {
+					return this;
+				}
+				var id = ele[ expando ],
+					cache = exports.cache,
+					thisCache;
+
+				if ( !name && !id )
+					return this;
+
+				if ( !id )
+					id = ++uuid;
+
+				if ( typeof name === "object" ) {
+					ele[ expando ] = id;
+					thisCache = cache[ id ] = utilExtend.extend( true, {}, name );
+				} else if ( cache[ id ] ) {
+					thisCache = cache[ id ];
+				} else if ( data === undefined ) {
+					thisCache = emptyObject;
+				} else {
+					thisCache = cache[ id ] = {};
+				}
+
+				if ( data !== undefined ) {
+					ele[ expando ] = id;
+					thisCache[ name ] = data;
+				}
+
+				return this;
+			},
+
 			expando: expando,
 
 			noData: {

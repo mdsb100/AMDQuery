@@ -7,15 +7,34 @@
   <script src="../../amdquery/amdquery.js" type="text/javascript" amdquery="define:$;" amd="detectCR:1;"></script>
 
   <script type="text/javascript">
-    $.require(["main/query", "main/data"], function(data) {
-      var test = $("#test");
-      console.log( "hasData", test.hasData() );
-      test.data("name", "test");
-      console.log( "hasData", test.hasData() );
-      console.log( "name value", test.data("name") );
-      test.removeData("name");
-      console.log( "name value", test.data("name") );
-      console.log( "hasData", test.hasData() );
+    $.require(["main/query", "main/data"], function( query, utilData ) {
+      // var test = $("#test");
+      // console.log( "hasData", test.hasData() );
+      // test.data("name");
+      // test.data("name", "test");
+      // console.log( "hasData", test.hasData() );
+      // console.log( "name value", test.data("name") );
+      // test.removeData("name");
+      // console.log( "name value", test.data("name") );
+      // console.log( "hasData", test.hasData() );
+
+      var test = $( "#test" )[0];
+      console.log( "hasData", utilData.hasData( test ) );
+      utilData.get( test, "name");
+      utilData.set( test, "name", "test" );
+      console.log( "hasData", utilData.hasData( test ) );
+      console.log( "name value", utilData.get( test, "name" ) );
+      utilData.removeData( test, "name" );
+      console.log( "name value", utilData.get( test, "name" ) );
+      console.log( "hasData", utilData.hasData( test ) );
+
+      utilData.set( test, { name: "test", id: "101" } );
+      console.log( "name value", utilData.get( test, "name" ) );
+      console.log( "id value", utilData.get( test, "id" ) );
+
+      utilData.removeData( test );
+      console.log( "hasData", utilData.hasData( test ) );
+
     });
   </script>
 </head>
