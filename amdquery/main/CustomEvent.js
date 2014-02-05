@@ -2,8 +2,11 @@
 	"use strict";
 	this.describe( "A custom event" );
 	/**
+	 * Be defined by object.extend.
 	 * @constructor
 	 * @exports main/CustomEvent
+	 * @requires module:main/object
+	 * @mixes ObjectClassStaticMethods
 	 */
 	var CustomEvent = object.extend( "CustomEvent", /** @lends module:main/CustomEvent.prototype */ {
 		constructor: CustomEvent,
@@ -14,20 +17,20 @@
 			return this;
 		},
 		/**
-     * Add a handler.
+		 * Add a handler.
 		 * @param {String}
 		 * @param {Function}
-     * @returns {this}
+		 * @returns {this}
 		 */
 		on: function( type, handler ) {
 			return this.addHandler( type, handler );
 		},
-    /**
-     * Add a handler once.
-     * @param {String}
-     * @param {Function}
-     * @returns {this}
-     */
+		/**
+		 * Add a handler once.
+		 * @param {String}
+		 * @param {Function}
+		 * @returns {this}
+		 */
 		once: function( type, handler ) {
 			var self = this,
 				handlerproxy = function() {
@@ -36,12 +39,12 @@
 				};
 			return this.on( type, handlerproxy );
 		},
-    /**
-     * Add a handler.
-     * @param {String}
-     * @param {Function}
-     * @returns {this}
-     */
+		/**
+		 * Add a handler.
+		 * @param {String}
+		 * @param {Function}
+		 * @returns {this}
+		 */
 		addHandler: function( type, handler ) {
 			var types = type.split( " " ),
 				i = types.length - 1;
@@ -55,19 +58,19 @@
 			this.hasHandler( type, handler, handlers ) == -1 && handlers.push( handler );
 			return this;
 		},
-    /**
-     * Clear handlers.
-     * @param {String} [type] - If type is undefined, then clear all handler
-     * @returns {this}
-     */
+		/**
+		 * Clear handlers.
+		 * @param {String} [type] - If type is undefined, then clear all handler
+		 * @returns {this}
+		 */
 		clear: function( type ) {
 			return this.clearHandlers( type );
 		},
-    /**
-     * Clear handlers.
-     * @param {String} [type] - If type is undefined, then clear all handler
-     * @returns {this}
-     */
+		/**
+		 * Clear handlers.
+		 * @param {String} [type] - If type is undefined, then clear all handler
+		 * @returns {this}
+		 */
 		clearHandlers: function( type ) {
 			if ( type ) {
 				var types = type.split( " " ),
@@ -84,13 +87,13 @@
 			}
 			return this;
 		},
-    /**
-     * Return index of handlers array. -1 means not found.
-     * @param {String}
-     * @param {Function}
-     * @param {Array<Function>} [handlers]
-     * @returns {Number}
-     */
+		/**
+		 * Return index of handlers array. -1 means not found.
+		 * @param {String}
+		 * @param {Function}
+		 * @param {Array<Function>} [handlers]
+		 * @returns {Number}
+		 */
 		hasHandler: function( type, handler, handlers ) {
 			handlers = handlers || this._nameSpace( type );
 			var i = 0,
@@ -106,13 +109,13 @@
 			}
 			return j;
 		},
-    /**
-     * Trigger an event.
-     * @param {String}
-     * @param {Context}
-     * @param {...*} [args]
-     * @returns {this}
-     */
+		/**
+		 * Trigger an event.
+		 * @param {String}
+		 * @param {Context}
+		 * @param {...*} [args]
+		 * @returns {this}
+		 */
 		trigger: function( type, target, args ) {
 			var handlers = this._nameSpace( type );
 			if ( handlers instanceof Array && handlers.length ) {
@@ -121,21 +124,21 @@
 			}
 			return this;
 		},
-    /**
-     * Remove handler.
-     * @param {String}
-     * @param {Function}
-     * @returns {this}
-     */
+		/**
+		 * Remove handler.
+		 * @param {String}
+		 * @param {Function}
+		 * @returns {this}
+		 */
 		off: function( type, handler ) {
 			return this.removeHandler( type, handler );
 		},
-    /**
-     * Remove handler.
-     * @param {String}
-     * @param {Function}
-     * @returns {this}
-     */
+		/**
+		 * Remove handler.
+		 * @param {String}
+		 * @param {Function}
+		 * @returns {this}
+		 */
 		removeHandler: function( type, handler ) {
 			var types = type.split( " " ),
 				i = types.length - 1;
