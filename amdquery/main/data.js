@@ -37,7 +37,7 @@
 				/// <returns type="thisCache/any/$" />
 
 				//quote from jQuery-1.4.1
-				if ( !ele || ( ele.nodeName && $.noData[ ele.nodeName.toLowerCase() ] ) )
+				if ( !ele || ( ele.nodeName && exports.noData[ ele.nodeName.toLowerCase() ] ) )
 					return this;
 
 				ele = ele == window ?
@@ -45,7 +45,7 @@
 					ele;
 
 				var id = ele[ expando ],
-					cache = $.cache,
+					cache = exports.cache,
 					thisCache;
 
 				if ( !name && !id )
@@ -87,7 +87,7 @@
 				/// <param name="ele" type="Object">对象</param>
 				/// <param name="name" type="String/undefined">如果为undefined则删除全部</param>
 				/// <returns type="self" />
-				if ( !ele || ( ele.nodeName && $.noData[ ele.nodeName.toLowerCase() ] ) )
+				if ( !ele || ( ele.nodeName && exports.noData[ ele.nodeName.toLowerCase() ] ) )
 					return this;
 
 				ele = ele == window ?
@@ -95,7 +95,7 @@
 					ele;
 
 				var id = ele[ expando ],
-					cache = $.cache,
+					cache = exports.cache,
 					thisCache = cache[ id ];
 
 				if ( name ) {
@@ -103,7 +103,7 @@
 						delete thisCache[ name ];
 
 						if ( typed.isEmptyObj( thisCache ) )
-							$.removeData( ele );
+							exports.removeData( ele );
 
 					}
 
@@ -151,11 +151,11 @@
 			/// <param name="key" type="String/null">如果为nul则删除全部</param>
 			/// <returns type="self" />
 			return this.each( function( ele ) {
-				$.removeData( ele, key );
+				exports.removeData( ele, key );
 			} );
 		},
 		hasData: function() {
-			return this[ 0 ] && $.hasData( this[ 0 ] );
+			return this[ 0 ] && exports.hasData( this[ 0 ] );
 		}
 	} );
 
