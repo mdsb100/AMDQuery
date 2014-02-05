@@ -3,21 +3,21 @@
 
 	// checks a cache object for emptiness
 
-	// function isEmptyDataObject( obj ) {
-	// 	var name;
-	// 	for ( name in obj ) {
+	function isEmptyDataObject( obj ) {
+		var name;
+		for ( name in obj ) {
 
-	// 		// if the public data object is empty, the private is still empty
-	// 		if ( name === "data" && typed.isEmptyObject( obj[ name ] ) ) {
-	// 			continue;
-	// 		}
-	// 		if ( name !== "toJSON" ) {
-	// 			return false;
-	// 		}
-	// 	}
+			// if the public data object is empty, the private is still empty
+			if ( name === "data" && typed.isEmptyObj( obj[ name ] ) ) {
+				continue;
+			}
+			if ( name !== "toJSON" ) {
+				return false;
+			}
+		}
 
-	// 	return true;
-	// }
+		return true;
+	}
 
 	var
 	expando = "AMDQuery" + $.now(),
@@ -122,8 +122,7 @@
 
 			hasData: function( ele ) {
 				ele = ele.nodeType ? data.cache[ ele[ data.expando ] ] : ele[ data.expando ];
-				return !!ele;
-				//&& !isEmptyDataObject( ele );
+				return !!ele && !isEmptyDataObject( ele );
 			}
 		};
 
@@ -156,6 +155,9 @@
 			return this.each( function( ele ) {
 				$.removeData( ele, key );
 			} );
+		},
+		hasData: function() {
+			return this[ 0 ] && $.hasData( this[ 0 ] );
 		}
 	} );
 

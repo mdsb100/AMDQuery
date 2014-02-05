@@ -26,6 +26,7 @@
           <li amdquery-widget="ui.navitem" ui-navitem="html:Dom;img:class"></li>
           <li amdquery-widget="ui.navitem" ui-navitem="html:Event;img:class"></li>
           <li amdquery-widget="ui.navitem" ui-navitem="html:Object;img:class"></li>
+          <li amdquery-widget="ui.navitem" ui-navitem="html:Data;img:class"></li>
         </ul>
       </li>
       <li amdquery-widget="ui.navitem" ui-navitem="html:animation;img:module">
