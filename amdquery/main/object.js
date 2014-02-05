@@ -84,7 +84,7 @@
 	 */
 
 	/**
-	 * This provides methods used for method "extend" handling. It will be mixed in constructor.
+	 * This provides methods used for method "object.extend" handling. It will be mixed in constructor.
 	 * This methods is static.
 	 * @public
 	 * @mixin ObjectClassStaticMethods
@@ -163,7 +163,7 @@
 	};
 
 	/**
-	 * This provides methods used for method "collection" handling. It will be mixed in constructor.prototype
+	 * This provides methods used for method "object.collection" handling. It will be mixed in constructor.prototype
 	 * This methods is prototype.
 	 * @public
 	 * @mixin CollectionClassPrototypeMethods
