@@ -22,177 +22,193 @@
 	var
 	expando = "AMDQuery" + $.now(),
 		uuid = 0,
-		windowData = {}, emptyObject = {},
-		exports = {
-			cache: [],
-
-			data: function( ele, name, data ) {
-				/// <summary>获得或设置对象的数据
-				/// <para>如果name是obj可能有风险，他会赋值所有的</para>
-				/// <para>如果data是undefined会取值</para>
-				/// </summary>
-				/// <param name="ele" type="Object">对象</param>
-				/// <param name="name" type="String/Object/null">如果为nul则删除全部</param>
-				/// <param name="data" type="any">数据</param>
-				/// <returns type="thisCache/any/$" />
-
-				//quote from jQuery-1.4.1
-				if ( !ele || ( ele.nodeName && exports.noData[ ele.nodeName.toLowerCase() ] ) )
-					return this;
-
-				ele = ele == window ?
-					windowData :
-					ele;
-
-				var id = ele[ expando ],
-					cache = exports.cache,
-					thisCache;
-
-				if ( !name && !id )
-					return this;
-
-				if ( !id )
-					id = ++uuid;
-
-				if ( typeof name === "object" ) {
-					ele[ expando ] = id;
-					thisCache = cache[ id ] = utilExtend.extend( true, {}, name );
-				} else if ( cache[ id ] ) {
-					thisCache = cache[ id ];
-				} else if ( data === undefined ) {
-					thisCache = emptyObject;
-				} else {
-					thisCache = cache[ id ] = {};
-				}
-
-				if ( data !== undefined ) {
-					ele[ expando ] = id;
-					thisCache[ name ] = data;
-				}
-
-				return typed.isStr( name ) ? thisCache[ name ] : thisCache;
-			},
-
-			_getTarget: function( ele ) {
-				if ( !ele || ( ele.nodeName && exports.noData[ ele.nodeName.toLowerCase() ] ) )
-					return null;
-				return ele == window ?
-					windowData :
-					ele;
-			},
-
-			get: function( ele, name ) {
-				ele = exports._getTarget( ele );
-				if ( !ele ) {
-					return undefined;
-				}
-				var id = ele[ expando ],
-					cache = exports.cache,
-					thisCache;
-
-				if ( id && cache[ id ] ) {
-					return name ? cache[ id ][ name ] : cache[ id ];
-				} else {
-					return undefined;
-				}
-			},
-
-			set: function( ele, name, data ) {
-				ele = exports._getTarget( ele );
-				if ( !ele ) {
-					return this;
-				}
-				var id = ele[ expando ],
-					cache = exports.cache,
-					thisCache;
-
-				if ( !name && !id )
-					return this;
-
-				if ( !id )
-					id = ++uuid;
-
-				if ( typeof name === "object" ) {
-					ele[ expando ] = id;
-					thisCache = cache[ id ] = utilExtend.extend( true, {}, name );
-				} else if ( cache[ id ] ) {
-					thisCache = cache[ id ];
-				} else if ( data === undefined ) {
-					thisCache = emptyObject;
-				} else {
-					thisCache = cache[ id ] = {};
-				}
-
-				if ( data !== undefined ) {
-					ele[ expando ] = id;
-					thisCache[ name ] = data;
-				}
-
+		windowData = {}, emptyObject = {};
+	/**
+	 * @pubilc
+	 * @exports main/data
+	 * @requires module:main/data
+	 */
+	var exports = {
+		/**
+		 * @type Array
+		 */
+		cache: [],
+		/**
+		 * Quote from jQuery-1.4.1 .
+		 * @deprecated
+		 */
+		data: function( ele, name, data ) {
+			if ( !ele || ( ele.nodeName && exports.noData[ ele.nodeName.toLowerCase() ] ) )
 				return this;
-			},
 
-			expando: expando,
+			ele = ele == window ?
+				windowData :
+				ele;
 
-			noData: {
-				//quote from jQuery-1.4.1
-				"embed": true,
-				"object": true,
-				"applet": true
-			},
+			var id = ele[ expando ],
+				cache = exports.cache,
+				thisCache;
 
-			removeData: function( ele, name ) {
-				/// <summary>删除对象的数据</summary>
-				/// <param name="ele" type="Object">对象</param>
-				/// <param name="name" type="String/undefined">如果为undefined则删除全部</param>
-				/// <returns type="self" />
-				if ( !ele || ( ele.nodeName && exports.noData[ ele.nodeName.toLowerCase() ] ) )
-					return this;
-
-				ele = ele == window ?
-					windowData :
-					ele;
-
-				var id = ele[ expando ],
-					cache = exports.cache,
-					thisCache = cache[ id ];
-
-				if ( name ) {
-					if ( thisCache ) {
-						delete thisCache[ name ];
-
-						if ( typed.isEmptyObj( thisCache ) )
-							exports.removeData( ele );
-
-					}
-
-				} else {
-					if ( support.deleteExpando ) {
-						delete ele[ expando ];
-					} else if ( ele.removeAttribute ) {
-						ele.removeAttribute( expando );
-					} else {
-						ele[ expando ] = null;
-					}
-					delete cache[ id ];
-				}
+			if ( !name && !id )
 				return this;
-			},
 
-			hasData: function( ele ) {
-				ele = ele.nodeType ? exports.cache[ ele[ exports.expando ] ] : ele[ exports.expando ];
-				return !!ele && !isEmptyDataObject( ele );
+			if ( !id )
+				id = ++uuid;
+
+			if ( typed.isPlainObj( name ) ) {
+				ele[ expando ] = id;
+				thisCache = cache[ id ] = utilExtend.extend( true, {}, name );
+			} else if ( cache[ id ] ) {
+				thisCache = cache[ id ];
+			} else if ( data === undefined ) {
+				thisCache = emptyObject;
+			} else {
+				thisCache = cache[ id ] = {};
 			}
-		};
+
+			if ( data !== undefined ) {
+				ele[ expando ] = id;
+				thisCache[ name ] = data;
+			}
+
+			return typed.isStr( name ) ? thisCache[ name ] : thisCache;
+		},
+
+		_getTarget: function( ele ) {
+			if ( !ele || ( ele.nodeName && exports.noData[ ele.nodeName.toLowerCase() ] ) )
+				return null;
+			return ele == window ?
+				windowData :
+				ele;
+		},
+		/**
+		 * Get Data.It maybe return undefined.
+		 * @param {Element|window}
+		 * @param {String} [name] - If name is undefined then return whole cache.
+		 * @returns {undefined|*}
+		 */
+		get: function( ele, name ) {
+			ele = exports._getTarget( ele );
+			if ( !ele ) {
+				return undefined;
+			}
+			var id = ele[ expando ],
+				cache = exports.cache,
+				thisCache;
+
+			if ( id && cache[ id ] ) {
+				return name ? cache[ id ][ name ] : cache[ id ];
+			} else {
+				return undefined;
+			}
+		},
+		/**
+		 * Set Data.
+		 * @param {Element|window}
+		 * @param {String} name
+		 * @param {*|Object} - If data is an plain object, then add all properties to cache.
+		 * @returns {this}
+		 */
+		set: function( ele, name, data ) {
+			ele = exports._getTarget( ele );
+			if ( !ele ) {
+				return this;
+			}
+			var id = ele[ expando ],
+				cache = exports.cache,
+				thisCache;
+
+			if ( !name && !id )
+				return this;
+
+			if ( !id )
+				id = ++uuid;
+
+			if ( typed.isPlainObj( name ) ) {
+				ele[ expando ] = id;
+				thisCache = cache[ id ] = utilExtend.extend( true, {}, name );
+			} else if ( cache[ id ] ) {
+				thisCache = cache[ id ];
+			} else if ( data === undefined ) {
+				thisCache = emptyObject;
+			} else {
+				thisCache = cache[ id ] = {};
+			}
+
+			if ( data !== undefined ) {
+				ele[ expando ] = id;
+				thisCache[ name ] = data;
+			}
+
+			return this;
+		},
+		/** @constant */
+		expando: expando,
+		/** A hash of Element which does not support data. */
+		noData: {
+			//quote from jQuery-1.4.1
+			"embed": true,
+			"object": true,
+			"applet": true
+		},
+		/**
+		 * Remove Data.
+		 * @param {Element|window}
+		 * @param {String} [name] - If name is undefined then remove all.
+		 * @returns {this}
+		 */
+		removeData: function( ele, name ) {
+			if ( !ele || ( ele.nodeName && exports.noData[ ele.nodeName.toLowerCase() ] ) )
+				return this;
+
+			ele = ele == window ?
+				windowData :
+				ele;
+
+			var id = ele[ expando ],
+				cache = exports.cache,
+				thisCache = cache[ id ];
+
+			if ( name ) {
+				if ( thisCache ) {
+					delete thisCache[ name ];
+
+					if ( typed.isEmptyObj( thisCache ) )
+						exports.removeData( ele );
+
+				}
+
+			} else {
+				if ( support.deleteExpando ) {
+					delete ele[ expando ];
+				} else if ( ele.removeAttribute ) {
+					ele.removeAttribute( expando );
+				} else {
+					ele[ expando ] = null;
+				}
+				delete cache[ id ];
+			}
+			return this;
+		},
+		/**
+		 * @param {Element|window}
+		 * @returns {Boolean}
+		 */
+		hasData: function( ele ) {
+			ele = ele.nodeType ? exports.cache[ ele[ exports.expando ] ] : ele[ exports.expando ];
+			return !!ele && !isEmptyDataObject( ele );
+		}
+	};
 
 	$.fn.extend( {
+		/**
+		 * Get or set data.
+		 * @memberof aQuery.prototype
+		 * @param {String}
+		 * @param {*|Object} [value] - If value is undefined then get data, else if value is plain object then add all properties to cache.
+		 * @returns {this|*}
+		 */
 		data: function( key, value ) {
-			/// <summary>获得或设置对象的数据
-			/// <para>如果key是obj可能有风险，他会赋值所有的</para>
-			/// <para>如果value是undefined会取值</para>
-			/// </summary>
-			/// <param name="key" type="String/Object/null">如果为nul则删除全部</param>
-			/// <param name="value" type="any">数据</param>
-			/// <returns type="thisCache/any/$" />
 			if ( key === undefined && this.length ) {
 				return exports.get( this[ 0 ] );
 			} else if ( typed.isObj( key ) ) {
@@ -204,14 +220,21 @@
 				exports.set( ele, key, value );
 			} );
 		},
+		/**
+		 * Remove data.
+		 * @memberof aQuery.prototype
+		 * @param {String} - If key is undefined then remove all.
+		 * @returns {this}
+		 */
 		removeData: function( key ) {
-			/// <summary>删除对象的数据</summary>
-			/// <param name="key" type="String/null">如果为nul则删除全部</param>
-			/// <returns type="self" />
 			return this.each( function( ele ) {
 				exports.removeData( ele, key );
 			} );
 		},
+		/**
+		 * @memberof aQuery.prototype
+		 * @returns {Boolean}
+		 */
 		hasData: function() {
 			return this[ 0 ] && exports.hasData( this[ 0 ] );
 		}
