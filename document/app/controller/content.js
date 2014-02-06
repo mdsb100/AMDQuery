@@ -1,4 +1,4 @@
-aQuery.define( "@app/controller/content", [ "base/client", "app/Controller", "@app/view/content" ], function( $, client, SuperController, ContentView ) {
+aQuery.define( "@app/controller/content", [ "base/client", "module/src", "app/Controller", "@app/view/content" ], function( $, client, src, SuperController, ContentView ) {
 	"use strict"; //启用严格模式
 	var Controller = SuperController.extend( {
 		init: function( contollerElement, models ) {
