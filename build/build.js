@@ -423,7 +423,6 @@
  	htmlInfo.distHtmlPath = PATH.join( htmlInfo.projectDistPath, "app/app.html" );
 
  	var cssList = [],
- 		first = false,
  		append = "",
  		i = 0;
 
@@ -437,15 +436,8 @@
  		var ws = link.createWriteStream( {
  			outer: true
  		} );
- 		append = "";
- 		if ( !first ) {
- 			first = true;
- 			append = '<link href="' + "../" + htmlInfo.uiCombinationRelativeCssPath + '" rel="stylesheet" type="text/css" />\n';
- 			append += '\n<link href="' + htmlInfo.appCombinationCssRelativePath + '" rel="stylesheet" type="text/css" />';
- 			logger( "add combinationCss", append );
- 		}
 
- 		ws.end( append + "\n<!-- annotate by build link.src: " + cssList[ i++ ] + " -->\n" );
+ 		ws.end( "<!-- annotate by build link.src: " + cssList[ i++ ] + " -->\n" );
  	} );
 
  	//必须需要有app这个属性
@@ -469,6 +461,22 @@
 
  		script1.setAttribute( "app", formatToAttr( config ) );
  	} );
+
+ 	var script2 = scriptTr2.select( "script[app]" );
+ 	var scriptStr = "";
+ 	var scriptStream = script2.createStream( {
+ 		outer: true
+ 	} );
+ 	scriptStream.pipe( through( function( buf ) {
+ 		scriptStr += buf.toString();
+ 	}, function() {
+ 		append = '<link href="' + "../" + htmlInfo.uiCombinationRelativeCssPath + '" rel="stylesheet" type="text/css" />\n';
+ 		logger( "add css" + htmlInfo.uiCombinationRelativeCssPath );
+ 		append += '<link href="' + htmlInfo.appCombinationCssRelativePath + '" rel="stylesheet" type="text/css" />\n';
+ 		logger( "add css" + htmlInfo.appCombinationCssRelativePath );
+ 		append += scriptStr;
+ 		this.queue( append );
+ 	} ) ).pipe( scriptStream );
 
  	var body = bodyTr.select( "body" );
 
