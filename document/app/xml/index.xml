@@ -1,8 +1,9 @@
 <div style="" amdquery-widget="ui.flex" ui-flex="flexDirection:column">
-  <div style="width: 100%;height:50px;border-bottom:1px solid black;background-color:#0487C9;">
-    <center style="line-height:50px;">
+  <div id="header_wrap">
+    <center id="title">
       <h1>Documentation</h1>
     </center>
+    <a id="forkme_banner" href="https://github.com/mdsb100/AMDQuery">View on GitHub</a>
   </div>
   <div style="" amdquery-widget="ui.flex" ui-flex="flexDirection:row;flex:1">
     <div id="tabview" amdquery-widget="ui.flex;ui.tabview" ui-flex="flexDirection:column;fillParentWidth:false" style="width:200px;">
@@ -25,11 +26,11 @@
       </ol>
     </div>
   </div>
-  <div style="width: 100%;height:50px;border-bottom:1px solid black;background-color:#CF301A;">
-    <center style="line-height:50px;">
+  <div id="footer_wrap">
+    <center id="contact">
       <h1>
-                <a style="color:black;" href="http://www.weibo.com/1870903955/profile" rel="contact" target="_blank">Contact me</a>
-            </h1>
+        <a style="color:white;" href="http://www.weibo.com/1870903955/profile" rel="contact" target="_blank">Contact me</a>
+      </h1>
     </center>
   </div>
 </div>

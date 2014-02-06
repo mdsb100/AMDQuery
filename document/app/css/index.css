@@ -1,0 +1,35 @@
+#header_wrap, #footer_wrap
+{
+  background: #212121;
+  background: -moz-linear-gradient(top, #373737, #212121);
+  background: -webkit-linear-gradient(top, #373737, #212121);
+  background: -ms-linear-gradient(top, #373737, #212121);
+  background: -o-linear-gradient(top, #373737, #212121);
+  background: linear-gradient(top, #373737, #212121);
+  width: 100%;
+  height: 50px;
+  postion: relative;
+}
+
+#forkme_banner
+{
+  display: block;
+  position: absolute;
+  top:5px;
+  right: 10px;
+  z-index: 10;
+  padding: 10px 50px 10px 10px;
+  color: #fff;
+  text-decoration: none;
+  background: url('../asset/images/blacktocat.png') #0090ff no-repeat 95% 50%;
+  font-weight: 700;
+  box-shadow: 0 0 10px rgba(0,0,0,.5);
+  border-bottom-left-radius: 2px;
+  border-bottom-right-radius: 2px;
+}
+
+#title, #contact
+{
+  line-height:50px;
+  color: white;
+}
