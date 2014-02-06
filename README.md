@@ -40,7 +40,7 @@
 
 > Model is not achieved, may be used directly backbone of the model. View may need a template like handlerbars.
 
-> Now, the "document/app/app.html" is just a simple example.
+> Now, the [app.html](https://github.com/mdsb100/AMDQuery/blob/master/document/app/app.html) is just a simple example.
 
 ### API Document
 
