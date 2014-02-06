@@ -136,8 +136,8 @@ aQuery.define( "base/typed", function( $ ) {
 		 * @returns {Boolean}
 		 * @example
 		 * var a = [], b = {};
-		 * typed.isEmpty(a); // true
-		 * typed.isEmpty(b); // true
+		 * typed.isEmptyObj(a); // true
+		 * typed.isEmptyObj(b); // true
 		 */
 		isEmptyObj: function( obj ) {
 			for ( var name in obj ) {
