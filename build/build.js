@@ -440,11 +440,12 @@
  		append = "";
  		if ( !first ) {
  			first = true;
- 			append = '<link href="' + htmlInfo.appCombinationCssRelativePath + '" rel="stylesheet" type="text/css" />' + "\n";
+ 			append = '<link href="' + "../" + htmlInfo.uiCombinationRelativeCssPath + '" rel="stylesheet" type="text/css" />\n';
+ 			append += '\n<link href="' + htmlInfo.appCombinationCssRelativePath + '" rel="stylesheet" type="text/css" />';
  			logger( "add combinationCss", append );
  		}
 
- 		ws.end( append + "\n<!-- annotate by build link.src: " + cssList[ i++ ] + " -->" );
+ 		ws.end( append + "\n<!-- annotate by build link.src: " + cssList[ i++ ] + " -->\n" );
  	} );
 
  	//必须需要有app这个属性
@@ -468,17 +469,6 @@
 
  		script1.setAttribute( "app", formatToAttr( config ) );
  	} );
-
- 	var script2 = scriptTr2.select( "script[app]" );
-
- 	var scriptStream = script2.createStream( {
- 		outer: true
- 	} );
- 	scriptStream.pipe( through( function( buf ) {
- 		this.queue( buf );
- 	}, function() {
- 		this.queue( '\n<link href="' + "../" + htmlInfo.uiCombinationRelativeCssPath + '" rel="stylesheet" type="text/css" />' );
- 	} ) ).pipe( scriptStream );
 
  	var body = bodyTr.select( "body" );
 
