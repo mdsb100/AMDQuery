@@ -1,28 +1,36 @@
 ﻿aQuery.define( "main/communicate", [ "base/typed", "base/extend", "main/event", "main/parse" ], function( $, typed, utilExtend, parse, undefined ) {
 	"use strict";
+	/**
+	 * Export network requests.
+	 * <br /> JSONP or AJAX.
+	 * @exports main/communicate
+	 * @requires module:base/typed
+	 * @requires module:base/extend
+	 * @requires module:main/event
+	 * @requires module:main/parse
+	 */
 	var communicate = {
+		/**
+		 * @param options {Object}
+		 * @param [options.type="GET"] {String} - "GET" or "POST"
+		 * @param options.url {String}
+		 * @param [options.data=""] {String|Object<String,String>|Array<Object<String,String>>} - See {@link module:main/communicate.getURLParam}
+		 * @param [options.async=true] {Boolean}
+		 * @param [options.complete] {Function}
+		 * @param [options.header] {Object<String,String>}
+		 * @param [options.isRandom] {Boolean}
+		 * @param [options.timeout=10000] {Number}
+		 * @param [options.routing=""] {String}
+		 * @param [options.timeoutFun] {Function} - Timeout handler.
+		 * @param [options.dataType="text"] {String} - "json"|"xml"|"text"|"html"
+		 * @param [options.contentType="application/x-www-form-urlencoded"] {String}
+		 * @param [options.context=null] {Object} - Complete context.
+		 * @returns {this}
+		 */
 		ajax: function( options ) {
-			/// <summary>AJAX数据请求
-			/// <para>如果没有参数，则直接返回生成的AJAX的对象实例</para>
-			/// <para>str options.type:"get"||"post" 缺省"get"</para>
-			/// <para>str options.url：不可缺省</para>
-			/// <para>str options.data:数据 缺省为""</para>
-			/// <para>bol options.async:true||false 缺省为true表示异步</para>
-			/// <para>fun options.complete:回调函数</para>
-			/// <para>obj options.context:complete的作用域</para>
-			/// <para>obj options.header:头信息</para>
-			/// <para>obj options.isRandom:是否带随机数以获得最新数据</para>
-			/// <para>num options.timeout:超时时间。缺省为10000</para>
-			/// <para>str options.routing:路由 缺省为""</para>
-			/// <para>fun options.timeoutFun:超时后的事件</para>
-			/// <para>str options.dataType:"json"|"xml"|"text"|"html" 缺省"text"</para>
-			/// <para>str options.contentType: 缺省"application/x-www-form-urlencoded"</para>
-			/// </summary>
-			/// <param name="options" type="Object">参数</param>
-			/// <returns type="self" />
 			var _ajax, _timeId, o;
 			if ( options ) {
-				_ajax = communicate.getXhrObject( options.newXhr );
+				_ajax = communicate.getXhrObject();
 
 				if ( _ajax ) {
 
@@ -107,13 +115,10 @@
 			}
 			return this;
 		},
+		/**
+		 * @deprecated
+		 */
 		ajaxByFinal: function( list, complete, context ) {
-			/// <summary>加载几段ajax，当他们都加载完毕触发个事件
-			/// </summary>
-			/// <param name="list" type="Array:[options]">包含获取js配置的数组，参考jsonp</param>
-			/// <param name="complete" type="Function">complete</param>
-			/// <param name="context" type="Object">作用域</param>
-			/// <returns type="self" />
 			var sum = list.length,
 				count = 0;
 			return $.each( list, function( item ) {
@@ -130,14 +135,36 @@
 				communicate.ajax( item );
 			} );
 		},
-		ajaxSetting: {
+
+		ajaxSetting:
+		/**
+		 * @name ajaxSetting
+		 * @memberOf module:main/communicate
+		 * @property {Object}   ajaxSetting                     - AJAX default setting.
+		 * @property {String}   ajaxSetting.url
+		 * @property {String}   ajaxSetting.dataType            - "text".
+		 * @property {String}   ajaxSetting.type                - "GET".
+		 * @property {String}   ajaxSetting.contentType         - "application/x-www-form-urlencoded".
+		 * @property {Object}   ajaxSetting.context             - Complete context.
+		 * @property {Number}   ajaxSetting.timeout             - 10000 millisecond.
+		 * @property {Function} ajaxSetting.timeoutFun          - Timeout handler.
+		 * @property {String}   ajaxSetting.routing             - "".
+		 * @property {null}     ajaxSetting.header
+		 * @property {Boolean}  ajaxSetting.isRandom            - False.
+		 * @property {Object}   ajaxSetting.accepts
+		 * @property {String}   ajaxSetting.accepts.xml         - "application/xml, text/xml".
+		 * @property {String}   ajaxSetting.accepts.html        - "text/html".
+		 * @property {String}   ajaxSetting.accepts.json        - "application/json, text/javascript".
+		 * @property {String}   ajaxSetting.accepts.text        - "text/plain".
+		 */
+		{
 			url: location.href,
 			dataType: "text",
 			type: "GET",
 			contentType: "application/x-www-form-urlencoded",
 			context: null,
 			async: true,
-			timeout: false,
+			timeout: 10000,
 			timeoutFun: function( o ) {
 				$.logger( "aQuery.ajax", o.url + "of ajax is timeout:" + ( o.timeout / 1000 ) + "second" );
 			},
@@ -147,29 +174,28 @@
 			accepts: {
 				xml: "application/xml, text/xml",
 				html: "text/html",
-				//script: "text/javascript, application/javascript",
 				json: "application/json, text/javascript",
 				text: "text/plain",
 				_default: "*/*"
 			}
 		},
-
+		/**
+		 * @param options {Object}
+		 * @param options.url {String}
+		 * @param [options.charset="GBK"] {String}
+		 * @param [options.complete] {Function}
+     * @param [options.error] {Function} - Error handler
+		 * @param [options.isDelete=true] {Boolean} - Does delete the script.
+		 * @param [options.context=null] {Object} - Complete context.
+		 * @param [options.isRandom=false] {Boolean}
+		 * @param [options.checkString=""] {String} - Then JSONP back string.
+     * @param [options.timeout=10000] {Number}
+     * @param [options.timeoutFun] {Function} - Timeout handler.
+		 * @param [options.routing=""] {String}
+		 * @param [options.JSONP] {String|Boolean} - True is aQuery. String is JSONP.
+		 * @returns {this}
+		 */
 		jsonp: function( options ) {
-			/// <summary>加载一段script
-			/// <para>str options.url：不可缺省</para>
-			/// <para>str options.chaset:缺省为"GBK"</para>
-			/// <para>fun options.complete:回调函数</para>
-			/// <para>bol options.isDelete:是否删除这段script 缺省为true</para>
-			/// <para>obj options.context:complete的作用域</para>
-			/// <para>str/obj options.checkString:检查变量结果</para>
-			/// <para>obj options.isRandom:是否带随机数以获得最新数据</para>
-			/// <para>str options.routing:路由 缺省为""</para>
-			/// <para>str/bol options.JSONP:true为aQuery形式、str为自定义JSONP</para>
-			/// <para>str options.JSONPKey:有些时候后台不一定支持字段名为JSONP，可能叫Callback等，这提供了灵活定义</para>
-			/// </summary>
-			/// <param name="options" type="Object/String">参数或脚本内容</param>
-			/// <returns type="self" />
-
 			var _scripts = document.createElement( "script" ),
 				_head = document.getElementsByTagName( "HEAD" ).item( 0 ),
 				o = utilExtend.extend( {}, communicate.jsonpSetting, options ),
@@ -237,8 +263,24 @@
 			_head.insertBefore( _scripts, _head.firstChild );
 			return this;
 		},
-		jsonpSetting: {
-			chaset: "",
+		jsonpSetting:
+		/**
+		 * @name ajaxSetting
+		 * @memberOf module:main/communicate
+		 * @property {Object}         jsonpSetting                    - JSONP default setting.
+		 * @property {String}         ajaxSetting.url                 - "".
+		 * @property {String}         ajaxSetting.charset             - "GBK".
+		 * @property {String}         ajaxSetting.checkString         - "".
+		 * @property {Function}       ajaxSetting.error
+		 * @property {Boolean}        ajaxSetting.isDelete            - true.
+		 * @property {Boolean}        ajaxSetting.isRandom            - false.
+		 * @property {String|Boolean} ajaxSetting.JSONP               - false.
+		 * @property {String}         ajaxSetting.routing             - "".
+		 * @property {Number}         ajaxSetting.timeout             - 10000 millisecond.
+     * @property {Function}       ajaxSetting.timeoutFun          - Timeout handler.
+		 */
+		{
+			charset: "GBK",
 			checkString: "",
 			error: function() {
 				$.logger( "aQuery.jsonp", ( this.src || "(empty)" ) + " of javascript getting error" );
@@ -246,14 +288,16 @@
 			isDelete: true,
 			isRandom: false,
 			JSONP: false,
-			JSONPKey: "JSONP",
 			routing: "",
-			timeout: false,
+			timeout: 10000,
 			timeoutFun: function( o ) {
 				$.logger( aQuery.jsonp, ( o.url || "(empty)" ) + "of ajax is timeout:" + ( o.timeout / 1000 ) + "second" );
 			},
 			url: ""
 		},
+		/**
+		 * @deprecated
+		 */
 		jsonpsByFinal: function( list, complete, context ) {
 			/// <summary>加载几段script，当他们都加载完毕触发个事件
 			/// </summary>
@@ -274,14 +318,31 @@
 						sum = null;
 					}
 				};
-				$.jsonp( item );
+				communicate.jsonp( item );
 			} );
 			return this;
 		},
+		/**
+		 * @example
+		 * communicate.getURLParam( {
+		 *   id: "00001",
+		 *   name: "Jarry"
+		 * } );
+		 * communicate.getURLParam( [
+		 *   {
+		 *     name: "id",
+		 *     value: "000001"
+		 *   },
+		 *   {
+		 *     name: "name",
+		 *     value: "Jarry"
+		 *   }
+		 * ] );
+		 * // output: "id=00001&name=Jarry"
+		 * @param {String|Object<String, String>|Array<Object<String,String>>}
+		 * @returns {String}
+		 */
 		getURLParam: function( content ) {
-			/// <summary>返回url参数</summary>
-			/// <param name="content" type="String/Object/$/Array[element]">内容可以是Object键值对，也可以是数组形式的element，也可以是aQuery对象</param>
-			/// <returns type="String" />
 			var list = [];
 			if ( typed.isObj( content ) ) {
 				$.each( content, function( value, name ) {
@@ -299,29 +360,30 @@
 			}
 			return content;
 		},
-		getXhrObject: function( xhr ) {
-			/// <summary>生成一个XMLHttpRequest</summary>
-			/// <param name="isNewXhr" type="Boolean">是否从xhr池里获得</param>
-			/// <returns type="XMLHttpRequest" />
-			if ( !xhr ) {
-				if ( window.ActiveXObject ) {
-					$.each( [ "Microsoft.XMLHttp", "MSXML2.XMLHttp", "MSXML2.XMLHttp.6.0", "MSXML2.XMLHttp.5.0", "MSXML2.XMLHttp.4.0", "MSXML2.XMLHttp.3.0" ], function( value ) {
-						try {
-							xhr = new ActiveXObject( value );
-							return xhr;
-						} catch ( e ) {
-
-						}
-					}, this );
-				} else {
+		/**
+		 * If return null means it does not support XMLHttpRequest.
+		 * @returns {XMLHttpRequest|null}
+		 */
+		getXhrObject: function() {
+			var xhr = null;
+			if ( window.ActiveXObject ) {
+				$.each( [ "Microsoft.XMLHttp", "MSXML2.XMLHttp", "MSXML2.XMLHttp.6.0", "MSXML2.XMLHttp.5.0", "MSXML2.XMLHttp.4.0", "MSXML2.XMLHttp.3.0" ], function( value ) {
 					try {
-						xhr = new XMLHttpRequest();
-					} catch ( e ) {}
-				}
-				if ( !xhr ) {
-					$.logger( "getXhrObject", "broswer no support AJAX" );
-				}
+						xhr = new ActiveXObject( value );
+						return xhr;
+					} catch ( e ) {
+
+					}
+				}, this );
+			} else {
+				try {
+					xhr = new XMLHttpRequest();
+				} catch ( e ) {}
 			}
+			if ( !xhr ) {
+				$.logger( "getXhrObject", "broswer no support AJAX" );
+			}
+
 			return xhr;
 		}
 	};
