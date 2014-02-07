@@ -148,10 +148,6 @@
 			return this;
 		},
 		_removeHandler: function( type, handler ) {
-			/// <summary>移除自定义事件</summary>
-			/// <param name="type" type="String">方法类型</param>
-			/// <param name="handler" type="Function">方法</param>
-			/// <returns type="self" />
 			var handlers = this._nameSpace( type ),
 				i = this.hasHandler( type, handler, handlers );
 			if ( i > -1 ) {
