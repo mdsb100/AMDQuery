@@ -22,13 +22,13 @@
 			/// <returns type="self" />
 			var _ajax, _timeId, o;
 			if ( options ) {
-				_ajax = $.getXhrObject( options.newXhr );
+				_ajax = communicate.getXhrObject( options.newXhr );
 
 				if ( _ajax ) {
 
-					o = utilExtend.extend( {}, $.ajaxSetting, options );
+					o = utilExtend.extend( {}, communicate.ajaxSetting, options );
 
-					o.data = $.getURLParam( o.data );
+					o.data = communicate.getURLParam( o.data );
 
 					if ( o.isRandom == true && o.type == "get" ) {
 						o.data += "&random=" + $.now();
@@ -127,7 +127,7 @@
 						sum = null;
 					}
 				};
-				$.ajax( item );
+				communicate.ajax( item );
 			} );
 		},
 		ajaxSetting: {
@@ -172,13 +172,13 @@
 
 			var _scripts = document.createElement( "script" ),
 				_head = document.getElementsByTagName( "HEAD" ).item( 0 ),
-				o = utilExtend.extend( {}, $.jsonpSetting, options ),
+				o = utilExtend.extend( {}, communicate.jsonpSetting, options ),
 				_data = "",
 				_timeId, random = "";
 			//            , _checkString = o.checkString
 			//            , isDelete = options.isDelete || false;
 
-			_data = $.getURLParam( o.data );
+			_data = communicate.getURLParam( o.data );
 
 
 			if ( o.JSONP ) {
@@ -289,7 +289,7 @@
 					!typed.isNul( value ) && list.push( encodeURIComponent( name ) + "=" + encodeURIComponent( value ) );
 				} );
 				content = list.join( "&" );
-			} else if ( typed.is$( content ) || ( typed.isArr( content ) && typed.isEle( content[ 0 ] ) ) ) {
+			} else if ( typed.isArr( content ) ) {
 				$.each( content, function( item ) {
 					!typed.isNul( item.value ) && list.push( encodeURIComponent( item.name ) + "=" + encodeURIComponent( item.value ) );
 				} );
@@ -297,7 +297,7 @@
 			} else if ( !typed.isStr( content ) ) {
 				content = "";
 			}
-			return content; //encodeURIComponent(content); //转第二次码
+			return content;
 		},
 		getXhrObject: function( xhr ) {
 			/// <summary>生成一个XMLHttpRequest</summary>
@@ -325,8 +325,6 @@
 			return xhr;
 		}
 	};
-
-	$.extend( communicate );
 
 	return communicate;
 } );
