@@ -1,4 +1,4 @@
-﻿aQuery.define( "main/CustomEvent", [ "main/object" ], function( $, object, undefined ) {
+﻿aQuery.define( "main/CustomEvent", [ "base/extend", "main/object" ], function( $, utilExtend, object, undefined ) {
 	"use strict";
 	this.describe( "A custom event" );
 	/**
@@ -146,6 +146,25 @@
 				this._removeHandler( types[ i ], handler );
 			}
 			return this;
+		},
+		/** @returns {CustomEvent} */
+		clone: function() {
+			var customEvent = new CustomEvent(),
+				name, list, i, len;
+
+			for ( name in this._handlerMap ) {
+				list = this._handlerMap[ name ];
+				len = list.length;
+				if ( len > 0 ) {
+					for ( i = 0; i < len; i++ ) {
+						customEvent.on( name, list[ i ] );
+					}
+				} else {
+					customEvent._nameSpace( name );
+				}
+			}
+
+			return customEvent;
 		},
 		_removeHandler: function( type, handler ) {
 			var handlers = this._nameSpace( type ),
