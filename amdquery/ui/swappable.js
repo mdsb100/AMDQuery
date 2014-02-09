@@ -125,7 +125,7 @@
 
 				switch ( e.type ) {
 					case "mousedown":
-						if ( !client.system.mobile ) event.event.document.preventDefault( e );
+						if ( !client.system.mobile ) event.document.preventDefault( e );
 					case "touchstart":
 						//event.document.stopPropagation(e);
 						if ( !self.isDown ) {

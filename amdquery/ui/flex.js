@@ -52,14 +52,14 @@ aQuery.define( "ui/flex", [
 				},
 				enable: function() {
 					// if ( !this.findParent( ) ) {
-					event.event.document.addHandler( window, "resize", this.flexEvent );
+					event.document.addHandler( window, "resize", this.flexEvent );
 					// }
 					this.options.disabled = false;
 					return this;
 				},
 				disable: function() {
 					// if ( !this.findParent( ) ) {
-					event.event.document.removeHandler( window, "resize", this.flexEvent );
+					event.document.removeHandler( window, "resize", this.flexEvent );
 					// }
 					this.options.disabled = true;
 					return this;
@@ -181,7 +181,7 @@ aQuery.define( "ui/flex", [
 				},
 				enable: function() {
 					if ( !this.findParent() ) {
-						event.event.document.addHandler( window, "resize", this.resizeEvent );
+						event.document.addHandler( window, "resize", this.resizeEvent );
 						this.target.on( "widget.detect", this.flexEvent );
 					}
 					this.options.disabled = false;
@@ -189,7 +189,7 @@ aQuery.define( "ui/flex", [
 				},
 				disable: function() {
 					if ( !this.findParent() ) {
-						event.event.document.removeHandler( window, "resize", this.resizeEvent );
+						event.document.removeHandler( window, "resize", this.resizeEvent );
 						this.target.off( "widget.detect", this.flexEvent );
 					}
 					this.options.disabled = true;

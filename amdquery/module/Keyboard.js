@@ -117,7 +117,7 @@
 			return false;
 		},
 		routing: function( target, e ) {
-			e = event.event.document.getEvent( e );
+			e = event.document.getEvent( e );
 			var item;
 			if ( item = this.iterationKeyList( e ) ) {
 				//item.todo.call(this, e);i
@@ -128,8 +128,8 @@
 					event: e,
 					keyItem: item
 				} );
-				event.event.document.preventDefault( e );
-				event.event.document.stopPropagation( e );
+				event.document.preventDefault( e );
+				event.document.stopPropagation( e );
 			}
 		}
 	}, {

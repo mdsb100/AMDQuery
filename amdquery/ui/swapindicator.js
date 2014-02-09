@@ -13,7 +13,7 @@ aQuery.define( "ui/swapindicator", [
 	Widget.fetchCSS( "ui/css/swapindicator" );
 	var HORIZONTAL = "H",
 		VERTICAL = "V";
-	var eventFuns = event.event.document;
+	var eventFuns = event.document;
 
 	var swapindicator = Widget.extend( "ui.swapindicator", {
 		create: function() {

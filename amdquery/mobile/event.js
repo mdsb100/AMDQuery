@@ -79,7 +79,7 @@
 				/// <param name="type" type="String">事件类型</param>
 				/// <param name="paras" type="Object">模拟事件参数</param>
 				/// <returns type="null" />
-				var eventF = event.event.document,
+				var eventF = event.document,
 					createEvent = eventF.createEvent,
 					settings = utilExtend.extend( {}, _touchSettings, paras ),
 					e, i;
@@ -93,17 +93,17 @@
 			_gestureSettings = {},
 			gestureImitation = function( /*unfinished*/) {};
 
-		event.event.document.imitation._touchSettings = _touchSettings;
-		event.event.document.imitation.touch = touch;
+		event.document.imitation._touchSettings = _touchSettings;
+		event.document.imitation.touch = touch;
 
 		for ( i = 0, len = touch.length; i < len; i++ ) {
-			event.event.domEventList[ touch[ i ] ] = touchImitation; //mouse
+			event.domEventList[ touch[ i ] ] = touchImitation; //mouse
 		}
 		for ( i = 0, len = gesture.length; i < len; i++ ) {
-			event.event.domEventList[ gesture[ i ] ] = 1; //mouse
+			event.domEventList[ gesture[ i ] ] = 1; //mouse
 		}
 		for ( i = 0, len = other.length; i < len; i++ ) {
-			event.event.domEventList[ other[ i ] ] = 1;
+			event.domEventList[ other[ i ] ] = 1;
 		}
 
 		$.fn.extend( {

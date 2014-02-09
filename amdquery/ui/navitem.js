@@ -27,7 +27,7 @@ aQuery.define( "ui/navitem", [
 				this.navitemEvent = function( e ) {
 					switch ( e.type ) {
 						case "click":
-							if ( $.event.document.getTarget( e ) == self.$arrow[ 0 ] ) {
+							if ( event.document.getTarget( e ) == self.$arrow[ 0 ] ) {
 								self.toggle();
 							} else {
 								self.select();

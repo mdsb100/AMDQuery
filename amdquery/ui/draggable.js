@@ -67,7 +67,7 @@
 		};
 	}
 
-	var eventFuns = event.event.document,
+	var eventFuns = event.document,
 		draggable = Widget.extend( "ui.draggable", {
 			container: null,
 			create: function() {

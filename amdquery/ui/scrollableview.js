@@ -267,8 +267,8 @@ aQuery.define( "ui/scrollableview", [
 						self.render( x, y, true, opt.boundary );
 						break;
 					case "click":
-						event.event.document.preventDefault( e );
-						event.event.document.stopPropagation( e );
+						event.document.preventDefault( e );
+						event.document.stopPropagation( e );
 
 						self.refreshPosition();
 

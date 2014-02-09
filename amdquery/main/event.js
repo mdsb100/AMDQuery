@@ -1,4 +1,4 @@
-﻿aQuery.define( "main/event", [ "base/config", "base/typed", "base/extend", "base/client", "base/array", "main/CustomEvent", "main/data" ], function( $, config, typed, utilExtend, client, array, CustomEvent, utilData, undefined ) {
+﻿aQuery.define( "main/event", [ "base/config", "base/typed", "base/extend", "base/client", "base/array", "main/query", "main/CustomEvent", "main/data" ], function( $, config, typed, utilExtend, client, array, query, CustomEvent, utilData, undefined ) {
 	"use strict";
 	var mouse = "contextmenu click dblclick mousedown mouseup mousemove mouseover mouseout mouseenter mouseleave mousewheel DOMMouseScroll".split( " " ),
 		/*DOMMouseScroll firefox*/
@@ -7,7 +7,7 @@
 		key = "keydown keypress keyup".split( " " ),
 		other = "resize scroll change select submit DomNodeInserted DomNodeRemoved".split( " " ),
 		_eventNameList = [].concat( mouse, mutation, html, key, other ),
-		_domEventList = {},
+		domEventList = {},
 		eventHooks = {
 			type: function( type ) {
 				/// <summary>兼容事件类型名</summary>
@@ -33,7 +33,7 @@
 				return type;
 			},
 			compatibleEvent: function( e ) {
-				var eventDoc = $.event.document;
+				var eventDoc = event.document;
 				e.getCharCode = function() {
 					eventDoc.getCharCode( this );
 				};
@@ -54,11 +54,11 @@
 				if ( !fun.__guid ) {
 					var temp;
 					fun.__guid = function( e ) {
-						var evt = $.event.document.getEvent( e ),
+						var evt = event.document.getEvent( e ),
 							target = this;
 
 						if ( typed.isEvent( evt ) ) {
-							target = $.event.document.getTarget( e );
+							target = event.document.getTarget( e );
 							if ( ( temp = $.interfaces.trigger( "proxy", evt, target ) ) ) {
 								evt = temp.event;
 								target = temp.target;
@@ -80,611 +80,622 @@
 			}
 			return data;
 		},
-		event = {
-			addHandler: function( ele, type, fun ) {
-				/// <summary>给aQuery或元素添加事件</summary>
-				/// <para>$.addHandler(ele,"click",function(){})</para>
-				/// <para>$.addHandler("ajaxStart",function(){})</para>
-				/// <param name="ele" type="Element/String">元素或类型</param>
-				/// <param name="type" type="String/Function">方法或类型</param>
-				/// <param name="fun" type="Function/undefined">方法或空</param>
-				/// <returns type="self" />
-				if ( fun === null || type === null ) {
-					return this.clearHandlers( ele, type );
-				}
-
-				if ( typed.isEle( ele ) || typed.isWindow( ele ) ) {
-					var data, proxy, item, types = type.split( " " ),
-						i = types.length - 1;
-
-					data = _initCustomEvent( ele, "_handlers_" );
-					proxy = eventHooks.proxy( fun, this );
-
-					for ( ; i >= 0; i-- ) {
-						item = types[ i ];
-						if ( data.hasHandler( item, fun ) == -1 && _domEventList[ item ] ) {
-							item = eventHooks.type( item );
-							$.event.document._addHandler( ele, item, proxy );
-						}
-					}
-
-					type && fun && data.addHandler( type, fun );
-				} else {
-					$.bus.addHandler( ele, type );
-				}
-				return this;
-			},
-			once: function( ele, type, fun ) {
-				if ( typed.isEle( ele ) || typed.isWindow( ele ) ) {
-					var data, proxy, item, types = type.split( " " ),
-						i = types.length - 1;
-
-					data = _initCustomEvent( ele, "_handlers_" );
-					proxy = eventHooks.proxy( fun, this );
-
-					for ( ; i >= 0; i-- ) {
-						item = types[ i ];
-						if ( data.hasHandler( item, fun ) == -1 && _domEventList[ item ] ) {
-							item = eventHooks.type( item );
-							$.event.document.once( ele, item, proxy );
-						}
-					}
-
-					type && fun && data.once( type, proxy );
-				} else {
-					$.bus.once( ele, type );
-				}
-			},
-
-			ajaxStart: function( fun ) {
-				/// <summary>ajax开始</summary>
-				/// <param name="fun" type="Function">方法</param>
-				/// <returns type="self" />
-				$.bus.addHandler( arguments[ 1 ] || "ajaxStart", fun );
-				return this;
-			},
-			ajaxStop: function( fun ) {
-				/// <summary>ajax停止</summary>
-				/// <param name="fun" type="Function">方法</param>
-				/// <returns type="self" />
-				return $.ajaxStart( fun, "ajaxStop" );
-			},
-			ajaxTimeout: function( fun ) {
-				/// <summary>ajax超时</summary>
-				/// <param name="fun" type="Function">方法</param>
-				/// <returns type="self" />
-				return $.ajaxStart( fun, "ajaxTimeout" );
-			},
-
-			bus: ( new CustomEvent() ),
-
-			clearHandlers: function( ele, type ) {
-				/// <summary>移除dom元素的所有事件或所有aQuery提供的事件，如果类型存在则删除这种类型</summary>
-				/// <param name="ele" type="Element/undefined">元素</param>
-				/// <param name="type" type="String/undefinded">事件类型</param>
-				/// <returns type="self" />
-				if ( typed.isEle( ele ) || typed.isWindow( ele ) ) {
-					var data = utilData.get( ele, "_handlers_" );
-					if ( !data ) {
-						return this;
-					}
-					var handlerMap = data._handlerMap,
-						map = {},
-						j = 0,
-						len = 0,
-						i, item, fun;
-
-					if ( type ) {
-						var types = type.split( " " ),
-							z = types.length - 1;
-						for ( ; z >= 0; z-- ) {
-							item = types[ z ];
-							if ( item in handlerMap ) {
-								map[ item ] = 1;
-							}
-						}
-					}
-
-					for ( i in map ) {
-						item = data._nameSpace( i );
-						for ( j = 0, len = item.length; j < len; j++ ) {
-							fun = item[ j ];
-							_domEventList[ i ] && $.event.document._removeHandler( ele, i, fun.__guid || fun );
-						}
-					}
-					data.clearHandlers( type );
-				} else {
-					$.bus.clearHandlers( ele );
-				}
-				return this;
-			},
-
-			cloneHandlers: function( ele, handlerEve ) {
-				var customEvent = data.set( handlerEve, "_handlers_" );
-				if ( customEvent ) {
-					var handlerMap = customEvent._handlerMap,
-						j = 0,
-						len = 0,
-						i, item, fun;
-
-					for ( i in handlerMap ) {
-						item = customEvent._nameSpace( i );
-						for ( j = 0, len = item.length; j < len; j++ ) {
-							fun = item[ j ];
-							_domEventList[ i ] && $.event.document._addHandler( ele, i, fun.__guid || fun );
-						}
-					}
-					data.set( ele, "_handlers_", customEvent );
-				}
-			},
-
-			getJSStart: function( fun ) {
-				/// <summary>加载js开始</summary>
-				/// <param name="fun" type="Function">方法</param>
-				/// <returns type="self" />
-				return $.ajaxStart( fun, "getJSStart" );
-			},
-			getJSStop: function( fun ) {
-				/// <summary>加载js停止</summary>
-				/// <param name="fun" type="Function">方法</param>
-				/// <returns type="self" />
-				return $.ajaxStart( fun, "getJSStop" );
-			},
-			getJSTimeout: function( fun ) {
-				/// <summary>加载js超时</summary>
-				/// <param name="fun" type="Function">方法</param>
-				/// <returns type="self" />
-				return $.ajaxStart( fun, "getJSTimeout" );
-			},
-
-			hasHandler: function( ele, type, fun ) {
-				/// <summary>查找aQuery或元素事件</summary>
-				/// <param name="ele" type="Element/String">元素或类型</param>
-				/// <param name="type" type="String/Function">方法或类型</param>
-				/// <param name="fun" type="Function/undefined">方法</param>
-				/// <returns type="Number" />
-				if ( typed.isEle( ele ) || typed.isWindow( ele ) ) {
-					var proxy;
-					if ( _domEventList[ type ] ) {
-						proxy = fun.__guid || fun;
-						type = eventHooks.type( type );
-						return $.event.document.hasHandler( ele, type, proxy );
-					}
-
-					return -1;
-				} else {
-					return $.bus.hasHandler( ele, type );
-				}
-			},
-
-			event: {
-				custom: CustomEvent,
-
-				document: {
-					addHandler: function( ele, type, fn ) {
-						/// <summary>给DOM元素添加事件</summary>
-						/// <para>例:"mousedown mouseup"</para>
-						/// <param name="ele" type="Element">元素</param>
-						/// <param name="type" type="String">事件类型</param>
-						/// <param name="fn" type="Function">事件方法</param>
-						/// <returns type="null" />
-						var types = type.split( " " ),
-							i = types.length - 1;
-						for ( ; i >= 0; i-- ) {
-							this._addHandler( ele, types[ i ], fn );
-						}
-
-					},
-					_addHandler: function( ele, type, fn ) {
-						if ( ele.addEventListener ) ele.addEventListener( type, fn, false ); //事件冒泡
-						else if ( ele.attachEvent ) ele.attachEvent( "on" + type, fn );
-						else {
-							ele[ "on" + type ] = fn;
-							ele = null;
-						}
-					},
-					once: function( ele, type, fn ) {
-						var self = this,
-							fnproxy = function() {
-								self._removeHandler( ele, type, fnproxy );
-								fn.apply( this, arguments );
-							};
-						return this._addHandler( type, fnproxy );
-					},
-					removeHandler: function( ele, type, fn ) {
-						/// <summary>给DOM元素移除事件</summary>
-						/// <param name="ele" type="Element">元素</param>
-						/// <param name="type" type="String">事件类型</param>
-						/// <param name="fn" type="Function">事件方法</param>
-						/// <returns type="null" />
-						var types = type.split( " " ),
-							i = types.length - 1;
-						for ( ; i >= 0; i-- ) {
-							this._removeHandler( ele, types[ i ], fn );
-						}
-					},
-					_removeHandler: function( ele, type, fn ) {
-						if ( ele.removeEventListener ) ele.removeEventListener( type, fn, false );
-						else if ( ele.detachEvent ) ele.detachEvent( "on" + type, fn );
-						else ele[ "on" + type ] = null;
-					},
-					// , clearHandlers: function (ele) {
-					//     /// <summary>移除dom元素的所有事件</summary>
-					//     /// <param name="ele" type="Element">元素</param>
-					// }
-
-					createEvent: function( type ) {
-						/// <summary>创建原生事件对象</summary>
-						/// <param name="type" type="String">事件类型</param>
-						/// <returns type="Event" />
-						var e;
-						if ( document.createEvent ) {
-							e = document.createEvent( type );
-						} else if ( document.createEventObject ) {
-							e = document.createEventObject();
-						}
-						return e;
-					},
-					dispatchEvent: function( ele, event, type ) {
-						/// <summary>触发事件</summary>
-						/// <param name="ele" type="Element">元素</param>
-						/// <param name="event" type="Event">事件对象</param>
-						/// <param name="type" type="String">事件类型</param>
-						/// <returns type="null" />
-						if ( ele.dispatchEvent ) {
-							ele.dispatchEvent( event );
-						} else if ( ele.fireEvent ) {
-							ele.fireEvent( "on" + type, event, false );
-						}
-					},
-					getCharCode: function( e ) {
-						/// <summary>获得兼容的charCode对象</summary>
-						/// <param name="e" type="Event">event对象</param>
-						/// <returns type="Number" />
-						return ( e.keyCode ? e.keyCode : ( e.which || e.charCode ) ) || 0;
-					},
-					getEvent: function( e ) {
-						/// <summary>获得兼容的事件event对象</summary>
-						/// <param name="e" type="Event">event对象</param>
-						/// <returns type="event" />
-						return e || window.event;
-					},
-					getTarget: function( e ) {
-						/// <summary>获得事件对象</summary>
-						/// <param name="e" type="Event">event对象</param>
-						/// <returns type="Element" />
-						return e.srcElement || e.target;
-					},
-					imitation: {
-						_keySettings: {
-							bubbles: true,
-							cancelable: true,
-							view: document.defaultView,
-							detail: 0,
-							ctrlKey: false,
-							altKey: false,
-							shiftKey: false,
-							metaKey: false,
-							keyCode: 0,
-							charCode: 0
-						},
-						_editKeyCharCode: function( setting ) {
-							var code = event.event.document.getCharCode( setting );
-							delete setting.charCode;
-							delete setting.keyCode;
-							delete setting.which;
-
-							if ( client.engine.webkit ) {
-								setting.charCode = code;
-							} else if ( client.engine.ie ) {
-								setting.charCode = code;
-							} else {
-								setting.keyCode = setting.which = code;
-							}
-						},
-						key: function( ele, type, paras ) {
-							/// <summary>触发DOM元素key事件</summary>
-							/// <param name="ele" type="Element">dom元素</param>
-							/// <param name="type" type="String">事件类型</param>
-							/// <param name="paras" type="Object">模拟事件参数</param>
-							/// <returns type="null" />
-							var eventF = event.event.document,
-								createEvent = eventF.createEvent,
-								settings = i = utilExtend.extend( {}, eventF.imitation._keySettings, paras ),
-								e, i, name;
-							eventF.imitation._editKeyCharCode( settings );
-							if ( client.browser.firefox ) {
-								e = createEvent( "KeyEvents" );
-								e.initKeyEvent( type, i.bubbles, i.cancelable, i.view, i.ctrlKey, i.altKey, i.shiftKey, i.metaKey, i.keyCode, i.charCode );
-							} else if ( client.browser.ie678 ) {
-								e = createEvent();
-								for ( i in settings ) {
-									e[ i ] = settings[ i ];
-								}
-							} else {
-								name = "Events";
-								client.browser.safari && client.browser.safari < 3 && ( name = "UIEvents" );
-								e = createEvent( name );
-								e.initEvent( type, settings.bubbles, settings.cancelable );
-								delete settings.bubbles;
-								delete settings.cancelable;
-
-								for ( i in settings ) {
-									e[ i ] = settings[ i ];
-								}
-							}
-							eventF.dispatchEvent( ele, e, type );
-
-						},
-						_mouseSettings: {
-							bubbles: true,
-							cancelable: true,
-							view: document.defaultView,
-							detail: 0,
-							screenX: 0,
-							screenY: 0,
-							clientX: 0,
-							clientY: 0,
-							ctrlKey: false,
-							altKey: false,
-							metaKey: false,
-							shiftKey: false,
-							button: 0,
-							relatedTarget: null
-						},
-						mouse: function( ele, type, paras ) {
-							/// <summary>触发DOM元素Mouse事件</summary>
-							/// <param name="ele" type="Element">dom元素</param>
-							/// <param name="type" type="String">事件类型</param>
-							/// <param name="paras" type="Object">模拟事件参数</param>
-							/// <returns type="null" />
-							var eventF = event.event.document,
-								createEvent = eventF.createEvent,
-								settings = utilExtend.extend( {}, eventF.imitation._mouseSettings, paras ),
-								e, i = settings;
-							if ( client.browser.safari && client.browser.safari < 3 ) {
-								e = createEvent( "UIEvents" );
-								e.initEvent( type, settings.bubbles, settings.cancelable );
-								delete settings.bubbles;
-								delete settings.cancelable;
-								for ( i in settings ) {
-									e[ i ] = settings[ i ];
-								}
-							} else if ( client.browser.ie678 ) {
-								e = createEvent();
-								for ( i in settings ) {
-									e[ i ] = settings[ i ];
-								}
-							} else {
-								e = createEvent( "MouseEvents" );
-								e.initMouseEvent( type, i.bubbles, i.cancelable, i.view, i.detail, i.screenX, i.screenY, i.clientX, i.clientY, i.ctrlKey, i.altKey, i.metaKey, i.shiftKey, i.button, i.relatedTarget );
-							}
-							eventF.dispatchEvent( ele, e, type );
-
-						},
-						_htmlSettings: {
-							bubbles: true,
-							cancelable: true
-						},
-						html: function( ele, type, paras ) {
-							/// <summary>触发DOM元素html事件:blur focus focusin focusout</summary>
-							/// <param name="ele" type="Element">dom元素</param>
-							/// <param name="type" type="String">事件类型</param>
-							/// <param name="paras" type="Object">模拟事件参数</param>
-							/// <returns type="null" />
-							var eventF = event.event.document,
-								createEvent = eventF.createEvent,
-								settings = utilExtend.extend( {}, eventF.imitation._htmlSettings, paras ),
-								e, i = settings;
-
-							if ( client.browser.ie678 ) {
-								e = createEvent();
-								for ( i in settings ) {
-									e[ i ] = settings[ i ];
-								}
-							} else {
-								e = createEvent( "HTMLEvents" );
-								e.initEvent( type, settings.bubbles, settings.cancelable );
-								delete settings.bubbles;
-								delete settings.cancelable;
-								for ( i in settings ) {
-									e[ i ] = settings[ i ];
-								}
-							}
-
-							eventF.dispatchEvent( ele, e, type );
-
-						}
-					},
-					preventDefault: function( e ) {
-						/// <summary>阻止Element对象默认行为</summary>
-						/// <param name="e" type="Event">event对象</param>
-						/// <returns type="null" />
-						if ( e.preventDefault ) e.preventDefault();
-						else e.returnValue = false;
-					},
-					stopPropagation: function( e ) {
-						/// <summary>阻止Element对象事件的冒泡</summary>
-						/// <param name="e" type="Event">event对象</param>
-						/// <returns type="null" />
-						if ( e.stopPropagation ) e.stopPropagation();
-						else e.cancelBubble = true;
-					},
-					getButton: function( e ) {
-						/// <summary>获得鼠标的正确点击类型</summary>
-						/// <param name="e" type="Event">event对象</param>
-						/// <returns type="Number" />
-						if ( document.implementation.hasFeature( "MouseEvents", "2.0" ) ) return e.button;
-						else {
-							switch ( e.button ) {
-								case 0:
-								case 1:
-								case 3:
-								case 5:
-								case 7:
-									return 0;
-								case 2:
-								case 6:
-									return 2;
-								case 4:
-									return 1;
-							}
-						}
-					},
-					on: function( ele, type, fn ) {
-						return this.addHandler( ele, type, fn );
-					},
-					off: function( ele, type, fn ) {
-						return this.removeHandler( ele, type, fn );
-					}
-				},
-				domEventList: _domEventList
-
-				//aQuery的事件
-			},
-			error: function( isMsgDiv ) {
-				/// <summary>抛出异常</summary>
-				/// <param name="isMsgDiv" type="Boolean">是否以div内容出现否则为title</param>
-				/// <returns type="self" />
-				$.event.document.addHandler( window, "error", function( e, url, line ) {
-					var msg = e.message || "no message",
-						filename = e.filename || e.sourceURL || e.stacktrace || url;
-					line = e.lineno || e.lineNumber || e.number || e.lineNumber || e.line || line;
-				} );
-				return this;
-			},
-
-			_initHandler: function( ele ) {
-				/// <summary>初始化事件集</summary>
-				/// <param name="ele" type="Element/undefined">元素</param>
-				/// <private/>
-				var data = utilData.get( ele, "_handlers_" );
-				if ( !data ) {
-					data = new CustomEvent();
-					utilData.set( ele, "_handlers_", data )
-				}
-				return this;
-			},
-
-			removeHandler: function( ele, type, fun ) {
-				/// <summary>给aQuery或元素添加事件</summary>
-				/// <para>$.removeHandler(ele,"click",fun)</para>
-				/// <para>$.removeHandler("ajaxStart",fun)</para>
-				/// <param name="ele" type="Element/String">元素或类型</param>
-				/// <param name="type" type="String/Function">方法或类型</param>
-				/// <param name="fun" type="Function/undefined">方法或空</param>
-				/// <returns type="self" />
-				if ( typed.isEle( ele ) || typed.isWindow( ele ) ) {
-					var data, proxy = fun.__guid || fun,
-						types = type.split( " " ),
-						i = types.length - 1,
-						item;
-
-					for ( ; i >= 0; i-- ) {
-						item = types[ i ];
-						if ( _domEventList[ item ] ) {
-							item = eventHooks.type( item );
-							$.event.document._removeHandler( ele, item, proxy );
-						}
-					}
-
-					data = _initCustomEvent( ele, "_handlers_" );
-					type && fun && data.removeHandler( type, fun );
-
-				} else {
-					$.bus.removeHandler( ele, type );
-				}
-				return this;
-			},
-
-			searchCustomEvent: function( type ) {
-				/// <summary>搜索注册的自定义事件</summary>
-				/// <param name="type" type="String">事件名</param>
-				/// <returns type="String" />
-				var key = $.event.customEventName[ type ];
-				//要改。为了addevent。
-				//            $.each(, function (value, name) {
-				//                if (type === name) {
-				//                    key = value
-				//                    return false;
-				//                }
-				//            }, this);
-				return key || "";
-			},
-
-			toggle: function( ele, funParas ) {
-				/// <summary>切换点击或解除绑定</summary>
-				/// <para>若只有ele 就解除绑定</para>
-				/// <param name="ele" type="Element">element元素</param>
-				/// <param name="funParas" type="Function:[]/undefined">方法组</param>
-				/// <returns type="self" />
-				var arg = $.util.argToArray( arguments, 1 ),
-					index = 0,
-					data;
-				if ( arg.length > 1 ) {
-					if ( data = utilData.get( ele, "_toggle_" ) ) {
-						arg = data.arg.concat( arg );
-						index = data.index;
-					}
-
-					utilData.set( ele, "_toggle_", {
-						index: index,
-						arg: arg
-					} );
-
-					$.addHandler( ele, "click", this._toggle );
-				} else {
-					$.removeHandler( ele, "click", this._toggle );
-					$.removeData( ele, "_toggle_" );
-				}
-				//移除事件 添加至event 移除 arg len
-				return this;
-			},
-			_toggle: function( e ) {
-				var self = $.event.document.getTarget( e ),
-					data = utilData.get( self, "_toggle_" ),
-					arg = data.arg,
-					len = arg.length,
-					index = data.index % len;
-
-				arg[ index ].call( self, e );
-				utilData.set( self, "_toggle_", {
-					index: index + 1,
-					arg: arg
-				} );
-			},
-
-			trigger: function( ele, type, context, paras ) {
-				/// <summary>
-				/// 触发自定义或者原生事件
-				/// </summary>
-				/// <param name="ele" type="Element">dom对象</param>
-				/// <param name="type" type="String">事件类型</param>
-				/// <param name="context" type="Object">当为自定义事件时 为作用域 否则为事件参数</param>
-				/// <param name="paras" type="para:[any]">当为自定义事件时 为参数列表</param>
-				/// <returns type="self"></returns>
-				if ( typed.isEle( ele ) || typed.isWindow( ele ) ) {
-					var data;
-					if ( data = _domEventList[ type ] ) {
-						type = eventHooks.type( type );
-						typed.isFun( data ) ? data( ele, type, context ) : $.logger( "trigger", "triggering" + type + " is not supported" );
-					} else {
-						( data = utilData.get( ele, "_handlers_" ) ) && data.trigger.apply( data, [ type, context ].concat( $.util.argToArray( arguments, 3 ) ) );
-					}
-				} else {
-					$.bus.trigger.apply( $.bus, arguments );
-				}
-				return this;
-			}
-		},
 		i = 0,
 		len;
 
-	event.on = event.addHandler;
-	event.off = event.removeHandler;
-	event.clear = event.clearHandlers;
+	/**
+	 * Export network requests.
+	 * <br /> JSONP or AJAX.
+	 * @exports main/communicate
+	 * @requires module:base/typed
+	 * @requires module:base/extend
+	 * @requires module:main/event
+	 * @requires module:main/parse
+	 */
+	var event = {
+		addHandler: function( ele, type, fun ) {
+			/// <summary>给aQuery或元素添加事件</summary>
+			/// <para>$.addHandler(ele,"click",function(){})</para>
+			/// <para>$.addHandler("ajaxStart",function(){})</para>
+			/// <param name="ele" type="Element/String">元素或类型</param>
+			/// <param name="type" type="String/Function">方法或类型</param>
+			/// <param name="fun" type="Function/undefined">方法或空</param>
+			/// <returns type="self" />
+			if ( fun === null || type === null ) {
+				return this.clearHandlers( ele, type );
+			}
 
-	$.extend( event );
+			if ( typed.isEle( ele ) || typed.isWindow( ele ) ) {
+				var data, proxy, item, types = type.split( " " ),
+					i = types.length - 1;
+
+				data = _initCustomEvent( ele, "_handlers_" );
+				proxy = eventHooks.proxy( fun, this );
+
+				for ( ; i >= 0; i-- ) {
+					item = types[ i ];
+					if ( data.hasHandler( item, fun ) == -1 && domEventList[ item ] ) {
+						item = eventHooks.type( item );
+						event.document._addHandler( ele, item, proxy );
+					}
+				}
+
+				type && fun && data.addHandler( type, fun );
+			}
+			return this;
+		},
+		once: function( ele, type, fun ) {
+			if ( typed.isEle( ele ) || typed.isWindow( ele ) ) {
+				var data, proxy, item, types = type.split( " " ),
+					i = types.length - 1;
+
+				data = _initCustomEvent( ele, "_handlers_" );
+				proxy = eventHooks.proxy( fun, this );
+
+				for ( ; i >= 0; i-- ) {
+					item = types[ i ];
+					if ( data.hasHandler( item, fun ) == -1 && domEventList[ item ] ) {
+						item = eventHooks.type( item );
+						event.document.once( ele, item, proxy );
+					}
+				}
+
+				type && fun && data.once( type, proxy );
+			}
+			return this;
+		},
+
+		clearHandlers: function( ele, type ) {
+			/// <summary>移除dom元素的所有事件或所有aQuery提供的事件，如果类型存在则删除这种类型</summary>
+			/// <param name="ele" type="Element/undefined">元素</param>
+			/// <param name="type" type="String/undefinded">事件类型</param>
+			/// <returns type="self" />
+			if ( typed.isEle( ele ) || typed.isWindow( ele ) ) {
+				var data = utilData.get( ele, "_handlers_" );
+				if ( !data ) {
+					return this;
+				}
+				var handlerMap = data._handlerMap,
+					map = {},
+					j = 0,
+					len = 0,
+					i, item, fun;
+
+				if ( type ) {
+					var types = type.split( " " ),
+						z = types.length - 1;
+					for ( ; z >= 0; z-- ) {
+						item = types[ z ];
+						if ( item in handlerMap ) {
+							map[ item ] = 1;
+						}
+					}
+				}
+
+				for ( i in map ) {
+					item = data._nameSpace( i );
+					for ( j = 0, len = item.length; j < len; j++ ) {
+						fun = item[ j ];
+						domEventList[ i ] && event.document._removeHandler( ele, i, fun.__guid || fun );
+					}
+				}
+				data.clearHandlers( type );
+			}
+			return this;
+		},
+
+		cloneHandlers: function( ele, handlerEve ) {
+			var customEvent = data.set( handlerEve, "_handlers_" );
+			if ( customEvent ) {
+				var handlerMap = customEvent._handlerMap,
+					j = 0,
+					len = 0,
+					i, item, fun;
+
+				for ( i in handlerMap ) {
+					item = customEvent._nameSpace( i );
+					for ( j = 0, len = item.length; j < len; j++ ) {
+						fun = item[ j ];
+						domEventList[ i ] && event.document._addHandler( ele, i, fun.__guid || fun );
+					}
+				}
+				data.set( ele, "_handlers_", customEvent );
+			}
+		},
+
+		hasHandler: function( ele, type, fun ) {
+			/// <summary>查找aQuery或元素事件</summary>
+			/// <param name="ele" type="Element/String">元素或类型</param>
+			/// <param name="type" type="String/Function">方法或类型</param>
+			/// <param name="fun" type="Function/undefined">方法</param>
+			/// <returns type="Number" />
+			if ( typed.isEle( ele ) || typed.isWindow( ele ) ) {
+				var proxy;
+				if ( domEventList[ type ] ) {
+					proxy = fun.__guid || fun;
+					type = eventHooks.type( type );
+					return event.document.hasHandler( ele, type, proxy );
+				}
+			}
+			return -1;
+		},
+
+		document: {
+			addHandler: function( ele, type, fn ) {
+				/// <summary>给DOM元素添加事件</summary>
+				/// <para>例:"mousedown mouseup"</para>
+				/// <param name="ele" type="Element">元素</param>
+				/// <param name="type" type="String">事件类型</param>
+				/// <param name="fn" type="Function">事件方法</param>
+				/// <returns type="null" />
+				var types = type.split( " " ),
+					i = types.length - 1;
+				for ( ; i >= 0; i-- ) {
+					this._addHandler( ele, types[ i ], fn );
+				}
+
+			},
+			_addHandler: function( ele, type, fn ) {
+				if ( ele.addEventListener ) ele.addEventListener( type, fn, false ); //事件冒泡
+				else if ( ele.attachEvent ) ele.attachEvent( "on" + type, fn );
+				else {
+					ele[ "on" + type ] = fn;
+					ele = null;
+				}
+			},
+			once: function( ele, type, fn ) {
+				var self = this,
+					fnproxy = function() {
+						self._removeHandler( ele, type, fnproxy );
+						fn.apply( this, arguments );
+					};
+				return this._addHandler( type, fnproxy );
+			},
+			removeHandler: function( ele, type, fn ) {
+				/// <summary>给DOM元素移除事件</summary>
+				/// <param name="ele" type="Element">元素</param>
+				/// <param name="type" type="String">事件类型</param>
+				/// <param name="fn" type="Function">事件方法</param>
+				/// <returns type="null" />
+				var types = type.split( " " ),
+					i = types.length - 1;
+				for ( ; i >= 0; i-- ) {
+					this._removeHandler( ele, types[ i ], fn );
+				}
+			},
+			_removeHandler: function( ele, type, fn ) {
+				if ( ele.removeEventListener ) ele.removeEventListener( type, fn, false );
+				else if ( ele.detachEvent ) ele.detachEvent( "on" + type, fn );
+				else ele[ "on" + type ] = null;
+			},
+			// , clearHandlers: function (ele) {
+			//     /// <summary>移除dom元素的所有事件</summary>
+			//     /// <param name="ele" type="Element">元素</param>
+			// }
+
+			createEvent: function( type ) {
+				/// <summary>创建原生事件对象</summary>
+				/// <param name="type" type="String">事件类型</param>
+				/// <returns type="Event" />
+				var e;
+				if ( document.createEvent ) {
+					e = document.createEvent( type );
+				} else if ( document.createEventObject ) {
+					e = document.createEventObject();
+				}
+				return e;
+			},
+			dispatchEvent: function( ele, event, type ) {
+				/// <summary>触发事件</summary>
+				/// <param name="ele" type="Element">元素</param>
+				/// <param name="event" type="Event">事件对象</param>
+				/// <param name="type" type="String">事件类型</param>
+				/// <returns type="null" />
+				if ( ele.dispatchEvent ) {
+					ele.dispatchEvent( event );
+				} else if ( ele.fireEvent ) {
+					ele.fireEvent( "on" + type, event, false );
+				}
+			},
+			getCharCode: function( e ) {
+				/// <summary>获得兼容的charCode对象</summary>
+				/// <param name="e" type="Event">event对象</param>
+				/// <returns type="Number" />
+				return ( e.keyCode ? e.keyCode : ( e.which || e.charCode ) ) || 0;
+			},
+			getEvent: function( e ) {
+				/// <summary>获得兼容的事件event对象</summary>
+				/// <param name="e" type="Event">event对象</param>
+				/// <returns type="event" />
+				return e || window.event;
+			},
+			getTarget: function( e ) {
+				/// <summary>获得事件对象</summary>
+				/// <param name="e" type="Event">event对象</param>
+				/// <returns type="Element" />
+				return e.srcElement || e.target;
+			},
+			imitation: {
+				_keySettings: {
+					bubbles: true,
+					cancelable: true,
+					view: document.defaultView,
+					detail: 0,
+					ctrlKey: false,
+					altKey: false,
+					shiftKey: false,
+					metaKey: false,
+					keyCode: 0,
+					charCode: 0
+				},
+				eventList: domEventList,
+				_editKeyCharCode: function( setting ) {
+					var code = event.document.getCharCode( setting );
+					delete setting.charCode;
+					delete setting.keyCode;
+					delete setting.which;
+
+					if ( client.engine.webkit ) {
+						setting.charCode = code;
+					} else if ( client.engine.ie ) {
+						setting.charCode = code;
+					} else {
+						setting.keyCode = setting.which = code;
+					}
+				},
+				key: function( ele, type, paras ) {
+					/// <summary>触发DOM元素key事件</summary>
+					/// <param name="ele" type="Element">dom元素</param>
+					/// <param name="type" type="String">事件类型</param>
+					/// <param name="paras" type="Object">模拟事件参数</param>
+					/// <returns type="null" />
+					var eventF = event.document,
+						createEvent = eventF.createEvent,
+						settings = i = utilExtend.extend( {}, eventF.imitation._keySettings, paras ),
+						e, i, name;
+					eventF.imitation._editKeyCharCode( settings );
+					if ( client.browser.firefox ) {
+						e = createEvent( "KeyEvents" );
+						e.initKeyEvent( type, i.bubbles, i.cancelable, i.view, i.ctrlKey, i.altKey, i.shiftKey, i.metaKey, i.keyCode, i.charCode );
+					} else if ( client.browser.ie678 ) {
+						e = createEvent();
+						for ( i in settings ) {
+							e[ i ] = settings[ i ];
+						}
+					} else {
+						name = "Events";
+						client.browser.safari && client.browser.safari < 3 && ( name = "UIEvents" );
+						e = createEvent( name );
+						e.initEvent( type, settings.bubbles, settings.cancelable );
+						delete settings.bubbles;
+						delete settings.cancelable;
+
+						for ( i in settings ) {
+							e[ i ] = settings[ i ];
+						}
+					}
+					eventF.dispatchEvent( ele, e, type );
+
+				},
+				_mouseSettings: {
+					bubbles: true,
+					cancelable: true,
+					view: document.defaultView,
+					detail: 0,
+					screenX: 0,
+					screenY: 0,
+					clientX: 0,
+					clientY: 0,
+					ctrlKey: false,
+					altKey: false,
+					metaKey: false,
+					shiftKey: false,
+					button: 0,
+					relatedTarget: null
+				},
+				mouse: function( ele, type, paras ) {
+					/// <summary>触发DOM元素Mouse事件</summary>
+					/// <param name="ele" type="Element">dom元素</param>
+					/// <param name="type" type="String">事件类型</param>
+					/// <param name="paras" type="Object">模拟事件参数</param>
+					/// <returns type="null" />
+					var eventF = event.document,
+						createEvent = eventF.createEvent,
+						settings = utilExtend.extend( {}, eventF.imitation._mouseSettings, paras ),
+						e, i = settings;
+					if ( client.browser.safari && client.browser.safari < 3 ) {
+						e = createEvent( "UIEvents" );
+						e.initEvent( type, settings.bubbles, settings.cancelable );
+						delete settings.bubbles;
+						delete settings.cancelable;
+						for ( i in settings ) {
+							e[ i ] = settings[ i ];
+						}
+					} else if ( client.browser.ie678 ) {
+						e = createEvent();
+						for ( i in settings ) {
+							e[ i ] = settings[ i ];
+						}
+					} else {
+						e = createEvent( "MouseEvents" );
+						e.initMouseEvent( type, i.bubbles, i.cancelable, i.view, i.detail, i.screenX, i.screenY, i.clientX, i.clientY, i.ctrlKey, i.altKey, i.metaKey, i.shiftKey, i.button, i.relatedTarget );
+					}
+					eventF.dispatchEvent( ele, e, type );
+
+				},
+				_htmlSettings: {
+					bubbles: true,
+					cancelable: true
+				},
+				html: function( ele, type, paras ) {
+					/// <summary>触发DOM元素html事件:blur focus focusin focusout</summary>
+					/// <param name="ele" type="Element">dom元素</param>
+					/// <param name="type" type="String">事件类型</param>
+					/// <param name="paras" type="Object">模拟事件参数</param>
+					/// <returns type="null" />
+					var eventF = event.document,
+						createEvent = eventF.createEvent,
+						settings = utilExtend.extend( {}, eventF.imitation._htmlSettings, paras ),
+						e, i = settings;
+
+					if ( client.browser.ie678 ) {
+						e = createEvent();
+						for ( i in settings ) {
+							e[ i ] = settings[ i ];
+						}
+					} else {
+						e = createEvent( "HTMLEvents" );
+						e.initEvent( type, settings.bubbles, settings.cancelable );
+						delete settings.bubbles;
+						delete settings.cancelable;
+						for ( i in settings ) {
+							e[ i ] = settings[ i ];
+						}
+					}
+
+					eventF.dispatchEvent( ele, e, type );
+
+				}
+			},
+			preventDefault: function( e ) {
+				/// <summary>阻止Element对象默认行为</summary>
+				/// <param name="e" type="Event">event对象</param>
+				/// <returns type="null" />
+				if ( e.preventDefault ) e.preventDefault();
+				else e.returnValue = false;
+			},
+			stopPropagation: function( e ) {
+				/// <summary>阻止Element对象事件的冒泡</summary>
+				/// <param name="e" type="Event">event对象</param>
+				/// <returns type="null" />
+				if ( e.stopPropagation ) e.stopPropagation();
+				else e.cancelBubble = true;
+			},
+			getButton: function( e ) {
+				/// <summary>获得鼠标的正确点击类型</summary>
+				/// <param name="e" type="Event">event对象</param>
+				/// <returns type="Number" />
+				if ( document.implementation.hasFeature( "MouseEvents", "2.0" ) ) return e.button;
+				else {
+					switch ( e.button ) {
+						case 0:
+						case 1:
+						case 3:
+						case 5:
+						case 7:
+							return 0;
+						case 2:
+						case 6:
+							return 2;
+						case 4:
+							return 1;
+					}
+				}
+			},
+			on: function( ele, type, fn ) {
+				return this.addHandler( ele, type, fn );
+			},
+			off: function( ele, type, fn ) {
+				return this.removeHandler( ele, type, fn );
+			}
+		},
+
+		error: function( isMsgDiv ) {
+			/// <summary>抛出异常</summary>
+			/// <param name="isMsgDiv" type="Boolean">是否以div内容出现否则为title</param>
+			/// <returns type="self" />
+			event.document.addHandler( window, "error", function( e, url, line ) {
+				var msg = e.message || "no message",
+					filename = e.filename || e.sourceURL || e.stacktrace || url;
+				line = e.lineno || e.lineNumber || e.number || e.lineNumber || e.line || line;
+			} );
+			return this;
+		},
+
+		_initHandler: function( ele ) {
+			/// <summary>初始化事件集</summary>
+			/// <param name="ele" type="Element/undefined">元素</param>
+			/// <private/>
+			var data = utilData.get( ele, "_handlers_" );
+			if ( !data ) {
+				data = new CustomEvent();
+				utilData.set( ele, "_handlers_", data )
+			}
+			return this;
+		},
+
+		removeHandler: function( ele, type, fun ) {
+			/// <summary>给aQuery或元素添加事件</summary>
+			/// <para>$.removeHandler(ele,"click",fun)</para>
+			/// <para>$.removeHandler("ajaxStart",fun)</para>
+			/// <param name="ele" type="Element/String">元素或类型</param>
+			/// <param name="type" type="String/Function">方法或类型</param>
+			/// <param name="fun" type="Function/undefined">方法或空</param>
+			/// <returns type="self" />
+			if ( typed.isEle( ele ) || typed.isWindow( ele ) ) {
+				var data, proxy = fun.__guid || fun,
+					types = type.split( " " ),
+					i = types.length - 1,
+					item;
+
+				for ( ; i >= 0; i-- ) {
+					item = types[ i ];
+					if ( domEventList[ item ] ) {
+						item = eventHooks.type( item );
+						event.document._removeHandler( ele, item, proxy );
+					}
+				}
+
+				data = _initCustomEvent( ele, "_handlers_" );
+				type && fun && data.removeHandler( type, fun );
+
+			}
+			return this;
+		},
+
+		toggle: function( ele, funParas ) {
+			/// <summary>切换点击或解除绑定</summary>
+			/// <para>若只有ele 就解除绑定</para>
+			/// <param name="ele" type="Element">element元素</param>
+			/// <param name="funParas" type="Function:[]/undefined">方法组</param>
+			/// <returns type="self" />
+			var arg = $.util.argToArray( arguments, 1 ),
+				index = 0,
+				data;
+			if ( arg.length > 1 ) {
+				if ( data = utilData.get( ele, "_toggle_" ) ) {
+					arg = data.arg.concat( arg );
+					index = data.index;
+				}
+
+				utilData.set( ele, "_toggle_", {
+					index: index,
+					arg: arg
+				} );
+
+				event.addHandler( ele, "click", this._toggle );
+			} else {
+				event.removeHandler( ele, "click", this._toggle );
+				event.removeData( ele, "_toggle_" );
+			}
+			//移除事件 添加至event 移除 arg len
+			return this;
+		},
+		_toggle: function( e ) {
+			var self = event.document.getTarget( e ),
+				data = utilData.get( self, "_toggle_" ),
+				arg = data.arg,
+				len = arg.length,
+				index = data.index % len;
+
+			arg[ index ].call( self, e );
+			utilData.set( self, "_toggle_", {
+				index: index + 1,
+				arg: arg
+			} );
+		},
+
+		trigger: function( ele, type, context, paras ) {
+			/// <summary>
+			/// 触发自定义或者原生事件
+			/// </summary>
+			/// <param name="ele" type="Element">dom对象</param>
+			/// <param name="type" type="String">事件类型</param>
+			/// <param name="context" type="Object">当为自定义事件时 为作用域 否则为事件参数</param>
+			/// <param name="paras" type="para:[any]">当为自定义事件时 为参数列表</param>
+			/// <returns type="self"></returns>
+			if ( typed.isEle( ele ) || typed.isWindow( ele ) ) {
+				var data;
+				if ( data = domEventList[ type ] ) {
+					type = eventHooks.type( type );
+					typed.isFun( data ) ? data( ele, type, context ) : $.logger( "trigger", "triggering" + type + " is not supported" );
+				} else {
+					( data = utilData.get( ele, "_handlers_" ) ) && data.trigger.apply( data, [ type, context ].concat( $.util.argToArray( arguments, 3 ) ) );
+				}
+			}
+			return this;
+		}
+	};
+
+	utilExtend.easyExtend( event, {
+		on: event.addHandler,
+		off: event.removeHandler,
+		clear: event.clearHandlers
+	} );
+
+	var bus = new CustomEvent();
+
+	$.extend( {
+		addHandler: function( type, fn ) {
+			bus.addHandler( type, fn );
+			return this;
+		},
+		removeHandler: function( type, fn ) {
+			bus.removeHandler( type, fn );
+		},
+		clearHandlers: function( type ) {
+			bus.clearHandlers( type );
+			return this;
+		},
+		hasHandler: function( type, fn ) {
+			return bus.hasHandler( type, fn );
+		},
+		trigger: function() {
+			bus.trigger.apply( bus, arguments );
+			return this;
+		},
+		once: function() {
+			bus.once( ele, type );
+
+		},
+
+		bus: bus,
+
+		ajaxStart: function( fun ) {
+			/// <summary>ajax开始</summary>
+			/// <param name="fun" type="Function">方法</param>
+			/// <returns type="self" />
+			return $.addHandler( "ajaxStart", fun );
+		},
+		ajaxStop: function( fun ) {
+			/// <summary>ajax停止</summary>
+			/// <param name="fun" type="Function">方法</param>
+			/// <returns type="self" />
+			return $.addHandler( "ajaxStop", fun );
+		},
+		ajaxTimeout: function( fun ) {
+			/// <summary>ajax超时</summary>
+			/// <param name="fun" type="Function">方法</param>
+			/// <returns type="self" />
+			return $.addHandler( "ajaxTimeout", fun );
+		},
+
+		getJSStart: function( fun ) {
+			/// <summary>加载js开始</summary>
+			/// <param name="fun" type="Function">方法</param>
+			/// <returns type="self" />
+			return $.addHandler( "getJSStart", fun );
+		},
+		getJSStop: function( fun ) {
+			/// <summary>加载js停止</summary>
+			/// <param name="fun" type="Function">方法</param>
+			/// <returns type="self" />
+			return $.addHandler( "getJSStop", fun );
+		},
+		getJSTimeout: function( fun ) {
+			/// <summary>加载js超时</summary>
+			/// <param name="fun" type="Function">方法</param>
+			/// <returns type="self" />
+			return $.addHandler( "getJSTimeout", fun );
+		},
+	} );
+
+	$.extend( {
+		on: $.addHandler,
+		off: $.removeHandler,
+		clear: $.clearHandlers
+	} );
+
 
 	$.fn.extend( {
 		addHandler: function( type, fun ) {
@@ -694,21 +705,13 @@
 			/// <returns type="self" />
 			if ( !typed.isStr( type ) || !( typed.isFun( fun ) || fun === null ) ) return this;
 			return this.each( function( ele ) {
-				//                    fun = eventHooks.proxy(fun, this);
-				//                    var key, result
-				//                if ((key = $.searchCustomEvent(type))) {//直接绑定在 container ele上的事件
-				//                    key = utilData.get(ele, key);
-				//                    key && key.addHandler(type, fun);
-				//                    return;
-				//                }
-				//type = eventHooks.type(type);
-				$.addHandler( ele, type, fun );
+				event.addHandler( ele, type, fun );
 			} );
 		},
 		once: function( type, fun ) {
 			if ( !typed.isStr( type ) || !( typed.isFun( fun ) || fun === null ) ) return this;
 			return this.each( function( ele ) {
-				$.once( ele, type, fun );
+				event.once( ele, type, fun );
 			} );
 		},
 
@@ -717,7 +720,7 @@
 			/// <param name="type" type="String/undefinded">事件类型</param>
 			/// <returns type="self" />
 			return this.each( function( ele ) {
-				$.clearHandlers( ele, type );
+				event.clearHandlers( ele, type );
 			} );
 		},
 
@@ -728,10 +731,10 @@
 			/// <param name="fun" type="Function">事件方法</param>
 			/// <returns type="self" />
 			return this.each( function( parentNode ) {
-				$.addHandler( parentNode, type, function( e ) {
+				event.addHandler( parentNode, type, function( e ) {
 					var
-					eleCollection = $.find( selector, parentNode ),
-						target = event.event.document.getTarget( e ),
+					eleCollection = query.find( selector, parentNode ),
+						target = event.document.getTarget( e ),
 						ret = array.inArray( eleCollection || [], target );
 
 					if ( ret > -1 ) {
@@ -750,15 +753,7 @@
 			/// <returns type="self" />
 			if ( !typed.isStr( type ) || !typed.isFun( fun ) ) return this;
 			return this.each( function( ele ) {
-				//fun = fun.__guid || fun;
-				//                var key, result
-				//                if ((key = $.searchCustomEvent(type))) {
-				//                    key = utilData.get(ele, key);
-				//                    key && key.removeHandler(type, fun);
-				//                    return;
-				//                }
-				//type = eventHooks.type(type);
-				$.removeHandler( ele, type, fun );
+				event.removeHandler( ele, type, fun );
 			} );
 		},
 
@@ -766,7 +761,7 @@
 			/// <summary>初始化事件集</summary>
 			/// <private/>
 			return this.each( function( ele ) {
-				$._initHandler( ele );
+				event._initHandler( ele );
 			} );
 		},
 
@@ -781,30 +776,11 @@
 			for ( ; ele = this.eles[ i++ ]; ) {
 				temp = arg.concat();
 				temp.splice( 0, 0, ele );
-				$.toggle.apply( $, temp );
+				event.toggle.apply( event, temp );
 			}
 			return this;
 		},
-		// toggleClass: function(ele, classParas) {
-		//     /// <summary>切换样式</summary>
-		//     /// <param name="ele" type="Element">element元素</param>
-		//     /// <param name="classParas" type="String:[]">样式名</param>
-		//     /// <returns type="self" />
-		//     var arg = typed.isArr(classParas) ? classParas : $.util.argToArray(arguments, 0),
-		//         temp;
-		//     for(; ele = this.eles[i++];) {
-		//         temp = arg.concat();
-		//         temp.splice(0, 0, ele);
-		//         $.toggleClass.apply($, temp);
-		//     }
-		//     return this;
-		//     //            return this.each(function (ele) {
-		//     //                temp = arg.concat();
-		//     //                temp.splice(0, 0, ele)
-		//     //                $.toggleClass.apply($, temp);
-		//     //            });
-		//     //移除事件 添加至event 移除arg len
-		// },
+
 		trigger: function( type, a, b, c ) {
 			/// <summary>
 			/// 触发自定义或者原生事件
@@ -816,7 +792,7 @@
 			/// <returns type="self"></returns>
 			var arg = $.util.argToArray( arguments );
 			return this.each( function( ele ) {
-				$.trigger.apply( null, [ ele ].concat( arg ) );
+				event.trigger.apply( null, [ ele ].concat( arg ) );
 			} );
 		},
 
@@ -933,7 +909,7 @@
 			/// <returns type="self" />
 			return this.blur( function( e ) {
 				fun.apply( this, arguments );
-				event.event.document.stopPropagation( e );
+				event.document.stopPropagation( e );
 			}, "mouseover" );
 		},
 
@@ -944,7 +920,7 @@
 			/// <returns type="self" />
 			return this.blur( function( e ) {
 				fun.apply( this, arguments );
-				event.event.document.stopPropagation( e );
+				event.document.stopPropagation( e );
 			}, "mouseout" );
 		},
 
@@ -953,13 +929,13 @@
 			/// <param name="fun" type="Function/Object/undefined">事件方法</param>
 			/// <returns type="self" />
 			return typed.isFun( fun ) ? this.addHandler( "mousewheel", function( e ) {
-				e = $.event.document.getEvent( e );
+				e = event.document.getEvent( e );
 				var delta = 0;
 				if ( e.wheelDelta ) delta = e.wheelDelta / 120;
 				if ( e.detail ) delta = -e.detail / 3;
 				delta = Math.round( delta );
 				if ( delta ) fun.call( this, delta );
-				$.event.document.stopPropagation( e );
+				event.document.stopPropagation( e );
 			} ) : this.trigger( "mousewheel", fun );
 		},
 
@@ -968,7 +944,7 @@
 			/// <param name="fun" type="Function/Object/undefined">事件方法</param>
 			/// <returns type="self" />
 			return typed.isFun( fun ) ? this.addHandler( "mousewheel", function( e ) {
-				e = $.event.document.getEvent( e );
+				e = event.document.getEvent( e );
 				var delta = 0,
 					direction = "y";
 				if ( e.wheelDelta ) {
@@ -988,8 +964,8 @@
 				e.delta = delta;
 				e.direction = direction;
 
-				$.event.document.stopPropagation( e );
-				$.event.document.preventDefault( e );
+				event.document.stopPropagation( e );
+				event.document.preventDefault( e );
 
 				// if (e.type == "DOMMouseScroll") {
 				//     e.type = "mousewheel";
@@ -1056,24 +1032,26 @@
 		}
 	} );
 
-	$.fn.on = $.fn.addHandler;
-	$.fn.off = $.fn.removeHandler;
-	$.fn.clear = $.fn.clearHandlers;
+	$.fn.extend( {
+		on: $.fn.addHandler,
+		off: $.fn.removeHandler,
+		clear: $.fn.clearHandlers
+	} );
 
 	for ( i = 0, len = mouse.length; i < len; i++ ) {
-		_domEventList[ mouse[ i ] ] = event.event.document.imitation.mouse;
+		domEventList[ mouse[ i ] ] = event.document.imitation.mouse;
 	}
 	for ( i = 0, len = mutation.length; i < len; i++ ) {
-		_domEventList[ mutation[ i ] ] = 1;
+		domEventList[ mutation[ i ] ] = 1;
 	}
 	for ( i = 0, len = key.length; i < len; i++ ) {
-		_domEventList[ key[ i ] ] = event.event.document.imitation.key;
+		domEventList[ key[ i ] ] = event.document.imitation.key;
 	}
 	for ( i = 0, len = html.length; i < len; i++ ) {
-		_domEventList[ html[ i ] ] = event.event.document.imitation.html;
+		domEventList[ html[ i ] ] = event.document.imitation.html;
 	}
 	for ( i = 0, len = other.length; i < len; i++ ) {
-		_domEventList[ other[ i ] ] = 1;
+		domEventList[ other[ i ] ] = 1;
 	}
 
 	return event;

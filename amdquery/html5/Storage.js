@@ -32,7 +32,7 @@
 		 * @returns {this}
 		 */
 		addChangeHandler: function( fun ) {
-			return event.event.document.addHandler( window, "storage", fun );
+			return event.document.addHandler( window, "storage", fun );
 		},
 		/**
 		 * Clear storage

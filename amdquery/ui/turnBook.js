@@ -104,7 +104,7 @@ aQuery.define( "ui/turnBook", [ "base/support", "base/typed", "main/css", "main/
 						padding: "0",
 						cursor: "pointer"
 					}, "img" ).addHandler( "mousedown", function( e ) {
-						$.event.document.preventDefault( e );
+						event.document.preventDefault( e );
 					} ).replaceClass( opt.contentClass );
 					content[ 0 ].setAttribute( "src", html );
 					break;
@@ -126,7 +126,7 @@ aQuery.define( "ui/turnBook", [ "base/support", "base/typed", "main/css", "main/
 						pointerEvents: "auto",
 						cursor: "pointer"
 					}, "textArea" ).addHandler( "mousedown", function( e ) {
-						$.event.document.preventDefault( e );
+						event.document.preventDefault( e );
 					} ).replaceClass( opt.contentClass ).html( html || "" );
 					content[ 0 ].setAttribute( "readonly", "readonly" );
 					if ( typed.isIpad ) {
