@@ -249,7 +249,7 @@
 						self._removeHandler( ele, type, fnproxy );
 						fn.apply( this, arguments );
 					};
-				return this._addHandler( type, fnproxy );
+				return this._addHandler( ele, type, fnproxy );
 			},
 			removeHandler: function( ele, type, fn ) {
 				/// <summary>给DOM元素移除事件</summary>
