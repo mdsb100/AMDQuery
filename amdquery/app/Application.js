@@ -49,7 +49,7 @@ aQuery.define( "app/Application", [
 					type: "ready"
 				} );
 
-				promiseCallback.resolve();
+				promiseCallback && promiseCallback.resolve();
 
 			} );
 

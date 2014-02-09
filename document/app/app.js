@@ -1,18 +1,27 @@
-aQuery.define( "@app/app", [ "app/Application", "@app/controller/index" ], function( $, Application ) {
-  "use strict"; //启用严格模式
-  //必须依赖index controller
-  var app = Application.extend( "Application", {
-    init: function( promiseCallback ) {
-      this._super( promiseCallback );
-    },
-    launch: function( ) {
+aQuery.define( "@app/app", [ "base/Promise", "main/event", "app/Application", "@app/controller/index" ], function( $, Promise, event, Application ) {
+	"use strict"; //启用严格模式
+	//必须依赖index controller
+	var app = Application.extend( "Application", {
+		init: function( promiseCallback ) {
+			this._super();
+			this.promise.then( function() {
+				var promise = new Promise;
+				this.index.document.$content.once( "load", function() {
+					promise.resolve();
+					promiseCallback.resolve();
+				} );
 
-    }
-  }, {
-    global: {
+				return promise;
+			} );
+		},
+		launch: function() {
 
-    }
-  }, Application );
+		}
+	}, {
+		global: {
 
-  return app;
+		}
+	}, Application );
+
+	return app;
 } );
