@@ -2219,7 +2219,7 @@
 			cover = $.createEle( "div" );
 
 		image.style.cssText = "position:absolute;top:50%;left:50%";
-		cover.style.cssText = "width:100%;height:100%;position:absolute;top:0;left:0;zIndex:10001;background-color:white";
+		cover.style.cssText = "width:100%;height:100%;position:absolute;top:0;left:0;z-index:10001;background-color:white";
 
 		cover.appendChild( image );
 
