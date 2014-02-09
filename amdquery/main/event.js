@@ -6,7 +6,7 @@
 		html = "blur focus focusin focusout".split( " " ),
 		key = "keydown keypress keyup".split( " " ),
 		other = "resize scroll change select submit DomNodeInserted DomNodeRemoved".split( " " ),
-		_eventNameList = [].concat( mouse, mutation, html, key, other ),
+		// _eventNameList = [].concat( mouse, mutation, html, key, other ),
 		domEventList = {},
 		eventHooks = {
 			type: function( type ) {
@@ -185,7 +185,7 @@
 		},
 
 		cloneHandlers: function( ele, handlerEve ) {
-			var customEvent = data.set( handlerEve, "_handlers_" );
+			var customEvent = utilData.set( handlerEve, "_handlers_" );
 			if ( customEvent ) {
 				var handlerMap = customEvent._handlerMap,
 					j = 0,
@@ -199,7 +199,7 @@
 						domEventList[ i ] && event.document._addHandler( ele, i, fun.__guid || fun );
 					}
 				}
-				data.set( ele, "_handlers_", customEvent );
+				utilData.set( ele, "_handlers_", customEvent );
 			}
 		},
 
@@ -351,12 +351,13 @@
 					/// <returns type="null" />
 					var eventF = event.document,
 						createEvent = eventF.createEvent,
-						settings = i = utilExtend.extend( {}, eventF.imitation._keySettings, paras ),
+						settings = utilExtend.extend( {}, eventF.imitation._keySettings, paras ),
+						opt = settings,
 						e, i, name;
 					eventF.imitation._editKeyCharCode( settings );
 					if ( client.browser.firefox ) {
 						e = createEvent( "KeyEvents" );
-						e.initKeyEvent( type, i.bubbles, i.cancelable, i.view, i.ctrlKey, i.altKey, i.shiftKey, i.metaKey, i.keyCode, i.charCode );
+						e.initKeyEvent( type, opt.bubbles, opt.cancelable, opt.view, opt.ctrlKey, opt.altKey, opt.shiftKey, opt.metaKey, opt.keyCode, opt.charCode );
 					} else if ( client.browser.ie678 ) {
 						e = createEvent();
 						for ( i in settings ) {
@@ -500,7 +501,7 @@
 			}
 		},
 
-		error: function( isMsgDiv ) {
+		error: function() {
 			/// <summary>抛出异常</summary>
 			/// <param name="isMsgDiv" type="Boolean">是否以div内容出现否则为title</param>
 			/// <returns type="self" />
@@ -508,6 +509,7 @@
 				var msg = e.message || "no message",
 					filename = e.filename || e.sourceURL || e.stacktrace || url;
 				line = e.lineno || e.lineNumber || e.number || e.lineNumber || e.line || line;
+				$.logger( "line", line, "message", msg, "at", filename );
 			} );
 			return this;
 		},
@@ -519,7 +521,7 @@
 			var data = utilData.get( ele, "_handlers_" );
 			if ( !data ) {
 				data = new CustomEvent();
-				utilData.set( ele, "_handlers_", data )
+				utilData.set( ele, "_handlers_", data );
 			}
 			return this;
 		},
@@ -644,9 +646,9 @@
 			bus.trigger.apply( bus, arguments );
 			return this;
 		},
-		once: function() {
-			bus.once( ele, type );
-
+		once: function(type, fn) {
+			bus.once( type, fn );
+      return this;
 		},
 
 		bus: bus,
@@ -1001,7 +1003,7 @@
 			/// <returns type="self" />
 			return typed.isFun( fun ) ? this.addHandler( "keydown", function( e ) {
 				client.browser.firefox && e.keyCode || ( e.keyCode = e.which );
-				e.charCode == undefined && ( e.charCode = e.keyCode );
+				e.charCode === undefined && ( e.charCode = e.keyCode );
 				fun.call( this, e );
 			} ) : this.trigger( "keydown", fun );
 		},
@@ -1012,7 +1014,7 @@
 			/// <returns type="self" />
 			return typed.isFun( fun ) ? this.addHandler( "keypress", function( e ) {
 				client.browser.firefox && e.keyCode || ( e.keyCode = e.which );
-				e.charCode == undefined && ( e.charCode = e.keyCode );
+				e.charCode === undefined && ( e.charCode = e.keyCode );
 				fun.call( this, e, String.fromCharCode( e.charCode ) );
 			} ) : this.trigger( "keypress", fun );
 		},
