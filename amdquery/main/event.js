@@ -10,9 +10,6 @@
 		domEventList = {},
 		eventHooks = {
 			type: function( type ) {
-				/// <summary>兼容事件类型名</summary>
-				/// <param name="type" type="String"></param>
-				/// <returns type="String" />
 				var temp;
 				switch ( type ) {
 					case "focus":
@@ -47,13 +44,16 @@
 					eventDoc.getButton( this );
 				};
 			},
-			proxy: function( fun ) {
-				/// <summary>代理，主要是用于addHandler</summary>
-				/// <param name="fun" type="Function">方法</param>
-				/// <returns type="Function" />
-				if ( !fun.__guid ) {
+			/**
+			 * @inner
+			 * Proxy of event handler.
+			 * @param {Function}
+			 * @returns {Function}
+			 */
+			proxy: function( fn ) {
+				if ( !fn.__guid ) {
 					var temp;
-					fun.__guid = function( e ) {
+					fn.__guid = function( e ) {
 						var evt = event.document.getEvent( e ),
 							target = this;
 
@@ -66,10 +66,10 @@
 							config.module.compatibleEvent && eventHooks.compatibleEvent( evt );
 						}
 
-						fun.call( target, evt || {} );
+						fn.call( target, evt || {} );
 					};
 				}
-				return fun.__guid;
+				return fn.__guid;
 			}
 		},
 		_initCustomEvent = function( ele, type ) {
@@ -84,72 +84,109 @@
 		len;
 
 	/**
-	 * Export network requests.
-	 * <br /> JSONP or AJAX.
-	 * @exports main/communicate
+	 * Export event util.
+	 * <br /> It create bus to send or listion message for aQuery life-cycle.
+	 * @exports main/event
+	 * @requires module:base/config
 	 * @requires module:base/typed
 	 * @requires module:base/extend
-	 * @requires module:main/event
-	 * @requires module:main/parse
+	 * @requires module:base/client
+	 * @requires module:base/array
+	 * @requires module:main/query
+	 * @requires module:main/CustomEvent
+	 * @requires module:main/data
 	 */
 	var event = {
-		addHandler: function( ele, type, fun ) {
-			/// <summary>给aQuery或元素添加事件</summary>
-			/// <para>$.addHandler(ele,"click",function(){})</para>
-			/// <para>$.addHandler("ajaxStart",function(){})</para>
-			/// <param name="ele" type="Element/String">元素或类型</param>
-			/// <param name="type" type="String/Function">方法或类型</param>
-			/// <param name="fun" type="Function/undefined">方法或空</param>
-			/// <returns type="self" />
-			if ( fun === null || type === null ) {
-				return this.clearHandlers( ele, type );
-			}
-
+		/**
+		 * Add an event Handler to element.
+		 * @param {Element}
+		 * @param {String} - "click", "swap.down"
+		 * @param {Function}
+		 * @returns {this}
+		 */
+		addHandler: function( ele, type, fn ) {
 			if ( typed.isEle( ele ) || typed.isWindow( ele ) ) {
 				var data, proxy, item, types = type.split( " " ),
 					i = types.length - 1;
 
 				data = _initCustomEvent( ele, "_handlers_" );
-				proxy = eventHooks.proxy( fun, this );
+				proxy = eventHooks.proxy( fn, this );
 
 				for ( ; i >= 0; i-- ) {
 					item = types[ i ];
-					if ( data.hasHandler( item, fun ) == -1 && domEventList[ item ] ) {
+					if ( data.hasHandler( item, fn ) == -1 && domEventList[ item ] ) {
 						item = eventHooks.type( item );
 						event.document._addHandler( ele, item, proxy );
 					}
 				}
 
-				type && fun && data.addHandler( type, fun );
+				type && fn && data.addHandler( type, fn );
 			}
 			return this;
 		},
-		once: function( ele, type, fun ) {
+		/**
+		 * Add a event Handler to element and do once.
+		 * <br /> It will remove handler after done.
+		 * @param {Element}
+		 * @param {String} - "click", "swap.down"
+		 * @param {Function}
+		 * @returns {this}
+		 */
+		once: function( ele, type, fn ) {
 			if ( typed.isEle( ele ) || typed.isWindow( ele ) ) {
 				var data, proxy, item, types = type.split( " " ),
 					i = types.length - 1;
 
 				data = _initCustomEvent( ele, "_handlers_" );
-				proxy = eventHooks.proxy( fun, this );
+				proxy = eventHooks.proxy( fn, this );
 
 				for ( ; i >= 0; i-- ) {
 					item = types[ i ];
-					if ( data.hasHandler( item, fun ) == -1 && domEventList[ item ] ) {
+					if ( data.hasHandler( item, fn ) == -1 && domEventList[ item ] ) {
 						item = eventHooks.type( item );
 						event.document.once( ele, item, proxy );
 					}
 				}
 
-				type && fun && data.once( type, proxy );
+				type && fn && data.once( type, proxy );
 			}
 			return this;
 		},
+		/**
+		 * Remove an event Handler from element.
+		 * @param {Element}
+		 * @param {String} - "click", "swap.down"
+		 * @param {Function}
+		 * @returns {this}
+		 */
+		removeHandler: function( ele, type, fn ) {
+			if ( typed.isEle( ele ) || typed.isWindow( ele ) ) {
+				var data, proxy = fn.__guid || fn,
+					types = type.split( " " ),
+					i = types.length - 1,
+					item;
 
+				for ( ; i >= 0; i-- ) {
+					item = types[ i ];
+					if ( domEventList[ item ] ) {
+						item = eventHooks.type( item );
+						event.document._removeHandler( ele, item, proxy );
+					}
+				}
+
+				data = _initCustomEvent( ele, "_handlers_" );
+				type && fn && data.removeHandler( type, fn );
+
+			}
+			return this;
+		},
+		/**
+		 * Remove all event Handler from element.
+		 * @param {Element}
+		 * @param {String} [type] - If type is undefined then clear all handlers.
+		 * @returns {this}
+		 */
 		clearHandlers: function( ele, type ) {
-			/// <summary>移除dom元素的所有事件或所有aQuery提供的事件，如果类型存在则删除这种类型</summary>
-			/// <param name="ele" type="Element/undefined">元素</param>
-			/// <param name="type" type="String/undefinded">事件类型</param>
-			/// <returns type="self" />
 			if ( typed.isEle( ele ) || typed.isWindow( ele ) ) {
 				var data = utilData.get( ele, "_handlers_" );
 				if ( !data ) {
@@ -183,9 +220,14 @@
 			}
 			return this;
 		},
-
+		/**
+		 * Clone the current element`s handler to another element.
+		 * @param {Element}
+		 * @param {Element}
+		 * @returns {this}
+		 */
 		cloneHandlers: function( ele, handlerEve ) {
-			var customEvent = utilData.set( handlerEve, "_handlers_" );
+			var customEvent = utilData.get( handlerEve, "_handlers_" );
 			if ( customEvent ) {
 				var handlerMap = customEvent._handlerMap,
 					j = 0,
@@ -199,20 +241,23 @@
 						domEventList[ i ] && event.document._addHandler( ele, i, fun.__guid || fun );
 					}
 				}
+				event.clearHandlers( ele );
 				utilData.set( ele, "_handlers_", customEvent );
 			}
+			return this;
 		},
-
-		hasHandler: function( ele, type, fun ) {
-			/// <summary>查找aQuery或元素事件</summary>
-			/// <param name="ele" type="Element/String">元素或类型</param>
-			/// <param name="type" type="String/Function">方法或类型</param>
-			/// <param name="fun" type="Function/undefined">方法</param>
-			/// <returns type="Number" />
+		/**
+		 * Has the element an event handler.
+		 * @param {Element}
+		 * @param {String}
+		 * @param {Function}
+		 * @returns {Number} fn - "-1" means has not.
+		 */
+		hasHandler: function( ele, type, fn ) {
 			if ( typed.isEle( ele ) || typed.isWindow( ele ) ) {
 				var proxy;
 				if ( domEventList[ type ] ) {
-					proxy = fun.__guid || fun;
+					proxy = fn.__guid || fn;
 					type = eventHooks.type( type );
 					return event.document.hasHandler( ele, type, proxy );
 				}
@@ -501,10 +546,11 @@
 			}
 		},
 
+		/**
+		 * Listen error form window.
+		 * @returns {this}
+		 */
 		error: function() {
-			/// <summary>抛出异常</summary>
-			/// <param name="isMsgDiv" type="Boolean">是否以div内容出现否则为title</param>
-			/// <returns type="self" />
 			event.document.addHandler( window, "error", function( e, url, line ) {
 				var msg = e.message || "no message",
 					filename = e.filename || e.sourceURL || e.stacktrace || url;
@@ -515,9 +561,6 @@
 		},
 
 		_initHandler: function( ele ) {
-			/// <summary>初始化事件集</summary>
-			/// <param name="ele" type="Element/undefined">元素</param>
-			/// <private/>
 			var data = utilData.get( ele, "_handlers_" );
 			if ( !data ) {
 				data = new CustomEvent();
@@ -525,42 +568,20 @@
 			}
 			return this;
 		},
-
-		removeHandler: function( ele, type, fun ) {
-			/// <summary>给aQuery或元素添加事件</summary>
-			/// <para>$.removeHandler(ele,"click",fun)</para>
-			/// <para>$.removeHandler("ajaxStart",fun)</para>
-			/// <param name="ele" type="Element/String">元素或类型</param>
-			/// <param name="type" type="String/Function">方法或类型</param>
-			/// <param name="fun" type="Function/undefined">方法或空</param>
-			/// <returns type="self" />
-			if ( typed.isEle( ele ) || typed.isWindow( ele ) ) {
-				var data, proxy = fun.__guid || fun,
-					types = type.split( " " ),
-					i = types.length - 1,
-					item;
-
-				for ( ; i >= 0; i-- ) {
-					item = types[ i ];
-					if ( domEventList[ item ] ) {
-						item = eventHooks.type( item );
-						event.document._removeHandler( ele, item, proxy );
-					}
-				}
-
-				data = _initCustomEvent( ele, "_handlers_" );
-				type && fun && data.removeHandler( type, fun );
-
-			}
-			return this;
-		},
-
+		/**
+		 * Toggle event.
+		 * @example
+		 * var test1 = $("#a")[0];
+		 * event.toggle( test1, function() {
+		 *   alert(1)
+		 * }, function() {
+		 *   alert(2)
+		 * });
+		 * @param {Element}
+		 * @param {...Function} - Handelrs.
+		 * @returns {this}
+		 */
 		toggle: function( ele, funParas ) {
-			/// <summary>切换点击或解除绑定</summary>
-			/// <para>若只有ele 就解除绑定</para>
-			/// <param name="ele" type="Element">element元素</param>
-			/// <param name="funParas" type="Function:[]/undefined">方法组</param>
-			/// <returns type="self" />
 			var arg = $.util.argToArray( arguments, 1 ),
 				index = 0,
 				data;
@@ -596,16 +617,29 @@
 				arg: arg
 			} );
 		},
-
+		/**
+		 * Trigger an native or custom event.
+		 * @example
+		 * var test1 = $("#a");
+		 * var fn1 = function(str) {
+		 *   $.logger(typed.isEvent(str));
+		 *   $.logger({}.toString.call(str));
+		 * }
+		 * test1.on("mousedown", fn1);
+		 * test1.trigger("mousedown", {
+		 *   screenX: 4
+		 * });
+		 * test1.on("my.test1", fn1);
+		 * test1.trigger("my.test1", {
+		 *   screenX: 5
+		 * });
+		 * @param {Element}
+		 * @param {String}
+		 * @param {Object} - Function context.
+		 * @param {...Object}
+		 * @returns {this}
+		 */
 		trigger: function( ele, type, context, paras ) {
-			/// <summary>
-			/// 触发自定义或者原生事件
-			/// </summary>
-			/// <param name="ele" type="Element">dom对象</param>
-			/// <param name="type" type="String">事件类型</param>
-			/// <param name="context" type="Object">当为自定义事件时 为作用域 否则为事件参数</param>
-			/// <param name="paras" type="para:[any]">当为自定义事件时 为参数列表</param>
-			/// <returns type="self"></returns>
 			if ( typed.isEle( ele ) || typed.isWindow( ele ) ) {
 				var data;
 				if ( data = domEventList[ type ] ) {
@@ -620,118 +654,226 @@
 	};
 
 	utilExtend.easyExtend( event, {
+		/**
+		 * Alias addHandler.
+		 * @memberOf module:main/event
+		 * @method
+		 * @param {Element}
+		 * @param {String} - "click", "swap.down"
+		 * @param {Function}
+		 * @returns {this}
+		 */
 		on: event.addHandler,
+		/**
+		 * Alias removeHandler.
+		 * @memberOf module:main/event
+		 * @method
+		 * @param {Element}
+		 * @param {String} - "click", "swap.down"
+		 * @param {Function}
+		 * @returns {this}
+		 */
 		off: event.removeHandler,
+		/**
+		 * Alias clearHandlers.
+		 * @memberOf module:main/event
+		 * @method
+		 * @param {Element}
+		 * @param {String} [type] - If type is undefined then clear all handlers.
+		 * @returns {this}
+		 */
 		clear: event.clearHandlers
 	} );
 
 	var bus = new CustomEvent();
 
-	$.extend( {
+	$.extend( /** @lends aQuery */ {
+		/**
+		 * Add an event Handler to bus.
+		 * @param {String} - "click", "swap.down"
+		 * @param {Function}
+		 * @returns {this}
+		 */
 		addHandler: function( type, fn ) {
 			bus.addHandler( type, fn );
 			return this;
 		},
+		/**
+		 * Remove an event Handler from bus.
+		 * @param {String} - "click", "swap.down"
+		 * @param {Function}
+		 * @returns {this}
+		 */
 		removeHandler: function( type, fn ) {
 			bus.removeHandler( type, fn );
 		},
+		/**
+		 * Clear all event Handler from bus.
+		 * @param {String} - "click", "swap.down"
+		 * @returns {this}
+		 */
 		clearHandlers: function( type ) {
 			bus.clearHandlers( type );
 			return this;
 		},
+		/**
+		 * Has the element an event handler.
+		 * @param {String} - "click", "swap.down"
+		 * @param {Function}
+		 * @returns {this}
+		 */
 		hasHandler: function( type, fn ) {
 			return bus.hasHandler( type, fn );
 		},
+		/**
+		 * Trigger an event to bus.
+		 * @param {Element}
+		 * @param {String}
+		 * @param {Object} - Function context.
+		 * @param {...Object}
+		 * @returns {this}
+		 */
 		trigger: function() {
 			bus.trigger.apply( bus, arguments );
 			return this;
 		},
-		once: function(type, fn) {
+		/**
+		 * Add a event Handler to element and do once.
+		 * <br /> It will remove handler after done.
+		 * @param {String} - "click", "swap.down"
+		 * @param {Function}
+		 * @returns {this}
+		 */
+		once: function( type, fn ) {
 			bus.once( type, fn );
-      return this;
+			return this;
 		},
 
+		/** {CustomEvent} */
 		bus: bus,
 
-		ajaxStart: function( fun ) {
-			/// <summary>ajax开始</summary>
-			/// <param name="fun" type="Function">方法</param>
-			/// <returns type="self" />
-			return $.addHandler( "ajaxStart", fun );
+		/**
+		 * Add "ajaxStart" event Handler to bus.
+		 * @param {Function}
+		 * @returns {this}
+		 */
+		ajaxStart: function( fn ) {
+			return $.addHandler( "ajaxStart", fn );
 		},
-		ajaxStop: function( fun ) {
-			/// <summary>ajax停止</summary>
-			/// <param name="fun" type="Function">方法</param>
-			/// <returns type="self" />
-			return $.addHandler( "ajaxStop", fun );
+		/**
+		 * Add "ajaxStop" event Handler to bus.
+		 * @param {Function}
+		 * @returns {this}
+		 */
+		ajaxStop: function( fn ) {
+			return $.addHandler( "ajaxStop", fn );
 		},
-		ajaxTimeout: function( fun ) {
-			/// <summary>ajax超时</summary>
-			/// <param name="fun" type="Function">方法</param>
-			/// <returns type="self" />
-			return $.addHandler( "ajaxTimeout", fun );
+		/**
+		 * Add "ajaxTimeout" event Handler to bus.
+		 * @param {Function}
+		 * @returns {this}
+		 */
+		ajaxTimeout: function( fn ) {
+			return $.addHandler( "ajaxTimeout", fn );
 		},
-
-		getJSStart: function( fun ) {
-			/// <summary>加载js开始</summary>
-			/// <param name="fun" type="Function">方法</param>
-			/// <returns type="self" />
-			return $.addHandler( "getJSStart", fun );
+		/**
+		 * Add "getJSStart" event Handler to bus.
+		 * @param {Function}
+		 * @returns {this}
+		 */
+		getJSStart: function( fn ) {
+			return $.addHandler( "getJSStart", fn );
 		},
-		getJSStop: function( fun ) {
-			/// <summary>加载js停止</summary>
-			/// <param name="fun" type="Function">方法</param>
-			/// <returns type="self" />
-			return $.addHandler( "getJSStop", fun );
+		/**
+		 * Add "getJSStop" event Handler to bus.
+		 * @param {Function}
+		 * @returns {this}
+		 */
+		getJSStop: function( fn ) {
+			return $.addHandler( "getJSStop", fn );
 		},
-		getJSTimeout: function( fun ) {
-			/// <summary>加载js超时</summary>
-			/// <param name="fun" type="Function">方法</param>
-			/// <returns type="self" />
-			return $.addHandler( "getJSTimeout", fun );
+		/**
+		 * Add "getJSTimeout" event Handler to bus.
+		 * @param {Function}
+		 * @returns {this}
+		 */
+		getJSTimeout: function( fn ) {
+			return $.addHandler( "getJSTimeout", fn );
 		},
 	} );
 
 	$.extend( {
+		/**
+		 * Add an event Handler to bus.
+		 * @memberOf aQuery
+		 * @param {String} - "click", "swap.down"
+		 * @param {Function}
+		 * @returns {this}
+		 */
 		on: $.addHandler,
+		/**
+		 * Remove an event Handler from bus.
+		 * @memberOf aQuery
+		 * @param {String} - "click", "swap.down"
+		 * @param {Function}
+		 * @returns {this}
+		 */
 		off: $.removeHandler,
+		/**
+		 * Clear all event Handler from bus.
+		 * @memberOf aQuery
+		 * @param {String} - "click", "swap.down"
+		 * @param {Function}
+		 * @returns {this}
+		 */
 		clear: $.clearHandlers
 	} );
 
 
-	$.fn.extend( {
-		addHandler: function( type, fun ) {
-			/// <summary>给当前$所有DOM元素添加事件</summary>
-			/// <param name="type" type="String">事件类型</param>
-			/// <param name="fun" type="Function">事件方法</param>
-			/// <returns type="self" />
-			if ( !typed.isStr( type ) || !( typed.isFun( fun ) || fun === null ) ) return this;
+	$.fn.extend( /** @lends aQuery.prototype */ {
+		/**
+		 * Add an event Handler to elements.
+		 * @param {String} - "click", "swap.down"
+		 * @param {Function}
+		 * @returns {this}
+		 */
+		addHandler: function( type, fn ) {
+			if ( !typed.isStr( type ) || !( typed.isFun( fn ) || fn === null ) ) return this;
 			return this.each( function( ele ) {
-				event.addHandler( ele, type, fun );
+				event.addHandler( ele, type, fn );
 			} );
 		},
-		once: function( type, fun ) {
-			if ( !typed.isStr( type ) || !( typed.isFun( fun ) || fun === null ) ) return this;
+		/**
+		 * Add a event Handler to elements and do once.
+		 * <br /> It will remove handler after done.
+		 * @param {String} - "click", "swap.down"
+		 * @param {Function}
+		 * @returns {this}
+		 */
+		once: function( type, fn ) {
+			if ( !typed.isStr( type ) || !( typed.isFun( fn ) || fn === null ) ) return this;
 			return this.each( function( ele ) {
-				event.once( ele, type, fun );
+				event.once( ele, type, fn );
 			} );
 		},
-
+		/**
+		 * Clear all event Handler from elements.
+		 * @param {String} - "click", "swap.down"
+		 * @returns {this}
+		 */
 		clearHandlers: function( type ) {
-			/// <summary>移除dom元素的所有事件或单独某一类事件</summary>
-			/// <param name="type" type="String/undefinded">事件类型</param>
-			/// <returns type="self" />
 			return this.each( function( ele ) {
 				event.clearHandlers( ele, type );
 			} );
 		},
-
-		delegate: function( selector, type, fun ) {
-			/// <summary>作为委托监听子元素</summary>
-			/// <param name="selector" type="String">查询语句</param>
-			/// <param name="type" type="String">事件类型</param>
-			/// <param name="fun" type="Function">事件方法</param>
-			/// <returns type="self" />
+		/**
+		 * Delegate children event handler from parentNode.
+		 * @param {String} - "div>a"
+		 * @param {String} - "click", "swap.down"
+		 * @param {Function}
+		 * @returns {this}
+		 */
+		delegate: function( selector, type, fn ) {
 			return this.each( function( parentNode ) {
 				event.addHandler( parentNode, type, function( e ) {
 					var
@@ -740,38 +882,43 @@
 						ret = array.inArray( eleCollection || [], target );
 
 					if ( ret > -1 ) {
-						fun.call( target, e );
+						fn.call( target, e );
 					}
 
 				} );
 			} );
 		},
-
-		removeHandler: function( type, fun ) {
-			/// <summary>给所有DOM元素移除事件</summary>
-			/// <para>例:"mousedown mouseup"</para>
-			/// <param name="type" type="String">事件类型</param>
-			/// <param name="fun" type="Function">事件方法</param>
-			/// <returns type="self" />
-			if ( !typed.isStr( type ) || !typed.isFun( fun ) ) return this;
+		/**
+		 * Remove an event Handler from elements.
+		 * @param {String} - "click", "swap.down"
+		 * @param {Function}
+		 * @returns {this}
+		 */
+		removeHandler: function( type, fn ) {
+			if ( !typed.isStr( type ) || !typed.isFun( fn ) ) return this;
 			return this.each( function( ele ) {
-				event.removeHandler( ele, type, fun );
+				event.removeHandler( ele, type, fn );
 			} );
 		},
-
 		_initHandler: function() {
-			/// <summary>初始化事件集</summary>
-			/// <private/>
 			return this.each( function( ele ) {
 				event._initHandler( ele );
 			} );
 		},
-
+		/**
+		 * Toggle event.
+		 * @example
+		 * var test1 = $("#a");
+		 * test1.toggle(function() {
+		 *   alert(1)
+		 * }, function() {
+		 *   alert(2)
+		 * });
+		 * @param {Element}
+		 * @param {...Function} - Handelrs.
+		 * @returns {this}
+		 */
 		toggle: function( funParas ) {
-			/// <summary>切换点击或解除绑定</summary>
-			/// <para>若没有funParas 就解除绑定</para>
-			/// <param name="funParas" type="Function:[]/Array[Function]">方法组</param>
-			/// <returns type="self" />
 			var arg = typed.isArr( funParas ) ? funParas : $.util.argToArray( arguments, 0 ),
 				temp, i = 0,
 				ele;
@@ -782,170 +929,184 @@
 			}
 			return this;
 		},
-
+		/**
+		 * Trigger an event from elements.
+		 * @param {String}
+		 * @param {Object} - Function context.
+		 * @param {...Object}
+		 * @returns {this}
+		 */
 		trigger: function( type, a, b, c ) {
-			/// <summary>
-			/// 触发自定义或者原生事件
-			/// </summary>
-			/// <param name="ele" type="Element">dom对象</param>
-			/// <param name="a" type="String">事件类型</param>
-			/// <param name="b" type="Object">当为自定义事件时 为作用域 否则为事件参数</param>
-			/// <param name="c" type="para:[any]">当为自定义事件时 为参数列表</param>
-			/// <returns type="self"></returns>
 			var arg = $.util.argToArray( arguments );
 			return this.each( function( ele ) {
 				event.trigger.apply( null, [ ele ].concat( arg ) );
 			} );
 		},
-
-		blur: function( fun ) {
-			/// <summary>绑定或触发mousedown事件</summary>
-			/// <param name="fun" type="Function/Object/undefined">不存在则触发</param>
-			/// <returns type="self" />
-			var type = arguments[ 1 ] || "blur";
-			return typed.isFun( fun ) ? this.addHandler( type, fun ) : this.trigger( type, fun );
+		/**
+		 * Add "blur" event handler to elements.
+		 * @param {Function}
+		 * @returns {this}
+		 */
+		blur: function( fn ) {
+			return this.addHandler( "blur", fn );
 		},
-
-		focus: function( fun ) {
-			/// <summary>绑定或触发focus事件</summary>
-			/// <param name="fun" type="Function/Object/undefined">不存在则触发</param>
-			/// <returns type="self" />
-			return this.blur( fun, "focus" );
+		/**
+		 * Add "focus" event handler to elements.
+		 * @param {Function}
+		 * @returns {this}
+		 */
+		focus: function( fn ) {
+			return this.addHandler( "focus", fn );
 		},
-
-		focusin: function( fun ) {
-			/// <summary>绑定或触发focusin事件</summary>
-			/// <param name="fun" type="Function/Object/undefined">不存在则触发</param>
-			/// <returns type="self" />
-			return this.blur( fun, "focusin" );
+		/**
+		 * Add "focusin" event handler to elements.
+		 * @param {Function}
+		 * @returns {this}
+		 */
+		focusin: function( fn ) {
+			return this.addHandler( "focusin", fn );
 		},
-
-		focusout: function( fun ) {
-			/// <summary>绑定或触发focusout事件</summary>
-			/// <param name="fun" type="Function/Object/undefined">不存在则触发</param>
-			/// <returns type="self" />
-			return this.blur( fun, "focusout" );
+		/**
+		 * Add "focusout" event handler to elements.
+		 * @param {Function}
+		 * @returns {this}
+		 */
+		focusout: function( fn ) {
+			return this.addHandler( "focusout", fn );
 		},
-
-		load: function( fun ) {
-			/// <summary>绑定或触发load事件</summary>
-			/// <param name="fun" type="Function/Object/undefined">不存在则触发</param>
-			/// <returns type="self" />
-			return this.blur( fun, "load" );
+		/**
+		 * Add "load" event handler to elements.
+		 * @param {Function}
+		 * @returns {this}
+		 */
+		load: function( fn ) {
+			return this.addHandler( "load", fn );
 		},
-
-		resize: function( fun ) {
-			/// <summary>绑定或触发resize事件</summary>
-			/// <param name="fun" type="Function/Object/undefined">不存在则触发</param>
-			/// <returns type="self" />
-			return this.blur( fun, "resize" );
+		/**
+		 * Add "resize" event handler to elements.
+		 * @param {Function}
+		 * @returns {this}
+		 */
+		resize: function( fn ) {
+			return this.addHandler( "resize", fn );
 		},
-
-		scroll: function( fun ) {
-			/// <summary>绑定或触发scroll事件</summary>
-			/// <param name="fun" type="Function/Object/undefined">不存在则触发</param>
-			/// <returns type="self" />
-			return this.blur( fun, "scroll" );
+		/**
+		 * Add "resize" event handler to elements.
+		 * @param {Function}
+		 * @returns {this}
+		 */
+		scroll: function( fn ) {
+			return this.addHandler( "scroll", fn );
 		},
-
-		unload: function( fun ) {
-			/// <summary>绑定或触发unload事件</summary>
-			/// <param name="fun" type="Function/Object/undefined">不存在则触发</param>
-			/// <returns type="self" />
-			return this.blur( fun, "unload" );
+		/**
+		 * Add "unload" event handler to elements.
+		 * @param {Function}
+		 * @returns {this}
+		 */
+		unload: function( fn ) {
+			return this.addHandler( "unload", fn );
 		},
-
-		click: function( fun ) {
-			/// <summary>绑定或触发click事件</summary>
-			/// <param name="fun" type="Function/Object/undefined">不存在则触发</param>
-			/// <returns type="self" />
-			return this.blur( fun, "click" );
+		/**
+		 * Add "click" event handler to elements.
+		 * @param {Function}
+		 * @returns {this}
+		 */
+		click: function( fn ) {
+			return this.addHandler( "click", fn );
 		},
-
-		dblclick: function( fun ) {
-			/// <summary>绑定或触发dblclick事件</summary>
-			/// <param name="fun" type="Function/Object/undefined">不存在则触发</param>
-			/// <returns type="self" />
-			return this.blur( fun, "dblclick" );
+		/**
+		 * Add "dblclick" event handler to elements.
+		 * @param {Function}
+		 * @returns {this}
+		 */
+		dblclick: function( fn ) {
+			return this.addHandler( "dblclick", fn );
 		},
-
-		mousedown: function( fun ) {
-			/// <summary>绑定或触发mousedown事件</summary>
-			/// <param name="fun" type="Function/Object/undefined">不存在则触发</param>
-			/// <returns type="self" />
-			return this.blur( fun, "mousedown" );
+		/**
+		 * Add "mousedown" event handler to elements.
+		 * @param {Function}
+		 * @returns {this}
+		 */
+		mousedown: function( fn ) {
+			return this.addHandler( "dblclick", fn );
 		},
-
-		mouseup: function( fun ) {
-			/// <summary>绑定或触发mouseup事件</summary>
-			/// <param name="fun" type="Function/Object/undefined">不存在则触发</param>
-			/// <returns type="self" />
-			return this.blur( fun, "mouseup" );
+		/**
+		 * Add "mouseup" event handler to elements.
+		 * @param {Function}
+		 * @returns {this}
+		 */
+		mouseup: function( fn ) {
+			return this.addHandler( "mouseup", fn );
 		},
-
-		mousemove: function( fun ) {
-			/// <summary>绑定或触发mousemove事件</summary>
-			/// <param name="fun" type="Function/Object/undefined">不存在则触发</param>
-			/// <returns type="self" />
-			return this.blur( fun, "mousemove" );
+		/**
+		 * Add "mousemove" event handler to elements.
+		 * @param {Function}
+		 * @returns {this}
+		 */
+		mousemove: function( fn ) {
+			return this.addHandler( "mousemove", fn );
 		},
-
-		mouseover: function( fun ) {
-			/// <summary>绑定或触发mouseover事件</summary>
-			/// <param name="fun" type="Function/Object/undefined">不存在则触发</param>
-			/// <returns type="self" />
-			return this.blur( fun, "mouseover" );
+		/**
+		 * Add "mouseover" event handler to elements.
+		 * @param {Function}
+		 * @returns {this}
+		 */
+		mouseover: function( fn ) {
+			return this.addHandler( "mouseover", fn );
 		},
-
-		mouseout: function( fun ) {
-			/// <summary>绑定或触发mouseout事件</summary>
-			/// <param name="fun" type="Function/Object/undefined">不存在则触发</param>
-			/// <returns type="self" />
-			return this.blur( fun, "mouseout" );
+		/**
+		 * Add "mouseout" event handler to elements.
+		 * @param {Function}
+		 * @returns {this}
+		 */
+		mouseout: function( fn ) {
+			return this.addHandler( "mouseout", fn );
 		},
-
-		mouseenter: function( fun ) {
-			/// <summary>绑定或触发mouseenter事件</summary>
-			/// <para>不冒泡</para>
-			/// <param name="fun" type="Function/Object/undefined">不存在则触发</param>
-			/// <returns type="self" />
-			return this.blur( function( e ) {
-				fun.apply( this, arguments );
+		/**
+		 * Add "mouseenter" event handler to elements.
+		 * @param {Function}
+		 * @returns {this}
+		 */
+		mouseenter: function( fn ) {
+			return this.addHandler( "mouseover", function( e ) {
+				fn.apply( this, arguments );
 				event.document.stopPropagation( e );
-			}, "mouseover" );
+			} );
 		},
-
-		mouseleave: function( fun ) {
-			/// <summary>绑定或触发mouseleave事件</summary>
-			/// <para>不冒泡</para>
-			/// <param name="fun" type="Function/Object/undefined">不存在则触发</param>
-			/// <returns type="self" />
-			return this.blur( function( e ) {
-				fun.apply( this, arguments );
+		/**
+		 * Add "mouseleave" event handler to elements.
+		 * @param {Function}
+		 * @returns {this}
+		 */
+		mouseleave: function( fn ) {
+			return this.blur( "mouseout", function( e ) {
+				fn.apply( this, arguments );
 				event.document.stopPropagation( e );
-			}, "mouseout" );
+			} );
 		},
-
-		mousewheel: function( fun ) {
-			/// <summary>添加兼容滚轮事件或触发</summary>
-			/// <param name="fun" type="Function/Object/undefined">事件方法</param>
-			/// <returns type="self" />
-			return typed.isFun( fun ) ? this.addHandler( "mousewheel", function( e ) {
+		/**
+		 * Add "mousewheel" event handler to elements.
+		 * @param {Function}
+		 * @returns {this}
+		 */
+		mousewheel: function( fn ) {
+			return this.addHandler( "mousewheel", function( e ) {
 				e = event.document.getEvent( e );
 				var delta = 0;
 				if ( e.wheelDelta ) delta = e.wheelDelta / 120;
 				if ( e.detail ) delta = -e.detail / 3;
 				delta = Math.round( delta );
-				if ( delta ) fun.call( this, delta );
+				if ( delta ) fn.call( this, delta );
 				event.document.stopPropagation( e );
-			} ) : this.trigger( "mousewheel", fun );
+			} );
 		},
-
-		touchwheel: function( fun ) {
-			/// <summary>触摸板事件或触发</summary>
-			/// <param name="fun" type="Function/Object/undefined">事件方法</param>
-			/// <returns type="self" />
-			return typed.isFun( fun ) ? this.addHandler( "mousewheel", function( e ) {
+		/**
+		 * Add "touchwheel" event handler to elements.
+		 * @param {Function}
+		 * @returns {this}
+		 */
+		touchwheel: function( fn ) {
+			return this.addHandler( "mousewheel", function( e ) {
 				e = event.document.getEvent( e );
 				var delta = 0,
 					direction = "y";
@@ -972,65 +1133,72 @@
 				// if (e.type == "DOMMouseScroll") {
 				//     e.type = "mousewheel";
 				// };
-				fun.call( this, e );
-			} ) : this.trigger( "mousewheel", fun );
+				fn.call( this, e );
+			} );
 		},
-
-		change: function( fun ) {
-			/// <summary>绑定或触发change事件</summary>
-			/// <param name="fun" type="Function/Object/undefined">不存在则触发</param>
-			/// <returns type="self" />
-			return this.blur( fun, "change" );
+		/**
+		 * Add "change" event handler to elements.
+		 * @param {Function}
+		 * @returns {this}
+		 */
+		change: function( fn ) {
+			return this.addHandler( "mouseout", fn );
 		},
-
-		select: function( fun ) {
-			/// <summary>绑定或触发select事件</summary>
-			/// <param name="fun" type="Function/Object/undefined">不存在则触发</param>
-			/// <returns type="self" />
-			return this.blur( fun, "select" );
+		/**
+		 * Add "select" event handler to elements.
+		 * @param {Function}
+		 * @returns {this}
+		 */
+		select: function( fn ) {
+			return this.addHandler( "mouseout", fn );
 		},
-
-		submit: function( fun ) {
-			/// <summary>绑定或触发submit事件</summary>
-			/// <param name="fun" type="Function/Object/undefined">不存在则触发</param>
-			/// <returns type="self" />
-			return this.blur( fun, "submit" );
+		/**
+		 * Add "submit" event handler to elements.
+		 * @param {Function}
+		 * @returns {this}
+		 */
+		submit: function( fn ) {
+			return this.addHandler( "mouseout", fn );
 		},
-
-		keydown: function( fun ) {
-			/// <summary>绑定或触发keydown事件</summary>
-			/// <param name="fun" type="Function/Object/undefined">不存在则触发</param>
-			/// <returns type="self" />
-			return typed.isFun( fun ) ? this.addHandler( "keydown", function( e ) {
+		/**
+		 * Add "keydown" event handler to elements.
+		 * @param {Function}
+		 * @returns {this}
+		 */
+		keydown: function( fn ) {
+			return this.addHandler( "keydown", function( e ) {
 				client.browser.firefox && e.keyCode || ( e.keyCode = e.which );
 				e.charCode === undefined && ( e.charCode = e.keyCode );
-				fun.call( this, e );
-			} ) : this.trigger( "keydown", fun );
+				fn.call( this, e );
+			} );
 		},
-
-		keypress: function( fun ) {
-			/// <summary>绑定或触发keypress事件</summary>
-			/// <param name="fun" type="Function/Object/undefined">不存在则触发</param>
-			/// <returns type="self" />
-			return typed.isFun( fun ) ? this.addHandler( "keypress", function( e ) {
+		/**
+		 * Add "keypress" event handler to elements.
+		 * @param {Function}
+		 * @returns {this}
+		 */
+		keypress: function( fn ) {
+			return this.addHandler( "keypress", function( e ) {
 				client.browser.firefox && e.keyCode || ( e.keyCode = e.which );
 				e.charCode === undefined && ( e.charCode = e.keyCode );
-				fun.call( this, e, String.fromCharCode( e.charCode ) );
-			} ) : this.trigger( "keypress", fun );
+				fn.call( this, e, String.fromCharCode( e.charCode ) );
+			} );
 		},
-
-		keyup: function( fun ) {
-			/// <summary>绑定或触发keyup事件</summary>
-			/// <param name="fun" type="Function/Object/undefined">不存在则触发</param>
-			/// <returns type="self" />
-			return this.blur( fun, "keyup" );
+    /**
+     * Add "keyup" event handler to elements.
+     * @param {Function}
+     * @returns {this}
+     */
+		keyup: function( fn ) {
+			return this.addHandler( "mouseout", fn );
 		},
-
-		error: function( fun ) {
-			/// <summary>绑定或触发error事件</summary>
-			/// <param name="fun" type="Function/Object/undefined">不存在则触发</param>
-			/// <returns type="self" />
-			return this.blur( fun, "error" );
+    /**
+     * Add "keyup" event handler to elements.
+     * @param {Function}
+     * @returns {this}
+     */
+		error: function( fn ) {
+			return this.addHandler( "error", fn );
 		}
 	} );
 
