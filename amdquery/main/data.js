@@ -200,10 +200,9 @@
 		}
 	};
 
-	$.fn.extend( {
+	$.fn.extend( /** @lends aQuery.prototype */ {
 		/**
 		 * Get or set data.
-		 * @memberof aQuery.prototype
 		 * @param {String}
 		 * @param {*|Object} [value] - If value is undefined then get data, else if value is plain object then add all properties to cache.
 		 * @returns {this|*}
@@ -222,7 +221,6 @@
 		},
 		/**
 		 * Remove data.
-		 * @memberof aQuery.prototype
 		 * @param {String} - If key is undefined then remove all.
 		 * @returns {this}
 		 */
@@ -232,7 +230,6 @@
 			} );
 		},
 		/**
-		 * @memberof aQuery.prototype
 		 * @returns {Boolean}
 		 */
 		hasData: function() {

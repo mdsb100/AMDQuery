@@ -119,10 +119,8 @@
 
 	$.extend( cls );
 
-	$.fn.extend( {
+	$.fn.extend( /** @lends aQuery.prototype */ {
 		/**
-		 * @public
-		 * @memberof aQuery.prototype
 		 * @param {String}
 		 * @returns {this}
 		 */
@@ -132,8 +130,6 @@
 			}, this );
 		},
 		/**
-		 * @public
-		 * @memberof aQuery.prototype
 		 * @param {String}
 		 * @returns {Boolean}
 		 */
@@ -141,8 +137,6 @@
 			return cls.containsClass( this[ 0 ], className );
 		},
 		/**
-		 * @public
-		 * @memberof aQuery.prototype
 		 * @param {String}
 		 * @returns {this}
 		 */
@@ -152,8 +146,6 @@
 			} );
 		},
 		/**
-		 * @public
-		 * @memberof aQuery.prototype
 		 * @param {String}
 		 * @returns {this}
 		 */
@@ -163,8 +155,6 @@
 			} );
 		},
 		/**
-		 * @public
-		 * @memberof aQuery.prototype
 		 * @param {String}
 		 * @param {String}
 		 * @returns {this}
@@ -175,16 +165,12 @@
 			} );
 		},
 		/**
-		 * @public
-		 * @memberof aQuery.prototype
 		 * @returns {Number}
 		 */
 		classLength: function() {
 			return cls.classLength( this[ 0 ] );
 		},
 		/**
-		 * @public
-		 * @memberof aQuery.prototype
 		 * @param {Number}
 		 * @returns {String}
 		 */

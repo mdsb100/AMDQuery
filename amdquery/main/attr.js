@@ -102,7 +102,7 @@
 		/**
 		 * @param {Element}
 		 * @param {String}
-     * @param {String|Number}
+		 * @param {String|Number}
 		 * @returns {this}
 		 */
 		setAttr: function( ele, name, value ) {
@@ -154,23 +154,21 @@
 
 	$.extend( attr );
 
-	$.fn.extend( {
-    /**
-     * Set or get attribute.
-     * @example
-     * $("#img").attr({
-     *   width: "100px",
-     *   height: "100px"
-     * }).attr("title", "Flower");
-     * $("#div1").attr("title", "Hello");
-     * $("#div2").attr("title", "World");
-     * $("#div1, #div2").attr("title"); // return "Hello"
-     * @public
-     * @memberof aQuery.prototype
-     * @param {String|Object}
-     * @param {String|Number} [value]
-     * @returns {this|String}
-     */
+	$.fn.extend( /** @lends aQuery.prototype */ {
+		/**
+		 * Set or get attribute.
+		 * @example
+		 * $("#img").attr({
+		 *   width: "100px",
+		 *   height: "100px"
+		 * }).attr("title", "Flower");
+		 * $("#div1").attr("title", "Hello");
+		 * $("#div2").attr("title", "World");
+		 * $("#div1, #div2").attr("title"); // return "Hello"
+		 * @param {String|Object}
+		 * @param {String|Number} [value]
+		 * @returns {this|String}
+		 */
 		attr: function( attr, value ) {
 			if ( typed.isObj( attr ) ) {
 				for ( var i in attr ) {
@@ -189,25 +187,21 @@
 			}
 			return this;
 		},
-    /**
-     * Remove attribute.
-     * @public
-     * @memberof aQuery.prototype
-     * @param {String}
-     * @returns {this}
-     */
+		/**
+		 * Remove attribute.
+		 * @param {String}
+		 * @returns {this}
+		 */
 		removeAttr: function( name ) {
 			return this.each( function( ele ) {
 				$.removeAttr( ele, name );
 			} );
 		},
-    /**
-     * Get or set value.
-     * @public
-     * @memberof aQuery.prototype
-     * @param {String|Boolean|Number} [value]
-     * @returns {this|String}
-     */
+		/**
+		 * Get or set value.
+		 * @param {String|Boolean|Number} [value]
+		 * @returns {this|String}
+		 */
 		val: function( value ) {
 			return value ? this.each( function( ele ) {
 				$.setVal( ele, value );

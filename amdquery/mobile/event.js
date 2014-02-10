@@ -106,11 +106,9 @@
 			event.domEventList[ other[ i ] ] = 1;
 		}
 
-		$.fn.extend( {
+		$.fn.extend( /** @lends aQuery.prototype */{
 			/**
 			 * Bind or trigger touchstart.
-			 * @public
-			 * @memberof aQuery.prototype
 			 * @param {Function|Object} [fn]
 			 * @returns {this}
 			 */
@@ -119,8 +117,6 @@
 			},
 			/**
 			 * Bind or trigger touchmove.
-			 * @public
-			 * @memberof aQuery.prototype
 			 * @param {Function|Object} [fn]
 			 * @returns {this}
 			 */
@@ -129,8 +125,6 @@
 			},
 			/**
 			 * Bind or trigger touchend.
-			 * @public
-			 * @memberof aQuery.prototype
 			 * @param {Function|Object} [fn]
 			 * @returns {this}
 			 */
@@ -139,8 +133,6 @@
 			},
 			/**
 			 * Bind or trigger touchcancel.
-			 * @public
-			 * @memberof aQuery.prototype
 			 * @param {Function|Object} [fn]
 			 * @returns {this}
 			 */
@@ -149,8 +141,6 @@
 			},
 			/**
 			 * Bind or trigger gesturestart.
-			 * @public
-			 * @memberof aQuery.prototype
 			 * @param {Function|Object} [fn]
 			 * @returns {this}
 			 */
@@ -159,8 +149,6 @@
 			},
 			/**
 			 * Bind or trigger gesturechange.
-			 * @public
-			 * @memberof aQuery.prototype
 			 * @param {Function|Object} [fn]
 			 * @returns {this}
 			 */
@@ -169,8 +157,6 @@
 			},
 			/**
 			 * Bind or trigger gestureend.
-			 * @public
-			 * @memberof aQuery.prototype
 			 * @param {Function|Object} [fn]
 			 * @returns {this}
 			 */
@@ -179,8 +165,6 @@
 			},
 			/**
 			 * Bind or trigger orientationchange.
-			 * @public
-			 * @memberof aQuery.prototype
 			 * @param {Function|Object} [fn]
 			 * @returns {this}
 			 */
