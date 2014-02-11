@@ -1,4 +1,4 @@
-aQuery.define( "@app/app", [ "base/Promise", "main/event", "app/Application", "@app/controller/index" ], function( $, Promise, event, Application ) {
+aQuery.define( "@app/app", [ "base/Promise", "main/event", "app/Application", "@app/controllers/index" ], function( $, Promise, event, Application ) {
 	"use strict"; //启用严格模式
 	//必须依赖index controller
 	var app = Application.extend( "Application", {

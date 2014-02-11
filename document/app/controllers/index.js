@@ -1,9 +1,9 @@
-aQuery.define( "@app/controller/index", [
+aQuery.define( "@app/controllers/index", [
   "hash/locationHash",
   "app/Controller",
-  "@app/view/index",
-  "@app/controller/navmenu",
-  "@app/controller/content"
+  "@app/views/index",
+  "@app/controllers/navmenu",
+  "@app/controllers/content"
   ], function( $,
 	locationHash,
 	SuperController,
@@ -33,7 +33,7 @@ aQuery.define( "@app/controller/index", [
 				$swapview.uiSwapview( "render", e.index, function() {
 					if ( e.index === 1 && loadAPIFlag === false ) {
 						loadAPIFlag = true;
-						self.api.loadPath( "asset/api/index.html" );
+						self.api.loadPath( "assets/api/index.html" );
 					}
 				} );
 			} );

@@ -1,4 +1,4 @@
-aQuery.define( "@app/view/content", [ "base/client", "app/View", "ui/flex" ], function( $, client, SuperView ) {
+aQuery.define( "@app/views/content", [ "base/client", "app/View", "ui/flex" ], function( $, client, SuperView ) {
 	"use strict"; //启用严格模式
 	var xmlpath = "@app/xml/content";
 	var View = SuperView.extend( {
