@@ -1,4 +1,4 @@
-aQuery.define( "@app/controller/navmenu", [ "app/Controller", "@app/view/navmenu" ], function( $, SuperController, NavmenuView ) {
+aQuery.define( "@app/controllers/navmenu", [ "app/Controller", "@app/views/navmenu" ], function( $, SuperController, NavmenuView ) {
 	"use strict"; //启用严格模式
 	var Controller = SuperController.extend( {
 		init: function( contollerElement, models ) {

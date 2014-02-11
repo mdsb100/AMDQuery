@@ -1,8 +1,8 @@
-aQuery.define( "@app/view/router", [ "app/View", "ui/flex" ], function( $, SuperView ) {
+aQuery.define( "@app/views/router", [ "app/View", "ui/flex" ], function( $, SuperView ) {
 	"use strict"; //启用严格模式
 	var htmlSrc = "@app/xml/router";
 
-	SuperView.getStyle( "@app/css/reset" );
+	SuperView.getStyle( "@app/styles/reset" );
 
 	var View = SuperView.extend( {
 		init: function( contollerElement ) {

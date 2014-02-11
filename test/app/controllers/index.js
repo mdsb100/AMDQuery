@@ -1,10 +1,10 @@
-aQuery.define( "@app/controller/index", [
+aQuery.define( "@app/controllers/index", [
   "hash/locationHash",
   "app/Controller",
-  "@app/view/index",
-  "@app/controller/navmenu",
-  "@app/controller/content",
-  "@app/controller/router"
+  "@app/views/index",
+  "@app/controllers/navmenu",
+  "@app/controllers/content",
+  "@app/controllers/router"
   ], function( $, locationHash, SuperController, IndexView ) {
 	"use strict"; //启用严格模式
 	var Controller = SuperController.extend( {

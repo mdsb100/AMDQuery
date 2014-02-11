@@ -1,4 +1,4 @@
-aQuery.define( "@app/controller/router", [ "app/Controller", "@app/view/router" ], function( $, SuperController, IndexView ) {
+aQuery.define( "@app/controllers/router", [ "app/Controller", "@app/views/router" ], function( $, SuperController, IndexView ) {
 	"use strict"; //启用严格模式
 	var Controller = SuperController.extend( {
 		init: function( contollerElement ) {

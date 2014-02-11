@@ -1,4 +1,4 @@
-aQuery.define( "@app/app", [ "app/Application", "@app/controller/index" ], function( $, Application ) {
+aQuery.define( "@app/app", [ "app/Application", "@app/controllers/index" ], function( $, Application ) {
   "use strict"; //启用严格模式
   //必须依赖index controller
   var app = Application.extend( "TestApplication", {
@@ -9,8 +9,8 @@ aQuery.define( "@app/app", [ "app/Application", "@app/controller/index" ], funct
 
     },
     beforeLoad: function( promise ) {
-      this.addRouter( "default", "@app/controller/index.js" );
-      this.addRouter( "router", "@app/controller/router.js" );
+      this.addRouter( "default", "@app/controllers/index.js" );
+      this.addRouter( "router", "@app/controllers/router.js" );
       promise.resolve( );
     }
   }, {
