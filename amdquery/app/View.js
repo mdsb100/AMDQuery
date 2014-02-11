@@ -30,12 +30,12 @@ aQuery.define( "app/View", [
 
 	function getHtmlSrc( id ) {
 		//都只能小写
-		var index = id.lastIndexOf( "view/" );
+		var index = id.lastIndexOf( "views/" );
 
 		if ( index > -1 ) {
-			return id.substring( 0, index ) + id.substring( index, id.length ).replace( /view\//, "xml/" );
+			return id.substring( 0, index ) + id.substring( index, id.length ).replace( /views\//, "xml/" );
 		} else {
-			throw new Error( "View need htmlSrc or path need contains view/'" );
+			throw new Error( "View need htmlSrc or path need contains views/'" );
 		}
 
 	}
@@ -78,7 +78,7 @@ aQuery.define( "app/View", [
 				//fix ie7
 				for ( var i = parentNode.childNodes.length - 1, node; i >= 0; i-- ) {
 					node = parentNode.childNodes[ i ];
-					if ( typed.isNode( node, "/controller" ) ) {
+					if ( typed.isNode( node, "/controllers" ) ) {
 						parentNode.removeChild( node );
 					}
 				};
