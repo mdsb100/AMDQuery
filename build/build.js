@@ -285,8 +285,8 @@
  	logger( htmlInfo.appProjectPath );
 
  	var copyDirMap = {
- 		"app/asset": PATH.join( htmlInfo.appProjectPath, "asset" ),
- 		"app/css": PATH.join( htmlInfo.appProjectPath, "css" ),
+ 		"app/assets": PATH.join( htmlInfo.appProjectPath, "assets" ),
+ 		"app/styles": PATH.join( htmlInfo.appProjectPath, "styles" ),
  		"app/xml": PATH.join( htmlInfo.appProjectPath, "xml" ),
  		"app/lib": PATH.join( htmlInfo.appProjectPath, "lib" ),
  		"amdquery/ui/css": PATH.join( AMDQueryJSRootPath, "ui", "css" ),
@@ -381,7 +381,7 @@
  		resultPath.push( item.path );
  	} );
 
- 	htmlInfo.appCombinationCssRelativePath = PATH.join( "css", htmlInfo.appName + ".css" );
+ 	htmlInfo.appCombinationCssRelativePath = PATH.join( "styles", htmlInfo.appName + ".css" );
 
  	htmlInfo.appCombinationCssPath = PATH.join( htmlInfo.projectDistPath, "app", htmlInfo.appCombinationCssRelativePath );
 
@@ -613,9 +613,9 @@
  	for ( ; i < len; i++ ) {
  		mdItem = moduleList[ i ];
 
- 		if ( /app\/view\/(.*)/.test( mdItem.name ) ) {
+ 		if ( /app\/views\/(.*)/.test( mdItem.name ) ) {
  			xmlPath = PATH.join( htmlInfo.appProjectPath, "xml", RegExp.$1 + ".xml" );
- 			cssPath = PATH.join( htmlInfo.appProjectPath, "css", RegExp.$1 + ".css" );
+ 			cssPath = PATH.join( htmlInfo.appProjectPath, "styles", RegExp.$1 + ".css" );
  			if ( FSE.existsSync( xmlPath ) ) {
  				xmlPathList.push( {
  					key: RegExp.$1,

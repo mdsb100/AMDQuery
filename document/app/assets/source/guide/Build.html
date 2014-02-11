@@ -122,9 +122,13 @@ root
               |           |- css
               |           \- iamges
               |- app
-                  |- asset
-                  |- css
+                  |- assets
+                  |- styles
+                  |- modles
+                  |- views
+                  |- controllers
                   |- xml
+                  |- lib
                   \- app.html
                   </pre>
                   <ul class="ul">
@@ -172,13 +176,13 @@ root
   //It also create "test.debug.js" which is not minify.
   test: {
     //The "path" is main of the build-js.It is relative "amdquery.js".
-    path: "../document/app/asset/source/js/scrollTo.js",
+    path: "../document/app/assets/source/js/scrollTo.js",
     //The "directory" is array of folder, Building would include all of js under the item-folder.It is relative "amdquery.js".
     directory: [ "ui/" ],
     //The "complete" function will be call when building complete.
     complete: function( minPath, minContent, deubugPath, debugContent ) {
       var FSE = require( 'fs-extra' );
-      path = "../document/app/asset/source/js/amdquery.js";
+      path = "../document/app/assets/source/js/amdquery.js";
       FSE.writeFile( path, debugContent );
     }
   }
@@ -204,7 +208,7 @@ root
                   <p>1.Read base amdquery.js . we should get the content of amdquery.js, amdquery.js is basal. It began in the file.
                     <br />If you want to start using "AMDQuery", you must first load the "amdquery.js". So Build will be a top priority loaded and stored in the file start position.
                   </p>
-                  <p>2.Build defines. Get the main of js from config. Path is "../document/app/asset/source/js/scrollTo.js"
+                  <p>2.Build defines. Get the main of js from config. Path is "../document/app/assets/source/js/scrollTo.js"
                     <br />The "scrollTo.js" require "[ "main/query", "hash/locationHash", "ui/swapview", "ui/scrollableview" ]".
                     <br />The "oye.node" will find and load these js file, detect dependencies of these js.
                     <br />Finally, get the all of js then combine to a stream.
@@ -264,7 +268,7 @@ root
 //The argument in "complete"
 {
   appConfig: { debug: '1', src: '../document/app/app' },
-  cssPath: [ 'css/reset.css' ],
+  cssPath: [ 'styles/reset.css' ],
   htmlPath: '/Users/apple/project/my/amdquery/document/app/app.html',
   appProjectPath: '/Users/apple/project/my/amdquery/document/app/',
   appName: 'document',
@@ -274,8 +278,8 @@ root
   viewContentID: 'aQueryViewContentKey',
   appCombinationXMLRelativePath: 'app/xml/combination.xml',
   appCombinationXMLPath: '/Users/apple/project/my/amdquery/build/dist/apps/document/app/xml/combination.xml',
-  appCombinationCssRelativePath: 'css/document.css',
-  appCombinationCssPath: '/Users/apple/project/my/amdquery/build/dist/apps/document/app/css/document.css',
+  appCombinationCssRelativePath: 'styles/document.css',
+  appCombinationCssPath: '/Users/apple/project/my/amdquery/build/dist/apps/document/app/styles/document.css',
   uiCombinationRelativeCssPath: 'amdquery/ui/css/amdquery-widget.css',
   distHtmlPath: '/Users/apple/project/my/amdquery/build/dist/apps/document/app/app.html'
 }
@@ -293,8 +297,8 @@ root
               <br />(This example: AMDQueryJSRootPath is "/Users/apple/project/my/amdquery/")
               <br />(This example: appProjectPath is "/Users/apple/project/my/amdquery/document/app/")
               <br />(This example: distPath is "/Users/apple/project/my/amdquery/build/dist/apps/document/". "document" is application name)
-              <br />Copy appProjectPath + "asset" to distPath + "app/asset"
-              <br />Copy appProjectPath + "css" to distPath + "app/css"
+              <br />Copy appProjectPath + "assets" to distPath + "app/assets"
+              <br />Copy appProjectPath + "styles" to distPath + "app/styles"
               <br />Copy appProjectPath + "xml" to distPath + "app/xml"
               <br />Copy appProjectPath + "lib" to distPath + "app/lib"
               <br />Copy AMDQueryJSRootPath + "ui/css" to distPath + "amdquery/ui/css"
@@ -307,13 +311,13 @@ root
               <br />Save file: /Users/apple/project/my/amdquery/build/dist/apps/document/amdquery/amdquery.debug.js
             </p>
             <p>4.Build XML of Application
-              <br />Put all the XML merged into one XML. Root tag is "&ltroot&gt". Each original XML will be wrapped in "&ltwrag&gt" tag within
+              <br />Put all the XML merged into one XML. Root tag is "&div id='aQueryViewContentKey' &gt". Each original XML will be wrapped in "&lt aQueryViewContentKey='name' &gt" tag within
               <br />The new XML will be saved as "combination.xml". "combination.xml" is easy for reading.
               <br />Content of new XML will append into "app.html"
             </p>
             <p>5.Build CSS of Application
               <br />After the first step has been to get all the "CSS" href, this step will be to find those CSS file through the href and use the "clean-css" to merge them into a CSS file.
-              <br />The new CSS will be saved as "{#appName}.css" moreover the final step will automatically add a "CSS" tag to "HTML" head, the properties href will be set "css/{#appName}.css".
+              <br />The new CSS will be saved as "{#appName}.css" moreover the final step will automatically add a "CSS" tag to "HTML" head, the properties href will be set "styles/{#appName}.css".
             </p>
             <p>6.Build CSS of AMDQuery UI
               <br />Build combine all the CSS of AMDQuery UI and save it as "amdquery-widget.css".
@@ -323,16 +327,16 @@ root
               <br />Save app Combination xml: /Users/apple/project/my/amdquery/build/dist/apps/document/app/xml/combination.xml
               <br />
               <br />Build "document" css file
-              <br />buildAppCss css path: /Users/apple/project/my/amdquery/document/app/css/reset.css
+              <br />buildAppCss css path: /Users/apple/project/my/amdquery/document/app/styles/reset.css
               <br />
-              <br />Save app Combination css: /Users/apple/project/my/amdquery/build/dist/apps/document/app/css/document.css
+              <br />Save app Combination css: /Users/apple/project/my/amdquery/build/dist/apps/document/app/styles/document.css
               <br />
               <br />Build css of AMDQuery-UI
               <br />
               <br />Save UI amdquery-widget.css:  /Users/apple/project/my/amdquery/build/dist/apps/document/amdquery/ui/css/amdquery-widget.css
             </p>
             <p>7.Modify HTML
-              <br />Remove all CSS in head and add a new CSS into head, the new CSS href is "css/document.css".
+              <br />Remove all CSS in head and add a new CSS into head, the new CSS href is "styles/document.css".
               <br />Modify "amdquery.js" script attribute:
               <br />change "src" as "../app/app"
               <br />change "development" to "false"
