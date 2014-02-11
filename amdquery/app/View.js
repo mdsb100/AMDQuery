@@ -143,17 +143,6 @@ aQuery.define( "app/View", [
 	if ( !config.app.development ) {
 		var $combinationXML = null;
 
-		// communicate.ajax( {
-		// 	url: config.app.xmlPath,
-		// 	async: false,
-		// 	dataType: "string",
-		// 	complete: function( xml ) {
-		// 		$combinationXML = parse.HTML( xml );
-		// 	},
-		// 	timeout: View.timeout,
-		// 	timeoutFun: View.error
-		// } );
-
 		View.getXML = function( htmlSrc ) {
 			var key = "",
 				xml,
