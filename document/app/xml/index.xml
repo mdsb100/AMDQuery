@@ -3,7 +3,7 @@
     <center id="title">
       <h1>Documentation</h1>
     </center>
-    <a id="forkme_banner" href="https://github.com/mdsb100/AMDQuery">View on GitHub</a>
+    <a id="forkme_banner" target="_blank" href="https://github.com/mdsb100/AMDQuery">View on GitHub</a>
   </div>
   <div style="" amdquery-widget="ui.flex" ui-flex="flexDirection:row;flex:1">
     <div id="tabview" amdquery-widget="ui.flex;ui.tabview" ui-flex="flexDirection:column;fillParentWidth:false" style="width:200px;">
