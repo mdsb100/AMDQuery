@@ -1,4 +1,4 @@
-$.require( [ "main/query", "module/location", "ui/swapview", "ui/scrollableview" ], function( query, location ) {
+$.require( [ "main/query", "main/attr", "module/location", "ui/swapview", "ui/scrollableview" ], function( query, attr, location ) {
 	//http://127.0.0.1:8080/document/app/app.html#navmenu=#Build!swapIndex=1!scrollTo=Detail
 	var swapview = $( "#swapview" );
 
@@ -10,6 +10,27 @@ $.require( [ "main/query", "module/location", "ui/swapview", "ui/scrollableview"
 			var $toElement = $scrollableview.uiScrollableview( "getAnimationToElementByName", location.getHash( "scrollTo" ) );
 			$scrollableview.uiScrollableview( "animateToElement", $toElement );
 		} );
+
+		if ( window.parent && window.parent.aQuery ) {
+			swapview.on( "swapview.change", function( e ) {
+				var type = "document_iframe.swapIndexChange";
+				window.parent.aQuery.trigger( type, null, {
+					type: type,
+					index: e.index
+				} );
+			} );
+
+			swapview.findWidgets( "ui.scrollableview" ).on( "scrollableview.animateToElement", function( e ) {
+				if ( e.overflow == "V" && e.toElement ) {
+					var type = "document_iframe.scrollToChange";
+					window.parent.aQuery.trigger( type, null, {
+						type: type,
+						name: attr.getAttr( e.toElement, "name" )
+					} );
+				}
+			} );
+		}
+
 	}
 
 	$( ".prettyprinted" ).each( function( ele ) {

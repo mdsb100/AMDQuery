@@ -27,6 +27,15 @@ aQuery.define( "@app/controllers/index", [
 
 			var $swapview = $( this.view.topElement ).find( "#contentview" );
 
+			$.on( "document_iframe.swapIndexChange", function( e ) {
+				location.removeHash( "scrollTo" );
+				location.setHash( "swapIndex", e.index );
+			} );
+
+			$.on( "document_iframe.scrollToChange", function( e ) {
+				location.setHash( "scrollTo", e.name );
+			} );
+
 			var loadAPIFlag = false;
 
 			$( "#tabview" ).on( "tabview.select", function( e ) {

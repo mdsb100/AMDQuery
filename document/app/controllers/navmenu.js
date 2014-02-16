@@ -1,19 +1,22 @@
 aQuery.define( "@app/controllers/navmenu", [ "main/attr", "module/location", "app/Controller", "@app/views/navmenu" ], function( $, attr, location, SuperController, NavmenuView ) {
 	"use strict"; //启用严格模式
-	var ROUTER_MARK = "_";
+	var ROUTER_MARK = "_",
+		SCROLLTO = "scrollTo",
+		SWAPINDEX = "swapIndex";
 
 	var Controller = SuperController.extend( {
 		init: function( contollerElement, models ) {
 			this._super( new NavmenuView( contollerElement ), models );
 
 			this.navitem = null;
-			this.initSwapIndex = location.getHash( "swapIndex" );
-			this.initsSrollTo = location.getHash( "scrollTo" );
+			this.initSwapIndex = location.getHash( SWAPINDEX );
+			this.initsSrollTo = location.getHash( SCROLLTO );
 
 			var controller = this;
 			this.$nav = $( this.view.topElement ).find( "#nav" );
 
 			this.$nav.on( "navmenu.select", function( e ) {
+				controller._modifyLocation( e.navitem );
 				controller.selectNavitem( e.navitem );
 			} ).on( "dblclick", function( e ) {
 				controller.trigger( "navmenu.dblclick", controller, {
@@ -22,6 +25,20 @@ aQuery.define( "@app/controllers/navmenu", [ "main/attr", "module/location", "ap
 				} );
 			} );
 
+		},
+		_modifyLocation: function( target ) {
+			var $target = $( target );
+
+			if ( $target.isWidget( "ui.navitem" ) ) {
+				var path = $target.navitem( "getOptionToRoot" ).reverse().join( ROUTER_MARK );
+				location.setHash( "navmenu", path );
+				if ( this._modified ) {
+					location.removeHash( SCROLLTO );
+					location.removeHash( SWAPINDEX );
+				}
+
+			}
+			this._modified = true;
 		},
 		selectNavitem: function( navitem ) {
 			var swapIndex, scrollTo;
@@ -55,10 +72,10 @@ aQuery.define( "@app/controllers/navmenu", [ "main/attr", "module/location", "ap
 				path = $.pagePath + ret.reverse().join( "/" ) + ".html#";
 
 				if ( swapIndex != null ) {
-					path += "swapIndex=" + location.getHash( "swapIndex" ) + "!";
+					path += "swapIndex=" + location.getHash( SWAPINDEX ) + "!";
 				}
 				if ( scrollTo != null ) {
-					path += "scrollTo=" + location.getHash( "scrollTo" ) + "!";
+					path += "scrollTo=" + location.getHash( SCROLLTO ) + "!";
 				}
 			}
 			return path;
