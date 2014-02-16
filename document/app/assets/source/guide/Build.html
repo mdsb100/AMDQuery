@@ -278,14 +278,15 @@ root
 //The argument in "complete"
 {
   appConfig: { debug: '1', src: '../document/app/app' },
-  cssPath: [ 'styles/reset.css' ],
+  cssPath: [ 'styles/reset.css' ], // The css be defined in app.html head.
+  UICssPath: [], // The css be defined in app.html head about ui-widget.
   htmlPath: '/Users/apple/project/my/amdquery/document/app/app.html',
   appProjectPath: '/Users/apple/project/my/amdquery/document/app/',
   appName: 'document',
   projectDistPath: '/Users/apple/project/my/amdquery/build/dist/apps/document',
   AMDQueryJSPath: '/Users/apple/project/my/amdquery/build/dist/apps/document/amdquery/amdquery',
   AMDQueryJSRelativeHTMLPath: '../amdquery/amdquery',
-  viewContentID: 'aQueryViewContentKey',
+  viewContentID: 'aQueryViewContentKey', // This property is used to tell the Application how to find the content view in a non-development model.
   appCombinationXMLRelativePath: 'app/xml/combination.xml',
   appCombinationXMLPath: '/Users/apple/project/my/amdquery/build/dist/apps/document/app/xml/combination.xml',
   appCombinationCssRelativePath: 'styles/document.css',
@@ -298,11 +299,13 @@ root
             </ul>
 
             <h2 name="Detail">Build Detail</h2>
-            <p>1.Open HTML. Get "HTML" path from the configuration.
-              <br />Use "trumpet" to parse html, Get an array of css hrefs and script tag of application. Parse configuration of the tag.
+            <h3>1.Open HTML. Get "HTML" path from the configuration.</h3>
+            <p>
+              Use "trumpet" to parse html, Get an array of css hrefs and script tag of application. Parse configuration of the tag.
             </p>
-            <p>2.Create application directory and copy file.
-              <br />Create application directory. In this example, path of directory is "dist/apps/document/". If the path of directory exists then remove it.
+            <h3>2.Create application directory and copy file.</h3>
+            <p>
+              Create application directory. In this example, path of directory is "dist/apps/document/". If the path of directory exists then remove it.
               <br />Copy directory:
               <br />(This example: AMDQueryJSRootPath is "/Users/apple/project/my/amdquery/")
               <br />(This example: appProjectPath is "/Users/apple/project/my/amdquery/document/app/")
@@ -314,39 +317,48 @@ root
               <br />Copy AMDQueryJSRootPath + "ui/css" to distPath + "amdquery/ui/css"
               <br />Copy AMDQueryJSRootPath + "ui/images" to distPath + "amdquery/ui/images"
             </p>
-            <p>3.Build Javascript of Application
-              <br />Get "app.js" path to the directory. Set "require" parameter with the path. ("@app" ==> "../document/app/app")
+            <h3>3.Build Javascript of Application</h3>
+            <p>
+              Get "app.js" path to the directory. Set "require" parameter with the path. ("@app" ==> "../document/app/app")
               <br />"oye.node" could load all js after setting "require" parameter. Then build save the js files to the dist directory. You also can see then log in terminal.
               <br />Save file: /Users/apple/project/my/amdquery/build/dist/apps/document/amdquery/amdquery.js
               <br />Save file: /Users/apple/project/my/amdquery/build/dist/apps/document/amdquery/amdquery.debug.js
             </p>
-            <p>4.Build XML of Application
-              <br />Put all the XML merged into one XML. Root tag is "&div id='aQueryViewContentKey' &gt". Each original XML will be wrapped in "&lt aQueryViewContentKey='name' &gt" tag within
+            <h3>4.Build XML of Application</h3>
+            <p>
+              Put all the XML merged into one XML. Root tag is "&div id='aQueryViewContentKey' &gt". Each original XML will be wrapped in "&lt aQueryViewContentKey='name' &gt" tag within
               <br />The new XML will be saved as "combination.xml". "combination.xml" is easy for reading.
               <br />Content of new XML will append into "app.html"
-            </p>
-            <p>5.Build CSS of Application
-              <br />After the first step has been to get all the "CSS" href, this step will be to find those CSS file through the href and use the "clean-css" to merge them into a CSS file.
-              <br />The new CSS will be saved as "{#appName}.css" moreover the final step will automatically add a "CSS" tag to "HTML" head, the properties href will be set "styles/{#appName}.css".
-            </p>
-            <p>6.Build CSS of AMDQuery UI
-              <br />Build combine all the CSS of AMDQuery UI and save it as "amdquery-widget.css".
               <br />
               <br />Build "document" xml file
               <br />
               <br />Save app Combination xml: /Users/apple/project/my/amdquery/build/dist/apps/document/app/xml/combination.xml
               <br />
+            </p>
+            <h3>5.Build CSS of Application</h3>
+            <p>
+              After the first step has been to get all the "CSS" href, this step will be to find those CSS file through the href and use the "clean-css" to merge them into a CSS file.
+              <br />The new CSS will be saved as "{#appName}.css" moreover the final step will automatically add a "CSS" tag to "HTML" head, the properties href will be set "styles/{#appName}.css".
+              <br />
               <br />Build "document" css file
               <br />buildAppCss css path: /Users/apple/project/my/amdquery/document/app/styles/reset.css
               <br />
               <br />Save app Combination css: /Users/apple/project/my/amdquery/build/dist/apps/document/app/styles/document.css
+            </p>
+            <h3>6.Build CSS of AMDQuery UI</h3>
+            <p>
+              Build combine all the CSS of AMDQuery UI and save it as "amdquery-widget.css".
               <br />
-              <br />Build css of AMDQuery-UI
+              <br />The priority of "UICssPath" which is defined in head is highest.
+              <br />Second priority is the css list form html defined by "amdquery-widget" or the css list from build directory("amdquery/ui/css/*.css").
+              <br />The lowest priority is css defined by "build_config".
+              <br />See the function "_buildUICss" of "build.js".
               <br />
               <br />Save UI amdquery-widget.css:  /Users/apple/project/my/amdquery/build/dist/apps/document/amdquery/ui/css/amdquery-widget.css
             </p>
-            <p>7.Modify HTML
-              <br />Remove all CSS in head and add a new CSS into head, the new CSS href is "styles/document.css".
+            <h3>7.Modify HTML</h3>
+            <p>
+              Remove all CSS in head and add a new CSS into head, the new CSS href is "styles/document.css".
               <br />Modify "amdquery.js" script attribute:
               <br />change "src" as "../app/app"
               <br />change "development" to "false"
