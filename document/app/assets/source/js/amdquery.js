@@ -17995,6 +17995,9 @@ aQuery.define( "ui/scrollableview", [
 	Widget.fetchCSS( "ui/css/scrollableview" );
 	var isTransform3d = !! config.ui.isTransform3d && support.transform3d;
 
+	var V = "V",
+		H = "H";
+
 	var scrollableview = Widget.extend( "ui.scrollableview", {
 		container: null,
 		_keyList: [ "Up", "Down", "Left", "Right", "Home", "End", "PageUp", "PageDown" ],
@@ -18039,8 +18042,8 @@ aQuery.define( "ui/scrollableview", [
 				innerWidth: opt.boundary,
 				innerHeight: opt.boundary,
 				stopPropagation: false,
-				vertical: this._isAllowedDirection( "V" ),
-				horizontal: this._isAllowedDirection( "H" ),
+				vertical: this._isAllowedDirection( V ),
+				horizontal: this._isAllowedDirection( H ),
 				container: this.target,
 				overflow: true
 			} );
@@ -18274,12 +18277,22 @@ aQuery.define( "ui/scrollableview", [
 			var $toElement = $( ele );
 			if ( $toElement.length === 1 && query.contains( this.target[ 0 ], $toElement[ 0 ] ) ) {
 				var top = $toElement.getTopWithTranslate3d(),
-					left = $toElement.getLeftWithTranslate3d();
-				if ( this._isAllowedDirection( "V" ) ) {
-					this.animateY( Math.max( -top + this.viewportHeight > 0 ? 0 : -top, -this.scrollHeight + this.viewportHeight ), FX.normal, animationCallback );
+					left = $toElement.getLeftWithTranslate3d(),
+					self = this,
+					callback = function( overflow ) {
+						animationCallback && animationCallback.apply( this, arguments );
+						var type = self.getEventName( "animateToElement" );
+						self.target.trigger( type, self.target[ 0 ], {
+							type: type,
+							toElement: typed.is$( ele ) ? ele[ 0 ] : ele,
+							overflow: overflow
+						} );
+					};
+				if ( this._isAllowedDirection( V ) ) {
+					this.animateY( Math.max( -top + this.viewportHeight > 0 ? 0 : -top, -this.scrollHeight + this.viewportHeight ), FX.normal, callback );
 				}
-				if ( this._isAllowedDirection( "H" ) ) {
-					this.animateX( Math.max( -left + this.viewportHeight > 0 ? 0 : -left, -this.scrollWidth + this.viewportWidth ), FX.normal, animationCallback );
+				if ( this._isAllowedDirection( H ) ) {
+					this.animateX( Math.max( -left + this.viewportHeight > 0 ? 0 : -left, -this.scrollWidth + this.viewportWidth ), FX.normal, callback );
 				}
 			}
 		},
@@ -18337,7 +18350,7 @@ aQuery.define( "ui/scrollableview", [
 
 			return this;
 		},
-		customEventName: [ "pulldown", "pullup", "pullleft", "pullright", "animationEnd" ],
+		customEventName: [ "pulldown", "pullup", "pullleft", "pullright", "animationEnd", "animateToElement" ],
 		options: {
 			"overflow": "HV",
 			"animateDuration": 600,
@@ -18388,11 +18401,11 @@ aQuery.define( "ui/scrollableview", [
 				originY = position.y;
 			}
 
-			if ( x !== null && this._isAllowedDirection( "H" ) ) {
+			if ( x !== null && this._isAllowedDirection( H ) ) {
 				x = this.checkXBoundary( originX + x, boundary );
 				statusX = this.checkXStatusBar( x );
 			}
-			if ( y !== null && this._isAllowedDirection( "V" ) ) {
+			if ( y !== null && this._isAllowedDirection( V ) ) {
 				y = this.checkYBoundary( originY + y, boundary );
 				statusY = this.checkYStatusBar( y );
 			}
@@ -18401,11 +18414,11 @@ aQuery.define( "ui/scrollableview", [
 		},
 		_render: function( x1, x2, y1, y2 ) {
 			var pos = {};
-			if ( x1 !== null && this._isAllowedDirection( "H" ) ) {
+			if ( x1 !== null && this._isAllowedDirection( H ) ) {
 				pos.x = parseInt( x1, 0 );
 				this.statusBarX.setPositionX( isTransform3d, parseInt( x2, 0 ) );
 			}
-			if ( y1 !== null && this._isAllowedDirection( "V" ) ) {
+			if ( y1 !== null && this._isAllowedDirection( V ) ) {
 				pos.y = parseInt( y1, 0 );
 				this.statusBarY.setPositionY( isTransform3d, parseInt( y2, 0 ) );
 			}
@@ -18413,9 +18426,9 @@ aQuery.define( "ui/scrollableview", [
 			return this;
 		},
 		renderStatusBar: function( x, y ) {
-			if ( this._isAllowedDirection( "H" ) ) this.statusBarX.setPositionX( isTransform3d, parseInt( x, 0 ) );
+			if ( this._isAllowedDirection( H ) ) this.statusBarX.setPositionX( isTransform3d, parseInt( x, 0 ) );
 
-			if ( this._isAllowedDirection( "V" ) ) this.statusBarY.setPositionY( isTransform3d, parseInt( y, 0 ) );
+			if ( this._isAllowedDirection( V ) ) this.statusBarY.setPositionY( isTransform3d, parseInt( y, 0 ) );
 
 			return this;
 		},
@@ -18586,8 +18599,8 @@ aQuery.define( "ui/scrollableview", [
 		},
 
 		showStatusBar: function() {
-			if ( this.statusBarXVisible && this._isAllowedDirection( "H" ) ) this.statusBarX.show();
-			if ( this.statusBarYVisible && this._isAllowedDirection( "V" ) ) this.statusBarY.show();
+			if ( this.statusBarXVisible && this._isAllowedDirection( H ) ) this.statusBarX.show();
+			if ( this.statusBarYVisible && this._isAllowedDirection( V ) ) this.statusBarY.show();
 			return this;
 		},
 		hideStatusBar: function() {
@@ -18665,10 +18678,10 @@ aQuery.define( "ui/scrollableview", [
 		},
 
 		toH: function( s, t, d, animationCallback ) {
-			return this._isAllowedDirection( "H" ) ? this.animateX( this.checkXBoundary( this.getLeft() - s ), t, d, animationCallback ) : this;
+			return this._isAllowedDirection( H ) ? this.animateX( this.checkXBoundary( this.getLeft() - s ), t, d, animationCallback ) : this;
 		},
 		toV: function( s, t, d, animationCallback ) {
-			return this._isAllowedDirection( "V" ) ? this.animateY( this.checkYBoundary( this.getTop() - s ), t, d, animationCallback ) : this;
+			return this._isAllowedDirection( V ) ? this.animateY( this.checkYBoundary( this.getTop() - s ), t, d, animationCallback ) : this;
 		},
 		animateY: function( y1, t, animationCallback ) {
 			var opt = $.getPositionAnimationOptionProxy( isTransform3d, undefined, y1 );
@@ -18681,7 +18694,7 @@ aQuery.define( "ui/scrollableview", [
 				complete: function() {
 					self.toHBoundary( self.getLeft() ).toVBoundary( y1 );
 					self._triggerAnimate( "inner", self._direction, t, y1 );
-					if ( typed.isFun( animationCallback ) ) animationCallback.call( self.target, "V" );
+					if ( typed.isFun( animationCallback ) ) animationCallback.call( self.target, V );
 				}
 			} );
 
@@ -18703,7 +18716,7 @@ aQuery.define( "ui/scrollableview", [
 				complete: function() {
 					self.toHBoundary( x1 ).toVBoundary( self.getTop() );
 					self._triggerAnimate( "inner", self._direction, t, x1 );
-					if ( typed.isFun( animationCallback ) ) animationCallback.call( self.target, "H" );
+					if ( typed.isFun( animationCallback ) ) animationCallback.call( self.target, H );
 				}
 			} );
 
@@ -19122,7 +19135,8 @@ aQuery.define( "ui/swapview", [
 				type: this.getEventName( "beforeAnimation" ),
 				target: this.container[ 0 ],
 				view: this.$views[ index ],
-				index: index
+				index: index,
+				originIndex: index
 			};
 			this.target.trigger( animationEvent.type, animationEvent.target, animationEvent );
 
@@ -19134,6 +19148,8 @@ aQuery.define( "ui/swapview", [
 				activeView.trigger( "beforeActive", activeView[ index ], {
 					type: "beforeActive"
 				} );
+				animationEvent.type = this.getEventName( "change" );
+				this.target.trigger( animationEvent.type, animationEvent.target, animationEvent );
 			}
 
 			this.container.stopAnimation().animate( animationOpt, {
@@ -19267,7 +19283,7 @@ aQuery.define( "ui/swapview", [
 			this.orientationLength = 0;
 			return this.create()._initHandler().enable().render( this.options.index );
 		},
-		customEventName: [ "beforeAnimation", "afterAnimation" ],
+		customEventName: [ "beforeAnimation", "afterAnimation", "change" ],
 		options: {
 			index: 0,
 			orientation: HORIZONTAL,
@@ -20493,7 +20509,7 @@ aQuery.define( "ui/turnBook", [ "base/support", "base/typed", "main/css", "main/
 		 * parse.QueryString("name=Jarry&age=27")
 		 * //{
 		 * //  name: "Jarry",
-     * //  name: "27"
+		 * //  name: "27"
 		 * //}
 		 * @param {String}
 		 * @param {String|Boolean} [split1="&"]
@@ -20506,15 +20522,17 @@ aQuery.define( "ui/turnBook", [ "base/support", "base/typed", "main/css", "main/
 			if ( qs ) {
 				$.each( qs.split( split1 || "&" ), function( item ) {
 					item = item.split( split2 || "=" );
-					args[ decodeURIComponent( item[ 0 ] ) ] = decodeURIComponent( item[ 1 ] );
+					if ( item[ 1 ] !== undefined ) {
+						args[ decodeURIComponent( item[ 0 ] ) ] = decodeURIComponent( item[ 1 ] );
+					}
 				} );
 			}
 			return args;
 		},
-    /**
-     * @param {String}
-     * @returns {Document}
-     */
+		/**
+		 * @param {String}
+		 * @returns {Document}
+		 */
 		XML: ( function( xml ) {
 			var parseXML;
 			if ( typeof DOMParser != "undefined" ) {
@@ -20559,17 +20577,7 @@ aQuery.define( "ui/turnBook", [ "base/support", "base/typed", "main/css", "main/
 /*===================module/location===========================*/
 aQuery.define( "module/location", [ "base/extend", "main/parse" ], function( $, utilExtend, parse ) {
 	this.describe( "Location to Hash" );
-	/**
-	 * @pubilc
-	 * @module module/location
-	 * @describe window.location to hash
-	 * @example
-	 * // http://localhost:8080/document/app/asset/source/guide/AMDQuery.html#swapIndex=1!scrollTo=#Config
-	 * {
-	 *   swapIndex: "1",
-	 *   scrollTo:  "#Config"
-	 * }
-	 */
+
 	var
 	SPLIT_MARK = "!",
 		EQUALS_MARK = "=",
@@ -20584,16 +20592,42 @@ aQuery.define( "module/location", [ "base/extend", "main/parse" ], function( $, 
 		return strList.join( split1 );
 	}
 
+	/**
+	 * @exports module/location
+	 * @describe window.location to hash
+	 * @example
+	 * // http://localhost:8080/document/app/asset/source/guide/AMDQuery.html#swapIndex=1!scrollTo=#Config
+	 * {
+	 *   swapIndex: "1",
+	 *   scrollTo:  "#Config"
+	 * }
+	 */
 	var location = {
+		/**
+     * Get value form hash.
+     * @param {String}
+		 * @returns {String}
+		 */
 		getHash: function( key ) {
 			this.toHash();
 			return this.hash[ key ];
 		},
+    /**
+     * Set value to hash by key.
+     * @param {String}
+     * @param {*}
+     * @returns {this}
+     */
 		setHash: function( key, value ) {
-			this.hash[ key ] = value;
+			this.hash[ key ] = value + "";
 			_location.hash = hashToString( this.hash, SPLIT_MARK, EQUALS_MARK );
 			return this;
 		},
+    /**
+     * Remove key from hash.
+     * @param {String}
+     * @returns {this}
+     */
 		removeHash: function( key ) {
 			if ( this.hash[ key ] !== undefined ) {
 				delete this.hash[ key ];
@@ -20601,15 +20635,27 @@ aQuery.define( "module/location", [ "base/extend", "main/parse" ], function( $, 
 			}
 			return this;
 		},
+    /**
+     * Clear window.location.hash
+     * @returns {this}
+     */
 		clearHash: function() {
 			window.location.hash = "";
 			this.hash = {};
 			return this;
 		},
+    /**
+     * Parse window.location.hash to object for this.hash.
+     * @returns {this}
+     */
 		toHash: function() {
 			this.hash = parse.QueryString( _location.hash.replace( "#", "" ), SPLIT_MARK, EQUALS_MARK );
 			return this;
 		},
+    /**
+     * An object of window.location.hash.
+     * @type {Object}
+     */
 		hash: {}
 	};
 
