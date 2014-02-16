@@ -1,16 +1,6 @@
 aQuery.define( "module/location", [ "base/extend", "main/parse" ], function( $, utilExtend, parse ) {
 	this.describe( "Location to Hash" );
-	/**
-	 * @pubilc
-	 * @module module/location
-	 * @describe window.location to hash
-	 * @example
-	 * // http://localhost:8080/document/app/asset/source/guide/AMDQuery.html#swapIndex=1!scrollTo=#Config
-	 * {
-	 *   swapIndex: "1",
-	 *   scrollTo:  "#Config"
-	 * }
-	 */
+
 	var
 	SPLIT_MARK = "!",
 		EQUALS_MARK = "=",
@@ -25,16 +15,42 @@ aQuery.define( "module/location", [ "base/extend", "main/parse" ], function( $, 
 		return strList.join( split1 );
 	}
 
+	/**
+	 * @exports module/location
+	 * @describe window.location to hash
+	 * @example
+	 * // http://localhost:8080/document/app/asset/source/guide/AMDQuery.html#swapIndex=1!scrollTo=#Config
+	 * {
+	 *   swapIndex: "1",
+	 *   scrollTo:  "#Config"
+	 * }
+	 */
 	var location = {
+		/**
+     * Get value form hash.
+     * @param {String}
+		 * @returns {String}
+		 */
 		getHash: function( key ) {
 			this.toHash();
 			return this.hash[ key ];
 		},
+    /**
+     * Set value to hash by key.
+     * @param {String}
+     * @param {*}
+     * @returns {this}
+     */
 		setHash: function( key, value ) {
 			this.hash[ key ] = value + "";
 			_location.hash = hashToString( this.hash, SPLIT_MARK, EQUALS_MARK );
 			return this;
 		},
+    /**
+     * Remove key from hash.
+     * @param {String}
+     * @returns {this}
+     */
 		removeHash: function( key ) {
 			if ( this.hash[ key ] !== undefined ) {
 				delete this.hash[ key ];
@@ -42,15 +58,27 @@ aQuery.define( "module/location", [ "base/extend", "main/parse" ], function( $, 
 			}
 			return this;
 		},
+    /**
+     * Clear window.location.hash
+     * @returns {this}
+     */
 		clearHash: function() {
 			window.location.hash = "";
 			this.hash = {};
 			return this;
 		},
+    /**
+     * Parse window.location.hash to object for this.hash.
+     * @returns {this}
+     */
 		toHash: function() {
 			this.hash = parse.QueryString( _location.hash.replace( "#", "" ), SPLIT_MARK, EQUALS_MARK );
 			return this;
 		},
+    /**
+     * An object of window.location.hash.
+     * @type {Object}
+     */
 		hash: {}
 	};
 
