@@ -187,7 +187,8 @@ aQuery.define( "ui/swapview", [
 				type: this.getEventName( "beforeAnimation" ),
 				target: this.container[ 0 ],
 				view: this.$views[ index ],
-				index: index
+				index: index,
+				originIndex: index
 			};
 			this.target.trigger( animationEvent.type, animationEvent.target, animationEvent );
 
@@ -199,6 +200,8 @@ aQuery.define( "ui/swapview", [
 				activeView.trigger( "beforeActive", activeView[ index ], {
 					type: "beforeActive"
 				} );
+				animationEvent.type = this.getEventName( "change" );
+				this.target.trigger( animationEvent.type, animationEvent.target, animationEvent );
 			}
 
 			this.container.stopAnimation().animate( animationOpt, {
@@ -332,7 +335,7 @@ aQuery.define( "ui/swapview", [
 			this.orientationLength = 0;
 			return this.create()._initHandler().enable().render( this.options.index );
 		},
-		customEventName: [ "beforeAnimation", "afterAnimation" ],
+		customEventName: [ "beforeAnimation", "afterAnimation", "change" ],
 		options: {
 			index: 0,
 			orientation: HORIZONTAL,
