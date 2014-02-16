@@ -28,7 +28,7 @@ aQuery.define( "@app/controllers/navmenu", [ "main/attr", "hash/locationHash", "
 				scrollTo = this.initsSrollTo;
 			} else {
 				swapIndex = attr.getAttr( navitem, "swap-index" );
-				swapIndex = attr.getAttr( navitem, "scroll-to" );
+				scrollTo = attr.getAttr( navitem, "scroll-to" );
 			}
 
 			this.navitem = navitem;
