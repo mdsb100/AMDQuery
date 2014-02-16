@@ -19,7 +19,8 @@
     "through": "~2.3.4",
     "concat-stream" : "~1.0.0",
     "uglify-js": "~1.x.x",
-    "js-beautify": "1.4.2"
+    "js-beautify": "1.4.2",
+    "colors": ">0.6.2"
   },
   "engines": {
     "node": ">=0.8.0"

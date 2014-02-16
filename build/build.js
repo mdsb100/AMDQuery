@@ -96,6 +96,7 @@
  	return final_code;
  };
 
+ var colors = require( "colors" );
  var glob = require( "glob" );
  var async = require( "async" );
  var trumpet = require( "trumpet" );
@@ -183,7 +184,7 @@
 
  	mkdirSync( dirPath );
 
- 	console.log( '\u001b[34m' + '\r\nBegin write file' + '\u001b[39m' );
+ 	console.log( '\r\nBegin write file'.red );
 
  	for ( name in result ) {
  		list = result[ name ];
@@ -216,7 +217,7 @@
  }
 
  function openHtml( appConfig, createAppDirAndCopyFile ) {
- 	console.log( '\u001b[34m' + '\r\nopen HTML and get parameter... \u001b[39m' );
+ 	console.log( '\r\nOpen HTML and get parameter... '.red );
  	var tr = trumpet();
  	var appPath = PATH.join( AMDQueryJSRootPath, appConfig.path );
  	var htmlInfo = {
@@ -229,7 +230,7 @@
 
  	tr.selectAll( 'link', function( link ) {
  		link.getAttribute( "href", function( value ) {
- 			logger( "css link", value );
+ 			logger( "[DEBUG]".white, "css link".white, value.white );
  			htmlInfo.cssPath.push( value );
  		} );
 
@@ -251,7 +252,7 @@
  					}
  				}
  			}
- 			logger( "htmlInfo", JSON.stringify( htmlInfo ) );
+ 			logger( "[DEBUG]".white, "htmlInfo".white, JSON.stringify( htmlInfo ).white );
  			createAppDirAndCopyFile( null, appConfig, htmlInfo );
  		} );
  		// script.createReadStream( {outer: true} ).pipe( process.stdout );
@@ -265,7 +266,7 @@
  		distPath = PATH.join( projectDistPath, appDistProjectPath );
 
  	if ( FSE.existsSync( distPath ) ) {
- 		console.log( '\u001b[34m' + '\r\nClean "' + htmlInfo.appName + '" directory \u001b[39m' );
+ 		console.log( '\r\nClean "' + htmlInfo.appName + '" directory ' );
  		FSE.removeSync( distPath );
  	}
 
@@ -278,11 +279,11 @@
 
  	for ( i = 0; i < len; i++ ) {
  		dirName = PATH.join( distPath, dirNameList[ i ] );
- 		console.log( "make directory: " + "\u001b[34m" + dirName + "\u001b[39m" );
+ 		console.log( "make directory: " + dirName.red );
  		mkdirSync( dirName );
  	}
 
- 	logger( htmlInfo.appProjectPath );
+ 	logger( "[DEBUG]".white, "app project path:".white, htmlInfo.appProjectPath.white );
 
  	var copyDirMap = {
  		"app/assets": PATH.join( htmlInfo.appProjectPath, "assets" ),
@@ -296,7 +297,7 @@
  	for ( key in copyDirMap ) {
  		value = copyDirMap[ key ];
  		if ( FSE.existsSync( value ) ) {
- 			console.log( "copy \u001b[34m" + value + "\u001b[39m to \u001b[34m" + PATH.join( distPath, key ) + "\u001b[39m" );
+ 			console.log( "copy " + value.red + " to " + PATH.join( distPath, key ).red );
  			FSE.copySync( value, PATH.join( distPath, key ) );
  		}
  	}
@@ -317,7 +318,7 @@
  	oye.require.variablePrefix( "@" );
  	oye.require.variable( "app", dirPath );
 
- 	console.log( '\u001b[34m' + '\r\nBuild "' + htmlInfo.appName + '" js file \u001b[39m' );
+ 	console.log( ( '\r\nBuild "' + htmlInfo.appName + '" js file' ).red );
  	_buildjs( htmlInfo.appConfig.src, htmlInfo.appName, function( name, contentList, moduleList ) {
  		var obj = {};
  		obj.amdquery = contentList;
@@ -331,7 +332,7 @@
  }
 
  function buildAppXML( appConfig, htmlInfo, XMLAndCSSPathList, buildAppCss ) {
- 	console.log( '\u001b[34m' + '\r\nBuild "' + htmlInfo.appName + '" xml file \u001b[39m' );
+ 	console.log( ( '\r\nBuild "' + htmlInfo.appName + '" xml file ' ).red );
  	htmlInfo.viewContentID = "aQueryViewContentKey";
  	var content = "<div id='" + htmlInfo.viewContentID + "' >",
  		xmlPathList = XMLAndCSSPathList.xmlPathList,
@@ -358,7 +359,7 @@
 
 
  function buildAppCss( appConfig, htmlInfo, XMLAndCSSPathList, buildUICss ) {
- 	console.log( '\u001b[34m' + '\r\nBuild "' + htmlInfo.appName + '" css file \u001b[39m' );
+ 	console.log( ( '\r\nBuild "' + htmlInfo.appName + '" css file ' ).red );
 
  	var
  	pathList = htmlInfo.cssPath,
@@ -393,7 +394,7 @@
  }
 
  function buildUICss( appConfig, htmlInfo, modifyHTML ) {
- 	console.log( '\u001b[34m' + '\r\nBuild css of AMDQuery-UI \u001b[39m' );
+ 	console.log( '\r\nBuild css of AMDQuery-UI '.red );
  	var
  	cwd = PATH.join( AMDQueryJSRootPath, "ui", "css" ),
  		globOpt = {
@@ -445,19 +446,19 @@
 
  	var src = htmlInfo.AMDQueryJSRelativeHTMLPath + ( appConfig.debug ? ".debug" : "" ) + ".js";
  	script1.setAttribute( "src", src );
- 	logger( "script setAttribute src", src );
+ 	logger( "[DEBUG]".white, "script setAttribute src:".white, src.white );
 
  	script1.getAttribute( "app", function( value ) {
  		var config = splitAttrToObject( value );
 
  		config.src = "../app/app";
- 		logger( "script setAttribute app", "src = " + config.src );
+ 		logger( "[DEBUG]".white, "script setAttribute app".white, ( "src = " + config.src ).white );
  		config.development = "0";
- 		logger( "script setAttribute app", "development = " + config.development );
+ 		logger( "[DEBUG]".white, "script setAttribute app".white, ( "development = " + config.development ).white );
  		config.debug = !! appConfig.debug;
- 		logger( "script setAttribute app", "debug = " + config.debug );
+ 		logger( "[DEBUG]".white, "script setAttribute app".white, ( "debug = " + config.debug ).white );
  		config.viewContentID = htmlInfo.viewContentID
- 		logger( "script setAttribute app", "viewContentID = " + config.viewContentID );
+ 		logger( "[DEBUG]".white, "script setAttribute app".white, ( "viewContentID = " + config.viewContentID ).white );
 
  		script1.setAttribute( "app", formatToAttr( config ) );
  	} );
@@ -471,9 +472,9 @@
  		scriptStr += buf.toString();
  	}, function() {
  		append = '<link href="' + "../" + htmlInfo.uiCombinationRelativeCssPath + '" rel="stylesheet" type="text/css" />\n';
- 		logger( "add css" + htmlInfo.uiCombinationRelativeCssPath );
+ 		logger( "[DEBUG]".white, "add css".white, htmlInfo.uiCombinationRelativeCssPath.white );
  		append += '<link href="' + htmlInfo.appCombinationCssRelativePath + '" rel="stylesheet" type="text/css" />\n';
- 		logger( "add css" + htmlInfo.appCombinationCssRelativePath );
+ 		logger( "[DEBUG]".white, "add css".white, htmlInfo.appCombinationCssRelativePath.white );
  		append += scriptStr;
  		this.queue( append );
  	} ) ).pipe( scriptStream );
@@ -497,7 +498,7 @@
  			FSE.writeFileSync( htmlInfo.distHtmlPath, beautify_html( FSE.readFileSync( htmlInfo.distHtmlPath ).toString(), {} ) );
  			appConfig.complete.call( appConfig, htmlInfo );
  		}
- 		console.log( '\u001b[31m\r\nbuilding finish... \u001b[39m' );
+ 		console.log( '\r\nbuilding finish... '.red );
  		// buildUICss( null, htmlInfo );
  	} );
 
@@ -512,7 +513,7 @@
  		if ( err ) {
  			throw err;
  		}
- 		console.log( '\u001b[34m' + '\r\nBuiding finish' + '\u001b[39m' );
+ 		console.log( '\r\nBuiding finish'.red );
  	} );
  }
 
@@ -521,7 +522,7 @@
  }
 
  function startBuildDefines( waterfallNext ) {
- 	console.log( '\u001b[31m\r\nstart building defines... \u001b[39m' );
+ 	console.log( '\r\nStart building defines... '.magenta );
 
  	setPathVariable( buildConfig.pathVariable );
 
@@ -548,7 +549,7 @@
  	if ( apps.length ) {
  		var appConfig = apps.shift();
 
- 		console.log( '\u001b[31m\r\nstart building app ' + appConfig.name + ' ... \u001b[39m' );
+ 		console.log( ( '\r\nStart building app ' + appConfig.name + ' ... ' ).magenta );
 
  		async.waterfall( [
 
@@ -651,7 +652,7 @@
  			module = args[ i ];
  			dependencies = module.getDependenciesList();
  			list = list.concat( dependencies );
- 			console.info( '\u001b[34m' + '\r\nDependencies length of module ' + module._amdID + ': ' + dependencies.length + '\u001b[39m' );
+ 			console.info( '\r\nDependencies length of module ' + module._amdID + ': ' + dependencies.length );
  		}
 
  		// list.sort( function( a, b ) {
@@ -676,7 +677,7 @@
  			}
  		}
 
- 		console.info( '\u001b[33m' + '\r\nthe defines "' + name + '" Dependencies length of file ' + result.length + '\u001b[39m' );
+ 		console.info( ( '\r\nthe defines "' + name + '" Dependencies length of file ' + result.length ).red );
 
  		callback( name, result, list );
  	} );
@@ -736,14 +737,14 @@
  			start = ( line > 10 ? line - 10 : 0 ),
  			end = line + 10;
  		//var line = e.line, start = 0, end = undefined;
- 		console.log( '\u001b[31m' + e.message + ' Line: ' + line + '\u001b[0m' );
+ 		console.log( ( e.message + ' Line: ' + line ).red );
  		content = content.split( /(?:\r\n|[\r\n])/ )
  			.slice( start, end );
  		var errCode = [],
  			lineNumber, code;
  		for ( var i = 0; i < content.length; i++ ) {
  			lineNumber = i + start + 1;
- 			code = ( lineNumber === line ) ? ( '\u001b[31m' + lineNumber + ' ' + content[ i ] + '\u001b[0m' ) : ( '\u001b[36m' + lineNumber + ' \u001b[32m' + content[ i ] + '\u001b[0m' );
+ 			code = ( lineNumber === line ) ? ( ( lineNumber + ' ' + content[ i ] ).red ) : ( lineNumber + content[ i ] ).red;
  			errCode.push( code );
  		}
  		console.log( errCode.join( '\r\n' ) );
@@ -758,12 +759,11 @@
  		content = content.replace( /define\(/, 'define("' + module + '",' );
  	}
  	content += "\r\n\r\n/*=======================================================*/\r\n";
- 	// logger( content );
  	return content;
  }
 
  function mkdirSync( path ) {
- 	if ( !path || PATH.existsSync( path ) ) {
+ 	if ( !path || FSE.existsSync( path ) ) {
  		return;
  	}
  	var r = /(?=[\\\/]+)/;
@@ -773,7 +773,7 @@
  	for ( var i = 1; i < l; i++ ) {
  		_path = list.slice( 0, i )
  			.join( '' );
- 		if ( PATH.existsSync( _path ) ) {
+ 		if ( FSE.existsSync( _path ) ) {
  			continue;
  		}
  		FSE.mkdirSync( _path );
