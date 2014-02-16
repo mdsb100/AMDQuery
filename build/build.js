@@ -229,7 +229,7 @@
  		appName: appConfig.name
  	};
 
- 	tr.selectAll( 'link[type=text/css]', function( link ) {
+ 	tr.selectAll( 'link[type="text/css"]', function( link ) {
  		link.getAttribute( "href", function( value ) {
  			// ignore ui css
  			if ( value.indexOf( "amdquery/ui/css" ) == -1 ) {
@@ -480,13 +480,13 @@
  		append = "",
  		i = 0;
 
- 	linkTr1.selectAll( "link", function( link ) {
+ 	linkTr1.selectAll( 'link[type="text/css"]', function( link ) {
  		link.getAttribute( "href", function( value ) {
  			cssList.push( value );
  		} );
  	} );
 
- 	linkTr2.selectAll( "link", function( link ) {
+ 	linkTr2.selectAll( 'link[type="text/css"]', function( link ) {
  		var ws = link.createWriteStream( {
  			outer: true
  		} );
