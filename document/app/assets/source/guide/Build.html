@@ -261,6 +261,16 @@ root
                 <p>If that is true, that build will create a non-compressed "amdquery.debug.js", set the configuration of application to "true" in HTML</p>
               </li>
               <li>
+                <h4>detectUIWidgetCSS</h4>
+                <p>If that is true, then build would detect ui-widget css from "appCombinationXMLPath".</p>
+                <p>If that is false, then build would include all of "ui/css/*.css".</p>
+              </li>
+              <li>
+                <h4>UIWidgetCSS</h4>
+                <p>It is a array of "ui/css/some.css", for example: ["tabbar.css", "navmenu.css"]. The array will concat into build-list when building ui-widget css.</p>
+                <p>Do not worry about duplicate css, build would filter same.</p>
+              </li>
+              <li>
                 <h4>complete</h4>
                 <p>The callback of the Build.</p>
                 <p>You can do some interesting things after the build is completed.</p>
