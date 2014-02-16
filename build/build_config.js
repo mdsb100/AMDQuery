@@ -22,7 +22,9 @@ exports.apps = [
 		debug: true,
 		complete: function( htmlInfo ) {
 
-		}
+		},
+    detectWidgetUICss: true,
+    widgetUICss: []
   }
  ]
 

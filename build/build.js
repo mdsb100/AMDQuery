@@ -399,10 +399,23 @@
  	cwd = PATH.join( AMDQueryJSRootPath, "ui", "css" ),
  		globOpt = {
  			cwd: cwd
- 		},
- 		cssFileList = glob.sync( "*.css", globOpt );
-
+ 		}
  	htmlInfo.uiCombinationRelativeCssPath = "amdquery/ui/css/amdquery-widget.css";
+
+ 	if ( appConfig.detectWidgetUICss ) {
+ 		detectWidgetUICss( cwd, appConfig, htmlInfo, function( cssFileList ) {
+ 			_buildUICss( cwd, cssFileList, appConfig, htmlInfo );
+ 			modifyHTML( null, appConfig, htmlInfo );
+ 		} );
+ 	} else {
+ 		var cssFileList = glob.sync( "*.css", globOpt );
+ 		_buildUICss( cwd, cssFileList, appConfig, htmlInfo );
+ 		modifyHTML( null, appConfig, htmlInfo );
+ 	}
+ }
+
+ function _buildUICss( cwd, cssFileList, appConfig, htmlInfo ) {
+ 	cssFileList = _.union( cssFileList.concat( appConfig.widgetUICss || [] ) );
 
  	var uiCombinationCssPath = PATH.join( htmlInfo.projectDistPath, htmlInfo.uiCombinationRelativeCssPath );
 
@@ -410,7 +423,39 @@
 
  	console.log( '\r\nSave UI amdquery-widget.css: ', uiCombinationCssPath );
 
- 	modifyHTML( null, appConfig, htmlInfo );
+ }
+
+ function detectWidgetUICss( cwd, appConfig, htmlInfo, callback ) {
+ 	var widgetTr = trumpet(),
+ 		cssFileList = [];
+ 	widgetTr.selectAll( "*", function( link ) {
+ 		link.getAttribute( "amdquery-widget", function( value ) {
+
+ 			var UIList = value.split( /;|,/ ),
+ 				i = 0,
+ 				len = UIList.length;
+
+ 			for ( ; i < len; i++ ) {
+ 				var tempPath = UIList[ i ].split( "." );
+ 				if ( ( tempPath.length == 1 || tempPath[ 0 ] == "ui" ) && tempPath[ 0 ] != "" ) {
+ 					var path = tempPath[ 1 ] + ".css",
+ 						detect_path = PATH.join( cwd, tempPath[ 1 ] + ".css" );
+ 					if ( FSE.existsSync( detect_path ) ) {
+ 						logger( "[DEBUG]".white, "add UI css:".white, detect_path.white );
+ 						cssFileList.push( path );
+ 					} else {
+ 						logger( "[WARN]".red, "the css path:", detect_path, "not found" );
+ 					}
+ 				}
+ 			}
+ 		} );
+ 	} );
+ 	var read = FSE.createReadStream( htmlInfo.appCombinationXMLPath ).pipe( widgetTr );
+
+ 	read.on( 'end', function() {
+ 		callback( _.union( cssFileList ) );
+ 	} );
+
  }
 
  function modifyHTML( appConfig, htmlInfo ) {
