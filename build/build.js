@@ -223,15 +223,22 @@
  	var htmlInfo = {
  		appConfig: {},
  		cssPath: [],
+ 		UICssPath: [],
  		htmlPath: appPath,
  		appProjectPath: getFileParentDirectoryPath( appPath ),
  		appName: appConfig.name
  	};
 
- 	tr.selectAll( 'link', function( link ) {
+ 	tr.selectAll( 'link[type=text/css]', function( link ) {
  		link.getAttribute( "href", function( value ) {
- 			logger( "[DEBUG]".white, "css link".white, value.white );
- 			htmlInfo.cssPath.push( value );
+ 			// ignore ui css
+ 			if ( value.indexOf( "amdquery/ui/css" ) == -1 ) {
+ 				logger( "[DEBUG]".white, "css link".white, value.white );
+ 				htmlInfo.cssPath.push( value );
+ 			} else {
+ 				logger( "[DEBUG]".white, "UI css link".white, value.white );
+ 				htmlInfo.UICssPath.push( getFileName( value ) );
+ 			}
  		} );
 
  		// link.createReadStream( {outer: true} ).pipe( process.stdout );
@@ -415,7 +422,8 @@
  }
 
  function _buildUICss( cwd, cssFileList, appConfig, htmlInfo ) {
- 	cssFileList = _.union( cssFileList.concat( appConfig.UIWidgetCSS || [] ) );
+  // UICssPath(defined in Head) is first, html defined css is second, config defined css is lastest.
+ 	cssFileList = _.union( htmlInfo.UICssPath.concat( cssFileList.concat( appConfig.UIWidgetCSS || [] ) ) );
 
  	var uiCombinationCssPath = PATH.join( htmlInfo.projectDistPath, htmlInfo.uiCombinationRelativeCssPath );
 
@@ -564,6 +572,10 @@
 
  function getFileParentDirectoryPath( path ) {
  	return path.replace( /([\\\/])[^\\\/]*$/, '$1' );
+ }
+
+ function getFileName( path ) {
+ 	return path ? path.split( "/" ).pop() : "";
  }
 
  function startBuildDefines( waterfallNext ) {
