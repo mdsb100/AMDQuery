@@ -1,4 +1,4 @@
-aQuery.define( "@app/controllers/navmenu", [ "app/Controller", "@app/views/navmenu" ], function( $, SuperController, NavmenuView ) {
+aQuery.define( "@app/controllers/navmenu", [ "module/location", "app/Controller", "@app/views/navmenu" ], function( $, location, SuperController, NavmenuView ) {
 	"use strict"; //启用严格模式
 	var Controller = SuperController.extend( {
 		init: function( contollerElement, models ) {
@@ -19,6 +19,7 @@ aQuery.define( "@app/controllers/navmenu", [ "app/Controller", "@app/views/navme
 					ret = target.uiNavitem( "getOptionToRoot" ),
 					path;
 				if ( ret.length > 1 ) {
+					location.setHash( "navmenu", ret.concat().reverse().join( "_" ) );
 					ret.push( "test", ".." );
 					path = $.getPath( ret.reverse().join( "/" ), ".html" );
 					controller.trigger( "navmenu.select", controller, {
