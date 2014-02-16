@@ -23,8 +23,8 @@ exports.apps = [
 		complete: function( htmlInfo ) {
 
 		},
-    detectWidgetUICss: true,
-    widgetUICss: []
+    detectUIWidgetCSS: true,
+    UIWidgetCSS: []
   }
  ]
 

@@ -402,8 +402,8 @@
  		}
  	htmlInfo.uiCombinationRelativeCssPath = "amdquery/ui/css/amdquery-widget.css";
 
- 	if ( appConfig.detectWidgetUICss ) {
- 		detectWidgetUICss( cwd, appConfig, htmlInfo, function( cssFileList ) {
+ 	if ( appConfig.detectUIWidgetCSS ) {
+ 		detectUIWidgetCSS( cwd, appConfig, htmlInfo, function( cssFileList ) {
  			_buildUICss( cwd, cssFileList, appConfig, htmlInfo );
  			modifyHTML( null, appConfig, htmlInfo );
  		} );
@@ -415,7 +415,7 @@
  }
 
  function _buildUICss( cwd, cssFileList, appConfig, htmlInfo ) {
- 	cssFileList = _.union( cssFileList.concat( appConfig.widgetUICss || [] ) );
+ 	cssFileList = _.union( cssFileList.concat( appConfig.UIWidgetCSS || [] ) );
 
  	var uiCombinationCssPath = PATH.join( htmlInfo.projectDistPath, htmlInfo.uiCombinationRelativeCssPath );
 
@@ -425,7 +425,7 @@
 
  }
 
- function detectWidgetUICss( cwd, appConfig, htmlInfo, callback ) {
+ function detectUIWidgetCSS( cwd, appConfig, htmlInfo, callback ) {
  	var widgetTr = trumpet(),
  		cssFileList = [];
  	widgetTr.selectAll( "*", function( link ) {
