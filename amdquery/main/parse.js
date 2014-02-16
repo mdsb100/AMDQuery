@@ -87,7 +87,7 @@
 		 * parse.QueryString("name=Jarry&age=27")
 		 * //{
 		 * //  name: "Jarry",
-     * //  name: "27"
+		 * //  name: "27"
 		 * //}
 		 * @param {String}
 		 * @param {String|Boolean} [split1="&"]
@@ -100,15 +100,17 @@
 			if ( qs ) {
 				$.each( qs.split( split1 || "&" ), function( item ) {
 					item = item.split( split2 || "=" );
-					args[ decodeURIComponent( item[ 0 ] ) ] = decodeURIComponent( item[ 1 ] );
+					if ( item[ 1 ] !== undefined ) {
+						args[ decodeURIComponent( item[ 0 ] ) ] = decodeURIComponent( item[ 1 ] );
+					}
 				} );
 			}
 			return args;
 		},
-    /**
-     * @param {String}
-     * @returns {Document}
-     */
+		/**
+		 * @param {String}
+		 * @returns {Document}
+		 */
 		XML: ( function( xml ) {
 			var parseXML;
 			if ( typeof DOMParser != "undefined" ) {

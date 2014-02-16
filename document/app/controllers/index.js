@@ -1,11 +1,11 @@
 aQuery.define( "@app/controllers/index", [
-  "hash/locationHash",
+  "module/location",
   "app/Controller",
   "@app/views/index",
   "@app/controllers/navmenu",
   "@app/controllers/content"
   ], function( $,
-	locationHash,
+	location,
 	SuperController,
 	IndexView ) {
 	"use strict"; //启用严格模式
@@ -21,7 +21,7 @@ aQuery.define( "@app/controllers/index", [
 				self.document.openWindow();
 			} );
 
-			this.navmenu.selectDefaultNavmenu( locationHash.navmenu );
+			this.navmenu.selectDefaultNavmenu( location.getHash( "navmenu" ) );
 
 			// this.api.loadPath( "/document/api/index.html" );
 

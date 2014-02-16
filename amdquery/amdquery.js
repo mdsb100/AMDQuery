@@ -1665,7 +1665,7 @@
 		 * @param {Function} [fail] - An function to the fail callback if loading moudle timeout or error.
 		 * @returns {ClassModule}
 		 * @example
-		 * require( [ "main/query", "hash/locationHash", "ui/swapview", "ui/scrollableview" ], function( query, locationHash ) { } );
+		 * require( [ "main/query", "module/location", "ui/swapview", "ui/scrollableview" ], function( query, location ) { } );
 		 * require( "main/query", function( query ) { } );
 		 * require( "main/query" ).first // Maybe is null;
 		 */

@@ -1,12 +1,14 @@
-aQuery.define( "@app/controllers/navmenu", [ "main/attr", "hash/locationHash", "app/Controller", "@app/views/navmenu" ], function( $, attr, locationHash, SuperController, NavmenuView ) {
+aQuery.define( "@app/controllers/navmenu", [ "main/attr", "module/location", "app/Controller", "@app/views/navmenu" ], function( $, attr, location, SuperController, NavmenuView ) {
 	"use strict"; //启用严格模式
+	var ROUTER_MARK = "_";
+
 	var Controller = SuperController.extend( {
 		init: function( contollerElement, models ) {
 			this._super( new NavmenuView( contollerElement ), models );
 
 			this.navitem = null;
-			this.initSwapIndex = locationHash.swapIndex;
-			this.initsSrollTo = locationHash.scrollTo;
+			this.initSwapIndex = location.getHash( "swapIndex" );
+			this.initsSrollTo = location.getHash( "scrollTo" );
 
 			var controller = this;
 			this.$nav = $( this.view.topElement ).find( "#nav" );
@@ -35,12 +37,12 @@ aQuery.define( "@app/controllers/navmenu", [ "main/attr", "hash/locationHash", "
 
 			var path = this._getPath( navitem, swapIndex, scrollTo );
 
-      if ( path != null ) {
-        this.trigger( "navmenu.select", this, {
-          type: "navmenu.select",
-          path: path
-        } );
-      }
+			if ( path != null ) {
+				this.trigger( "navmenu.select", this, {
+					type: "navmenu.select",
+					path: path
+				} );
+			}
 
 		},
 		_getPath: function( navitem, swapIndex, scrollTo ) {
@@ -53,20 +55,16 @@ aQuery.define( "@app/controllers/navmenu", [ "main/attr", "hash/locationHash", "
 				path = $.pagePath + ret.reverse().join( "/" ) + ".html#";
 
 				if ( swapIndex != null ) {
-					path += "swapIndex=" + locationHash.swapIndex + "!";
+					path += "swapIndex=" + location.getHash( "swapIndex" ) + "!";
 				}
 				if ( scrollTo != null ) {
-					path += "scrollTo=" + locationHash.scrollTo + "!";
+					path += "scrollTo=" + location.getHash( "scrollTo" ) + "!";
 				}
 			}
 			return path;
 		},
 		selectDefaultNavmenu: function( target ) {
-			var ret = $( target || "#AMDQuery");
-			// if ( target ) {
-				// var navItem = this.$nav.uiNavmenu( "getNavItemsByHtmlPath", target.split( /\W/ ) )[ 0 ];
-				// ret = navItem || ret;
-			// }
+			var ret = $( target ? this.$nav.uiNavmenu( "getNavItemsByHtmlPath", target.split( ROUTER_MARK ) ) : "#guide_AMDQuery" );
 			this.$nav.uiNavmenu( "selectNavItem", ret );
 		},
 		destroy: function() {
