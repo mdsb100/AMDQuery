@@ -303,25 +303,26 @@ $.require( [
             </pre>
             <h3 name="Directory" id="Directory">Directory Structure</h3>
             <pre class="prettyprint">
-amdquery
-  |- animation //animation module
-  |- app //application module
-  |- base //base module
-  |- ecma5 //ecma5 decoration
-  |- hash //save hash data
-  |- html5 //html5 decoration
-  |- json //save JSON data
-  |- lib //libraries
-  |- main //main module, main function
-  |- mobile //compatible js to adapt mobile
-  |- module //save some module which can not be classified
-  |- ui //ui widget
-  |- util //tools
-  |- build //build directory
-  |- document //amdquery document
-  |- jsdoc //api document
-  |- test //test directory
-  \ - amdquery.js //base js
+root
+  | - build //build directory
+  | - document //amdquery document
+  | - jsdoc //api document
+  | - test //test directory
+  \ - amdquery
+      | - animation //animation module
+      | - app //application module
+      | - base //base module
+      | - ecma5 //ecma5 decoration
+      | - hash //save hash data
+      | - html5 //html5 decoration
+      | - json //save JSON data
+      | - lib //libraries
+      | - main //main module, main function
+      | - mobile //compatible js to adapt mobile
+      | - module //save some module which can not be classified
+      | - ui //ui widget
+      | - util //tools
+      \ - amdquery.js //base js
             </pre>
             <h3 name="Life_Cycle" id="Life_Cycle">Life cycle of AMDQuery</h3>
             <p>We only load "amdquery.js". The "amdquery.js" defines some base module and class aQuery. The module "base/ready" control process of AMDQuery depend on "Promise".
