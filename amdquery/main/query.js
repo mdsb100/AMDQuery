@@ -1,4 +1,4 @@
-﻿aQuery.define( "main/query", [ "lib/js/sizzle", "base/extend", "base/typed", "base/array" ], function( $, Sizzle, utilExtend, typed, array, undefined ) {
+﻿aQuery.define( "main/query", [ "lib/sizzle", "base/extend", "base/typed", "base/array" ], function( $, Sizzle, utilExtend, typed, array, undefined ) {
 	"use strict";
 	this.describe( "Depend Sizzle1.10.3" );
 	$.module[ "lib/js/sizzle" ] = "Sizzle1.10.3";
@@ -51,12 +51,27 @@
 			return ( array.inArray( ele, qualifier ) >= 0 ) === keep;
 		} );
 	}
-
+	/**
+	 * @exports main/query
+	 * @requires module:lib/js/sizzle
+	 * @requires module:base/extend
+	 * @requires module:base/typed
+	 * @requires module:base/array
+	 */
 	var query = {
 		expr: Sizzle.selectors,
 		unique: Sizzle.uniqueSort,
 		text: Sizzle.getText,
 
+		/**
+     * Element contains another.
+     * @name contains
+     * @memberOf module:main/query
+		 * @method
+     * @param a {Element}
+     * @param b {Element}
+     * @returns {Boolean}
+		 */
 		contains: Sizzle.contains,
 
 		dir: function( ele, dir, until ) {
