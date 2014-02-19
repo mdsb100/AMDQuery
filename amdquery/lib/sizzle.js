@@ -1969,7 +1969,12 @@ if ( !assert(function( div ) {
 
 // EXPOSE
 if ( typeof define === "function" && define.amd ) {
-	define(function() { return Sizzle; });
+	define(function() {
+    /**
+     * @module lib/sizzle
+     */
+    return Sizzle;
+  });
 } else {
 	window.Sizzle = Sizzle;
 }
