@@ -21,13 +21,12 @@
 			contenteditable: "contentEditable"
 		}, rboolean = /^(?:autofocus|autoplay|async|checked|controls|defer|disabled|hidden|loop|multiple|open|readonly|required|scoped|selected)$/i;
 	/**
-	 * @pubilc
 	 * @exports main/attr
 	 * @requires module:base/typed
 	 * @requires module:base/extend
 	 * @requires module:base/support
 	 */
-	var attr = {
+	var attrUtil = {
 		/**
 		 * @param {Element}
 		 * @param {String}
@@ -87,7 +86,7 @@
 						isBool = rboolean.test( name );
 
 						if ( !isBool ) {
-							$.setAttr( ele, name, "" );
+							attrUtil.setAttr( ele, name, "" );
 						}
 						ele.removeAttribute( support.getSetAttribute ? name : propName );
 
@@ -107,7 +106,7 @@
 		 */
 		setAttr: function( ele, name, value ) {
 			if ( value == null ) {
-				return $.removeAttr( ele, name );
+				return attrUtil.removeAttr( ele, name );
 			}
 			if ( !support.getSetAttribute ) {
 				var ret = ele.getAttributeNode( name );
@@ -152,8 +151,6 @@
 		}
 	};
 
-	$.extend( attr );
-
 	$.fn.extend( /** @lends aQuery.prototype */ {
 		/**
 		 * Set or get attribute.
@@ -173,15 +170,15 @@
 			if ( typed.isObj( attr ) ) {
 				for ( var i in attr ) {
 					this.each( function( ele ) {
-						$.setAttr( ele, i, attr[ i ] );
+						attrUtil.setAttr( ele, i, attr[ i ] );
 					} );
 				}
 			} else if ( typed.isStr( attr ) ) {
 				if ( value == undefined ) {
-					return $.getAttr( this[ 0 ], attr );
+					return attrUtil.getAttr( this[ 0 ], attr );
 				} else {
 					this.each( function( ele ) {
-						$.setAttr( ele, attr, value );
+						attrUtil.setAttr( ele, attr, value );
 					} );
 				}
 			}
@@ -194,7 +191,7 @@
 		 */
 		removeAttr: function( name ) {
 			return this.each( function( ele ) {
-				$.removeAttr( ele, name );
+				attrUtil.removeAttr( ele, name );
 			} );
 		},
 		/**
@@ -204,10 +201,10 @@
 		 */
 		val: function( value ) {
 			return value ? this.each( function( ele ) {
-				$.setVal( ele, value );
-			} ) : $.getVal( this[ 0 ] );
+				attrUtil.setVal( ele, value );
+			} ) : attrUtil.getVal( this[ 0 ] );
 		}
 	} );
 
-	return attr;
+	return attrUtil;
 } );

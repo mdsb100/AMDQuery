@@ -83,7 +83,7 @@
 	} else {
 		cls = {
 			addClass: function( ele, className ) {
-				if ( !$.containsClass( ele, className ) ) {
+				if ( !cls.containsClass( ele, className ) ) {
 					var str = " ";
 					if ( ele.className.length == 0 ) str = "";
 					ele.className += str + className;
@@ -97,14 +97,14 @@
 				return !!( result && result[ 0 ] );
 			},
 			removeClass: function( ele, className ) {
-				if ( $.containsClass( ele, className ) ) {
+				if ( cls.containsClass( ele, className ) ) {
 					var reg = new RegExp( "(\\s|^)" + className + "(\\s|$)" );
 					ele.className = ele.className.replace( reg, " " );
 				}
 				return this;
 			},
 			toggleClass: function( ele, className ) {
-				$.containsClass( ele, className ) ? $.removeClass( ele, className ) : $.addClass( ele, className );
+				cls.containsClass( ele, className ) ? cls.removeClass( ele, className ) : cls.addClass( ele, className );
 				return this;
 			},
 			replaceClass: replaceClass,
@@ -116,8 +116,6 @@
 			}
 		};
 	}
-
-	$.extend( cls );
 
 	$.fn.extend( /** @lends aQuery.prototype */ {
 		/**
