@@ -1427,10 +1427,19 @@
 					status = this.getStatus(),
 					url;
 
-				( url = ClassModule.getPath( id, ".js" ) ) || util.error( {
+				if ( id && /^(http(s?):\/\/)/i.test( id ) ) {
+					if ( !rsuffix.test( id ) ) {
+						url += id + ".js";
+					} else {
+						url = id;
+					}
+				} else {
+					( url = ClassModule.getPath( id, ".js" ) ) || util.error( {
 						fn: "require",
 						msg: "Could not load module: " + id + ", Cannot match its URL"
 					} );
+				}
+
 				//如果当前模块不是已知的具名模块，则设定它为正在处理中的模块，直到它的定义体出现
 				//if (!namedModule) { ClassModule.anonymousID = id; } //这边赋值的时候应当是影射的
 				this.setStatus( 2 );
