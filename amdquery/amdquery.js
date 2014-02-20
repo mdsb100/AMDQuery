@@ -10,9 +10,10 @@
 	"use strict";
 	var
 	core_slice = [].slice,
-		core_splice = [].splice;
+		core_splice = [].splice,
+		rsuffix = /\.[^\/\.]*$/g;
 
-  /** @typedef {(DOMDocument|DOMElement)} Element */
+	/** @typedef {(DOMDocument|DOMElement)} Element */
 
 	var
 	version = "AMDQuery 1.0.0",
@@ -100,7 +101,7 @@
 				if ( !_suffix ) {
 					_suffix = ".js";
 				}
-				if ( ma = _key.match( /\.[^\/\.]*$/g ) ) {
+				if ( ma = _key.match( rsuffix ) ) {
 					_url = _key;
 					if ( ma[ ma.length - 1 ] != _suffix ) {
 						_url += _suffix;
@@ -129,7 +130,7 @@
 			 */
 			removeSuffix: function( src ) {
 				src = src.replace( /\/$/, "" );
-				if ( src.match( /\.[^\/\.]*$/g ) ) {
+				if ( src.match( rsuffix ) ) {
 					src = src.replace( /\.[^\/\.]*$/, "" );
 				}
 
