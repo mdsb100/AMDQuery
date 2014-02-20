@@ -12,6 +12,8 @@
 	core_slice = [].slice,
 		core_splice = [].splice;
 
+  /** @typedef {(DOMDocument|DOMElement)} Element */
+
 	var
 	version = "AMDQuery 1.0.0",
 		/**
