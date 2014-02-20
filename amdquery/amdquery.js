@@ -200,7 +200,10 @@
 			detectCR: false,
 			debug: true,
 			timeout: 5000,
-			console: false
+			console: false,
+		},
+		amdVariables: {
+
 		},
 		ui: {
 			initWidget: false,
@@ -222,11 +225,12 @@
 	if ( typeof aQueryConfig != "undefined" && typeof aQueryConfig === "object" ) {
 		defineConfig = aQueryConfig;
 	} else {
-		defineConfig = util.getJScriptConfig( [ "amdquery", "amd", "ui", "module", "app" ] );
+		defineConfig = util.getJScriptConfig( [ "amdquery", "amd", "amdVariables", "ui", "module", "app" ] );
 	}
 
 	util.extend( _config.amdquery, defineConfig.amdquery );
 	util.extend( _config.amd, defineConfig.amd );
+	util.extend( _config.amdVariables, defineConfig.amdVariables );
 	util.extend( _config.ui, defineConfig.ui );
 	util.extend( _config.module, defineConfig.module );
 	util.extend( _config.app, defineConfig.app );
@@ -1811,6 +1815,10 @@
 				return this;
 			}
 		} );
+
+		for ( var name in _config.amdVariables ) {
+			require.variable( name, _config.amdVariables[ name ] );
+		}
 
 		aQuery.define( "base/ClassModule", function( $ ) {
 			/**
