@@ -245,6 +245,7 @@
 	 * @param {Element} [parent] - Parent Element.
 	 * @borrows util.getPath as getPath
 	 * @borrows util.now as now
+	 * @mixes module:main/query
 	 * @example
 	 * aQuery(function(){}); // Equivalent to ready(function(){}), see {@link module:base/ready}
 	 * // should require("main/query")
