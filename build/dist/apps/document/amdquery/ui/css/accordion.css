@@ -1,0 +1,86 @@
+.aquery-accordion {
+    text-align: center;
+    cursor: pointer;
+    background-color: White;
+    /*
+        fix safari
+        border: 1px solid #e7d5b4;
+    */
+    border: 1px solid #e7d5b4;
+    /*
+    border-right: 1px solid #e7d5b4;
+    border-bottom: 1px solid #e7d5b4;
+    */
+    height: auto;
+    overflow: hidden;
+    border-top: 2px solid #a8680e;
+}
+.aquery-accordion .shell {
+    height: auto;
+    width: 100%;
+    font: 24px Arial, "\5FAE\8F6F\96C5\9ED1";
+}
+.aquery-accordion .title: hover
+/*改成shell就一起变了*/
+
+ {} .aquery-accordion .title: active {} .aquery-accordion .title {
+    width: 100%;
+    height: 28px;
+    text-align: left;
+    cursor: pointer;
+    line-height: 28px;
+    font-family: 宋体;
+    font-weight: bold;
+    font-size: 14px;
+    color: #6B573B;
+}
+.aquery-accordion .title_select {
+    background: url(../images/accordion_typeSelect.jpg) repeat-x;
+}
+.aquery-accordion .title_unselect {
+    background: url(../images/accordion_typeUnselect.jpg) repeat-x;
+}
+.aquery-accordion .arrowRight {
+    width: 32px;
+    height: 100%;
+    background: url(../images/accordion_arrowRight.jpg) 50% 50% no-repeat;
+}
+.aquery-accordion .arrowBottom {
+    width: 32px;
+    height: 100%;
+    background: url(../images/accordion_arrowBottom.jpg) 50% 50% no-repeat;
+}
+.aquery-accordion .text {
+    /*width: 166px;*/
+    height: 100%;
+    font-size: 14px;
+}
+.aquery-accordion .board {
+    width: 100%;
+    background: url(../images/accordion_bottomBackground.jpg) bottom repeat-x;
+}
+.aquery-accordion .key {
+    width: 100%;
+    height: 28px;
+    line-height: 28px;
+}
+.aquery-accordion .board .select {
+    color: #d30000;
+}
+.aquery-accordion .board .unselect {
+    color: #6B573B;
+}
+.aquery-accordion .key .a {
+    width: 100%;
+    height: 100%;
+    font-family: 宋体;
+    font-size: 12px;
+    padding-left: 30px;
+    text-align: left;
+}
+.aquery-accordion .key .a: hover {
+    color: #d30000;
+    /*text-decoration: underline;*/
+    background-color: #fff9ef;
+}
+.aquery-accordion .key .a: active {}

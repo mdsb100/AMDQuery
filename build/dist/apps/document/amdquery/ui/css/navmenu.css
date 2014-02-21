@@ -1,0 +1,91 @@
+.aquery-navmenu {
+    /*text-align: center;*/
+    background-color: White;
+    /*
+        fix safari
+        border: 1px solid #e7d5b4;
+    */
+    /*border:1px solid #e7d5b4;*/
+    /*
+    border-right: 1px solid #e7d5b4;
+    border-bottom: 1px solid #e7d5b4;
+    */
+    height: auto;
+    overflow: hidden;
+    /*border-top:2px solid #a8680e;*/
+    /*position: absolute;*/
+}
+.aquery-navmenu ul {
+    float: left;
+}
+.aquery-navmenu .img {
+    width: 16px;
+    height: 28px;
+    cursor: pointer;
+}
+.aquery-navmenu .module {
+    background: url(../images/icons.png) 0px -35px no-repeat;
+}
+.aquery-navmenu .class {
+    background: url(../images/icons.png) 0px -74px no-repeat;
+}
+.aquery-navmenu .file {
+    background: url(../images/icons.png) -2px -472px no-repeat;
+}
+.aquery-navmenu .item {
+    height: auto;
+    font: 24px Arial, "\5FAE\8F6F\96C5\9ED1";
+}
+.aquery-navmenu .title: link {} .aquery-navmenu .title: visited {} .aquery-navmenu .title: hover
+/*改成shell就一起变了*/
+
+{
+    color: #d30000;
+}
+.aquery-navmenu .title: active {} .aquery-navmenu .title {
+    height: 28px;
+    text-align: left;
+    line-height: 28px;
+    font-family: 宋体;
+    font-weight: bold;
+    font-size: 14px;
+    color: #6B573B;
+}
+.aquery-navmenu .arrow {
+    width: 16px;
+    height: 28px;
+    cursor: pointer;
+}
+.aquery-navmenu .arrowRight {
+    width: 16px;
+    height: 28px;
+    background: url(../images/navmenu_arrows.png) 2px 5px no-repeat;
+}
+.aquery-navmenu .arrowBottom {
+    width: 16px;
+    height: 28px;
+    background: url(../images/navmenu_arrows.png) -12px 5px no-repeat;
+}
+.aquery-navmenu .text {
+    /*width: 166px;*/
+    height: 100%;
+    font-size: 14px;
+    cursor: pointer;
+}
+.aquery-navmenu .text_select {
+    /*background: url(../images/navmenu_typeSelect.jpg) repeat-x;*/
+    color: #d30000;
+}
+.aquery-navmenu .text_unselect {
+    /*background: url(../images/navmenu_typeUnselect.jpg) repeat-x;*/
+}
+.aquery-navmenu .board {
+    margin-left: 16px;
+    background: url(../images/navmenu_bottomBackground.jpg) bottom repeat-x;
+}
+.aquery-navmenu .board .select {
+    color: #d30000;
+}
+.aquery-navmenu .board .unselect {
+    color: #6B573B;
+}

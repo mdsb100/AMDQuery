@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>Documentation Source: main/query.js</title>
+
+	<!--[if lt IE 9]>
+	<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]-->
+	<link type="text/css" rel="stylesheet" href="styles/sunlight.default.css">
+
+	
+	<link type="text/css" rel="stylesheet" href="styles/site.simplex.css">
+	
+</head>
+
+<body>
+<div class="container-fluid">
+	<div class="navbar navbar-fixed-top ">
+		<div class="navbar-inner">
+			<a class="brand" href="index.html">Documentation</a>
+			<ul class="nav">
+				
+				<li class="dropdown">
+					<a href="namespaces.list.html" class="dropdown-toggle" data-toggle="dropdown">Namespaces<b
+						class="caret"></b></a>
+
+					<ul class="dropdown-menu ">
+						
+						<li>
+							<a href="aQuery.util.html">util</a>
+						</li>
+						
+						<li>
+							<a href="event.document.html">document</a>
+						</li>
+						
+						<li>
+							<a href="require.html">require(namespace)</a>
+						</li>
+						
+
+					</ul>
+				</li>
+				
+				<li class="dropdown">
+					<a href="modules.list.html" class="dropdown-toggle" data-toggle="dropdown">Modules<b
+						class="caret"></b></a>
+
+					<ul class="dropdown-menu ">
+						
+						<li>
+							<a href="array.html">base/array</a>
+						</li>
+						
+						<li>
+							<a href="ClassModule.html">base/ClassModule</a>
+						</li>
+						
+						<li>
+							<a href="client.html">base/client</a>
+						</li>
+						
+						<li>
+							<a href="config.html">base/config</a>
+						</li>
+						
+						<li>
+							<a href="extend.html">base/extend</a>
+						</li>
+						
+						<li>
+							<a href="Promise.html">base/Promise</a>
+						</li>
+						
+						<li>
+							<a href="queue.html">base/queue</a>
+						</li>
+						
+						<li>
+							<a href="ready.html">base/ready</a>
+						</li>
+						
+						<li>
+							<a href="support.html">base/support</a>
+						</li>
+						
+						<li>
+							<a href="typed.html">base/typed</a>
+						</li>
+						
+						<li>
+							<a href="array_.html">ecma5/array</a>
+						</li>
+						
+						<li>
+							<a href="function.html">ecma5/function</a>
+						</li>
+						
+						<li>
+							<a href="object.html">ecma5/object</a>
+						</li>
+						
+						<li>
+							<a href="string.html">ecma5/string</a>
+						</li>
+						
+						<li>
+							<a href="charcode.html">hash/charcode</a>
+						</li>
+						
+						<li>
+							<a href="cssColors.html">hash/cssColors</a>
+						</li>
+						
+						<li>
+							<a href="applicationCache.html">html5/applicationCache</a>
+						</li>
+						
+						<li>
+							<a href="localStorage.html">html5/localStorage</a>
+						</li>
+						
+						<li>
+							<a href="sessionStorage.html">html5/sessionStorage</a>
+						</li>
+						
+						<li>
+							<a href="Storage.html">html5/Storage</a>
+						</li>
+						
+						<li>
+							<a href="Worker.html">html5/Worker</a>
+						</li>
+						
+						<li>
+							<a href="sizzle.html">lib/sizzle</a>
+						</li>
+						
+						<li>
+							<a href="attr.html">main/attr</a>
+						</li>
+						
+						<li>
+							<a href="class.html">main/class</a>
+						</li>
+						
+						<li>
+							<a href="communicate.html">main/communicate</a>
+						</li>
+						
+						<li>
+							<a href="CustomEvent.html">main/CustomEvent</a>
+						</li>
+						
+						<li>
+							<a href="data.html">main/data</a>
+						</li>
+						
+						<li>
+							<a href="event.html">main/event</a>
+						</li>
+						
+						<li>
+							<a href="object_.html">main/object</a>
+						</li>
+						
+						<li>
+							<a href="parse.html">main/parse</a>
+						</li>
+						
+						<li>
+							<a href="query.html">main/query</a>
+						</li>
+						
+						<li>
+							<a href="event_.html">mobile/event</a>
+						</li>
+						
+						<li>
+							<a href="location.html">module/location</a>
+						</li>
+						
+
+					</ul>
+				</li>
+				
+				<li class="dropdown">
+					<a href="classes.list.html" class="dropdown-toggle" data-toggle="dropdown">Classes<b
+						class="caret"></b></a>
+
+					<ul class="dropdown-menu ">
+						
+						<li>
+							<a href="aQuery.html">aQuery</a>
+						</li>
+						
+
+					</ul>
+				</li>
+				
+				<li class="dropdown">
+					<a href="mixins.list.html" class="dropdown-toggle" data-toggle="dropdown">Mixins<b
+						class="caret"></b></a>
+
+					<ul class="dropdown-menu ">
+						
+						<li>
+							<a href="CollectionClassPrototypeMethods.html">CollectionClassPrototypeMethods</a>
+						</li>
+						
+						<li>
+							<a href="ObjectClassStaticMethods.html">ObjectClassStaticMethods</a>
+						</li>
+						
+
+					</ul>
+				</li>
+				
+				<li class="dropdown">
+					<a href="global.html" class="dropdown-toggle" data-toggle="dropdown">Global<b
+						class="caret"></b></a>
+
+					<ul class="dropdown-menu ">
+						
+						<li>
+							<a href="global.html#define">define</a>
+						</li>
+						
+						<li>
+							<a href="global.html#find">find</a>
+						</li>
+						
+						<li>
+							<a href="global.html#require">require</a>
+						</li>
+						
+
+					</ul>
+				</li>
+				
+			</ul>
+		</div>
+	</div>
+
+	<div class="row-fluid">
+
+		
+			<div class="span12">
+				
+				<div id="main">
+					
+
+
+		<h1 class="page-title">Source: main/query.js</h1>
+    
+    <section>
+        <article>
+            <pre class="sunlight-highlight-javascript linenums">﻿aQuery.define( "main/query", [ "lib/sizzle", "base/extend", "base/typed", "base/array" ], function( $, Sizzle, utilExtend, typed, array, undefined ) {
+	"use strict";
+	this.describe( "Depend Sizzle1.10.3" );
+	$.module[ "lib/js/sizzle" ] = "Sizzle1.10.3";
+
+	var core_deletedIds = [],
+		core_concat = core_deletedIds.concat;
+
+	var runtil = /Until$/,
+		rparentsprev = /^(?:parents|prev(?:Until|All))/,
+		isSimple = /^.[^:#\[\.,]*$/,
+		rneedsContext = Sizzle.selectors.match.needsContext,
+		// methods guaranteed to produce a unique set when starting from a unique set
+		guaranteedUnique = {
+			children: true,
+			contents: true,
+			next: true,
+			prev: true
+		};
+
+	function winnow( elements, qualifier, keep ) {
+
+		// Can't pass null or undefined to indexOf in Firefox 4
+		// Set to 0 to skip string check
+		qualifier = qualifier || 0;
+
+		if ( typed.isFun( qualifier ) ) {
+			return array.grep( elements, function( ele, i ) {
+				var retVal = !! qualifier.call( ele, i, ele );
+				return retVal === keep;
+			} );
+
+		} else if ( qualifier.nodeType ) {
+			return array.grep( elements, function( ele ) {
+				return ( ele === qualifier ) === keep;
+			} );
+
+		} else if ( typed.isStr( qualifier ) ) {
+			var filtered = array.grep( elements, function( ele ) {
+				return ele.nodeType === 1;
+			} );
+
+			if ( isSimple.test( qualifier ) ) {
+				return $.filter( qualifier, filtered, !keep );
+			} else {
+				qualifier = $.filter( qualifier, filtered );
+			}
+		}
+
+		return array.grep( elements, function( ele ) {
+			return ( array.inArray( ele, qualifier ) >= 0 ) === keep;
+		} );
+	}
+	/**
+	 * @exports main/query
+	 * @requires module:lib/sizzle
+	 * @requires module:base/extend
+	 * @requires module:base/typed
+	 * @requires module:base/array
+	 */
+	var query = {
+		expr: Sizzle.selectors,
+		unique: Sizzle.uniqueSort,
+		text: Sizzle.getText,
+
+		/**
+     * Element contains another.
+     * @name contains
+     * @memberOf module:main/query
+		 * @method
+     * @param a {Element}
+     * @param b {Element}
+     * @returns {Boolean}
+		 */
+		contains: Sizzle.contains,
+
+		dir: function( ele, dir, until ) {
+			var matched = [],
+				cur = ele[ dir ];
+
+			while ( cur && cur.nodeType !== 9 && ( until === undefined || cur.nodeType !== 1 || !$( cur ).is( until ) ) ) {
+				if ( cur.nodeType === 1 ) {
+					matched.push( cur );
+				}
+				cur = cur[ dir ];
+			}
+			return matched;
+		},
+    /**
+     * Get the all posterity elment.
+     * @param {Element}
+     * @returns {Array&lt;Element>}
+     */
+		posterity: function( eles ) {
+			return $.getElesByTag( "*", eles );
+		},
+    /**
+     * Element collection transform to elment array.
+     * @param {ElementCollection}
+     * @param {Boolean} [real=true] - If ture means the element node type must be 3 or 8.
+     * @returns {Array&lt;Element>}
+     */
+		elementCollectionToArray: function( eles, real ) {
+			var list = [];
+			if ( typed.isEleConllection( eles ) ) {
+				var real = real === undefined ? true : real;
+				$.each( eles, function( ele ) {
+					if ( real === false )
+						list.push( ele );
+					else if ( ele.nodeType != 3 && ele.nodeType != 8 )
+						list.push( ele );
+				}, this );
+			}
+			return list;
+		},
+    /**
+     * Find element of array.
+     * @name find
+     * @method
+     * @param selector {String} - see {@link https://github.com/jquery/sizzle}
+     * @returns {Array&lt;Element>}
+     */
+		find: Sizzle,
+    /**
+     * Find element of array.
+     * @param selector {String}
+     * @param {Element|Array&lt;Element>} [eles] - context
+     * @param {Boolean} [not=false] - If true selctor be ":not(" + selector + ")" so returns another result.
+     * @returns {Array&lt;Element>}
+     */
+		filter: function( selector, eles, not ) {
+			if ( not ) {
+				selector = ":not(" + selector + ")";
+			}
+
+			return eles.length === 1 ?
+				$.find.matchesSelector( eles[ 0 ], selector ) ? [ eles[ 0 ] ] : [] :
+				$.find.matches( selector, eles );
+		},
+    /**
+     * Get element of arry.
+     * @param selector {String|Element|aQuery}
+     * @param {Element} [context=DOMDocument]
+     * @returns {Array&lt;Element>}
+     */
+		getEle: function( ele, context ) {
+			/// &lt;summary>通过各种筛选获得包含DOM元素的数组&lt;/summary>
+			/// &lt;param name="ele" type="Element/$/document/str">各种筛选&lt;/param>
+			/// &lt;param name="ele" type="Element/document/undefined">各种筛选&lt;/param>
+			/// &lt;returns type="Array" />
+			var list = [],
+				tmp;
+			if ( typed.isStr( ele ) ) {
+				ele = $.util.trim( ele );
+				if ( /^&lt;.*>$/.test( ele ) ) {
+					list = $.elementCollectionToArray( $.createEle( ele ), false );
+				} else {
+					tmp = context || document;
+					list = $.find( ele, tmp.documentElement || context );
+				}
+			} else if ( typed.isEle( ele ) )
+				list = [ ele ];
+			else if ( typed.isArr( ele ) ) {
+				$.each( ele, function( result ) {
+					typed.isEle( result ) && list.push( result );
+				}, this );
+				list = array.filterSame( list );
+			} else if ( ele instanceof $ )
+				list = ele.eles;
+			else if ( typed.isEleConllection( ele ) ) {
+				list = $.elementCollectionToArray( ele, true );
+			} else if ( ele === document )
+				list = [ ele.documentElement ];
+			else if ( ele === window )
+				list = [ window ]; //有风险的
+			else if ( typed.isDoc( ele ) ) {
+				list = [ ele.documentElement ];
+			}
+
+			return list;
+		},
+		getElesByClass: function( className, context ) {
+			/// &lt;summary>通过样式名获得DOM元素
+			/// &lt;para>返回为ele的arr集合&lt;/para>
+			/// &lt;/summary>
+			/// &lt;param name="className" type="String">样式名&lt;/param>
+			/// &lt;param name="context" type="Element">从元素中获取&lt;/param>
+			/// &lt;returns type="Array" />
+			return $.expr.find[ "CLASS" ]( className, context || document );
+		},
+		getEleById: function( id, context ) {
+			/// &lt;summary>通过ID获得一个DOM元素&lt;/summary>
+			/// &lt;param name="id" type="String">id&lt;/param>
+			/// &lt;param name="context" type="Document">document&lt;/param>
+			/// &lt;returns type="Element" />
+      ret = $.expr.find[ "ID" ]( id, context || document ) || []
+			return ret[0];
+		},
+		getElesByTag: function( tag, context ) {
+			/// &lt;summary>通过标签名获得DOM元素&lt;/summary>
+			/// &lt;param name="tag" type="String">标签名&lt;/param>
+			/// &lt;param name="context" type="Element/ElementCollection/Array[Element]">从元素或元素集合中获取&lt;/param>
+			/// &lt;returns type="Array" />
+			return $.expr.find[ "TAG" ]( tag, context || document );
+		},
+
+		getSelfIndex: function( ele ) {
+			/// &lt;summary>通过序号获得当前DOM元素某个真子DOM元素 从0开始&lt;/summary>
+			/// &lt;param name="ele" type="Element">dom元素&lt;/param>
+			/// &lt;returns type="Number" />
+			var i = -1,
+				node = ele.parentNode.firstChild;
+			while ( node ) {
+				if ( typed.isEle( node ) && i++ != undefined && node === ele ) {
+					break;
+				}
+				node = node.nextSibling;
+			}
+			return i;
+		},
+		iterationPosterity: function( ele, fun ) {
+			/// &lt;summary>遍历当前元素的所有子元素并返回符合function条件的DOM元素集合&lt;/summary>
+			/// &lt;param name="ele" type="Element">DOM元素&lt;/param>
+			/// &lt;param name="fun" type="Function">筛选的方法&lt;/param>
+			/// &lt;returns type="Array" />
+			return array.grep( $.posterity( ele ), function( child ) {
+				return fun( child );
+			} );
+		},
+
+		map: function( eles, callback, arg ) {
+			var value,
+				i = 0,
+				length = eles.length,
+				isArray = typed.isArrlike( eles ),
+				ret = [];
+
+			// Go through the array, translating each of the items to their
+			if ( isArray ) {
+				for ( ; i &lt; length; i++ ) {
+					value = callback( eles[ i ], i, arg );
+
+					if ( value != null ) {
+						ret[ ret.length ] = value;
+					}
+				}
+
+				// Go through every key on the object,
+			} else {
+				for ( i in eles ) {
+					value = callback( eles[ i ], i, arg );
+
+					if ( value != null ) {
+						ret[ ret.length ] = value;
+					}
+				}
+			}
+
+			// Flatten any nested arrays
+			return core_concat.apply( [], ret );
+		},
+
+		sibling: function( n, ele ) {
+			var r = [];
+
+			for ( ; n; n = n.nextSibling ) {
+				if ( n.nodeType === 1 && n !== ele ) {
+					r.push( n );
+				}
+			}
+
+			return r;
+		}
+	};
+
+	$.extend( query );
+	$.expr[ ":" ] = $.expr.pseudos;
+
+	$.fn.extend( {
+		posterity: function( query ) {
+			/// &lt;summary>返回当前对象的所有子元素&lt;/summary>
+			/// &lt;param name="str" type="String">字符串query&lt;/param>
+			/// &lt;param name="real" type="Boolean/Null">是否获得真元素，默认为真&lt;/param>
+			/// &lt;returns type="self" />
+			var posterity = $.posterity( this.eles );
+			if ( typed.isStr( query ) ) posterity = $.find( query, posterity );
+			return $( posterity );
+		},
+
+		eq: function( i ) {
+			/// &lt;summary>返回元素序号的新$&lt;/summary>
+			/// &lt;param name="num1" type="Number/null">序号 缺省返回第一个&lt;/param>
+			/// &lt;param name="num2" type="Number/null">长度 返回当前序号后几个元素 缺省返回当前序号&lt;/param>
+			/// &lt;returns type="$" />
+			var len = this.length,
+				j = +i + ( i &lt; 0 ? len : 0 );
+			return j >= 0 && j &lt; len ? $( this[ j ] ) : $( [] );
+		},
+
+		filter: function( str ) {
+			/// &lt;summary>筛选Element
+			/// &lt;para>返回arr第一项为查询语句&lt;/para>
+			/// &lt;para>返回arr第二项为元素数组&lt;/para>
+			/// &lt;/summary>
+			/// &lt;param name="str" type="String/Function">字符串query或者筛选方法&lt;/param>
+			/// &lt;returns type="$" />
+
+			return $( winnow( this, str, false ) );
+
+		},
+		find: function( selector ) {
+			/// &lt;summary>查询命令&lt;/summary>
+			/// &lt;param name="selector" type="String">查询字符串&lt;/param>
+			/// &lt;returns type="$" />
+			var i, ret, self,
+				len = this.length;
+
+			if ( typeof selector !== "string" ) {
+				self = this;
+				return $( $( selector ).filter( function() {
+					for ( i = 0; i &lt; len; i++ ) {
+						if ( Sizzle.contains( self[ i ], this ) ) {
+							return true;
+						}
+					}
+				} ) );
+			}
+
+			ret = [];
+			for ( i = 0; i &lt; len; i++ ) {
+				$.find( selector, this[ i ], ret );
+			}
+
+			// Needed because $( selector, context ) becomes $( context ).find( selector )
+			ret = $( len > 1 ? $.unique( ret ) : ret );
+			ret.selector = ( this.selector ? this.selector + " " : "" ) + selector;
+			return ret;
+		},
+
+		index: function( ele ) {
+			/// &lt;summary>返回当前对象的第一个元素在同辈元素中的index顺序&lt;/summary>
+			/// &lt;param name="real" type="Boolean/Null">是否获得真元素，默认为真&lt;/param>
+			/// &lt;returns type="Number" />
+			if ( !ele ) {
+				return ( this[ 0 ] && this[ 0 ].parentNode ) ? this.first().prevAll().length : -1;
+			}
+
+			// index in selector
+			if ( typed.isStr( ele ) ) {
+				return array.inArray( $( ele ), this[ 0 ] );
+			}
+
+			// Locate the position of the desired element
+			return array.inArray(
+				// If it receives a jQuery object, the first element is used
+				this, typed.is$( ele ) ? ele[ 0 ] : ele );
+		},
+		is: function( str ) {
+			/// &lt;summary>返回筛选后的数组是否存在&lt;/summary>
+			/// &lt;param name="str" type="String">查询字符串&lt;/param>
+			/// &lt;returns type="Boolean" />
+			return !!str && (
+				typed.isStr( str ) ?
+				rneedsContext.test( str ) ?
+				$.find( str, this.context ).index( this[ 0 ] ) >= 0 :
+				$.filter( str, this.eles ).length > 0 :
+				this.filter( str ).length > 0 );
+		},
+
+		map: function( callback ) {
+			return $( $.map( this, function( ele, i ) {
+				return callback.call( ele, i, ele );
+			} ) );
+		},
+
+		not: function( selector ) {
+			return $( winnow( this, selector, false ) );
+		}
+	} );
+
+	function sibling( cur, dir ) {
+		do {
+			cur = cur[ dir ];
+		} while ( cur && cur.nodeType !== 1 );
+
+		return cur;
+	}
+
+	$.each( {
+		parent: function( ele ) {
+			var parent = ele.parentNode;
+			return parent && parent.nodeType !== 11 ? parent : null;
+		},
+		parents: function( ele ) {
+			return $.dir( ele, "parentNode" );
+		},
+		parentsUntil: function( ele, i, until ) {
+			return $.dir( ele, "parentNode", until );
+		},
+		next: function( ele ) {
+			return sibling( ele, "nextSibling" );
+		},
+		prev: function( ele ) {
+			return sibling( ele, "previousSibling" );
+		},
+		nextAll: function( ele ) {
+			return $.dir( ele, "nextSibling" );
+		},
+		prevAll: function( ele ) {
+			return $.dir( ele, "previousSibling" );
+		},
+		nextUntil: function( ele, i, until ) {
+			return $.dir( ele, "nextSibling", until );
+		},
+		prevUntil: function( ele, i, until ) {
+			return $.dir( ele, "previousSibling", until );
+		},
+		siblings: function( ele ) {
+			return $.sibling( ( ele.parentNode || {} ).firstChild, ele );
+		},
+		children: function( ele ) {
+			return $.sibling( ele.firstChild );
+		},
+		contents: function( ele ) {
+			return $.nodeName( ele, "iframe" ) ?
+				ele.contentDocument || ele.contentWindow.document :
+				$.merge( [], ele.childNodes );
+		}
+	}, function( fn, name ) {
+		$.fn[ name ] = function( until, selector ) {
+			var ret = $.map( this, fn, until );
+
+			if ( !runtil.test( name ) ) {
+				selector = until;
+			}
+
+			if ( selector && typeof selector === "string" ) {
+				ret = $.filter( selector, ret );
+			}
+
+			ret = this.length > 1 && !guaranteedUnique[ name ] ? $.unique( ret ) : ret;
+
+			if ( this.length > 1 && rparentsprev.test( name ) ) {
+				ret = ret.reverse();
+			}
+
+			return $( ret );
+		};
+	} );
+
+	$.interfaces.achieve( "constructorQuery", function( type, a, b ) {
+		return query.getEle( a, b );
+	} );
+
+	return query;
+} );</pre>
+        </article>
+    </section>
+
+
+
+
+
+				</div>
+
+				<div class="clearfix"></div>
+				<footer>
+					
+					
+		<span class="jsdoc-message">
+		Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.2</a>
+		on Thu Feb 20 2014 23:24:46 GMT+0800 (CST) using the <a href="https://github.com/terryweiss/docstrap">DocStrap template</a>.
+		</span>
+				</footer>
+			</div>
+
+			
+			<br clear="both">
+		</div>
+
+	</div>
+	<script src="scripts/sunlight.js"></script>
+	<script src="scripts/sunlight.javascript.js"></script>
+	<script src="scripts/sunlight-plugin.doclinks.js"></script>
+	<script src="scripts/sunlight-plugin.linenumbers.js"></script>
+	<script src="scripts/sunlight-plugin.menu.js"></script>
+	<script src="scripts/jquery.min.js"></script>
+	<script src="scripts/jquery.scrollTo.js"></script>
+	<script src="scripts/jquery.localScroll.js"></script>
+	<script src="scripts/bootstrap-dropdown.js"></script>
+	<script src="scripts/toc.js"></script>
+
+
+	<script>  Sunlight.highlightAll({lineNumbers:true,  showMenu: true, enableDoclinks :true}); </script>
+
+	<script>
+		$( function () {
+			$( "#toc" ).toc( {
+				selectors   : "h1,h2,h3,h4",
+				showAndHide : false,
+				scrollTo    : 60
+			} );
+			$( "#toc>ul" ).addClass( "nav nav-pills nav-stacked" );
+			$( "#main span[id^='toc']" ).addClass( "toc-shim" );
+
+		} );
+	</script>
+
+	
+
+</body>
+</html>
