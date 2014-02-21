@@ -21,9 +21,9 @@
 
 ## Usage
 
-> See [homepage](http://mdsb100.github.io/homepage/). But it is compressed.
+> See [homepage](http://mdsb100.github.io/AMDQuery/). But it is compressed.
 
-> You can node server.js after input "localhost:8080/document/app/app.html" in browser.
+> Also See [homepage](http://mdsb100.github.io/AMDQuery/document/app/app.html). It is uncompressed
 
 
 ### Using in mobile
