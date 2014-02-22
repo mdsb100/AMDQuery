@@ -5,6 +5,7 @@ var $amdquery = path.join( "..", "amdquery" )
 task( "default", function() {
 	jake.logger.log( "jake build[build_config.js]   build application and javascript" );
 	jake.logger.log( "jake ui_css                   build css of UI-widget" );
+	jake.logger.log( "jake jsdoc                    build javascript api document" );
 } );
 
 task( "build", {
@@ -56,23 +57,22 @@ task( "master", [ "jsdoc", "build" ], {
     [
     "git stash",
     "git checkout master",
-    "git stash pop",
-    "git commit -am 'Publish gh-pages'"
     ], {
 			printStdout: true
 		}, complete );
 } );
 
 desc( "It is inner. Publish gh-pages." );
-task( "pages", [ "master" ], {
+task( "pages", [ "jsdoc", "build" ], {
 	async: true
 }, function() {
 	jake.exec(
     [
+    "git stash"
     "git checkout gh-pages",
     "git merge master",
     "git push origin gh-pages",
-    "git checkout master"
+    "git stash pop"
     ], {
 			printStdout: true
 		}, complete );
