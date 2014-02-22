@@ -52,8 +52,15 @@
 		} );
 	}
 	/**
+	 * @callback queryMapCallback
+	 * @param {DOMElement}
+	 * @param {Number} - Index in array.
+	 * @param {*} - Any object which is the third parameter of function "map".
+	 */
+
+	/**
 	 * @exports main/query
-	 * @requires module:lib/js/sizzle
+	 * @requires module:lib/sizzle
 	 * @requires module:base/extend
 	 * @requires module:base/typed
 	 * @requires module:base/array
@@ -64,13 +71,13 @@
 		text: Sizzle.getText,
 
 		/**
-     * Element contains another.
-     * @name contains
-     * @memberOf module:main/query
+		 * Element contains another.
+		 * @name contains
+		 * @memberOf module:main/query
 		 * @method
-     * @param a {Element}
-     * @param b {Element}
-     * @returns {Boolean}
+		 * @param a {Element}
+		 * @param b {Element}
+		 * @returns {Boolean}
 		 */
 		contains: Sizzle.contains,
 
@@ -86,22 +93,21 @@
 			}
 			return matched;
 		},
-
+		/**
+		 * Get the all posterity elements.
+		 * @param {Element}
+		 * @returns {Array<Element>}
+		 */
 		posterity: function( eles ) {
-			/// <summary>获得所有的子元素</summary>
-			/// <param name="eles" type="Element/ElementCollection/arr">从元素或元素数组或元素集合中获取</param>
-			/// <param name="real" type="Boolean/Null">是否获得真元素，默认为真</param>
-			/// <returns type="Array" />
-			// if ( typed.isEle( eles ) )
-			//   eles = [ eles ];
-			return $.getEleByTag( "*", eles );
+			return $.getElesByTag( "*", eles );
 		},
-
+		/**
+		 * Element collection transform to element array.
+		 * @param {DOMElementCollection}
+		 * @param {Boolean} [real=true] - If ture means the element node type must be 3 or 8.
+		 * @returns {Array<Element>}
+		 */
 		elementCollectionToArray: function( eles, real ) {
-			/// <summary>把ElementCollection转换成arr[ele]</summary>
-			/// <param name="eles" type="ElementCollection">元素集合</param>
-			/// <param name="real" type="Boolean/undefined">是否获得真元素，默认为真</param>
-			/// <returns type="Array" />
 			var list = [];
 			if ( typed.isEleConllection( eles ) ) {
 				var real = real === undefined ? true : real;
@@ -114,23 +120,38 @@
 			}
 			return list;
 		},
-
+		/**
+		 * Find element of array.
+		 * @name find
+		 * @memberOf module:main/query
+		 * @method
+		 * @param selector {String} - see {@link https://github.com/jquery/sizzle}
+		 * @returns {Array<Element>}
+		 */
 		find: Sizzle,
-		filter: function( expr, eles, not ) {
+		/**
+		 * Find element of array.
+		 * @param selector {String}
+		 * @param {Element|Array<Element>} [eles] - context
+		 * @param {Boolean} [not=false] - If true selector be ":not(" + selector + ")" so returns another result.
+		 * @returns {Array<Element>}
+		 */
+		filter: function( selector, eles, not ) {
 			if ( not ) {
-				expr = ":not(" + expr + ")";
+				selector = ":not(" + selector + ")";
 			}
 
 			return eles.length === 1 ?
-				$.find.matchesSelector( eles[ 0 ], expr ) ? [ eles[ 0 ] ] : [] :
-				$.find.matches( expr, eles );
+				$.find.matchesSelector( eles[ 0 ], selector ) ? [ eles[ 0 ] ] : [] :
+				$.find.matches( selector, eles );
 		},
-
+		/**
+		 * Get element of array.
+		 * @param selector {String|Element|aQuery}
+		 * @param {Element} [context]
+		 * @returns {Array<Element>}
+		 */
 		getEle: function( ele, context ) {
-			/// <summary>通过各种筛选获得包含DOM元素的数组</summary>
-			/// <param name="ele" type="Element/$/document/str">各种筛选</param>
-			/// <param name="ele" type="Element/document/undefined">各种筛选</param>
-			/// <returns type="Array" />
 			var list = [],
 				tmp;
 			if ( typed.isStr( ele ) ) {
@@ -162,34 +183,39 @@
 
 			return list;
 		},
-		getEleByClass: function( className, context ) {
-			/// <summary>通过样式名获得DOM元素
-			/// <para>返回为ele的arr集合</para>
-			/// </summary>
-			/// <param name="className" type="String">样式名</param>
-			/// <param name="context" type="Element">从元素中获取</param>
-			/// <returns type="Array" />
+		/**
+		 * Get elements of array by class name.
+		 * @param {String}
+		 * @param {Element} [context=DOMElement]
+		 * @returns {Array<Element>}
+		 */
+		getElesByClass: function( className, context ) {
 			return $.expr.find[ "CLASS" ]( className, context || document );
 		},
-		getEleById: function( id, context ) {
-			/// <summary>通过ID获得一个DOM元素</summary>
-			/// <param name="id" type="String">id</param>
-			/// <param name="context" type="Document">document</param>
-			/// <returns type="Element" />
-			return $.expr.find[ "ID" ]( id, context || document );
+		/**
+		 * Get element by ID.
+		 * @param {String}
+		 * @param {Element} [context=DOMElement]
+		 * @returns {Array<Element>} - Just one length or empty array.
+		 */
+		getEleById: function( ID, context ) {
+			return $.expr.find[ "ID" ]( ID, context || document );
 		},
-		getEleByTag: function( tag, context ) {
-			/// <summary>通过标签名获得DOM元素</summary>
-			/// <param name="tag" type="String">标签名</param>
-			/// <param name="context" type="Element/ElementCollection/Array[Element]">从元素或元素集合中获取</param>
-			/// <returns type="Array" />
+		/**
+		 * Get elements of array by tag name.
+		 * @param {String}
+		 * @param {Element} [context=DOMElement]
+		 * @returns {Array<Element>}
+		 */
+		getElesByTag: function( tag, context ) {
 			return $.expr.find[ "TAG" ]( tag, context || document );
 		},
-
+		/**
+		 * Get elements index in siblings.
+		 * @param {Element}
+		 * @returns {Number}
+		 */
 		getSelfIndex: function( ele ) {
-			/// <summary>通过序号获得当前DOM元素某个真子DOM元素 从0开始</summary>
-			/// <param name="ele" type="Element">dom元素</param>
-			/// <returns type="Number" />
 			var i = -1,
 				node = ele.parentNode.firstChild;
 			while ( node ) {
@@ -200,17 +226,24 @@
 			}
 			return i;
 		},
+		/**
+		 * Iteration all of posterity elements.
+		 * @param {Element}
+		 * @returns {Array} - Returns the parameter "ele".
+		 */
 		iterationPosterity: function( ele, fun ) {
-			/// <summary>遍历当前元素的所有子元素并返回符合function条件的DOM元素集合</summary>
-			/// <param name="ele" type="Element">DOM元素</param>
-			/// <param name="fun" type="Function">筛选的方法</param>
-			/// <returns type="Array" />
 			return array.grep( $.posterity( ele ), function( child ) {
 				return fun( child );
 			} );
 		},
-
-		map: function( eles, callback, arg ) {
+		/**
+		 * Iteration elements by function.
+		 * @param {DOMElementCollection|Arrasy<DOMElement>}
+		 * @param {queryMapCallback}
+		 * @param {*} - It is function`s arguments.
+		 * @returns {Array} - Returns the parameter "ele".
+		 */
+		map: function( eles, fn, arg ) {
 			var value,
 				i = 0,
 				length = eles.length,
@@ -220,7 +253,7 @@
 			// Go through the array, translating each of the items to their
 			if ( isArray ) {
 				for ( ; i < length; i++ ) {
-					value = callback( eles[ i ], i, arg );
+					value = fn( eles[ i ], i, arg );
 
 					if ( value != null ) {
 						ret[ ret.length ] = value;
@@ -230,7 +263,7 @@
 				// Go through every key on the object,
 			} else {
 				for ( i in eles ) {
-					value = callback( eles[ i ], i, arg );
+					value = fn( eles[ i ], i, arg );
 
 					if ( value != null ) {
 						ret[ ret.length ] = value;
@@ -241,7 +274,12 @@
 			// Flatten any nested arrays
 			return core_concat.apply( [], ret );
 		},
-
+		/**
+		 * Get sibling element from "n" util "ele".
+		 * @param {DOMElement} - From next sibling of this.
+		 * @param {DOMElement} - Until this.
+		 * @returns {Array<DOMElement>}
+		 */
 		sibling: function( n, ele ) {
 			var r = [];
 
@@ -258,42 +296,41 @@
 	$.extend( query );
 	$.expr[ ":" ] = $.expr.pseudos;
 
-	$.fn.extend( {
-		posterity: function( query ) {
-			/// <summary>返回当前对象的所有子元素</summary>
-			/// <param name="str" type="String">字符串query</param>
-			/// <param name="real" type="Boolean/Null">是否获得真元素，默认为真</param>
-			/// <returns type="self" />
+	$.fn.extend( /* @lends aQuery.prototype */ {
+		/**
+		 * Get a new aQuery object by all posterity elements which was found by selector.
+		 * @param {String}
+		 * @returns {aQuery}
+		 */
+		posterity: function( selector ) {
 			var posterity = $.posterity( this.eles );
-			if ( typed.isStr( query ) ) posterity = $.find( query, posterity );
+			if ( typed.isStr( selector ) ) posterity = $.find( selector, posterity );
 			return $( posterity );
 		},
-
+		/**
+		 * Get a new aQuery object by index.
+		 * @param {String}
+		 * @returns {aQuery}
+		 */
 		eq: function( i ) {
-			/// <summary>返回元素序号的新$</summary>
-			/// <param name="num1" type="Number/null">序号 缺省返回第一个</param>
-			/// <param name="num2" type="Number/null">长度 返回当前序号后几个元素 缺省返回当前序号</param>
-			/// <returns type="$" />
 			var len = this.length,
 				j = +i + ( i < 0 ? len : 0 );
 			return j >= 0 && j < len ? $( this[ j ] ) : $( [] );
 		},
-
-		filter: function( str ) {
-			/// <summary>筛选Element
-			/// <para>返回arr第一项为查询语句</para>
-			/// <para>返回arr第二项为元素数组</para>
-			/// </summary>
-			/// <param name="str" type="String/Function">字符串query或者筛选方法</param>
-			/// <returns type="$" />
-
-			return $( winnow( this, str, false ) );
-
+		/**
+		 * Filter elements by selector.
+		 * @param {String}
+		 * @returns {aQuery}
+		 */
+		filter: function( selector ) {
+			return $( winnow( this, selector, false ) );
 		},
+		/**
+		 * Find elements by selector.
+		 * @param {String}
+		 * @returns {aQuery}
+		 */
 		find: function( selector ) {
-			/// <summary>查询命令</summary>
-			/// <param name="selector" type="String">查询字符串</param>
-			/// <returns type="$" />
 			var i, ret, self,
 				len = this.length;
 
@@ -318,11 +355,15 @@
 			ret.selector = ( this.selector ? this.selector + " " : "" ) + selector;
 			return ret;
 		},
-
+		/**
+		 * Search for a given element from among the matched elements.
+		 * <br/> If no argument is passed to the .index() method, the return value is an integer indicating the position of the first element within the jQuery object relative to its sibling elements.
+		 * <br/> If .index() is called on a collection of elements and a DOM element or aQuery object is passed in, .index() returns an integer indicating the position of the passed element relative to the original collection.
+		 * <br/> If a selector string is passed as an argument, .index() returns an integer indicating the position of the first element within the jQuery object relative to the elements matched by the selector. If the element is not found, .index() will return -1.
+		 * @param {String|aQuery|DOMElement|Array<DOMElement>} [ele]
+		 * @returns {Number}
+		 */
 		index: function( ele ) {
-			/// <summary>返回当前对象的第一个元素在同辈元素中的index顺序</summary>
-			/// <param name="real" type="Boolean/Null">是否获得真元素，默认为真</param>
-			/// <returns type="Number" />
 			if ( !ele ) {
 				return ( this[ 0 ] && this[ 0 ].parentNode ) ? this.first().prevAll().length : -1;
 			}
@@ -337,24 +378,38 @@
 				// If it receives a jQuery object, the first element is used
 				this, typed.is$( ele ) ? ele[ 0 ] : ele );
 		},
-		is: function( str ) {
-			/// <summary>返回筛选后的数组是否存在</summary>
-			/// <param name="str" type="String">查询字符串</param>
-			/// <returns type="Boolean" />
-			return !!str && (
-				typed.isStr( str ) ?
-				rneedsContext.test( str ) ?
-				$.find( str, this.context ).index( this[ 0 ] ) >= 0 :
-				$.filter( str, this.eles ).length > 0 :
-				this.filter( str ).length > 0 );
+		/**
+		 * Check the current matched set of elements against a selector, element, or jQuery object and return true if at least one of these elements matches the given arguments.
+		 * <br /> A string containing a selector expression to match elements against.
+		 * <br /> A function used as a test for the set of elements. It accepts one argument, index, which is the element's index in the aQuery collection.Within the function, this refers to the current DOM element.
+		 * <br /> An existing aQuery object to match the current set of elements against.
+		 * <br /> One or more elements to match the current set of elements against.
+		 * @param {String|aQuery|Function|DOMElement}
+		 * @returns {Boolean}
+		 */
+		is: function( selector ) {
+			return !!selector && (
+				typed.isStr( selector ) ?
+				rneedsContext.test( selector ) ?
+				$.find( selector, this.context ).index( this[ 0 ] ) >= 0 :
+				$.filter( selector, this.eles ).length > 0 :
+				this.filter( selector ).length > 0 );
 		},
-
+		/**
+		 * Iteration elements by function.
+		 * @param {queryMapCallback}
+		 * @returns {aQuery}
+		 */
 		map: function( callback ) {
 			return $( $.map( this, function( ele, i ) {
 				return callback.call( ele, i, ele );
 			} ) );
 		},
-
+		/**
+		 * Reject the result to an aQuery object.
+		 * @param {String}
+		 * @returns {aQuery}
+		 */
 		not: function( selector ) {
 			return $( winnow( this, selector, false ) );
 		}
@@ -368,41 +423,103 @@
 		return cur;
 	}
 
-	$.each( {
+	$.each( /** @lends aQuery.prototype */ {
+		/**
+		 * Get the parent of each element in the current set of matched elements, optionally filtered by a selector.
+		 * @param [selector] {String}
+		 * @returns {aQuery}
+		 */
 		parent: function( ele ) {
 			var parent = ele.parentNode;
 			return parent && parent.nodeType !== 11 ? parent : null;
 		},
+		/**
+		 * Get the ancestors of each element in the current set of matched elements, optionally filtered by a selector.
+		 * @param [selector] {String}
+		 * @returns {aQuery}
+		 */
 		parents: function( ele ) {
 			return $.dir( ele, "parentNode" );
 		},
+		/**
+		 * Get the ancestors of each element in the current set of matched elements, optionally filtered by a selector.
+		 * @param [selector] {String|Element}
+		 * @param [filter] {String}
+		 * @returns {aQuery}
+		 */
 		parentsUntil: function( ele, i, until ) {
 			return $.dir( ele, "parentNode", until );
 		},
+		/**
+		 * Get the immediately following sibling of each element in the set of matched elements. If a selector is provided, it retrieves the next sibling only if it matches that selector.
+		 * @param [selector] {String}
+		 * @returns {aQuery}
+		 */
 		next: function( ele ) {
 			return sibling( ele, "nextSibling" );
 		},
+		/**
+		 * Get the immediately preceding sibling of each element in the set of matched elements, optionally filtered by a selector.
+		 * @param [selector] {String}
+		 * @returns {aQuery}
+		 */
 		prev: function( ele ) {
 			return sibling( ele, "previousSibling" );
 		},
+		/**
+		 * Get all following siblings of each element in the set of matched elements, optionally filtered by a selector.
+		 * @param [selector] {String}
+		 * @returns {aQuery}
+		 */
 		nextAll: function( ele ) {
 			return $.dir( ele, "nextSibling" );
 		},
+		/**
+		 * Get all preceding siblings of each element in the set of matched elements, optionally filtered by a selector.
+		 * @param [selector] {String}
+		 * @returns {aQuery}
+		 */
 		prevAll: function( ele ) {
 			return $.dir( ele, "previousSibling" );
 		},
+		/**
+		 * Get all following siblings of each element up to but not including the element matched by the selector, DOM node, or jQuery object passed.
+		 * @param [selector] {String|Element}
+		 * @param [filter] {String}
+		 * @returns {aQuery}
+		 */
 		nextUntil: function( ele, i, until ) {
 			return $.dir( ele, "nextSibling", until );
 		},
+		/**
+		 * Get all preceding siblings of each element up to but not including the element matched by the selector, DOM node, or jQuery object.
+		 * @param [selector] {String|Element}
+		 * @param [filter] {String}
+		 * @returns {aQuery}
+		 */
 		prevUntil: function( ele, i, until ) {
 			return $.dir( ele, "previousSibling", until );
 		},
+		/**
+		 * Get the siblings of each element in the set of matched elements, optionally filtered by a selector.
+		 * @param [selector] {String}
+		 * @returns {aQuery}
+		 */
 		siblings: function( ele ) {
 			return $.sibling( ( ele.parentNode || {} ).firstChild, ele );
 		},
+		/**
+		 * Get the children of each element in the set of matched elements, optionally filtered by a selector.
+		 * @param [selector] {String}
+		 * @returns {aQuery}
+		 */
 		children: function( ele ) {
 			return $.sibling( ele.firstChild );
 		},
+		/**
+		 * Get the children of each element in the set of matched elements, including text and comment nodes.
+		 * @returns {aQuery}
+		 */
 		contents: function( ele ) {
 			return $.nodeName( ele, "iframe" ) ?
 				ele.contentDocument || ele.contentWindow.document :
