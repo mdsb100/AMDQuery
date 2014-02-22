@@ -36,13 +36,13 @@ task( "jsdoc", {
 }, function( template ) {
 	var $distPath = path.join( "../document/app/assets/api/" );
 	var $template = path.join( "..", "jsdoc", "templates", template || "docstrap" );
-	jake.logger.log( "Build jsdoc" );
 	if ( FSE.exists( $template ) ) {
 		jake.logger.warn( $template + " does not exist" );
 		complete();
 		return;
 	}
 	jake.rmRf( $distPath );
+	jake.logger.log( "Build jsdoc ..." );
 	jake.exec( [ "jsdoc", $amdquery, path.join( $amdquery, "**", "*.js" ), "--template", $template, "--destination", $distPath ].join( " " ), {
 		printStdout: true
 	}, complete );
