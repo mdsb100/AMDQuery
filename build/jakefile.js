@@ -57,7 +57,7 @@ task( "master", [ "jsdoc", "build" ], {
     [
     "git stash",
     "git checkout master",
-    "git stash pop"
+    "git stash pop",
     "git commit -am 'Publish gh-pages'"
     ], {
 			printStdout: true
