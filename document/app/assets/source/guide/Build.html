@@ -509,8 +509,40 @@ root
             <a float="false" href="#BuildOptions" class="Top">Top</a>
           </div>
         </li>
+        <li>
+          <div style="width: 100%; height: 100%;" amdquery-widget="ui.scrollableview" ui-scrollableview="orientation:V;enableKeyboard:true;">
+            <h1 name="jake">Jake</h1>
+            <ul class="guide">
+              <li><a href="#Overview">Overview</a>
+              </li>
+              <li><a href="#Quick">Quick Start</a>
+              </li>
+              <li><a href="#Contributor">As a Contributor</a>
+              </li>
+            </ul>
+            <h2 name="Overview">Overview</h2>
+            <p>Jake -- JavaScript build tool for Node.js
+              <br />Using <a target="_blank" href="https://github.com/mde/jake">Jake</a> easy to build.
+            </p>
+            <h3 name="Quick">Quick Start</h3>
+            <p>
+              In terminal, cd build directory, "npm install" or "sudo npm install". Jake is automatically installed for global.
+              <br />Input "jake", you will see building options.
+              <br />"jake build[build_config.js]"   build application and javascript
+              <br />"jake ui_css"                   build css of UI-widget
+              <br />"jake jsdoc"                    build javascript api document
+            </p>
+            <h3 name="Contributor">As a Contributor</h3>
+            <p>
+              As a contributor, if you modify javascript api or modify document, you should update the gh-pages.
+              <br />You can input "jake pages" to update gh-pages and you should know about this command depends on command "jsdoc" and command "build".
+              <br />You should read "jakefile.js" under directory build to know more detail.
+            </p>
+          </div>
+        </li>
       </ol>
       <ol style="width:100px;height:20px;" amdquery-widget="ui.swapindicator" ui-swapindicator="orientation:H">
+        <li></li>
         <li></li>
         <li></li>
         <li></li>
