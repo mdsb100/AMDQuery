@@ -36,7 +36,7 @@ task( "jsdoc", {
 }, function( template ) {
 	var $distPath = path.join( "../document/app/assets/api/" );
 	var $template = path.join( "..", "jsdoc", "templates", template || "docstrap" );
-
+	jake.logger.log( "Build jsdoc" );
 	if ( FSE.exists( $template ) ) {
 		jake.logger.warn( $template + " does not exist" );
 		complete();
@@ -57,7 +57,8 @@ task( "pages", [ "jsdoc", "build" ], {
     "git stash",
     "git checkout gh-pages",
     "git merge master",
-    "git push origin gh-pages"
+    "git push origin gh-pages",
+    "git checkout master"
     ], {
 			printStdout: true
 		}, complete );
