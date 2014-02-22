@@ -48,13 +48,27 @@ task( "jsdoc", {
 	}, complete );
 } );
 
-desc( "It is inner. Publish gh-pages." );
-task( "pages", [ "jsdoc", "build" ], {
+desc( "It is inner. commit master." );
+task( "master", [ "jsdoc", "build" ], {
 	async: true
 }, function() {
 	jake.exec(
     [
     "git stash",
+    "git checkout master",
+    "git stash pop",
+    "git commit -am 'Publish gh-pages'"
+    ], {
+			printStdout: true
+		}, complete );
+} );
+
+desc( "It is inner. Publish gh-pages." );
+task( "pages", [ "master" ], {
+	async: true
+}, function() {
+	jake.exec(
+    [
     "git checkout gh-pages",
     "git merge master",
     "git push origin gh-pages",
