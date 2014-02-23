@@ -25,8 +25,8 @@
 			/**
 			 * Arguments to Array
 			 * @param {Arguments}
-			 * @param {Number}
-			 * @param {Number}
+			 * @param {Number} [start=0]
+			 * @param {Number} [end=arguments.length]
 			 * @returns {Array}
 			 */
 			argToArray: function( arg, start, end ) {
@@ -392,7 +392,7 @@
 		 * @example
 		 * aQuery.among( 1, 10, 5 ); // return 5
 		 * aQuery.among( 10, 1, 7 ); // return 7
-		 * aQuery.among( 10, 1, 123 ); // return 123
+		 * aQuery.among( 10, 1, 123 ); // return 10
 		 * aQuery.among( 10, 10, 15 ); // return 10
 		 */
 		among: function( num1, num2, num ) {
@@ -487,8 +487,8 @@
 
 			/**
 			 * @param {String}
-			 * @param {String}
-			 * @retusn {String}
+			 * @param {String} [head]
+			 * @returns {String}
 			 * @example
 			 * aQuery.util.camelCase("margin-left") // return "marginLeft"
 			 * aQuery.util.camelCase("border-redius", "webkit") // return "webkitBorderRedius"
@@ -506,15 +506,15 @@
 			},
 			/**
 			 * @param {String}
-			 * @retusn {String}
+			 * @returns {String}
 			 */
 			trim: function( str ) {
 				return str.replace( /(^\s*)|(\s*$)/g, "" );
 			},
 			/**
 			 * @param {String}
-			 * @param {String}
-			 * @retusn {String}
+			 * @param {String} [head]
+			 * @returns {String}
 			 * @example
 			 * aQuery.util.unCamelCase("marginLeft") // return "margin-left"
 			 * aQuery.util.unCamelCase("webkitBorderRedius") // return "webkit-border-redius"
@@ -567,6 +567,8 @@
 		},
 		/**
 		 * Slice element.
+		 * @param {Number} start
+		 * @param {Number} [end]
 		 * @returns {aQuery}
 		 */
 		slice: function() {
@@ -574,6 +576,9 @@
 		},
 		/**
 		 * Splice element.
+		 * @param {Number} index
+		 * @param {Number} howmany
+		 * @param {...*} [items]
 		 * @returns {aQuery} return new $( ret )
 		 */
 		splice: function() {
@@ -608,7 +613,7 @@
 		},
 		/**
 		 * Extend aQuery prototype from parameters.
-		 * @param [Object...]
+		 * @param [...Object]
 		 * @returns {aQuery.prototype}
 		 * @example
 		 * aQuery.fn.extend( {
@@ -623,13 +628,6 @@
 			}
 			return $.fn;
 		},
-		/**
-		 * Element container.
-		 * @instance
-		 * @type {Array}
-		 * @default null
-		 */
-		eles: null,
 		/**
 		 * Return new aQuery of first element.
 		 * @returns {aQuery}
@@ -734,7 +732,7 @@
 		/**
 		 * Get the Nth element in the matched element set OR. <br/>
 		 * Get the whole matched element set as a clean array.
-		 * @param {Number|null}
+		 * @param {?Number}
 		 * @returns {Array|Element}
 		 */
 		get: function( num ) {
@@ -825,7 +823,7 @@
 
 		function ClassModule( module, dependencies, factory, status, container, fail ) {
 			/**
-			 * @memberof module:base/ClassModule
+			 * @memberOf module:base/ClassModule
 			 * @constructs module:base/ClassModule
 			 * @param {String} module - Module name.
 			 * @param {Array} dependencies - Dependencies module.
@@ -1550,11 +1548,48 @@
 
 		/**
 		 * AMD define.
+		 * @variation 1
+		 * @global
+		 * @method define
+		 * @param id {*} - Not a string.
+		 * @example
+		 * define({});
+		 * @returns {ClassModule}
+		 */
+
+		/**
+		 * AMD define.
+		 * @variation 2
+		 * @global
+		 * @method define
+		 * @param id {String}
+		 * @param factory {*}
+		 * @example
+		 * define("mymodule", function(){});
+		 * @returns {ClassModule}
+		 */
+
+		/**
+		 * AMD define.
+		 * @variation 3
+		 * @global
+		 * @method define
+		 * @param dependencies {string[]} - dependencies.
+		 * @param factory {*} - Not a string.
+		 * @example
+		 * define(["base/array", "base/client"], {});
+		 * @returns {ClassModule}
+		 */
+
+		/**
+		 * AMD define.
 		 * @global
 		 * @method
 		 * @param {String} - Module.
-		 * @param {String[]|*} - If arguments[2] is a factory, it can be any object.
-		 * @param {*} [factory] - Usually, it is function(){} or {}.
+		 * @param {String[]} - If arguments[2] is a factory, it can be any object.
+		 * @param {*} factory
+		 * @example
+		 * define("mymodule", ["base/array", "base/client"], function(){});
 		 * @returns {ClassModule}
 		 */
 		window.define = function( id, dependencies, factory ) {
@@ -1705,7 +1740,7 @@
 		util.extend( require, {
 			/**
 			 * Cache the module.
-			 * @memberof require(namespace)
+			 * @memberOf require(namespace)
 			 * @param {Object.<String,Function>} - String: module name,Function: moudle factory.
 			 * @returns {this}
 			 */
@@ -1721,7 +1756,7 @@
 			},
 			/**
 			 * The module named, so we can load it by async.
-			 * @memberof require(namespace)
+			 * @memberOf require(namespace)
 			 * @param {String|String[]|Object.<String,*>} - String: module name.
 			 * @returns {this}
 			 */
@@ -1742,8 +1777,17 @@
 			},
 			/**
 			 * Reflect path.
-			 * @memberof require(namespace)
-			 * @param {String|Object.<String,String>} - Module name | Object.<String,String>: <"module name", "js path">.
+			 * @variation 1
+			 * @method reflect
+			 * @memberOf require(namespace)
+			 * @param option {Object.<String,String>} - Object.<String,String>: <"module name", "js path">.
+			 * @returns {this}
+			 */
+
+			/**
+			 * Reflect path.
+			 * @memberOf require(namespace)
+			 * @param {String} - Module name.
 			 * @param {String} [path] - JS path; If "name" is Object then "path" is optional.
 			 * @returns {this}
 			 */
@@ -1759,7 +1803,7 @@
 				return this;
 			},
 			/**
-			 * @memberof require(namespace)
+			 * @memberOf require(namespace)
 			 * @param {String}
 			 * @param {String}
 			 * @returns {this}
@@ -1779,11 +1823,11 @@
 		} );
 
 		util.extend( $, /** @lends aQuery */ {
-
 			/**
 			 * aQuery define.<br/>
 			 * If the last parameter is a function, then first argument of the function is aQuery(namespace).<br/>
-			 * <a href="/document/app/app.html#navmenu=#AMDQuery!scrollTo=Require_Define" target="_top">See also.</a>
+			 * see {@link define}<br/>
+			 * <a href="/document/app/app.html#navmenu=#AMDQuery!scrollTo=Require_Define" target="_parent">See also.</a>
 			 * @param {String} - Module name
 			 * @param {String[]|*} - If arguments[2] is a factory, it can be any object.
 			 * @param {*} [factory] - Usually, it is function(){} or {}.
