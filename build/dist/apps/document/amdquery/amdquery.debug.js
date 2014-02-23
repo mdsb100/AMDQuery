@@ -2,7 +2,7 @@
 /**
  * @overview AMDQuery JavaScript Library
  * @copyright 2012, Cao Jun
- * @version 1.0.0
+ * @version 0.0.1
  */
 
 
@@ -17,7 +17,7 @@
 	/** @typedef {(DOMDocument|DOMElement)} Element */
 
 	var
-	version = "AMDQuery 1.0.0",
+	version = "AMDQuery 0.0.1",
 		/**
 		 * @private
 		 * @namespace util
@@ -810,9 +810,9 @@
 
 	( function( /*require*/) {
 		"use strict";
-		$.module.require = "1.0.0";
+		$.module.require = "AMD";
 
-		var _define, _require;
+		var _define, _require, _tempDefine = "__require";
 		if ( window.define ) {
 			$.logger( "window.define has defined" );
 			_define = window.define;
@@ -843,6 +843,7 @@
 			this.first = null;
 			this.description = "No description";
 			this.id = ClassModule.variable( module );
+			$.module[ this.id ] = this.description;
 			this.reset( dependencies, factory, status, container, fail );
 			ClassModule.setModule( this.id, this );
 
@@ -875,7 +876,7 @@
 			 * @returns {void}
 			 */
 			checkName: function( id ) {
-				if ( this.anonymousID != null && id.indexOf( "tempDefine" ) < 0 ) {
+				if ( this.anonymousID != null && id.indexOf( "_tempDefine" ) < 0 ) {
 					id !== this.anonymousID && util.error( {
 						fn: "define",
 						msg: "the named " + id + " is not equal require"
@@ -1609,7 +1610,7 @@
 				//container = deep != 0 ? ClassModule.getContainer(id) : null;
 				ret.reset( dependencies, factory, 3, container );
 			} else {
-				container = /tempDefine/.test( id ) ? "inner" : ClassModule.getContainer( id );
+				container = RegExp( _tempDefine ).test( id ) ? "inner" : ClassModule.getContainer( id );
 				ret = new ClassModule( id, dependencies, factory, 3, container );
 			}
 
@@ -1644,7 +1645,7 @@
 					module = module.join( "" );
 				} else {
 					var de = module;
-					module = "tempDefine:" + module.join( "," );
+					module = _tempDefine + ":" + module.join( "," );
 					ret = ClassModule.getModule( module ) || define( module, de, function() {
 						return util.argToArray( arguments );
 					} );
