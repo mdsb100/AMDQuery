@@ -17,7 +17,8 @@ task( "build", {
 	jake.logger.log( "build application and javascript ..." );
 
 	jake.exec( "node build.js " + config, {
-		printStdout: true
+		printStdout: true,
+		printStderr: true
 	}, complete );
 } );
 
@@ -27,7 +28,8 @@ task( "ui_css", {
 	jake.logger.log( "build css of UI-widget ..." );
 
 	jake.exec( "node buildWidgetUICSS.js", {
-		printStdout: true
+		printStdout: true,
+		printStderr: true
 	}, complete );
 } );
 
@@ -45,7 +47,8 @@ task( "jsdoc", {
 	jake.rmRf( $distPath );
 	jake.logger.log( "Build jsdoc ..." );
 	jake.exec( [ "jsdoc", $amdquery, path.join( $amdquery, "**", "*.js" ), "--template", $template, "--destination", $distPath ].join( " " ), {
-		printStdout: true
+		printStdout: true,
+		printStderr: true
 	}, complete );
 } );
 
@@ -57,25 +60,27 @@ task( "master", [ "jsdoc", "build" ], {
     [
     "git stash",
     "git checkout master",
-    "git stash pop",
-    "git commit -am 'Publish gh-pages'"
+    "git stash pop"
     ], {
-			printStdout: true
+			printStdout: true,
+			printStderr: true
 		}, complete );
 } );
 
 desc( "It is inner. Publish gh-pages." );
 task( "pages", [ "master" ], {
 	async: true
-}, function( a ) {
+}, function( msg ) {
 	jake.exec(
-	   [
-	   "git checkout gh-pages",
-	   "git merge master",
-	   "git push origin gh-pages",
-	   "git checkout master"
-	   ], {
-			printStdout: true
+    [
+    "git commit -am '" + ( msg || "Publish gh-pages" ) + "'",
+    "git checkout gh-pages",
+    "git merge master",
+    "git push origin gh-pages",
+    "git checkout master"
+    ], {
+			printStdout: true,
+			printStderr: true
 		}, complete );
 	complete()
 } );

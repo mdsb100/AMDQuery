@@ -171,7 +171,7 @@
  		p,
  		readFileCallback = function( err ) {
  			if ( err ) {
- 				throw err;
+ 				console.error( err );
  			}
  		},
  		content,
@@ -216,18 +216,71 @@
 
  }
 
- function openHtml( appConfig, createAppDirAndCopyFile ) {
- 	console.log( '\r\nOpen HTML and get parameter... '.red );
- 	var tr = trumpet();
- 	var appPath = PATH.join( AMDQueryJSRootPath, appConfig.path );
+ function getAppaQueryConfig( appConfig, openHtml ) {
+ 	var htmlPath = PATH.join( AMDQueryJSRootPath, appConfig.path );
+ 	var raQueryConfig = /aQueryConfig\s*=/
  	var htmlInfo = {
  		appConfig: {},
  		cssPath: [],
  		UICssPath: [],
- 		htmlPath: appPath,
- 		appProjectPath: getFileParentDirectoryPath( appPath ),
+ 		htmlPath: htmlPath,
+ 		appProjectPath: PATH.dirname( htmlPath ),
  		appName: appConfig.name
  	};
+ 	var aQueryConfigStr = null;
+ 	var doNext = function( aQueryConfigStr ) {
+ 		try {
+ 			eval( aQueryConfigStr );
+ 			if ( aQueryConfig.app ) {
+ 				_.extend( htmlInfo.appConfig, aQueryConfig.app );
+ 				openHtml( null, appConfig, htmlInfo );
+ 			} else {
+ 				openHtml( "getAppaQueryConfig: Find aQueryConfig but aQueryConfig.app is not defined." );
+ 			}
+
+ 		} catch ( e ) {
+ 			openHtml( "getAppaQueryConfig: Find aQueryConfig but eval it fail." );
+ 		}
+ 	};
+
+ 	if ( appConfig.aQueryConfig == true ) {
+ 		var tr = trumpet();
+ 		var scriptAll = tr.selectAll( "script", function( script ) {
+ 			var scriptStream = script.createStream();
+ 			var scriptStr = "";
+ 			scriptStream.pipe( through( function( buf ) {
+ 				scriptStr += buf.toString();
+ 			}, function() {
+ 				if ( raQueryConfig.test( scriptStr ) ) {
+ 					aQueryConfigStr = scriptStr;
+ 				}
+ 			} ) ).pipe( scriptStream );
+ 		} );
+
+ 		FSE.createReadStream( htmlPath ).pipe( tr ).on( "close", function() {
+ 			if ( aQueryConfigStr ) {
+ 				doNext( aQueryConfigStr );
+ 			} else {
+ 				openHtml( "getAppaQueryConfig: You set 'appConfig.aQueryConfig' true, but can not find aQueryConfig in head of HTML." );
+ 			}
+ 		} );
+ 	} else if ( typeof appConfig.aQueryConfig == "string" ) {
+ 		var aQueryConfigPath = PATH.join( PATH.dirname( htmlPath ), appConfig.aQueryConfig );
+ 		if ( PATH.existsSync( aQueryConfigPath ) ) {
+ 			aQueryConfigStr = FSE.readFileSync( aQueryConfigPath ).toString();
+ 			doNext( aQueryConfigStr );
+ 		} else {
+ 			openHtml( "getAppaQueryConfig: You set 'appConfig.aQueryConfig' a string, but can not find file of aQueryConfig." )
+ 		}
+ 	} else {
+ 		openHtml( null, appConfig, htmlInfo );
+ 	}
+
+ }
+
+ function openHtml( appConfig, htmlInfo, createAppDirAndCopyFile ) {
+ 	console.log( '\r\nOpen HTML and get parameter... '.red );
+ 	var tr = trumpet();
 
  	tr.selectAll( 'link[type="text/css"]', function( link ) {
  		link.getAttribute( "href", function( value ) {
@@ -237,35 +290,36 @@
  				htmlInfo.cssPath.push( value );
  			} else {
  				logger( "[DEBUG]".white, "UI css link".white, value.white );
- 				htmlInfo.UICssPath.push( getFileName( value ) );
+ 				htmlInfo.UICssPath.push( PATH.basename( value ) );
  			}
  		} );
-
- 		// link.createReadStream( {outer: true} ).pipe( process.stdout );
  	} );
+ 	if ( !appConfig.aQueryConfig ) {
+ 		logger( "[DEBUG]".white, "selectAll script[app]".white );
+ 		tr.selectAll( 'script[app]', function( script ) {
+ 			script.getAttribute( "app", function( value ) {
+ 				// console.log( "app", value );
+ 				var list = value.split( /;|,/ ),
+ 					item, i, attr;
 
- 	tr.selectAll( 'script[app]', function( script ) {
- 		script.getAttribute( "app", function( value ) {
- 			// console.log( "app", value );
- 			var list = value.split( /;|,/ ),
- 				item, i, attr;
-
- 			for ( i = list.length - 1; i >= 0; i-- ) {
- 				item = list[ i ];
- 				if ( item ) {
- 					attr = item.split( /=|:/ );
- 					if ( attr[ 1 ] ) {
- 						htmlInfo.appConfig[ attr[ 0 ] ] = attr[ 1 ];
+ 				for ( i = list.length - 1; i >= 0; i-- ) {
+ 					item = list[ i ];
+ 					if ( item ) {
+ 						attr = item.split( /=|:/ );
+ 						if ( attr[ 1 ] ) {
+ 							htmlInfo.appConfig[ attr[ 0 ] ] = attr[ 1 ];
+ 						}
  					}
  				}
- 			}
- 			logger( "[DEBUG]".white, "htmlInfo".white, JSON.stringify( htmlInfo ).white );
- 			createAppDirAndCopyFile( null, appConfig, htmlInfo );
- 		} );
- 		// script.createReadStream( {outer: true} ).pipe( process.stdout );
- 	} );
+ 				logger( "[DEBUG]".white, "htmlInfo".white, JSON.stringify( htmlInfo ).white );
 
- 	FSE.createReadStream( appPath ).pipe( tr );
+ 			} );
+ 		} );
+ 	}
+
+ 	FSE.createReadStream( htmlInfo.htmlPath ).pipe( tr ).on( 'close', function() {
+ 		createAppDirAndCopyFile( null, appConfig, htmlInfo );
+ 	} );
  }
 
  function createAppDirAndCopyFile( appConfig, htmlInfo, buildAppJS ) {
@@ -316,10 +370,10 @@
 
  function buildAppJS( appConfig, htmlInfo, AMDQueryPath, buildAppXML ) {
  	if ( !htmlInfo.appConfig.src ) {
- 		throw htmlInfo.htmlPath + ": 'app' of attribute must define 'src'";
+ 		buildAppXML( htmlInfo.htmlPath + ": 'app' of attribute must define 'src'" );
  	}
 
- 	var dirPath = getFileParentDirectoryPath( htmlInfo.appConfig.src );
+ 	var dirPath = PATH.dirname( htmlInfo.appConfig.src );
  	dirPath = dirPath.replace( /\/$/, "" );
 
  	oye.require.variablePrefix( "@" );
@@ -379,7 +433,7 @@
  		if ( /^\//.test( item ) ) {
  			path = PATH.join( buildFileRootPath, projectRootPath, item.replace( /^\//, "" ) );
  		} else {
- 			path = PATH.join( getFileParentDirectoryPath( htmlInfo.htmlPath ), item );
+ 			path = PATH.join( PATH.dirname( htmlInfo.htmlPath ), item );
  		}
  		console.log( "buildAppCss css path:", path );
  		resultPath.push( path );
@@ -422,7 +476,7 @@
  }
 
  function _buildUICss( cwd, cssFileList, appConfig, htmlInfo ) {
-  // UICssPath(defined in Head) is first, html defined css is second, config defined css is lastest.
+ 	// UICssPath(defined in Head) is first, html defined css is second, config defined css is lastest.
  	cssFileList = _.union( htmlInfo.UICssPath.concat( cssFileList.concat( appConfig.UIWidgetCSS || [] ) ) );
 
  	var uiCombinationCssPath = PATH.join( htmlInfo.projectDistPath, htmlInfo.uiCombinationRelativeCssPath );
@@ -564,18 +618,10 @@
      startBuildApps
    ], function( err, result ) {
  		if ( err ) {
- 			throw err;
+ 			console.error( "[Error]".red, err.red );
  		}
  		console.log( '\r\nBuiding finish'.red );
  	} );
- }
-
- function getFileParentDirectoryPath( path ) {
- 	return path.replace( /([\\\/])[^\\\/]*$/, '$1' );
- }
-
- function getFileName( path ) {
- 	return path ? path.split( "/" ).pop() : "";
  }
 
  function startBuildDefines( waterfallNext ) {
@@ -591,7 +637,7 @@
    ], function( err, result ) {
  		if ( err ) {
  			waterfallNext( null, null );
- 			throw err;
+ 			console.error( "[Error]".red, err.red );
  			return;
  		}
 
@@ -613,6 +659,7 @@
        function( callback ) {
  				callback( null, appConfig );
        },
+       getAppaQueryConfig,
        openHtml,
        createAppDirAndCopyFile,
        buildAppJS,
@@ -622,7 +669,7 @@
        modifyHTML
      ], function( err, result ) {
  			if ( err ) {
- 				throw err;
+ 				console.error( "[Error]".red, err.red );
  			}
  			startBuildApps( null, waterfallNext );
  		} );
