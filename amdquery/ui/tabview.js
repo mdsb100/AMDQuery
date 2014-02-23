@@ -48,17 +48,14 @@ aQuery.define( "ui/tabview", [
 				this.options.disabled = true;
 				return this;
 			},
-			render: function() {
+			render: function( index ) {
 				var opt = this.options;
 
-				this.selectView( opt.index );
+				this.selectView( index );
 
-				this.selectTabbutton( opt.index );
 			},
 			selectTabbutton: function( index ) {
 				this.$tabBar.uiTabbar( index );
-
-				this.options.index = index;
 			},
 			selectView: function( index ) {
 				var originIndex = this.options.index;
@@ -66,6 +63,8 @@ aQuery.define( "ui/tabview", [
 				this.options.index = index;
 
 				if ( index !== originIndex ) {
+					this.selectTabbutton( index );
+
 					var activeView = this.$view.eq( index ),
 						deactiveView = this.$view.eq( originIndex );
 
@@ -124,7 +123,7 @@ aQuery.define( "ui/tabview", [
 
 			},
 			publics: {
-
+				selectView: Widget.AllowPublic
 			},
 			target: null,
 			toString: function() {
