@@ -34,7 +34,7 @@ exports.defines = {
 		directory: [ "ui/" ],
 		complete: function( minPath, minContent, deubugPath, debugContent ) {
 			var FSE = require( 'fs-extra' );
-			path = "../document/app/assets/source/js/amdquery.js";
+			var path = "../document/app/assets/source/js/amdquery.js";
 			FSE.writeFile( path, debugContent );
 		}
 	}

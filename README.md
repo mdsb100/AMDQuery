@@ -21,7 +21,7 @@
 
 ## Usage
 
-> See [homepage](http://mdsb100.github.io/AMDQuery/). But it is compressed.
+> See [homepage](http://mdsb100.github.io/Homepage/). But it is compressed.
 
 > See also [homepage](http://mdsb100.github.io/AMDQuery/document/app/app.html). It is uncompressed and loading slow, please more patient. You can open developer tool to see some Interesting things. Yow will see broswer load js and css one by one in head of HTML.
 
