@@ -10,11 +10,29 @@ aQuery.define( "ui/flex", [
     "main/position",
     "main/dom",
     "main/attr",
-    "html5/css3",
-    "util/function.extend"
+    "html5/css3"
   ],
-	function( $, client, typed, support, Widget, query, cls, event, css, position, dom, attr, css3, functionExtend ) {
+	function( $, client, typed, support, Widget, query, cls, event, css, position, dom, attr, css3 ) {
 		"use strict";
+
+		function debounce( fun, wait, immediate ) {
+			//undefinded does not work well when titanium
+			var timeout = null,
+				result = null;
+			return function() {
+				var context = this,
+					args = arguments;
+				var later = function() {
+					timeout = null;
+					if ( !immediate ) result = fun.apply( context, args );
+				};
+				var callNow = immediate && !timeout;
+				clearTimeout( timeout );
+				timeout = setTimeout( later, wait );
+				if ( callNow ) result = fun.apply( context, args );
+				return result;
+			};
+		};
 
 		Widget.fetchCSS( "ui/css/flex" );
 
@@ -44,7 +62,7 @@ aQuery.define( "ui/flex", [
 					// var self = this;
 					var self = this;
 
-					this.flexEvent = functionExtend.debounce( function() {
+					this.flexEvent = debounce( function() {
 						self.resize();
 					}, 50 );
 
@@ -172,7 +190,7 @@ aQuery.define( "ui/flex", [
 						}
 					};
 
-					this.resizeEvent = functionExtend.debounce( function() {
+					this.resizeEvent = debounce( function() {
 						self.fillParent();
 						self.render();
 					}, 50 );
