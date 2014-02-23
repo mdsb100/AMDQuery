@@ -296,7 +296,7 @@
 	$.extend( query );
 	$.expr[ ":" ] = $.expr.pseudos;
 
-	$.fn.extend( /* @lends aQuery.prototype */ {
+	$.fn.extend( /** @lends aQuery.prototype */ {
 		/**
 		 * Get a new aQuery object by all posterity elements which was found by selector.
 		 * @param {String}

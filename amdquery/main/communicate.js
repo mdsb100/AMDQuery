@@ -362,7 +362,7 @@
 		},
 		/**
 		 * If return null means it does not support XMLHttpRequest.
-		 * @returns {XMLHttpRequest|null}
+		 * @returns {?XMLHttpRequest}
 		 */
 		getXhrObject: function() {
 			var xhr = null;
