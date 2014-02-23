@@ -23,8 +23,9 @@ exports.apps = [
 		complete: function( htmlInfo ) {
 
 		},
-    detectUIWidgetCSS: true,
-    UIWidgetCSS: []
+		detectUIWidgetCSS: true,
+		UIWidgetCSS: [],
+		aQueryConfig: false
   }
  ]
 
