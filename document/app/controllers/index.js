@@ -37,15 +37,20 @@ aQuery.define( "@app/controllers/index", [
 			} );
 
 			var loadAPIFlag = false;
-
-			$( "#tabview" ).on( "tabview.select", function( e ) {
+			var $tabview = $( "#tabview" );
+			$tabview.on( "tabview.select", function( e ) {
 				$swapview.uiSwapview( "render", e.index, function() {
+					location.setHash( "tab", e.index );
 					if ( e.index === 1 && loadAPIFlag === false ) {
 						loadAPIFlag = true;
 						self.api.loadPath( "assets/api/index.html" );
 					}
 				} );
 			} );
+
+			if ( location.getHash( "tab" ) != null ) {
+				$tabview.uiTabview( "render", parseInt( location.getHash( "tab" ) ) || 0 );
+			}
 		},
 		destroy: function() {
 			this.navmenu.clearHandlers();
