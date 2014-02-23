@@ -443,7 +443,7 @@
 		},
 		/**
 		 * Get the ancestors of each element in the current set of matched elements, optionally filtered by a selector.
-		 * @param [selector] {String|Element}
+		 * @param selector {String|Element}
 		 * @param [filter] {String}
 		 * @returns {aQuery}
 		 */
@@ -484,7 +484,7 @@
 		},
 		/**
 		 * Get all following siblings of each element up to but not including the element matched by the selector, DOM node, or jQuery object passed.
-		 * @param [selector] {String|Element}
+		 * @param selector {String|Element}
 		 * @param [filter] {String}
 		 * @returns {aQuery}
 		 */
@@ -493,7 +493,7 @@
 		},
 		/**
 		 * Get all preceding siblings of each element up to but not including the element matched by the selector, DOM node, or jQuery object.
-		 * @param [selector] {String|Element}
+		 * @param selector {String|Element}
 		 * @param [filter] {String}
 		 * @returns {aQuery}
 		 */
