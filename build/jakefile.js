@@ -60,8 +60,7 @@ task( "master", [ "jsdoc", "build" ], {
     [
     "git stash",
     "git checkout master",
-    "git stash pop",
-    "git commit -am 'Publish gh-pages'"
+    "git stash pop"
     ], {
 			printStdout: true,
 			printStderr: true
@@ -71,14 +70,15 @@ task( "master", [ "jsdoc", "build" ], {
 desc( "It is inner. Publish gh-pages." );
 task( "pages", [ "master" ], {
 	async: true
-}, function( a ) {
+}, function( msg ) {
 	jake.exec(
-	   [
-	   "git checkout gh-pages",
-	   "git merge master",
-	   "git push origin gh-pages",
-	   "git checkout master"
-	   ], {
+    [
+    "git commit -am '" + ( msg || "Publish gh-pages" ) + "'",
+    "git checkout gh-pages",
+    "git merge master",
+    "git push origin gh-pages",
+    "git checkout master"
+    ], {
 			printStdout: true,
 			printStderr: true
 		}, complete );
