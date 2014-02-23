@@ -253,21 +253,82 @@ root
             </p>
             <ul class="ul">
               <li>
-                <h4>name</h4>
+                <h4>name {String}</h4>
                 <p>The name of the application.</p>
               </li>
               <li>
-                <h4>path</h4>
+                <h4>path {String}</h4>
                 <p>Application HTML path.</p>
               </li>
               <li>
-                <h4>debug</h4>
+                <h4>debug {Boolean}</h4>
                 <p>If that is true, that build will create a non-compressed "amdquery.debug.js", set the configuration of application to "true" in HTML</p>
               </li>
               <li>
-                <h4>detectUIWidgetCSS</h4>
+                <h4>detectUIWidgetCSS {Boolean}</h4>
                 <p>If that is true, then build would detect ui-widget css from "appCombinationXMLPath".</p>
                 <p>If that is false, then build would include all of "ui/css/*.css".</p>
+              </li>
+              <li>
+                <h4>aQueryConfig {Boolean|String}</h4>
+                <div class="admonition-note">
+                  <strong>
+                    <p>If it is a boolean, and it is true then it means you define "aQueryConfig" in inner script. Like this:
+                    </p>
+                    <pre class="prettyprint">
+&ltscript type="text/javascript"&gt
+var aQueryConfig = {
+    amdquery: {
+      define: "$",
+      debug: false,
+      development: true,
+      loadingImage: ""
+    },
+    amd: {
+      detectCR: false,
+      debug: true,
+      timeout: 5000,
+      console: false,
+    },
+    amdVariables: {
+
+    },
+    ui: {
+      initWidget: false,
+      autoFetchCss: true,
+      isTransform3d: true
+    },
+    module: {
+
+    },
+    app: {
+      src: "",
+      debug: false,
+      development: true,
+      autoFetchCss: true,
+      viewContentID: ""
+    }
+  };
+&lt/script&gt
+                    </pre>
+                    <p>If it is a string, it means you define "aQueryConfig" in a "*.js" and you add tag "script" to haed before "amdquery.js"
+                    </p>
+                    <pre class="prettyprint">
+&ltscript type="text/javascript" src="aQueryConfig.js"&gt&lt/script&gt
+&ltscript src="../../amdquery/amdquery.js" type="text/javascript"&gt&lt/script&gt
+                    </pre>
+                    <p>
+                      Whatever you set boolean or string, the build will ignore attribute of tag "script".
+                      <br />The most important is: If "aQueryConfig" is null, the tag "script" of amdquery.js must have an attribute which is "app".
+                    </p>
+                    <pre class="prettyprint">
+&ltscript src="../../amdquery/amdquery.js" app="src:../document/app/app;debug:1;" type="text/javascript"&gt&lt/script&gt
+                    </pre>
+                    <p>
+                      I support developer define config by attribute.
+                    </p>
+                  </strong>
+                </div>
               </li>
               <li>
                 <h4>UIWidgetCSS</h4>
@@ -303,11 +364,16 @@ root
             </ul>
 
             <h2 name="Detail">Build Detail</h2>
-            <h3>1.Open HTML. Get "HTML" path from the configuration.</h3>
+            <h3>1.Detecting whether there is "aQueryConfig"</h3>
+            <p>
+              Find aQueryConfig or not.
+            </p>
+            <h3>2.Open HTML. Get "HTML" path from the configuration.</h3>
             <p>
               Use "trumpet" to parse html, Get an array of css hrefs and script tag of application. Parse configuration of the tag.
+              <br />If aQueryConfig is found, the build will ignore "amdquery.js" script.
             </p>
-            <h3>2.Create application directory and copy file.</h3>
+            <h3>3.Create application directory and copy file.</h3>
             <p>
               Create application directory. In this example, path of directory is "dist/apps/document/". If the path of directory exists then remove it.
               <br />Copy directory:
@@ -321,14 +387,14 @@ root
               <br />Copy AMDQueryJSRootPath + "ui/css" to distPath + "amdquery/ui/css"
               <br />Copy AMDQueryJSRootPath + "ui/images" to distPath + "amdquery/ui/images"
             </p>
-            <h3>3.Build Javascript of Application</h3>
+            <h3>4.Build Javascript of Application</h3>
             <p>
               Get "app.js" path to the directory. Set "require" parameter with the path. ("@app" ==> "../document/app/app")
               <br />"oye.node" could load all js after setting "require" parameter. Then build save the js files to the dist directory. You also can see then log in terminal.
               <br />Save file: /Users/apple/project/my/amdquery/build/dist/apps/document/amdquery/amdquery.js
               <br />Save file: /Users/apple/project/my/amdquery/build/dist/apps/document/amdquery/amdquery.debug.js
             </p>
-            <h3>4.Build XML of Application</h3>
+            <h3>5.Build XML of Application</h3>
             <p>
               Put all the XML merged into one XML. Root tag is "&lt div id='aQueryViewContentKey' &gt". Each original XML will be wrapped in "&lt aQueryViewContentKey='name' &gt" tag within
               <br />The new XML will be saved as "combination.xml". "combination.xml" is easy for reading.
@@ -339,7 +405,7 @@ root
               <br />Save app Combination xml: /Users/apple/project/my/amdquery/build/dist/apps/document/app/xml/combination.xml
               <br />
             </p>
-            <h3>5.Build CSS of Application</h3>
+            <h3>6.Build CSS of Application</h3>
             <p>
               After the first step has been to get all the "CSS" href, this step will be to find those CSS file through the href and use the "clean-css" to merge them into a CSS file.
               <br />The new CSS will be saved as "{#appName}.css" moreover the final step will automatically add a "CSS" tag to "HTML" head, the properties href will be set "styles/{#appName}.css".
@@ -349,7 +415,7 @@ root
               <br />
               <br />Save app Combination css: /Users/apple/project/my/amdquery/build/dist/apps/document/app/styles/document.css
             </p>
-            <h3>6.Build CSS of AMDQuery UI</h3>
+            <h3>7.Build CSS of AMDQuery UI</h3>
             <p>
               Build combine all the CSS of AMDQuery UI and save it as "amdquery-widget.css".
               <br />
@@ -360,7 +426,7 @@ root
               <br />
               <br />Save UI amdquery-widget.css:  /Users/apple/project/my/amdquery/build/dist/apps/document/amdquery/ui/css/amdquery-widget.css
             </p>
-            <h3>7.Modify HTML</h3>
+            <h3>8.Modify HTML</h3>
             <p>
               Remove all CSS in head and add a new CSS into head, the new CSS href is "styles/document.css".
               <br />Modify "amdquery.js" script attribute:
@@ -388,30 +454,30 @@ root
             <h2><a target="_blank" href="https://github.com/mishoo/UglifyJS">uglifyOptions</a></h2>
             <ul class="ul">
               <li>
-                <bold><span class="value">strict_semicolons</span>:boolean[false]</bold>
+                <bold><span class="value">strict_semicolons</span>:Boolean[false]</bold>
                 <p>disable automatic semicolon insertion and support for trailing comma in arrays and objects.</p>
               </li>
               <li>
                 <bold>mangle_options</bold>
                 <ul class="ul">
                   <li>
-                    <bold><span class="value">mangle</span>:boolean[true]</bold>
+                    <bold><span class="value">mangle</span>:Boolean[true]</bold>
                     <p>pass false to skip mangling names.</p>
                   </li>
                   <li>
-                    <bold><span class="value">toplevel</span>:boolean[false]</bold>
+                    <bold><span class="value">toplevel</span>:Boolean[false]</bold>
                     <p>mangle toplevel names (by default we don’t touch them).</p>
                   </li>
                   <li>
-                    <bold><span class="value">defines</span>:array[null]</bold>
+                    <bold><span class="value">defines</span>:Array[null]</bold>
                     <p>an object with properties named after symbols to replace.</p>
                   </li>
                   <li>
-                    <bold><span class="value">except</span>:object[null]</bold>
+                    <bold><span class="value">except</span>:Object[null]</bold>
                     <p>an array of names to exclude from compression.</p>
                   </li>
                   <li>
-                    <bold><span class="value">no_functions</span>:boolean[false]</bold>
+                    <bold><span class="value">no_functions</span>:Boolean[false]</bold>
                     <p>no mangle functions</p>
                   </li>
                 </ul>
@@ -420,23 +486,23 @@ root
                 <bold>squeeze_options</bold>
                 <ul class="ul">
                   <li>
-                    <bold><span class="value">make_seqs</span>:boolean[true]</bold>
+                    <bold><span class="value">make_seqs</span>:Boolean[true]</bold>
                     <p>which will cause consecutive statements in a block to be merged using the “sequence” (comma) operator.</p>
                   </li>
                   <li>
-                    <bold><span class="value">dead_code</span>:boolean[true]</bold>
+                    <bold><span class="value">dead_code</span>:Boolean[true]</bold>
                     <p>which will remove unreachable code.</p>
                   </li>
                   <li>
-                    <bold><span class="value">no_warnings</span>:boolean[false]</bold>
+                    <bold><span class="value">no_warnings</span>:Boolean[false]</bold>
                     <p>whether dist warnings.</p>
                   </li>
                   <li>
-                    <bold><span class="value">keep_comps</span>:boolean[true]</bold>
+                    <bold><span class="value">keep_comps</span>:Boolean[true]</bold>
                     <p>keep comps.</p>
                   </li>
                   <li>
-                    <bold><span class="value">unsafe</span>:boolean[false]</bold>
+                    <bold><span class="value">unsafe</span>:Boolean[false]</bold>
                     <p>enable other additional optimizations that are known to be unsafe in some contrived situations, but could still be generally useful. For now only these:
                       <br />foo.toString() ==> foo+””
                       <br />new Array(x,…) ==> [x,…]
@@ -449,31 +515,31 @@ root
                 <bold>gen_options</bold>
                 <ul class="ul">
                   <li>
-                    <bold><span class="value">indent_start</span>:number[0]</bold>
+                    <bold><span class="value">indent_start</span>:Number[0]</bold>
                     <p>(only applies when beautify is true) – initial indentation in spaces.</p>
                   </li>
                   <li>
-                    <bold><span class="value">indent_level</span>:number[4]</bold>
+                    <bold><span class="value">indent_level</span>:Number[4]</bold>
                     <p>(only applies when beautify is true) – indentation level, in spaces (pass an even number).</p>
                   </li>
                   <li>
-                    <bold><span class="value">quote_keys</span>:boolean[false]</bold>
+                    <bold><span class="value">quote_keys</span>:Boolean[false]</bold>
                     <p>if you pass true it will quote all keys in literal objects.</p>
                   </li>
                   <li>
-                    <bold><span class="value">space_colon</span>:boolean[false]</bold>
+                    <bold><span class="value">space_colon</span>:Boolean[false]</bold>
                     <p>(only applies when beautify is true) – wether to put a space before the colon in object literals.</p>
                   </li>
                   <li>
-                    <bold><span class="value">beautify</span>:boolean[false]</bold>
+                    <bold><span class="value">beautify</span>:Boolean[false]</bold>
                     <p>pass true if you want indented dist.</p>
                   </li>
                   <li>
-                    <bold><span class="value">ascii_only</span>:boolean[false]</bold>
+                    <bold><span class="value">ascii_only</span>:Boolean[false]</bold>
                     <p>pass true if you want to encode non-ASCII characters as \uXXXX.</p>
                   </li>
                   <li>
-                    <bold><span class="value">inline_script</span>:boolean[false]</bold>
+                    <bold><span class="value">inline_script</span>:Boolean[false]</bold>
                     <p>pass true to escape occurrences of</script in strings</p>
                   </li>
                 </ul>
@@ -482,27 +548,27 @@ root
             <h2><a target="_blank" href="https://github.com/GoalSmashers/clean-css">cleanCssOptions</a></h2>
             <ul class="ul">
               <li>
-                <bold><span class="value">keepSpecialComments</span>:string["*"]</bold>
+                <bold><span class="value">keepSpecialComments</span>:String["*"]</bold>
                 <p>"*" for keeping all (default), 1 for keeping first one only, 0 for removing all.</p>
               </li>
               <li>
-                <bold><span class="value">keepBreaks</span>:boolean[false]</bold>
+                <bold><span class="value">keepBreaks</span>:Boolean[false]</bold>
                 <p>whether to keep line breaks (default is false).</p>
               </li>
               <li>
-                <bold><span class="value">processImport</span>:boolean[true]</bold>
+                <bold><span class="value">processImport</span>:Boolean[true]</bold>
                 <p>whether to process @import rules.</p>
               </li>
               <li>
-                <bold><span class="value">noRebase</span>:boolean[false]</bold>
+                <bold><span class="value">noRebase</span>:Boolean[false]</bold>
                 <p>whether to skip URLs rebasing.</p>
               </li>
               <li>
-                <bold><span class="value">noAdvanced</span>:boolean[false]</bold>
+                <bold><span class="value">noAdvanced</span>:Boolean[false]</bold>
                 <p>set to true to disable advanced optimizations - selector & property merging, reduction, etc.</p>
               </li>
               <li>
-                <bold><span class="value">selectorsMergeMode</span>:string["*"]</bold>
+                <bold><span class="value">selectorsMergeMode</span>:String["*"]</bold>
                 <p>ie8 for IE8 compatibility mode, * for merging all (default).</p>
               </li>
             </ul>
