@@ -405,12 +405,13 @@
 						setting.keyCode = setting.which = code;
 					}
 				},
+				/**
+				 * Trigger Element keyboard event.
+				 * @param {Element}
+				 * @param {String}
+				 * @param {Object}
+				 */
 				key: function( ele, type, paras ) {
-					/// <summary>触发DOM元素key事件</summary>
-					/// <param name="ele" type="Element">dom元素</param>
-					/// <param name="type" type="String">事件类型</param>
-					/// <param name="paras" type="Object">模拟事件参数</param>
-					/// <returns type="null" />
 					var eventF = event.document,
 						createEvent = eventF.createEvent,
 						settings = utilExtend.extend( {}, eventF.imitation._keySettings, paras ),
@@ -456,12 +457,13 @@
 					button: 0,
 					relatedTarget: null
 				},
+				/**
+				 * Trigger Element mouse event.
+				 * @param {Element}
+				 * @param {String}
+				 * @param {Object}
+				 */
 				mouse: function( ele, type, paras ) {
-					/// <summary>触发DOM元素Mouse事件</summary>
-					/// <param name="ele" type="Element">dom元素</param>
-					/// <param name="type" type="String">事件类型</param>
-					/// <param name="paras" type="Object">模拟事件参数</param>
-					/// <returns type="null" />
 					var eventF = event.document,
 						createEvent = eventF.createEvent,
 						settings = utilExtend.extend( {}, eventF.imitation._mouseSettings, paras ),
@@ -490,12 +492,13 @@
 					bubbles: true,
 					cancelable: true
 				},
+				/**
+				 * Trigger Element HTML event. Like: blur focus focusin focusout.
+				 * @param {Element}
+				 * @param {String}
+				 * @param {Object}
+				 */
 				html: function( ele, type, paras ) {
-					/// <summary>触发DOM元素html事件:blur focus focusin focusout</summary>
-					/// <param name="ele" type="Element">dom元素</param>
-					/// <param name="type" type="String">事件类型</param>
-					/// <param name="paras" type="Object">模拟事件参数</param>
-					/// <returns type="null" />
 					var eventF = event.document,
 						createEvent = eventF.createEvent,
 						settings = utilExtend.extend( {}, eventF.imitation._htmlSettings, paras ),
@@ -634,7 +637,6 @@
 				event.removeHandler( ele, "click", this._toggle );
 				event.removeData( ele, "_toggle_" );
 			}
-			//移除事件 添加至event 移除 arg len
 			return this;
 		},
 		_toggle: function( e ) {

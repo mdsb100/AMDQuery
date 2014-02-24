@@ -123,9 +123,6 @@ aQuery.define( "base/typed", function( $ ) {
 		 * typed.isEmpty(e); // true
 		 */
 		isEmpty: function( a ) {
-			/// <summary>是否为空</summary>
-			/// <param name="a" type="any">任意对象</param>
-			/// <returns type="Boolean" />
 			if ( a == null ) return true;
 			if ( typed.isArr( a ) || typed.isStr( a ) ) return a.length == 0;
 			return typed.isEmptyObj( a );

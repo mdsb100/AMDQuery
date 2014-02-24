@@ -72,14 +72,14 @@ aQuery.define( "base/array", [ "base/typed", "base/extend" ], function( $, typed
 		 * Filter Array. If callback return true then push.
 		 * @param {Array}
 		 * @param {filterArrayCallback}
-		 * @param {Object} - filterArrayCallback context.
+		 * @param {Object} [context=item] - filterArrayCallback context. If null then is each item.
 		 * @returns {Array}
 		 */
 		filterArray: function( arr, callback, context ) {
 			var ret = [];
 			for ( var i = 0, len = arr.length, item; i < len; i++ ) {
 				item = arr[ i ];
-				callback.call( context, item, i, arr ) === true && ret.push( item );
+				callback.call( context || item, item, i, arr ) === true && ret.push( item );
 			}
 			return ret;
 		},

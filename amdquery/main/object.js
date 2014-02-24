@@ -353,9 +353,6 @@
 				 * @returns {model}
 				 */
 				remove: function( id ) {
-					/// <summary>移除某个对象</summary>
-					/// <param name="id" type="Object/Number/String">对象的索引</param>
-					/// <returns type="Model" />
 					var model = null,
 						i;
 					switch ( typeof id ) {
@@ -411,10 +408,6 @@
 				 * @returns {this}
 				 */
 				each: function( fn, context ) {
-					/// <summary>遍历整个model</summary>
-					/// <param name="fn" type="Function">方法</param>
-					/// <param name="context" type="Object">上下文</param>
-					/// <returns type="self" />
 					for ( var i = 0, model = this.models, item; item = model[ i++ ]; )
 						fn.call( context || item, item, i );
 					return this;
