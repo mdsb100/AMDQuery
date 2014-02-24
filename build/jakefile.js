@@ -68,7 +68,7 @@ task( "master", [ "jsdoc", "build" ], {
 } );
 
 desc( "It is inner. Publish gh-pages." );
-task( "pages", [ "master" ], {
+task( "pages", {
 	async: true
 }, function( msg ) {
 	jake.exec(
