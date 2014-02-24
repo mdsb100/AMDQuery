@@ -1884,10 +1884,6 @@
 			 */
 
 			/**
-			 * @typedef {module:base/ClassModule} ClassModule
-			 */
-
-			/**
 			 * @public
 			 * @alias module:base/ClassModule
 			 * @constructor
@@ -1910,10 +1906,6 @@
 		 * A module representing a queue.
 		 * @public
 		 * @module base/queue
-		 */
-
-		/**
-		 * @typedef {module:base/queue} Queue
 		 */
 
 		/**
@@ -1957,11 +1949,7 @@
 		 */
 
 		/**
-		 * @typedef {module:base/Promise} Promise
-		 */
-
-		/**
-		 * @public
+		 * @inner
 		 * @alias module:base/Promise
 		 * @constructor
 		 */
@@ -2257,10 +2245,6 @@
 		 * Life Cycle of AMDQuery.
 		 * @public
 		 * @module base/ready
-		 */
-
-		/**
-		 * @typedef {module:base/ready} ready
 		 */
 
 		/**
