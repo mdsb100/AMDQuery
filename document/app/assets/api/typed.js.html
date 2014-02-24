@@ -390,9 +390,6 @@
 		 * typed.isEmpty(e); // true
 		 */
 		isEmpty: function( a ) {
-			/// &lt;summary>是否为空&lt;/summary>
-			/// &lt;param name="a" type="any">任意对象&lt;/param>
-			/// &lt;returns type="Boolean" />
 			if ( a == null ) return true;
 			if ( typed.isArr( a ) || typed.isStr( a ) ) return a.length == 0;
 			return typed.isEmptyObj( a );

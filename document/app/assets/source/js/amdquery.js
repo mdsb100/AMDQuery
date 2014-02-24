@@ -1884,10 +1884,6 @@
 			 */
 
 			/**
-			 * @typedef {module:base/ClassModule} ClassModule
-			 */
-
-			/**
 			 * @public
 			 * @alias module:base/ClassModule
 			 * @constructor
@@ -1910,10 +1906,6 @@
 		 * A module representing a queue.
 		 * @public
 		 * @module base/queue
-		 */
-
-		/**
-		 * @typedef {module:base/queue} Queue
 		 */
 
 		/**
@@ -1957,11 +1949,7 @@
 		 */
 
 		/**
-		 * @typedef {module:base/Promise} Promise
-		 */
-
-		/**
-		 * @public
+		 * @inner
 		 * @alias module:base/Promise
 		 * @constructor
 		 */
@@ -2260,10 +2248,6 @@
 		 */
 
 		/**
-		 * @typedef {module:base/ready} ready
-		 */
-
-		/**
 		 * @public
 		 * @alias module:base/ready
 		 * @method
@@ -2508,9 +2492,6 @@ aQuery.define( "base/typed", function( $ ) {
 		 * typed.isEmpty(e); // true
 		 */
 		isEmpty: function( a ) {
-			/// <summary>是否为空</summary>
-			/// <param name="a" type="any">任意对象</param>
-			/// <returns type="Boolean" />
 			if ( a == null ) return true;
 			if ( typed.isArr( a ) || typed.isStr( a ) ) return a.length == 0;
 			return typed.isEmptyObj( a );
@@ -2898,14 +2879,14 @@ aQuery.define( "base/array", [ "base/typed", "base/extend" ], function( $, typed
 		 * Filter Array. If callback return true then push.
 		 * @param {Array}
 		 * @param {filterArrayCallback}
-		 * @param {Object} - filterArrayCallback context.
+		 * @param {Object} [context=item] - filterArrayCallback context. If null then is each item.
 		 * @returns {Array}
 		 */
 		filterArray: function( arr, callback, context ) {
 			var ret = [];
 			for ( var i = 0, len = arr.length, item; i < len; i++ ) {
 				item = arr[ i ];
-				callback.call( context, item, i, arr ) === true && ret.push( item );
+				callback.call( context || item, item, i, arr ) === true && ret.push( item );
 			}
 			return ret;
 		},
@@ -3353,9 +3334,6 @@ aQuery.define( "base/array", [ "base/typed", "base/extend" ], function( $, typed
 				 * @returns {model}
 				 */
 				remove: function( id ) {
-					/// <summary>移除某个对象</summary>
-					/// <param name="id" type="Object/Number/String">对象的索引</param>
-					/// <returns type="Model" />
 					var model = null,
 						i;
 					switch ( typeof id ) {
@@ -3411,10 +3389,6 @@ aQuery.define( "base/array", [ "base/typed", "base/extend" ], function( $, typed
 				 * @returns {this}
 				 */
 				each: function( fn, context ) {
-					/// <summary>遍历整个model</summary>
-					/// <param name="fn" type="Function">方法</param>
-					/// <param name="context" type="Object">上下文</param>
-					/// <returns type="self" />
 					for ( var i = 0, model = this.models, item; item = model[ i++ ]; )
 						fn.call( context || item, item, i );
 					return this;
@@ -7599,12 +7573,13 @@ if ( typeof define === "function" && define.amd ) {
 						setting.keyCode = setting.which = code;
 					}
 				},
+				/**
+				 * Trigger Element keyboard event.
+				 * @param {Element}
+				 * @param {String}
+				 * @param {Object}
+				 */
 				key: function( ele, type, paras ) {
-					/// <summary>触发DOM元素key事件</summary>
-					/// <param name="ele" type="Element">dom元素</param>
-					/// <param name="type" type="String">事件类型</param>
-					/// <param name="paras" type="Object">模拟事件参数</param>
-					/// <returns type="null" />
 					var eventF = event.document,
 						createEvent = eventF.createEvent,
 						settings = utilExtend.extend( {}, eventF.imitation._keySettings, paras ),
@@ -7650,12 +7625,13 @@ if ( typeof define === "function" && define.amd ) {
 					button: 0,
 					relatedTarget: null
 				},
+				/**
+				 * Trigger Element mouse event.
+				 * @param {Element}
+				 * @param {String}
+				 * @param {Object}
+				 */
 				mouse: function( ele, type, paras ) {
-					/// <summary>触发DOM元素Mouse事件</summary>
-					/// <param name="ele" type="Element">dom元素</param>
-					/// <param name="type" type="String">事件类型</param>
-					/// <param name="paras" type="Object">模拟事件参数</param>
-					/// <returns type="null" />
 					var eventF = event.document,
 						createEvent = eventF.createEvent,
 						settings = utilExtend.extend( {}, eventF.imitation._mouseSettings, paras ),
@@ -7684,12 +7660,13 @@ if ( typeof define === "function" && define.amd ) {
 					bubbles: true,
 					cancelable: true
 				},
+				/**
+				 * Trigger Element HTML event. Like: blur focus focusin focusout.
+				 * @param {Element}
+				 * @param {String}
+				 * @param {Object}
+				 */
 				html: function( ele, type, paras ) {
-					/// <summary>触发DOM元素html事件:blur focus focusin focusout</summary>
-					/// <param name="ele" type="Element">dom元素</param>
-					/// <param name="type" type="String">事件类型</param>
-					/// <param name="paras" type="Object">模拟事件参数</param>
-					/// <returns type="null" />
 					var eventF = event.document,
 						createEvent = eventF.createEvent,
 						settings = utilExtend.extend( {}, eventF.imitation._htmlSettings, paras ),
@@ -7828,7 +7805,6 @@ if ( typeof define === "function" && define.amd ) {
 				event.removeHandler( ele, "click", this._toggle );
 				event.removeData( ele, "_toggle_" );
 			}
-			//移除事件 添加至event 移除 arg len
 			return this;
 		},
 		_toggle: function( e ) {
@@ -20675,8 +20651,8 @@ aQuery.define( "ui/turnBook", [ "base/support", "base/typed", "main/css", "main/
 		 * //  name: "27"
 		 * //}
 		 * @param {String}
-		 * @param {String|Boolean} [split1="&"]
-		 * @param {Boolean} [split2="="]
+		 * @param {String} [split1="&"]
+		 * @param {String} [split2="="]
 		 * @returns {Object}
 		 */
 		QueryString: function( str, split1, split2 ) {

@@ -68,12 +68,11 @@ task( "master", [ "jsdoc", "build" ], {
 } );
 
 desc( "It is inner. Publish gh-pages." );
-task( "pages", [ "master" ], {
+task( "pages", {
 	async: true
 }, function( msg ) {
 	jake.exec(
     [
-    "git commit -am '" + ( msg || "Publish gh-pages" ) + "'",
     "git checkout gh-pages",
     "git merge master",
     "git push origin gh-pages",
