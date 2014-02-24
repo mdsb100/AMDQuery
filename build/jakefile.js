@@ -73,7 +73,6 @@ task( "pages", {
 }, function( msg ) {
 	jake.exec(
     [
-    "git commit -am '" + ( msg || "Publish gh-pages" ) + "'",
     "git checkout gh-pages",
     "git merge master",
     "git push origin gh-pages",
