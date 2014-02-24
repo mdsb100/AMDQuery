@@ -38,11 +38,12 @@ aQuery.define( "ui/tabbar", [
 			},
 			select: function( ele ) {
 				var $button = typed.isNum( ele ) ? this.$tabButtons.eq( ele ) : $( ele );
+				this.options.index = $button.index();
 				this.$tabButtons.uiTabbutton( "option", "select", false );
 				$button.uiTabbutton( "option", "select", true );
 			},
-			render: function() {
-				this.select( this.options.index );
+			render: function( index ) {
+				this.select( index || this.options.index );
 			},
 			getSelectionIndex: function() {
 				var SelectionIndex = 0;

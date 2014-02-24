@@ -51,11 +51,11 @@ aQuery.define( "ui/tabview", [
 			render: function( index ) {
 				var opt = this.options;
 
-				this.selectView( index );
+				this.selectView( index || opt.index );
 
 			},
 			selectTabbutton: function( index ) {
-				this.$tabBar.uiTabbar( index );
+				this.$tabBar.uiTabbar( "option", "index", index );
 			},
 			selectView: function( index ) {
 				var originIndex = this.options.index;
