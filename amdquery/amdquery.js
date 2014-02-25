@@ -180,6 +180,7 @@
 	 * @property {boolean} config.ui.isTransform3d             - Whether to use transform3d.
 	 *
 	 * @property {object}  config.module                       - The module Configuration.
+	 * @property {object}  config.module.testLogByHTML         - Whether log by HTML when do test.
 	 *
 	 * @property {object}  config.app                          - The application Configuration.
 	 * @property {string}  config.app.src                      - A js file src, main of application.
@@ -211,7 +212,7 @@
 			isTransform3d: true
 		},
 		module: {
-
+			testLogByHTML: false
 		},
 		app: {
 			src: "",
