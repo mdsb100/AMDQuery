@@ -1,7 +1,7 @@
 aQuery.define( "module/Test", [ "base/Promise" ], function( $, Promise ) {
 	"use strict";
 	var logger, error, info, debug;
-	if ( window.console && window.console.log.bind && false ) {
+	if ( window.console && window.console.log.bind ) {
 		logger = $.logger;
 		error = $.error;
 		info = $.info;
