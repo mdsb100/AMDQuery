@@ -192,7 +192,7 @@
 				if ( !data ) {
 					return this;
 				}
-				var handlerMap = data._handlerMap,
+				var handlerMap = data.getHandlers(),
 					map = {},
 					j = 0,
 					len = 0,
@@ -210,7 +210,7 @@
 				}
 
 				for ( i in map ) {
-					item = data._nameSpace( i );
+					item = data.getHandlers( i );
 					for ( j = 0, len = item.length; j < len; j++ ) {
 						fun = item[ j ];
 						domEventList[ i ] && event.document._removeHandler( ele, i, fun.__guid || fun );
@@ -229,13 +229,13 @@
 		cloneHandlers: function( ele, handlerEve ) {
 			var customEvent = utilData.get( handlerEve, "_handlers_" );
 			if ( customEvent ) {
-				var handlerMap = customEvent._handlerMap,
+				var handlerMap = customEvent.getHandlers(),
 					j = 0,
 					len = 0,
 					i, item, fun;
 
 				for ( i in handlerMap ) {
-					item = customEvent._nameSpace( i );
+					item = customEvent.getHandlers( i );
 					for ( j = 0, len = item.length; j < len; j++ ) {
 						fun = item[ j ];
 						domEventList[ i ] && event.document._addHandler( ele, i, fun.__guid || fun );

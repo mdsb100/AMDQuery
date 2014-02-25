@@ -12,13 +12,12 @@
 		constructor: CustomEvent,
 		/** @constructs module:main/CustomEvent */
 		init: function() {
-			this.handlers = {};
-			this._handlerMap = {};
+			this.__handlers = {};
 			return this;
 		},
 		/**
 		 * Add a handler.
-		 * @param {String}
+		 * @param {String} - "mousedown" or "mousedown mouseup"
 		 * @param {Function}
 		 * @returns {this}
 		 */
@@ -27,7 +26,7 @@
 		},
 		/**
 		 * Add a handler once.
-		 * @param {String}
+		 * @param {String} - "mousedown" or "mousedown mouseup"
 		 * @param {Function}
 		 * @returns {this}
 		 */
@@ -41,7 +40,7 @@
 		},
 		/**
 		 * Add a handler.
-		 * @param {String}
+		 * @param {String} - "mousedown" or "mousedown mouseup"
 		 * @param {Function}
 		 * @returns {this}
 		 */
@@ -54,13 +53,18 @@
 			return this;
 		},
 		_addHandler: function( type, handler ) {
-			var handlers = this._nameSpace( type );
-			this.hasHandler( type, handler, handlers ) == -1 && handlers.push( handler );
+			var handlers = this.__handlers[ type ];
+			if ( !handlers ) {
+				this.__handlers[ type ] = handlers = [];
+			}
+			if ( this.hasHandler( type, handler, handlers ) == -1 ) {
+				handlers.push( handler );
+			}
 			return this;
 		},
 		/**
 		 * Clear handlers.
-		 * @param {String} [type] - If type is undefined, then clear all handler
+		 * @param {String} [type] - If type is undefined, then clear all handler. If string can be used like "mousedown" or "mousedown mouseup".
 		 * @returns {this}
 		 */
 		clear: function( type ) {
@@ -68,7 +72,7 @@
 		},
 		/**
 		 * Clear handlers.
-		 * @param {String} [type] - If type is undefined, then clear all handler
+		 * @param {String} [type] - If type is undefined, then clear all handler. If string can be used like "mousedown" or "mousedown mouseup".
 		 * @returns {this}
 		 */
 		clearHandlers: function( type ) {
@@ -78,14 +82,20 @@
 					item;
 				for ( ; i >= 0; i-- ) {
 					item = types[ i ];
-					this._nameSpace( item, true );
-					delete this._handlerMap[ item ];
-					delete this.handlers[ item ];
+					delete this.__handlers[ item ];
 				}
 			} else {
-				this.handlers = {};
+				this.__handlers = {};
 			}
 			return this;
+		},
+		/**
+		 * Return handlers.
+		 * @param {String=} - If type is null then return whole handlers object.
+		 * @returns {Array|Object}
+		 */
+		getHandlers: function( type ) {
+			return type ? this.__handlers[ type ] || [] : this.__handlers;
 		},
 		/**
 		 * Return index of handlers array. -1 means not found.
@@ -95,7 +105,7 @@
 		 * @returns {Number}
 		 */
 		hasHandler: function( type, handler, handlers ) {
-			handlers = handlers || this._nameSpace( type );
+			handlers = handlers || this.getHandlers( type );
 			var i = 0,
 				j = -1,
 				len;
@@ -110,14 +120,33 @@
 			return j;
 		},
 		/**
+		 * There are not any event then return true.
+		 * @returns {Boolean}
+		 */
+		isEmpty: function() {
+			for ( var i in this.__handlers ) {
+				return false;
+			}
+			return true;
+		},
+		/**
 		 * Trigger an event.
-		 * @param {String}
+		 * @param {String} - "mousedown" or "mousedown mouseup"
 		 * @param {Context}
 		 * @param {...*} [args]
 		 * @returns {this}
 		 */
 		trigger: function( type, target, args ) {
-			var handlers = this._nameSpace( type );
+			var types = type.split( " " ),
+				i = 0,
+				len = types.length;
+			for ( ; i < len; i++ ) {
+				this._trigger( types[ i ], target, args );
+			}
+			return this;
+		},
+		_trigger: function( type, target, args ) {
+			var handlers = this.getHandlers( type );
 			if ( handlers instanceof Array && handlers.length ) {
 				for ( var i = 0, len = handlers.length, arg = $.util.argToArray( arguments, 2 ); i < len; i++ )
 					handlers[ i ].apply( target, arg );
@@ -135,7 +164,7 @@
 		},
 		/**
 		 * Remove handler.
-		 * @param {String}
+		 * @param {String} - "mousedown" or "mousedown mouseup"
 		 * @param {Function}
 		 * @returns {this}
 		 */
@@ -152,55 +181,27 @@
 			var customEvent = new CustomEvent(),
 				name, list, i, len;
 
-			for ( name in this._handlerMap ) {
-				list = this._handlerMap[ name ];
+			for ( name in this.getHandlers() ) {
+				list = this.getHandlers( name );
 				len = list.length;
-				if ( len > 0 ) {
-					for ( i = 0; i < len; i++ ) {
-						customEvent.on( name, list[ i ] );
-					}
-				} else {
-					customEvent._nameSpace( name );
+				for ( i = 0; i < len; i++ ) {
+					customEvent.on( name, list[ i ] );
 				}
 			}
 
 			return customEvent;
 		},
 		_removeHandler: function( type, handler ) {
-			var handlers = this._nameSpace( type ),
+			var handlers = this.getHandlers( type ),
 				i = this.hasHandler( type, handler, handlers );
 			if ( i > -1 ) {
 				handlers.splice( i, 1 );
 			}
+			if ( handlers.length === 0 ) {
+				delete this.__handlers[ type ];
+			}
 			return this;
 		},
-		_nameSpace: function( type, re ) {
-			var nameList = type.split( "." ),
-				result = this._initSpace( nameList, this.handlers, re );
-			//, i = 0, nameSpace, name, result;
-			//nameList.length > 2 && tools.error({ fn: "CustomEvent._nameSpace", msg: "nameSpace is too long" });
-
-			this._handlerMap[ type ] || ( this._handlerMap[ type ] = result );
-			return result;
-		},
-		_initSpace: function( nameList, nameSpace, re ) {
-			var name = nameList[ 0 ],
-				result;
-			//name = nameList[1];
-			if ( nameSpace ) {
-				result = nameSpace[ name ];
-				if ( !result || re ) {
-					nameSpace[ name ] = {};
-				}
-				nameSpace = nameSpace[ name ];
-				if ( !nameSpace[ "__" + name ] ) {
-					nameSpace[ "__" + name ] = [];
-				}
-				result = nameSpace[ "__" + name ];
-			}
-			nameList.splice( 0, 1 );
-			return nameList.length ? this._initSpace( nameList, nameSpace, re ) : result;
-		}
 	} );
 
 	return CustomEvent;
