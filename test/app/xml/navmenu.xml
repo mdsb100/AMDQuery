@@ -8,6 +8,7 @@
       </li>
       <li amdquery-widget="ui.navitem" ui-navitem="html:base;img:module">
         <ul>
+          <li amdquery-widget="ui.navitem" ui-navitem="html:CustomEvent;img:class"></li>
           <li amdquery-widget="ui.navitem" ui-navitem="html:AMDQuery;img:class"></li>
           <li amdquery-widget="ui.navitem" ui-navitem="html:Ready;img:class"></li>
           <li amdquery-widget="ui.navitem" ui-navitem="html:Require;img:class"></li>
