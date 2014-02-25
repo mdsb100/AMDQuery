@@ -31,12 +31,16 @@
 		 * @returns {this}
 		 */
 		once: function( type, handler ) {
-			var self = this,
-				handlerproxy = function() {
-					self.off( type, handlerproxy );
-					handler.apply( this, arguments );
-				};
-			return this.on( type, handlerproxy );
+			var self = this;
+			if ( handler.__oncerproxy ) {
+				return this;
+			}
+			handler.__oncerproxy = function() {
+				self.off( type, handler.__oncerproxy );
+				delete handler.__oncerproxy;
+				handler.apply( this, arguments );
+			};
+			return this.on( type, handler.__oncerproxy );
 		},
 		/**
 		 * Add a handler.
