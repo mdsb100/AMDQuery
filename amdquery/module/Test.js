@@ -1,7 +1,7 @@
-aQuery.define( "module/Test", [ "base/Promise" ], function( $, Promise ) {
+aQuery.define( "module/Test", [ "base/Promise", "base/config" ], function( $, Promise, config ) {
 	"use strict";
 	var logger, error, info, debug;
-	if ( window.console && window.console.log.bind ) {
+	if ( window.console && window.console.log.bind && !config.module.testLogByHTML ) {
 		logger = $.logger;
 		error = $.error;
 		info = $.info;
@@ -23,6 +23,7 @@ aQuery.define( "module/Test", [ "base/Promise" ], function( $, Promise ) {
 
 		var input = function( type, arg ) {
 			dialog.innerHTML = ( dialog.innerHTML + '<p style="color:' + colorMap[ type ] + '" >' + "<strong>" + type + ":<strong>" + arg.join( " " ) + '</p>' + "\n" );
+			dialog.scrollTop = dialog.scrollHeight;
 		};
 
 		logger = function() {
@@ -43,8 +44,9 @@ aQuery.define( "module/Test", [ "base/Promise" ], function( $, Promise ) {
 
 	}
 
-	function Test( name ) {
+	function Test( name, complete ) {
 		this.name = "[" + name + "]";
+		this.complete = complete || function() {};
 		this.promise = new Promise( function() {
 			logger( this.name, "Test start", "Test:" + this.count );
 		} ).withContext( this );
@@ -141,6 +143,10 @@ aQuery.define( "module/Test", [ "base/Promise" ], function( $, Promise ) {
 		start: function() {
 			this.promise.then( function() {
 				Test[ this.fail == 0 ? "logger" : "error" ]( this.name, "Test stop", "Test:" + this.count, "Success" + ( this.count - this.fail ), "Fail:" + this.fail );
+				this.complete();
+				if ( window.parent && window.parent.aQuery && window.parent.aQuery.trigger ) {
+					window.parent.aQuery.trigger( "test", null, this.name, this.count, this.fail );
+				}
 			} );
 			this.promise.root().resolve();
 			return this;
