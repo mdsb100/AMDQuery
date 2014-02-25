@@ -73,6 +73,7 @@ aQuery.define( "module/Test", [ "base/Promise", "base/config" ], function( $, Pr
 				} catch ( e ) {
 					this.fail++;
 					error( this.name, describe, "execute", sfail, e );
+					this.report();
 					throw e;
 				}
 			} );
@@ -87,6 +88,7 @@ aQuery.define( "module/Test", [ "base/Promise", "base/config" ], function( $, Pr
 				} catch ( e ) {
 					this.fail++;
 					error( this.name, describe, "executeAsync", sfail, e );
+					this.report();
 					throw e;
 				}
 			} ).withContext( this );
@@ -105,6 +107,7 @@ aQuery.define( "module/Test", [ "base/Promise", "base/config" ], function( $, Pr
 				} catch ( e ) {
 					this.fail++;
 					error( this.name, describe, value + " equal " + result, sfail, e );
+					this.report();
 					throw e;
 				}
 				if ( result === value ) {
@@ -112,6 +115,7 @@ aQuery.define( "module/Test", [ "base/Promise", "base/config" ], function( $, Pr
 				} else {
 					this.fail++;
 					error( this.name, describe, value + " equal " + result, sfail );
+					this.report();
 				}
 			} );
 			return this;
@@ -124,6 +128,7 @@ aQuery.define( "module/Test", [ "base/Promise", "base/config" ], function( $, Pr
 				} catch ( e ) {
 					this.fail++;
 					error( this.name, describe, value + " equal " + result, sfail, e );
+					this.report();
 					throw e;
 				}
 				if ( result === value ) {
@@ -131,6 +136,7 @@ aQuery.define( "module/Test", [ "base/Promise", "base/config" ], function( $, Pr
 				} else {
 					this.fail++;
 					error( this.name, describe, value + " equalAsync " + result, sfail );
+					this.report();
 				}
 			} ).withContext( this );
 
@@ -144,12 +150,15 @@ aQuery.define( "module/Test", [ "base/Promise", "base/config" ], function( $, Pr
 			this.promise.then( function() {
 				Test[ this.fail == 0 ? "logger" : "error" ]( this.name, "Test stop", "Test:" + this.count, "Success" + ( this.count - this.fail ), "Fail:" + this.fail );
 				this.complete();
-				if ( window.parent && window.parent.aQuery && window.parent.aQuery.trigger ) {
-					window.parent.aQuery.trigger( "test", null, this.name, this.count, this.fail );
-				}
+				this.report();
 			} );
 			this.promise.root().resolve();
 			return this;
+		},
+		report: function() {
+			if ( window.parent && window.parent.aQuery && window.parent.aQuery.trigger ) {
+				window.parent.aQuery.trigger( "test", null, this.name, this.count, this.fail );
+			}
 		}
 	};
 
