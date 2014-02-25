@@ -76,6 +76,8 @@
 
 	Widget.initFirst = 2;
 
+	Widget.detectEventName = "widget.detect";
+
 	var booleanExtend = function( a, b ) {
 		for ( var i in b ) {
 			if ( b[ i ] === 0 || b[ i ] === false ) {
@@ -661,7 +663,7 @@
 			return this;
 		},
 		triggerDetectToParent: function( target ) {
-			var eventName = "widget.detect";
+			var eventName = Widget.detectEventName;
 			if ( target ) {
 				$( target ).parents().each( function( ele ) {
 					if ( Widget.hasWidget( ele ) ) {
@@ -740,8 +742,6 @@
 	// 		href: $.getPath( "ui/css/amdquery-widget", ".css" )
 	// 	} );
 	// }
-
-	$.Widget = Widget;
 
 	return Widget;
 } );

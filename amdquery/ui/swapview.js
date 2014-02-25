@@ -262,7 +262,7 @@ aQuery.define( "ui/swapview", [
 
 			this.swapviewEvent = function( e ) {
 				switch ( e.type ) {
-					case "widget.detect":
+					case Widget.detectEventName:
 						self.detect();
 						self.$indicator && self.$indicator.uiSwapindicator( "detect" );
 						break;

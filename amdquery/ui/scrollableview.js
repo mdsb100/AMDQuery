@@ -201,7 +201,7 @@ aQuery.define( "ui/scrollableview", [
 
 			this.scrollableviewEvent = function( e ) {
 				switch ( e.type ) {
-					case "widget.detect":
+					case Widget.detectEventName:
 						self.detect();
 						break;
 					case "drag.move":

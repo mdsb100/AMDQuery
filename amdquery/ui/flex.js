@@ -184,7 +184,7 @@ aQuery.define( "ui/flex", [
 
 					this.flexEvent = function( e ) {
 						switch ( e.type ) {
-							case "widget.detect":
+							case Widget.changeEventName:
 								self.detect();
 								break;
 						}
@@ -200,7 +200,7 @@ aQuery.define( "ui/flex", [
 				enable: function() {
 					if ( !this.findParent() ) {
 						event.document.addHandler( window, "resize", this.resizeEvent );
-						this.target.on( "widget.detect", this.flexEvent );
+						this.target.on( Widget.detectEventName, this.flexEvent );
 					}
 					this.options.disabled = false;
 					return this;
@@ -208,7 +208,7 @@ aQuery.define( "ui/flex", [
 				disable: function() {
 					if ( !this.findParent() ) {
 						event.document.removeHandler( window, "resize", this.resizeEvent );
-						this.target.off( "widget.detect", this.flexEvent );
+						this.target.off( Widget.detectEventName, this.flexEvent );
 					}
 					this.options.disabled = true;
 					return this;
