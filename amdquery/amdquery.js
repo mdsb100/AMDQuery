@@ -288,6 +288,19 @@
 	},
 		$ = aQuery;
 
+	var emptyFn = function() {}, error, logger, info, debug;
+	if ( window.console && console.log.bind ) {
+		logger = console.log.bind( console );
+		error = console.error.bind( console );
+		info = console.info.bind( console );
+		debug = console.debug.bind( console );
+	} else {
+		logger = emptyFn;
+		error = emptyFn;
+		info = emptyFn;
+		debug = emptyFn;
+	}
+
 	/**
 	 * @callback EachCallback
 	 * @param {*} - Item.
@@ -408,8 +421,26 @@
 				return fun.apply( context || window, arguments );
 			};
 		},
-		/** wrap console.log. */
-		logger: ( window.console ? ( console.log.bind ? console.log.bind( console ) : console.log ) : function() {} ),
+		/** wrap console.log if exists.
+		 * @method logger
+		 * @param {...String}
+		 */
+		logger: logger,
+		/** wrap console.debug if exists.
+		 * @method debug
+		 * @param {...String}
+		 */
+		debug: debug,
+		/** wrap console.info if exists.
+		 * @method info
+		 * @param {...String}
+		 */
+		info: info,
+		/** wrap console.error if exists.
+		 * @method error
+		 * @param {...String}
+		 */
+		error: error,
 		/** Create a elemnt by tag name.
 		 * @param {String}
 		 * @returns {Element}
