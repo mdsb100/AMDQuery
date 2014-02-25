@@ -244,6 +244,12 @@
 		detect: function() {
 			return this;
 		},
+		layout: function() {
+			return this;
+		},
+		resize: function() {
+			return this;
+		},
 		container: null,
 		constructor: Widget,
 		destroy: function() {
@@ -344,7 +350,9 @@
 			beSetter: Widget.AllowReturn,
 			beGetter: Widget.AllowReturn,
 			render: Widget.AllowPublic,
-			detect: Widget.AllowPublic
+			detect: Widget.AllowPublic,
+			resize: Widget.AllowPublic,
+			layout: Widget.AllowPublic
 		},
 		getEventName: function( name ) {
 			return this.widgetEventPrefix + "." + name;

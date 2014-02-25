@@ -185,8 +185,6 @@ aQuery.define( "ui/swapindicator", [
 			render: Widget.AllowPublic,
 			orevious: Widget.AllowPublic,
 			next: Widget.AllowPublic,
-			resize: Widget.AllowPublic,
-			layout: Widget.AllowPublic,
 			append: Widget.AllowPublic,
 			remove: Widget.AllowPublic
 		},

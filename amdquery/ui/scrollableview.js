@@ -254,8 +254,7 @@ aQuery.define( "ui/scrollableview", [
 						x = null;
 						y = null;
 						clearTimeout( self.wheelTimeId );
-						//refreshContainerSize?
-						self.refreshPosition();
+						self.layout();
 						// var x = null,
 						// y = null;
 						if ( e.direction == "x" ) {
@@ -273,7 +272,7 @@ aQuery.define( "ui/scrollableview", [
 						event.document.preventDefault( e );
 						event.document.stopPropagation( e );
 
-						self.refreshPosition();
+						self.layout();
 
 						var $a = $( this ),
 							href = ( $a.attr( "href" ) || "" ).replace( window.location.href, "" ).replace( "#", "" );
@@ -391,7 +390,7 @@ aQuery.define( "ui/scrollableview", [
 
 				setTimeout( function() {
 					try {
-						self.refreshPosition();
+						self.layout();
 						self.target[ 0 ].focus();
 					} catch ( e ) {}
 				}, 0 );
@@ -421,7 +420,6 @@ aQuery.define( "ui/scrollableview", [
 			"firstToElement": Widget.initFirst
 		},
 		publics: {
-			"refreshPosition": Widget.AllowPublic,
 			"showStatusBar": Widget.AllowPublic,
 			"hideStatusBar": Widget.AllowPublic,
 			"render": Widget.AllowPublic,
@@ -509,7 +507,7 @@ aQuery.define( "ui/scrollableview", [
 		},
 
 		detect: function() {
-			this.refreshPosition().refreshContainerSize();
+			this.layout().resize();
 			return this;
 		},
 
@@ -549,12 +547,12 @@ aQuery.define( "ui/scrollableview", [
 
 			return this;
 		},
-		refreshContainerSize: function() {
+		resize: function() {
 			this.container.width( this.scrollWidth );
 			this.container.height( this.scrollHeight );
 			return this;
 		},
-		refreshPosition: function() {
+		layout: function() {
 			// add Math.max to fix ie7
 			var originViewportHeight = this.viewportHeight,
 				originViewportWidth = this.viewportWidth;

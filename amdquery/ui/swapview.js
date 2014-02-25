@@ -154,7 +154,7 @@ aQuery.define( "ui/swapview", [
 
 			if ( this.$indicator ) this.$indicator.uiSwapindicator( "resize" );
 		},
-		toPosition: function() {
+		layout: function() {
 			var pos = {}, opt = this.options;
 			if ( opt.orientation == HORIZONTAL ) {
 				pos.x = -this.target.width() * opt.index;
@@ -281,7 +281,7 @@ aQuery.define( "ui/swapview", [
 						break;
 					case "flex.resize":
 						self.resize();
-						self.toPosition();
+						self.layout();
 						break;
 				}
 			};
