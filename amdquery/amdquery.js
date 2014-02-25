@@ -555,6 +555,32 @@
 				head && ( name = head + "-" + name );
 				return name;
 			},
+			/**
+			 * Object A is equal to Object B.
+			 * @param {Object}
+			 * @param {Object}
+			 * @returns {Boolean}
+			 * @example
+			 * var a = { foo : { fu : "bar" } };
+			 * var b = { foo : { fu : "bar" } };
+			 * aQuery.util.isEqual(a, b) //return true
+			 */
+			isEqual: function( objA, objB ) {
+				if ( objA.constructor !== objB.constructor )
+					return false;
+				var aMemberCount = 0;
+				for ( var a in objA ) {
+					if ( !objA.hasOwnProperty( a ) )
+						continue;
+					if ( typeof objA[ a ] === 'object' && typeof objB[ a ] === 'object' ? !$.util.isEqual( objA[ a ], objB[ a ] ) : objA[ a ] !== objB[ a ] )
+						return false;
+					++aMemberCount;
+				}
+				for ( var a in objB )
+					if ( objB.hasOwnProperty( a ) )
+					--aMemberCount;
+				return aMemberCount ? false : true;
+			},
 			removeSuffix: util.removeSuffix,
 			version: version
 		}
