@@ -30,17 +30,17 @@
       .execute("customEvent on fn name is 'a.b a.c a b'.", function(){
         customEvent.on("a.b a.c a b", fn);
       })
-      .equal("customEvent has event a.b.", -1, function(){
-        return customEvent.hasHandler("a.b");
+      .equal("customEvent has event a.b.", true, function(){
+        return customEvent.hasHandler("a.b", fn) > -1;
       })
-      .equal("customEvent has event a.c.", -1, function(){
-        return customEvent.hasHandler("a.c");
+      .equal("customEvent has event a.c.", true, function(){
+        return customEvent.hasHandler("a.c", fn) > -1;
       })
-      .equal("customEvent has event a.", -1, function(){
-        return customEvent.hasHandler("a");
+      .equal("customEvent has event a.", true, function(){
+        return customEvent.hasHandler("a", fn) > -1;
       })
-      .equal("customEvent has event b.", -1, function(){
-        return customEvent.hasHandler("b");
+      .equal("customEvent has event b.", true, function(){
+        return customEvent.hasHandler("b", fn) > -1;
       })
       .execute("customEvent on fn1 'b'.", function(){
         customEvent.on("b", fn1);
@@ -58,7 +58,8 @@
         return customEvent.isEmpty();
       })
       .equal("customEvent off fn 'a.b a', so has 'a.b' and 'a' is false.", false, function(){
-        return customEvent.hasHandler("a.b") > -1 || customEvent.hasHandler("a") > -1;
+        customEvent.off("a.b a", fn);
+        return customEvent.hasHandler("a.b", fn) > -1 || customEvent.hasHandler("a", fn) > -1;
       })
       .equal("customEvent trigger a.c, result should equal 'myresult'.", "myresult", function(){
         customEvent.trigger("a.c", customEvent, "myresult");
