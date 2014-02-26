@@ -37,6 +37,7 @@
       </li>
       <li amdquery-widget="ui.navitem" ui-navitem="html:module;img:module">
         <ul>
+          <li amdquery-widget="ui.navitem" ui-navitem="html:Test;img:class"></li>
           <li amdquery-widget="ui.navitem" ui-navitem="html:Color;img:class"></li>
           <li amdquery-widget="ui.navitem" ui-navitem="html:Promise;img:class"></li>
           <li amdquery-widget="ui.navitem" ui-navitem="html:Thread;img:class"></li>
