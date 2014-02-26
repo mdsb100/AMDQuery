@@ -181,6 +181,7 @@
 	 *
 	 * @property {object}  config.module                       - The module Configuration.
 	 * @property {object}  config.module.testLogByHTML         - Whether log by HTML when do test.
+	 * @property {object}  config.module.compatibleEvent       - Whether compatible event, for example: e.srcElement || e.target.
 	 *
 	 * @property {object}  config.app                          - The application Configuration.
 	 * @property {string}  config.app.src                      - A js file src, main of application.
@@ -212,7 +213,8 @@
 			isTransform3d: true
 		},
 		module: {
-			testLogByHTML: false
+			testLogByHTML: false,
+			compatibleEvent: false
 		},
 		app: {
 			src: "",
