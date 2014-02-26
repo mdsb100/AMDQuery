@@ -196,10 +196,10 @@
 		 * Get element by ID.
 		 * @param {String}
 		 * @param {Element} [context=DOMElement]
-		 * @returns {Array<Element>} - Just one length or empty array.
+		 * @returns {Element}
 		 */
 		getEleById: function( ID, context ) {
-			return $.expr.find[ "ID" ]( ID, context || document );
+			return $.expr.find[ "ID" ]( ID, context || document )[0];
 		},
 		/**
 		 * Get elements of array by tag name.
