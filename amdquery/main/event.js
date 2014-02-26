@@ -671,17 +671,16 @@
 
 		/**
 		 * Toggle event.
-		 * @variation
-		 * @example
-		 * var test1 = $("#a")[0];
-		 * event.toggle( test1, function() {
-		 *   alert(1)
-		 * }, function() {
-		 *   alert(2)
-		 * });
 		 * @param {Element|window}
 		 * @param {...Function} - Handelrs.
 		 * @returns {this}
+		 * @example
+		 * var test1 = $("#a")[0];
+		 * event.toggle(test1, function() {
+		 *   alert(1);
+		 * }, function() {
+		 *   alert(2);
+		 * });
 		 */
 		toggle: function( ele, funParas ) {
 			var arg = $.util.argToArray( arguments, 1 ),
