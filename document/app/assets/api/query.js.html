@@ -151,6 +151,10 @@
 						</li>
 						
 						<li>
+							<a href="css.html">main/css</a>
+						</li>
+						
+						<li>
 							<a href="CustomEvent.html">main/CustomEvent</a>
 						</li>
 						
@@ -180,6 +184,10 @@
 						
 						<li>
 							<a href="location.html">module/location</a>
+						</li>
+						
+						<li>
+							<a href="Test_.html">module/Test</a>
 						</li>
 						
 
@@ -225,6 +233,10 @@
 					<ul class="dropdown-menu ">
 						
 						<li>
+							<a href="global.html#debug">debug</a>
+						</li>
+						
+						<li>
 							<a href="global.html#define">define</a>
 						</li>
 						
@@ -238,6 +250,18 @@
 						
 						<li>
 							<a href="global.html#define">define(3)</a>
+						</li>
+						
+						<li>
+							<a href="global.html#error">error</a>
+						</li>
+						
+						<li>
+							<a href="global.html#info">info</a>
+						</li>
+						
+						<li>
+							<a href="global.html#logger">logger</a>
 						</li>
 						
 						<li>
@@ -463,10 +487,10 @@
 		 * Get element by ID.
 		 * @param {String}
 		 * @param {Element} [context=DOMElement]
-		 * @returns {Array&lt;Element>} - Just one length or empty array.
+		 * @returns {Element}
 		 */
 		getEleById: function( ID, context ) {
-			return $.expr.find[ "ID" ]( ID, context || document );
+			return $.expr.find[ "ID" ]( ID, context || document )[0];
 		},
 		/**
 		 * Get elements of array by tag name.

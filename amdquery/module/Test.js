@@ -1,0 +1,240 @@
+aQuery.define( "module/Test", [ "base/Promise", "base/config" ], function( $, Promise, config ) {
+	"use strict";
+	this.describe( "Test Module" );
+
+	var logger, error, info, debug;
+	if ( window.console && window.console.log.bind && !config.module.testLogByHTML ) {
+		logger = $.logger;
+		error = $.error;
+		info = $.info;
+		debug = $.debug;
+	} else {
+		var dialog = $.createEle( "pre" );
+
+		dialog.style.cssText = "display:block;position:absolute;width:600px;height:200px;overflow:scroll;z-index:1000000;";
+		dialog.style.right = "0px";
+		dialog.style.top = "0px";
+		document.body.appendChild( dialog );
+
+		var colorMap = {
+			log: "green",
+			error: "red",
+			info: "black",
+			debug: "orange"
+		};
+
+		var input = function( type, arg ) {
+			dialog.innerHTML = ( dialog.innerHTML + '<p style="color:' + colorMap[ type ] + '" >' + "<strong>" + type + ":<strong>" + arg.join( " " ) + '</p>' + "\n" );
+			dialog.scrollTop = dialog.scrollHeight;
+		};
+
+		logger = function() {
+			input( "log", $.util.argToArray( arguments ) );
+		};
+
+		error = function() {
+			input( "error", $.util.argToArray( arguments ) );
+		};
+
+		info = function() {
+			input( "info", $.util.argToArray( arguments ) );
+		};
+
+		debug = function() {
+			input( "debug", $.util.argToArray( arguments ) );
+		};
+
+	}
+	/**
+	 * You can see Test.html.
+	 * @public
+	 * @module module/Test
+	 * @requires module:base/Promise
+	 * @requires module:base/config
+	 */
+
+	/**
+	 * Test Module.
+	 * @constructor
+	 * @param {String} - Name of the test.
+	 * @param {Function=} - The complete function of resoving all promise.
+	 * @alias module:module/Test
+	 */
+	function Test( name, complete ) {
+		this.name = "[" + name + "]";
+		this.complete = complete || function() {};
+		this.promise = new Promise( function( preResult ) {
+			logger( this.name, "userAgent", navigator.userAgent );
+			logger( this.name, "Test start", "Test:" + this.count );
+			return preResult;
+		} ).withContext( this );
+		this.count = 0;
+		this.fail = 0;
+	}
+	/**
+	 * console.log or log in html.
+	 * @method logger
+	 * @param {...String}
+	 * @memberOf module:module/Test
+	 */
+	Test.logger = logger;
+	/**
+	 * console.error or error in html.
+	 * @method error
+	 * @param {...String}
+	 * @memberOf module:module/Test
+	 */
+	Test.error = error;
+	/**
+	 * console.info or info in html.
+	 * @method info
+	 * @param {...String}
+	 * @memberOf module:module/Test
+	 */
+	Test.info = info;
+	/**
+	 * console.debug or debug in html.
+	 * @method debug
+	 * @param {...String}
+	 * @memberOf module:module/Test
+	 */
+	Test.debug = debug;
+	/** {undefined|DOMElement<pre>} */
+	Test.dialog = dialog;
+
+	var ssuccess = "√",
+		sfail = "X";
+
+	Test.prototype = /** @alias module:module/Test.prototype */ {
+		constructor: Test,
+		/**
+		 * Execute a function and non-return.
+		 * @param {String} - The describe of this test.
+		 * @param {Function} - The function of this test.
+		 * @param {Promise=} - If get a Promise instance then this test will be async.
+		 * @returns {this}
+		 * @example
+		 * var promise1 = new Promise;
+		 * new Test("TestTest", function(preResult){
+		 *   // complete
+		 * })
+		 * .execute("Test execute async. After 1 seconds, 'promise1.resolve'. ", function(){
+		 *   setTimeout(function(){
+		 *     promise1.resolve();
+		 *   }, 1000);
+		 * })
+		 * .execute("Test execute async. After 1 seconds, the next test is executed. ", function(){
+		 *
+		 * }, promise1)
+		 * .start();
+		 */
+		execute: function( describe, executeFn, promise ) {
+			this.count++;
+			this.promise = this.promise.then( function( preResult ) {
+				if ( Promise.forinstance( promise ) ) {
+					promise.then( function( result ) {
+						this._execute( describe, executeFn, preResult );
+					} ).withContext( this );
+					return promise;
+				} else {
+					this._execute( describe, executeFn, preResult );
+					return preResult;
+				}
+			} );
+			return this;
+		},
+		_execute: function( describe, executeFn, preResult ) {
+			try {
+				executeFn( preResult );
+				logger( this.name, describe, ssuccess );
+			} catch ( e ) {
+				this.fail++;
+				error( this.name, describe, sfail, e );
+				this.report();
+				throw e;
+			}
+		},
+		/**
+		 * Execute a function and return a result.
+		 * @param {String} - The describe of this test.
+		 * @param {*} - The result.
+		 * @param {Function} - The function of this test.
+		 * @param {Promise=} - If get a Promise instance then this test will be async.
+		 * @returns {this}
+		 * @example
+		 * var promise1 = new Promise;
+		 * new Test("TestTest", function(preResult){
+		 *   // complete
+		 * })
+		 * .equal("Test equal async. After 1 seconds, 'promise1.resolve'. ", true, function(){
+		 *   setTimeout(function(){
+		 *     promise1.resolve();
+		 *   }, 1000);
+		 *   return true;
+		 * })
+		 * .equal("Test equal async. After 1 seconds, the next test is executed and preResult is true. ", true, function(preResult){
+		 *   return preResult;
+		 * }, promise1)
+		 * .start();
+		 */
+		equal: function( describe, value, resultBackFn, promise ) {
+			this.count++;
+			this.promise = this.promise.then( function( preResult ) {
+				if ( Promise.forinstance( promise ) ) {
+					promise.then( function( result ) {
+						return this._equal( describe, value, resultBackFn, preResult );
+					} ).withContext( this );
+					return promise;
+				} else {
+					return this._equal( describe, value, resultBackFn, preResult );
+				}
+			} );
+			return this;
+		},
+		_equal: function( describe, value, resultBackFn, preResult ) {
+			try {
+				var result = resultBackFn( preResult );
+			} catch ( e ) {
+				this.fail++;
+				error( this.name, describe, sfail, e );
+				this.report();
+				throw e;
+			}
+			if ( result === value ) {
+				logger( this.name, describe, ssuccess );
+			} else {
+				this.fail++;
+				error( this.name, describe, sfail );
+				this.report();
+			}
+			return result;
+		},
+		/**
+		 * Start test
+		 * @param {*} - The first result.
+		 * @returns {this}
+		 */
+		start: function( firstResult ) {
+			this.promise.then( function() {
+				Test[ this.fail == 0 ? "logger" : "error" ]( this.name, "Test stop", "Test:" + this.count, "Success" + ( this.count - this.fail ), "Fail:" + this.fail );
+				this.complete();
+				this.report();
+			} );
+			this.promise.root().resolve( firstResult );
+			return this;
+		},
+    /**
+     * If window.parent.aQuery is exists then trigger "test" event.
+     * @inner
+     * @returns {this}
+     */
+		report: function() {
+			if ( window.parent && window.parent.aQuery && window.parent.aQuery.trigger ) {
+				window.parent.aQuery.trigger( "test", null, this.name, this.count, this.fail );
+			}
+			return this;
+		}
+	};
+
+	return Test;
+} );

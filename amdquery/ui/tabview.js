@@ -23,7 +23,7 @@ aQuery.define( "ui/tabview", [
 					opt = this.options;
 				this.tabviewEvent = function( e ) {
 					switch ( e.type ) {
-						case "widget.detect":
+						case Widget.detectEventName:
 							self.detect();
 							self.$tabBar.uiTabbar( "detect" );
 							break;
@@ -38,13 +38,13 @@ aQuery.define( "ui/tabview", [
 			enable: function() {
 				this.disable();
 				this.$tabBar.on( "tabbar.click", this.tabviewEvent );
-				this.target.on( "widget.detect", this.tabviewEvent );
+				this.target.on( Widget.detectEventName, this.tabviewEvent );
 				this.options.disabled = false;
 				return this;
 			},
 			disable: function() {
 				this.$tabBar.off( "tabbar.click", this.tabviewEvent );
-				this.target.off( "widget.detect", this.tabviewEvent );
+				this.target.off( Widget.detectEventName, this.tabviewEvent );
 				this.options.disabled = true;
 				return this;
 			},

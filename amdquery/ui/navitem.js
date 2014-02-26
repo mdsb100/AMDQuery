@@ -78,9 +78,7 @@ aQuery.define( "ui/navitem", [
 				if ( !this.hasChild() ) {
 					this.$arrow.removeClass( "arrowRight" ).removeClass( "arrowBottom" );
 				}
-				// if(client.browser.ie){
-				//     //this.$title.width(this.$arrow.width() + this.$img.width() + this.$text.width());
-				// }
+
 				return this;
 			},
 			toggle: function() {

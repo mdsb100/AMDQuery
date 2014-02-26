@@ -51,9 +51,9 @@
 			 * @returns {Function}
 			 */
 			proxy: function( fn ) {
-				if ( !fn.__guid ) {
+				if ( !fn.__proxy ) {
 					var temp;
-					fn.__guid = function( e ) {
+					fn.__proxy = function( e ) {
 						var evt = event.document.getEvent( e ),
 							target = this;
 
@@ -68,18 +68,25 @@
 
 						fn.call( target, evt || {} );
 					};
+					fn.__proxy.count = 1;
+				} else {
+					fn.__proxy.count++;
 				}
-				return fn.__guid;
+				return fn.__proxy;
+			},
+			/**
+			 * @inner
+			 * Destroy proxy.
+			 * @param {Function}
+			 */
+			destroyProxy: function( fn ) {
+				if ( fn.__proxy && --fn.__proxy.count === 0 ) {
+					delete fn.__proxy;
+				}
 			}
 		},
-		_initCustomEvent = function( ele, type ) {
-			var data;
-			if ( !( data = utilData.get( ele, type ) ) ) {
-				data = new CustomEvent();
-				utilData.set( ele, type, data );
-			}
-			return data;
-		},
+		_handlersKey = "__handlersKey",
+		_toggleKey = "__toggleKey",
 		i = 0,
 		len;
 
@@ -99,69 +106,92 @@
 	var event = {
 		/**
 		 * Add an event Handler to element.
-		 * @param {Element}
+		 * @param {Element|window}
 		 * @param {String} - "click", "swap.down"
 		 * @param {Function}
 		 * @returns {this}
 		 */
 		addHandler: function( ele, type, fn ) {
 			if ( typed.isEle( ele ) || typed.isWindow( ele ) ) {
-				var data, proxy, item, types = type.split( " " ),
+				var customEvent, proxy, item, types = type.split( " " ),
 					i = types.length - 1;
 
-				data = _initCustomEvent( ele, "_handlers_" );
-				proxy = eventHooks.proxy( fn, this );
+				customEvent = event._initHandler( ele );
 
 				for ( ; i >= 0; i-- ) {
 					item = types[ i ];
-					if ( data.hasHandler( item, fn ) == -1 && domEventList[ item ] ) {
+					if ( customEvent.hasHandler( item, fn ) == -1 && domEventList[ item ] ) {
 						item = eventHooks.type( item );
+						proxy = eventHooks.proxy( fn, this );
 						event.document._addHandler( ele, item, proxy );
 					}
 				}
 
-				type && fn && data.addHandler( type, fn );
+				type && fn && customEvent.addHandler( type, fn );
 			}
 			return this;
 		},
 		/**
 		 * Add a event Handler to element and do once.
 		 * <br /> It will remove handler after done.
-		 * @param {Element}
+		 * @param {Element|window}
 		 * @param {String} - "click", "swap.down"
 		 * @param {Function}
 		 * @returns {this}
 		 */
 		once: function( ele, type, fn ) {
-			if ( typed.isEle( ele ) || typed.isWindow( ele ) ) {
-				var data, proxy, item, types = type.split( " " ),
-					i = types.length - 1;
-
-				data = _initCustomEvent( ele, "_handlers_" );
-				proxy = eventHooks.proxy( fn, this );
+			if ( ( typed.isEle( ele ) || typed.isWindow( ele ) ) ) {
+				var customEvent = event._initHandler( ele ),
+					types = type.split( " " ),
+					i = types.length - 1,
+					item;
 
 				for ( ; i >= 0; i-- ) {
 					item = types[ i ];
-					if ( data.hasHandler( item, fn ) == -1 && domEventList[ item ] ) {
-						item = eventHooks.type( item );
-						event.document.once( ele, item, proxy );
+					if ( customEvent.hasHandler( item, fn ) == -1 ) {
+						this._once( ele, item, fn );
 					}
 				}
 
-				type && fn && data.once( type, proxy );
 			}
 			return this;
 		},
+		_once: function( ele, type, fn ) {
+			var customEvent = event._initHandler( ele ),
+				proxy = function() {
+					if ( domEventList[ type ] ) {
+						var todo = eventHooks.proxy( fn, event );
+						var typeHook = eventHooks.type( type );
+						todo.apply( this, arguments );
+						eventHooks.destroyProxy( fn );
+						event.document.removeHandler( ele, typeHook, proxy );
+						customEvent.removeHandler( type, fn );
+						event._destroyHandler( ele );
+						proxy = null;
+					}
+				};
+
+			if ( domEventList[ type ] ) {
+				var typeHook = eventHooks.type( type );
+				event.document.addHandler( ele, typeHook, proxy );
+				customEvent.addHandler( type, fn );
+			} else {
+				customEvent.once( type, fn, function() {
+					event._destroyHandler( ele );
+				} );
+			}
+		},
 		/**
 		 * Remove an event Handler from element.
-		 * @param {Element}
+		 * @param {Element|window}
 		 * @param {String} - "click", "swap.down"
 		 * @param {Function}
 		 * @returns {this}
 		 */
 		removeHandler: function( ele, type, fn ) {
 			if ( typed.isEle( ele ) || typed.isWindow( ele ) ) {
-				var data, proxy = fn.__guid || fn,
+				var customEvent = utilData.get( ele, _handlersKey ),
+					proxy = fn.__proxy || fn,
 					types = type.split( " " ),
 					i = types.length - 1,
 					item;
@@ -170,33 +200,36 @@
 					item = types[ i ];
 					if ( domEventList[ item ] ) {
 						item = eventHooks.type( item );
+						eventHooks.destroyProxy( fn );
 						event.document._removeHandler( ele, item, proxy );
 					}
 				}
 
-				data = _initCustomEvent( ele, "_handlers_" );
-				type && fn && data.removeHandler( type, fn );
+				if ( customEvent && type && fn ) {
+					customEvent.removeHandler( type, fn );
+					event._destroyHandler( ele );
+				}
 
 			}
 			return this;
 		},
 		/**
 		 * Remove all event Handler from element.
-		 * @param {Element}
+		 * @param {Element|window}
 		 * @param {String} [type] - If type is undefined then clear all handlers.
 		 * @returns {this}
 		 */
 		clearHandlers: function( ele, type ) {
 			if ( typed.isEle( ele ) || typed.isWindow( ele ) ) {
-				var data = utilData.get( ele, "_handlers_" );
-				if ( !data ) {
+				var customEvent = utilData.get( ele, _handlersKey );
+				if ( !customEvent ) {
 					return this;
 				}
-				var handlerMap = data._handlerMap,
+				var handlerMap = customEvent.getHandlers(),
 					map = {},
 					j = 0,
 					len = 0,
-					i, item, fun;
+					i, item, fn;
 
 				if ( type ) {
 					var types = type.split( " " ),
@@ -207,62 +240,79 @@
 							map[ item ] = 1;
 						}
 					}
+				} else {
+					map = handlerMap;
 				}
 
 				for ( i in map ) {
-					item = data._nameSpace( i );
+					item = customEvent.getHandlers( i );
 					for ( j = 0, len = item.length; j < len; j++ ) {
-						fun = item[ j ];
-						domEventList[ i ] && event.document._removeHandler( ele, i, fun.__guid || fun );
+						fn = item[ j ];
+						domEventList[ i ] && event.removeHandler( ele, i, fn );
 					}
 				}
-				data.clearHandlers( type );
+				customEvent.clearHandlers( type );
+				event._destroyHandler( ele );
 			}
 			return this;
 		},
 		/**
 		 * Clone the current element`s handler to another element.
-		 * @param {Element}
-		 * @param {Element}
+		 * <br /> Wraning: ele will clear handlers.
+		 * @param {Element|window} - Target Element
+		 * @param {Element|window} - Source Element.
 		 * @returns {this}
 		 */
-		cloneHandlers: function( ele, handlerEve ) {
-			var customEvent = utilData.get( handlerEve, "_handlers_" );
+		cloneHandlers: function( tarEle, srcEle ) {
+			var customEvent = utilData.get( srcEle, _handlersKey );
 			if ( customEvent ) {
-				var handlerMap = customEvent._handlerMap,
+				var handlerMap = customEvent.getHandlers(),
 					j = 0,
 					len = 0,
-					i, item, fun;
+					i, item, fn;
+				event.clearHandlers( tarEle );
 
 				for ( i in handlerMap ) {
-					item = customEvent._nameSpace( i );
+					item = customEvent.getHandlers( i );
 					for ( j = 0, len = item.length; j < len; j++ ) {
-						fun = item[ j ];
-						domEventList[ i ] && event.document._addHandler( ele, i, fun.__guid || fun );
+						fn = item[ j ];
+						event.addHandler( tarEle, i, fn );
 					}
 				}
-				event.clearHandlers( ele );
-				utilData.set( ele, "_handlers_", customEvent );
 			}
 			return this;
 		},
 		/**
 		 * Has the element an event handler.
-		 * @param {Element}
+		 * @param {Element|window}
 		 * @param {String}
 		 * @param {Function}
 		 * @returns {Number} fn - "-1" means has not.
 		 */
 		hasHandler: function( ele, type, fn ) {
 			if ( typed.isEle( ele ) || typed.isWindow( ele ) ) {
-				var proxy;
-				if ( domEventList[ type ] ) {
-					proxy = fn.__guid || fn;
-					type = eventHooks.type( type );
-					return event.document.hasHandler( ele, type, proxy );
+				var customEvent = utilData.get( ele, _handlersKey );
+				if ( customEvent ) {
+					return customEvent.hasHandler( type, fn );
 				}
 			}
 			return -1;
+		},
+		/**
+		 * Return handlers.
+		 * @param {Element|window}
+		 * @param {String=} - If type is null then return whole handlers object.
+		 * @returns {Array|Object|null}
+		 */
+		getHandlers: function( ele, type ) {
+			if ( typed.isEle( ele ) || typed.isWindow( ele ) ) {
+				var customEvent = utilData.get( ele, _handlersKey );
+				if ( customEvent ) {
+					var handlers = customEvent.getHandlers( type );
+					return handlers.length ? handlers : null;
+				}
+			}
+			return null;
 		},
 		/**
 		 * @namespace
@@ -270,7 +320,7 @@
 		document: {
 			/**
 			 * Add an event handler to element.
-			 * @param {Element}
+			 * @param {Element|window}
 			 * @param {String}
 			 * @param {Funtion}
 			 */
@@ -291,7 +341,7 @@
 			},
 			/**
 			 * Add a event Handler to element and do once.
-			 * @param {Element}
+			 * @param {Element|window}
 			 * @param {String}
 			 * @param {Funtion}
 			 */
@@ -305,16 +355,11 @@
 			},
 			/**
 			 * Remove an event Handler from element.
-			 * @param {Element}
+			 * @param {Element|window}
 			 * @param {String}
 			 * @param {Funtion}
 			 */
 			removeHandler: function( ele, type, fn ) {
-				/// <summary>给DOM元素移除事件</summary>
-				/// <param name="ele" type="Element">元素</param>
-				/// <param name="type" type="String">事件类型</param>
-				/// <param name="fn" type="Function">事件方法</param>
-				/// <returns type="null" />
 				var types = type.split( " " ),
 					i = types.length - 1;
 				for ( ; i >= 0; i-- ) {
@@ -342,7 +387,7 @@
 			},
 			/**
 			 * Dispatch an event.
-			 * @param {Element} - Dispatch an event from this element.
+			 * @param {Element|window} - Dispatch an event from this element.
 			 * @param {Event}
 			 * @param {String} - The type of event
 			 */
@@ -372,7 +417,7 @@
 			/**
 			 * Get event target.
 			 * @param {Event}
-			 * @returns {Element}
+			 * @returns {Element|window}
 			 */
 			getTarget: function( e ) {
 				return e.srcElement || e.target;
@@ -407,7 +452,7 @@
 				},
 				/**
 				 * Trigger Element keyboard event.
-				 * @param {Element}
+				 * @param {Element|window}
 				 * @param {String}
 				 * @param {Object}
 				 */
@@ -459,7 +504,7 @@
 				},
 				/**
 				 * Trigger Element mouse event.
-				 * @param {Element}
+				 * @param {Element|window}
 				 * @param {String}
 				 * @param {Object}
 				 */
@@ -494,7 +539,7 @@
 				},
 				/**
 				 * Trigger Element HTML event. Like: blur focus focusin focusout.
-				 * @param {Element}
+				 * @param {Element|window}
 				 * @param {String}
 				 * @param {Object}
 				 */
@@ -564,7 +609,7 @@
 			},
 			/**
 			 * Add an event handler to element.
-			 * @param {Element}
+			 * @param {Element|window}
 			 * @param {String}
 			 * @param {Funtion}
 			 */
@@ -573,7 +618,7 @@
 			},
 			/**
 			 * Remove an event handler from element.
-			 * @param {Element}
+			 * @param {Element|window}
 			 * @param {String}
 			 * @param {Funtion}
 			 */
@@ -597,57 +642,77 @@
 		},
 
 		_initHandler: function( ele ) {
-			var data = utilData.get( ele, "_handlers_" );
+			var data = utilData.get( ele, _handlersKey );
 			if ( !data ) {
 				data = new CustomEvent();
-				utilData.set( ele, "_handlers_", data );
+				utilData.set( ele, _handlersKey, data );
 			}
-			return this;
+			return data;
+		},
+		_destroyHandler: function( ele ) {
+			var data = utilData.get( ele, _handlersKey );
+			if ( data && data.isEmpty() ) {
+				utilData.removeData( ele, _handlersKey );
+				if ( !utilData.hasData( ele ) ) {
+					utilData.removeData( ele );
+				}
+			}
+			return data;
 		},
 		/**
-		 * Toggle event.
+		 * Remove toggle event.
+		 * @variation 1
+		 * @memberOf module:main/event
+		 * @method toggle
 		 * @example
-		 * var test1 = $("#a")[0];
-		 * event.toggle( test1, function() {
-		 *   alert(1)
-		 * }, function() {
-		 *   alert(2)
-		 * });
-		 * @param {Element}
+		 * $("#a").toggle();
+		 * @returns {this}
+		 */
+
+		/**
+		 * Toggle event.
+		 * @param {Element|window}
 		 * @param {...Function} - Handelrs.
 		 * @returns {this}
+		 * @example
+		 * var test1 = $("#a")[0];
+		 * event.toggle(test1, function() {
+		 *   alert(1);
+		 * }, function() {
+		 *   alert(2);
+		 * });
 		 */
 		toggle: function( ele, funParas ) {
 			var arg = $.util.argToArray( arguments, 1 ),
 				index = 0,
 				data;
 			if ( arg.length > 1 ) {
-				if ( data = utilData.get( ele, "_toggle_" ) ) {
+				if ( data = utilData.get( ele, _toggleKey ) ) {
 					arg = data.arg.concat( arg );
 					index = data.index;
 				}
 
-				utilData.set( ele, "_toggle_", {
+				utilData.set( ele, _toggleKey, {
 					index: index,
 					arg: arg
 				} );
 
 				event.addHandler( ele, "click", this._toggle );
 			} else {
+				utilData.removeData( ele, _toggleKey );
 				event.removeHandler( ele, "click", this._toggle );
-				event.removeData( ele, "_toggle_" );
 			}
 			return this;
 		},
 		_toggle: function( e ) {
 			var self = event.document.getTarget( e ),
-				data = utilData.get( self, "_toggle_" ),
+				data = utilData.get( self, _toggleKey ),
 				arg = data.arg,
 				len = arg.length,
 				index = data.index % len;
 
 			arg[ index ].call( self, e );
-			utilData.set( self, "_toggle_", {
+			utilData.set( self, _toggleKey, {
 				index: index + 1,
 				arg: arg
 			} );
@@ -668,10 +733,10 @@
 		 * test1.trigger("my.test1", {
 		 *   screenX: 5
 		 * });
-		 * @param {Element}
+		 * @param {Element|window}
 		 * @param {String}
 		 * @param {Object} - Function context.
-		 * @param {...Object}
+		 * @param {...Object} - If you trigger a document event, the parameter must be a {}.
 		 * @returns {this}
 		 */
 		trigger: function( ele, type, context, paras ) {
@@ -679,9 +744,9 @@
 				var data;
 				if ( data = domEventList[ type ] ) {
 					type = eventHooks.type( type );
-					typed.isFun( data ) ? data( ele, type, context ) : $.logger( "trigger", "triggering" + type + " is not supported" );
-				} else {
-					( data = utilData.get( ele, "_handlers_" ) ) && data.trigger.apply( data, [ type, context ].concat( $.util.argToArray( arguments, 3 ) ) );
+					typed.isFun( data ) ? data( ele, type, paras ) : $.logger( "trigger", "triggering" + type + " is not supported" );
+				} else if ( data = utilData.get( ele, _handlersKey ) ) {
+					data.trigger.apply( data, [ type, context ].concat( $.util.argToArray( arguments, 3 ) ) );
 				}
 			}
 			return this;
@@ -693,7 +758,7 @@
 		 * Alias addHandler.
 		 * @memberOf module:main/event
 		 * @method
-		 * @param {Element}
+		 * @param {Element|window}
 		 * @param {String} - "click", "swap.down"
 		 * @param {Function}
 		 * @returns {this}
@@ -703,7 +768,7 @@
 		 * Alias removeHandler.
 		 * @memberOf module:main/event
 		 * @method
-		 * @param {Element}
+		 * @param {Element|window}
 		 * @param {String} - "click", "swap.down"
 		 * @param {Function}
 		 * @returns {this}
@@ -713,7 +778,7 @@
 		 * Alias clearHandlers.
 		 * @memberOf module:main/event
 		 * @method
-		 * @param {Element}
+		 * @param {Element|window}
 		 * @param {String} [type] - If type is undefined then clear all handlers.
 		 * @returns {this}
 		 */
@@ -762,7 +827,7 @@
 		},
 		/**
 		 * Trigger an event to bus.
-		 * @param {Element}
+		 * @param {Element|window}
 		 * @param {String}
 		 * @param {Object} - Function context.
 		 * @param {...Object}
@@ -949,7 +1014,7 @@
 		 * }, function() {
 		 *   alert(2)
 		 * });
-		 * @param {Element}
+		 * @param {Element|window}
 		 * @param {...Function} - Handelrs.
 		 * @returns {this}
 		 */
@@ -971,7 +1036,7 @@
 		 * @param {...Object}
 		 * @returns {this}
 		 */
-		trigger: function( type, a, b, c ) {
+		trigger: function( type, context ) {
 			var arg = $.util.argToArray( arguments );
 			return this.each( function( ele ) {
 				event.trigger.apply( null, [ ele ].concat( arg ) );

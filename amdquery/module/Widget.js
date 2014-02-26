@@ -76,6 +76,8 @@
 
 	Widget.initFirst = 2;
 
+	Widget.detectEventName = "widget.detect";
+
 	var booleanExtend = function( a, b ) {
 		for ( var i in b ) {
 			if ( b[ i ] === 0 || b[ i ] === false ) {
@@ -242,6 +244,12 @@
 		detect: function() {
 			return this;
 		},
+		layout: function() {
+			return this;
+		},
+		resize: function() {
+			return this;
+		},
 		container: null,
 		constructor: Widget,
 		destroy: function() {
@@ -342,7 +350,9 @@
 			beSetter: Widget.AllowReturn,
 			beGetter: Widget.AllowReturn,
 			render: Widget.AllowPublic,
-			detect: Widget.AllowPublic
+			detect: Widget.AllowPublic,
+			resize: Widget.AllowPublic,
+			layout: Widget.AllowPublic
 		},
 		getEventName: function( name ) {
 			return this.widgetEventPrefix + "." + name;
@@ -661,7 +671,7 @@
 			return this;
 		},
 		triggerDetectToParent: function( target ) {
-			var eventName = "widget.detect";
+			var eventName = Widget.detectEventName;
 			if ( target ) {
 				$( target ).parents().each( function( ele ) {
 					if ( Widget.hasWidget( ele ) ) {
@@ -740,8 +750,6 @@
 	// 		href: $.getPath( "ui/css/amdquery-widget", ".css" )
 	// 	} );
 	// }
-
-	$.Widget = Widget;
 
 	return Widget;
 } );

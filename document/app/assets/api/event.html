@@ -151,6 +151,10 @@
 						</li>
 						
 						<li>
+							<a href="css.html">main/css</a>
+						</li>
+						
+						<li>
 							<a href="CustomEvent.html">main/CustomEvent</a>
 						</li>
 						
@@ -180,6 +184,10 @@
 						
 						<li>
 							<a href="location.html">module/location</a>
+						</li>
+						
+						<li>
+							<a href="Test_.html">module/Test</a>
 						</li>
 						
 
@@ -225,6 +233,10 @@
 					<ul class="dropdown-menu ">
 						
 						<li>
+							<a href="global.html#debug">debug</a>
+						</li>
+						
+						<li>
 							<a href="global.html#define">define</a>
 						</li>
 						
@@ -238,6 +250,18 @@
 						
 						<li>
 							<a href="global.html#define">define(3)</a>
+						</li>
+						
+						<li>
+							<a href="global.html#error">error</a>
+						</li>
+						
+						<li>
+							<a href="global.html#info">info</a>
+						</li>
+						
+						<li>
+							<a href="global.html#logger">logger</a>
 						</li>
 						
 						<li>
@@ -304,7 +328,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="event.js.html">main/event.js</a>, <a href="event.js.html#sunlight-1-line-99">line 99</a>
+        <a href="event.js.html">main/event.js</a>, <a href="event.js.html#sunlight-1-line-106">line 106</a>
     </li></ul></dd>
     
 
@@ -414,6 +438,9 @@
             
                 
 <span class="param-type"><a href="global.html#Element">Element</a></span>
+|
+
+<span class="param-type">window</span>
 
 
             
@@ -501,7 +528,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="event.js.html">main/event.js</a>, <a href="event.js.html#sunlight-1-line-107">line 107</a>
+        <a href="event.js.html">main/event.js</a>, <a href="event.js.html#sunlight-1-line-114">line 114</a>
     </li></ul></dd>
     
 
@@ -599,6 +626,9 @@
             
                 
 <span class="param-type"><a href="global.html#Element">Element</a></span>
+|
+
+<span class="param-type">window</span>
 
 
             
@@ -681,7 +711,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="event.js.html">main/event.js</a>, <a href="event.js.html#sunlight-1-line-720">line 720</a>
+        <a href="event.js.html">main/event.js</a>, <a href="event.js.html#sunlight-1-line-785">line 785</a>
     </li></ul></dd>
     
 
@@ -779,6 +809,9 @@
             
                 
 <span class="param-type"><a href="global.html#Element">Element</a></span>
+|
+
+<span class="param-type">window</span>
 
 
             
@@ -861,7 +894,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="event.js.html">main/event.js</a>, <a href="event.js.html#sunlight-1-line-189">line 189</a>
+        <a href="event.js.html">main/event.js</a>, <a href="event.js.html#sunlight-1-line-222">line 222</a>
     </li></ul></dd>
     
 
@@ -908,7 +941,7 @@
         
             
 <dt>
-    <h4 class="name" id="cloneHandlers"><span class="type-signature">&lt;static> </span>cloneHandlers<span class="signature">(ele, handlerEve)</span><span class="type-signature"> &rarr; {this}</span></h4>
+    <h4 class="name" id="cloneHandlers"><span class="type-signature">&lt;static> </span>cloneHandlers<span class="signature">(tarEle, srcEle)</span><span class="type-signature"> &rarr; {this}</span></h4>
     
     
 </dt>
@@ -917,6 +950,7 @@
     
     <div class="description">
         Clone the current element`s handler to another element.
+<br /> Wraning: ele will clear handlers.
     </div>
     
 
@@ -950,13 +984,16 @@
 
         <tr>
             
-                <td class="name"><code>ele</code></td>
+                <td class="name"><code>tarEle</code></td>
             
 
             <td class="type">
             
                 
 <span class="param-type"><a href="global.html#Element">Element</a></span>
+|
+
+<span class="param-type">window</span>
 
 
             
@@ -966,20 +1003,23 @@
 
             
 
-            <td class="description last"></td>
+            <td class="description last">Target Element</td>
         </tr>
 
 	
 
         <tr>
             
-                <td class="name"><code>handlerEve</code></td>
+                <td class="name"><code>srcEle</code></td>
             
 
             <td class="type">
             
                 
 <span class="param-type"><a href="global.html#Element">Element</a></span>
+|
+
+<span class="param-type">window</span>
 
 
             
@@ -989,7 +1029,7 @@
 
             
 
-            <td class="description last"></td>
+            <td class="description last">Source Element.</td>
         </tr>
 
 	
@@ -1021,7 +1061,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="event.js.html">main/event.js</a>, <a href="event.js.html#sunlight-1-line-229">line 229</a>
+        <a href="event.js.html">main/event.js</a>, <a href="event.js.html#sunlight-1-line-266">line 266</a>
     </li></ul></dd>
     
 
@@ -1109,7 +1149,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="event.js.html">main/event.js</a>, <a href="event.js.html#sunlight-1-line-589">line 589</a>
+        <a href="event.js.html">main/event.js</a>, <a href="event.js.html#sunlight-1-line-634">line 634</a>
     </li></ul></dd>
     
 
@@ -1142,6 +1182,195 @@
 	<dd>
 		
 <span class="param-type">this</span>
+
+
+	</dd>
+</dl>
+
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="getHandlers"><span class="type-signature">&lt;static> </span>getHandlers<span class="signature">(ele, <span class="optional">type</span>)</span><span class="type-signature"> &rarr; {Array|Object|null}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Return handlers.
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+
+		<th>Type</th>
+
+		
+		<th>Argument</th>
+		
+
+		
+
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+
+	<tbody>
+	
+
+        <tr>
+            
+                <td class="name"><code>ele</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="global.html#Element">Element</a></span>
+|
+
+<span class="param-type">window</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>type</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">If type is null then return whole handlers object.</td>
+        </tr>
+
+	
+	</tbody>
+</table>
+
+    
+    
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="event.js.html">main/event.js</a>, <a href="event.js.html#sunlight-1-line-307">line 307</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">Array</span>
+|
+
+<span class="param-type">Object</span>
+|
+
+<span class="param-type">null</span>
 
 
 	</dd>
@@ -1205,6 +1434,9 @@
             
                 
 <span class="param-type"><a href="global.html#Element">Element</a></span>
+|
+
+<span class="param-type">window</span>
 
 
             
@@ -1292,7 +1524,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="event.js.html">main/event.js</a>, <a href="event.js.html#sunlight-1-line-256">line 256</a>
+        <a href="event.js.html">main/event.js</a>, <a href="event.js.html#sunlight-1-line-292">line 292</a>
     </li></ul></dd>
     
 
@@ -1388,6 +1620,9 @@
             
                 
 <span class="param-type"><a href="global.html#Element">Element</a></span>
+|
+
+<span class="param-type">window</span>
 
 
             
@@ -1471,7 +1706,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="event.js.html">main/event.js</a>, <a href="event.js.html#sunlight-1-line-711">line 711</a>
+        <a href="event.js.html">main/event.js</a>, <a href="event.js.html#sunlight-1-line-776">line 776</a>
     </li></ul></dd>
     
 
@@ -1563,6 +1798,9 @@
             
                 
 <span class="param-type"><a href="global.html#Element">Element</a></span>
+|
+
+<span class="param-type">window</span>
 
 
             
@@ -1646,7 +1884,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="event.js.html">main/event.js</a>, <a href="event.js.html#sunlight-1-line-701">line 701</a>
+        <a href="event.js.html">main/event.js</a>, <a href="event.js.html#sunlight-1-line-766">line 766</a>
     </li></ul></dd>
     
 
@@ -1743,6 +1981,9 @@
             
                 
 <span class="param-type"><a href="global.html#Element">Element</a></span>
+|
+
+<span class="param-type">window</span>
 
 
             
@@ -1830,7 +2071,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="event.js.html">main/event.js</a>, <a href="event.js.html#sunlight-1-line-135">line 135</a>
+        <a href="event.js.html">main/event.js</a>, <a href="event.js.html#sunlight-1-line-142">line 142</a>
     </li></ul></dd>
     
 
@@ -1926,6 +2167,9 @@
             
                 
 <span class="param-type"><a href="global.html#Element">Element</a></span>
+|
+
+<span class="param-type">window</span>
 
 
             
@@ -2013,7 +2257,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="event.js.html">main/event.js</a>, <a href="event.js.html#sunlight-1-line-162">line 162</a>
+        <a href="event.js.html">main/event.js</a>, <a href="event.js.html#sunlight-1-line-191">line 191</a>
     </li></ul></dd>
     
 
@@ -2111,6 +2355,9 @@
             
                 
 <span class="param-type"><a href="global.html#Element">Element</a></span>
+|
+
+<span class="param-type">window</span>
 
 
             
@@ -2193,7 +2440,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="event.js.html">main/event.js</a>, <a href="event.js.html#sunlight-1-line-620">line 620</a>
+        <a href="event.js.html">main/event.js</a>, <a href="event.js.html#sunlight-1-line-685">line 685</a>
     </li></ul></dd>
     
 
@@ -2238,11 +2485,105 @@
         <h5>Example</h5>
         
     <pre class="sunlight-highlight-javascript">var test1 = $("#a")[0];
-event.toggle( test1, function() {
-  alert(1)
+event.toggle(test1, function() {
+  alert(1);
 }, function() {
-  alert(2)
+  alert(2);
 });</pre>
+
+
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="toggle"><span class="type-signature">&lt;static> </span>toggle<span class="signature">()</span><span class="type-signature"> &rarr; {this}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Remove toggle event.
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="event.js.html">main/event.js</a>, <a href="event.js.html#sunlight-1-line-662">line 662</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">this</span>
+
+
+	</dd>
+</dl>
+
+
+        
+    
+    
+        <h5>Example</h5>
+        
+    <pre class="sunlight-highlight-javascript">$("#a").toggle();</pre>
 
 
     
@@ -2302,6 +2643,9 @@ event.toggle( test1, function() {
             
                 
 <span class="param-type"><a href="global.html#Element">Element</a></span>
+|
+
+<span class="param-type">window</span>
 
 
             
@@ -2414,7 +2758,7 @@ event.toggle( test1, function() {
 
             
 
-            <td class="description last"></td>
+            <td class="description last">If you trigger a document event, the parameter must be a {}.</td>
         </tr>
 
 	
@@ -2446,7 +2790,7 @@ event.toggle( test1, function() {
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="event.js.html">main/event.js</a>, <a href="event.js.html#sunlight-1-line-677">line 677</a>
+        <a href="event.js.html">main/event.js</a>, <a href="event.js.html#sunlight-1-line-742">line 742</a>
     </li></ul></dd>
     
 

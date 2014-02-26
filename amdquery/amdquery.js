@@ -180,6 +180,8 @@
 	 * @property {boolean} config.ui.isTransform3d             - Whether to use transform3d.
 	 *
 	 * @property {object}  config.module                       - The module Configuration.
+	 * @property {object}  config.module.testLogByHTML         - Whether log by HTML when do test.
+	 * @property {object}  config.module.compatibleEvent       - Whether compatible event, for example: e.srcElement || e.target.
 	 *
 	 * @property {object}  config.app                          - The application Configuration.
 	 * @property {string}  config.app.src                      - A js file src, main of application.
@@ -211,7 +213,8 @@
 			isTransform3d: true
 		},
 		module: {
-
+			testLogByHTML: false,
+			compatibleEvent: false
 		},
 		app: {
 			src: "",
@@ -287,6 +290,19 @@
 		} else return new $( elem, tagName, parent );
 	},
 		$ = aQuery;
+
+	var emptyFn = function() {}, error, logger, info, debug;
+	if ( window.console && console.log.bind ) {
+		logger = console.log.bind( console );
+		error = console.error.bind( console );
+		info = console.info.bind( console );
+		debug = console.debug.bind( console );
+	} else {
+		logger = emptyFn;
+		error = emptyFn;
+		info = emptyFn;
+		debug = emptyFn;
+	}
 
 	/**
 	 * @callback EachCallback
@@ -408,8 +424,26 @@
 				return fun.apply( context || window, arguments );
 			};
 		},
-		/** wrap console.log. */
-		logger: ( window.console ? ( console.log.bind ? console.log.bind( console ) : console.log ) : function() {} ),
+		/** wrap console.log if exists.
+		 * @method logger
+		 * @param {...String}
+		 */
+		logger: logger,
+		/** wrap console.debug if exists.
+		 * @method debug
+		 * @param {...String}
+		 */
+		debug: debug,
+		/** wrap console.info if exists.
+		 * @method info
+		 * @param {...String}
+		 */
+		info: info,
+		/** wrap console.error if exists.
+		 * @method error
+		 * @param {...String}
+		 */
+		error: error,
 		/** Create a elemnt by tag name.
 		 * @param {String}
 		 * @returns {Element}
@@ -523,6 +557,34 @@
 				name = name.replace( /([A-Z]|^ms)/g, "-$1" ).toLowerCase();
 				head && ( name = head + "-" + name );
 				return name;
+			},
+			/**
+			 * Object A is equal to Object B.
+			 * @param {Object}
+			 * @param {Object}
+			 * @returns {Boolean}
+			 * @example
+			 * var a = { foo : { fu : "bar" } };
+			 * var b = { foo : { fu : "bar" } };
+			 * aQuery.util.isEqual(a, b) //return true
+			 */
+			isEqual: function( objA, objB ) {
+				if ( objA === objB )
+					return true;
+				if ( objA.constructor !== objB.constructor )
+					return false;
+				var aMemberCount = 0;
+				for ( var a in objA ) {
+					if ( !objA.hasOwnProperty( a ) )
+						continue;
+					if ( typeof objA[ a ] === 'object' && typeof objB[ a ] === 'object' ? !$.util.isEqual( objA[ a ], objB[ a ] ) : objA[ a ] !== objB[ a ] )
+						return false;
+					++aMemberCount;
+				}
+				for ( var a in objB )
+					if ( objB.hasOwnProperty( a ) )
+					--aMemberCount;
+				return aMemberCount ? false : true;
 			},
 			removeSuffix: util.removeSuffix,
 			version: version

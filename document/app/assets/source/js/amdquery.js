@@ -181,6 +181,8 @@
 	 * @property {boolean} config.ui.isTransform3d             - Whether to use transform3d.
 	 *
 	 * @property {object}  config.module                       - The module Configuration.
+	 * @property {object}  config.module.testLogByHTML         - Whether log by HTML when do test.
+	 * @property {object}  config.module.compatibleEvent       - Whether compatible event, for example: e.srcElement || e.target.
 	 *
 	 * @property {object}  config.app                          - The application Configuration.
 	 * @property {string}  config.app.src                      - A js file src, main of application.
@@ -212,7 +214,8 @@
 			isTransform3d: true
 		},
 		module: {
-
+			testLogByHTML: false,
+			compatibleEvent: false
 		},
 		app: {
 			src: "",
@@ -288,6 +291,19 @@
 		} else return new $( elem, tagName, parent );
 	},
 		$ = aQuery;
+
+	var emptyFn = function() {}, error, logger, info, debug;
+	if ( window.console && console.log.bind ) {
+		logger = console.log.bind( console );
+		error = console.error.bind( console );
+		info = console.info.bind( console );
+		debug = console.debug.bind( console );
+	} else {
+		logger = emptyFn;
+		error = emptyFn;
+		info = emptyFn;
+		debug = emptyFn;
+	}
 
 	/**
 	 * @callback EachCallback
@@ -409,8 +425,26 @@
 				return fun.apply( context || window, arguments );
 			};
 		},
-		/** wrap console.log. */
-		logger: ( window.console ? ( console.log.bind ? console.log.bind( console ) : console.log ) : function() {} ),
+		/** wrap console.log if exists.
+		 * @method logger
+		 * @param {...String}
+		 */
+		logger: logger,
+		/** wrap console.debug if exists.
+		 * @method debug
+		 * @param {...String}
+		 */
+		debug: debug,
+		/** wrap console.info if exists.
+		 * @method info
+		 * @param {...String}
+		 */
+		info: info,
+		/** wrap console.error if exists.
+		 * @method error
+		 * @param {...String}
+		 */
+		error: error,
 		/** Create a elemnt by tag name.
 		 * @param {String}
 		 * @returns {Element}
@@ -524,6 +558,34 @@
 				name = name.replace( /([A-Z]|^ms)/g, "-$1" ).toLowerCase();
 				head && ( name = head + "-" + name );
 				return name;
+			},
+			/**
+			 * Object A is equal to Object B.
+			 * @param {Object}
+			 * @param {Object}
+			 * @returns {Boolean}
+			 * @example
+			 * var a = { foo : { fu : "bar" } };
+			 * var b = { foo : { fu : "bar" } };
+			 * aQuery.util.isEqual(a, b) //return true
+			 */
+			isEqual: function( objA, objB ) {
+				if ( objA === objB )
+					return true;
+				if ( objA.constructor !== objB.constructor )
+					return false;
+				var aMemberCount = 0;
+				for ( var a in objA ) {
+					if ( !objA.hasOwnProperty( a ) )
+						continue;
+					if ( typeof objA[ a ] === 'object' && typeof objB[ a ] === 'object' ? !$.util.isEqual( objA[ a ], objB[ a ] ) : objA[ a ] !== objB[ a ] )
+						return false;
+					++aMemberCount;
+				}
+				for ( var a in objB )
+					if ( objB.hasOwnProperty( a ) )
+					--aMemberCount;
+				return aMemberCount ? false : true;
 			},
 			removeSuffix: util.removeSuffix,
 			version: version
@@ -6388,10 +6450,10 @@ if ( typeof define === "function" && define.amd ) {
 		 * Get element by ID.
 		 * @param {String}
 		 * @param {Element} [context=DOMElement]
-		 * @returns {Array<Element>} - Just one length or empty array.
+		 * @returns {Element}
 		 */
 		getEleById: function( ID, context ) {
-			return $.expr.find[ "ID" ]( ID, context || document );
+			return $.expr.find[ "ID" ]( ID, context || document )[0];
 		},
 		/**
 		 * Get elements of array by tag name.
@@ -6960,6 +7022,7 @@ if ( typeof define === "function" && define.amd ) {
 	this.describe( "A custom event" );
 	/**
 	 * Be defined by object.extend.
+   * Each function can not repeat to add into CustomEvent.
 	 * @constructor
 	 * @exports main/CustomEvent
 	 * @requires module:main/object
@@ -6969,13 +7032,12 @@ if ( typeof define === "function" && define.amd ) {
 		constructor: CustomEvent,
 		/** @constructs module:main/CustomEvent */
 		init: function() {
-			this.handlers = {};
-			this._handlerMap = {};
+			this.__handlers = {};
 			return this;
 		},
 		/**
 		 * Add a handler.
-		 * @param {String}
+		 * @param {String} - "mousedown" or "mousedown mouseup"
 		 * @param {Function}
 		 * @returns {this}
 		 */
@@ -6984,21 +7046,33 @@ if ( typeof define === "function" && define.amd ) {
 		},
 		/**
 		 * Add a handler once.
-		 * @param {String}
+		 * @param {String} - "mousedown" or "mousedown mouseup"
 		 * @param {Function}
+		 * @param {Function} - Inner.
 		 * @returns {this}
 		 */
-		once: function( type, handler ) {
+		once: function( type, handler, proxy ) {
 			var self = this,
-				handlerproxy = function() {
-					self.off( type, handlerproxy );
-					handler.apply( this, arguments );
-				};
-			return this.on( type, handlerproxy );
+				proxyName = this._getOnceProxyName( type );
+			if ( handler[ proxyName ] ) {
+				return this;
+			}
+			handler[ proxyName ] = function() {
+				self.off( type, handler );
+				delete handler[ proxyName ];
+				handler.apply( this, arguments );
+				handler = null;
+				proxy && proxy();
+				proxy = null;
+			};
+			return this.on( type, handler );
+		},
+		_getOnceProxyName: function( name ) {
+			return "__" + name + "proxy";
 		},
 		/**
 		 * Add a handler.
-		 * @param {String}
+		 * @param {String} - "mousedown" or "mousedown mouseup"
 		 * @param {Function}
 		 * @returns {this}
 		 */
@@ -7011,13 +7085,18 @@ if ( typeof define === "function" && define.amd ) {
 			return this;
 		},
 		_addHandler: function( type, handler ) {
-			var handlers = this._nameSpace( type );
-			this.hasHandler( type, handler, handlers ) == -1 && handlers.push( handler );
+			var handlers = this.__handlers[ type ];
+			if ( !handlers ) {
+				this.__handlers[ type ] = handlers = [];
+			}
+			if ( this.hasHandler( type, handler, handlers ) == -1 ) {
+				handlers.push( handler );
+			}
 			return this;
 		},
 		/**
 		 * Clear handlers.
-		 * @param {String} [type] - If type is undefined, then clear all handler
+		 * @param {String} [type] - If type is undefined, then clear all handler. If string can be used like "mousedown" or "mousedown mouseup".
 		 * @returns {this}
 		 */
 		clear: function( type ) {
@@ -7025,7 +7104,7 @@ if ( typeof define === "function" && define.amd ) {
 		},
 		/**
 		 * Clear handlers.
-		 * @param {String} [type] - If type is undefined, then clear all handler
+		 * @param {String} [type] - If type is undefined, then clear all handler. If string can be used like "mousedown" or "mousedown mouseup".
 		 * @returns {this}
 		 */
 		clearHandlers: function( type ) {
@@ -7035,14 +7114,20 @@ if ( typeof define === "function" && define.amd ) {
 					item;
 				for ( ; i >= 0; i-- ) {
 					item = types[ i ];
-					this._nameSpace( item, true );
-					delete this._handlerMap[ item ];
-					delete this.handlers[ item ];
+					delete this.__handlers[ item ];
 				}
 			} else {
-				this.handlers = {};
+				this.__handlers = {};
 			}
 			return this;
+		},
+		/**
+		 * Return handlers.
+		 * @param {String=} - If type is null then return whole handlers object.
+		 * @returns {Array|Object}
+		 */
+		getHandlers: function( type ) {
+			return type ? this.__handlers[ type ] || [] : this.__handlers;
 		},
 		/**
 		 * Return index of handlers array. -1 means not found.
@@ -7052,7 +7137,7 @@ if ( typeof define === "function" && define.amd ) {
 		 * @returns {Number}
 		 */
 		hasHandler: function( type, handler, handlers ) {
-			handlers = handlers || this._nameSpace( type );
+			handlers = handlers || this.getHandlers( type );
 			var i = 0,
 				j = -1,
 				len;
@@ -7067,17 +7152,44 @@ if ( typeof define === "function" && define.amd ) {
 			return j;
 		},
 		/**
+		 * There are not any event then return true.
+		 * @returns {Boolean}
+		 */
+		isEmpty: function() {
+			for ( var i in this.__handlers ) {
+				return false;
+			}
+			return true;
+		},
+		/**
 		 * Trigger an event.
-		 * @param {String}
+		 * @param {String} - "mousedown" or "mousedown mouseup"
 		 * @param {Context}
 		 * @param {...*} [args]
 		 * @returns {this}
 		 */
 		trigger: function( type, target, args ) {
-			var handlers = this._nameSpace( type );
+			var types = type.split( " " ),
+				i = 0,
+				len = types.length;
+			for ( ; i < len; i++ ) {
+				this._trigger( types[ i ], target, args );
+			}
+			return this;
+		},
+		_trigger: function( type, target ) {
+			var handlers = this.getHandlers( type ),
+				onceProxyName = this._getOnceProxyName( type );
 			if ( handlers instanceof Array && handlers.length ) {
-				for ( var i = 0, len = handlers.length, arg = $.util.argToArray( arguments, 2 ); i < len; i++ )
-					handlers[ i ].apply( target, arg );
+				for ( var i = 0, len = handlers.length, arg = $.util.argToArray( arguments, 2 ), handler; i < len; i++ ) {
+					handler = handlers[ i ];
+
+					if ( handler[ onceProxyName ] ) {
+						handler = handler[ onceProxyName ];
+					}
+
+					handler.apply( target, arg );
+				}
 			}
 			return this;
 		},
@@ -7092,7 +7204,7 @@ if ( typeof define === "function" && define.amd ) {
 		},
 		/**
 		 * Remove handler.
-		 * @param {String}
+		 * @param {String} - "mousedown" or "mousedown mouseup"
 		 * @param {Function}
 		 * @returns {this}
 		 */
@@ -7109,55 +7221,27 @@ if ( typeof define === "function" && define.amd ) {
 			var customEvent = new CustomEvent(),
 				name, list, i, len;
 
-			for ( name in this._handlerMap ) {
-				list = this._handlerMap[ name ];
+			for ( name in this.getHandlers() ) {
+				list = this.getHandlers( name );
 				len = list.length;
-				if ( len > 0 ) {
-					for ( i = 0; i < len; i++ ) {
-						customEvent.on( name, list[ i ] );
-					}
-				} else {
-					customEvent._nameSpace( name );
+				for ( i = 0; i < len; i++ ) {
+					customEvent.on( name, list[ i ] );
 				}
 			}
 
 			return customEvent;
 		},
 		_removeHandler: function( type, handler ) {
-			var handlers = this._nameSpace( type ),
+			var handlers = this.getHandlers( type ),
 				i = this.hasHandler( type, handler, handlers );
 			if ( i > -1 ) {
 				handlers.splice( i, 1 );
 			}
+			if ( handlers.length === 0 ) {
+				delete this.__handlers[ type ];
+			}
 			return this;
 		},
-		_nameSpace: function( type, re ) {
-			var nameList = type.split( "." ),
-				result = this._initSpace( nameList, this.handlers, re );
-			//, i = 0, nameSpace, name, result;
-			//nameList.length > 2 && tools.error({ fn: "CustomEvent._nameSpace", msg: "nameSpace is too long" });
-
-			this._handlerMap[ type ] || ( this._handlerMap[ type ] = result );
-			return result;
-		},
-		_initSpace: function( nameList, nameSpace, re ) {
-			var name = nameList[ 0 ],
-				result;
-			//name = nameList[1];
-			if ( nameSpace ) {
-				result = nameSpace[ name ];
-				if ( !result || re ) {
-					nameSpace[ name ] = {};
-				}
-				nameSpace = nameSpace[ name ];
-				if ( !nameSpace[ "__" + name ] ) {
-					nameSpace[ "__" + name ] = [];
-				}
-				result = nameSpace[ "__" + name ];
-			}
-			nameList.splice( 0, 1 );
-			return nameList.length ? this._initSpace( nameList, nameSpace, re ) : result;
-		}
 	} );
 
 	return CustomEvent;
@@ -7219,9 +7303,9 @@ if ( typeof define === "function" && define.amd ) {
 			 * @returns {Function}
 			 */
 			proxy: function( fn ) {
-				if ( !fn.__guid ) {
+				if ( !fn.__proxy ) {
 					var temp;
-					fn.__guid = function( e ) {
+					fn.__proxy = function( e ) {
 						var evt = event.document.getEvent( e ),
 							target = this;
 
@@ -7236,18 +7320,25 @@ if ( typeof define === "function" && define.amd ) {
 
 						fn.call( target, evt || {} );
 					};
+					fn.__proxy.count = 1;
+				} else {
+					fn.__proxy.count++;
 				}
-				return fn.__guid;
+				return fn.__proxy;
+			},
+			/**
+			 * @inner
+			 * Destroy proxy.
+			 * @param {Function}
+			 */
+			destroyProxy: function( fn ) {
+				if ( fn.__proxy && --fn.__proxy.count === 0 ) {
+					delete fn.__proxy;
+				}
 			}
 		},
-		_initCustomEvent = function( ele, type ) {
-			var data;
-			if ( !( data = utilData.get( ele, type ) ) ) {
-				data = new CustomEvent();
-				utilData.set( ele, type, data );
-			}
-			return data;
-		},
+		_handlersKey = "__handlersKey",
+		_toggleKey = "__toggleKey",
 		i = 0,
 		len;
 
@@ -7267,69 +7358,92 @@ if ( typeof define === "function" && define.amd ) {
 	var event = {
 		/**
 		 * Add an event Handler to element.
-		 * @param {Element}
+		 * @param {Element|window}
 		 * @param {String} - "click", "swap.down"
 		 * @param {Function}
 		 * @returns {this}
 		 */
 		addHandler: function( ele, type, fn ) {
 			if ( typed.isEle( ele ) || typed.isWindow( ele ) ) {
-				var data, proxy, item, types = type.split( " " ),
+				var customEvent, proxy, item, types = type.split( " " ),
 					i = types.length - 1;
 
-				data = _initCustomEvent( ele, "_handlers_" );
-				proxy = eventHooks.proxy( fn, this );
+				customEvent = event._initHandler( ele );
 
 				for ( ; i >= 0; i-- ) {
 					item = types[ i ];
-					if ( data.hasHandler( item, fn ) == -1 && domEventList[ item ] ) {
+					if ( customEvent.hasHandler( item, fn ) == -1 && domEventList[ item ] ) {
 						item = eventHooks.type( item );
+						proxy = eventHooks.proxy( fn, this );
 						event.document._addHandler( ele, item, proxy );
 					}
 				}
 
-				type && fn && data.addHandler( type, fn );
+				type && fn && customEvent.addHandler( type, fn );
 			}
 			return this;
 		},
 		/**
 		 * Add a event Handler to element and do once.
 		 * <br /> It will remove handler after done.
-		 * @param {Element}
+		 * @param {Element|window}
 		 * @param {String} - "click", "swap.down"
 		 * @param {Function}
 		 * @returns {this}
 		 */
 		once: function( ele, type, fn ) {
-			if ( typed.isEle( ele ) || typed.isWindow( ele ) ) {
-				var data, proxy, item, types = type.split( " " ),
-					i = types.length - 1;
-
-				data = _initCustomEvent( ele, "_handlers_" );
-				proxy = eventHooks.proxy( fn, this );
+			if ( ( typed.isEle( ele ) || typed.isWindow( ele ) ) ) {
+				var customEvent = event._initHandler( ele ),
+					types = type.split( " " ),
+					i = types.length - 1,
+					item;
 
 				for ( ; i >= 0; i-- ) {
 					item = types[ i ];
-					if ( data.hasHandler( item, fn ) == -1 && domEventList[ item ] ) {
-						item = eventHooks.type( item );
-						event.document.once( ele, item, proxy );
+					if ( customEvent.hasHandler( item, fn ) == -1 ) {
+						this._once( ele, item, fn );
 					}
 				}
 
-				type && fn && data.once( type, proxy );
 			}
 			return this;
 		},
+		_once: function( ele, type, fn ) {
+			var customEvent = event._initHandler( ele ),
+				proxy = function() {
+					if ( domEventList[ type ] ) {
+						var todo = eventHooks.proxy( fn, event );
+						var typeHook = eventHooks.type( type );
+						todo.apply( this, arguments );
+						eventHooks.destroyProxy( fn );
+						event.document.removeHandler( ele, typeHook, proxy );
+						customEvent.removeHandler( type, fn );
+						event._destroyHandler( ele );
+						proxy = null;
+					}
+				};
+
+			if ( domEventList[ type ] ) {
+				var typeHook = eventHooks.type( type );
+				event.document.addHandler( ele, typeHook, proxy );
+				customEvent.addHandler( type, fn );
+			} else {
+				customEvent.once( type, fn, function() {
+					event._destroyHandler( ele );
+				} );
+			}
+		},
 		/**
 		 * Remove an event Handler from element.
-		 * @param {Element}
+		 * @param {Element|window}
 		 * @param {String} - "click", "swap.down"
 		 * @param {Function}
 		 * @returns {this}
 		 */
 		removeHandler: function( ele, type, fn ) {
 			if ( typed.isEle( ele ) || typed.isWindow( ele ) ) {
-				var data, proxy = fn.__guid || fn,
+				var customEvent = utilData.get( ele, _handlersKey ),
+					proxy = fn.__proxy || fn,
 					types = type.split( " " ),
 					i = types.length - 1,
 					item;
@@ -7338,33 +7452,36 @@ if ( typeof define === "function" && define.amd ) {
 					item = types[ i ];
 					if ( domEventList[ item ] ) {
 						item = eventHooks.type( item );
+						eventHooks.destroyProxy( fn );
 						event.document._removeHandler( ele, item, proxy );
 					}
 				}
 
-				data = _initCustomEvent( ele, "_handlers_" );
-				type && fn && data.removeHandler( type, fn );
+				if ( customEvent && type && fn ) {
+					customEvent.removeHandler( type, fn );
+					event._destroyHandler( ele );
+				}
 
 			}
 			return this;
 		},
 		/**
 		 * Remove all event Handler from element.
-		 * @param {Element}
+		 * @param {Element|window}
 		 * @param {String} [type] - If type is undefined then clear all handlers.
 		 * @returns {this}
 		 */
 		clearHandlers: function( ele, type ) {
 			if ( typed.isEle( ele ) || typed.isWindow( ele ) ) {
-				var data = utilData.get( ele, "_handlers_" );
-				if ( !data ) {
+				var customEvent = utilData.get( ele, _handlersKey );
+				if ( !customEvent ) {
 					return this;
 				}
-				var handlerMap = data._handlerMap,
+				var handlerMap = customEvent.getHandlers(),
 					map = {},
 					j = 0,
 					len = 0,
-					i, item, fun;
+					i, item, fn;
 
 				if ( type ) {
 					var types = type.split( " " ),
@@ -7375,62 +7492,79 @@ if ( typeof define === "function" && define.amd ) {
 							map[ item ] = 1;
 						}
 					}
+				} else {
+					map = handlerMap;
 				}
 
 				for ( i in map ) {
-					item = data._nameSpace( i );
+					item = customEvent.getHandlers( i );
 					for ( j = 0, len = item.length; j < len; j++ ) {
-						fun = item[ j ];
-						domEventList[ i ] && event.document._removeHandler( ele, i, fun.__guid || fun );
+						fn = item[ j ];
+						domEventList[ i ] && event.removeHandler( ele, i, fn );
 					}
 				}
-				data.clearHandlers( type );
+				customEvent.clearHandlers( type );
+				event._destroyHandler( ele );
 			}
 			return this;
 		},
 		/**
 		 * Clone the current element`s handler to another element.
-		 * @param {Element}
-		 * @param {Element}
+		 * <br /> Wraning: ele will clear handlers.
+		 * @param {Element|window} - Target Element
+		 * @param {Element|window} - Source Element.
 		 * @returns {this}
 		 */
-		cloneHandlers: function( ele, handlerEve ) {
-			var customEvent = utilData.get( handlerEve, "_handlers_" );
+		cloneHandlers: function( tarEle, srcEle ) {
+			var customEvent = utilData.get( srcEle, _handlersKey );
 			if ( customEvent ) {
-				var handlerMap = customEvent._handlerMap,
+				var handlerMap = customEvent.getHandlers(),
 					j = 0,
 					len = 0,
-					i, item, fun;
+					i, item, fn;
+				event.clearHandlers( tarEle );
 
 				for ( i in handlerMap ) {
-					item = customEvent._nameSpace( i );
+					item = customEvent.getHandlers( i );
 					for ( j = 0, len = item.length; j < len; j++ ) {
-						fun = item[ j ];
-						domEventList[ i ] && event.document._addHandler( ele, i, fun.__guid || fun );
+						fn = item[ j ];
+						event.addHandler( tarEle, i, fn );
 					}
 				}
-				event.clearHandlers( ele );
-				utilData.set( ele, "_handlers_", customEvent );
 			}
 			return this;
 		},
 		/**
 		 * Has the element an event handler.
-		 * @param {Element}
+		 * @param {Element|window}
 		 * @param {String}
 		 * @param {Function}
 		 * @returns {Number} fn - "-1" means has not.
 		 */
 		hasHandler: function( ele, type, fn ) {
 			if ( typed.isEle( ele ) || typed.isWindow( ele ) ) {
-				var proxy;
-				if ( domEventList[ type ] ) {
-					proxy = fn.__guid || fn;
-					type = eventHooks.type( type );
-					return event.document.hasHandler( ele, type, proxy );
+				var customEvent = utilData.get( ele, _handlersKey );
+				if ( customEvent ) {
+					return customEvent.hasHandler( type, fn );
 				}
 			}
 			return -1;
+		},
+		/**
+		 * Return handlers.
+		 * @param {Element|window}
+		 * @param {String=} - If type is null then return whole handlers object.
+		 * @returns {Array|Object|null}
+		 */
+		getHandlers: function( ele, type ) {
+			if ( typed.isEle( ele ) || typed.isWindow( ele ) ) {
+				var customEvent = utilData.get( ele, _handlersKey );
+				if ( customEvent ) {
+					var handlers = customEvent.getHandlers( type );
+					return handlers.length ? handlers : null;
+				}
+			}
+			return null;
 		},
 		/**
 		 * @namespace
@@ -7438,7 +7572,7 @@ if ( typeof define === "function" && define.amd ) {
 		document: {
 			/**
 			 * Add an event handler to element.
-			 * @param {Element}
+			 * @param {Element|window}
 			 * @param {String}
 			 * @param {Funtion}
 			 */
@@ -7459,7 +7593,7 @@ if ( typeof define === "function" && define.amd ) {
 			},
 			/**
 			 * Add a event Handler to element and do once.
-			 * @param {Element}
+			 * @param {Element|window}
 			 * @param {String}
 			 * @param {Funtion}
 			 */
@@ -7473,16 +7607,11 @@ if ( typeof define === "function" && define.amd ) {
 			},
 			/**
 			 * Remove an event Handler from element.
-			 * @param {Element}
+			 * @param {Element|window}
 			 * @param {String}
 			 * @param {Funtion}
 			 */
 			removeHandler: function( ele, type, fn ) {
-				/// <summary>给DOM元素移除事件</summary>
-				/// <param name="ele" type="Element">元素</param>
-				/// <param name="type" type="String">事件类型</param>
-				/// <param name="fn" type="Function">事件方法</param>
-				/// <returns type="null" />
 				var types = type.split( " " ),
 					i = types.length - 1;
 				for ( ; i >= 0; i-- ) {
@@ -7510,7 +7639,7 @@ if ( typeof define === "function" && define.amd ) {
 			},
 			/**
 			 * Dispatch an event.
-			 * @param {Element} - Dispatch an event from this element.
+			 * @param {Element|window} - Dispatch an event from this element.
 			 * @param {Event}
 			 * @param {String} - The type of event
 			 */
@@ -7540,7 +7669,7 @@ if ( typeof define === "function" && define.amd ) {
 			/**
 			 * Get event target.
 			 * @param {Event}
-			 * @returns {Element}
+			 * @returns {Element|window}
 			 */
 			getTarget: function( e ) {
 				return e.srcElement || e.target;
@@ -7575,7 +7704,7 @@ if ( typeof define === "function" && define.amd ) {
 				},
 				/**
 				 * Trigger Element keyboard event.
-				 * @param {Element}
+				 * @param {Element|window}
 				 * @param {String}
 				 * @param {Object}
 				 */
@@ -7627,7 +7756,7 @@ if ( typeof define === "function" && define.amd ) {
 				},
 				/**
 				 * Trigger Element mouse event.
-				 * @param {Element}
+				 * @param {Element|window}
 				 * @param {String}
 				 * @param {Object}
 				 */
@@ -7662,7 +7791,7 @@ if ( typeof define === "function" && define.amd ) {
 				},
 				/**
 				 * Trigger Element HTML event. Like: blur focus focusin focusout.
-				 * @param {Element}
+				 * @param {Element|window}
 				 * @param {String}
 				 * @param {Object}
 				 */
@@ -7732,7 +7861,7 @@ if ( typeof define === "function" && define.amd ) {
 			},
 			/**
 			 * Add an event handler to element.
-			 * @param {Element}
+			 * @param {Element|window}
 			 * @param {String}
 			 * @param {Funtion}
 			 */
@@ -7741,7 +7870,7 @@ if ( typeof define === "function" && define.amd ) {
 			},
 			/**
 			 * Remove an event handler from element.
-			 * @param {Element}
+			 * @param {Element|window}
 			 * @param {String}
 			 * @param {Funtion}
 			 */
@@ -7765,15 +7894,36 @@ if ( typeof define === "function" && define.amd ) {
 		},
 
 		_initHandler: function( ele ) {
-			var data = utilData.get( ele, "_handlers_" );
+			var data = utilData.get( ele, _handlersKey );
 			if ( !data ) {
 				data = new CustomEvent();
-				utilData.set( ele, "_handlers_", data );
+				utilData.set( ele, _handlersKey, data );
 			}
-			return this;
+			return data;
+		},
+		_destroyHandler: function( ele ) {
+			var data = utilData.get( ele, _handlersKey );
+			if ( data && data.isEmpty() ) {
+				utilData.removeData( ele, _handlersKey );
+				if ( !utilData.hasData( ele ) ) {
+					utilData.removeData( ele );
+				}
+			}
+			return data;
 		},
 		/**
+		 * Remove toggle event.
+		 * @variation 1
+		 * @memberOf module:main/event
+		 * @method toggle
+		 * @example
+		 * $("#a").toggle();
+		 * @returns {this}
+		 */
+
+		/**
 		 * Toggle event.
+		 * @variation
 		 * @example
 		 * var test1 = $("#a")[0];
 		 * event.toggle( test1, function() {
@@ -7781,7 +7931,7 @@ if ( typeof define === "function" && define.amd ) {
 		 * }, function() {
 		 *   alert(2)
 		 * });
-		 * @param {Element}
+		 * @param {Element|window}
 		 * @param {...Function} - Handelrs.
 		 * @returns {this}
 		 */
@@ -7790,32 +7940,32 @@ if ( typeof define === "function" && define.amd ) {
 				index = 0,
 				data;
 			if ( arg.length > 1 ) {
-				if ( data = utilData.get( ele, "_toggle_" ) ) {
+				if ( data = utilData.get( ele, _toggleKey ) ) {
 					arg = data.arg.concat( arg );
 					index = data.index;
 				}
 
-				utilData.set( ele, "_toggle_", {
+				utilData.set( ele, _toggleKey, {
 					index: index,
 					arg: arg
 				} );
 
 				event.addHandler( ele, "click", this._toggle );
 			} else {
+				utilData.removeData( ele, _toggleKey );
 				event.removeHandler( ele, "click", this._toggle );
-				event.removeData( ele, "_toggle_" );
 			}
 			return this;
 		},
 		_toggle: function( e ) {
 			var self = event.document.getTarget( e ),
-				data = utilData.get( self, "_toggle_" ),
+				data = utilData.get( self, _toggleKey ),
 				arg = data.arg,
 				len = arg.length,
 				index = data.index % len;
 
 			arg[ index ].call( self, e );
-			utilData.set( self, "_toggle_", {
+			utilData.set( self, _toggleKey, {
 				index: index + 1,
 				arg: arg
 			} );
@@ -7836,10 +7986,10 @@ if ( typeof define === "function" && define.amd ) {
 		 * test1.trigger("my.test1", {
 		 *   screenX: 5
 		 * });
-		 * @param {Element}
+		 * @param {Element|window}
 		 * @param {String}
 		 * @param {Object} - Function context.
-		 * @param {...Object}
+		 * @param {...Object} - If you trigger a document event, the parameter must be a {}.
 		 * @returns {this}
 		 */
 		trigger: function( ele, type, context, paras ) {
@@ -7847,9 +7997,9 @@ if ( typeof define === "function" && define.amd ) {
 				var data;
 				if ( data = domEventList[ type ] ) {
 					type = eventHooks.type( type );
-					typed.isFun( data ) ? data( ele, type, context ) : $.logger( "trigger", "triggering" + type + " is not supported" );
-				} else {
-					( data = utilData.get( ele, "_handlers_" ) ) && data.trigger.apply( data, [ type, context ].concat( $.util.argToArray( arguments, 3 ) ) );
+					typed.isFun( data ) ? data( ele, type, paras ) : $.logger( "trigger", "triggering" + type + " is not supported" );
+				} else if ( data = utilData.get( ele, _handlersKey ) ) {
+					data.trigger.apply( data, [ type, context ].concat( $.util.argToArray( arguments, 3 ) ) );
 				}
 			}
 			return this;
@@ -7861,7 +8011,7 @@ if ( typeof define === "function" && define.amd ) {
 		 * Alias addHandler.
 		 * @memberOf module:main/event
 		 * @method
-		 * @param {Element}
+		 * @param {Element|window}
 		 * @param {String} - "click", "swap.down"
 		 * @param {Function}
 		 * @returns {this}
@@ -7871,7 +8021,7 @@ if ( typeof define === "function" && define.amd ) {
 		 * Alias removeHandler.
 		 * @memberOf module:main/event
 		 * @method
-		 * @param {Element}
+		 * @param {Element|window}
 		 * @param {String} - "click", "swap.down"
 		 * @param {Function}
 		 * @returns {this}
@@ -7881,7 +8031,7 @@ if ( typeof define === "function" && define.amd ) {
 		 * Alias clearHandlers.
 		 * @memberOf module:main/event
 		 * @method
-		 * @param {Element}
+		 * @param {Element|window}
 		 * @param {String} [type] - If type is undefined then clear all handlers.
 		 * @returns {this}
 		 */
@@ -7930,7 +8080,7 @@ if ( typeof define === "function" && define.amd ) {
 		},
 		/**
 		 * Trigger an event to bus.
-		 * @param {Element}
+		 * @param {Element|window}
 		 * @param {String}
 		 * @param {Object} - Function context.
 		 * @param {...Object}
@@ -8117,7 +8267,7 @@ if ( typeof define === "function" && define.amd ) {
 		 * }, function() {
 		 *   alert(2)
 		 * });
-		 * @param {Element}
+		 * @param {Element|window}
 		 * @param {...Function} - Handelrs.
 		 * @returns {this}
 		 */
@@ -8139,7 +8289,7 @@ if ( typeof define === "function" && define.amd ) {
 		 * @param {...Object}
 		 * @returns {this}
 		 */
-		trigger: function( type, a, b, c ) {
+		trigger: function( type, context ) {
 			var arg = $.util.argToArray( arguments );
 			return this.each( function( ele ) {
 				event.trigger.apply( null, [ ele ].concat( arg ) );
@@ -8916,6 +9066,8 @@ if ( typeof define === "function" && define.amd ) {
 
 	Widget.initFirst = 2;
 
+	Widget.detectEventName = "widget.detect";
+
 	var booleanExtend = function( a, b ) {
 		for ( var i in b ) {
 			if ( b[ i ] === 0 || b[ i ] === false ) {
@@ -9082,6 +9234,12 @@ if ( typeof define === "function" && define.amd ) {
 		detect: function() {
 			return this;
 		},
+		layout: function() {
+			return this;
+		},
+		resize: function() {
+			return this;
+		},
 		container: null,
 		constructor: Widget,
 		destroy: function() {
@@ -9182,7 +9340,9 @@ if ( typeof define === "function" && define.amd ) {
 			beSetter: Widget.AllowReturn,
 			beGetter: Widget.AllowReturn,
 			render: Widget.AllowPublic,
-			detect: Widget.AllowPublic
+			detect: Widget.AllowPublic,
+			resize: Widget.AllowPublic,
+			layout: Widget.AllowPublic
 		},
 		getEventName: function( name ) {
 			return this.widgetEventPrefix + "." + name;
@@ -9501,7 +9661,7 @@ if ( typeof define === "function" && define.amd ) {
 			return this;
 		},
 		triggerDetectToParent: function( target ) {
-			var eventName = "widget.detect";
+			var eventName = Widget.detectEventName;
 			if ( target ) {
 				$( target ).parents().each( function( ele ) {
 					if ( Widget.hasWidget( ele ) ) {
@@ -9580,8 +9740,6 @@ if ( typeof define === "function" && define.amd ) {
 	// 		href: $.getPath( "ui/css/amdquery-widget", ".css" )
 	// 	} );
 	// }
-
-	$.Widget = Widget;
 
 	return Widget;
 } );
@@ -9800,7 +9958,6 @@ aQuery.define( "main/css", [ "base/typed", "base/extend", "base/array", "base/su
 		};
 
 	if ( window.getComputedStyle ) {
-		//quote from jquery1.9.0
 		getStyles = function( elem ) {
 			return window.getComputedStyle( elem, null );
 		};
@@ -9890,7 +10047,17 @@ aQuery.define( "main/css", [ "base/typed", "base/extend", "base/array", "base/su
 			return ret === "" ? "auto" : ret;
 		};
 	}
-
+	/**
+	 * @pubilc
+	 * @exports main/css
+	 * @requires module:base/typed
+	 * @requires module:base/extend
+	 * @requires module:base/array
+	 * @requires module:base/support
+	 * @requires module:base/client
+	 * @requires module:main/data
+	 * @requires module:main/query
+	 */
 	var css = {
 		css: function( ele, name, value, style, extra ) {
 			/// <summary>为元素添加样式</summary>
@@ -15266,125 +15433,6 @@ aQuery.define( "ui/button", [
 
 /*=======================================================*/
 
-/*===================html5/css3.position===========================*/
-aQuery.define( "html5/css3.position", [ "base/support", "main/position", "html5/css3" ], function( $, support, position, css3 ) {
-  "use strict";
-  this.describe( "Get positionX: left + translateX" );
-  var css3Position = {
-    getPositionX: function( ele ) {
-      var x = position.getOffsetL( ele );
-      if ( support.transform3d ) {
-        x += css3.getTransform3dByName( ele, "translateX", true );
-      }
-      return x;
-    },
-    setPositionX: function( ele, isTransform3d, x ) {
-      if ( isTransform3d && support.transform3d ) {
-        css3.setTranslate3d( ele, {
-          tx: x
-        } );
-      } else {
-        position.setOffsetL( ele, x );
-      }
-      return this;
-    },
-    getPositionY: function( ele ) {
-      var y = position.getOffsetT( ele );
-      if ( support.transform3d ) {
-        y += css3.getTransform3dByName( ele, "translateY", true );
-      }
-      return y;
-    },
-    setPositionY: function( ele, isTransform3d, y ) {
-      if ( isTransform3d && support.transform3d ) {
-        css3.setTranslate3d( ele, {
-          ty: y
-        } );
-      } else {
-        position.setOffsetT( ele, y );
-      }
-      return this;
-    },
-    getPositionXY: function( ele ) {
-      return {
-        x: this.getPositionX( ele ),
-        y: this.getPositionY( ele )
-      }
-    },
-    setPositionXY: function( ele, isTransform3d, pos ) {
-      if ( isTransform3d && support.transform3d ) {
-        var opt = {};
-        pos.x !== undefined && ( opt.tx = pos.x );
-        pos.y !== undefined && ( opt.ty = pos.y );
-        css3.setTranslate3d( ele, opt );
-      } else {
-        pos.x !== undefined && position.setOffsetL( ele, pos.x );
-        pos.y !== undefined && position.setOffsetT( ele, pos.y );
-      }
-      return this;
-    },
-    getLeftWithTranslate3d: function( ele ) {
-      var t = this.getPositionX( ele ) || 0,
-        cur = ele.offsetParent;
-      while ( cur != null ) {
-        t += this.getPositionX( cur );
-        cur = cur.offsetParent;
-      }
-      return t;
-    },
-    getTopWithTranslate3d: function( ele ) {
-      var t = this.getPositionY( ele ) || 0,
-        cur = ele.offsetParent;
-      while ( cur != null ) {
-        t += this.getPositionY( cur );
-        cur = cur.offsetParent;
-      }
-      return t;
-    }
-  };
-
-  $.extend( css3Position );
-
-  $.fn.extend( {
-    getPositionX: function( ) {
-      return css3Position.getPositionX( this[ 0 ] );
-    },
-    setPositionX: function( isTransform3d, x ) {
-      return this.each( function( ele ) {
-        css3Position.setPositionX( ele, isTransform3d, x );
-      } );
-    },
-    getPositionY: function( ) {
-      return css3Position.getPositionY( this[ 0 ] );
-    },
-    setPositionY: function( isTransform3d, y ) {
-      return this.each( function( ele ) {
-        css3Position.setPositionY( ele, isTransform3d, y );
-      } );
-    },
-    getPositionXY: function( ) {
-      return {
-        x: css3Position.getPositionX( this[ 0 ] ),
-        y: css3Position.getPositionY( this[ 0 ] )
-      }
-    },
-    setPositionXY: function( isTransform3d, pos ) {
-      return this.each( function( ele ) {
-        css3Position.setPositionXY( ele, isTransform3d, pos );
-      } );
-    },
-    getLeftWithTranslate3d: function( ) {
-      return css3Position.getLeftWithTranslate3d( this[ 0 ] );
-    },
-    getTopWithTranslate3d: function( ) {
-      return css3Position.getTopWithTranslate3d( this[ 0 ] )
-    }
-  } );
-
-} );
-
-/*=======================================================*/
-
 /*===================animation/tween.extend===========================*/
 ﻿aQuery.define( "animation/tween.extend", [ "base/extend", "animation/tween" ], function( $, utilExtend, tween, undefined ) {
 	"use strict";
@@ -15557,6 +15605,125 @@ aQuery.define( "html5/css3.position", [ "base/support", "main/position", "html5/
 
 /*=======================================================*/
 
+/*===================html5/css3.position===========================*/
+aQuery.define( "html5/css3.position", [ "base/support", "main/position", "html5/css3" ], function( $, support, position, css3 ) {
+  "use strict";
+  this.describe( "Get positionX: left + translateX" );
+  var css3Position = {
+    getPositionX: function( ele ) {
+      var x = position.getOffsetL( ele );
+      if ( support.transform3d ) {
+        x += css3.getTransform3dByName( ele, "translateX", true );
+      }
+      return x;
+    },
+    setPositionX: function( ele, isTransform3d, x ) {
+      if ( isTransform3d && support.transform3d ) {
+        css3.setTranslate3d( ele, {
+          tx: x
+        } );
+      } else {
+        position.setOffsetL( ele, x );
+      }
+      return this;
+    },
+    getPositionY: function( ele ) {
+      var y = position.getOffsetT( ele );
+      if ( support.transform3d ) {
+        y += css3.getTransform3dByName( ele, "translateY", true );
+      }
+      return y;
+    },
+    setPositionY: function( ele, isTransform3d, y ) {
+      if ( isTransform3d && support.transform3d ) {
+        css3.setTranslate3d( ele, {
+          ty: y
+        } );
+      } else {
+        position.setOffsetT( ele, y );
+      }
+      return this;
+    },
+    getPositionXY: function( ele ) {
+      return {
+        x: this.getPositionX( ele ),
+        y: this.getPositionY( ele )
+      }
+    },
+    setPositionXY: function( ele, isTransform3d, pos ) {
+      if ( isTransform3d && support.transform3d ) {
+        var opt = {};
+        pos.x !== undefined && ( opt.tx = pos.x );
+        pos.y !== undefined && ( opt.ty = pos.y );
+        css3.setTranslate3d( ele, opt );
+      } else {
+        pos.x !== undefined && position.setOffsetL( ele, pos.x );
+        pos.y !== undefined && position.setOffsetT( ele, pos.y );
+      }
+      return this;
+    },
+    getLeftWithTranslate3d: function( ele ) {
+      var t = this.getPositionX( ele ) || 0,
+        cur = ele.offsetParent;
+      while ( cur != null ) {
+        t += this.getPositionX( cur );
+        cur = cur.offsetParent;
+      }
+      return t;
+    },
+    getTopWithTranslate3d: function( ele ) {
+      var t = this.getPositionY( ele ) || 0,
+        cur = ele.offsetParent;
+      while ( cur != null ) {
+        t += this.getPositionY( cur );
+        cur = cur.offsetParent;
+      }
+      return t;
+    }
+  };
+
+  $.extend( css3Position );
+
+  $.fn.extend( {
+    getPositionX: function( ) {
+      return css3Position.getPositionX( this[ 0 ] );
+    },
+    setPositionX: function( isTransform3d, x ) {
+      return this.each( function( ele ) {
+        css3Position.setPositionX( ele, isTransform3d, x );
+      } );
+    },
+    getPositionY: function( ) {
+      return css3Position.getPositionY( this[ 0 ] );
+    },
+    setPositionY: function( isTransform3d, y ) {
+      return this.each( function( ele ) {
+        css3Position.setPositionY( ele, isTransform3d, y );
+      } );
+    },
+    getPositionXY: function( ) {
+      return {
+        x: css3Position.getPositionX( this[ 0 ] ),
+        y: css3Position.getPositionY( this[ 0 ] )
+      }
+    },
+    setPositionXY: function( isTransform3d, pos ) {
+      return this.each( function( ele ) {
+        css3Position.setPositionXY( ele, isTransform3d, pos );
+      } );
+    },
+    getLeftWithTranslate3d: function( ) {
+      return css3Position.getLeftWithTranslate3d( this[ 0 ] );
+    },
+    getTopWithTranslate3d: function( ) {
+      return css3Position.getTopWithTranslate3d( this[ 0 ] )
+    }
+  } );
+
+} );
+
+/*=======================================================*/
+
 /*===================ui/draggable===========================*/
 ﻿aQuery.define( "ui/draggable", [
   "base/config",
@@ -15566,14 +15733,15 @@ aQuery.define( "html5/css3.position", [ "base/support", "main/position", "html5/
   "main/css",
   "main/position",
   "main/dom",
+  "main/query",
   "animation/FX",
   "animation/animate",
+  "animation/tween.extend",
   "html5/animate.transform",
   "html5/css3.transition.animate",
   "html5/css3",
-  "html5/css3.position",
-  "main/query",
-  "animation/tween.extend" ], function( $,
+  "html5/css3.position"
+   ], function( $,
 	config,
 	support,
 	Widget,
@@ -15581,14 +15749,14 @@ aQuery.define( "html5/css3.position", [ "base/support", "main/position", "html5/
 	css,
 	position,
 	dom,
+	query,
 	FX,
 	animate,
+	tween,
 	animateTransform,
 	css3Transition,
-	cls3,
-	cl3Position,
-	query,
-	tween,
+	css3,
+	css3Position,
 	undefined ) {
 	"use strict";
 	var isTransform3d = !! config.ui.isTransform3d && support.transform3d;
@@ -16097,7 +16265,7 @@ aQuery.define( "ui/flex", [
 
 					this.flexEvent = function( e ) {
 						switch ( e.type ) {
-							case "widget.detect":
+							case Widget.changeEventName:
 								self.detect();
 								break;
 						}
@@ -16113,7 +16281,7 @@ aQuery.define( "ui/flex", [
 				enable: function() {
 					if ( !this.findParent() ) {
 						event.document.addHandler( window, "resize", this.resizeEvent );
-						this.target.on( "widget.detect", this.flexEvent );
+						this.target.on( Widget.detectEventName, this.flexEvent );
 					}
 					this.options.disabled = false;
 					return this;
@@ -16121,7 +16289,7 @@ aQuery.define( "ui/flex", [
 				disable: function() {
 					if ( !this.findParent() ) {
 						event.document.removeHandler( window, "resize", this.resizeEvent );
-						this.target.off( "widget.detect", this.flexEvent );
+						this.target.off( Widget.detectEventName, this.flexEvent );
 					}
 					this.options.disabled = true;
 					return this;
@@ -16997,9 +17165,7 @@ aQuery.define( "ui/navitem", [
 				if ( !this.hasChild() ) {
 					this.$arrow.removeClass( "arrowRight" ).removeClass( "arrowBottom" );
 				}
-				// if(client.browser.ie){
-				//     //this.$title.width(this.$arrow.width() + this.$img.width() + this.$text.width());
-				// }
+
 				return this;
 			},
 			toggle: function() {
@@ -18290,7 +18456,7 @@ aQuery.define( "ui/scrollableview", [
 
 			this.scrollableviewEvent = function( e ) {
 				switch ( e.type ) {
-					case "widget.detect":
+					case Widget.detectEventName:
 						self.detect();
 						break;
 					case "drag.move":
@@ -18343,8 +18509,7 @@ aQuery.define( "ui/scrollableview", [
 						x = null;
 						y = null;
 						clearTimeout( self.wheelTimeId );
-						//refreshContainerSize?
-						self.refreshPosition();
+						self.layout();
 						// var x = null,
 						// y = null;
 						if ( e.direction == "x" ) {
@@ -18362,7 +18527,7 @@ aQuery.define( "ui/scrollableview", [
 						event.document.preventDefault( e );
 						event.document.stopPropagation( e );
 
-						self.refreshPosition();
+						self.layout();
 
 						var $a = $( this ),
 							href = ( $a.attr( "href" ) || "" ).replace( window.location.href, "" ).replace( "#", "" );
@@ -18480,7 +18645,7 @@ aQuery.define( "ui/scrollableview", [
 
 				setTimeout( function() {
 					try {
-						self.refreshPosition();
+						self.layout();
 						self.target[ 0 ].focus();
 					} catch ( e ) {}
 				}, 0 );
@@ -18510,7 +18675,6 @@ aQuery.define( "ui/scrollableview", [
 			"firstToElement": Widget.initFirst
 		},
 		publics: {
-			"refreshPosition": Widget.AllowPublic,
 			"showStatusBar": Widget.AllowPublic,
 			"hideStatusBar": Widget.AllowPublic,
 			"render": Widget.AllowPublic,
@@ -18598,7 +18762,7 @@ aQuery.define( "ui/scrollableview", [
 		},
 
 		detect: function() {
-			this.refreshPosition().refreshContainerSize();
+			this.layout().resize();
 			return this;
 		},
 
@@ -18638,12 +18802,12 @@ aQuery.define( "ui/scrollableview", [
 
 			return this;
 		},
-		refreshContainerSize: function() {
+		resize: function() {
 			this.container.width( this.scrollWidth );
 			this.container.height( this.scrollHeight );
 			return this;
 		},
-		refreshPosition: function() {
+		layout: function() {
 			// add Math.max to fix ie7
 			var originViewportHeight = this.viewportHeight,
 				originViewportWidth = this.viewportWidth;
@@ -19060,8 +19224,6 @@ aQuery.define( "ui/swapindicator", [
 			render: Widget.AllowPublic,
 			orevious: Widget.AllowPublic,
 			next: Widget.AllowPublic,
-			resize: Widget.AllowPublic,
-			layout: Widget.AllowPublic,
 			append: Widget.AllowPublic,
 			remove: Widget.AllowPublic
 		},
@@ -19241,7 +19403,7 @@ aQuery.define( "ui/swapview", [
 
 			if ( this.$indicator ) this.$indicator.uiSwapindicator( "resize" );
 		},
-		toPosition: function() {
+		layout: function() {
 			var pos = {}, opt = this.options;
 			if ( opt.orientation == HORIZONTAL ) {
 				pos.x = -this.target.width() * opt.index;
@@ -19349,7 +19511,7 @@ aQuery.define( "ui/swapview", [
 
 			this.swapviewEvent = function( e ) {
 				switch ( e.type ) {
-					case "widget.detect":
+					case Widget.detectEventName:
 						self.detect();
 						self.$indicator && self.$indicator.uiSwapindicator( "detect" );
 						break;
@@ -19368,7 +19530,7 @@ aQuery.define( "ui/swapview", [
 						break;
 					case "flex.resize":
 						self.resize();
-						self.toPosition();
+						self.layout();
 						break;
 				}
 			};
@@ -19710,7 +19872,7 @@ aQuery.define( "ui/tabview", [
 					opt = this.options;
 				this.tabviewEvent = function( e ) {
 					switch ( e.type ) {
-						case "widget.detect":
+						case Widget.detectEventName:
 							self.detect();
 							self.$tabBar.uiTabbar( "detect" );
 							break;
@@ -19725,13 +19887,13 @@ aQuery.define( "ui/tabview", [
 			enable: function() {
 				this.disable();
 				this.$tabBar.on( "tabbar.click", this.tabviewEvent );
-				this.target.on( "widget.detect", this.tabviewEvent );
+				this.target.on( Widget.detectEventName, this.tabviewEvent );
 				this.options.disabled = false;
 				return this;
 			},
 			disable: function() {
 				this.$tabBar.off( "tabbar.click", this.tabviewEvent );
-				this.target.off( "widget.detect", this.tabviewEvent );
+				this.target.off( Widget.detectEventName, this.tabviewEvent );
 				this.options.disabled = true;
 				return this;
 			},

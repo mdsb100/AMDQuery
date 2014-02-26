@@ -151,6 +151,10 @@
 						</li>
 						
 						<li>
+							<a href="css.html">main/css</a>
+						</li>
+						
+						<li>
 							<a href="CustomEvent.html">main/CustomEvent</a>
 						</li>
 						
@@ -180,6 +184,10 @@
 						
 						<li>
 							<a href="location.html">module/location</a>
+						</li>
+						
+						<li>
+							<a href="Test_.html">module/Test</a>
 						</li>
 						
 
@@ -225,6 +233,10 @@
 					<ul class="dropdown-menu ">
 						
 						<li>
+							<a href="global.html#debug">debug</a>
+						</li>
+						
+						<li>
 							<a href="global.html#define">define</a>
 						</li>
 						
@@ -238,6 +250,18 @@
 						
 						<li>
 							<a href="global.html#define">define(3)</a>
+						</li>
+						
+						<li>
+							<a href="global.html#error">error</a>
+						</li>
+						
+						<li>
+							<a href="global.html#info">info</a>
+						</li>
+						
+						<li>
+							<a href="global.html#logger">logger</a>
 						</li>
 						
 						<li>
@@ -313,7 +337,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="CustomEvent.js.html">main/CustomEvent.js</a>, <a href="CustomEvent.js.html#sunlight-1-line-14">line 14</a>
+        <a href="CustomEvent.js.html">main/CustomEvent.js</a>, <a href="CustomEvent.js.html#sunlight-1-line-15">line 15</a>
     </li></ul></dd>
     
 
@@ -342,7 +366,8 @@
 
     
         
-            <div class="description">Be defined by object.extend.</div>
+            <div class="description">Be defined by object.extend.
+Each function can not repeat to add into CustomEvent.</div>
         
 
         
@@ -368,7 +393,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="CustomEvent.js.html">main/CustomEvent.js</a>, <a href="CustomEvent.js.html#sunlight-1-line-11">line 11</a>
+        <a href="CustomEvent.js.html">main/CustomEvent.js</a>, <a href="CustomEvent.js.html#sunlight-1-line-12">line 12</a>
     </li></ul></dd>
     
 
@@ -472,7 +497,7 @@
 
             
 
-            <td class="description last"></td>
+            <td class="description last">"mousedown" or "mousedown mouseup"</td>
         </tr>
 
 	
@@ -527,7 +552,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="CustomEvent.js.html">main/CustomEvent.js</a>, <a href="CustomEvent.js.html#sunlight-1-line-48">line 48</a>
+        <a href="CustomEvent.js.html">main/CustomEvent.js</a>, <a href="CustomEvent.js.html#sunlight-1-line-60">line 60</a>
     </li></ul></dd>
     
 
@@ -644,7 +669,7 @@
 
             
 
-            <td class="description last">If type is undefined, then clear all handler</td>
+            <td class="description last">If type is undefined, then clear all handler. If string can be used like "mousedown" or "mousedown mouseup".</td>
         </tr>
 
 	
@@ -676,7 +701,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="CustomEvent.js.html">main/CustomEvent.js</a>, <a href="CustomEvent.js.html#sunlight-1-line-66">line 66</a>
+        <a href="CustomEvent.js.html">main/CustomEvent.js</a>, <a href="CustomEvent.js.html#sunlight-1-line-83">line 83</a>
     </li></ul></dd>
     
 
@@ -793,7 +818,7 @@
 
             
 
-            <td class="description last">If type is undefined, then clear all handler</td>
+            <td class="description last">If type is undefined, then clear all handler. If string can be used like "mousedown" or "mousedown mouseup".</td>
         </tr>
 
 	
@@ -825,7 +850,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="CustomEvent.js.html">main/CustomEvent.js</a>, <a href="CustomEvent.js.html#sunlight-1-line-74">line 74</a>
+        <a href="CustomEvent.js.html">main/CustomEvent.js</a>, <a href="CustomEvent.js.html#sunlight-1-line-91">line 91</a>
     </li></ul></dd>
     
 
@@ -909,7 +934,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="CustomEvent.js.html">main/CustomEvent.js</a>, <a href="CustomEvent.js.html#sunlight-1-line-151">line 151</a>
+        <a href="CustomEvent.js.html">main/CustomEvent.js</a>, <a href="CustomEvent.js.html#sunlight-1-line-201">line 201</a>
     </li></ul></dd>
     
 
@@ -942,6 +967,158 @@
 	<dd>
 		
 <span class="param-type">CustomEvent</span>
+
+
+	</dd>
+</dl>
+
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="getHandlers"><span class="type-signature"></span>getHandlers<span class="signature">(<span class="optional">type</span>)</span><span class="type-signature"> &rarr; {Array|Object}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Return handlers.
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+
+		<th>Type</th>
+
+		
+		<th>Argument</th>
+		
+
+		
+
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+
+	<tbody>
+	
+
+        <tr>
+            
+                <td class="name"><code>type</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">If type is null then return whole handlers object.</td>
+        </tr>
+
+	
+	</tbody>
+</table>
+
+    
+    
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="CustomEvent.js.html">main/CustomEvent.js</a>, <a href="CustomEvent.js.html#sunlight-1-line-110">line 110</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">Array</span>
+|
+
+<span class="param-type">Object</span>
 
 
 	</dd>
@@ -1120,7 +1297,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="CustomEvent.js.html">main/CustomEvent.js</a>, <a href="CustomEvent.js.html#sunlight-1-line-97">line 97</a>
+        <a href="CustomEvent.js.html">main/CustomEvent.js</a>, <a href="CustomEvent.js.html#sunlight-1-line-120">line 120</a>
     </li></ul></dd>
     
 
@@ -1153,6 +1330,94 @@
 	<dd>
 		
 <span class="param-type">Number</span>
+
+
+	</dd>
+</dl>
+
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="isEmpty"><span class="type-signature"></span>isEmpty<span class="signature">()</span><span class="type-signature"> &rarr; {Boolean}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        There are not any event then return true.
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="CustomEvent.js.html">main/CustomEvent.js</a>, <a href="CustomEvent.js.html#sunlight-1-line-139">line 139</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">Boolean</span>
 
 
 	</dd>
@@ -1280,7 +1545,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="CustomEvent.js.html">main/CustomEvent.js</a>, <a href="CustomEvent.js.html#sunlight-1-line-133">line 133</a>
+        <a href="CustomEvent.js.html">main/CustomEvent.js</a>, <a href="CustomEvent.js.html#sunlight-1-line-183">line 183</a>
     </li></ul></dd>
     
 
@@ -1385,7 +1650,7 @@
 
             
 
-            <td class="description last"></td>
+            <td class="description last">"mousedown" or "mousedown mouseup"</td>
         </tr>
 
 	
@@ -1487,7 +1752,7 @@
         
             
 <dt>
-    <h4 class="name" id="once"><span class="type-signature"></span>once<span class="signature">(type, handler)</span><span class="type-signature"> &rarr; {this}</span></h4>
+    <h4 class="name" id="once"><span class="type-signature"></span>once<span class="signature">(type, handler, proxy)</span><span class="type-signature"> &rarr; {this}</span></h4>
     
     
 </dt>
@@ -1545,7 +1810,7 @@
 
             
 
-            <td class="description last"></td>
+            <td class="description last">"mousedown" or "mousedown mouseup"</td>
         </tr>
 
 	
@@ -1569,6 +1834,29 @@
             
 
             <td class="description last"></td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>proxy</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Inner.</td>
         </tr>
 
 	
@@ -1600,7 +1888,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="CustomEvent.js.html">main/CustomEvent.js</a>, <a href="CustomEvent.js.html#sunlight-1-line-34">line 34</a>
+        <a href="CustomEvent.js.html">main/CustomEvent.js</a>, <a href="CustomEvent.js.html#sunlight-1-line-35">line 35</a>
     </li></ul></dd>
     
 
@@ -1705,7 +1993,7 @@
 
             
 
-            <td class="description last"></td>
+            <td class="description last">"mousedown" or "mousedown mouseup"</td>
         </tr>
 
 	
@@ -1760,7 +2048,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="CustomEvent.js.html">main/CustomEvent.js</a>, <a href="CustomEvent.js.html#sunlight-1-line-142">line 142</a>
+        <a href="CustomEvent.js.html">main/CustomEvent.js</a>, <a href="CustomEvent.js.html#sunlight-1-line-192">line 192</a>
     </li></ul></dd>
     
 
@@ -1875,7 +2163,7 @@
 
             
 
-            <td class="description last"></td>
+            <td class="description last">"mousedown" or "mousedown mouseup"</td>
         </tr>
 
 	
@@ -1973,7 +2261,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="CustomEvent.js.html">main/CustomEvent.js</a>, <a href="CustomEvent.js.html#sunlight-1-line-119">line 119</a>
+        <a href="CustomEvent.js.html">main/CustomEvent.js</a>, <a href="CustomEvent.js.html#sunlight-1-line-152">line 152</a>
     </li></ul></dd>
     
 
