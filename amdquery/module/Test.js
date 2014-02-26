@@ -59,6 +59,7 @@ aQuery.define( "module/Test", [ "base/Promise", "base/config" ], function( $, Pr
 	Test.error = error;
 	Test.info = info;
 	Test.debug = debug;
+	Test.dialog = dialog;
 
 	var ssuccess = "√",
 		sfail = "X";
@@ -70,10 +71,10 @@ aQuery.define( "module/Test", [ "base/Promise", "base/config" ], function( $, Pr
 			this.promise.then( function() {
 				try {
 					executeFn.apply( executeFnContext, executeFnArg || [] );
-					logger( this.name, describe, "execute", ssuccess );
+					logger( this.name, describe, ssuccess );
 				} catch ( e ) {
 					this.fail++;
-					error( this.name, describe, "execute", sfail, e );
+					error( this.name, describe, sfail, e );
 					this.report();
 					throw e;
 				}
