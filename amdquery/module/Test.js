@@ -69,41 +69,61 @@ aQuery.define( "module/Test", [ "base/Promise", "base/config" ], function( $, Pr
 		constructor: Test,
 		execute: function( describe, executeFn, promise ) {
 			this.count++;
-			this.promise.then( function( preResult ) {
-				try {
-					executeFn();
-					logger( this.name, describe, ssuccess );
-				} catch ( e ) {
-					this.fail++;
-					error( this.name, describe, sfail, e );
-					this.report();
-					throw e;
+			this.promise = this.promise.then( function( preResult ) {
+				if ( Promise.forinstance( promise ) ) {
+					promise.then( function( result ) {
+						this._execute( describe, executeFn, preResult );
+					} ).withContext( this );
+					return promise;
+				} else {
+					this._execute( describe, executeFn, preResult );
+					return preResult;
 				}
-				return promise || preResult;
 			} );
 			return this;
 		},
+		_execute: function( describe, executeFn, preResult ) {
+			try {
+				executeFn( preResult );
+				logger( this.name, describe, ssuccess );
+			} catch ( e ) {
+				this.fail++;
+				error( this.name, describe, sfail, e );
+				this.report();
+				throw e;
+			}
+		},
 		equal: function( describe, value, resultBackFn, promise ) {
 			this.count++;
-			this.promise.then( function( preResult ) {
-				try {
-					var result = resultBackFn( preResult );
-				} catch ( e ) {
-					this.fail++;
-					error( this.name, describe, sfail, e );
-					this.report();
-					throw e;
-				}
-				if ( result === value ) {
-					logger( this.name, describe, ssuccess );
+			this.promise = this.promise.then( function( preResult ) {
+				if ( Promise.forinstance( promise ) ) {
+					promise.then( function( result ) {
+						return this._equal( describe, value, resultBackFn, preResult );
+					} ).withContext( this );
+					return promise;
 				} else {
-					this.fail++;
-					error( this.name, describe, sfail );
-					this.report();
+					return this._equal( describe, value, resultBackFn, preResult );
 				}
-				return promise || result;
 			} );
 			return this;
+		},
+		_equal: function( describe, value, resultBackFn, preResult ) {
+			try {
+				var result = resultBackFn( preResult );
+			} catch ( e ) {
+				this.fail++;
+				error( this.name, describe, sfail, e );
+				this.report();
+				throw e;
+			}
+			if ( result === value ) {
+				logger( this.name, describe, ssuccess );
+			} else {
+				this.fail++;
+				error( this.name, describe, sfail );
+				this.report();
+			}
+			return result;
 		},
 		start: function( firstResult ) {
 			this.promise.then( function() {
