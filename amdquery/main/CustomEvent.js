@@ -36,11 +36,12 @@
 				return this;
 			}
 			handler.__oncerproxy = function() {
-				self.off( type, handler.__oncerproxy );
+				self.off( type, handler );
 				delete handler.__oncerproxy;
 				handler.apply( this, arguments );
+				handler = null;
 			};
-			return this.on( type, handler.__oncerproxy );
+			return this.on( type, handler );
 		},
 		/**
 		 * Add a handler.
@@ -149,11 +150,14 @@
 			}
 			return this;
 		},
-		_trigger: function( type, target, args ) {
+		_trigger: function( type, target ) {
 			var handlers = this.getHandlers( type );
 			if ( handlers instanceof Array && handlers.length ) {
-				for ( var i = 0, len = handlers.length, arg = $.util.argToArray( arguments, 2 ); i < len; i++ )
-					handlers[ i ].apply( target, arg );
+				for ( var i = 0, len = handlers.length, arg = $.util.argToArray( arguments, 2 ), handler; i < len; i++ ) {
+					handler = handlers[ i ];
+					handler = handler.__oncerproxy || handler;
+					handler.apply( target, arg );
+				}
 			}
 			return this;
 		},
