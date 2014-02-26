@@ -47,9 +47,10 @@ aQuery.define( "module/Test", [ "base/Promise", "base/config" ], function( $, Pr
 	function Test( name, complete ) {
 		this.name = "[" + name + "]";
 		this.complete = complete || function() {};
-		this.promise = new Promise( function() {
+		this.promise = new Promise( function( preResult ) {
 			logger( this.name, "userAgent", navigator.userAgent );
 			logger( this.name, "Test start", "Test:" + this.count );
+			return preResult;
 		} ).withContext( this );
 		this.count = 0;
 		this.fail = 0;
@@ -66,11 +67,11 @@ aQuery.define( "module/Test", [ "base/Promise", "base/config" ], function( $, Pr
 
 	Test.prototype = {
 		constructor: Test,
-		execute: function( describe, executeFn, executeFnContext, executeFnArg ) {
+		execute: function( describe, executeFn ) {
 			this.count++;
-			this.promise.then( function() {
+			this.promise.then( function( preResult ) {
 				try {
-					executeFn.apply( executeFnContext, executeFnArg || [] );
+					executeFn();
 					logger( this.name, describe, ssuccess );
 				} catch ( e ) {
 					this.fail++;
@@ -78,34 +79,15 @@ aQuery.define( "module/Test", [ "base/Promise", "base/config" ], function( $, Pr
 					this.report();
 					throw e;
 				}
+				return preResult;
 			} );
 			return this;
 		},
-		executeAsync: function( describe, executeFn, executeFnContext, executeFnArg ) {
+		equal: function( describe, value, resultBackFn ) {
 			this.count++;
-			var promise = new Promise( function() {
+			this.promise.then( function( preResult ) {
 				try {
-					executeFn.apply( executeFnContext, executeFnArg || [] );
-					logger( this.name, describe, ssuccess );
-				} catch ( e ) {
-					this.fail++;
-					error( this.name, describe, sfail, e );
-					this.report();
-					throw e;
-				}
-			} ).withContext( this );
-
-			this.promise.then( function() {
-				return promise;
-			} );
-
-			return promise;
-		},
-		equal: function( describe, value, resultBackFn, backFnContext, backFnArg ) {
-			this.count++;
-			this.promise.then( function() {
-				try {
-					var result = resultBackFn.apply( backFnContext, backFnArg || [] );
+					var result = resultBackFn( preResult );
 				} catch ( e ) {
 					this.fail++;
 					error( this.name, describe, sfail, e );
@@ -119,42 +101,17 @@ aQuery.define( "module/Test", [ "base/Promise", "base/config" ], function( $, Pr
 					error( this.name, describe, sfail );
 					this.report();
 				}
+				return result;
 			} );
 			return this;
 		},
-		equalAsync: function( describe, value, resultBackFn, backFnContext, backFnArg ) {
-			this.count++;
-			var promise = new Promise( function() {
-				try {
-					var result = resultBackFn.apply( backFnContext, backFnArg || [] );
-				} catch ( e ) {
-					this.fail++;
-					error( this.name, describe, sfail, e );
-					this.report();
-					throw e;
-				}
-				if ( result === value ) {
-					logger( this.name, describe, ssuccess );
-				} else {
-					this.fail++;
-					error( this.name, describe, sfail );
-					this.report();
-				}
-			} ).withContext( this );
-
-			this.promise.then( function() {
-				return promise;
-			} );
-
-			return promise;
-		},
-		start: function() {
+		start: function( firstResult ) {
 			this.promise.then( function() {
 				Test[ this.fail == 0 ? "logger" : "error" ]( this.name, "Test stop", "Test:" + this.count, "Success" + ( this.count - this.fail ), "Fail:" + this.fail );
 				this.complete();
 				this.report();
 			} );
-			this.promise.root().resolve();
+			this.promise.root().resolve( firstResult );
 			return this;
 		},
 		report: function() {
