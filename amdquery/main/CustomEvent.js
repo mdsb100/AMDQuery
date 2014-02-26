@@ -32,12 +32,12 @@
 		 */
 		once: function( type, handler ) {
 			var self = this;
-			if ( handler.__oncerproxy ) {
+			if ( handler.__proxy ) {
 				return this;
 			}
-			handler.__oncerproxy = function() {
+			handler.__proxy = function() {
 				self.off( type, handler );
-				delete handler.__oncerproxy;
+				delete handler.__proxy;
 				handler.apply( this, arguments );
 				handler = null;
 			};
@@ -155,7 +155,7 @@
 			if ( handlers instanceof Array && handlers.length ) {
 				for ( var i = 0, len = handlers.length, arg = $.util.argToArray( arguments, 2 ), handler; i < len; i++ ) {
 					handler = handlers[ i ];
-					handler = handler.__oncerproxy || handler;
+					handler = handler.__proxy || handler;
 					handler.apply( target, arg );
 				}
 			}
