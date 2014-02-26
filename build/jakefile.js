@@ -3,9 +3,9 @@ var FSE = require( 'fs-extra' );
 var $amdquery = path.join( "..", "amdquery" )
 
 task( "default", function() {
-	jake.logger.log( "jake build[build_config.js]   build application and javascript" );
-	jake.logger.log( "jake ui_css                   build css of UI-widget" );
-	jake.logger.log( "jake jsdoc                    build javascript api document" );
+	jake.logger.log( "jake build[build_config.js]      build application and javascript" );
+	jake.logger.log( "jake ui_css                      build css of UI-widget" );
+	jake.logger.log( "jake jsdoc                       build javascript api document" );
 } );
 
 task( "build", {
