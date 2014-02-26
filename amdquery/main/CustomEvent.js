@@ -43,7 +43,7 @@
 				delete handler[ proxyName ];
 				handler.apply( this, arguments );
 				handler = null;
-				proxy();
+				proxy && proxy();
 				proxy = null;
 			};
 			return this.on( type, handler );
