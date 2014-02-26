@@ -67,7 +67,7 @@ aQuery.define( "module/Test", [ "base/Promise", "base/config" ], function( $, Pr
 
 	Test.prototype = {
 		constructor: Test,
-		execute: function( describe, executeFn ) {
+		execute: function( describe, executeFn, promise ) {
 			this.count++;
 			this.promise.then( function( preResult ) {
 				try {
@@ -79,11 +79,11 @@ aQuery.define( "module/Test", [ "base/Promise", "base/config" ], function( $, Pr
 					this.report();
 					throw e;
 				}
-				return preResult;
+				return promise || preResult;
 			} );
 			return this;
 		},
-		equal: function( describe, value, resultBackFn ) {
+		equal: function( describe, value, resultBackFn, promise ) {
 			this.count++;
 			this.promise.then( function( preResult ) {
 				try {
@@ -101,7 +101,7 @@ aQuery.define( "module/Test", [ "base/Promise", "base/config" ], function( $, Pr
 					error( this.name, describe, sfail );
 					this.report();
 				}
-				return result;
+				return promise || result;
 			} );
 			return this;
 		},
