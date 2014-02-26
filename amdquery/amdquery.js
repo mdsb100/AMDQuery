@@ -569,6 +569,8 @@
 			 * aQuery.util.isEqual(a, b) //return true
 			 */
 			isEqual: function( objA, objB ) {
+				if ( objA === objB )
+					return true;
 				if ( objA.constructor !== objB.constructor )
 					return false;
 				var aMemberCount = 0;
