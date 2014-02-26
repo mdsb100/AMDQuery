@@ -48,6 +48,7 @@ aQuery.define( "module/Test", [ "base/Promise", "base/config" ], function( $, Pr
 		this.name = "[" + name + "]";
 		this.complete = complete || function() {};
 		this.promise = new Promise( function() {
+			logger( this.name, "userAgent", navigator.userAgent );
 			logger( this.name, "Test start", "Test:" + this.count );
 		} ).withContext( this );
 		this.count = 0;
@@ -84,10 +85,10 @@ aQuery.define( "module/Test", [ "base/Promise", "base/config" ], function( $, Pr
 			var promise = new Promise( function() {
 				try {
 					executeFn.apply( executeFnContext, executeFnArg || [] );
-					logger( this.name, describe, "executeAsync", ssuccess );
+					logger( this.name, describe, ssuccess );
 				} catch ( e ) {
 					this.fail++;
-					error( this.name, describe, "executeAsync", sfail, e );
+					error( this.name, describe, sfail, e );
 					this.report();
 					throw e;
 				}
@@ -106,15 +107,15 @@ aQuery.define( "module/Test", [ "base/Promise", "base/config" ], function( $, Pr
 					var result = resultBackFn.apply( backFnContext, backFnArg || [] );
 				} catch ( e ) {
 					this.fail++;
-					error( this.name, describe, value + " equal " + result, sfail, e );
+					error( this.name, describe, sfail, e );
 					this.report();
 					throw e;
 				}
 				if ( result === value ) {
-					logger( this.name, describe, value + " equal " + result, ssuccess );
+					logger( this.name, describe, ssuccess );
 				} else {
 					this.fail++;
-					error( this.name, describe, value + " equal " + result, sfail );
+					error( this.name, describe, sfail );
 					this.report();
 				}
 			} );
@@ -127,15 +128,15 @@ aQuery.define( "module/Test", [ "base/Promise", "base/config" ], function( $, Pr
 					var result = resultBackFn.apply( backFnContext, backFnArg || [] );
 				} catch ( e ) {
 					this.fail++;
-					error( this.name, describe, value + " equal " + result, sfail, e );
+					error( this.name, describe, sfail, e );
 					this.report();
 					throw e;
 				}
 				if ( result === value ) {
-					logger( this.name, describe, value + " equalAsync " + result, ssuccess );
+					logger( this.name, describe, ssuccess );
 				} else {
 					this.fail++;
-					error( this.name, describe, value + " equalAsync " + result, sfail );
+					error( this.name, describe, sfail );
 					this.report();
 				}
 			} ).withContext( this );
