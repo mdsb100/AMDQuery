@@ -3,6 +3,7 @@
 	this.describe( "A custom event" );
 	/**
 	 * Be defined by object.extend.
+   * Each function can not repeat to add into CustomEvent.
 	 * @constructor
 	 * @exports main/CustomEvent
 	 * @requires module:main/object
@@ -28,20 +29,27 @@
 		 * Add a handler once.
 		 * @param {String} - "mousedown" or "mousedown mouseup"
 		 * @param {Function}
+		 * @param {Function} - Inner.
 		 * @returns {this}
 		 */
-		once: function( type, handler ) {
-			var self = this;
-			if ( handler.__proxy ) {
+		once: function( type, handler, proxy ) {
+			var self = this,
+				proxyName = this._getOnceProxyName( type );
+			if ( handler[ proxyName ] ) {
 				return this;
 			}
-			handler.__proxy = function() {
+			handler[ proxyName ] = function() {
 				self.off( type, handler );
-				delete handler.__proxy;
+				delete handler[ proxyName ];
 				handler.apply( this, arguments );
 				handler = null;
+				proxy();
+				proxy = null;
 			};
 			return this.on( type, handler );
+		},
+		_getOnceProxyName: function( name ) {
+			return "__" + name + "proxy";
 		},
 		/**
 		 * Add a handler.
@@ -151,11 +159,16 @@
 			return this;
 		},
 		_trigger: function( type, target ) {
-			var handlers = this.getHandlers( type );
+			var handlers = this.getHandlers( type ),
+				onceProxyName = this._getOnceProxyName( type );
 			if ( handlers instanceof Array && handlers.length ) {
 				for ( var i = 0, len = handlers.length, arg = $.util.argToArray( arguments, 2 ), handler; i < len; i++ ) {
 					handler = handlers[ i ];
-					handler = handler.__proxy || handler;
+
+					if ( handler[ onceProxyName ] ) {
+						handler = handler[ onceProxyName ];
+					}
+
 					handler.apply( target, arg );
 				}
 			}
