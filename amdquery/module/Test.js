@@ -1,7 +1,7 @@
-aQuery.define( "module/Test", [ "base/Promise", "base/config" ], function( $, Promise, config ) {
+aQuery.define( "module/Test", [ "base/Promise", "base/config", "main/event" ], function( $, Promise, config, event ) {
 	"use strict";
 	this.describe( "Test Module" );
-
+	var TestEventType = "test.report";
 	var logger, error, info, debug;
 	if ( window.console && window.console.log.bind && !config.module.testLogByHTML ) {
 		logger = $.logger;
@@ -46,6 +46,14 @@ aQuery.define( "module/Test", [ "base/Promise", "base/config" ], function( $, Pr
 
 	}
 	/**
+	 * Event reporting that a test has been trigger.
+	 * @event aQuery#"test.report"
+	 * @param {String} name  - Test name.
+	 * @param {Number} count - Test count.
+	 * @param {Number} fail  - fail count.
+	 */
+
+	/**
 	 * You can see Test.html.
 	 * @public
 	 * @module module/Test
@@ -71,41 +79,44 @@ aQuery.define( "module/Test", [ "base/Promise", "base/config" ], function( $, Pr
 		this.count = 0;
 		this.fail = 0;
 	}
-	/**
-	 * console.log or log in html.
-	 * @method logger
-	 * @param {...String}
-	 * @memberOf module:module/Test
-	 */
-	Test.logger = logger;
-	/**
-	 * console.error or error in html.
-	 * @method error
-	 * @param {...String}
-	 * @memberOf module:module/Test
-	 */
-	Test.error = error;
-	/**
-	 * console.info or info in html.
-	 * @method info
-	 * @param {...String}
-	 * @memberOf module:module/Test
-	 */
-	Test.info = info;
-	/**
-	 * console.debug or debug in html.
-	 * @method debug
-	 * @param {...String}
-	 * @memberOf module:module/Test
-	 */
-	Test.debug = debug;
-	/** {undefined|DOMElement<pre>} */
-	Test.dialog = dialog;
+
+	$.util.extend( Test, /** @lends module:module/Test */{
+		/**
+		 * console.log or log in html.
+		 * @method logger
+		 * @param {...String}
+		 * @memberOf module:module/Test
+		 */
+		logger: logger,
+		/**
+		 * console.error or error in html.
+		 * @method error
+		 * @param {...String}
+		 * @memberOf module:module/Test
+		 */
+		error: error,
+		/**
+		 * console.info or info in html.
+		 * @method info
+		 * @param {...String}
+		 * @memberOf module:module/Test
+		 */
+		info: info,
+		/**
+		 * console.debug or debug in html.
+		 * @method debug
+		 * @param {...String}
+		 * @memberOf module:module/Test
+		 */
+		debug: debug,
+		/** {undefined|DOMElement} */
+		dialog: dialog
+	} );
 
 	var ssuccess = "√",
 		sfail = "X";
 
-	Test.prototype = /** @alias module:module/Test.prototype */ {
+	Test.prototype = /** @lends module:module/Test.prototype */ {
 		constructor: Test,
 		/**
 		 * Execute a function and non-return.
@@ -226,11 +237,12 @@ aQuery.define( "module/Test", [ "base/Promise", "base/config" ], function( $, Pr
 		/**
 		 * If window.parent.aQuery is exists then trigger "test" event.
 		 * @inner
+		 * @fires aQuery#"test.report"
 		 * @returns {this}
 		 */
 		report: function() {
 			if ( window.parent && window.parent.aQuery && window.parent.aQuery.trigger ) {
-				window.parent.aQuery.trigger( "test", null, this.name, this.count, this.fail );
+				window.parent.aQuery.trigger( TestEventType, null, this.name, this.count, this.fail );
 			}
 			return this;
 		}

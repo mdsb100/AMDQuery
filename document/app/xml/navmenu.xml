@@ -5,6 +5,7 @@
         <ul>
           <li id="guide_AMDQuery" amdquery-widget="ui.navitem" ui-navitem="html:AMDQuery;img:file"></li>
           <li id="guide_Build" amdquery-widget="ui.navitem" ui-navitem="html:Build;img:file"></li>
+          <li id="guide_Test" amdquery-widget="ui.navitem" ui-navitem="html:Test;img:file"></li>
         </ul>
       </li>
     </ul>
