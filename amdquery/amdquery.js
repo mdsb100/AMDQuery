@@ -174,7 +174,7 @@
 	 * @property {number}  config.amd.timeout                  - Timeout of the loading module.
 	 * @property {boolean} config.amd.console                  - It will be output log "module [id] ready" if true.
 	 *
-	 * @property {object}  config.ui                           - The UI-Widget Configuration.
+	 * @property {object}  config.ui                           - The widget-ui Configuration.
 	 * @property {boolean} config.ui.initWidget                - Automatic initialization UI.
 	 * @property {boolean} config.ui.autoFetchCss              - Automatic fetching CSS.
 	 * @property {boolean} config.ui.isTransform3d             - Whether to use transform3d.

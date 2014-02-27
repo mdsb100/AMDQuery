@@ -7,7 +7,7 @@ task( "default", function() {
 	jake.logger.log( "jake build                             default is build_config.js" );
 	jake.logger.log( "jake jsdoc[default|docstrap|amdquery]  build javascript api document" );
 	jake.logger.log( "jake jsdoc                             default is amdquery" );
-	jake.logger.log( "jake ui_css                            build css of UI-widget" );
+	jake.logger.log( "jake ui_css                            build css of widget-ui" );
 } );
 
 task( "build", {
@@ -27,7 +27,7 @@ task( "build", {
 task( "ui_css", {
 	async: true
 }, function() {
-	jake.logger.log( "build css of UI-widget ..." );
+	jake.logger.log( "build css of widget-ui ..." );
 
 	jake.exec( "node buildWidgetUICSS.js", {
 		printStdout: true,
