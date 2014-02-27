@@ -133,7 +133,7 @@ aQuery.define( "module/Test", [ "base/Promise", "base/config" ], function( $, Pr
 			this.promise = this.promise.then( function( preResult ) {
 				if ( Promise.forinstance( promise ) ) {
 					promise.then( function( result ) {
-						this._execute( describe, executeFn, preResult );
+						this._execute( describe, executeFn, result != null ? result : preResult );
 					} ).withContext( this );
 					return promise;
 				} else {
@@ -182,7 +182,7 @@ aQuery.define( "module/Test", [ "base/Promise", "base/config" ], function( $, Pr
 			this.promise = this.promise.then( function( preResult ) {
 				if ( Promise.forinstance( promise ) ) {
 					promise.then( function( result ) {
-						return this._equal( describe, value, resultBackFn, preResult );
+						return this._equal( describe, value, resultBackFn, result != null ? result : preResult );
 					} ).withContext( this );
 					return promise;
 				} else {
@@ -223,11 +223,11 @@ aQuery.define( "module/Test", [ "base/Promise", "base/config" ], function( $, Pr
 			this.promise.root().resolve( firstResult );
 			return this;
 		},
-    /**
-     * If window.parent.aQuery is exists then trigger "test" event.
-     * @inner
-     * @returns {this}
-     */
+		/**
+		 * If window.parent.aQuery is exists then trigger "test" event.
+		 * @inner
+		 * @returns {this}
+		 */
 		report: function() {
 			if ( window.parent && window.parent.aQuery && window.parent.aQuery.trigger ) {
 				window.parent.aQuery.trigger( "test", null, this.name, this.count, this.fail );
