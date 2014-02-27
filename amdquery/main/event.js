@@ -882,23 +882,23 @@
 		 * @returns {this}
 		 */
 		getJSStart: function( fn ) {
-			return $.addHandler( "getJSStart", fn );
+			return $.addHandler( "jsonpStart", fn );
 		},
 		/**
-		 * Add "getJSStop" event Handler to bus.
+		 * Add "jsonpStop" event Handler to bus.
 		 * @param {Function}
 		 * @returns {this}
 		 */
-		getJSStop: function( fn ) {
-			return $.addHandler( "getJSStop", fn );
+		jsonpStop: function( fn ) {
+			return $.addHandler( "jsonpStop", fn );
 		},
 		/**
-		 * Add "getJSTimeout" event Handler to bus.
+		 * Add "jsonpTimeout" event Handler to bus.
 		 * @param {Function}
 		 * @returns {this}
 		 */
-		getJSTimeout: function( fn ) {
-			return $.addHandler( "getJSTimeout", fn );
+		jsonpTimeout: function( fn ) {
+			return $.addHandler( "jsonpTimeout", fn );
 		},
 	} );
 

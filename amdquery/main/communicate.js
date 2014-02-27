@@ -1,6 +1,79 @@
 ﻿aQuery.define( "main/communicate", [ "base/typed", "base/extend", "main/event", "main/parse" ], function( $, typed, utilExtend, parse, undefined ) {
 	"use strict";
 	/**
+	 * @inner
+	 * @name AjaxOptions
+	 * @property options {Object}
+	 * @property [options.type="GET"] {String} - "GET" or "POST"
+	 * @property options.url {String}
+	 * @property [options.data=""] {String|Object<String,String>|Array<Object<String,String>>} - See {@link module:main/communicate.getURLParam}
+	 * @property [options.async=true] {Boolean}
+	 * @property [options.complete] {Function}
+	 * @property [options.header] {Object<String,String>}
+	 * @property [options.isRandom] {Boolean}
+	 * @property [options.timeout=10000] {Number}
+	 * @property [options.routing=""] {String}
+	 * @property [options.timeoutFun] {Function} - Timeout handler.
+	 * @property [options.dataType="text"] {String} - "json"|"xml"|"text"|"html"
+	 * @property [options.contentType="application/x-www-form-urlencoded"] {String}
+	 * @property [options.context=null] {Object} - Complete context.
+	 */
+
+	/**
+	 * @inner
+	 * @name JSONPOptions
+	 * @property options {Object}
+	 * @property options.url {String}
+	 * @property [options.charset="GBK"] {String}
+	 * @property [options.complete] {Function}
+	 * @property [options.error] {Function} - Error handler
+	 * @property [options.isDelete=true] {Boolean} - Does delete the script.
+	 * @property [options.context=null] {Object} - Complete context.
+	 * @property [options.isRandom=false] {Boolean}
+	 * @property [options.checkString=""] {String} - Then JSONP back string.
+	 * @property [options.timeout=10000] {Number}
+	 * @property [options.timeoutFun] {Function} - Timeout handler.
+	 * @property [options.routing=""] {String}
+	 * @property [options.JSONP] {String|Boolean} - True is aQuery. String is JSONP.
+	 */
+
+	/**
+	 * Event reporting that an ajax start.
+	 * @event aQuery#"ajaxStart"
+	 * @param {AjaxOptions}
+	 */
+
+	/**
+	 * Event reporting that an ajax stop.
+	 * @event aQuery#"ajaxStop"
+	 * @param {AjaxOptions}
+	 */
+
+	/**
+	 * Event reporting that an ajax timeout.
+	 * @event aQuery#"ajaxTimeout"
+	 * @param {AjaxOptions}
+	 */
+
+	/**
+	 * Event reporting that an JSONP start.
+	 * @event aQuery#"jsonpStart"
+	 * @param {AjaxOptions}
+	 */
+
+	/**
+	 * Event reporting that an JSONP stop.
+	 * @event aQuery#"jsonpStop"
+	 * @param {AjaxOptions}
+	 */
+
+	/**
+	 * Event reporting that an JSONP timeout.
+	 * @event aQuery#"jsonpTimeout"
+	 * @param {AjaxOptions}
+	 */
+
+	/**
 	 * Export network requests.
 	 * <br /> JSONP or AJAX.
 	 * @exports main/communicate
@@ -11,20 +84,7 @@
 	 */
 	var communicate = {
 		/**
-		 * @param options {Object}
-		 * @param [options.type="GET"] {String} - "GET" or "POST"
-		 * @param options.url {String}
-		 * @param [options.data=""] {String|Object<String,String>|Array<Object<String,String>>} - See {@link module:main/communicate.getURLParam}
-		 * @param [options.async=true] {Boolean}
-		 * @param [options.complete] {Function}
-		 * @param [options.header] {Object<String,String>}
-		 * @param [options.isRandom] {Boolean}
-		 * @param [options.timeout=10000] {Number}
-		 * @param [options.routing=""] {String}
-		 * @param [options.timeoutFun] {Function} - Timeout handler.
-		 * @param [options.dataType="text"] {String} - "json"|"xml"|"text"|"html"
-		 * @param [options.contentType="application/x-www-form-urlencoded"] {String}
-		 * @param [options.context=null] {Object} - Complete context.
+		 * @param options {AjaxOptions}
 		 * @returns {this}
 		 */
 		ajax: function( options ) {
@@ -184,13 +244,13 @@
 		 * @param options.url {String}
 		 * @param [options.charset="GBK"] {String}
 		 * @param [options.complete] {Function}
-     * @param [options.error] {Function} - Error handler
+		 * @param [options.error] {Function} - Error handler
 		 * @param [options.isDelete=true] {Boolean} - Does delete the script.
 		 * @param [options.context=null] {Object} - Complete context.
 		 * @param [options.isRandom=false] {Boolean}
 		 * @param [options.checkString=""] {String} - Then JSONP back string.
-     * @param [options.timeout=10000] {Number}
-     * @param [options.timeoutFun] {Function} - Timeout handler.
+		 * @param [options.timeout=10000] {Number}
+		 * @param [options.timeoutFun] {Function} - Timeout handler.
 		 * @param [options.routing=""] {String}
 		 * @param [options.JSONP] {String|Boolean} - True is aQuery. String is JSONP.
 		 * @returns {this}
@@ -229,7 +289,7 @@
 			_scripts.onload = _scripts.onreadystatechange = function() {
 				if ( !this.readyState || this.readyState == "loaded" || this.readyState == "complete" ) {
 					clearTimeout( _timeId );
-					$.trigger( "getJSStop", _scripts, o );
+					$.trigger( "jsonpStop", _scripts, o );
 					var js = typeof window[ o.checkString ] != "undefined" ? window[ o.checkString ] : undefined;
 					!o.JSONP && typed.isFun( o.complete ) && o.complete.call( o.context || this, js );
 					//typed.isFun(o.complete) && o.complete.call(o.context || this, js);
@@ -245,7 +305,7 @@
 			_scripts.onerror = o.error;
 
 			o.timeout && ( _timeId = setTimeout( function() {
-				$.trigger( "getJSTimeout", _scripts, o );
+				$.trigger( "jsonpTimeout", _scripts, o );
 				o.timeoutFun.call( this, o );
 				_scripts = _scripts.onerror = _scripts.onload = o.error = _head = null;
 				if ( window[ random ] ) {
@@ -259,7 +319,7 @@
 			_scripts.setAttribute( "type", "text/javascript" );
 			_scripts.setAttribute( "language", "javascript" );
 
-			$.trigger( "getJSStart", _scripts, o );
+			$.trigger( "jsonpStart", _scripts, o );
 			_head.insertBefore( _scripts, _head.firstChild );
 			return this;
 		},
@@ -277,7 +337,7 @@
 		 * @property {String|Boolean} ajaxSetting.JSONP               - false.
 		 * @property {String}         ajaxSetting.routing             - "".
 		 * @property {Number}         ajaxSetting.timeout             - 10000 millisecond.
-     * @property {Function}       ajaxSetting.timeoutFun          - Timeout handler.
+		 * @property {Function}       ajaxSetting.timeoutFun          - Timeout handler.
 		 */
 		{
 			charset: "GBK",
