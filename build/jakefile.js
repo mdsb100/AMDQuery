@@ -3,9 +3,11 @@ var FSE = require( 'fs-extra' );
 var $amdquery = path.join( "..", "amdquery" )
 
 task( "default", function() {
-	jake.logger.log( "jake build[build_config.js]      build application and javascript" );
-	jake.logger.log( "jake ui_css                      build css of UI-widget" );
-	jake.logger.log( "jake jsdoc                       build javascript api document" );
+	jake.logger.log( "jake build[*.js]                       build application and javascript" );
+	jake.logger.log( "jake build                             default is build_config.js" );
+	jake.logger.log( "jake jsdoc[default|docstrap|amdquery]  build javascript api document" );
+	jake.logger.log( "jake jsdoc                             default is amdquery" );
+	jake.logger.log( "jake ui_css                            build css of UI-widget" );
 } );
 
 task( "build", {
@@ -38,7 +40,7 @@ task( "jsdoc", {
 	async: true
 }, function( template ) {
 	var $distPath = path.join( "../document/app/assets/api/" );
-	var $template = path.join( "..", "jsdoc", "templates", template || "docstrap" );
+	var $template = path.join( "..", "jsdoc", "templates", template || "amdquery" );
 	if ( FSE.exists( $template ) ) {
 		jake.logger.warn( $template + " does not exist" );
 		complete();

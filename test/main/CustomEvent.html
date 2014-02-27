@@ -1,0 +1,96 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+  <title></title>
+  <link href="/styles/reset.css" rel="stylesheet" type="text/css" />
+  <script src="../../amdquery/amdquery.js" type="text/javascript" amdquery="define:$;package:main;" amd="detectCR:1;" module="compatibleEvent:1;testLogByHTML:1"></script>
+  <script type="text/javascript">
+    $.require([
+      "main/CustomEvent",
+      "module/Test",
+    ], function(CustomEvent, Test) {
+
+      var customEvent = new CustomEvent();
+      var testTriggerResult = "";
+      var testTriggerContext = null;
+      var fn = function( ret ){
+        testTriggerResult = ret;
+        testTriggerContext = this;
+      };
+      var fn1 = function(){};
+
+      var testCustomEvent = new Test("TestCustomeEvent", function(preResult){
+        // complete
+      });
+      testCustomEvent
+      .equal("customEvent is empty.", true , function(preResult){
+        return customEvent.isEmpty();
+      })
+      .execute("customEvent on fn name is 'a.b a.c a b'.", function(preResult){
+        customEvent.on("a.b a.c a b", fn);
+      })
+      .equal("customEvent has event a.b.", true, function(preResult){
+        return customEvent.hasHandler("a.b", fn) > -1;
+      })
+      .equal("customEvent has event a.c.", true, function(preResult){
+        return customEvent.hasHandler("a.c", fn) > -1;
+      })
+      .equal("customEvent has event a.", true, function(preResult){
+        return customEvent.hasHandler("a", fn) > -1;
+      })
+      .equal("customEvent has event b.", true, function(preResult){
+        return customEvent.hasHandler("b", fn) > -1;
+      })
+      .execute("customEvent on fn1 'b'.", function(preResult){
+        customEvent.on("b", fn1);
+      })
+      .equal("customEvent getHandlers with type 'b', the result intanceOf Array.", true, function(preResult){
+        return customEvent.getHandlers("b") instanceof Array;
+      })
+      .equal("customEvent clone, the new customEvent handlers is equal to origin customEvent handlers.", true, function(preResult){
+        return $.util.isEqual(customEvent.getHandlers(), customEvent.clone().getHandlers());
+      })
+      .equal("customEvent getHandlers with type 'b', the result[1] is fn1.", true, function(preResult){
+        return customEvent.getHandlers("b")[1] === fn1;
+      })
+      .equal("customEvent is not empty.", false, function(preResult){
+        return customEvent.isEmpty();
+      })
+      .equal("customEvent off fn 'a.b a', so has 'a.b' and 'a' is false.", false, function(preResult){
+        customEvent.off("a.b a", fn);
+        return customEvent.hasHandler("a.b", fn) > -1 || customEvent.hasHandler("a", fn) > -1;
+      })
+      .equal("customEvent trigger a.c, result should equal 'myresult'.", "myresult", function(preResult){
+        customEvent.trigger("a.c", customEvent, "myresult");
+        return testTriggerResult;
+      })
+      .equal("customEvent trigger b, context should equal customEvent.", customEvent, function(preResult){
+        customEvent.trigger("b", customEvent, "abc");
+        return testTriggerContext;
+      })
+      .execute("customEvent clear handlers.", function(preResult){
+        customEvent.clearHandlers();
+      })
+      .equal("customEvent is empty.", true, function(preResult){
+        return customEvent.isEmpty();
+      })
+      .execute("customEvent once fn 'once'.", function(preResult){
+        customEvent.once("once", fn)
+      })
+      .equal("customEvent trigger once, testTriggerResult should equal 'onceResult'.", "onceResult", function(preResult){
+        customEvent.trigger("once", customEvent, "onceResult");
+        return testTriggerResult;
+      })
+      .equal("customEvent is empty.", true, function(preResult){
+        return customEvent.isEmpty();
+      }).start();
+
+    });
+  </script>
+</head>
+
+<body style="overflow: auto">
+</body>
+
+</html>

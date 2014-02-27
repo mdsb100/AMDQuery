@@ -30,12 +30,23 @@ exports.apps = [
  ]
 
 exports.defines = {
-	test: {
+	document: {
 		path: "../document/app/assets/source/js/main.js",
 		directory: [ "ui/" ],
 		complete: function( minPath, minContent, deubugPath, debugContent ) {
 			var FSE = require( 'fs-extra' );
 			var path = "../document/app/assets/source/js/amdquery.js";
+			FSE.writeFile( path, debugContent );
+			path = "../jsdoc/templates/amdquery/static/scripts/amdquery.js";
+			FSE.writeFile( path, debugContent );
+		}
+	},
+	jsdoc: {
+		path: "../jsdoc/templates/amdquery/static/scripts/main.js",
+		directory: [ "ui/" ],
+		complete: function( minPath, minContent, deubugPath, debugContent ) {
+			var FSE = require( 'fs-extra' );
+			var path = "../jsdoc/templates/amdquery/static/scripts/amdquery.js";
 			FSE.writeFile( path, debugContent );
 		}
 	}

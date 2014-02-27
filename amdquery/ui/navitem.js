@@ -87,8 +87,6 @@ aQuery.define( "ui/navitem", [
 			open: function() {
 				var opt = this.options;
 
-				this.render();
-
 				if ( !opt.isOpen ) {
 					if ( opt.parent && !opt.parent.uiNavitem( "option", "isOpen" ) ) {
 						opt.parent.uiNavitem( "open" );
@@ -109,14 +107,15 @@ aQuery.define( "ui/navitem", [
 						html: opt.html
 					};
 
-					return this.target.trigger( para.type, this.target[ 0 ], para );
+					this.target.trigger( para.type, this.target[ 0 ], para );
 				}
+
+				this.render();
+
 				return this;
 			},
 			close: function() {
 				var opt = this.options;
-
-				this.render();
 
 				if ( opt.isOpen ) {
 					opt.isOpen = false;
@@ -132,8 +131,11 @@ aQuery.define( "ui/navitem", [
 						html: opt.html
 					};
 
-					return this.target.trigger( para.type, this.target[ 0 ], para );
+					this.target.trigger( para.type, this.target[ 0 ], para );
 				}
+
+				this.render();
+
 				return this;
 			},
 			select: function() {

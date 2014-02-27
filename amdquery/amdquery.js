@@ -559,6 +559,40 @@
 				return name;
 			},
 			/**
+			 * Object.is is a proposed addition to the ECMA-262 standard
+			 * @param {Object}
+			 * @param {Object}
+			 * @returns {Boolean}
+			 * @example
+			 * Object.is("foo", "foo");     // true
+			 * Object.is(window, window);   // true
+			 *
+			 * Object.is("foo", "bar");     // false
+			 * Object.is([], []);           // false
+			 *
+			 * var test = {a: 1};
+			 * Object.is(test, test);       // true
+			 *
+			 * Object.is(null, null);       // true
+			 *
+			 * // Special Cases
+			 * Object.is(0, -0);            // false
+			 * Object.is(-0, -0);           // true
+			 * Object.is(NaN, 0/0);         // true
+			 */
+			is: function( v1, v2 ) {
+				if ( Object.is ) {
+					return Object.is( v1, v2 );
+				}
+				if ( v1 === 0 && v2 === 0 ) {
+					return 1 / v1 === 1 / v2;
+				}
+				if ( v1 !== v1 ) {
+					return v2 !== v2;
+				}
+				return v1 === v2;
+			},
+			/**
 			 * Object A is equal to Object B.
 			 * @param {Object}
 			 * @param {Object}
@@ -569,7 +603,7 @@
 			 * aQuery.util.isEqual(a, b) //return true
 			 */
 			isEqual: function( objA, objB ) {
-				if ( objA === objB )
+				if ( this.is( objA, objB ) )
 					return true;
 				if ( objA.constructor !== objB.constructor )
 					return false;
