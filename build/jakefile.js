@@ -40,7 +40,7 @@ task( "jsdoc", {
 	async: true
 }, function( template ) {
 	var $distPath = path.join( "../document/app/assets/api/" );
-	var $template = path.join( "..", "jsdoc", "templates", template || "docstrap" );
+	var $template = path.join( "..", "jsdoc", "templates", template || "amdquery" );
 	if ( FSE.exists( $template ) ) {
 		jake.logger.warn( $template + " does not exist" );
 		complete();
