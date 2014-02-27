@@ -560,6 +560,40 @@
 				return name;
 			},
 			/**
+			 * Object.is is a proposed addition to the ECMA-262 standard
+			 * @param {Object}
+			 * @param {Object}
+			 * @returns {Boolean}
+			 * @example
+			 * Object.is("foo", "foo");     // true
+			 * Object.is(window, window);   // true
+			 *
+			 * Object.is("foo", "bar");     // false
+			 * Object.is([], []);           // false
+			 *
+			 * var test = {a: 1};
+			 * Object.is(test, test);       // true
+			 *
+			 * Object.is(null, null);       // true
+			 *
+			 * // Special Cases
+			 * Object.is(0, -0);            // false
+			 * Object.is(-0, -0);           // true
+			 * Object.is(NaN, 0/0);         // true
+			 */
+			is: function( v1, v2 ) {
+				if ( Object.is ) {
+					return Object.is( v1, v2 );
+				}
+				if ( v1 === 0 && v2 === 0 ) {
+					return 1 / v1 === 1 / v2;
+				}
+				if ( v1 !== v1 ) {
+					return v2 !== v2;
+				}
+				return v1 === v2;
+			},
+			/**
 			 * Object A is equal to Object B.
 			 * @param {Object}
 			 * @param {Object}
@@ -570,7 +604,7 @@
 			 * aQuery.util.isEqual(a, b) //return true
 			 */
 			isEqual: function( objA, objB ) {
-				if ( objA === objB )
+				if ( this.is( objA, objB ) )
 					return true;
 				if ( objA.constructor !== objB.constructor )
 					return false;
@@ -7923,17 +7957,16 @@ if ( typeof define === "function" && define.amd ) {
 
 		/**
 		 * Toggle event.
-		 * @variation
-		 * @example
-		 * var test1 = $("#a")[0];
-		 * event.toggle( test1, function() {
-		 *   alert(1)
-		 * }, function() {
-		 *   alert(2)
-		 * });
 		 * @param {Element|window}
 		 * @param {...Function} - Handelrs.
 		 * @returns {this}
+		 * @example
+		 * var test1 = $("#a")[0];
+		 * event.toggle(test1, function() {
+		 *   alert(1);
+		 * }, function() {
+		 *   alert(2);
+		 * });
 		 */
 		toggle: function( ele, funParas ) {
 			var arg = $.util.argToArray( arguments, 1 ),
@@ -9958,6 +9991,7 @@ aQuery.define( "main/css", [ "base/typed", "base/extend", "base/array", "base/su
 		};
 
 	if ( window.getComputedStyle ) {
+		//quote from jquery1.9.0
 		getStyles = function( elem ) {
 			return window.getComputedStyle( elem, null );
 		};
@@ -10047,17 +10081,7 @@ aQuery.define( "main/css", [ "base/typed", "base/extend", "base/array", "base/su
 			return ret === "" ? "auto" : ret;
 		};
 	}
-	/**
-	 * @pubilc
-	 * @exports main/css
-	 * @requires module:base/typed
-	 * @requires module:base/extend
-	 * @requires module:base/array
-	 * @requires module:base/support
-	 * @requires module:base/client
-	 * @requires module:main/data
-	 * @requires module:main/query
-	 */
+
 	var css = {
 		css: function( ele, name, value, style, extra ) {
 			/// <summary>为元素添加样式</summary>
@@ -17174,8 +17198,6 @@ aQuery.define( "ui/navitem", [
 			open: function() {
 				var opt = this.options;
 
-				this.render();
-
 				if ( !opt.isOpen ) {
 					if ( opt.parent && !opt.parent.uiNavitem( "option", "isOpen" ) ) {
 						opt.parent.uiNavitem( "open" );
@@ -17196,14 +17218,15 @@ aQuery.define( "ui/navitem", [
 						html: opt.html
 					};
 
-					return this.target.trigger( para.type, this.target[ 0 ], para );
+					this.target.trigger( para.type, this.target[ 0 ], para );
 				}
+
+				this.render();
+
 				return this;
 			},
 			close: function() {
 				var opt = this.options;
-
-				this.render();
 
 				if ( opt.isOpen ) {
 					opt.isOpen = false;
@@ -17219,8 +17242,11 @@ aQuery.define( "ui/navitem", [
 						html: opt.html
 					};
 
-					return this.target.trigger( para.type, this.target[ 0 ], para );
+					this.target.trigger( para.type, this.target[ 0 ], para );
 				}
+
+				this.render();
+
 				return this;
 			},
 			select: function() {
