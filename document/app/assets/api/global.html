@@ -1,356 +1,1265 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
-	<meta charset="utf-8">
-	<title>Documentation Global</title>
+    <meta charset="utf-8">
+    <title>JSDoc: Global</title>
 
-	<!--[if lt IE 9]>
-	<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-	<![endif]-->
-	<link type="text/css" rel="stylesheet" href="styles/sunlight.default.css">
-
-	
-	<link type="text/css" rel="stylesheet" href="styles/site.simplex.css">
-	
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
 </head>
 
 <body>
-<div class="container-fluid">
-	<div class="navbar navbar-fixed-top ">
-		<div class="navbar-inner">
-			<a class="brand" href="index.html">Documentation</a>
-			<ul class="nav">
-				
-				<li class="dropdown">
-					<a href="namespaces.list.html" class="dropdown-toggle" data-toggle="dropdown">Namespaces<b
-						class="caret"></b></a>
 
-					<ul class="dropdown-menu ">
-						
-						<li>
-							<a href="aQuery.util.html">util</a>
-						</li>
-						
-						<li>
-							<a href="event.document.html">document</a>
-						</li>
-						
-						<li>
-							<a href="require.html">require(namespace)</a>
-						</li>
-						
+<div id="main">
 
-					</ul>
-				</li>
-				
-				<li class="dropdown">
-					<a href="modules.list.html" class="dropdown-toggle" data-toggle="dropdown">Modules<b
-						class="caret"></b></a>
+    <h1 class="page-title">Global</h1>
 
-					<ul class="dropdown-menu ">
-						
-						<li>
-							<a href="array.html">base/array</a>
-						</li>
-						
-						<li>
-							<a href="ClassModule.html">base/ClassModule</a>
-						</li>
-						
-						<li>
-							<a href="client.html">base/client</a>
-						</li>
-						
-						<li>
-							<a href="config.html">base/config</a>
-						</li>
-						
-						<li>
-							<a href="extend.html">base/extend</a>
-						</li>
-						
-						<li>
-							<a href="Promise.html">base/Promise</a>
-						</li>
-						
-						<li>
-							<a href="queue.html">base/queue</a>
-						</li>
-						
-						<li>
-							<a href="ready.html">base/ready</a>
-						</li>
-						
-						<li>
-							<a href="support.html">base/support</a>
-						</li>
-						
-						<li>
-							<a href="typed.html">base/typed</a>
-						</li>
-						
-						<li>
-							<a href="array_.html">ecma5/array</a>
-						</li>
-						
-						<li>
-							<a href="function.html">ecma5/function</a>
-						</li>
-						
-						<li>
-							<a href="object.html">ecma5/object</a>
-						</li>
-						
-						<li>
-							<a href="string.html">ecma5/string</a>
-						</li>
-						
-						<li>
-							<a href="charcode.html">hash/charcode</a>
-						</li>
-						
-						<li>
-							<a href="cssColors.html">hash/cssColors</a>
-						</li>
-						
-						<li>
-							<a href="applicationCache.html">html5/applicationCache</a>
-						</li>
-						
-						<li>
-							<a href="localStorage.html">html5/localStorage</a>
-						</li>
-						
-						<li>
-							<a href="sessionStorage.html">html5/sessionStorage</a>
-						</li>
-						
-						<li>
-							<a href="Storage.html">html5/Storage</a>
-						</li>
-						
-						<li>
-							<a href="Worker.html">html5/Worker</a>
-						</li>
-						
-						<li>
-							<a href="sizzle.html">lib/sizzle</a>
-						</li>
-						
-						<li>
-							<a href="attr.html">main/attr</a>
-						</li>
-						
-						<li>
-							<a href="class.html">main/class</a>
-						</li>
-						
-						<li>
-							<a href="communicate.html">main/communicate</a>
-						</li>
-						
-						<li>
-							<a href="css.html">main/css</a>
-						</li>
-						
-						<li>
-							<a href="CustomEvent.html">main/CustomEvent</a>
-						</li>
-						
-						<li>
-							<a href="data.html">main/data</a>
-						</li>
-						
-						<li>
-							<a href="event.html">main/event</a>
-						</li>
-						
-						<li>
-							<a href="object_.html">main/object</a>
-						</li>
-						
-						<li>
-							<a href="parse.html">main/parse</a>
-						</li>
-						
-						<li>
-							<a href="query.html">main/query</a>
-						</li>
-						
-						<li>
-							<a href="event_.html">mobile/event</a>
-						</li>
-						
-						<li>
-							<a href="location.html">module/location</a>
-						</li>
-						
-						<li>
-							<a href="Test_.html">module/Test</a>
-						</li>
-						
-
-					</ul>
-				</li>
-				
-				<li class="dropdown">
-					<a href="classes.list.html" class="dropdown-toggle" data-toggle="dropdown">Classes<b
-						class="caret"></b></a>
-
-					<ul class="dropdown-menu ">
-						
-						<li>
-							<a href="aQuery.html">aQuery</a>
-						</li>
-						
-
-					</ul>
-				</li>
-				
-				<li class="dropdown">
-					<a href="mixins.list.html" class="dropdown-toggle" data-toggle="dropdown">Mixins<b
-						class="caret"></b></a>
-
-					<ul class="dropdown-menu ">
-						
-						<li>
-							<a href="CollectionClassPrototypeMethods.html">CollectionClassPrototypeMethods</a>
-						</li>
-						
-						<li>
-							<a href="ObjectClassStaticMethods.html">ObjectClassStaticMethods</a>
-						</li>
-						
-
-					</ul>
-				</li>
-				
-				<li class="dropdown">
-					<a href="global.html" class="dropdown-toggle" data-toggle="dropdown">Global<b
-						class="caret"></b></a>
-
-					<ul class="dropdown-menu ">
-						
-						<li>
-							<a href="global.html#debug">debug</a>
-						</li>
-						
-						<li>
-							<a href="global.html#define">define</a>
-						</li>
-						
-						<li>
-							<a href="global.html#define">define(1)</a>
-						</li>
-						
-						<li>
-							<a href="global.html#define">define(2)</a>
-						</li>
-						
-						<li>
-							<a href="global.html#define">define(3)</a>
-						</li>
-						
-						<li>
-							<a href="global.html#error">error</a>
-						</li>
-						
-						<li>
-							<a href="global.html#info">info</a>
-						</li>
-						
-						<li>
-							<a href="global.html#logger">logger</a>
-						</li>
-						
-						<li>
-							<a href="global.html#require">require</a>
-						</li>
-						
-
-					</ul>
-				</li>
-				
-			</ul>
-		</div>
-	</div>
-
-	<div class="row-fluid">
-
-		
-		<div class="span8">
-			
-				<div id="main">
-					
+    
 
 
-	<h1 class="page-title">Global</h1>
+
 <section>
-
+    
 <header>
     <h2>
     
     </h2>
     
-</header>
+</header>  
 
 <article>
     <div class="container-overview">
     
-
+    
     
         
-
+        
         
 <dl class="details">
     
-
+        
+    
+    
     
 
     
-
     
-
     
-
     
-
     
-
     
-
     
-
     
-
     
-
     
-
+    
+    
+    
+    
+    
+    
+    
+    
     
 </dl>
 
-
+        
         
     
     </div>
-
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+        <h3 class="subsection-title">Members</h3>
+        
+        <dl>
+            
+<dt>
+    <h4 class="name" id="AjaxOptions"><span class="type-signature">&lt;inner> </span>AjaxOptions<span class="type-signature"></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
     
 
     
+<dl class="details">
+    
+        
+        <h5 class="subsection-title">Properties:</h5>
+        
+        <dl>
 
+<table class="props">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>options</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">
+                <h6>Properties</h6>
+
+<table class="props">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		<th>Argument</th>
+		
+		
+		
+		<th>Default</th>
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>type</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+            
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+                    
+                
+                </td>
+            
+            
+            
+                <td class="default">
+                
+                    "GET"
+                
+                </td>
+            
+            
+            <td class="description last">"GET" or "POST"</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>url</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+            
+            
+                <td class="attributes">
+                
+                    
+                
+                </td>
+            
+            
+            
+                <td class="default">
+                
+                </td>
+            
+            
+            <td class="description last"></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>data</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+|
+
+<span class="param-type">Object.&lt;String, String></span>
+|
+
+<span class="param-type">Array.&lt;Object.&lt;String, String>></span>
+
+
+            
+            </td>
+            
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+                    
+                
+                </td>
+            
+            
+            
+                <td class="default">
+                
+                    ""
+                
+                </td>
+            
+            
+            <td class="description last">See <a href="communicate.html#getURLParam">module:main/communicate.getURLParam</a></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>async</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Boolean</span>
+
+
+            
+            </td>
+            
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+                    
+                
+                </td>
+            
+            
+            
+                <td class="default">
+                
+                    true
+                
+                </td>
+            
+            
+            <td class="description last"></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>complete</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+            
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+                    
+                
+                </td>
+            
+            
+            
+                <td class="default">
+                
+                </td>
+            
+            
+            <td class="description last"></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>header</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Object.&lt;String, String></span>
+
+
+            
+            </td>
+            
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+                    
+                
+                </td>
+            
+            
+            
+                <td class="default">
+                
+                </td>
+            
+            
+            <td class="description last"></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>isRandom</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Boolean</span>
+
+
+            
+            </td>
+            
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+                    
+                
+                </td>
+            
+            
+            
+                <td class="default">
+                
+                </td>
+            
+            
+            <td class="description last"></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>timeout</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+            
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+                    
+                
+                </td>
+            
+            
+            
+                <td class="default">
+                
+                    10000
+                
+                </td>
+            
+            
+            <td class="description last"></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>routing</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+            
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+                    
+                
+                </td>
+            
+            
+            
+                <td class="default">
+                
+                    ""
+                
+                </td>
+            
+            
+            <td class="description last"></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>timeoutFun</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+            
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+                    
+                
+                </td>
+            
+            
+            
+                <td class="default">
+                
+                </td>
+            
+            
+            <td class="description last">Timeout handler.</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>dataType</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+            
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+                    
+                
+                </td>
+            
+            
+            
+                <td class="default">
+                
+                    "text"
+                
+                </td>
+            
+            
+            <td class="description last">"json"|"xml"|"text"|"html"</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>contentType</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+            
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+                    
+                
+                </td>
+            
+            
+            
+                <td class="default">
+                
+                    "application/x-www-form-urlencoded"
+                
+                </td>
+            
+            
+            <td class="description last"></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>context</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+            
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+                    
+                
+                </td>
+            
+            
+            
+                <td class="default">
+                
+                    null
+                
+                </td>
+            
+            
+            <td class="description last">Complete context.</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+            </td>
+        </tr>
+	
+	
+	</tbody>
+</table></dl>
+        
+    
+        
+    
+    
     
 
     
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="communicate.js.html">main/communicate.js</a>, <a href="communicate.js.html#line3">line 3</a>
+    </li></ul></dd>
+    
+    
+    
+    
+    
+    
+    
+</dl>
 
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="JSONPOptions"><span class="type-signature">&lt;inner> </span>JSONPOptions<span class="type-signature"></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
     
 
     
+<dl class="details">
+    
+        
+        <h5 class="subsection-title">Properties:</h5>
+        
+        <dl>
 
+<table class="props">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>options</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">
+                <h6>Properties</h6>
+
+<table class="props">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		<th>Argument</th>
+		
+		
+		
+		<th>Default</th>
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>url</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+            
+            
+                <td class="attributes">
+                
+                    
+                
+                </td>
+            
+            
+            
+                <td class="default">
+                
+                </td>
+            
+            
+            <td class="description last"></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>charset</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+            
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+                    
+                
+                </td>
+            
+            
+            
+                <td class="default">
+                
+                    "GBK"
+                
+                </td>
+            
+            
+            <td class="description last"></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>complete</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+            
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+                    
+                
+                </td>
+            
+            
+            
+                <td class="default">
+                
+                </td>
+            
+            
+            <td class="description last"></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>error</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+            
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+                    
+                
+                </td>
+            
+            
+            
+                <td class="default">
+                
+                </td>
+            
+            
+            <td class="description last">Error handler</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>isDelete</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Boolean</span>
+
+
+            
+            </td>
+            
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+                    
+                
+                </td>
+            
+            
+            
+                <td class="default">
+                
+                    true
+                
+                </td>
+            
+            
+            <td class="description last">Does delete the script.</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>context</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+            
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+                    
+                
+                </td>
+            
+            
+            
+                <td class="default">
+                
+                    null
+                
+                </td>
+            
+            
+            <td class="description last">Complete context.</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>isRandom</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Boolean</span>
+
+
+            
+            </td>
+            
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+                    
+                
+                </td>
+            
+            
+            
+                <td class="default">
+                
+                    false
+                
+                </td>
+            
+            
+            <td class="description last"></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>checkString</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+            
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+                    
+                
+                </td>
+            
+            
+            
+                <td class="default">
+                
+                    ""
+                
+                </td>
+            
+            
+            <td class="description last">Then JSONP back string.</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>timeout</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+            
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+                    
+                
+                </td>
+            
+            
+            
+                <td class="default">
+                
+                    10000
+                
+                </td>
+            
+            
+            <td class="description last"></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>timeoutFun</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+            
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+                    
+                
+                </td>
+            
+            
+            
+                <td class="default">
+                
+                </td>
+            
+            
+            <td class="description last">Timeout handler.</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>routing</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+            
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+                    
+                
+                </td>
+            
+            
+            
+                <td class="default">
+                
+                    ""
+                
+                </td>
+            
+            
+            <td class="description last"></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>JSONP</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+|
+
+<span class="param-type">Boolean</span>
+
+
+            
+            </td>
+            
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+                    
+                
+                </td>
+            
+            
+            
+                <td class="default">
+                
+                </td>
+            
+            
+            <td class="description last">True is aQuery. String is JSONP.</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+            </td>
+        </tr>
+	
+	
+	</tbody>
+</table></dl>
+        
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="communicate.js.html">main/communicate.js</a>, <a href="communicate.js.html#line5">line 5</a>
+    </li></ul></dd>
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+</dd>
+
+        </dl>
+    
+    
     
         <h3 class="subsection-title">Methods</h3>
-
+        
         <dl>
             
 <dt>
@@ -374,29 +1283,29 @@
         <h5>Parameters:</h5>
         
 
-<table class="params table table-striped">
+<table class="params">
     <thead>
 	<tr>
 		
-
+		
 		<th>Type</th>
-
+		
 		
 		<th>Argument</th>
 		
-
 		
-
+		
+		
 		<th class="last">Description</th>
 	</tr>
 	</thead>
-
+	
 	<tbody>
 	
-
+	
         <tr>
             
-
+            
             <td class="type">
             
                 
@@ -405,61 +1314,60 @@
 
             
             </td>
-
+            
             
                 <td class="attributes">
                 
-
+                    
                 
-
+                    
                 
                     &lt;repeatable><br>
                 
                 </td>
             
-
             
-
+            
+            
             <td class="description last"></td>
         </tr>
-
+	
 	
 	</tbody>
 </table>
-
     
     
     
 <dl class="details">
     
-
+        
+    
+    
     
 
     
-
     
-
     
-
     
-
     
-
     
-
     
-
+    
+    
+    
+    
+    
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#sunlight-1-line-432">line 432</a>
+        <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#line432">line 432</a>
     </li></ul></dd>
     
-
     
-
     
-
+    
+    
+    
     
 </dl>
 
@@ -500,31 +1408,31 @@
         <h5>Parameters:</h5>
         
 
-<table class="params table table-striped">
+<table class="params">
     <thead>
 	<tr>
 		
 		<th>Name</th>
 		
-
+		
 		<th>Type</th>
-
 		
-
 		
-
+		
+		
+		
 		<th class="last">Description</th>
 	</tr>
 	</thead>
-
+	
 	<tbody>
 	
-
+	
         <tr>
             
                 <td class="name"><code>id</code></td>
             
-
+            
             <td class="type">
             
                 
@@ -533,21 +1441,21 @@
 
             
             </td>
-
             
-
             
-
+            
+            
+            
             <td class="description last">Module.</td>
         </tr>
-
 	
-
+	
+	
         <tr>
             
                 <td class="name"><code>dependencies</code></td>
             
-
+            
             <td class="type">
             
                 
@@ -556,21 +1464,21 @@
 
             
             </td>
-
             
-
             
-
+            
+            
+            
             <td class="description last">If arguments[2] is a factory, it can be any object.</td>
         </tr>
-
 	
-
+	
+	
         <tr>
             
                 <td class="name"><code>factory</code></td>
             
-
+            
             <td class="type">
             
                 
@@ -579,51 +1487,50 @@
 
             
             </td>
-
             
-
             
-
+            
+            
+            
             <td class="description last"></td>
         </tr>
-
+	
 	
 	</tbody>
 </table>
-
     
     
     
 <dl class="details">
     
-
+        
+    
+    
     
 
     
-
     
-
     
-
     
-
     
-
     
-
     
-
+    
+    
+    
+    
+    
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#sunlight-1-line-1657">line 1657</a>
+        <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#line1691">line 1691</a>
     </li></ul></dd>
     
-
     
-
     
-
+    
+    
+    
     
 </dl>
 
@@ -654,14 +1561,12 @@
 	</dd>
 </dl>
 
-
         
     
     
         <h5>Example</h5>
         
-    <pre class="sunlight-highlight-javascript">define("mymodule", ["base/array", "base/client"], function(){});</pre>
-
+    <pre class="prettyprint"><code>define("mymodule", ["base/array", "base/client"], function(){});</code></pre>
 
     
 </dd>
@@ -689,31 +1594,31 @@
         <h5>Parameters:</h5>
         
 
-<table class="params table table-striped">
+<table class="params">
     <thead>
 	<tr>
 		
 		<th>Name</th>
 		
-
+		
 		<th>Type</th>
-
 		
-
 		
-
+		
+		
+		
 		<th class="last">Description</th>
 	</tr>
 	</thead>
-
+	
 	<tbody>
 	
-
+	
         <tr>
             
                 <td class="name"><code>id</code></td>
             
-
+            
             <td class="type">
             
                 
@@ -722,51 +1627,50 @@
 
             
             </td>
-
             
-
             
-
+            
+            
+            
             <td class="description last">Not a string.</td>
         </tr>
-
+	
 	
 	</tbody>
 </table>
-
     
     
     
 <dl class="details">
     
-
+        
+    
+    
     
 
     
-
     
-
     
-
     
-
     
-
     
-
     
-
+    
+    
+    
+    
+    
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#sunlight-1-line-1611">line 1611</a>
+        <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#line1645">line 1645</a>
     </li></ul></dd>
     
-
     
-
     
-
+    
+    
+    
     
 </dl>
 
@@ -797,14 +1701,12 @@
 	</dd>
 </dl>
 
-
         
     
     
         <h5>Example</h5>
         
-    <pre class="sunlight-highlight-javascript">define({});</pre>
-
+    <pre class="prettyprint"><code>define({});</code></pre>
 
     
 </dd>
@@ -832,31 +1734,31 @@
         <h5>Parameters:</h5>
         
 
-<table class="params table table-striped">
+<table class="params">
     <thead>
 	<tr>
 		
 		<th>Name</th>
 		
-
+		
 		<th>Type</th>
-
 		
-
 		
-
+		
+		
+		
 		<th class="last">Description</th>
 	</tr>
 	</thead>
-
+	
 	<tbody>
 	
-
+	
         <tr>
             
                 <td class="name"><code>id</code></td>
             
-
+            
             <td class="type">
             
                 
@@ -865,21 +1767,21 @@
 
             
             </td>
-
             
-
             
-
+            
+            
+            
             <td class="description last"></td>
         </tr>
-
 	
-
+	
+	
         <tr>
             
                 <td class="name"><code>factory</code></td>
             
-
+            
             <td class="type">
             
                 
@@ -888,51 +1790,50 @@
 
             
             </td>
-
             
-
             
-
+            
+            
+            
             <td class="description last"></td>
         </tr>
-
+	
 	
 	</tbody>
 </table>
-
     
     
     
 <dl class="details">
     
-
+        
+    
+    
     
 
     
-
     
-
     
-
     
-
     
-
     
-
     
-
+    
+    
+    
+    
+    
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#sunlight-1-line-1613">line 1613</a>
+        <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#line1647">line 1647</a>
     </li></ul></dd>
     
-
     
-
     
-
+    
+    
+    
     
 </dl>
 
@@ -963,14 +1864,12 @@
 	</dd>
 </dl>
 
-
         
     
     
         <h5>Example</h5>
         
-    <pre class="sunlight-highlight-javascript">define("mymodule", function(){});</pre>
-
+    <pre class="prettyprint"><code>define("mymodule", function(){});</code></pre>
 
     
 </dd>
@@ -998,31 +1897,31 @@
         <h5>Parameters:</h5>
         
 
-<table class="params table table-striped">
+<table class="params">
     <thead>
 	<tr>
 		
 		<th>Name</th>
 		
-
+		
 		<th>Type</th>
-
 		
-
 		
-
+		
+		
+		
 		<th class="last">Description</th>
 	</tr>
 	</thead>
-
+	
 	<tbody>
 	
-
+	
         <tr>
             
                 <td class="name"><code>dependencies</code></td>
             
-
+            
             <td class="type">
             
                 
@@ -1031,21 +1930,21 @@
 
             
             </td>
-
             
-
             
-
+            
+            
+            
             <td class="description last">dependencies.</td>
         </tr>
-
 	
-
+	
+	
         <tr>
             
                 <td class="name"><code>factory</code></td>
             
-
+            
             <td class="type">
             
                 
@@ -1054,51 +1953,50 @@
 
             
             </td>
-
             
-
             
-
+            
+            
+            
             <td class="description last">Not a string.</td>
         </tr>
-
+	
 	
 	</tbody>
 </table>
-
     
     
     
 <dl class="details">
     
-
+        
+    
+    
     
 
     
-
     
-
     
-
     
-
     
-
     
-
     
-
+    
+    
+    
+    
+    
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#sunlight-1-line-1615">line 1615</a>
+        <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#line1649">line 1649</a>
     </li></ul></dd>
     
-
     
-
     
-
+    
+    
+    
     
 </dl>
 
@@ -1129,14 +2027,12 @@
 	</dd>
 </dl>
 
-
         
     
     
         <h5>Example</h5>
         
-    <pre class="sunlight-highlight-javascript">define(["base/array", "base/client"], {});</pre>
-
+    <pre class="prettyprint"><code>define(["base/array", "base/client"], {});</code></pre>
 
     
 </dd>
@@ -1164,29 +2060,29 @@
         <h5>Parameters:</h5>
         
 
-<table class="params table table-striped">
+<table class="params">
     <thead>
 	<tr>
 		
-
+		
 		<th>Type</th>
-
+		
 		
 		<th>Argument</th>
 		
-
 		
-
+		
+		
 		<th class="last">Description</th>
 	</tr>
 	</thead>
-
+	
 	<tbody>
 	
-
+	
         <tr>
             
-
+            
             <td class="type">
             
                 
@@ -1195,61 +2091,60 @@
 
             
             </td>
-
+            
             
                 <td class="attributes">
                 
-
+                    
                 
-
+                    
                 
                     &lt;repeatable><br>
                 
                 </td>
             
-
             
-
+            
+            
             <td class="description last"></td>
         </tr>
-
+	
 	
 	</tbody>
 </table>
-
     
     
     
 <dl class="details">
     
-
+        
+    
+    
     
 
     
-
     
-
     
-
     
-
     
-
     
-
     
-
+    
+    
+    
+    
+    
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#sunlight-1-line-442">line 442</a>
+        <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#line442">line 442</a>
     </li></ul></dd>
     
-
     
-
     
-
+    
+    
+    
     
 </dl>
 
@@ -1290,29 +2185,29 @@
         <h5>Parameters:</h5>
         
 
-<table class="params table table-striped">
+<table class="params">
     <thead>
 	<tr>
 		
-
+		
 		<th>Type</th>
-
+		
 		
 		<th>Argument</th>
 		
-
 		
-
+		
+		
 		<th class="last">Description</th>
 	</tr>
 	</thead>
-
+	
 	<tbody>
 	
-
+	
         <tr>
             
-
+            
             <td class="type">
             
                 
@@ -1321,61 +2216,60 @@
 
             
             </td>
-
+            
             
                 <td class="attributes">
                 
-
+                    
                 
-
+                    
                 
                     &lt;repeatable><br>
                 
                 </td>
             
-
             
-
+            
+            
             <td class="description last"></td>
         </tr>
-
+	
 	
 	</tbody>
 </table>
-
     
     
     
 <dl class="details">
     
-
+        
+    
+    
     
 
     
-
     
-
     
-
     
-
     
-
     
-
     
-
+    
+    
+    
+    
+    
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#sunlight-1-line-437">line 437</a>
+        <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#line437">line 437</a>
     </li></ul></dd>
     
-
     
-
     
-
+    
+    
+    
     
 </dl>
 
@@ -1416,29 +2310,29 @@
         <h5>Parameters:</h5>
         
 
-<table class="params table table-striped">
+<table class="params">
     <thead>
 	<tr>
 		
-
+		
 		<th>Type</th>
-
+		
 		
 		<th>Argument</th>
 		
-
 		
-
+		
+		
 		<th class="last">Description</th>
 	</tr>
 	</thead>
-
+	
 	<tbody>
 	
-
+	
         <tr>
             
-
+            
             <td class="type">
             
                 
@@ -1447,61 +2341,60 @@
 
             
             </td>
-
+            
             
                 <td class="attributes">
                 
-
+                    
                 
-
+                    
                 
                     &lt;repeatable><br>
                 
                 </td>
             
-
             
-
+            
+            
             <td class="description last"></td>
         </tr>
-
+	
 	
 	</tbody>
 </table>
-
     
     
     
 <dl class="details">
     
-
+        
+    
+    
     
 
     
-
     
-
     
-
     
-
     
-
     
-
     
-
+    
+    
+    
+    
+    
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#sunlight-1-line-427">line 427</a>
+        <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#line427">line 427</a>
     </li></ul></dd>
     
-
     
-
     
-
+    
+    
+    
     
 </dl>
 
@@ -1538,31 +2431,31 @@
         <h5>Parameters:</h5>
         
 
-<table class="params table table-striped">
+<table class="params">
     <thead>
 	<tr>
 		
 		<th>Name</th>
 		
-
+		
 		<th>Type</th>
-
 		
-
 		
-
+		
+		
+		
 		<th class="last">Description</th>
 	</tr>
 	</thead>
-
+	
 	<tbody>
 	
-
+	
         <tr>
             
                 <td class="name"><code>fn</code></td>
             
-
+            
             <td class="type">
             
                 
@@ -1571,51 +2464,50 @@
 
             
             </td>
-
             
-
             
-
+            
+            
+            
             <td class="description last">When AMDQuery ready to call the callback function</td>
         </tr>
-
+	
 	
 	</tbody>
 </table>
-
     
     
     
 <dl class="details">
     
-
+        
+    
+    
     
 
     
-
     
-
     
-
     
-
     
-
     
-
     
-
+    
+    
+    
+    
+    
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#sunlight-1-line-2323">line 2323</a>
+        <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#line2357">line 2357</a>
     </li></ul></dd>
     
-
     
-
     
-
+    
+    
+    
     
 </dl>
 
@@ -1633,12 +2525,11 @@
     
         <h5>Example</h5>
         
-    <pre class="sunlight-highlight-javascript">require("base/ready", function( ready ) {
+    <pre class="prettyprint"><code>require("base/ready", function( ready ) {
   ready(function(){
 
   });
-} );</pre>
-
+} );</code></pre>
 
     
 </dd>
@@ -1666,33 +2557,33 @@
         <h5>Parameters:</h5>
         
 
-<table class="params table table-striped">
+<table class="params">
     <thead>
 	<tr>
 		
 		<th>Name</th>
 		
-
+		
 		<th>Type</th>
-
+		
 		
 		<th>Argument</th>
 		
-
 		
-
+		
+		
 		<th class="last">Description</th>
 	</tr>
 	</thead>
-
+	
 	<tbody>
 	
-
+	
         <tr>
             
                 <td class="name"><code></code></td>
             
-
+            
             <td class="type">
             
                 
@@ -1701,29 +2592,29 @@
 
             
             </td>
-
+            
             
                 <td class="attributes">
                 
-
+                    
                 
-
+                    
                 
                 </td>
             
-
             
-
+            
+            
             <td class="description last">Module.</td>
         </tr>
-
 	
-
+	
+	
         <tr>
             
                 <td class="name"><code></code></td>
             
-
+            
             <td class="type">
             
                 
@@ -1732,29 +2623,29 @@
 
             
             </td>
-
+            
             
                 <td class="attributes">
                 
-
+                    
                 
-
+                    
                 
                 </td>
             
-
             
-
+            
+            
             <td class="description last"></td>
         </tr>
-
 	
-
+	
+	
         <tr>
             
                 <td class="name"><code>fail</code></td>
             
-
+            
             <td class="type">
             
                 
@@ -1763,61 +2654,60 @@
 
             
             </td>
-
+            
             
                 <td class="attributes">
                 
                     &lt;optional><br>
                 
-
+                    
                 
-
+                    
                 
                 </td>
             
-
             
-
+            
+            
             <td class="description last">An function to the fail callback if loading moudle timeout or error.</td>
         </tr>
-
+	
 	
 	</tbody>
 </table>
-
     
     
     
 <dl class="details">
     
-
+        
+    
+    
     
 
     
-
     
-
     
-
     
-
     
-
     
-
     
-
+    
+    
+    
+    
+    
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#sunlight-1-line-1769">line 1769</a>
+        <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#line1803">line 1803</a>
     </li></ul></dd>
     
-
     
-
     
-
+    
+    
+    
     
 </dl>
 
@@ -1848,26 +2738,24 @@
 	</dd>
 </dl>
 
-
         
     
     
         <h5>Example</h5>
         
-    <pre class="sunlight-highlight-javascript">require( [ "main/query", "module/location", "ui/swapview", "ui/scrollableview" ], function( query, location ) { } );
+    <pre class="prettyprint"><code>require( [ "main/query", "module/location", "ui/swapview", "ui/scrollableview" ], function( query, location ) { } );
 require( "main/query", function( query ) { } );
-require( "main/query" ).first // Maybe is null;</pre>
-
+require( "main/query" ).first // Maybe is null;</code></pre>
 
     
 </dd>
 
         </dl>
     
-
+    
     
         <h3 class="subsection-title">Type Definitions</h3>
-
+        
         <dl>
                 
 <dt>
@@ -1894,27 +2782,27 @@ require( "main/query" ).first // Maybe is null;</pre>
         <h5>Parameters:</h5>
         
 
-<table class="params table table-striped">
+<table class="params">
     <thead>
 	<tr>
 		
-
+		
 		<th>Type</th>
-
 		
-
 		
-
+		
+		
+		
 		<th class="last">Description</th>
 	</tr>
 	</thead>
-
+	
 	<tbody>
 	
-
+	
         <tr>
             
-
+            
             <td class="type">
             
                 
@@ -1923,19 +2811,19 @@ require( "main/query" ).first // Maybe is null;</pre>
 
             
             </td>
-
             
-
             
-
+            
+            
+            
             <td class="description last">element</td>
         </tr>
-
 	
-
+	
+	
         <tr>
             
-
+            
             <td class="type">
             
                 
@@ -1944,51 +2832,50 @@ require( "main/query" ).first // Maybe is null;</pre>
 
             
             </td>
-
             
-
             
-
+            
+            
+            
             <td class="description last">index</td>
         </tr>
-
+	
 	
 	</tbody>
 </table>
-
     
     
     
 <dl class="details">
     
-
+        
+    
+    
     
 
     
-
     
-
     
-
     
-
     
-
     
-
     
-
+    
+    
+    
+    
+    
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#sunlight-1-line-309">line 309</a>
+        <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#line309">line 309</a>
     </li></ul></dd>
     
-
     
-
     
-
+    
+    
+    
     
 </dl>
 
@@ -2025,31 +2912,31 @@ require( "main/query" ).first // Maybe is null;</pre>
         <h5>Parameters:</h5>
         
 
-<table class="params table table-striped">
+<table class="params">
     <thead>
 	<tr>
 		
 		<th>Name</th>
 		
-
+		
 		<th>Type</th>
-
 		
-
 		
-
+		
+		
+		
 		<th class="last">Description</th>
 	</tr>
 	</thead>
-
+	
 	<tbody>
 	
-
+	
         <tr>
             
                 <td class="name"><code>item</code></td>
             
-
+            
             <td class="type">
             
                 
@@ -2058,21 +2945,21 @@ require( "main/query" ).first // Maybe is null;</pre>
 
             
             </td>
-
             
-
             
-
+            
+            
+            
             <td class="description last">Element of array.</td>
         </tr>
-
 	
-
+	
+	
         <tr>
             
                 <td class="name"><code>index</code></td>
             
-
+            
             <td class="type">
             
                 
@@ -2081,21 +2968,21 @@ require( "main/query" ).first // Maybe is null;</pre>
 
             
             </td>
-
             
-
             
-
+            
+            
+            
             <td class="description last">Index of element.</td>
         </tr>
-
 	
-
+	
+	
         <tr>
             
                 <td class="name"><code>array</code></td>
             
-
+            
             <td class="type">
             
                 
@@ -2104,51 +2991,50 @@ require( "main/query" ).first // Maybe is null;</pre>
 
             
             </td>
-
             
-
             
-
+            
+            
+            
             <td class="description last"></td>
         </tr>
-
+	
 	
 	</tbody>
 </table>
-
     
     
     
 <dl class="details">
     
-
+        
+    
+    
     
 
     
-
     
-
     
-
     
-
     
-
     
-
     
-
+    
+    
+    
+    
+    
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="array.js.html">ecma5/array.js</a>, <a href="array.js.html#sunlight-1-line-5">line 5</a>
+        <a href="array.js.html">ecma5/array.js</a>, <a href="array.js.html#line5">line 5</a>
     </li></ul></dd>
     
-
     
-
     
-
+    
+    
+    
     
 </dl>
 
@@ -2181,7 +3067,6 @@ require( "main/query" ).first // Maybe is null;</pre>
 
 	</dd>
 </dl>
-
 
         
     
@@ -2207,31 +3092,31 @@ require( "main/query" ).first // Maybe is null;</pre>
         <h5>Parameters:</h5>
         
 
-<table class="params table table-striped">
+<table class="params">
     <thead>
 	<tr>
 		
 		<th>Name</th>
 		
-
+		
 		<th>Type</th>
-
 		
-
 		
-
+		
+		
+		
 		<th class="last">Description</th>
 	</tr>
 	</thead>
-
+	
 	<tbody>
 	
-
+	
         <tr>
             
                 <td class="name"><code>rv</code></td>
             
-
+            
             <td class="type">
             
                 
@@ -2240,21 +3125,21 @@ require( "main/query" ).first // Maybe is null;</pre>
 
             
             </td>
-
             
-
             
-
+            
+            
+            
             <td class="description last">Previous result.</td>
         </tr>
-
 	
-
+	
+	
         <tr>
             
                 <td class="name"><code>item</code></td>
             
-
+            
             <td class="type">
             
                 
@@ -2263,21 +3148,21 @@ require( "main/query" ).first // Maybe is null;</pre>
 
             
             </td>
-
             
-
             
-
+            
+            
+            
             <td class="description last">Element of array.</td>
         </tr>
-
 	
-
+	
+	
         <tr>
             
                 <td class="name"><code>index</code></td>
             
-
+            
             <td class="type">
             
                 
@@ -2286,21 +3171,21 @@ require( "main/query" ).first // Maybe is null;</pre>
 
             
             </td>
-
             
-
             
-
+            
+            
+            
             <td class="description last">Index of element.</td>
         </tr>
-
 	
-
+	
+	
         <tr>
             
                 <td class="name"><code>array</code></td>
             
-
+            
             <td class="type">
             
                 
@@ -2309,51 +3194,50 @@ require( "main/query" ).first // Maybe is null;</pre>
 
             
             </td>
-
             
-
             
-
+            
+            
+            
             <td class="description last"></td>
         </tr>
-
+	
 	
 	</tbody>
 </table>
-
     
     
     
 <dl class="details">
     
-
+        
+    
+    
     
 
     
-
     
-
     
-
     
-
     
-
     
-
     
-
+    
+    
+    
+    
+    
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="array.js.html">ecma5/array.js</a>, <a href="array.js.html#sunlight-1-line-7">line 7</a>
+        <a href="array.js.html">ecma5/array.js</a>, <a href="array.js.html#line7">line 7</a>
     </li></ul></dd>
     
-
     
-
     
-
+    
+    
+    
     
 </dl>
 
@@ -2386,7 +3270,6 @@ require( "main/query" ).first // Maybe is null;</pre>
 
 	</dd>
 </dl>
-
 
         
     
@@ -2415,29 +3298,29 @@ require( "main/query" ).first // Maybe is null;</pre>
         <h5>Parameters:</h5>
         
 
-<table class="params table table-striped">
+<table class="params">
     <thead>
 	<tr>
 		
-
+		
 		<th>Type</th>
-
+		
 		
 		<th>Argument</th>
 		
-
 		
-
+		
+		
 		<th class="last">Description</th>
 	</tr>
 	</thead>
-
+	
 	<tbody>
 	
-
+	
         <tr>
             
-
+            
             <td class="type">
             
                 
@@ -2446,61 +3329,60 @@ require( "main/query" ).first // Maybe is null;</pre>
 
             
             </td>
-
+            
             
                 <td class="attributes">
                 
-
+                    
                 
-
+                    
                 
                     &lt;repeatable><br>
                 
                 </td>
             
-
             
-
+            
+            
             <td class="description last">An argument array of any object. Any one argument is defined in the module.</td>
         </tr>
-
+	
 	
 	</tbody>
 </table>
-
     
     
     
 <dl class="details">
     
-
+        
+    
+    
     
 
     
-
     
-
     
-
     
-
     
-
     
-
     
-
+    
+    
+    
+    
+    
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#sunlight-1-line-1241">line 1241</a>
+        <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#line1275">line 1275</a>
     </li></ul></dd>
     
-
     
-
     
-
+    
+    
+    
     
 </dl>
 
@@ -2537,31 +3419,31 @@ require( "main/query" ).first // Maybe is null;</pre>
         <h5>Parameters:</h5>
         
 
-<table class="params table table-striped">
+<table class="params">
     <thead>
 	<tr>
 		
 		<th>Name</th>
 		
-
+		
 		<th>Type</th>
-
 		
-
 		
-
+		
+		
+		
 		<th class="last">Description</th>
 	</tr>
 	</thead>
-
+	
 	<tbody>
 	
-
+	
         <tr>
             
                 <td class="name"><code>item</code></td>
             
-
+            
             <td class="type">
             
                 
@@ -2570,21 +3452,21 @@ require( "main/query" ).first // Maybe is null;</pre>
 
             
             </td>
-
             
-
             
-
+            
+            
+            
             <td class="description last"></td>
         </tr>
-
 	
-
+	
+	
         <tr>
             
                 <td class="name"><code>index</code></td>
             
-
+            
             <td class="type">
             
                 
@@ -2593,51 +3475,50 @@ require( "main/query" ).first // Maybe is null;</pre>
 
             
             </td>
-
             
-
             
-
+            
+            
+            
             <td class="description last"></td>
         </tr>
-
+	
 	
 	</tbody>
 </table>
-
     
     
     
 <dl class="details">
     
-
+        
+    
+    
     
 
     
-
     
-
     
-
     
-
     
-
     
-
     
-
+    
+    
+    
+    
+    
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="object.js.html">main/object.js</a>, <a href="object.js.html#sunlight-1-line-80">line 80</a>
+        <a href="object.js.html">main/object.js</a>, <a href="object.js.html#line80">line 80</a>
     </li></ul></dd>
     
-
     
-
     
-
+    
+    
+    
     
 </dl>
 
@@ -2674,27 +3555,27 @@ require( "main/query" ).first // Maybe is null;</pre>
         <h5>Parameters:</h5>
         
 
-<table class="params table table-striped">
+<table class="params">
     <thead>
 	<tr>
 		
-
+		
 		<th>Type</th>
-
 		
-
 		
-
+		
+		
+		
 		<th class="last">Description</th>
 	</tr>
 	</thead>
-
+	
 	<tbody>
 	
-
+	
         <tr>
             
-
+            
             <td class="type">
             
                 
@@ -2703,19 +3584,19 @@ require( "main/query" ).first // Maybe is null;</pre>
 
             
             </td>
-
             
-
             
-
+            
+            
+            
             <td class="description last">Item.</td>
         </tr>
-
 	
-
+	
+	
         <tr>
             
-
+            
             <td class="type">
             
                 
@@ -2727,51 +3608,50 @@ require( "main/query" ).first // Maybe is null;</pre>
 
             
             </td>
-
             
-
             
-
+            
+            
+            
             <td class="description last">If iterate array then parameter is index. If iterate object then parameter is key.</td>
         </tr>
-
+	
 	
 	</tbody>
 </table>
-
     
     
     
 <dl class="details">
     
-
+        
+    
+    
     
 
     
-
     
-
     
-
     
-
     
-
     
-
     
-
+    
+    
+    
+    
+    
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#sunlight-1-line-307">line 307</a>
+        <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#line307">line 307</a>
     </li></ul></dd>
     
-
     
-
     
-
+    
+    
+    
     
 </dl>
 
@@ -2817,34 +3697,34 @@ require( "main/query" ).first // Maybe is null;</pre>
     
 <dl class="details">
     
-
+        
+    
+    
     
 
     
-
     
-
     
-
     
-
     
-
     
-
     
-
+    
+    
+    
+    
+    
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#sunlight-1-line-16">line 16</a>
+        <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#line16">line 16</a>
     </li></ul></dd>
     
-
     
-
     
-
+    
+    
+    
     
 </dl>
 
@@ -2878,27 +3758,27 @@ require( "main/query" ).first // Maybe is null;</pre>
         <h5>Parameters:</h5>
         
 
-<table class="params table table-striped">
+<table class="params">
     <thead>
 	<tr>
 		
-
+		
 		<th>Type</th>
-
 		
-
 		
-
+		
+		
+		
 		<th class="last">Description</th>
 	</tr>
 	</thead>
-
+	
 	<tbody>
 	
-
+	
         <tr>
             
-
+            
             <td class="type">
             
                 
@@ -2907,19 +3787,19 @@ require( "main/query" ).first // Maybe is null;</pre>
 
             
             </td>
-
             
-
             
-
+            
+            
+            
             <td class="description last">Item</td>
         </tr>
-
 	
-
+	
+	
         <tr>
             
-
+            
             <td class="type">
             
                 
@@ -2928,19 +3808,19 @@ require( "main/query" ).first // Maybe is null;</pre>
 
             
             </td>
-
             
-
             
-
+            
+            
+            
             <td class="description last">Index</td>
         </tr>
-
 	
-
+	
+	
         <tr>
             
-
+            
             <td class="type">
             
                 
@@ -2949,51 +3829,50 @@ require( "main/query" ).first // Maybe is null;</pre>
 
             
             </td>
-
             
-
             
-
+            
+            
+            
             <td class="description last"></td>
         </tr>
-
+	
 	
 	</tbody>
 </table>
-
     
     
     
 <dl class="details">
     
-
+        
+    
+    
     
 
     
-
     
-
     
-
     
-
     
-
     
-
     
-
+    
+    
+    
+    
+    
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="array.js_.html">base/array.js</a>, <a href="array.js_.html#sunlight-1-line-24">line 24</a>
+        <a href="array.js_.html">base/array.js</a>, <a href="array.js_.html#line24">line 24</a>
     </li></ul></dd>
     
-
     
-
     
-
+    
+    
+    
     
 </dl>
 
@@ -3023,7 +3902,6 @@ require( "main/query" ).first // Maybe is null;</pre>
 
 	</dd>
 </dl>
-
 
         
     
@@ -3049,27 +3927,27 @@ require( "main/query" ).first // Maybe is null;</pre>
         <h5>Parameters:</h5>
         
 
-<table class="params table table-striped">
+<table class="params">
     <thead>
 	<tr>
 		
-
+		
 		<th>Type</th>
-
 		
-
 		
-
+		
+		
+		
 		<th class="last">Description</th>
 	</tr>
 	</thead>
-
+	
 	<tbody>
 	
-
+	
         <tr>
             
-
+            
             <td class="type">
             
                 
@@ -3078,19 +3956,19 @@ require( "main/query" ).first // Maybe is null;</pre>
 
             
             </td>
-
             
-
             
-
+            
+            
+            
             <td class="description last">Item.</td>
         </tr>
-
 	
-
+	
+	
         <tr>
             
-
+            
             <td class="type">
             
                 
@@ -3099,51 +3977,50 @@ require( "main/query" ).first // Maybe is null;</pre>
 
             
             </td>
-
             
-
             
-
+            
+            
+            
             <td class="description last">Index.</td>
         </tr>
-
+	
 	
 	</tbody>
 </table>
-
     
     
     
 <dl class="details">
     
-
+        
+    
+    
     
 
     
-
     
-
     
-
     
-
     
-
     
-
     
-
+    
+    
+    
+    
+    
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="array.js_.html">base/array.js</a>, <a href="array.js_.html#sunlight-1-line-22">line 22</a>
+        <a href="array.js_.html">base/array.js</a>, <a href="array.js_.html#line22">line 22</a>
     </li></ul></dd>
     
-
     
-
     
-
+    
+    
+    
     
 </dl>
 
@@ -3173,7 +4050,6 @@ require( "main/query" ).first // Maybe is null;</pre>
 
 	</dd>
 </dl>
-
 
         
     
@@ -3205,36 +4081,36 @@ require( "main/query" ).first // Maybe is null;</pre>
     
 <dl class="details">
     
-
+        
         <h5 class="subsection-title">Properties:</h5>
-
+        
         <dl>
 
-<table class="props table table-striped">
+<table class="props">
     <thead>
 	<tr>
 		
 		<th>Name</th>
 		
-
+		
 		<th>Type</th>
-
 		
-
 		
-
+		
+		
+		
 		<th class="last">Description</th>
 	</tr>
 	</thead>
-
+	
 	<tbody>
 	
-
+	
         <tr>
             
                 <td class="name"><code>name</code></td>
             
-
+            
             <td class="type">
             
                 
@@ -3243,21 +4119,21 @@ require( "main/query" ).first // Maybe is null;</pre>
 
             
             </td>
-
             
-
             
-
+            
+            
+            
             <td class="description last">Module name</td>
         </tr>
-
 	
-
+	
+	
         <tr>
             
                 <td class="name"><code>status</code></td>
             
-
+            
             <td class="type">
             
                 
@@ -3266,21 +4142,21 @@ require( "main/query" ).first // Maybe is null;</pre>
 
             
             </td>
-
             
-
             
-
+            
+            
+            
             <td class="description last">Module status</td>
         </tr>
-
 	
-
+	
+	
         <tr>
             
                 <td class="name"><code>container</code></td>
             
-
+            
             <td class="type">
             
                 
@@ -3289,48 +4165,47 @@ require( "main/query" ).first // Maybe is null;</pre>
 
             
             </td>
-
             
-
             
-
+            
+            
+            
             <td class="description last">Module path</td>
         </tr>
-
+	
 	
 	</tbody>
-</table>
-</dl>
-
+</table></dl>
+        
+    
+        
+    
+    
     
 
     
-
     
-
     
-
     
-
     
-
     
-
     
-
     
-
+    
+    
+    
+    
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#sunlight-1-line-1342">line 1342</a>
+        <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#line1376">line 1376</a>
     </li></ul></dd>
     
-
     
-
     
-
+    
+    
+    
     
 </dl>
 
@@ -3357,27 +4232,27 @@ require( "main/query" ).first // Maybe is null;</pre>
         <h5>Parameters:</h5>
         
 
-<table class="params table table-striped">
+<table class="params">
     <thead>
 	<tr>
 		
-
+		
 		<th>Type</th>
-
 		
-
 		
-
+		
+		
+		
 		<th class="last">Description</th>
 	</tr>
 	</thead>
-
+	
 	<tbody>
 	
-
+	
         <tr>
             
-
+            
             <td class="type">
             
                 
@@ -3386,19 +4261,19 @@ require( "main/query" ).first // Maybe is null;</pre>
 
             
             </td>
-
             
-
             
-
+            
+            
+            
             <td class="description last"></td>
         </tr>
-
 	
-
+	
+	
         <tr>
             
-
+            
             <td class="type">
             
                 
@@ -3407,19 +4282,19 @@ require( "main/query" ).first // Maybe is null;</pre>
 
             
             </td>
-
             
-
             
-
+            
+            
+            
             <td class="description last">Index in array.</td>
         </tr>
-
 	
-
+	
+	
         <tr>
             
-
+            
             <td class="type">
             
                 
@@ -3428,51 +4303,50 @@ require( "main/query" ).first // Maybe is null;</pre>
 
             
             </td>
-
             
-
             
-
+            
+            
+            
             <td class="description last">Any object which is the third parameter of function "map".</td>
         </tr>
-
+	
 	
 	</tbody>
 </table>
-
     
     
     
 <dl class="details">
     
-
+        
+    
+    
     
 
     
-
     
-
     
-
     
-
     
-
     
-
     
-
+    
+    
+    
+    
+    
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="query.js.html">main/query.js</a>, <a href="query.js.html#sunlight-1-line-54">line 54</a>
+        <a href="query.js.html">main/query.js</a>, <a href="query.js.html#line54">line 54</a>
     </li></ul></dd>
     
-
     
-
     
-
+    
+    
+    
     
 </dl>
 
@@ -3509,31 +4383,31 @@ require( "main/query" ).first // Maybe is null;</pre>
         <h5>Parameters:</h5>
         
 
-<table class="params table table-striped">
+<table class="params">
     <thead>
 	<tr>
 		
 		<th>Name</th>
 		
-
+		
 		<th>Type</th>
-
 		
-
 		
-
+		
+		
+		
 		<th class="last">Description</th>
 	</tr>
 	</thead>
-
+	
 	<tbody>
 	
-
+	
         <tr>
             
                 <td class="name"><code>event</code></td>
             
-
+            
             <td class="type">
             
                 
@@ -3542,40 +4416,40 @@ require( "main/query" ).first // Maybe is null;</pre>
 
             
             </td>
-
             
-
             
-
+            
+            
+            
             <td class="description last">callback event.
                 <h6>Properties</h6>
                 
 
-<table class="params table table-striped">
+<table class="params">
     <thead>
 	<tr>
 		
 		<th>Name</th>
 		
-
+		
 		<th>Type</th>
-
 		
-
 		
-
+		
+		
+		
 		<th class="last">Description</th>
 	</tr>
 	</thead>
-
+	
 	<tbody>
 	
-
+	
         <tr>
             
                 <td class="name"><code>key</code></td>
             
-
+            
             <td class="type">
             
                 
@@ -3584,21 +4458,21 @@ require( "main/query" ).first // Maybe is null;</pre>
 
             
             </td>
-
             
-
             
-
+            
+            
+            
             <td class="description last">Key of Storage.</td>
         </tr>
-
 	
-
+	
+	
         <tr>
             
                 <td class="name"><code>newValue</code></td>
             
-
+            
             <td class="type">
             
                 
@@ -3607,21 +4481,21 @@ require( "main/query" ).first // Maybe is null;</pre>
 
             
             </td>
-
             
-
             
-
+            
+            
+            
             <td class="description last">.</td>
         </tr>
-
 	
-
+	
+	
         <tr>
             
                 <td class="name"><code>oldValue</code></td>
             
-
+            
             <td class="type">
             
                 
@@ -3630,21 +4504,21 @@ require( "main/query" ).first // Maybe is null;</pre>
 
             
             </td>
-
             
-
             
-
+            
+            
+            
             <td class="description last">.</td>
         </tr>
-
 	
-
+	
+	
         <tr>
             
                 <td class="name"><code>url</code></td>
             
-
+            
             <td class="type">
             
                 
@@ -3653,76 +4527,74 @@ require( "main/query" ).first // Maybe is null;</pre>
 
             
             </td>
-
             
-
             
-
+            
+            
+            
             <td class="description last">.</td>
         </tr>
-
 	
-
+	
+	
         <tr>
             
                 <td class="name"><code>storageArea</code></td>
             
-
+            
             <td class="type">
             
             </td>
-
             
-
             
-
+            
+            
+            
             <td class="description last"></td>
         </tr>
-
+	
 	
 	</tbody>
 </table>
-
             </td>
         </tr>
-
+	
 	
 	</tbody>
 </table>
-
     
     
     
 <dl class="details">
     
-
+        
+    
+    
     
 
     
-
     
-
     
-
     
-
     
-
     
-
     
-
+    
+    
+    
+    
+    
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Storage.js.html">html5/Storage.js</a>, <a href="Storage.js.html#sunlight-1-line-4">line 4</a>
+        <a href="Storage.js.html">html5/Storage.js</a>, <a href="Storage.js.html#line4">line 4</a>
     </li></ul></dd>
     
-
     
-
     
-
+    
+    
+    
     
 </dl>
 
@@ -3742,64 +4614,28 @@ require( "main/query" ).first // Maybe is null;</pre>
 
             </dl>
     
-
+    
     
 </article>
 
-</section>
+</section>  
 
 
 
 
-				</div>
+</div>
 
-				<div class="clearfix"></div>
-				<footer>
-					
-					
-		<span class="jsdoc-message">
-		Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.2</a>
-		</span>
-				</footer>
-			</div>
+<nav>
+    <h2><a href="index.html">Index</a></h2><h3>Modules</h3><ul><li><a href="array.html">base/array</a></li><li><a href="ClassModule.html">base/ClassModule</a></li><li><a href="client.html">base/client</a></li><li><a href="config.html">base/config</a></li><li><a href="extend.html">base/extend</a></li><li><a href="Promise.html">base/Promise</a></li><li><a href="queue.html">base/queue</a></li><li><a href="ready.html">base/ready</a></li><li><a href="support.html">base/support</a></li><li><a href="typed.html">base/typed</a></li><li><a href="array_.html">ecma5/array</a></li><li><a href="function.html">ecma5/function</a></li><li><a href="object.html">ecma5/object</a></li><li><a href="string.html">ecma5/string</a></li><li><a href="charcode.html">hash/charcode</a></li><li><a href="cssColors.html">hash/cssColors</a></li><li><a href="applicationCache.html">html5/applicationCache</a></li><li><a href="localStorage.html">html5/localStorage</a></li><li><a href="sessionStorage.html">html5/sessionStorage</a></li><li><a href="Storage.html">html5/Storage</a></li><li><a href="Worker.html">html5/Worker</a></li><li><a href="sizzle.html">lib/sizzle</a></li><li><a href="attr.html">main/attr</a></li><li><a href="class.html">main/class</a></li><li><a href="communicate.html">main/communicate</a></li><li><a href="CustomEvent.html">main/CustomEvent</a></li><li><a href="data.html">main/data</a></li><li><a href="event.html">main/event</a></li><li><a href="object_.html">main/object</a></li><li><a href="parse.html">main/parse</a></li><li><a href="query.html">main/query</a></li><li><a href="event_.html">mobile/event</a></li><li><a href="location.html">module/location</a></li><li><a href="Test_.html">module/Test</a></li></ul><h3>Classes</h3><ul><li><a href="aQuery.html">aQuery</a></li></ul><h3>Events</h3><ul><li><a href="aQuery.html#event:"ajaxStart"">"ajaxStart"</a></li><li><a href="aQuery.html#event:"ajaxStop"">"ajaxStop"</a></li><li><a href="aQuery.html#event:"ajaxTimeout"">"ajaxTimeout"</a></li><li><a href="aQuery.html#event:"jsonpStart"">"jsonpStart"</a></li><li><a href="aQuery.html#event:"jsonpStop"">"jsonpStop"</a></li><li><a href="aQuery.html#event:"jsonpTimeout"">"jsonpTimeout"</a></li><li><a href="aQuery.html#event:"test.report"">"test.report"</a></li></ul><h3>Namespaces</h3><ul><li><a href="aQuery.util.html">util</a></li><li><a href="event.document.html">document</a></li><li><a href="require.html">require(namespace)</a></li></ul><h3>Mixins</h3><ul><li><a href="CollectionClassPrototypeMethods.html">CollectionClassPrototypeMethods</a></li><li><a href="ObjectClassStaticMethods.html">ObjectClassStaticMethods</a></li></ul><h3>Global</h3><ul><li><a href="global.html#AjaxOptions">AjaxOptions</a></li><li><a href="global.html#debug">debug</a></li><li><a href="global.html#define">define</a></li><li><a href="global.html#define">define(1)</a></li><li><a href="global.html#define">define(2)</a></li><li><a href="global.html#define">define(3)</a></li><li><a href="global.html#error">error</a></li><li><a href="global.html#info">info</a></li><li><a href="global.html#JSONPOptions">JSONPOptions</a></li><li><a href="global.html#logger">logger</a></li><li><a href="global.html#require">require</a></li></ul>
+</nav>
 
-			
-			<div class="span3">
-				<div id="toc"></div>
-			</div>
-			
-			<br clear="both">
-		</div>
+<br clear="both">
 
-	</div>
-	<script src="scripts/sunlight.js"></script>
-	<script src="scripts/sunlight.javascript.js"></script>
-	<script src="scripts/sunlight-plugin.doclinks.js"></script>
-	<script src="scripts/sunlight-plugin.linenumbers.js"></script>
-	<script src="scripts/sunlight-plugin.menu.js"></script>
-	<script src="scripts/jquery.min.js"></script>
-	<script src="scripts/jquery.scrollTo.js"></script>
-	<script src="scripts/jquery.localScroll.js"></script>
-	<script src="scripts/bootstrap-dropdown.js"></script>
-	<script src="scripts/toc.js"></script>
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.2</a> on Thu Feb 27 2014 23:18:09 GMT+0800 (CST)
+</footer>
 
-
-	<script>  Sunlight.highlightAll({lineNumbers:true,  showMenu: true, enableDoclinks :true}); </script>
-
-	<script>
-		$( function () {
-			$( "#toc" ).toc( {
-				selectors   : "h1,h2,h3,h4",
-				showAndHide : false,
-				scrollTo    : 60
-			} );
-			$( "#toc>ul" ).addClass( "nav nav-pills nav-stacked" );
-			$( "#main span[id^='toc']" ).addClass( "toc-shim" );
-
-		} );
-	</script>
-
-	
-
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
 </body>
 </html>

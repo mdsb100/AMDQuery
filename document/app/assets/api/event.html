@@ -1,356 +1,93 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
-	<meta charset="utf-8">
-	<title>Documentation Module: main/event</title>
+    <meta charset="utf-8">
+    <title>JSDoc: Module: main/event</title>
 
-	<!--[if lt IE 9]>
-	<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-	<![endif]-->
-	<link type="text/css" rel="stylesheet" href="styles/sunlight.default.css">
-
-	
-	<link type="text/css" rel="stylesheet" href="styles/site.simplex.css">
-	
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
 </head>
 
 <body>
-<div class="container-fluid">
-	<div class="navbar navbar-fixed-top ">
-		<div class="navbar-inner">
-			<a class="brand" href="index.html">Documentation</a>
-			<ul class="nav">
-				
-				<li class="dropdown">
-					<a href="namespaces.list.html" class="dropdown-toggle" data-toggle="dropdown">Namespaces<b
-						class="caret"></b></a>
 
-					<ul class="dropdown-menu ">
-						
-						<li>
-							<a href="aQuery.util.html">util</a>
-						</li>
-						
-						<li>
-							<a href="event.document.html">document</a>
-						</li>
-						
-						<li>
-							<a href="require.html">require(namespace)</a>
-						</li>
-						
+<div id="main">
 
-					</ul>
-				</li>
-				
-				<li class="dropdown">
-					<a href="modules.list.html" class="dropdown-toggle" data-toggle="dropdown">Modules<b
-						class="caret"></b></a>
+    <h1 class="page-title">Module: main/event</h1>
 
-					<ul class="dropdown-menu ">
-						
-						<li>
-							<a href="array.html">base/array</a>
-						</li>
-						
-						<li>
-							<a href="ClassModule.html">base/ClassModule</a>
-						</li>
-						
-						<li>
-							<a href="client.html">base/client</a>
-						</li>
-						
-						<li>
-							<a href="config.html">base/config</a>
-						</li>
-						
-						<li>
-							<a href="extend.html">base/extend</a>
-						</li>
-						
-						<li>
-							<a href="Promise.html">base/Promise</a>
-						</li>
-						
-						<li>
-							<a href="queue.html">base/queue</a>
-						</li>
-						
-						<li>
-							<a href="ready.html">base/ready</a>
-						</li>
-						
-						<li>
-							<a href="support.html">base/support</a>
-						</li>
-						
-						<li>
-							<a href="typed.html">base/typed</a>
-						</li>
-						
-						<li>
-							<a href="array_.html">ecma5/array</a>
-						</li>
-						
-						<li>
-							<a href="function.html">ecma5/function</a>
-						</li>
-						
-						<li>
-							<a href="object.html">ecma5/object</a>
-						</li>
-						
-						<li>
-							<a href="string.html">ecma5/string</a>
-						</li>
-						
-						<li>
-							<a href="charcode.html">hash/charcode</a>
-						</li>
-						
-						<li>
-							<a href="cssColors.html">hash/cssColors</a>
-						</li>
-						
-						<li>
-							<a href="applicationCache.html">html5/applicationCache</a>
-						</li>
-						
-						<li>
-							<a href="localStorage.html">html5/localStorage</a>
-						</li>
-						
-						<li>
-							<a href="sessionStorage.html">html5/sessionStorage</a>
-						</li>
-						
-						<li>
-							<a href="Storage.html">html5/Storage</a>
-						</li>
-						
-						<li>
-							<a href="Worker.html">html5/Worker</a>
-						</li>
-						
-						<li>
-							<a href="sizzle.html">lib/sizzle</a>
-						</li>
-						
-						<li>
-							<a href="attr.html">main/attr</a>
-						</li>
-						
-						<li>
-							<a href="class.html">main/class</a>
-						</li>
-						
-						<li>
-							<a href="communicate.html">main/communicate</a>
-						</li>
-						
-						<li>
-							<a href="css.html">main/css</a>
-						</li>
-						
-						<li>
-							<a href="CustomEvent.html">main/CustomEvent</a>
-						</li>
-						
-						<li>
-							<a href="data.html">main/data</a>
-						</li>
-						
-						<li>
-							<a href="event.html">main/event</a>
-						</li>
-						
-						<li>
-							<a href="object_.html">main/object</a>
-						</li>
-						
-						<li>
-							<a href="parse.html">main/parse</a>
-						</li>
-						
-						<li>
-							<a href="query.html">main/query</a>
-						</li>
-						
-						<li>
-							<a href="event_.html">mobile/event</a>
-						</li>
-						
-						<li>
-							<a href="location.html">module/location</a>
-						</li>
-						
-						<li>
-							<a href="Test_.html">module/Test</a>
-						</li>
-						
-
-					</ul>
-				</li>
-				
-				<li class="dropdown">
-					<a href="classes.list.html" class="dropdown-toggle" data-toggle="dropdown">Classes<b
-						class="caret"></b></a>
-
-					<ul class="dropdown-menu ">
-						
-						<li>
-							<a href="aQuery.html">aQuery</a>
-						</li>
-						
-
-					</ul>
-				</li>
-				
-				<li class="dropdown">
-					<a href="mixins.list.html" class="dropdown-toggle" data-toggle="dropdown">Mixins<b
-						class="caret"></b></a>
-
-					<ul class="dropdown-menu ">
-						
-						<li>
-							<a href="CollectionClassPrototypeMethods.html">CollectionClassPrototypeMethods</a>
-						</li>
-						
-						<li>
-							<a href="ObjectClassStaticMethods.html">ObjectClassStaticMethods</a>
-						</li>
-						
-
-					</ul>
-				</li>
-				
-				<li class="dropdown">
-					<a href="global.html" class="dropdown-toggle" data-toggle="dropdown">Global<b
-						class="caret"></b></a>
-
-					<ul class="dropdown-menu ">
-						
-						<li>
-							<a href="global.html#debug">debug</a>
-						</li>
-						
-						<li>
-							<a href="global.html#define">define</a>
-						</li>
-						
-						<li>
-							<a href="global.html#define">define(1)</a>
-						</li>
-						
-						<li>
-							<a href="global.html#define">define(2)</a>
-						</li>
-						
-						<li>
-							<a href="global.html#define">define(3)</a>
-						</li>
-						
-						<li>
-							<a href="global.html#error">error</a>
-						</li>
-						
-						<li>
-							<a href="global.html#info">info</a>
-						</li>
-						
-						<li>
-							<a href="global.html#logger">logger</a>
-						</li>
-						
-						<li>
-							<a href="global.html#require">require</a>
-						</li>
-						
-
-					</ul>
-				</li>
-				
-			</ul>
-		</div>
-	</div>
-
-	<div class="row-fluid">
-
-		
-		<div class="span8">
-			
-				<div id="main">
-					
+    
 
 
-	<h1 class="page-title">Module: main/event</h1>
+
 <section>
-
+    
 <header>
     <h2>
     main/event
     </h2>
     
-</header>
+</header>  
 
 <article>
     <div class="container-overview">
     
-
+    
     
         
             <div class="description">Export event util.
 <br /> It create bus to send or listion message for aQuery life-cycle.</div>
         
-
+        
         
 <dl class="details">
     
-
+        
+    
+    
     
 
     
-
     
-
     
-
     
-
     
-
     
-
     
-
+    
+    
+    
+    
+    
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="event.js.html">main/event.js</a>, <a href="event.js.html#sunlight-1-line-106">line 106</a>
+        <a href="event.js.html">main/event.js</a>, <a href="event.js.html#line106">line 106</a>
     </li></ul></dd>
     
-
     
-
     
-
+    
+    
+    
     
 </dl>
 
-
+        
         
     
     </div>
-
     
-
     
-
+    
+    
+    
     
         <h3 class="subsection-title">Requires</h3>
-
+        
         <ul>
             <li><a href="config.html">module:base/config</a></li>
         
@@ -369,23 +106,23 @@
             <li><a href="data.html">module:main/data</a></li>
         </ul>
     
-
     
-
+    
+    
     
         <h3 class="subsection-title">Namespaces</h3>
-
+        
         <dl>
             <dt><a href="namespaces.html#module:main/event.document"><a href="event.document.html">document</a></a></dt>
             <dd></dd>
         </dl>
     
-
     
-
+    
+    
     
         <h3 class="subsection-title">Methods</h3>
-
+        
         <dl>
             
 <dt>
@@ -409,31 +146,31 @@
         <h5>Parameters:</h5>
         
 
-<table class="params table table-striped">
+<table class="params">
     <thead>
 	<tr>
 		
 		<th>Name</th>
 		
-
+		
 		<th>Type</th>
-
 		
-
 		
-
+		
+		
+		
 		<th class="last">Description</th>
 	</tr>
 	</thead>
-
+	
 	<tbody>
 	
-
+	
         <tr>
             
                 <td class="name"><code>ele</code></td>
             
-
+            
             <td class="type">
             
                 
@@ -445,21 +182,21 @@
 
             
             </td>
-
             
-
             
-
+            
+            
+            
             <td class="description last"></td>
         </tr>
-
 	
-
+	
+	
         <tr>
             
                 <td class="name"><code>type</code></td>
             
-
+            
             <td class="type">
             
                 
@@ -468,21 +205,21 @@
 
             
             </td>
-
             
-
             
-
+            
+            
+            
             <td class="description last">"click", "swap.down"</td>
         </tr>
-
 	
-
+	
+	
         <tr>
             
                 <td class="name"><code>fn</code></td>
             
-
+            
             <td class="type">
             
                 
@@ -491,51 +228,50 @@
 
             
             </td>
-
             
-
             
-
+            
+            
+            
             <td class="description last"></td>
         </tr>
-
+	
 	
 	</tbody>
 </table>
-
     
     
     
 <dl class="details">
     
-
+        
+    
+    
     
 
     
-
     
-
     
-
     
-
     
-
     
-
     
-
+    
+    
+    
+    
+    
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="event.js.html">main/event.js</a>, <a href="event.js.html#sunlight-1-line-114">line 114</a>
+        <a href="event.js.html">main/event.js</a>, <a href="event.js.html#line114">line 114</a>
     </li></ul></dd>
     
-
     
-
     
-
+    
+    
+    
     
 </dl>
 
@@ -565,7 +301,6 @@
 
 	</dd>
 </dl>
-
 
         
     
@@ -595,33 +330,33 @@
         <h5>Parameters:</h5>
         
 
-<table class="params table table-striped">
+<table class="params">
     <thead>
 	<tr>
 		
 		<th>Name</th>
 		
-
+		
 		<th>Type</th>
-
+		
 		
 		<th>Argument</th>
 		
-
 		
-
+		
+		
 		<th class="last">Description</th>
 	</tr>
 	</thead>
-
+	
 	<tbody>
 	
-
+	
         <tr>
             
                 <td class="name"><code></code></td>
             
-
+            
             <td class="type">
             
                 
@@ -633,29 +368,29 @@
 
             
             </td>
-
+            
             
                 <td class="attributes">
                 
-
+                    
                 
-
+                    
                 
                 </td>
             
-
             
-
+            
+            
             <td class="description last"></td>
         </tr>
-
 	
-
+	
+	
         <tr>
             
                 <td class="name"><code>type</code></td>
             
-
+            
             <td class="type">
             
                 
@@ -664,61 +399,60 @@
 
             
             </td>
-
+            
             
                 <td class="attributes">
                 
                     &lt;optional><br>
                 
-
+                    
                 
-
+                    
                 
                 </td>
             
-
             
-
+            
+            
             <td class="description last">If type is undefined then clear all handlers.</td>
         </tr>
-
+	
 	
 	</tbody>
 </table>
-
     
     
     
 <dl class="details">
     
-
+        
+    
+    
     
 
     
-
     
-
     
-
     
-
     
-
     
-
     
-
+    
+    
+    
+    
+    
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="event.js.html">main/event.js</a>, <a href="event.js.html#sunlight-1-line-785">line 785</a>
+        <a href="event.js.html">main/event.js</a>, <a href="event.js.html#line785">line 785</a>
     </li></ul></dd>
     
-
     
-
     
-
+    
+    
+    
     
 </dl>
 
@@ -748,7 +482,6 @@
 
 	</dd>
 </dl>
-
 
         
     
@@ -778,33 +511,33 @@
         <h5>Parameters:</h5>
         
 
-<table class="params table table-striped">
+<table class="params">
     <thead>
 	<tr>
 		
 		<th>Name</th>
 		
-
+		
 		<th>Type</th>
-
+		
 		
 		<th>Argument</th>
 		
-
 		
-
+		
+		
 		<th class="last">Description</th>
 	</tr>
 	</thead>
-
+	
 	<tbody>
 	
-
+	
         <tr>
             
                 <td class="name"><code>ele</code></td>
             
-
+            
             <td class="type">
             
                 
@@ -816,29 +549,29 @@
 
             
             </td>
-
+            
             
                 <td class="attributes">
                 
-
+                    
                 
-
+                    
                 
                 </td>
             
-
             
-
+            
+            
             <td class="description last"></td>
         </tr>
-
 	
-
+	
+	
         <tr>
             
                 <td class="name"><code>type</code></td>
             
-
+            
             <td class="type">
             
                 
@@ -847,61 +580,60 @@
 
             
             </td>
-
+            
             
                 <td class="attributes">
                 
                     &lt;optional><br>
                 
-
+                    
                 
-
+                    
                 
                 </td>
             
-
             
-
+            
+            
             <td class="description last">If type is undefined then clear all handlers.</td>
         </tr>
-
+	
 	
 	</tbody>
 </table>
-
     
     
     
 <dl class="details">
     
-
+        
+    
+    
     
 
     
-
     
-
     
-
     
-
     
-
     
-
     
-
+    
+    
+    
+    
+    
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="event.js.html">main/event.js</a>, <a href="event.js.html#sunlight-1-line-222">line 222</a>
+        <a href="event.js.html">main/event.js</a>, <a href="event.js.html#line222">line 222</a>
     </li></ul></dd>
     
-
     
-
     
-
+    
+    
+    
     
 </dl>
 
@@ -931,7 +663,6 @@
 
 	</dd>
 </dl>
-
 
         
     
@@ -962,31 +693,31 @@
         <h5>Parameters:</h5>
         
 
-<table class="params table table-striped">
+<table class="params">
     <thead>
 	<tr>
 		
 		<th>Name</th>
 		
-
+		
 		<th>Type</th>
-
 		
-
 		
-
+		
+		
+		
 		<th class="last">Description</th>
 	</tr>
 	</thead>
-
+	
 	<tbody>
 	
-
+	
         <tr>
             
                 <td class="name"><code>tarEle</code></td>
             
-
+            
             <td class="type">
             
                 
@@ -998,21 +729,21 @@
 
             
             </td>
-
             
-
             
-
+            
+            
+            
             <td class="description last">Target Element</td>
         </tr>
-
 	
-
+	
+	
         <tr>
             
                 <td class="name"><code>srcEle</code></td>
             
-
+            
             <td class="type">
             
                 
@@ -1024,51 +755,50 @@
 
             
             </td>
-
             
-
             
-
+            
+            
+            
             <td class="description last">Source Element.</td>
         </tr>
-
+	
 	
 	</tbody>
 </table>
-
     
     
     
 <dl class="details">
     
-
+        
+    
+    
     
 
     
-
     
-
     
-
     
-
     
-
     
-
     
-
+    
+    
+    
+    
+    
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="event.js.html">main/event.js</a>, <a href="event.js.html#sunlight-1-line-266">line 266</a>
+        <a href="event.js.html">main/event.js</a>, <a href="event.js.html#line266">line 266</a>
     </li></ul></dd>
     
-
     
-
     
-
+    
+    
+    
     
 </dl>
 
@@ -1098,7 +828,6 @@
 
 	</dd>
 </dl>
-
 
         
     
@@ -1129,34 +858,34 @@
     
 <dl class="details">
     
-
+        
+    
+    
     
 
     
-
     
-
     
-
     
-
     
-
     
-
     
-
+    
+    
+    
+    
+    
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="event.js.html">main/event.js</a>, <a href="event.js.html#sunlight-1-line-634">line 634</a>
+        <a href="event.js.html">main/event.js</a>, <a href="event.js.html#line634">line 634</a>
     </li></ul></dd>
     
-
     
-
     
-
+    
+    
+    
     
 </dl>
 
@@ -1187,7 +916,6 @@
 	</dd>
 </dl>
 
-
         
     
     
@@ -1216,33 +944,33 @@
         <h5>Parameters:</h5>
         
 
-<table class="params table table-striped">
+<table class="params">
     <thead>
 	<tr>
 		
 		<th>Name</th>
 		
-
+		
 		<th>Type</th>
-
+		
 		
 		<th>Argument</th>
 		
-
 		
-
+		
+		
 		<th class="last">Description</th>
 	</tr>
 	</thead>
-
+	
 	<tbody>
 	
-
+	
         <tr>
             
                 <td class="name"><code>ele</code></td>
             
-
+            
             <td class="type">
             
                 
@@ -1254,29 +982,29 @@
 
             
             </td>
-
+            
             
                 <td class="attributes">
                 
-
+                    
                 
-
+                    
                 
                 </td>
             
-
             
-
+            
+            
             <td class="description last"></td>
         </tr>
-
 	
-
+	
+	
         <tr>
             
                 <td class="name"><code>type</code></td>
             
-
+            
             <td class="type">
             
                 
@@ -1285,61 +1013,60 @@
 
             
             </td>
-
+            
             
                 <td class="attributes">
                 
                     &lt;optional><br>
                 
-
+                    
                 
-
+                    
                 
                 </td>
             
-
             
-
+            
+            
             <td class="description last">If type is null then return whole handlers object.</td>
         </tr>
-
+	
 	
 	</tbody>
 </table>
-
     
     
     
 <dl class="details">
     
-
+        
+    
+    
     
 
     
-
     
-
     
-
     
-
     
-
     
-
     
-
+    
+    
+    
+    
+    
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="event.js.html">main/event.js</a>, <a href="event.js.html#sunlight-1-line-307">line 307</a>
+        <a href="event.js.html">main/event.js</a>, <a href="event.js.html#line307">line 307</a>
     </li></ul></dd>
     
-
     
-
     
-
+    
+    
+    
     
 </dl>
 
@@ -1376,7 +1103,6 @@
 	</dd>
 </dl>
 
-
         
     
     
@@ -1405,31 +1131,31 @@
         <h5>Parameters:</h5>
         
 
-<table class="params table table-striped">
+<table class="params">
     <thead>
 	<tr>
 		
 		<th>Name</th>
 		
-
+		
 		<th>Type</th>
-
 		
-
 		
-
+		
+		
+		
 		<th class="last">Description</th>
 	</tr>
 	</thead>
-
+	
 	<tbody>
 	
-
+	
         <tr>
             
                 <td class="name"><code>ele</code></td>
             
-
+            
             <td class="type">
             
                 
@@ -1441,21 +1167,21 @@
 
             
             </td>
-
             
-
             
-
+            
+            
+            
             <td class="description last"></td>
         </tr>
-
 	
-
+	
+	
         <tr>
             
                 <td class="name"><code>type</code></td>
             
-
+            
             <td class="type">
             
                 
@@ -1464,21 +1190,21 @@
 
             
             </td>
-
             
-
             
-
+            
+            
+            
             <td class="description last"></td>
         </tr>
-
 	
-
+	
+	
         <tr>
             
                 <td class="name"><code>fn</code></td>
             
-
+            
             <td class="type">
             
                 
@@ -1487,51 +1213,50 @@
 
             
             </td>
-
             
-
             
-
+            
+            
+            
             <td class="description last"></td>
         </tr>
-
+	
 	
 	</tbody>
 </table>
-
     
     
     
 <dl class="details">
     
-
+        
+    
+    
     
 
     
-
     
-
     
-
     
-
     
-
     
-
     
-
+    
+    
+    
+    
+    
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="event.js.html">main/event.js</a>, <a href="event.js.html#sunlight-1-line-292">line 292</a>
+        <a href="event.js.html">main/event.js</a>, <a href="event.js.html#line292">line 292</a>
     </li></ul></dd>
     
-
     
-
     
-
+    
+    
+    
     
 </dl>
 
@@ -1566,7 +1291,6 @@
 	</dd>
 </dl>
 
-
         
     
     
@@ -1595,27 +1319,27 @@
         <h5>Parameters:</h5>
         
 
-<table class="params table table-striped">
+<table class="params">
     <thead>
 	<tr>
 		
-
+		
 		<th>Type</th>
-
 		
-
 		
-
+		
+		
+		
 		<th class="last">Description</th>
 	</tr>
 	</thead>
-
+	
 	<tbody>
 	
-
+	
         <tr>
             
-
+            
             <td class="type">
             
                 
@@ -1627,19 +1351,19 @@
 
             
             </td>
-
             
-
             
-
+            
+            
+            
             <td class="description last"></td>
         </tr>
-
 	
-
+	
+	
         <tr>
             
-
+            
             <td class="type">
             
                 
@@ -1648,19 +1372,19 @@
 
             
             </td>
-
             
-
             
-
+            
+            
+            
             <td class="description last">"click", "swap.down"</td>
         </tr>
-
 	
-
+	
+	
         <tr>
             
-
+            
             <td class="type">
             
                 
@@ -1669,51 +1393,50 @@
 
             
             </td>
-
             
-
             
-
+            
+            
+            
             <td class="description last"></td>
         </tr>
-
+	
 	
 	</tbody>
 </table>
-
     
     
     
 <dl class="details">
     
-
+        
+    
+    
     
 
     
-
     
-
     
-
     
-
     
-
     
-
     
-
+    
+    
+    
+    
+    
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="event.js.html">main/event.js</a>, <a href="event.js.html#sunlight-1-line-776">line 776</a>
+        <a href="event.js.html">main/event.js</a>, <a href="event.js.html#line776">line 776</a>
     </li></ul></dd>
     
-
     
-
     
-
+    
+    
+    
     
 </dl>
 
@@ -1743,7 +1466,6 @@
 
 	</dd>
 </dl>
-
 
         
     
@@ -1773,27 +1495,27 @@
         <h5>Parameters:</h5>
         
 
-<table class="params table table-striped">
+<table class="params">
     <thead>
 	<tr>
 		
-
+		
 		<th>Type</th>
-
 		
-
 		
-
+		
+		
+		
 		<th class="last">Description</th>
 	</tr>
 	</thead>
-
+	
 	<tbody>
 	
-
+	
         <tr>
             
-
+            
             <td class="type">
             
                 
@@ -1805,19 +1527,19 @@
 
             
             </td>
-
             
-
             
-
+            
+            
+            
             <td class="description last"></td>
         </tr>
-
 	
-
+	
+	
         <tr>
             
-
+            
             <td class="type">
             
                 
@@ -1826,19 +1548,19 @@
 
             
             </td>
-
             
-
             
-
+            
+            
+            
             <td class="description last">"click", "swap.down"</td>
         </tr>
-
 	
-
+	
+	
         <tr>
             
-
+            
             <td class="type">
             
                 
@@ -1847,51 +1569,50 @@
 
             
             </td>
-
             
-
             
-
+            
+            
+            
             <td class="description last"></td>
         </tr>
-
+	
 	
 	</tbody>
 </table>
-
     
     
     
 <dl class="details">
     
-
+        
+    
+    
     
 
     
-
     
-
     
-
     
-
     
-
     
-
     
-
+    
+    
+    
+    
+    
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="event.js.html">main/event.js</a>, <a href="event.js.html#sunlight-1-line-766">line 766</a>
+        <a href="event.js.html">main/event.js</a>, <a href="event.js.html#line766">line 766</a>
     </li></ul></dd>
     
-
     
-
     
-
+    
+    
+    
     
 </dl>
 
@@ -1921,7 +1642,6 @@
 
 	</dd>
 </dl>
-
 
         
     
@@ -1952,31 +1672,31 @@
         <h5>Parameters:</h5>
         
 
-<table class="params table table-striped">
+<table class="params">
     <thead>
 	<tr>
 		
 		<th>Name</th>
 		
-
+		
 		<th>Type</th>
-
 		
-
 		
-
+		
+		
+		
 		<th class="last">Description</th>
 	</tr>
 	</thead>
-
+	
 	<tbody>
 	
-
+	
         <tr>
             
                 <td class="name"><code>ele</code></td>
             
-
+            
             <td class="type">
             
                 
@@ -1988,21 +1708,21 @@
 
             
             </td>
-
             
-
             
-
+            
+            
+            
             <td class="description last"></td>
         </tr>
-
 	
-
+	
+	
         <tr>
             
                 <td class="name"><code>type</code></td>
             
-
+            
             <td class="type">
             
                 
@@ -2011,21 +1731,21 @@
 
             
             </td>
-
             
-
             
-
+            
+            
+            
             <td class="description last">"click", "swap.down"</td>
         </tr>
-
 	
-
+	
+	
         <tr>
             
                 <td class="name"><code>fn</code></td>
             
-
+            
             <td class="type">
             
                 
@@ -2034,51 +1754,50 @@
 
             
             </td>
-
             
-
             
-
+            
+            
+            
             <td class="description last"></td>
         </tr>
-
+	
 	
 	</tbody>
 </table>
-
     
     
     
 <dl class="details">
     
-
+        
+    
+    
     
 
     
-
     
-
     
-
     
-
     
-
     
-
     
-
+    
+    
+    
+    
+    
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="event.js.html">main/event.js</a>, <a href="event.js.html#sunlight-1-line-142">line 142</a>
+        <a href="event.js.html">main/event.js</a>, <a href="event.js.html#line142">line 142</a>
     </li></ul></dd>
     
-
     
-
     
-
+    
+    
+    
     
 </dl>
 
@@ -2108,7 +1827,6 @@
 
 	</dd>
 </dl>
-
 
         
     
@@ -2138,31 +1856,31 @@
         <h5>Parameters:</h5>
         
 
-<table class="params table table-striped">
+<table class="params">
     <thead>
 	<tr>
 		
 		<th>Name</th>
 		
-
+		
 		<th>Type</th>
-
 		
-
 		
-
+		
+		
+		
 		<th class="last">Description</th>
 	</tr>
 	</thead>
-
+	
 	<tbody>
 	
-
+	
         <tr>
             
                 <td class="name"><code>ele</code></td>
             
-
+            
             <td class="type">
             
                 
@@ -2174,21 +1892,21 @@
 
             
             </td>
-
             
-
             
-
+            
+            
+            
             <td class="description last"></td>
         </tr>
-
 	
-
+	
+	
         <tr>
             
                 <td class="name"><code>type</code></td>
             
-
+            
             <td class="type">
             
                 
@@ -2197,21 +1915,21 @@
 
             
             </td>
-
             
-
             
-
+            
+            
+            
             <td class="description last">"click", "swap.down"</td>
         </tr>
-
 	
-
+	
+	
         <tr>
             
                 <td class="name"><code>fn</code></td>
             
-
+            
             <td class="type">
             
                 
@@ -2220,51 +1938,50 @@
 
             
             </td>
-
             
-
             
-
+            
+            
+            
             <td class="description last"></td>
         </tr>
-
+	
 	
 	</tbody>
 </table>
-
     
     
     
 <dl class="details">
     
-
+        
+    
+    
     
 
     
-
     
-
     
-
     
-
     
-
     
-
     
-
+    
+    
+    
+    
+    
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="event.js.html">main/event.js</a>, <a href="event.js.html#sunlight-1-line-191">line 191</a>
+        <a href="event.js.html">main/event.js</a>, <a href="event.js.html#line191">line 191</a>
     </li></ul></dd>
     
-
     
-
     
-
+    
+    
+    
     
 </dl>
 
@@ -2294,7 +2011,6 @@
 
 	</dd>
 </dl>
-
 
         
     
@@ -2324,33 +2040,33 @@
         <h5>Parameters:</h5>
         
 
-<table class="params table table-striped">
+<table class="params">
     <thead>
 	<tr>
 		
 		<th>Name</th>
 		
-
+		
 		<th>Type</th>
-
+		
 		
 		<th>Argument</th>
 		
-
 		
-
+		
+		
 		<th class="last">Description</th>
 	</tr>
 	</thead>
-
+	
 	<tbody>
 	
-
+	
         <tr>
             
                 <td class="name"><code>ele</code></td>
             
-
+            
             <td class="type">
             
                 
@@ -2362,29 +2078,29 @@
 
             
             </td>
-
+            
             
                 <td class="attributes">
                 
-
+                    
                 
-
+                    
                 
                 </td>
             
-
             
-
+            
+            
             <td class="description last"></td>
         </tr>
-
 	
-
+	
+	
         <tr>
             
                 <td class="name"><code>funParas</code></td>
             
-
+            
             <td class="type">
             
                 
@@ -2393,61 +2109,60 @@
 
             
             </td>
-
+            
             
                 <td class="attributes">
                 
-
+                    
                 
-
+                    
                 
                     &lt;repeatable><br>
                 
                 </td>
             
-
             
-
+            
+            
             <td class="description last">Handelrs.</td>
         </tr>
-
+	
 	
 	</tbody>
 </table>
-
     
     
     
 <dl class="details">
     
-
+        
+    
+    
     
 
     
-
     
-
     
-
     
-
     
-
     
-
     
-
+    
+    
+    
+    
+    
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="event.js.html">main/event.js</a>, <a href="event.js.html#sunlight-1-line-685">line 685</a>
+        <a href="event.js.html">main/event.js</a>, <a href="event.js.html#line685">line 685</a>
     </li></ul></dd>
     
-
     
-
     
-
+    
+    
+    
     
 </dl>
 
@@ -2478,19 +2193,17 @@
 	</dd>
 </dl>
 
-
         
     
     
         <h5>Example</h5>
         
-    <pre class="sunlight-highlight-javascript">var test1 = $("#a")[0];
+    <pre class="prettyprint"><code>var test1 = $("#a")[0];
 event.toggle(test1, function() {
   alert(1);
 }, function() {
   alert(2);
-});</pre>
-
+});</code></pre>
 
     
 </dd>
@@ -2519,34 +2232,34 @@ event.toggle(test1, function() {
     
 <dl class="details">
     
-
+        
+    
+    
     
 
     
-
     
-
     
-
     
-
     
-
     
-
     
-
+    
+    
+    
+    
+    
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="event.js.html">main/event.js</a>, <a href="event.js.html#sunlight-1-line-662">line 662</a>
+        <a href="event.js.html">main/event.js</a>, <a href="event.js.html#line662">line 662</a>
     </li></ul></dd>
     
-
     
-
     
-
+    
+    
+    
     
 </dl>
 
@@ -2577,14 +2290,12 @@ event.toggle(test1, function() {
 	</dd>
 </dl>
 
-
         
     
     
         <h5>Example</h5>
         
-    <pre class="sunlight-highlight-javascript">$("#a").toggle();</pre>
-
+    <pre class="prettyprint"><code>$("#a").toggle();</code></pre>
 
     
 </dd>
@@ -2612,33 +2323,33 @@ event.toggle(test1, function() {
         <h5>Parameters:</h5>
         
 
-<table class="params table table-striped">
+<table class="params">
     <thead>
 	<tr>
 		
 		<th>Name</th>
 		
-
+		
 		<th>Type</th>
-
+		
 		
 		<th>Argument</th>
 		
-
 		
-
+		
+		
 		<th class="last">Description</th>
 	</tr>
 	</thead>
-
+	
 	<tbody>
 	
-
+	
         <tr>
             
                 <td class="name"><code>ele</code></td>
             
-
+            
             <td class="type">
             
                 
@@ -2650,29 +2361,29 @@ event.toggle(test1, function() {
 
             
             </td>
-
+            
             
                 <td class="attributes">
                 
-
+                    
                 
-
+                    
                 
                 </td>
             
-
             
-
+            
+            
             <td class="description last"></td>
         </tr>
-
 	
-
+	
+	
         <tr>
             
                 <td class="name"><code>type</code></td>
             
-
+            
             <td class="type">
             
                 
@@ -2681,29 +2392,29 @@ event.toggle(test1, function() {
 
             
             </td>
-
+            
             
                 <td class="attributes">
                 
-
+                    
                 
-
+                    
                 
                 </td>
             
-
             
-
+            
+            
             <td class="description last"></td>
         </tr>
-
 	
-
+	
+	
         <tr>
             
                 <td class="name"><code>context</code></td>
             
-
+            
             <td class="type">
             
                 
@@ -2712,29 +2423,29 @@ event.toggle(test1, function() {
 
             
             </td>
-
+            
             
                 <td class="attributes">
                 
-
+                    
                 
-
+                    
                 
                 </td>
             
-
             
-
+            
+            
             <td class="description last">Function context.</td>
         </tr>
-
 	
-
+	
+	
         <tr>
             
                 <td class="name"><code>paras</code></td>
             
-
+            
             <td class="type">
             
                 
@@ -2743,61 +2454,60 @@ event.toggle(test1, function() {
 
             
             </td>
-
+            
             
                 <td class="attributes">
                 
-
+                    
                 
-
+                    
                 
                     &lt;repeatable><br>
                 
                 </td>
             
-
             
-
+            
+            
             <td class="description last">If you trigger a document event, the parameter must be a {}.</td>
         </tr>
-
+	
 	
 	</tbody>
 </table>
-
     
     
     
 <dl class="details">
     
-
+        
+    
+    
     
 
     
-
     
-
     
-
     
-
     
-
     
-
     
-
+    
+    
+    
+    
+    
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="event.js.html">main/event.js</a>, <a href="event.js.html#sunlight-1-line-742">line 742</a>
+        <a href="event.js.html">main/event.js</a>, <a href="event.js.html#line742">line 742</a>
     </li></ul></dd>
     
-
     
-
     
-
+    
+    
+    
     
 </dl>
 
@@ -2828,13 +2538,12 @@ event.toggle(test1, function() {
 	</dd>
 </dl>
 
-
         
     
     
         <h5>Example</h5>
         
-    <pre class="sunlight-highlight-javascript">var test1 = $("#a");
+    <pre class="prettyprint"><code>var test1 = $("#a");
 var fn1 = function(str) {
   $.logger(typed.isEvent(str));
   $.logger({}.toString.call(str));
@@ -2846,74 +2555,37 @@ test1.trigger("mousedown", {
 test1.on("my.test1", fn1);
 test1.trigger("my.test1", {
   screenX: 5
-});</pre>
-
+});</code></pre>
 
     
 </dd>
 
         </dl>
     
-
     
-
+    
+    
     
 </article>
 
-</section>
+</section>  
 
 
 
 
-				</div>
+</div>
 
-				<div class="clearfix"></div>
-				<footer>
-					
-					
-		<span class="jsdoc-message">
-		Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.2</a>
-		</span>
-				</footer>
-			</div>
+<nav>
+    <h2><a href="index.html">Index</a></h2><h3>Modules</h3><ul><li><a href="array.html">base/array</a></li><li><a href="ClassModule.html">base/ClassModule</a></li><li><a href="client.html">base/client</a></li><li><a href="config.html">base/config</a></li><li><a href="extend.html">base/extend</a></li><li><a href="Promise.html">base/Promise</a></li><li><a href="queue.html">base/queue</a></li><li><a href="ready.html">base/ready</a></li><li><a href="support.html">base/support</a></li><li><a href="typed.html">base/typed</a></li><li><a href="array_.html">ecma5/array</a></li><li><a href="function.html">ecma5/function</a></li><li><a href="object.html">ecma5/object</a></li><li><a href="string.html">ecma5/string</a></li><li><a href="charcode.html">hash/charcode</a></li><li><a href="cssColors.html">hash/cssColors</a></li><li><a href="applicationCache.html">html5/applicationCache</a></li><li><a href="localStorage.html">html5/localStorage</a></li><li><a href="sessionStorage.html">html5/sessionStorage</a></li><li><a href="Storage.html">html5/Storage</a></li><li><a href="Worker.html">html5/Worker</a></li><li><a href="sizzle.html">lib/sizzle</a></li><li><a href="attr.html">main/attr</a></li><li><a href="class.html">main/class</a></li><li><a href="communicate.html">main/communicate</a></li><li><a href="CustomEvent.html">main/CustomEvent</a></li><li><a href="data.html">main/data</a></li><li><a href="event.html">main/event</a></li><li><a href="object_.html">main/object</a></li><li><a href="parse.html">main/parse</a></li><li><a href="query.html">main/query</a></li><li><a href="event_.html">mobile/event</a></li><li><a href="location.html">module/location</a></li><li><a href="Test_.html">module/Test</a></li></ul><h3>Classes</h3><ul><li><a href="aQuery.html">aQuery</a></li></ul><h3>Events</h3><ul><li><a href="aQuery.html#event:"ajaxStart"">"ajaxStart"</a></li><li><a href="aQuery.html#event:"ajaxStop"">"ajaxStop"</a></li><li><a href="aQuery.html#event:"ajaxTimeout"">"ajaxTimeout"</a></li><li><a href="aQuery.html#event:"jsonpStart"">"jsonpStart"</a></li><li><a href="aQuery.html#event:"jsonpStop"">"jsonpStop"</a></li><li><a href="aQuery.html#event:"jsonpTimeout"">"jsonpTimeout"</a></li><li><a href="aQuery.html#event:"test.report"">"test.report"</a></li></ul><h3>Namespaces</h3><ul><li><a href="aQuery.util.html">util</a></li><li><a href="event.document.html">document</a></li><li><a href="require.html">require(namespace)</a></li></ul><h3>Mixins</h3><ul><li><a href="CollectionClassPrototypeMethods.html">CollectionClassPrototypeMethods</a></li><li><a href="ObjectClassStaticMethods.html">ObjectClassStaticMethods</a></li></ul><h3>Global</h3><ul><li><a href="global.html#AjaxOptions">AjaxOptions</a></li><li><a href="global.html#debug">debug</a></li><li><a href="global.html#define">define</a></li><li><a href="global.html#define">define(1)</a></li><li><a href="global.html#define">define(2)</a></li><li><a href="global.html#define">define(3)</a></li><li><a href="global.html#error">error</a></li><li><a href="global.html#info">info</a></li><li><a href="global.html#JSONPOptions">JSONPOptions</a></li><li><a href="global.html#logger">logger</a></li><li><a href="global.html#require">require</a></li></ul>
+</nav>
 
-			
-			<div class="span3">
-				<div id="toc"></div>
-			</div>
-			
-			<br clear="both">
-		</div>
+<br clear="both">
 
-	</div>
-	<script src="scripts/sunlight.js"></script>
-	<script src="scripts/sunlight.javascript.js"></script>
-	<script src="scripts/sunlight-plugin.doclinks.js"></script>
-	<script src="scripts/sunlight-plugin.linenumbers.js"></script>
-	<script src="scripts/sunlight-plugin.menu.js"></script>
-	<script src="scripts/jquery.min.js"></script>
-	<script src="scripts/jquery.scrollTo.js"></script>
-	<script src="scripts/jquery.localScroll.js"></script>
-	<script src="scripts/bootstrap-dropdown.js"></script>
-	<script src="scripts/toc.js"></script>
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.2</a> on Thu Feb 27 2014 23:18:12 GMT+0800 (CST)
+</footer>
 
-
-	<script>  Sunlight.highlightAll({lineNumbers:true,  showMenu: true, enableDoclinks :true}); </script>
-
-	<script>
-		$( function () {
-			$( "#toc" ).toc( {
-				selectors   : "h1,h2,h3,h4",
-				showAndHide : false,
-				scrollTo    : 60
-			} );
-			$( "#toc>ul" ).addClass( "nav nav-pills nav-stacked" );
-			$( "#main span[id^='toc']" ).addClass( "toc-shim" );
-
-		} );
-	</script>
-
-	
-
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
 </body>
 </html>

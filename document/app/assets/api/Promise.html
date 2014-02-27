@@ -1,299 +1,36 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
-	<meta charset="utf-8">
-	<title>Documentation Module: base/Promise</title>
+    <meta charset="utf-8">
+    <title>JSDoc: Module: base/Promise</title>
 
-	<!--[if lt IE 9]>
-	<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-	<![endif]-->
-	<link type="text/css" rel="stylesheet" href="styles/sunlight.default.css">
-
-	
-	<link type="text/css" rel="stylesheet" href="styles/site.simplex.css">
-	
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
 </head>
 
 <body>
-<div class="container-fluid">
-	<div class="navbar navbar-fixed-top ">
-		<div class="navbar-inner">
-			<a class="brand" href="index.html">Documentation</a>
-			<ul class="nav">
-				
-				<li class="dropdown">
-					<a href="namespaces.list.html" class="dropdown-toggle" data-toggle="dropdown">Namespaces<b
-						class="caret"></b></a>
 
-					<ul class="dropdown-menu ">
-						
-						<li>
-							<a href="aQuery.util.html">util</a>
-						</li>
-						
-						<li>
-							<a href="event.document.html">document</a>
-						</li>
-						
-						<li>
-							<a href="require.html">require(namespace)</a>
-						</li>
-						
+<div id="main">
 
-					</ul>
-				</li>
-				
-				<li class="dropdown">
-					<a href="modules.list.html" class="dropdown-toggle" data-toggle="dropdown">Modules<b
-						class="caret"></b></a>
+    <h1 class="page-title">Module: base/Promise</h1>
 
-					<ul class="dropdown-menu ">
-						
-						<li>
-							<a href="array.html">base/array</a>
-						</li>
-						
-						<li>
-							<a href="ClassModule.html">base/ClassModule</a>
-						</li>
-						
-						<li>
-							<a href="client.html">base/client</a>
-						</li>
-						
-						<li>
-							<a href="config.html">base/config</a>
-						</li>
-						
-						<li>
-							<a href="extend.html">base/extend</a>
-						</li>
-						
-						<li>
-							<a href="Promise.html">base/Promise</a>
-						</li>
-						
-						<li>
-							<a href="queue.html">base/queue</a>
-						</li>
-						
-						<li>
-							<a href="ready.html">base/ready</a>
-						</li>
-						
-						<li>
-							<a href="support.html">base/support</a>
-						</li>
-						
-						<li>
-							<a href="typed.html">base/typed</a>
-						</li>
-						
-						<li>
-							<a href="array_.html">ecma5/array</a>
-						</li>
-						
-						<li>
-							<a href="function.html">ecma5/function</a>
-						</li>
-						
-						<li>
-							<a href="object.html">ecma5/object</a>
-						</li>
-						
-						<li>
-							<a href="string.html">ecma5/string</a>
-						</li>
-						
-						<li>
-							<a href="charcode.html">hash/charcode</a>
-						</li>
-						
-						<li>
-							<a href="cssColors.html">hash/cssColors</a>
-						</li>
-						
-						<li>
-							<a href="applicationCache.html">html5/applicationCache</a>
-						</li>
-						
-						<li>
-							<a href="localStorage.html">html5/localStorage</a>
-						</li>
-						
-						<li>
-							<a href="sessionStorage.html">html5/sessionStorage</a>
-						</li>
-						
-						<li>
-							<a href="Storage.html">html5/Storage</a>
-						</li>
-						
-						<li>
-							<a href="Worker.html">html5/Worker</a>
-						</li>
-						
-						<li>
-							<a href="sizzle.html">lib/sizzle</a>
-						</li>
-						
-						<li>
-							<a href="attr.html">main/attr</a>
-						</li>
-						
-						<li>
-							<a href="class.html">main/class</a>
-						</li>
-						
-						<li>
-							<a href="communicate.html">main/communicate</a>
-						</li>
-						
-						<li>
-							<a href="css.html">main/css</a>
-						</li>
-						
-						<li>
-							<a href="CustomEvent.html">main/CustomEvent</a>
-						</li>
-						
-						<li>
-							<a href="data.html">main/data</a>
-						</li>
-						
-						<li>
-							<a href="event.html">main/event</a>
-						</li>
-						
-						<li>
-							<a href="object_.html">main/object</a>
-						</li>
-						
-						<li>
-							<a href="parse.html">main/parse</a>
-						</li>
-						
-						<li>
-							<a href="query.html">main/query</a>
-						</li>
-						
-						<li>
-							<a href="event_.html">mobile/event</a>
-						</li>
-						
-						<li>
-							<a href="location.html">module/location</a>
-						</li>
-						
-						<li>
-							<a href="Test_.html">module/Test</a>
-						</li>
-						
-
-					</ul>
-				</li>
-				
-				<li class="dropdown">
-					<a href="classes.list.html" class="dropdown-toggle" data-toggle="dropdown">Classes<b
-						class="caret"></b></a>
-
-					<ul class="dropdown-menu ">
-						
-						<li>
-							<a href="aQuery.html">aQuery</a>
-						</li>
-						
-
-					</ul>
-				</li>
-				
-				<li class="dropdown">
-					<a href="mixins.list.html" class="dropdown-toggle" data-toggle="dropdown">Mixins<b
-						class="caret"></b></a>
-
-					<ul class="dropdown-menu ">
-						
-						<li>
-							<a href="CollectionClassPrototypeMethods.html">CollectionClassPrototypeMethods</a>
-						</li>
-						
-						<li>
-							<a href="ObjectClassStaticMethods.html">ObjectClassStaticMethods</a>
-						</li>
-						
-
-					</ul>
-				</li>
-				
-				<li class="dropdown">
-					<a href="global.html" class="dropdown-toggle" data-toggle="dropdown">Global<b
-						class="caret"></b></a>
-
-					<ul class="dropdown-menu ">
-						
-						<li>
-							<a href="global.html#debug">debug</a>
-						</li>
-						
-						<li>
-							<a href="global.html#define">define</a>
-						</li>
-						
-						<li>
-							<a href="global.html#define">define(1)</a>
-						</li>
-						
-						<li>
-							<a href="global.html#define">define(2)</a>
-						</li>
-						
-						<li>
-							<a href="global.html#define">define(3)</a>
-						</li>
-						
-						<li>
-							<a href="global.html#error">error</a>
-						</li>
-						
-						<li>
-							<a href="global.html#info">info</a>
-						</li>
-						
-						<li>
-							<a href="global.html#logger">logger</a>
-						</li>
-						
-						<li>
-							<a href="global.html#require">require</a>
-						</li>
-						
-
-					</ul>
-				</li>
-				
-			</ul>
-		</div>
-	</div>
-
-	<div class="row-fluid">
-
-		
-		<div class="span8">
-			
-				<div id="main">
-					
+    
 
 
-	<h1 class="page-title">Module: base/Promise</h1>
+
 <section>
-
+    
 <header>
     <h2>
     base/Promise
     </h2>
     
-</header>
+</header>  
 
 <article>
     <div class="container-overview">
@@ -316,33 +53,33 @@
         <h5>Parameters:</h5>
         
 
-<table class="params table table-striped">
+<table class="params">
     <thead>
 	<tr>
 		
 		<th>Name</th>
 		
-
+		
 		<th>Type</th>
-
+		
 		
 		<th>Argument</th>
 		
-
 		
-
+		
+		
 		<th class="last">Description</th>
 	</tr>
 	</thead>
-
+	
 	<tbody>
 	
-
+	
         <tr>
             
                 <td class="name"><code>todo</code></td>
             
-
+            
             <td class="type">
             
                 
@@ -351,31 +88,31 @@
 
             
             </td>
-
+            
             
                 <td class="attributes">
                 
                     &lt;optional><br>
                 
-
+                    
                 
-
+                    
                 
                 </td>
             
-
             
-
+            
+            
             <td class="description last"></td>
         </tr>
-
 	
-
+	
+	
         <tr>
             
                 <td class="name"><code>fail</code></td>
             
-
+            
             <td class="type">
             
                 
@@ -384,31 +121,31 @@
 
             
             </td>
-
+            
             
                 <td class="attributes">
                 
                     &lt;optional><br>
                 
-
+                    
                 
-
+                    
                 
                 </td>
             
-
             
-
+            
+            
             <td class="description last"></td>
         </tr>
-
 	
-
+	
+	
         <tr>
             
                 <td class="name"><code>progress</code></td>
             
-
+            
             <td class="type">
             
                 
@@ -417,61 +154,60 @@
 
             
             </td>
-
+            
             
                 <td class="attributes">
                 
                     &lt;optional><br>
                 
-
+                    
                 
-
+                    
                 
                 </td>
             
-
             
-
+            
+            
             <td class="description last"></td>
         </tr>
-
+	
 	
 	</tbody>
 </table>
-
     
     
     
 <dl class="details">
     
-
+        
+    
+    
     
 
     
-
     
-
     
-
     
-
     
-
     
-
     
-
+    
+    
+    
+    
+    
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#sunlight-1-line-2106">line 2106</a>
+        <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#line2140">line 2140</a>
     </li></ul></dd>
     
-
     
-
     
-
+    
+    
+    
     
 </dl>
 
@@ -490,39 +226,39 @@
 </dd>
 
     
-
+    
     
         
-
+        
         
 <dl class="details">
     
-
+        
+    
+    
     
 
     
-
     
-
     
-
     
-
     
-
     
-
     
-
+    
+    
+    
+    
+    
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#sunlight-1-line-2002">line 2002</a>
+        <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#line2036">line 2036</a>
     </li></ul></dd>
     
-
     
-
+    
+    
     
     <dt class="tag-see">See:</dt>
     <dd class="tag-see">
@@ -531,38 +267,37 @@
         </ul>
     </dd>
     
-
+    
     
 </dl>
 
-
+        
         
             <h3>Example</h3>
             
-    <pre class="sunlight-highlight-javascript">new Promise(function(){}, function(){})
+    <pre class="prettyprint"><code>new Promise(function(){}, function(){})
 new Promise(function(){})
-new Promise()</pre>
-
+new Promise()</code></pre>
 
         
     
     </div>
-
     
-
     
-
     
-
     
-
     
-
     
-
+    
+    
+    
+    
+    
+    
+    
     
         <h3 class="subsection-title">Methods</h3>
-
+        
         <dl>
             
 <dt>
@@ -586,31 +321,31 @@ new Promise()</pre>
         <h5>Parameters:</h5>
         
 
-<table class="params table table-striped">
+<table class="params">
     <thead>
 	<tr>
 		
 		<th>Name</th>
 		
-
+		
 		<th>Type</th>
-
 		
-
 		
-
+		
+		
+		
 		<th class="last">Description</th>
 	</tr>
 	</thead>
-
+	
 	<tbody>
 	
-
+	
         <tr>
             
                 <td class="name"><code>promise</code></td>
             
-
+            
             <td class="type">
             
                 
@@ -619,51 +354,50 @@ new Promise()</pre>
 
             
             </td>
-
             
-
             
-
+            
+            
+            
             <td class="description last"></td>
         </tr>
-
+	
 	
 	</tbody>
 </table>
-
     
     
     
 <dl class="details">
     
-
+        
+    
+    
     
 
     
-
     
-
     
-
     
-
     
-
     
-
     
-
+    
+    
+    
+    
+    
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#sunlight-1-line-2294">line 2294</a>
+        <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#line2328">line 2328</a>
     </li></ul></dd>
     
-
     
-
     
-
+    
+    
+    
     
 </dl>
 
@@ -694,7 +428,6 @@ new Promise()</pre>
 	</dd>
 </dl>
 
-
         
     
     
@@ -723,33 +456,33 @@ new Promise()</pre>
         <h5>Parameters:</h5>
         
 
-<table class="params table table-striped">
+<table class="params">
     <thead>
 	<tr>
 		
 		<th>Name</th>
 		
-
+		
 		<th>Type</th>
-
+		
 		
 		<th>Argument</th>
 		
-
 		
-
+		
+		
 		<th class="last">Description</th>
 	</tr>
 	</thead>
-
+	
 	<tbody>
 	
-
+	
         <tr>
             
                 <td class="name"><code>todo</code></td>
             
-
+            
             <td class="type">
             
                 
@@ -758,31 +491,31 @@ new Promise()</pre>
 
             
             </td>
-
+            
             
                 <td class="attributes">
                 
                     &lt;optional><br>
                 
-
+                    
                 
-
+                    
                 
                 </td>
             
-
             
-
+            
+            
             <td class="description last"></td>
         </tr>
-
 	
-
+	
+	
         <tr>
             
                 <td class="name"><code>fail</code></td>
             
-
+            
             <td class="type">
             
                 
@@ -791,31 +524,31 @@ new Promise()</pre>
 
             
             </td>
-
+            
             
                 <td class="attributes">
                 
                     &lt;optional><br>
                 
-
+                    
                 
-
+                    
                 
                 </td>
             
-
             
-
+            
+            
             <td class="description last"></td>
         </tr>
-
 	
-
+	
+	
         <tr>
             
                 <td class="name"><code>progress</code></td>
             
-
+            
             <td class="type">
             
                 
@@ -824,61 +557,60 @@ new Promise()</pre>
 
             
             </td>
-
+            
             
                 <td class="attributes">
                 
                     &lt;optional><br>
                 
-
+                    
                 
-
+                    
                 
                 </td>
             
-
             
-
+            
+            
             <td class="description last"></td>
         </tr>
-
+	
 	
 	</tbody>
 </table>
-
     
     
     
 <dl class="details">
     
-
+        
+    
+    
     
 
     
-
     
-
     
-
     
-
     
-
     
-
     
-
+    
+    
+    
+    
+    
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#sunlight-1-line-2218">line 2218</a>
+        <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#line2252">line 2252</a>
     </li></ul></dd>
     
-
     
-
     
-
+    
+    
+    
     
 </dl>
 
@@ -909,14 +641,12 @@ new Promise()</pre>
 	</dd>
 </dl>
 
-
         
     
     
         <h5>Example</h5>
         
-    <pre class="sunlight-highlight-javascript">new Promise().and(todo).and(todo);</pre>
-
+    <pre class="prettyprint"><code>new Promise().and(todo).and(todo);</code></pre>
 
     
 </dd>
@@ -944,31 +674,31 @@ new Promise()</pre>
         <h5>Parameters:</h5>
         
 
-<table class="params table table-striped">
+<table class="params">
     <thead>
 	<tr>
 		
 		<th>Name</th>
 		
-
+		
 		<th>Type</th>
-
 		
-
 		
-
+		
+		
+		
 		<th class="last">Description</th>
 	</tr>
 	</thead>
-
+	
 	<tbody>
 	
-
+	
         <tr>
             
                 <td class="name"><code>name</code></td>
             
-
+            
             <td class="type">
             
                 
@@ -977,21 +707,21 @@ new Promise()</pre>
 
             
             </td>
-
             
-
             
-
+            
+            
+            
             <td class="description last">Function name.</td>
         </tr>
-
 	
-
+	
+	
         <tr>
             
                 <td class="name"><code>result</code></td>
             
-
+            
             <td class="type">
             
                 
@@ -1000,51 +730,50 @@ new Promise()</pre>
 
             
             </td>
-
             
-
             
-
+            
+            
+            
             <td class="description last"></td>
         </tr>
-
+	
 	
 	</tbody>
 </table>
-
     
     
     
 <dl class="details">
     
-
+        
+    
+    
     
 
     
-
     
-
     
-
     
-
     
-
     
-
     
-
+    
+    
+    
+    
+    
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#sunlight-1-line-2050">line 2050</a>
+        <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#line2084">line 2084</a>
     </li></ul></dd>
     
-
     
-
     
-
+    
+    
+    
     
 </dl>
 
@@ -1074,7 +803,6 @@ new Promise()</pre>
 
 	</dd>
 </dl>
-
 
         
     
@@ -1105,34 +833,34 @@ new Promise()</pre>
     
 <dl class="details">
     
-
+        
+    
+    
     
 
     
-
     
-
     
-
     
-
     
-
     
-
     
-
+    
+    
+    
+    
+    
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#sunlight-1-line-2143">line 2143</a>
+        <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#line2177">line 2177</a>
     </li></ul></dd>
     
-
     
-
     
-
+    
+    
+    
     
 </dl>
 
@@ -1163,7 +891,6 @@ new Promise()</pre>
 	</dd>
 </dl>
 
-
         
     
     
@@ -1189,34 +916,34 @@ new Promise()</pre>
     
 <dl class="details">
     
-
+        
+    
+    
     
 
     
-
     
-
     
-
     
-
     
-
     
-
     
-
+    
+    
+    
+    
+    
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#sunlight-1-line-2267">line 2267</a>
+        <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#line2301">line 2301</a>
     </li></ul></dd>
     
-
     
-
     
-
+    
+    
+    
     
 </dl>
 
@@ -1247,7 +974,6 @@ new Promise()</pre>
 	</dd>
 </dl>
 
-
         
     
     
@@ -1276,31 +1002,31 @@ new Promise()</pre>
         <h5>Parameters:</h5>
         
 
-<table class="params table table-striped">
+<table class="params">
     <thead>
 	<tr>
 		
 		<th>Name</th>
 		
-
+		
 		<th>Type</th>
-
 		
-
 		
-
+		
+		
+		
 		<th class="last">Description</th>
 	</tr>
 	</thead>
-
+	
 	<tbody>
 	
-
+	
         <tr>
             
                 <td class="name"><code>propertyName</code></td>
             
-
+            
             <td class="type">
             
                 
@@ -1309,51 +1035,50 @@ new Promise()</pre>
 
             
             </td>
-
             
-
             
-
+            
+            
+            
             <td class="description last">Property name.</td>
         </tr>
-
+	
 	
 	</tbody>
 </table>
-
     
     
     
 <dl class="details">
     
-
+        
+    
+    
     
 
     
-
     
-
     
-
     
-
     
-
     
-
     
-
+    
+    
+    
+    
+    
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#sunlight-1-line-2067">line 2067</a>
+        <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#line2101">line 2101</a>
     </li></ul></dd>
     
-
     
-
     
-
+    
+    
+    
     
 </dl>
 
@@ -1384,7 +1109,6 @@ new Promise()</pre>
 	</dd>
 </dl>
 
-
         
     
     
@@ -1409,33 +1133,33 @@ new Promise()</pre>
         <h5>Parameters:</h5>
         
 
-<table class="params table table-striped">
+<table class="params">
     <thead>
 	<tr>
 		
 		<th>Name</th>
 		
-
+		
 		<th>Type</th>
-
+		
 		
 		<th>Argument</th>
 		
-
 		
-
+		
+		
 		<th class="last">Description</th>
 	</tr>
 	</thead>
-
+	
 	<tbody>
 	
-
+	
         <tr>
             
                 <td class="name"><code>obj</code></td>
             
-
+            
             <td class="type">
             
                 
@@ -1444,61 +1168,60 @@ new Promise()</pre>
 
             
             </td>
-
+            
             
                 <td class="attributes">
                 
                     &lt;optional><br>
                 
-
+                    
                 
-
+                    
                 
                 </td>
             
-
             
-
+            
+            
             <td class="description last">result.</td>
         </tr>
-
+	
 	
 	</tbody>
 </table>
-
     
     
     
 <dl class="details">
     
-
+        
+    
+    
     
 
     
-
     
-
     
-
     
-
     
-
     
-
     
-
+    
+    
+    
+    
+    
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#sunlight-1-line-2163">line 2163</a>
+        <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#line2197">line 2197</a>
     </li></ul></dd>
     
-
     
-
     
-
+    
+    
+    
     
 </dl>
 
@@ -1528,7 +1251,6 @@ new Promise()</pre>
 
 	</dd>
 </dl>
-
 
         
     
@@ -1559,34 +1281,34 @@ new Promise()</pre>
     
 <dl class="details">
     
-
+        
+    
+    
     
 
     
-
     
-
     
-
     
-
     
-
     
-
     
-
+    
+    
+    
+    
+    
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#sunlight-1-line-2280">line 2280</a>
+        <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#line2314">line 2314</a>
     </li></ul></dd>
     
-
     
-
     
-
+    
+    
+    
     
 </dl>
 
@@ -1616,7 +1338,6 @@ new Promise()</pre>
 
 	</dd>
 </dl>
-
 
         
     
@@ -1646,31 +1367,31 @@ new Promise()</pre>
         <h5>Parameters:</h5>
         
 
-<table class="params table table-striped">
+<table class="params">
     <thead>
 	<tr>
 		
 		<th>Name</th>
 		
-
+		
 		<th>Type</th>
-
 		
-
 		
-
+		
+		
+		
 		<th class="last">Description</th>
 	</tr>
 	</thead>
-
+	
 	<tbody>
 	
-
+	
         <tr>
             
                 <td class="name"><code>nextToDo</code></td>
             
-
+            
             <td class="type">
             
                 
@@ -1679,21 +1400,21 @@ new Promise()</pre>
 
             
             </td>
-
             
-
             
-
+            
+            
+            
             <td class="description last">Todo.</td>
         </tr>
-
 	
-
+	
+	
         <tr>
             
                 <td class="name"><code>nextFail</code></td>
             
-
+            
             <td class="type">
             
                 
@@ -1702,21 +1423,21 @@ new Promise()</pre>
 
             
             </td>
-
             
-
             
-
+            
+            
+            
             <td class="description last">Fail next.</td>
         </tr>
-
 	
-
+	
+	
         <tr>
             
                 <td class="name"><code>nextProgress</code></td>
             
-
+            
             <td class="type">
             
                 
@@ -1725,51 +1446,50 @@ new Promise()</pre>
 
             
             </td>
-
             
-
             
-
+            
+            
+            
             <td class="description last">Progress.</td>
         </tr>
-
+	
 	
 	</tbody>
 </table>
-
     
     
     
 <dl class="details">
     
-
+        
+    
+    
     
 
     
-
     
-
     
-
     
-
     
-
     
-
     
-
+    
+    
+    
+    
+    
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#sunlight-1-line-2085">line 2085</a>
+        <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#line2119">line 2119</a>
     </li></ul></dd>
     
-
     
-
     
-
+    
+    
+    
     
 </dl>
 
@@ -1799,7 +1519,6 @@ new Promise()</pre>
 
 	</dd>
 </dl>
-
 
         
     
@@ -1829,35 +1548,35 @@ new Promise()</pre>
         <h5>Parameters:</h5>
         
 
-<table class="params table table-striped">
+<table class="params">
     <thead>
 	<tr>
 		
 		<th>Name</th>
 		
-
+		
 		<th>Type</th>
-
+		
 		
 		<th>Argument</th>
 		
-
+		
 		
 		<th>Default</th>
 		
-
+		
 		<th class="last">Description</th>
 	</tr>
 	</thead>
-
+	
 	<tbody>
 	
-
+	
         <tr>
             
                 <td class="name"><code>promise</code></td>
             
-
+            
             <td class="type">
             
                 
@@ -1866,19 +1585,19 @@ new Promise()</pre>
 
             
             </td>
-
+            
             
                 <td class="attributes">
                 
                     &lt;optional><br>
                 
-
+                    
                 
-
+                    
                 
                 </td>
             
-
+            
             
                 <td class="default">
                 
@@ -1886,17 +1605,17 @@ new Promise()</pre>
                 
                 </td>
             
-
+            
             <td class="description last"></td>
         </tr>
-
 	
-
+	
+	
         <tr>
             
                 <td class="name"><code>obj</code></td>
             
-
+            
             <td class="type">
             
                 
@@ -1905,65 +1624,64 @@ new Promise()</pre>
 
             
             </td>
-
+            
             
                 <td class="attributes">
                 
                     &lt;optional><br>
                 
-
+                    
                 
-
+                    
                 
                 </td>
             
-
+            
             
                 <td class="default">
                 
                 </td>
             
-
+            
             <td class="description last">result</td>
         </tr>
-
+	
 	
 	</tbody>
 </table>
-
     
     
     
 <dl class="details">
     
-
+        
+    
+    
     
 
     
-
     
-
     
-
     
-
     
-
     
-
     
-
+    
+    
+    
+    
+    
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#sunlight-1-line-2243">line 2243</a>
+        <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#line2277">line 2277</a>
     </li></ul></dd>
     
-
     
-
     
-
+    
+    
+    
     
 </dl>
 
@@ -1994,13 +1712,12 @@ new Promise()</pre>
 	</dd>
 </dl>
 
-
         
     
     
         <h5>Example</h5>
         
-    <pre class="sunlight-highlight-javascript">function delay(ms) {
+    <pre class="prettyprint"><code>function delay(ms) {
   return function (obj) {
       var promise = new Promise;
       var self = this;
@@ -2010,8 +1727,7 @@ new Promise()</pre>
       return promise;
   };
 };
-new Promise().and(delay(1000)).and(delay(2000));</pre>
-
+new Promise().and(delay(1000)).and(delay(2000));</code></pre>
 
     
 </dd>
@@ -2036,34 +1752,34 @@ new Promise().and(delay(1000)).and(delay(2000));</pre>
     
 <dl class="details">
     
-
+        
+    
+    
     
 
     
-
     
-
     
-
     
-
     
-
     
-
     
-
+    
+    
+    
+    
+    
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#sunlight-1-line-2273">line 2273</a>
+        <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#line2307">line 2307</a>
     </li></ul></dd>
     
-
     
-
     
-
+    
+    
+    
     
 </dl>
 
@@ -2094,7 +1810,6 @@ new Promise().and(delay(1000)).and(delay(2000));</pre>
 	</dd>
 </dl>
 
-
         
     
     
@@ -2119,31 +1834,31 @@ new Promise().and(delay(1000)).and(delay(2000));</pre>
         <h5>Parameters:</h5>
         
 
-<table class="params table table-striped">
+<table class="params">
     <thead>
 	<tr>
 		
 		<th>Name</th>
 		
-
+		
 		<th>Type</th>
-
 		
-
 		
-
+		
+		
+		
 		<th class="last">Description</th>
 	</tr>
 	</thead>
-
+	
 	<tbody>
 	
-
+	
         <tr>
             
                 <td class="name"><code>context</code></td>
             
-
+            
             <td class="type">
             
                 
@@ -2152,51 +1867,50 @@ new Promise().and(delay(1000)).and(delay(2000));</pre>
 
             
             </td>
-
             
-
             
-
+            
+            
+            
             <td class="description last">Context of Promise.</td>
         </tr>
-
+	
 	
 	</tbody>
 </table>
-
     
     
     
 <dl class="details">
     
-
+        
+    
+    
     
 
     
-
     
-
     
-
     
-
     
-
     
-
     
-
+    
+    
+    
+    
+    
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#sunlight-1-line-2074">line 2074</a>
+        <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#line2108">line 2108</a>
     </li></ul></dd>
     
-
     
-
     
-
+    
+    
+    
     
 </dl>
 
@@ -2227,7 +1941,6 @@ new Promise().and(delay(1000)).and(delay(2000));</pre>
 	</dd>
 </dl>
 
-
         
     
     
@@ -2235,66 +1948,30 @@ new Promise().and(delay(1000)).and(delay(2000));</pre>
 
         </dl>
     
-
     
-
+    
+    
     
 </article>
 
-</section>
+</section>  
 
 
 
 
-				</div>
+</div>
 
-				<div class="clearfix"></div>
-				<footer>
-					
-					
-		<span class="jsdoc-message">
-		Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.2</a>
-		</span>
-				</footer>
-			</div>
+<nav>
+    <h2><a href="index.html">Index</a></h2><h3>Modules</h3><ul><li><a href="array.html">base/array</a></li><li><a href="ClassModule.html">base/ClassModule</a></li><li><a href="client.html">base/client</a></li><li><a href="config.html">base/config</a></li><li><a href="extend.html">base/extend</a></li><li><a href="Promise.html">base/Promise</a></li><li><a href="queue.html">base/queue</a></li><li><a href="ready.html">base/ready</a></li><li><a href="support.html">base/support</a></li><li><a href="typed.html">base/typed</a></li><li><a href="array_.html">ecma5/array</a></li><li><a href="function.html">ecma5/function</a></li><li><a href="object.html">ecma5/object</a></li><li><a href="string.html">ecma5/string</a></li><li><a href="charcode.html">hash/charcode</a></li><li><a href="cssColors.html">hash/cssColors</a></li><li><a href="applicationCache.html">html5/applicationCache</a></li><li><a href="localStorage.html">html5/localStorage</a></li><li><a href="sessionStorage.html">html5/sessionStorage</a></li><li><a href="Storage.html">html5/Storage</a></li><li><a href="Worker.html">html5/Worker</a></li><li><a href="sizzle.html">lib/sizzle</a></li><li><a href="attr.html">main/attr</a></li><li><a href="class.html">main/class</a></li><li><a href="communicate.html">main/communicate</a></li><li><a href="CustomEvent.html">main/CustomEvent</a></li><li><a href="data.html">main/data</a></li><li><a href="event.html">main/event</a></li><li><a href="object_.html">main/object</a></li><li><a href="parse.html">main/parse</a></li><li><a href="query.html">main/query</a></li><li><a href="event_.html">mobile/event</a></li><li><a href="location.html">module/location</a></li><li><a href="Test_.html">module/Test</a></li></ul><h3>Classes</h3><ul><li><a href="aQuery.html">aQuery</a></li></ul><h3>Events</h3><ul><li><a href="aQuery.html#event:"ajaxStart"">"ajaxStart"</a></li><li><a href="aQuery.html#event:"ajaxStop"">"ajaxStop"</a></li><li><a href="aQuery.html#event:"ajaxTimeout"">"ajaxTimeout"</a></li><li><a href="aQuery.html#event:"jsonpStart"">"jsonpStart"</a></li><li><a href="aQuery.html#event:"jsonpStop"">"jsonpStop"</a></li><li><a href="aQuery.html#event:"jsonpTimeout"">"jsonpTimeout"</a></li><li><a href="aQuery.html#event:"test.report"">"test.report"</a></li></ul><h3>Namespaces</h3><ul><li><a href="aQuery.util.html">util</a></li><li><a href="event.document.html">document</a></li><li><a href="require.html">require(namespace)</a></li></ul><h3>Mixins</h3><ul><li><a href="CollectionClassPrototypeMethods.html">CollectionClassPrototypeMethods</a></li><li><a href="ObjectClassStaticMethods.html">ObjectClassStaticMethods</a></li></ul><h3>Global</h3><ul><li><a href="global.html#AjaxOptions">AjaxOptions</a></li><li><a href="global.html#debug">debug</a></li><li><a href="global.html#define">define</a></li><li><a href="global.html#define">define(1)</a></li><li><a href="global.html#define">define(2)</a></li><li><a href="global.html#define">define(3)</a></li><li><a href="global.html#error">error</a></li><li><a href="global.html#info">info</a></li><li><a href="global.html#JSONPOptions">JSONPOptions</a></li><li><a href="global.html#logger">logger</a></li><li><a href="global.html#require">require</a></li></ul>
+</nav>
 
-			
-			<div class="span3">
-				<div id="toc"></div>
-			</div>
-			
-			<br clear="both">
-		</div>
+<br clear="both">
 
-	</div>
-	<script src="scripts/sunlight.js"></script>
-	<script src="scripts/sunlight.javascript.js"></script>
-	<script src="scripts/sunlight-plugin.doclinks.js"></script>
-	<script src="scripts/sunlight-plugin.linenumbers.js"></script>
-	<script src="scripts/sunlight-plugin.menu.js"></script>
-	<script src="scripts/jquery.min.js"></script>
-	<script src="scripts/jquery.scrollTo.js"></script>
-	<script src="scripts/jquery.localScroll.js"></script>
-	<script src="scripts/bootstrap-dropdown.js"></script>
-	<script src="scripts/toc.js"></script>
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.2</a> on Thu Feb 27 2014 23:18:10 GMT+0800 (CST)
+</footer>
 
-
-	<script>  Sunlight.highlightAll({lineNumbers:true,  showMenu: true, enableDoclinks :true}); </script>
-
-	<script>
-		$( function () {
-			$( "#toc" ).toc( {
-				selectors   : "h1,h2,h3,h4",
-				showAndHide : false,
-				scrollTo    : 60
-			} );
-			$( "#toc>ul" ).addClass( "nav nav-pills nav-stacked" );
-			$( "#main span[id^='toc']" ).addClass( "toc-shim" );
-
-		} );
-	</script>
-
-	
-
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
 </body>
 </html>
