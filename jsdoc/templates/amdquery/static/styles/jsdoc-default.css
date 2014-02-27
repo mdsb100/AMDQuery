@@ -47,11 +47,10 @@ header
 section
 {
 	display: block;
-	
+
 	background-color: #fff;
 	padding: 12px 24px;
     border-bottom: 1px solid #ccc;
-    margin-right: 240px;
 }
 
 .variation {
@@ -221,7 +220,6 @@ h6
 .prettyprint
 {
 	border: 1px solid #ddd;
-	width: 80%;
     overflow: auto;
 }
 
@@ -287,4 +285,27 @@ h6
 
 .disabled {
     color: #454545;
+}
+
+
+
+pre {
+    margin-bottom: 1em;
+    letter-spacing: 1px;
+}
+
+pre .linenumber {
+    margin-right: 12px;
+    border-right: 1px solid rgb(190, 190, 190);
+    background-color: rgb(239, 239, 239);
+    width: 30px;
+    display: inline-block;
+    text-align: right;
+}
+
+.Top {
+    text-align: center;
+    display: block;
+    bottom: 30px;
+    right: 30px;
 }

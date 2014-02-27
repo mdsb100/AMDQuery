@@ -1,41 +1,44 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
     <meta charset="utf-8">
     <title>JSDoc: Class: aQuery</title>
-
-    <script src="scripts/prettify/prettify.js"> </script>
-    <script src="scripts/prettify/lang-css.js"> </script>
     <!--[if lt IE 9]>
       <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/reset.css">
     <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
     <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+    <link type="text/css" rel="stylesheet" href="styles/ui-widget.css">
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <script src="scripts/amdquery.js" amdquery="debug:false;" amd="detectCR=1" module="transitionToAnimation:1" ui="initWidget:1;isTransform3d:0;autoFetchCss:0"> </script>
+    <script src="scripts/main.js"> </script>
 </head>
 
-<body>
+<body style="width: 100%; height: 100%;" onload="prettyPrint()">
 
-<div id="main">
+<div id="main" style="width: 100%; height: 100%;" amdquery-widget="ui.scrollableview" ui-scrollableview="orientation:V;enableKeyboard:true;focus:true">
 
-    <h1 class="page-title">Class: aQuery</h1>
+    <h1 id="page-title" name="page-title" class="page-title">Class: aQuery</h1>
 
     
 
 
 
 <section>
-    
+
 <header>
     <h2>
     aQuery
     </h2>
     
-</header>  
+</header>
 
 <article>
     <div class="container-overview">
     
-    
+
     
         
 <dt>
@@ -213,34 +216,34 @@
     
 <dl class="details">
     
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#line265">line 265</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -258,7 +261,7 @@
     
         <h5>Example</h5>
         
-    <pre class="prettyprint"><code>aQuery(function(){}); // Equivalent to ready(function(){}), see <a href="ready.html">module:base/ready</a>
+    <pre class="prettyprint">aQuery(function(){}); // Equivalent to ready(function(){}), see <a href="ready.html">module:base/ready</a>
 // should require("main/query")
 aQuery("div"); aQuery("#my"); aQuery(".title") // see <a href="http://sizzlejs.com/">http://sizzlejs.com/</a>
 aQuery(div); aQuery([div, div]);
@@ -268,40 +271,40 @@ aQuery({height:100,width:100},"div"); // create a element "div", style is "heigh
 aQuery(null,"a"); // create a element "a" without style
 // should require("main/dom")
 aQuery({height:100,width:100},"div", document.body); // create a element "div" and append to "body"
-aQuery(null,"div", document.body);</code></pre>
+aQuery(null,"div", document.body);</pre>
 
     
 </dd>
 
     
     </div>
+
     
-    
-    
+
     
         <h3 class="subsection-title">Mixes In</h3>
-        
+
         <ul>
             <li><a href="query.html">module:main/query</a></li>
         </ul>
     
+
     
+
     
-    
-    
-    
+
     
         <h3 class="subsection-title">Namespaces</h3>
-        
+
         <dl>
             <dt><a href="namespaces.html#aQuery.util"><a href="aQuery.util.html">util</a></a></dt>
             <dd></dd>
         </dl>
     
-    
+
     
         <h3 class="subsection-title">Members</h3>
-        
+
         <dl>
             
 <dt>
@@ -321,34 +324,34 @@ aQuery(null,"div", document.body);</code></pre>
     
 <dl class="details">
     
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#line389">line 389</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -375,34 +378,34 @@ aQuery(null,"div", document.body);</code></pre>
     
 <dl class="details">
     
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="event.js.html">main/event.js</a>, <a href="event.js.html#line853">line 853</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -429,34 +432,34 @@ aQuery(null,"div", document.body);</code></pre>
     
 <dl class="details">
     
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="event.js.html">main/event.js</a>, <a href="event.js.html#line929">line 929</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -483,34 +486,34 @@ aQuery(null,"div", document.body);</code></pre>
     
 <dl class="details">
     
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#line508">line 508</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -537,34 +540,34 @@ aQuery(null,"div", document.body);</code></pre>
     
 <dl class="details">
     
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#line368">line 368</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -591,34 +594,34 @@ aQuery(null,"div", document.body);</code></pre>
     
 <dl class="details">
     
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="event.js.html">main/event.js</a>, <a href="event.js.html#line921">line 921</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -645,34 +648,34 @@ aQuery(null,"div", document.body);</code></pre>
     
 <dl class="details">
     
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="event.js.html">main/event.js</a>, <a href="event.js.html#line913">line 913</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -699,34 +702,34 @@ aQuery(null,"div", document.body);</code></pre>
     
 <dl class="details">
     
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#line512">line 512</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -753,34 +756,34 @@ aQuery(null,"div", document.body);</code></pre>
     
 <dl class="details">
     
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#line510">line 510</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -817,39 +820,39 @@ aQuery(null,"div", document.body);</code></pre>
     
 <dl class="details">
     
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
+
     
     <dt class="tag-default">Default Value:</dt>
     <dd class="tag-default"><ul class="dummy">
             <li>0</li>
         </ul></dd>
     
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#line797">line 797</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -859,10 +862,10 @@ aQuery(null,"div", document.body);</code></pre>
 
         </dl>
     
-    
+
     
         <h3 class="subsection-title">Methods</h3>
-        
+
         <dl>
             
 <dt>
@@ -958,34 +961,34 @@ aQuery(null,"div", document.body);</code></pre>
     
 <dl class="details">
     
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="event.js.html">main/event.js</a>, <a href="event.js.html#line797">line 797</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -1093,34 +1096,34 @@ aQuery(null,"div", document.body);</code></pre>
     
 <dl class="details">
     
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="event.js.html">main/event.js</a>, <a href="event.js.html#line860">line 860</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -1228,34 +1231,34 @@ aQuery(null,"div", document.body);</code></pre>
     
 <dl class="details">
     
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="event.js.html">main/event.js</a>, <a href="event.js.html#line868">line 868</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -1363,34 +1366,34 @@ aQuery(null,"div", document.body);</code></pre>
     
 <dl class="details">
     
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="event.js.html">main/event.js</a>, <a href="event.js.html#line876">line 876</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -1544,34 +1547,34 @@ aQuery(null,"div", document.body);</code></pre>
     
 <dl class="details">
     
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#line414">line 414</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -1607,10 +1610,10 @@ aQuery(null,"div", document.body);</code></pre>
     
         <h5>Example</h5>
         
-    <pre class="prettyprint"><code>aQuery.among( 1, 10, 5 ); // return 5
+    <pre class="prettyprint">aQuery.among( 1, 10, 5 ); // return 5
 aQuery.among( 10, 1, 7 ); // return 7
 aQuery.among( 10, 1, 123 ); // return 10
-aQuery.among( 10, 10, 15 ); // return 10</code></pre>
+aQuery.among( 10, 10, 15 ); // return 10</pre>
 
     
 </dd>
@@ -1733,34 +1736,34 @@ aQuery.among( 10, 10, 15 ); // return 10</code></pre>
     
 <dl class="details">
     
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#line400">line 400</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -1796,9 +1799,9 @@ aQuery.among( 10, 10, 15 ); // return 10</code></pre>
     
         <h5>Example</h5>
         
-    <pre class="prettyprint"><code>aQuery.between( 1, 10, 5 ); // return 5
+    <pre class="prettyprint">aQuery.between( 1, 10, 5 ); // return 5
 aQuery.between( 1, 10, 1 ); // return 1
-aQuery.between( 1, 10, 123 ); // return 10</code></pre>
+aQuery.between( 1, 10, 123 ); // return 10</pre>
 
     
 </dd>
@@ -1898,34 +1901,34 @@ aQuery.between( 1, 10, 123 ); // return 10</code></pre>
     
 <dl class="details">
     
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#line422">line 422</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -2033,34 +2036,34 @@ aQuery.between( 1, 10, 123 ); // return 10</code></pre>
     
 <dl class="details">
     
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="event.js.html">main/event.js</a>, <a href="event.js.html#line815">line 815</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -2168,34 +2171,34 @@ aQuery.between( 1, 10, 123 ); // return 10</code></pre>
     
 <dl class="details">
     
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#line451">line 451</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -2383,34 +2386,34 @@ see <a href="global.html#define">define</a><br/>
     
 <dl class="details">
     
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#line1932">line 1932</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -2595,34 +2598,34 @@ see <a href="global.html#define">define</a><br/>
     
 <dl class="details">
     
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#line460">line 460</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -2730,34 +2733,34 @@ see <a href="global.html#define">define</a><br/>
     
 <dl class="details">
     
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#line332">line 332</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -2793,10 +2796,10 @@ see <a href="global.html#define">define</a><br/>
     
         <h5>Example</h5>
         
-    <pre class="prettyprint"><code>aQuery.extend( {
+    <pre class="prettyprint">aQuery.extend( {
   myFun: function(){}
 } );
-aQuery.myFun();</code></pre>
+aQuery.myFun();</pre>
 
     
 </dd>
@@ -2873,34 +2876,34 @@ aQuery.myFun();</code></pre>
     
 <dl class="details">
     
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#line477">line 477</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -3008,34 +3011,34 @@ aQuery.myFun();</code></pre>
     
 <dl class="details">
     
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="event.js.html">main/event.js</a>, <a href="event.js.html#line884">line 884</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -3198,34 +3201,34 @@ aQuery.myFun();</code></pre>
     
 <dl class="details">
     
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#line97">line 97</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -3356,34 +3359,34 @@ aQuery.myFun();</code></pre>
     
 <dl class="details">
     
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="event.js.html">main/event.js</a>, <a href="event.js.html#line825">line 825</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -3491,34 +3494,34 @@ aQuery.myFun();</code></pre>
     
 <dl class="details">
     
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="event.js.html">main/event.js</a>, <a href="event.js.html#line892">line 892</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -3626,34 +3629,34 @@ aQuery.myFun();</code></pre>
     
 <dl class="details">
     
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="event.js.html">main/event.js</a>, <a href="event.js.html#line900">line 900</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -3784,34 +3787,34 @@ aQuery.myFun();</code></pre>
     
 <dl class="details">
     
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#line486">line 486</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -3875,34 +3878,34 @@ aQuery.myFun();</code></pre>
     
 <dl class="details">
     
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#line123">line 123</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -4034,34 +4037,34 @@ aQuery.myFun();</code></pre>
     
 <dl class="details">
     
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="event.js.html">main/event.js</a>, <a href="event.js.html#line847">line 847</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -4192,34 +4195,34 @@ aQuery.myFun();</code></pre>
     
 <dl class="details">
     
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="event.js.html">main/event.js</a>, <a href="event.js.html#line807">line 807</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -4402,34 +4405,34 @@ aQuery.myFun();</code></pre>
     
 <dl class="details">
     
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#line1962">line 1962</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -4489,34 +4492,34 @@ aQuery.myFun();</code></pre>
     
 <dl class="details">
     
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#line372">line 372</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -4714,34 +4717,34 @@ aQuery.myFun();</code></pre>
     
 <dl class="details">
     
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="event.js.html">main/event.js</a>, <a href="event.js.html#line836">line 836</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -4801,34 +4804,34 @@ aQuery.myFun();</code></pre>
     
 <dl class="details">
     
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#line379">line 379</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -4932,34 +4935,34 @@ aQuery.myFun();</code></pre>
     
 <dl class="details">
     
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="class.js.html">main/class.js</a>, <a href="class.js.html#line125">line 125</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -5090,34 +5093,34 @@ aQuery.myFun();</code></pre>
     
 <dl class="details">
     
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="event.js.html">main/event.js</a>, <a href="event.js.html#line940">line 940</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -5274,34 +5277,34 @@ aQuery.myFun();</code></pre>
     
 <dl class="details">
     
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="attr.js.html">main/attr.js</a>, <a href="attr.js.html#line169">line 169</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -5340,13 +5343,13 @@ aQuery.myFun();</code></pre>
     
         <h5>Example</h5>
         
-    <pre class="prettyprint"><code>$("#img").attr({
+    <pre class="prettyprint">$("#img").attr({
   width: "100px",
   height: "100px"
 }).attr("title", "Flower");
 $("#div1").attr("title", "Hello");
 $("#div2").attr("title", "World");
-$("#div1, #div2").attr("title"); // return "Hello"</code></pre>
+$("#div1, #div2").attr("title"); // return "Hello"</pre>
 
     
 </dd>
@@ -5423,34 +5426,34 @@ $("#div1, #div2").attr("title"); // return "Hello"</code></pre>
     
 <dl class="details">
     
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="event.js.html">main/event.js</a>, <a href="event.js.html#line1050">line 1050</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -5558,34 +5561,34 @@ $("#div1, #div2").attr("title"); // return "Hello"</code></pre>
     
 <dl class="details">
     
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="event.js.html">main/event.js</a>, <a href="event.js.html#line1244">line 1244</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -5705,34 +5708,34 @@ $("#div1, #div2").attr("title"); // return "Hello"</code></pre>
     
 <dl class="details">
     
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="query.js.html">main/query.js</a>, <a href="query.js.html#line516">line 516</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -5788,34 +5791,34 @@ $("#div1, #div2").attr("title"); // return "Hello"</code></pre>
     
 <dl class="details">
     
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="class.js.html">main/class.js</a>, <a href="class.js.html#line168">line 168</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -5923,34 +5926,34 @@ $("#div1, #div2").attr("title"); // return "Hello"</code></pre>
     
 <dl class="details">
     
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="event.js.html">main/event.js</a>, <a href="event.js.html#line964">line 964</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -6058,34 +6061,34 @@ $("#div1, #div2").attr("title"); // return "Hello"</code></pre>
     
 <dl class="details">
     
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="event.js.html">main/event.js</a>, <a href="event.js.html#line1114">line 1114</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -6189,34 +6192,34 @@ $("#div1, #div2").attr("title"); // return "Hello"</code></pre>
     
 <dl class="details">
     
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="class.js.html">main/class.js</a>, <a href="class.js.html#line134">line 134</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -6276,34 +6279,34 @@ $("#div1, #div2").attr("title"); // return "Hello"</code></pre>
     
 <dl class="details">
     
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="query.js.html">main/query.js</a>, <a href="query.js.html#line523">line 523</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -6457,34 +6460,34 @@ $("#div1, #div2").attr("title"); // return "Hello"</code></pre>
     
 <dl class="details">
     
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="data.js.html">main/data.js</a>, <a href="data.js.html#line210">line 210</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -6595,34 +6598,34 @@ $("#div1, #div2").attr("title"); // return "Hello"</code></pre>
     
 <dl class="details">
     
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="event.js.html">main/event.js</a>, <a href="event.js.html#line1122">line 1122</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -6776,34 +6779,34 @@ $("#div1, #div2").attr("title"); // return "Hello"</code></pre>
     
 <dl class="details">
     
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="event.js.html">main/event.js</a>, <a href="event.js.html#line976">line 976</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -6911,34 +6914,34 @@ $("#div1, #div2").attr("title"); // return "Hello"</code></pre>
     
 <dl class="details">
     
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#line706">line 706</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -7046,34 +7049,34 @@ $("#div1, #div2").attr("title"); // return "Hello"</code></pre>
     
 <dl class="details">
     
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="query.js.html">main/query.js</a>, <a href="query.js.html#line315">line 315</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -7181,34 +7184,34 @@ $("#div1, #div2").attr("title"); // return "Hello"</code></pre>
     
 <dl class="details">
     
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="event.js.html">main/event.js</a>, <a href="event.js.html#line1300">line 1300</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -7323,34 +7326,34 @@ $("#div1, #div2").attr("title"); // return "Hello"</code></pre>
     
 <dl class="details">
     
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#line720">line 720</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -7386,10 +7389,10 @@ $("#div1, #div2").attr("title"); // return "Hello"</code></pre>
     
         <h5>Example</h5>
         
-    <pre class="prettyprint"><code>aQuery.fn.extend( {
+    <pre class="prettyprint">aQuery.fn.extend( {
   myFun: function(){}
 } );
-new aQuery().myFun();</code></pre>
+new aQuery().myFun();</pre>
 
     
 </dd>
@@ -7466,34 +7469,34 @@ new aQuery().myFun();</code></pre>
     
 <dl class="details">
     
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="query.js.html">main/query.js</a>, <a href="query.js.html#line325">line 325</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -7601,34 +7604,34 @@ new aQuery().myFun();</code></pre>
     
 <dl class="details">
     
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="query.js.html">main/query.js</a>, <a href="query.js.html#line333">line 333</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -7688,34 +7691,34 @@ new aQuery().myFun();</code></pre>
     
 <dl class="details">
     
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#line731">line 731</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -7823,34 +7826,34 @@ new aQuery().myFun();</code></pre>
     
 <dl class="details">
     
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="event.js.html">main/event.js</a>, <a href="event.js.html#line1058">line 1058</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -7958,34 +7961,34 @@ new aQuery().myFun();</code></pre>
     
 <dl class="details">
     
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="event.js.html">main/event.js</a>, <a href="event.js.html#line1066">line 1066</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -8093,34 +8096,34 @@ new aQuery().myFun();</code></pre>
     
 <dl class="details">
     
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="event.js.html">main/event.js</a>, <a href="event.js.html#line1074">line 1074</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -8243,34 +8246,34 @@ new aQuery().myFun();</code></pre>
     
 <dl class="details">
     
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="event.js_.html">mobile/event.js</a>, <a href="event.js_.html#line155">line 155</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -8393,34 +8396,34 @@ new aQuery().myFun();</code></pre>
     
 <dl class="details">
     
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="event.js_.html">mobile/event.js</a>, <a href="event.js_.html#line163">line 163</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -8543,34 +8546,34 @@ new aQuery().myFun();</code></pre>
     
 <dl class="details">
     
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="event.js_.html">mobile/event.js</a>, <a href="event.js_.html#line147">line 147</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -8691,34 +8694,34 @@ Get the whole matched element set as a clean array.
     
 <dl class="details">
     
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#line834">line 834</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -8825,34 +8828,34 @@ Get the whole matched element set as a clean array.
     
 <dl class="details">
     
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="class.js.html">main/class.js</a>, <a href="class.js.html#line175">line 175</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -8976,34 +8979,34 @@ Get the whole matched element set as a clean array.
     
 <dl class="details">
     
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#line738">line 738</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -9059,34 +9062,34 @@ Get the whole matched element set as a clean array.
     
 <dl class="details">
     
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="data.js.html">main/data.js</a>, <a href="data.js.html#line235">line 235</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -9218,34 +9221,34 @@ Get the whole matched element set as a clean array.
     
 <dl class="details">
     
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="query.js.html">main/query.js</a>, <a href="query.js.html#line366">line 366</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -9349,34 +9352,34 @@ Get the whole matched element set as a clean array.
     
 <dl class="details">
     
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#line780">line 780</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -9527,34 +9530,34 @@ Get the whole matched element set as a clean array.
     
 <dl class="details">
     
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#line754">line 754</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -9675,34 +9678,34 @@ Get the whole matched element set as a clean array.
     
 <dl class="details">
     
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="query.js.html">main/query.js</a>, <a href="query.js.html#line390">line 390</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -9810,34 +9813,34 @@ Get the whole matched element set as a clean array.
     
 <dl class="details">
     
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="event.js.html">main/event.js</a>, <a href="event.js.html#line1268">line 1268</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -9945,34 +9948,34 @@ Get the whole matched element set as a clean array.
     
 <dl class="details">
     
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="event.js.html">main/event.js</a>, <a href="event.js.html#line1280">line 1280</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -10080,34 +10083,34 @@ Get the whole matched element set as a clean array.
     
 <dl class="details">
     
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="event.js.html">main/event.js</a>, <a href="event.js.html#line1292">line 1292</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -10167,34 +10170,34 @@ Get the whole matched element set as a clean array.
     
 <dl class="details">
     
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#line746">line 746</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -10302,34 +10305,34 @@ Get the whole matched element set as a clean array.
     
 <dl class="details">
     
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="event.js.html">main/event.js</a>, <a href="event.js.html#line1082">line 1082</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -10437,34 +10440,34 @@ Get the whole matched element set as a clean array.
     
 <dl class="details">
     
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="query.js.html">main/query.js</a>, <a href="query.js.html#line403">line 403</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -10572,34 +10575,34 @@ Get the whole matched element set as a clean array.
     
 <dl class="details">
     
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="event.js.html">main/event.js</a>, <a href="event.js.html#line1130">line 1130</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -10707,34 +10710,34 @@ Get the whole matched element set as a clean array.
     
 <dl class="details">
     
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="event.js.html">main/event.js</a>, <a href="event.js.html#line1170">line 1170</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -10842,34 +10845,34 @@ Get the whole matched element set as a clean array.
     
 <dl class="details">
     
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="event.js.html">main/event.js</a>, <a href="event.js.html#line1181">line 1181</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -10977,34 +10980,34 @@ Get the whole matched element set as a clean array.
     
 <dl class="details">
     
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="event.js.html">main/event.js</a>, <a href="event.js.html#line1146">line 1146</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -11112,34 +11115,34 @@ Get the whole matched element set as a clean array.
     
 <dl class="details">
     
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="event.js.html">main/event.js</a>, <a href="event.js.html#line1162">line 1162</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -11247,34 +11250,34 @@ Get the whole matched element set as a clean array.
     
 <dl class="details">
     
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="event.js.html">main/event.js</a>, <a href="event.js.html#line1154">line 1154</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -11382,34 +11385,34 @@ Get the whole matched element set as a clean array.
     
 <dl class="details">
     
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="event.js.html">main/event.js</a>, <a href="event.js.html#line1138">line 1138</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -11517,34 +11520,34 @@ Get the whole matched element set as a clean array.
     
 <dl class="details">
     
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="event.js.html">main/event.js</a>, <a href="event.js.html#line1192">line 1192</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -11664,34 +11667,34 @@ Get the whole matched element set as a clean array.
     
 <dl class="details">
     
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="query.js.html">main/query.js</a>, <a href="query.js.html#line458">line 458</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -11811,34 +11814,34 @@ Get the whole matched element set as a clean array.
     
 <dl class="details">
     
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="query.js.html">main/query.js</a>, <a href="query.js.html#line474">line 474</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -11992,34 +11995,34 @@ Get the whole matched element set as a clean array.
     
 <dl class="details">
     
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="query.js.html">main/query.js</a>, <a href="query.js.html#line491">line 491</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -12127,34 +12130,34 @@ Get the whole matched element set as a clean array.
     
 <dl class="details">
     
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="query.js.html">main/query.js</a>, <a href="query.js.html#line413">line 413</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -12286,34 +12289,34 @@ Get the whole matched element set as a clean array.
     
 <dl class="details">
     
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="event.js.html">main/event.js</a>, <a href="event.js.html#line953">line 953</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -12436,34 +12439,34 @@ Get the whole matched element set as a clean array.
     
 <dl class="details">
     
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="event.js_.html">mobile/event.js</a>, <a href="event.js_.html#line171">line 171</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -12583,34 +12586,34 @@ Get the whole matched element set as a clean array.
     
 <dl class="details">
     
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="query.js.html">main/query.js</a>, <a href="query.js.html#line432">line 432</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -12730,34 +12733,34 @@ Get the whole matched element set as a clean array.
     
 <dl class="details">
     
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="query.js.html">main/query.js</a>, <a href="query.js.html#line441">line 441</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -12911,34 +12914,34 @@ Get the whole matched element set as a clean array.
     
 <dl class="details">
     
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="query.js.html">main/query.js</a>, <a href="query.js.html#line450">line 450</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -12998,34 +13001,34 @@ Get the whole matched element set as a clean array.
     
 <dl class="details">
     
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#line642">line 642</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -13137,34 +13140,34 @@ Get the whole matched element set as a clean array.
     
 <dl class="details">
     
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="query.js.html">main/query.js</a>, <a href="query.js.html#line305">line 305</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -13284,34 +13287,34 @@ Get the whole matched element set as a clean array.
     
 <dl class="details">
     
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="query.js.html">main/query.js</a>, <a href="query.js.html#line466">line 466</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -13431,34 +13434,34 @@ Get the whole matched element set as a clean array.
     
 <dl class="details">
     
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="query.js.html">main/query.js</a>, <a href="query.js.html#line482">line 482</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -13612,34 +13615,34 @@ Get the whole matched element set as a clean array.
     
 <dl class="details">
     
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="query.js.html">main/query.js</a>, <a href="query.js.html#line500">line 500</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -13747,34 +13750,34 @@ Get the whole matched element set as a clean array.
     
 <dl class="details">
     
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#line634">line 634</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -13882,34 +13885,34 @@ Get the whole matched element set as a clean array.
     
 <dl class="details">
     
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="attr.js.html">main/attr.js</a>, <a href="attr.js.html#line192">line 192</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -14013,34 +14016,34 @@ Get the whole matched element set as a clean array.
     
 <dl class="details">
     
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="class.js.html">main/class.js</a>, <a href="class.js.html#line141">line 141</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -14148,34 +14151,34 @@ Get the whole matched element set as a clean array.
     
 <dl class="details">
     
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="data.js.html">main/data.js</a>, <a href="data.js.html#line227">line 227</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -14306,34 +14309,34 @@ Get the whole matched element set as a clean array.
     
 <dl class="details">
     
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="event.js.html">main/event.js</a>, <a href="event.js.html#line997">line 997</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -14460,34 +14463,34 @@ Get the whole matched element set as a clean array.
     
 <dl class="details">
     
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="class.js.html">main/class.js</a>, <a href="class.js.html#line160">line 160</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -14595,34 +14598,34 @@ Get the whole matched element set as a clean array.
     
 <dl class="details">
     
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="event.js.html">main/event.js</a>, <a href="event.js.html#line1090">line 1090</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -14678,34 +14681,34 @@ Get the whole matched element set as a clean array.
     
 <dl class="details">
     
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#line688">line 688</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -14813,34 +14816,34 @@ Get the whole matched element set as a clean array.
     
 <dl class="details">
     
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="event.js.html">main/event.js</a>, <a href="event.js.html#line1098">line 1098</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -14948,34 +14951,34 @@ Get the whole matched element set as a clean array.
     
 <dl class="details">
     
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="event.js.html">main/event.js</a>, <a href="event.js.html#line1252">line 1252</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -15079,34 +15082,34 @@ Get the whole matched element set as a clean array.
     
 <dl class="details">
     
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#line803">line 803</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -15166,34 +15169,34 @@ Get the whole matched element set as a clean array.
     
 <dl class="details">
     
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#line651">line 651</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -15317,34 +15320,34 @@ Get the whole matched element set as a clean array.
     
 <dl class="details">
     
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="query.js.html">main/query.js</a>, <a href="query.js.html#line508">line 508</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -15495,34 +15498,34 @@ Get the whole matched element set as a clean array.
     
 <dl class="details">
     
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#line670">line 670</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -15638,34 +15641,34 @@ Get the whole matched element set as a clean array.
     
 <dl class="details">
     
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#line696">line 696</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -15849,34 +15852,34 @@ Get the whole matched element set as a clean array.
     
 <dl class="details">
     
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#line680">line 680</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -15988,34 +15991,34 @@ Get the whole matched element set as a clean array.
     
 <dl class="details">
     
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="event.js.html">main/event.js</a>, <a href="event.js.html#line1260">line 1260</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -16075,34 +16078,34 @@ Get the whole matched element set as a clean array.
     
 <dl class="details">
     
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#line825">line 825</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -16256,34 +16259,34 @@ Get the whole matched element set as a clean array.
     
 <dl class="details">
     
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="event.js.html">main/event.js</a>, <a href="event.js.html#line1021">line 1021</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -16319,12 +16322,12 @@ Get the whole matched element set as a clean array.
     
         <h5>Example</h5>
         
-    <pre class="prettyprint"><code>var test1 = $("#a");
+    <pre class="prettyprint">var test1 = $("#a");
 test1.toggle(function() {
   alert(1)
 }, function() {
   alert(2)
-});</code></pre>
+});</pre>
 
     
 </dd>
@@ -16397,34 +16400,34 @@ test1.toggle(function() {
     
 <dl class="details">
     
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="class.js.html">main/class.js</a>, <a href="class.js.html#line150">line 150</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -16484,34 +16487,34 @@ test1.toggle(function() {
     
 <dl class="details">
     
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#line811">line 811</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -16634,34 +16637,34 @@ test1.toggle(function() {
     
 <dl class="details">
     
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="event.js_.html">mobile/event.js</a>, <a href="event.js_.html#line139">line 139</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -16784,34 +16787,34 @@ test1.toggle(function() {
     
 <dl class="details">
     
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="event.js_.html">mobile/event.js</a>, <a href="event.js_.html#line131">line 131</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -16934,34 +16937,34 @@ test1.toggle(function() {
     
 <dl class="details">
     
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="event.js_.html">mobile/event.js</a>, <a href="event.js_.html#line123">line 123</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -17084,34 +17087,34 @@ test1.toggle(function() {
     
 <dl class="details">
     
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="event.js_.html">mobile/event.js</a>, <a href="event.js_.html#line115">line 115</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -17219,34 +17222,34 @@ test1.toggle(function() {
     
 <dl class="details">
     
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="event.js.html">main/event.js</a>, <a href="event.js.html#line1208">line 1208</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -17428,34 +17431,34 @@ test1.toggle(function() {
     
 <dl class="details">
     
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="event.js.html">main/event.js</a>, <a href="event.js.html#line1039">line 1039</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -17563,34 +17566,34 @@ test1.toggle(function() {
     
 <dl class="details">
     
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="event.js.html">main/event.js</a>, <a href="event.js.html#line1106">line 1106</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -17698,34 +17701,34 @@ test1.toggle(function() {
     
 <dl class="details">
     
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#line661">line 661</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -17855,34 +17858,34 @@ test1.toggle(function() {
     
 <dl class="details">
     
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="attr.js.html">main/attr.js</a>, <a href="attr.js.html#line202">line 202</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -17945,34 +17948,34 @@ test1.toggle(function() {
     
 <dl class="details">
     
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#line818">line 818</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -18010,12 +18013,12 @@ test1.toggle(function() {
 
         </dl>
     
+
     
-    
-    
+
     
         <h3 class="subsection-title">Events</h3>
-        
+
         <dl>
             
 <dt>
@@ -18084,34 +18087,34 @@ test1.toggle(function() {
     
 <dl class="details">
     
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="communicate.js.html">main/communicate.js</a>, <a href="communicate.js.html#line7">line 7</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -18197,34 +18200,34 @@ test1.toggle(function() {
     
 <dl class="details">
     
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="communicate.js.html">main/communicate.js</a>, <a href="communicate.js.html#line9">line 9</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -18310,34 +18313,34 @@ test1.toggle(function() {
     
 <dl class="details">
     
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="communicate.js.html">main/communicate.js</a>, <a href="communicate.js.html#line11">line 11</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -18423,34 +18426,34 @@ test1.toggle(function() {
     
 <dl class="details">
     
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="communicate.js.html">main/communicate.js</a>, <a href="communicate.js.html#line13">line 13</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -18536,34 +18539,34 @@ test1.toggle(function() {
     
 <dl class="details">
     
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="communicate.js.html">main/communicate.js</a>, <a href="communicate.js.html#line15">line 15</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -18649,34 +18652,34 @@ test1.toggle(function() {
     
 <dl class="details">
     
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="communicate.js.html">main/communicate.js</a>, <a href="communicate.js.html#line17">line 17</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -18812,34 +18815,34 @@ test1.toggle(function() {
     
 <dl class="details">
     
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="Test.js.html">module/Test.js</a>, <a href="Test.js.html#line48">line 48</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -18861,20 +18864,16 @@ test1.toggle(function() {
     
 </article>
 
-</section>  
+</section>
 
 
 
 
+
+    <a float="false" href="#page-title" class="Top">Top</a>
 </div>
-
-<nav>
-    <h2><a href="index.html">Index</a></h2><h3>Modules</h3><ul><li><a href="array.html">base/array</a></li><li><a href="ClassModule.html">base/ClassModule</a></li><li><a href="client.html">base/client</a></li><li><a href="config.html">base/config</a></li><li><a href="extend.html">base/extend</a></li><li><a href="Promise.html">base/Promise</a></li><li><a href="queue.html">base/queue</a></li><li><a href="ready.html">base/ready</a></li><li><a href="support.html">base/support</a></li><li><a href="typed.html">base/typed</a></li><li><a href="array_.html">ecma5/array</a></li><li><a href="function.html">ecma5/function</a></li><li><a href="object.html">ecma5/object</a></li><li><a href="string.html">ecma5/string</a></li><li><a href="charcode.html">hash/charcode</a></li><li><a href="cssColors.html">hash/cssColors</a></li><li><a href="applicationCache.html">html5/applicationCache</a></li><li><a href="localStorage.html">html5/localStorage</a></li><li><a href="sessionStorage.html">html5/sessionStorage</a></li><li><a href="Storage.html">html5/Storage</a></li><li><a href="Worker.html">html5/Worker</a></li><li><a href="sizzle.html">lib/sizzle</a></li><li><a href="attr.html">main/attr</a></li><li><a href="class.html">main/class</a></li><li><a href="communicate.html">main/communicate</a></li><li><a href="CustomEvent.html">main/CustomEvent</a></li><li><a href="data.html">main/data</a></li><li><a href="event.html">main/event</a></li><li><a href="object_.html">main/object</a></li><li><a href="parse.html">main/parse</a></li><li><a href="query.html">main/query</a></li><li><a href="event_.html">mobile/event</a></li><li><a href="location.html">module/location</a></li><li><a href="Test.html">module/Test</a></li></ul><h3>Classes</h3><ul><li><a href="aQuery.html">aQuery</a></li></ul><h3>Events</h3><ul><li><a href="aQuery.html#event:"ajaxStart"">"ajaxStart"</a></li><li><a href="aQuery.html#event:"ajaxStop"">"ajaxStop"</a></li><li><a href="aQuery.html#event:"ajaxTimeout"">"ajaxTimeout"</a></li><li><a href="aQuery.html#event:"jsonpStart"">"jsonpStart"</a></li><li><a href="aQuery.html#event:"jsonpStop"">"jsonpStop"</a></li><li><a href="aQuery.html#event:"jsonpTimeout"">"jsonpTimeout"</a></li><li><a href="aQuery.html#event:"test.report"">"test.report"</a></li></ul><h3>Namespaces</h3><ul><li><a href="aQuery.util.html">util</a></li><li><a href="event.document.html">document</a></li><li><a href="require.html">require(namespace)</a></li></ul><h3>Mixins</h3><ul><li><a href="CollectionClassPrototypeMethods.html">CollectionClassPrototypeMethods</a></li><li><a href="ObjectClassStaticMethods.html">ObjectClassStaticMethods</a></li></ul><h3>Global</h3><ul><li><a href="global.html#AjaxOptions">AjaxOptions</a></li><li><a href="global.html#debug">debug</a></li><li><a href="global.html#define">define</a></li><li><a href="global.html#define">define(1)</a></li><li><a href="global.html#define">define(2)</a></li><li><a href="global.html#define">define(3)</a></li><li><a href="global.html#error">error</a></li><li><a href="global.html#info">info</a></li><li><a href="global.html#JSONPOptions">JSONPOptions</a></li><li><a href="global.html#logger">logger</a></li><li><a href="global.html#require">require</a></li></ul>
-</nav>
 
 <br clear="both">
 
-<script> prettyPrint(); </script>
-<script src="scripts/linenumber.js"> </script>
 </body>
 </html>
