@@ -431,7 +431,7 @@
  		var path = "";
  		//绝对路径 项目路径下
  		if ( /^\//.test( item ) ) {
- 			path = PATH.join( buildFileRootPath, projectRootPath, item.replace( /^\//, "" ) );
+ 			path = PATH.join(  amdqueryPath, "..", item.replace( /^\//, "" ) );
  		} else {
  			path = PATH.join( PATH.dirname( htmlInfo.htmlPath ), item );
  		}
