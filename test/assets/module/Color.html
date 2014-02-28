@@ -1,0 +1,25 @@
+﻿
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+  <title></title>
+  <link href="../../../global/styles/reset.css" rel="stylesheet" type="text/css" />
+  <script src="../../../amdquery/amdquery.js" type="text/javascript" amdquery="define:$;" amd="detectCR:1;"></script>
+  <script type="text/javascript">
+    $.require(["module/color"], function(color) {
+      var c = color("#15332F");
+      var c1 = c.clone();
+      var c2 = c.toCSS();
+      var c3 = c.blend(c1, 0.95).toCSS();
+      var h1 = c.toHSV();
+      var c4 = h1.toRGB().toCSS();
+      var a = color("Red");
+    })
+  </script>
+</head>
+
+<body style="overflow: auto">
+</body>
+
+</html>

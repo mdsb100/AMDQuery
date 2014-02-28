@@ -1,0 +1,629 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+  <title>Build</title>
+  <meta charset="utf-8" />
+  <link type="text/css" rel="stylesheet" href="../../../../global/styles/reset.css" />
+  <link type="text/css" rel="stylesheet" href="../../../../global/styles/prettify-tomorrow.css" />
+  <link type="text/css" rel="stylesheet" href="../../../../amdquery/ui/css/widget-ui.css" />
+  <link type="text/css" rel="stylesheet" href="../css/document.css"/>
+  <script src="../../../../global/js/prettify.js" type="text/javascript"></script>
+  <script src="../../../../global/js/lang-css.js"></script>
+  <script src="../js/amdquery.js" type="text/javascript" amdquery="debug:false;" amd="detectCR=1" module="transitionToAnimation:1" ui="initWidget:1;isTransform3d:0;autoFetchCss:0"></script>
+  <script src="../js/main.js" type="text/javascript"></script>
+  <script type="text/javascript">
+    $.require(["main/query", "main/event", "ui/swapview"], function(query, event) {
+      $(".swip_to_app").click(function(e) {
+        $("#swapview").uiSwapview("option", "index", 1);
+      });
+      $(".swip_to_options").click(function(event) {
+        $("#swapview").uiSwapview("option", "index", 2);
+      });
+    });
+  </script>
+</head>
+
+<body style="width: 100%; height: 100%;" onload="prettyPrint()">
+  <div amdquery-widget="ui.flex" ui-flex="flex:1;flexDriection:row">
+    <div style="width:20px;" amdquery-widget="ui.flex" ui-flex="fillParentWidth:false"></div>
+    <div class="document" id="swapview" style="" amdquery-widget="ui.swapview;ui.flex" ui-flex="flex:1" ui-swapview="orientation:H">
+      <ol>
+        <li id="first">
+          <div style="width: 100%; height: 100%;" amdquery-widget="ui.scrollableview" ui-scrollableview="orientation:V;enableKeyboard:true;">
+            <h1 name="Definition">Build Definition</h1>
+            <ul class="guide">
+              <li><a href="#Overview">Overview</a>
+              </li>
+              <li><a href="#Quick">Quick Start</a>
+              </li>
+              <li><a href="#Browser">Broswer html</a>
+              </li>
+              <li><a href="#Dependencies">Build Dependencies</a>
+              </li>
+              <li><a href="#Config">Config</a>
+              </li>
+              <li><a href="#Detail">Build Detail</a>
+              </li>
+            </ul>
+
+            <h2 name="Overview">Overview</h2>
+            <p>This guide teach you how to combine javascript to a file and minify it. It could reduce file size and http request.</p>
+            <p>The Building apply <a target="_blank" href="http://www.nodejs.org">nodejs</a> to build and conbine javascript. It load javascript according to <a target="_blank" href="http://en.wikipedia.org/wiki/Asynchronous_module_definition">AMD</a>
+              standard.
+            </p>
+
+            <h3 name="Quick">Quick Start</h3>
+            <p>Download nodejs and install nodejs. Open terminal and cd directory of amdquery project, <strong>cd build</strong>.</p>
+            <p>Input <strong>"npm install"</strong> or <strong>"sudo npm install"</strong> in terminal before start building. NPM will download and install some node modules.</p>
+            <p>Input <strong>"node build.js build_config.js"</strong> and watch the log.
+              <p/>
+              <p>Look the directory: build/dist/defines. Look over "test.js" and "test.debug.js".
+                <p/>
+                <p>cd "dist/apps/document/app", open the "app.html" with a web server.
+                  <p/>
+
+                  <h3 name="Browser">Broswer html</h3>
+                  <p>Quick start a web server. Input "npm install -g <a target="_blank" href="https://github.com/senchalabs/connect">connect</a>" or "sudo npm install -g <a target="_blank" href="https://github.com/senchalabs/connect">connect</a>". cd root
+                    of amdquery directory, input "node server.js". Open browser and input
+                    <Strong>"http://localhost:8080/document/app.html"</Strong> or open
+                    <Strong>"build/dist/apps/document/app.html"</Strong> by browser after built. You should collect the address in browser.</p>
+                  <p>The
+                    <a class="swip_to_app">
+                      <img src="../images/right.png" width="13px" height="13px" />"Build Application"</a>has detail guide.</p>
+
+                  <h3 name="Dependencies">Build Dependencies</h3>
+                  <p>There are node modules to support Build. The "UglifyJS" be used to minify js and detect syntax error. The clean-css be used to minify css. The "trumpet" be used to parse HTML and compile HTML.</p>
+                  <p>If you want more infomation, please click the link and read "build.js".</p>
+                  <ul class="guide" style="margin-top: 0">
+                    <li><a target="_blank" href="http://http://www.nodejs.org//">nodejs</a><span>>0.8.8</span>
+                    </li>
+                    <li><a target="_blank" href="https://github.com/isaacs/node-glob">glob</a><span>>3.x.x</span>
+                    </li>
+                    <li><a target="_blank" href="https://github.com/caolan/async">async</a><span>>0.0.0</span>
+                    </li>
+                    <li><a target="_blank" href="https://github.com/mishoo/UglifyJS">uglify-js</a><span>~1.x.x</span>
+                    </li>
+                    <li><a target="_blank" href="https://github.com/GoalSmashers/clean-css">clean-css</a><span>>0.0.0</span>
+                    </li>
+                    <li><a target="_blank" href="https://github.com/substack/node-trumpet">trumpet</a><span>>0.0.0</span>
+                    </li>
+                    <li><a target="_blank" href="https://github.com/jashkenas/underscore">underscore</a><span>>0.0.0</span>
+                    </li>
+                    <li><a target="_blank" href="https://github.com/jprichardson/node-fs-extra">fs-extra</a><span>>0.0.0</span>
+                    </li>
+                    <li><a target="_blank" href="https://github.com/dominictarr/through">through</a><span>~2.3.4</span>
+                    </li>
+                    <li><a target="_blank" href="https://github.com/maxogden/node-concat-stream">concat-stream</a><span>~1.0.0</span>
+                    </li>
+                    <li><a target="_blank" href="https://github.com/Marak/colors.js">colors</a><span>>=0.6.2</span>
+                    </li>
+                    <li><a target="_blank" href="https://github.com/mde/jake">jake</a><span>Lastest</span>
+                    </li>
+                  </ul>
+                  <h2 name="Config">Config</h2>
+                  <p>This guide would explain how to config build.</p>
+                  <p>cd "build/", open "build_config.js".</p>
+                  <pre class="prettyprint" name="DirectoryStructure">
+Directory Structure
+root
+  |- amdquery
+  |   \- amdquery.js
+  |- document
+  |- global
+  |- build
+      |- build.js
+      |- build_config.js
+      |- test
+         \- test.js
+      \- dist
+          |- defines
+          |   |- test.debug.js
+          |   \- test.js
+          |- apps
+              |- document
+                  |- amdquery
+                  |   |- amdquery.debug.js
+                  |   |- amdquery.js
+                  |   \- ui
+                  |       |- css
+                  |       \- iamges
+                  |- docuemnt
+                  |   |- assets
+                  |   |- styles
+                  |   |- modles
+                  |   |- xml
+                  |   |- lib
+                  |   |- app.html
+                  \- global
+                      |- js
+                      \- styles
+                 </pre>
+                  <ul class="ul">
+                    <li>
+                      <h4>amdqueryPath</h4>
+                      <p>Configure amdquery.js path. It is relative of build.js .</p>
+                      <p>exports.amdqueryPath = '../amdquery/'; (--amdquery)</p>
+                    </li>
+                    <li>
+                      <h4>projectRootPath</h4>
+                      <p>Configure project root path. It is relative of build.js .</p>
+                      <p>exports.projectRootPath = '../../'; (--root)</p>
+                    </li>
+                    <li>
+                      <h4>distPath</h4>
+                      <p>All build files will save to distPath. It is relative of build.js .</p>
+                      <p>exports.distPath = 'dist/'; (--dist)</p>
+                    </li>
+                    <li>
+                      <h4>pathVariable</h4>
+                      <p>exports path to load js. "@app" will parse to "../document/app" when you use "require(@app/index.js)"</p>
+                      <pre class="prettyprint">
+{
+  "@app":"../document/app",
+  "@mypath:":"../test/app"
+}
+                      </pre>
+                    </li>
+                    <li>
+                      <h4>debug</h4>
+                      <p>whether print log, true or false</p>
+                    </li>
+                    <li>
+                      <h4>apps</h4>
+                      <p>
+                        <a class="swip_to_app">
+                          <img src="../images/right.png" width="13px" height="13px" />"Build Application"</a>
+                      </p>
+                    </li>
+                    <li>
+                      <h4>defines</h4>
+                      <pre class="prettyprint">
+{
+  //The "document" is name of dist javascript which will be create in directory "defines".
+  document: {
+    //The "path" is main of the build-js.It is relative "amdquery.js".
+    path: "../document/assets/source/js/main.js",
+    //The "directory" is array of folder, Building would include all of js under the item-folder.It is relative "amdquery.js".
+    directory: [ "ui/" ],
+    //The "complete" function will be call when building complete.
+    complete: function( minPath, minContent, deubugPath, debugContent ) {
+      var FSE = require( 'fs-extra' );
+      var path = "../document/assets/source/js/amdquery.js";
+      FSE.writeFile( path, debugContent );
+    }
+  }
+}
+                      </pre>
+                    </li>
+                    <li>
+                      <h4>uglifyOptions</h4>
+                      <p>
+                        <a class="swip_to_options">
+                          <img src="../images/right.png" width="13px" height="13px" />"cleanCss And uglify options"</a>
+                      </p>
+                    </li>
+                    <li>
+                      <h4>cleanCssOptions</h4>
+                      <p>
+                        <a class="swip_to_options">
+                          <img src="../images/right.png" width="13px" height="13px" />"cleanCss And uglify options"</a>
+                      </p>
+                    </li>
+                  </ul>
+                  <h2 name="Detail">Build Detail</h2>
+                  <p>1.Read base amdquery.js . we should get the content of amdquery.js, amdquery.js is basal. It began in the file.
+                    <br />If you want to start using "AMDQuery", you must first load the "amdquery.js". So Build will be a top priority loaded and stored in the file start position.
+                  </p>
+                  <p>2.Build defines. Get the main of js from config. Path is "../document/app/assets/source/js/scrollTo.js"
+                    <br />The "scrollTo.js" require "[ "main/query", "hash/locationHash", "ui/swapview", "ui/scrollableview" ]".
+                    <br />The "oye.node" will find and load these js file, detect dependencies of these js.
+                    <br />Finally, get the all of js then combine to a stream.
+                  </p>
+                  <p>3.Save js file.According to config, to save js. For this example:
+                    <br />save "test.debug.js" into "dist/defines". "test.debug.js" is not compress, it could debug.
+                    <br />save "test.js" into "dist/defines". "test.js" is compress.
+                  </P>
+                  <p>4. If you increase the "complete" function in the configuration, You can do some interesting things after the build is completed.
+                    <br />For this example, I write the contents to a new file.
+                  </p>
+                  <a float="false" href="#Definition" class="Top">Top</a>
+          </div>
+        </li>
+        <li>
+          <div style="width: 100%; height: 100%;" amdquery-widget="ui.scrollableview" ui-scrollableview="orientation:V;enableKeyboard:true;">
+            <h1 name="Application">Building Application</h1>
+            <ul class="guide">
+              <li><a href="#Overview">Overview</a>
+              </li>
+              <li><a href="#Config">Config</a>
+              </li>
+              <li><a href="#Detail">Detail</a>
+              </li>
+              <li><a href="#APP">APP</a>
+              </li>
+            </ul>
+
+            <h2 name="Overview">Overview</h2>
+            <p>This guide will teach you how to build application, How to configure build.
+              <br />You also need to know how to create an application.
+              <br />If you need more details or to change the build process, you need to have some knowledge about the <a target="_blank" href="http://www.nodejs.org">nodejs</a> and node-modules.
+              <br />If you want to build your own js file or css file, you can refer to <a target="_blank" href="https://github.com/mishoo/UglifyJS">uglifyOptions</a> and <a target="_blank" href="https://github.com/GoalSmashers/clean-css">cleanCssOptions</a>.
+            </p>
+
+            <h2 name="Config">Config</h2>
+            <p>Reference "build_config.js". "apps" is an array, each of which is object.
+            </p>
+            <ul class="ul">
+              <li>
+                <h4>name {String}</h4>
+                <p>The name of the application.</p>
+              </li>
+              <li>
+                <h4>path {String}</h4>
+                <p>Application HTML path.</p>
+              </li>
+              <li>
+                <h4>debug {Boolean}</h4>
+                <p>If that is true, that build will create a non-compressed "amdquery.debug.js", set the configuration of application to "true" in HTML</p>
+              </li>
+              <li>
+                <h4>detectUIWidgetCSS {Boolean}</h4>
+                <p>If that is true, then build would detect widget-ui css from "appCombinationXMLPath".</p>
+                <p>If that is false, then build would include all of "ui/css/*.css".</p>
+              </li>
+              <li>
+                <h4>aQueryConfig {Boolean|String}</h4>
+                <div class="admonition-note">
+                  <strong>
+                    <p>If it is a boolean, and it is true then it means you define "aQueryConfig" in inner script. Like this:
+                    </p>
+                    <pre class="prettyprint">
+&ltscript type="text/javascript"&gt
+var aQueryConfig = {
+    amdquery: {
+      define: "$",
+      debug: false,
+      development: true,
+      loadingImage: ""
+    },
+    amd: {
+      detectCR: false,
+      debug: true,
+      timeout: 5000,
+      console: false,
+    },
+    amdVariables: {
+
+    },
+    ui: {
+      initWidget: false,
+      autoFetchCss: true,
+      isTransform3d: true
+    },
+    module: {
+
+    },
+    app: {
+      src: "",
+      debug: false,
+      development: true,
+      autoFetchCss: true,
+      viewContentID: ""
+    }
+  };
+&lt/script&gt
+                    </pre>
+                    <p>If it is a string, it means you define "aQueryConfig" in a "*.js" and you add tag "script" to haed before "amdquery.js"
+                      <br />The path is relative to "app.html" path.
+                    </p>
+                    <pre class="prettyprint">
+&ltscript type="text/javascript" src="aQueryConfig.js"&gt&lt/script&gt
+&ltscript src="../amdquery/amdquery.js" type="text/javascript"&gt&lt/script&gt
+                    </pre>
+                    <p>
+                      Whatever you set boolean or string, the build will ignore attribute of tag "script".
+                      <br />The most important is: If "aQueryConfig" is null, the tag "script" of amdquery.js must have an attribute which is "app".
+                    </p>
+                    <pre class="prettyprint">
+&ltscript src="../amdquery/amdquery.js" app="src:../document/app;debug:1;" type="text/javascript"&gt&lt/script&gt
+                    </pre>
+                    <p>
+                      I support developer define config by attribute.
+                    </p>
+                  </strong>
+                </div>
+              </li>
+              <li>
+                <h4>UIWidgetCSS</h4>
+                <p>It is a array of "ui/css/some.css", for example: ["tabbar.css", "navmenu.css"]. The array will concat into build-list when building widget-ui css.</p>
+                <p>Do not worry about duplicate css, build would filter same.</p>
+              </li>
+              <li>
+                <h4>complete</h4>
+                <p>The callback of the Build.</p>
+                <p>You can do some interesting things after the build is completed.</p>
+                <pre class="prettyprint">
+//The argument in "complete"
+{
+  appConfig: { debug: '1', src: '../document/app' },
+  cssPath: [ 'styles/reset.css' ], // The css be defined in app.html head.
+  UICssPath: [], // The css be defined in app.html head about widget-ui.
+  htmlPath: '/Users/apple/project/my/amdquery/document/app.html',
+  appProjectPath: '/Users/apple/project/my/amdquery/document/',
+  appDirectoryName: 'document',
+  appName: 'document',
+  projectDistPath: '/Users/apple/project/my/amdquery/build/dist/apps/document',
+  AMDQueryJSPath: '/Users/apple/project/my/amdquery/build/dist/apps/document/amdquery/amdquery',
+  AMDQueryJSRelativeHTMLPath: '../amdquery/amdquery',
+  AMDQueryProjectPath: '/Users/apple/project/my/amdquery',
+  viewContentID: 'aQueryViewContentKey', // This property is used to tell the Application how to find the content view in a non-development model.
+  appCombinationXMLRelativePath: 'app/xml/combination.xml',
+  appCombinationXMLPath: '/Users/apple/project/my/amdquery/build/dist/apps/document/xml/combination.xml',
+  appCombinationCssRelativePath: 'styles/document.css',
+  appCombinationCssPath: '/Users/apple/project/my/amdquery/build/dist/apps/document/styles/document.css',
+  uiCombinationRelativeCssPath: 'amdquery/ui/css/amdquery-widget.css',
+  distHtmlPath: '/Users/apple/project/my/amdquery/build/dist/apps/document/app.html'
+}
+                </pre>
+              </li>
+            </ul>
+
+            <h2 name="Detail">Build Detail</h2>
+            <h3>1.Detecting whether there is "aQueryConfig"</h3>
+            <p>
+              Find aQueryConfig or not.
+            </p>
+            <h3>2.Open HTML. Get "HTML" path from the configuration.</h3>
+            <p>
+              Use "trumpet" to parse html, Get an array of css hrefs and script tag of application. Parse configuration of the tag.
+              <br />If aQueryConfig is found, the build will ignore "amdquery.js" script.
+            </p>
+            <h3>3.Create application directory and copy file.</h3>
+            <p>
+              Create application directory. In this example, path of directory is "dist/apps/document/". If the path of directory exists then remove it.
+              <br />Copy directory:
+              <br />(This example: AMDQueryJSRootPath is "/Users/apple/project/my/amdquery/")
+              <br />(This example: appProjectPath is "/Users/apple/project/my/amdquery/document/")
+              <br />(This example: distPath is "/Users/apple/project/my/amdquery/build/dist/apps/document/". "document" is application name)
+              <br />(This example: AMDQueryProjectPath is "/Users/apple/project/my/amdquery/")
+              <br />Copy AMDQueryProjectPath + "global" to distPath + ""
+              <br />Copy appProjectPath + "assets" to distPath + "app/assets"
+              <br />Copy appProjectPath + "styles" to distPath + "app/styles"
+              <br />Copy appProjectPath + "xml" to distPath + "app/xml"
+              <br />Copy appProjectPath + "lib" to distPath + "app/lib"
+              <br />Copy AMDQueryJSRootPath + "ui/css" to distPath + "amdquery/ui/css"
+              <br />Copy AMDQueryJSRootPath + "ui/images" to distPath + "amdquery/ui/images"
+            </p>
+            <h3>4.Build Javascript of Application</h3>
+            <p>
+              Get "app.js" path to the directory. Set "require" parameter with the path. ("@app" ==> "../document/app/app")
+              <br />"oye.node" could load all js after setting "require" parameter. Then build save the js files to the dist directory. You also can see then log in terminal.
+              <br />Save file: /Users/apple/project/my/amdquery/build/dist/apps/document/amdquery/amdquery.js
+              <br />Save file: /Users/apple/project/my/amdquery/build/dist/apps/document/amdquery/amdquery.debug.js
+            </p>
+            <h3>5.Build XML of Application</h3>
+            <p>
+              Put all the XML merged into one XML. Root tag is "&lt div id='aQueryViewContentKey' &gt". Each original XML will be wrapped in "&lt aQueryViewContentKey='name' &gt" tag within
+              <br />The new XML will be saved as "combination.xml". "combination.xml" is easy for reading.
+              <br />Content of new XML will append into "app.html"
+              <br />
+              <br />Build "document" xml file
+              <br />
+              <br />Save app Combination xml: /Users/apple/project/my/amdquery/build/dist/apps/document/xml/combination.xml
+              <br />
+            </p>
+            <h3>6.Build CSS of Application</h3>
+            <p>
+              After the first step has been to get all the "CSS" href, this step will be to find those CSS file through the href and use the "clean-css" to merge them into a CSS file.
+              <br />The new CSS will be saved as "{#appName}.css" moreover the final step will automatically add a "CSS" tag to "HTML" head, the properties href will be set "styles/{#appName}.css".
+              <br />
+              <br />Build "document" css file
+              <br />buildAppCss css path: /Users/apple/project/my/amdquery/document/styles/reset.css
+              <br />
+              <br />Save app Combination css: /Users/apple/project/my/amdquery/build/dist/apps/document/styles/document.css
+            </p>
+            <h3>7.Build CSS of AMDQuery UI</h3>
+            <p>
+              Build combine all the CSS of AMDQuery UI and save it as "amdquery-widget.css".
+              <br />
+              <br />The priority of "UICssPath" which is defined in head is highest.
+              <br />Second priority is the css list form html defined by "amdquery-widget" or the css list from build directory("amdquery/ui/css/*.css").
+              <br />The lowest priority is css defined by "build_config".
+              <br />See the function "_buildUICss" of "build.js".
+              <br />
+              <br />Save UI amdquery-widget.css:  /Users/apple/project/my/amdquery/build/dist/apps/document/amdquery/ui/css/amdquery-widget.css
+            </p>
+            <h3>8.Modify HTML</h3>
+            <p>
+              Remove all CSS in head and add a new CSS into head, the new CSS href is "styles/document.css".
+              <br />Modify "amdquery.js" script attribute:
+              <br />change "src" as ".." + htmlInfo.appDirectoryName + "app"
+              <br />change "development" to "false"
+              <br />change "debug" as you define in configuration
+              <br />XML append into "app.html".
+            </p>
+
+            <h2 name="APP">APP</h2>
+            <div class="admonition-note">
+              <strong>
+                <p>Build set the configuration of the "viewContentID" property to "aQueryViewContentKey" and add combination "XML" into "app.html" body in order to synchronize the contents of loaded view.
+                <br />This property is used to tell the Application how to find the content view in a non-development model. After building the application development model is false.
+                <br />When the view is loading, it look for ID as "viewContentID" of "div" after look for property as "viewContentID" of sub-elements.
+                </p>
+              </strong>
+            </div>
+            <a float="false" href="#Application" class="Top">Top</a>
+          </div>
+        </li>
+        <li>
+          <div style="width: 100%; height: 100%;" amdquery-widget="ui.scrollableview" ui-scrollableview="orientation:V;enableKeyboard:true;">
+            <h1 name="BuildOptions">cleanCss And uglify options</h1>
+            <h2><a target="_blank" href="https://github.com/mishoo/UglifyJS">uglifyOptions</a></h2>
+            <ul class="ul">
+              <li>
+                <bold><span class="value">strict_semicolons</span>:Boolean[false]</bold>
+                <p>disable automatic semicolon insertion and support for trailing comma in arrays and objects.</p>
+              </li>
+              <li>
+                <bold>mangle_options</bold>
+                <ul class="ul">
+                  <li>
+                    <bold><span class="value">mangle</span>:Boolean[true]</bold>
+                    <p>pass false to skip mangling names.</p>
+                  </li>
+                  <li>
+                    <bold><span class="value">toplevel</span>:Boolean[false]</bold>
+                    <p>mangle toplevel names (by default we don’t touch them).</p>
+                  </li>
+                  <li>
+                    <bold><span class="value">defines</span>:Array[null]</bold>
+                    <p>an object with properties named after symbols to replace.</p>
+                  </li>
+                  <li>
+                    <bold><span class="value">except</span>:Object[null]</bold>
+                    <p>an array of names to exclude from compression.</p>
+                  </li>
+                  <li>
+                    <bold><span class="value">no_functions</span>:Boolean[false]</bold>
+                    <p>no mangle functions</p>
+                  </li>
+                </ul>
+              </li>
+              <li>
+                <bold>squeeze_options</bold>
+                <ul class="ul">
+                  <li>
+                    <bold><span class="value">make_seqs</span>:Boolean[true]</bold>
+                    <p>which will cause consecutive statements in a block to be merged using the “sequence” (comma) operator.</p>
+                  </li>
+                  <li>
+                    <bold><span class="value">dead_code</span>:Boolean[true]</bold>
+                    <p>which will remove unreachable code.</p>
+                  </li>
+                  <li>
+                    <bold><span class="value">no_warnings</span>:Boolean[false]</bold>
+                    <p>whether dist warnings.</p>
+                  </li>
+                  <li>
+                    <bold><span class="value">keep_comps</span>:Boolean[true]</bold>
+                    <p>keep comps.</p>
+                  </li>
+                  <li>
+                    <bold><span class="value">unsafe</span>:Boolean[false]</bold>
+                    <p>enable other additional optimizations that are known to be unsafe in some contrived situations, but could still be generally useful. For now only these:
+                      <br />foo.toString() ==> foo+””
+                      <br />new Array(x,…) ==> [x,…]
+                      <br />new Array(x) ==> Array(x)
+                    </p>
+                  </li>
+                </ul>
+              </li>
+              <li>
+                <bold>gen_options</bold>
+                <ul class="ul">
+                  <li>
+                    <bold><span class="value">indent_start</span>:Number[0]</bold>
+                    <p>(only applies when beautify is true) – initial indentation in spaces.</p>
+                  </li>
+                  <li>
+                    <bold><span class="value">indent_level</span>:Number[4]</bold>
+                    <p>(only applies when beautify is true) – indentation level, in spaces (pass an even number).</p>
+                  </li>
+                  <li>
+                    <bold><span class="value">quote_keys</span>:Boolean[false]</bold>
+                    <p>if you pass true it will quote all keys in literal objects.</p>
+                  </li>
+                  <li>
+                    <bold><span class="value">space_colon</span>:Boolean[false]</bold>
+                    <p>(only applies when beautify is true) – wether to put a space before the colon in object literals.</p>
+                  </li>
+                  <li>
+                    <bold><span class="value">beautify</span>:Boolean[false]</bold>
+                    <p>pass true if you want indented dist.</p>
+                  </li>
+                  <li>
+                    <bold><span class="value">ascii_only</span>:Boolean[false]</bold>
+                    <p>pass true if you want to encode non-ASCII characters as \uXXXX.</p>
+                  </li>
+                  <li>
+                    <bold><span class="value">inline_script</span>:Boolean[false]</bold>
+                    <p>pass true to escape occurrences of</script in strings</p>
+                  </li>
+                </ul>
+              </li>
+            </ul>
+            <h2><a target="_blank" href="https://github.com/GoalSmashers/clean-css">cleanCssOptions</a></h2>
+            <ul class="ul">
+              <li>
+                <bold><span class="value">keepSpecialComments</span>:String["*"]</bold>
+                <p>"*" for keeping all (default), 1 for keeping first one only, 0 for removing all.</p>
+              </li>
+              <li>
+                <bold><span class="value">keepBreaks</span>:Boolean[false]</bold>
+                <p>whether to keep line breaks (default is false).</p>
+              </li>
+              <li>
+                <bold><span class="value">processImport</span>:Boolean[true]</bold>
+                <p>whether to process @import rules.</p>
+              </li>
+              <li>
+                <bold><span class="value">noRebase</span>:Boolean[false]</bold>
+                <p>whether to skip URLs rebasing.</p>
+              </li>
+              <li>
+                <bold><span class="value">noAdvanced</span>:Boolean[false]</bold>
+                <p>set to true to disable advanced optimizations - selector & property merging, reduction, etc.</p>
+              </li>
+              <li>
+                <bold><span class="value">selectorsMergeMode</span>:String["*"]</bold>
+                <p>ie8 for IE8 compatibility mode, * for merging all (default).</p>
+              </li>
+            </ul>
+            <a float="false" href="#BuildOptions" class="Top">Top</a>
+          </div>
+        </li>
+        <li>
+          <div style="width: 100%; height: 100%;" amdquery-widget="ui.scrollableview" ui-scrollableview="orientation:V;enableKeyboard:true;">
+            <h1 name="jake">Jake</h1>
+            <ul class="guide">
+              <li><a href="#Overview">Overview</a>
+              </li>
+              <li><a href="#Quick">Quick Start</a>
+              </li>
+              <li><a href="#Contributor">As a Contributor</a>
+              </li>
+            </ul>
+            <h2 name="Overview">Overview</h2>
+            <p>Jake -- JavaScript build tool for Node.js
+              <br />Using <a target="_blank" href="https://github.com/mde/jake">Jake</a> easy to build.
+            </p>
+            <h3 name="Quick">Quick Start</h3>
+            <p>
+              In terminal, cd build directory, "npm install" or "sudo npm install". Jake is automatically installed for global.
+              <br />Input "jake", you will see building options.
+              <br />"jake build[build_config.js]"   build application and javascript
+              <br />"jake ui_css"                   build css of widget-ui
+              <br />"jake jsdoc"                    build javascript api document
+            </p>
+            <h3 name="Contributor">As a Contributor</h3>
+            <p>
+              As a contributor, if you modify javascript api or modify document, you should update the <a target="_blank" href="http://pages.github.com/">gh-pages</a>.
+              <br />You can input "jake pages" to update gh-pages and you should know about this command will merge master and push gh-pages.
+              <br />You should read "jakefile.js" under directory build to know more detail.
+            </p>
+          </div>
+        </li>
+      </ol>
+      <ol style="width:100px;height:20px;" amdquery-widget="ui.swapindicator" ui-swapindicator="orientation:H">
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+      </ol>
+    </div>
+    <div style="width:20px;" amdquery-widget="ui.flex" ui-flex="fillParentWidth:false"></div>
+  </div>
+</body>
+
+</html>

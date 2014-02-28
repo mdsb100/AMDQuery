@@ -1,0 +1,133 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+  <title>Test</title>
+  <meta charset="utf-8" />
+  <link type="text/css" rel="stylesheet" href="../../../../global/styles/reset.css" />
+  <link type="text/css" rel="stylesheet" href="../../../../global/styles/prettify-tomorrow.css" />
+  <link type="text/css" rel="stylesheet" href="../../../../amdquery/ui/css/widget-ui.css" />
+  <link type="text/css" rel="stylesheet" href="../css/document.css"/>
+  <script src="../../../../global/js/prettify.js" type="text/javascript"></script>
+  <script src="../../../../global/js/lang-css.js"></script>
+  <script src="../js/amdquery.js" type="text/javascript" amdquery="debug:false;" amd="detectCR=1" module="transitionToAnimation:1" ui="initWidget:1;isTransform3d:0;autoFetchCss:0"></script>
+  <script src="../js/main.js" type="text/javascript"></script>
+</head>
+
+<body style="width: 100%; height: 100%;" onload="prettyPrint()">
+  <div amdquery-widget="ui.flex" ui-flex="flex:1;flexDriection:row">
+    <div style="width:20px;" amdquery-widget="ui.flex" ui-flex="fillParentWidth:false"></div>
+    <div class="document" id="swapview" style="" amdquery-widget="ui.swapview;ui.flex" ui-flex="flex:1" ui-swapview="orientation:H">
+      <ol>
+        <li id="first">
+          <div id="scrollableview" style="width: 100%; height: 100%;" amdquery-widget="ui.scrollableview" ui-scrollableview="orientation:V;enableKeyboard:true;focus:true">
+            <h1 name="Test">Test API</h1>
+            <ul class="guide">
+              <li><a href="#Overview">Overview</a>
+              </li>
+              <li><a href="#Usage">Usage</a>
+              </li>
+              <li><a href="#Report">Report test results</a>
+              </li>
+            </ul>
+            <h2 name="Overview" id="Overview">Overview</h2>
+            <p>Using "module/Test.js" to test API.It is a simple module but it can test automatically and output infomartion.
+            <br/>In fact, Test depends on Promise to test in turn. Test can be synchronized or asynchronous. Using asynchronous to test UI behavior or some like http-request because must be wait for human operating or triggering a event.
+            </p>
+            <p>See also <a target="_blank" href="http://mdsb100.github.io/AMDQuery/test/module/Test.html">demo1</a> and <a target="_blank" href="http://mdsb100.github.io/AMDQuery/test/main/CustomEvent.html">demo2</a>
+            <br /><a target="_blank" href="http://mdsb100.github.io/AMDQuery/test/app/app.html">AMDQuery Test</a>
+            </p>
+            <h3 name="Usage" id="Usage">Usage</h3>
+            <p>If the config "module.testLogByHTML" is true or window.console does not exist then log by HTML, else log by window.console.</p>
+            <pre class="prettyprint">
+&ltscript src="../../amdquery/amdquery.js" type="text/javascript" module="testLogByHTML:1"&gt&lt/script&gt
+            </pre>
+            <p>If you want to test "base/CustomEvent"</p>
+            <pre class="prettyprint">
+$.require([
+  "base/Promise",
+  "main/CustomEvent",
+  "module/Test",
+], function(Promise, CustomEvent, Test) {
+  var customEvent = new CustomEvent();
+  var testCustomEvent = new Test("TestCustomeEvent", function(preResult){
+    // when finish test do this callback.
+    // "preResult" is last of "promise".
+  });
+});
+            </pre>
+            <p>Add an "equal". If the return result equals parameter then pass test. Throw error if javascript run error or result does not equal parameter.<p/>
+            <pre class="prettyprint">
+var testCustomEvent = new Test("TestCustomeEvent", function(preResult){
+  // preResult is true.
+})
+.equal("customEvent is empty.", true, function(preResult){
+  // preResult is "Hello Word"
+  return customEvent.isEmpty(); // return true;
+})
+.start("Hello Word");
+//log
+//log:[TestCustomeEvent] customEvent is empty. √
+            </pre>
+            <p>Add an "execute". Throw error if javascript run error.<p/>
+            <pre class="prettyprint">
+var testCustomEvent = new Test("TestCustomeEvent", function(preResult){
+  // preResult is true
+})
+.equal("customEvent is empty.", true, function(preResult){
+  // preResult is "Hello Word"
+  return customEvent.isEmpty(); // return true;
+})
+.execute("customEvent on fn name is 'a.b a.c a b'.", function(preResult){
+  // preResult is true
+  customEvent.on("a.b a.c a b", fn);
+})
+.equal("customEvent has event a.b.", true, function(preResult){
+  // preResult is true
+  return customEvent.hasHandler("a.b", fn) > -1;
+})
+.start("Hello Word");
+//log
+//log:[TestCustomeEvent] customEvent is empty. √
+//log:[TestCustomeEvent] customEvent on fn name is 'a.b a.c a b'. √
+//log:[TestCustomeEvent] customEvent has event a.b. √
+            </pre>
+            <p>Add asynchronous<p/>
+            <pre class="prettyprint">
+var promise1 = new Promise;
+var promise2 = new Promise;
+document.body.onclick = function(e){
+  promise2.resolve(e)
+}
+...
+.execute("Test execute async. After 1 seconds, 'promise1.resolve'. ", function(){
+  setTimeout(function(){
+    promise1.resolve( "value" );
+  }, 1000);
+})
+.execute("Test execute async. After 1 seconds, the next test is executed. ", function( preResult ){
+  //preResult is "value"
+}, promise1)
+.execute("When body clicking, exexute this.", function( preResult ){
+  //preResult is event of click
+
+}, promise2)
+.start()
+            </pre>
+            <h3 name="Report" id="Report">Report test results</h3>
+            <p>When test is fail or complete, Test would report results to parent-iframe if parent-iframe exists. Why Test should report results? Because we can test all case by one page.
+            <br/> If window.parent.aQuery.trigger exists (should require "main/event"), then trigger "test.report" event.
+            </p>
+            <a float="false" href="#AMDQuery" class="Top">Top</a>
+          </div>
+        </li>
+      </ol>
+      <ol style="width:100px;height:20px;" amdquery-widget="ui.swapindicator" ui-swapindicator="orientation:H">
+        <li></li>
+      </ol>
+    </div>
+    <div style="width:20px;" amdquery-widget="ui.flex" ui-flex="fillParentWidth:false"></div>
+  </div>
+</body>
+
+</html>

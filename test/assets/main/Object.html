@@ -1,0 +1,173 @@
+﻿
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+  <title></title>
+  <link href="../../../global/styles/reset.css" rel="stylesheet" type="text/css" />
+  <style>
+    #test {
+      background: #0000FF;
+      width: 100px;
+      height: 100px;
+    }
+  </style>
+  <script src="../../../amdquery/amdquery.js" type="text/javascript" amdquery="define:$;" amd="detectCR:1;"></script>
+  <script type="text/javascript">
+    //变成异步的了
+     //alert(document.getElementById("pre"));
+    require(["main/object", "base/ready"], function(object, ready) {
+      //alert(document.getElementById("pre"));
+      ready(function() {
+        //alert(document.getElementById("pre"));
+        var div = document.getElementsByTagName("div"),
+          write = function(s) {
+            div[0].innerHTML = div[0].innerHTML += s;
+          }
+        var test1 = object.extend("test1", {
+          init: function() {
+            var a = 3;
+            $.logger("init test1")
+          },
+          test: function() {
+            $.logger("test1")
+          }
+        }, {});
+        var test2 = object.extend("test2", {
+          init: function() {
+            //this._super();
+            $.logger("init test2")
+          },
+          test: function() {
+            $.logger("test2")
+            //this._superCall("test");
+          }
+        }, {}, test1);
+        var test3 = object.extend("test3", {
+          init: function() {
+            this._super();
+            $.logger("init test3")
+          },
+          test: function() {
+            $.logger("test3")
+            //this._superCall("test");
+          }
+        }, {}, test2);
+
+        test3.joinPrototype({
+          my: function(argument) {
+            // body...
+          }
+        })
+
+        var test4 = test3.extend({
+          init: function() {
+            this._super();
+            $.logger("init test4")
+          },
+          test: function() {
+            $.logger("test4")
+          }
+        }, {
+          staticFun: function() {
+            $.logger("staticFun")
+          }
+        });
+
+        test4.staticFun();
+
+        var t1 = new test3();
+        t1.test()
+        var t2 = new test3();
+        t2.test()
+        var t3 = new test2();
+        t3.test()
+
+
+      });
+    });
+  </script>
+</head>
+
+<body style="overflow: auto">
+  <div>
+  </div>
+  <pre id="pre">
+         $.require(["main/object", "base/ready"], function (object, ready) {
+            ready(function () {
+                var div = document.getElementsByTagName("div")
+                , write = function (s) {
+                    div[0].innerHTML = div[0].innerHTML += s;
+                }
+                var Supper = object.extend({
+                    init: function (name, color) {
+                        this.name = name;
+                        this.color = color;
+                        return this;
+                    },
+                    render: function () {
+                        this.showColor();
+                        this.showName();
+                    },
+                    showColor: function () {
+                        write("supper.color.fun:" + this.color + "
+<br>");
+                    },
+                    showName: function () {
+                        write("supper.name.fun:" + this.name + "
+<br>");
+                    }
+
+                }, "Supper");
+
+                var Sub = object.extend({
+                    init: function (weight, name, color) {
+                        Sub._SupperConstructor(this, name, color);
+                        this.weight = weight;
+                        return this;
+                    },
+                    render: function () {
+                        this.showWeight();
+                    },
+                    showWeight: function () {
+                        write("sub.weight.fun:" + this.weight + "
+<br>");
+                    }
+                }, Supper, "Sub")
+
+                var Child = object.extend({
+                    init: function (age, weight, name, color) {
+                        Child._SupperConstructor(this, weight, name, color);
+                        this.age = age;
+                        return this;
+                    },
+                    render: function () {
+                        this.showName();
+                        this.showAge();
+                        this.showWeight();
+                        this.showColor();
+                    },
+                    showAge: function () {
+                        write("child.age.fun:" + this.age + "
+<br>");
+                    },
+                    showColor: function () {
+                        write("child.color.fun:" + this.color + "
+<br>");
+                    }
+                }, Sub, "Child");
+
+                var child = new Child(25, 75, "caojun", "black");
+
+                write("constructor:" + child.constructor.toString() + "
+<br>");
+                write("
+<br>");
+                write("code:" + "
+<br>");
+            });
+        });
+    </pre>
+</body>
+
+</html>

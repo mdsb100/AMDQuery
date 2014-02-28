@@ -18,7 +18,7 @@ exports.debug = false;
 exports.apps = [
 	{
 		name: "document",
-		path: "../document/app/app.html",
+		path: "../document/app.html",
 		debug: true,
 		complete: function( htmlInfo ) {
 
@@ -31,20 +31,18 @@ exports.apps = [
 
 exports.defines = {
 	document: {
-		path: "../document/app/assets/source/js/main.js",
+		path: "../document/assets/source/js/main.js",
 		directory: [ "ui/" ],
-		complete: function( minPath, minContent, deubugPath, debugContent ) {
+		complete: function( minPath, minContent, debugPath, debugContent ) {
 			var FSE = require( 'fs-extra' );
-			var path = "../document/app/assets/source/js/amdquery.js";
-			FSE.writeFile( path, debugContent );
-			path = "../jsdoc/templates/amdquery/static/scripts/amdquery.js";
+			var path = "../document/assets/source/js/amdquery.js";
 			FSE.writeFile( path, debugContent );
 		}
 	},
 	jsdoc: {
 		path: "../jsdoc/templates/amdquery/static/scripts/main.js",
 		directory: [ "ui/" ],
-		complete: function( minPath, minContent, deubugPath, debugContent ) {
+		complete: function( minPath, minContent, debugPath, debugContent ) {
 			var FSE = require( 'fs-extra' );
 			var path = "../jsdoc/templates/amdquery/static/scripts/amdquery.js";
 			FSE.writeFile( path, debugContent );

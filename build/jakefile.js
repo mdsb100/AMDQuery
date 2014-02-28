@@ -39,7 +39,7 @@ desc( "It is inner. Build js api document." );
 task( "jsdoc", {
 	async: true
 }, function( template ) {
-	var $distPath = path.join( "../document/app/assets/api/" );
+	var $distPath = path.join( "../document/assets/api/" );
 	var $template = path.join( "..", "jsdoc", "templates", template || "amdquery" );
 	if ( FSE.exists( $template ) ) {
 		jake.logger.warn( $template + " does not exist" );
