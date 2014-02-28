@@ -63,8 +63,10 @@
 
  var FSE = require( 'fs-extra' );
 
+ var amdqueryProjectPath = PATH.join( buildFileRootPath, ".." );
+
  //Configurate oye.js
- amdqueryPath = PATH.join( buildFileRootPath, buildConfig.amdqueryPath );
+ var amdqueryPath = PATH.join( buildFileRootPath, buildConfig.amdqueryPath );
 
  //Configurate project root path
  projectRootPath = PATH.join( buildFileRootPath, buildConfig.projectRootPath );
@@ -218,13 +220,16 @@
 
  function getAppaQueryConfig( appConfig, openHtml ) {
  	var htmlPath = PATH.join( AMDQueryJSRootPath, appConfig.path );
- 	var raQueryConfig = /aQueryConfig\s*=/
+ 	var raQueryConfig = /aQueryConfig\s*=/;
+ 	var appProjectPath = PATH.dirname( htmlPath );
  	var htmlInfo = {
  		appConfig: {},
  		cssPath: [],
  		UICssPath: [],
  		htmlPath: htmlPath,
- 		appProjectPath: PATH.dirname( htmlPath ),
+ 		appProjectPath: appProjectPath,
+ 		appDirectoryName: PATH.basename( appProjectPath ),
+ 		AMDQueryProjectPath: amdqueryProjectPath,
  		appName: appConfig.name
  	};
  	var aQueryConfigStr = null;
@@ -343,17 +348,24 @@
  		console.log( "make directory: " + dirName.red );
  		mkdirSync( dirName );
  	}
+ 	var globalPath = PATH.join( htmlInfo.AMDQueryProjectPath, "global" ),
+ 		globalDistPath = PATH.join( distPath, "global" );
+
+ 	logger( "[DEBUG]".white, "copy directory:".white, globalPath, "to", globalDistPath );
+
+ 	FSE.copySync( globalPath, globalDistPath );
 
  	logger( "[DEBUG]".white, "app project path:".white, htmlInfo.appProjectPath.white );
 
  	var copyDirMap = {
- 		"app/assets": PATH.join( htmlInfo.appProjectPath, "assets" ),
- 		"app/styles": PATH.join( htmlInfo.appProjectPath, "styles" ),
- 		"app/xml": PATH.join( htmlInfo.appProjectPath, "xml" ),
- 		"app/lib": PATH.join( htmlInfo.appProjectPath, "lib" ),
  		"amdquery/ui/css": PATH.join( AMDQueryJSRootPath, "ui", "css" ),
  		"amdquery/ui/images": PATH.join( AMDQueryJSRootPath, "ui", "images" )
  	}, key, value;
+
+ 	copyDirMap[ htmlInfo.appDirectoryName + "/assets" ] = PATH.join( htmlInfo.appProjectPath, "assets" );
+ 	copyDirMap[ htmlInfo.appDirectoryName + "/styles" ] = PATH.join( htmlInfo.appProjectPath, "styles" );
+ 	copyDirMap[ htmlInfo.appDirectoryName + "/xml" ] = PATH.join( htmlInfo.appProjectPath, "xml" );
+ 	copyDirMap[ htmlInfo.appDirectoryName + "/lib" ] = PATH.join( htmlInfo.appProjectPath, "lib" );
 
  	for ( key in copyDirMap ) {
  		value = copyDirMap[ key ];
@@ -408,7 +420,7 @@
  	}
 
  	content += "\n</div>"
- 	htmlInfo.appCombinationXMLRelativePath = "app/xml/combination.xml";
+ 	htmlInfo.appCombinationXMLRelativePath = PATH.join( htmlInfo.appDirectoryName, "xml/combination.xml" );
  	htmlInfo.appCombinationXMLPath = PATH.join( htmlInfo.projectDistPath, htmlInfo.appCombinationXMLRelativePath );
 
  	console.log( '\r\nSave app Combination xml: ' + htmlInfo.appCombinationXMLPath );
@@ -431,7 +443,7 @@
  		var path = "";
  		//绝对路径 项目路径下
  		if ( /^\//.test( item ) ) {
- 			path = PATH.join(  amdqueryPath, "..", item.replace( /^\//, "" ) );
+ 			path = PATH.join( amdqueryPath, "..", item.replace( /^\//, "" ) );
  		} else {
  			path = PATH.join( PATH.dirname( htmlInfo.htmlPath ), item );
  		}
@@ -445,7 +457,7 @@
 
  	htmlInfo.appCombinationCssRelativePath = PATH.join( "styles", htmlInfo.appName + ".css" );
 
- 	htmlInfo.appCombinationCssPath = PATH.join( htmlInfo.projectDistPath, "app", htmlInfo.appCombinationCssRelativePath );
+ 	htmlInfo.appCombinationCssPath = PATH.join( htmlInfo.projectDistPath, htmlInfo.appDirectoryName, htmlInfo.appCombinationCssRelativePath );
 
  	_buildCssAndSave( resultPath, htmlInfo.appCombinationCssPath );
 
@@ -528,7 +540,7 @@
  		bodyTr = trumpet();
 
 
- 	htmlInfo.distHtmlPath = PATH.join( htmlInfo.projectDistPath, "app/app.html" );
+ 	htmlInfo.distHtmlPath = PATH.join( htmlInfo.projectDistPath, htmlInfo.appDirectoryName, "app.html" );
 
  	var cssList = [],
  		append = "",
@@ -558,7 +570,7 @@
  	script1.getAttribute( "app", function( value ) {
  		var config = splitAttrToObject( value );
 
- 		config.src = "../app/app";
+ 		config.src = PATH.join( "..", htmlInfo.appDirectoryName, "app" );
  		logger( "[DEBUG]".white, "script setAttribute app".white, ( "src = " + config.src ).white );
  		config.development = "0";
  		logger( "[DEBUG]".white, "script setAttribute app".white, ( "development = " + config.development ).white );
@@ -714,11 +726,11 @@
  	var i = 0,
  		len = moduleList.length,
  		mdItem, xmlPath, xmlPathList = [],
- 		cssPath, cssPathList = [];
+ 		cssPath, cssPathList = [],
+ 		reg = new RegExp( htmlInfo.appDirectoryName + "\/" + "views\/(.*)" );
  	for ( ; i < len; i++ ) {
  		mdItem = moduleList[ i ];
-
- 		if ( /app\/views\/(.*)/.test( mdItem.name ) ) {
+ 		if ( reg.test( mdItem.name ) ) {
  			xmlPath = PATH.join( htmlInfo.appProjectPath, "xml", RegExp.$1 + ".xml" );
  			cssPath = PATH.join( htmlInfo.appProjectPath, "styles", RegExp.$1 + ".css" );
  			if ( FSE.existsSync( xmlPath ) ) {
