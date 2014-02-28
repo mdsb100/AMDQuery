@@ -18,10 +18,11 @@ aQuery.define( "@app/controllers/navmenu", [ "module/location", "app/Controller"
 				var target = $( e.navitem ),
 					ret = target.uiNavitem( "getOptionToRoot" ),
 					path;
+
 				if ( ret.length > 1 ) {
 					location.setHash( "navmenu", ret.concat().reverse().join( "_" ) );
-					ret.push( "test", ".." );
-					path = $.getPath( ret.reverse().join( "/" ), ".html" );
+					ret.push( "assets" );
+					path = ret.reverse().join( "/" ) + ".html";
 					controller.trigger( "navmenu.select", controller, {
 						type: "navmenu.select",
 						path: path
