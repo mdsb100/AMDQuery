@@ -1055,7 +1055,6 @@
  	var list = path.split( r );
  	var l = list.length;
  	var _path;
- 	console.log( "l", l );
  	for ( var i = 1; i < l; i++ ) {
  		_path = list.slice( 0, i ).join( '' );
  		if ( FSE.existsSync( _path ) ) {
