@@ -20,7 +20,7 @@ aQuery.define( "app/Controller", [
 	View,
 	Model, undefined ) {
 	"use strict";
-  this.describe( "Super Controller Class" );
+	this.describe( "Super Controller Class" );
 	var Controller = CustomEvent.extend( "Controller", {
 		init: function( view, models ) {
 			this._super();
@@ -68,8 +68,9 @@ aQuery.define( "app/Controller", [
 		getView: function() {
 
 		},
+		// controller must be <controller></conroller>
 		loadController: function( node ) {
-			var contollersElement = typed.isNode( node, "controller" ) ? $( node ) : query.find( "controller", node ),
+			var contollersElement = typed.isNode( node, "controller" ) ? $( node ) : ( node === document.body ? query.find( ">controller", node ) : query.find( "controller", node ) ),
 				controller = [],
 				ret = [];
 

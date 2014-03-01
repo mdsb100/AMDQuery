@@ -142,7 +142,7 @@ aQuery.define( "app/View", [
 
 	if ( !config.app.development ) {
 		var $combinationXML = null;
-
+		// must excute after body ready
 		View.getXML = function( htmlSrc ) {
 			var key = "",
 				xml,
