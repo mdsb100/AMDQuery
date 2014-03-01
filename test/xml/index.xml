@@ -1,4 +1,4 @@
 <div id="index" style="width: 100%; height: 100%;position:relative;" amdquery-widget="ui.flex" ui-flex="flexDirection:row">
-  <controller src="@app/controllers/navmenu.js" id="navmenu" />
-  <controller src="@app/controllers/content.js" id="content" />
+  <controller src="@app/controllers/navmenu.js" id="navmenu" ></controller>
+  <controller src="@app/controllers/content.js" id="content" ></controller>
 </div>

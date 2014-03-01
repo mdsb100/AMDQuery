@@ -43,6 +43,8 @@
               </li>
               <li><a href="#Config">Config</a>
               </li>
+              <li><a href="#Anonymous">Anonymous Module Deifne</a>
+              </li>
               <li><a href="#Detail">Build Detail</a>
               </li>
             </ul>
@@ -211,6 +213,11 @@ root
                       </p>
                     </li>
                   </ul>
+                  <h2 name="Anonymous">Anonymous Module Deifne</h2>
+                  <p>
+                    If you define a module without name, build would add the name which is file name. So javascript can parse successive module by a combination js file.
+                    Best practices is defination the name of each module.
+                  </p>
                   <h2 name="Detail">Build Detail</h2>
                   <p>1.Read base amdquery.js . we should get the content of amdquery.js, amdquery.js is basal. It began in the file.
                     <br />If you want to start using "AMDQuery", you must first load the "amdquery.js". So Build will be a top priority loaded and stored in the file start position.
@@ -254,6 +261,20 @@ root
             <h2 name="Config">Config</h2>
             <p>Reference "build_config.js". "apps" is an array, each of which is object.
             </p>
+            <pre class="prettyprint">
+{
+  name: "document",
+  path: "../document/app.html",
+  debug: true,
+  complete: function( htmlInfo ) {
+    console.log( htmlInfo );
+  },
+  detectUIWidgetCSS: true,
+  UIWidgetCSS: [],
+  aQueryConfig: false,
+  includeLibJSFromHead: true
+}
+            </pre>
             <ul class="ul">
               <li>
                 <h4>name {String}</h4>
@@ -264,16 +285,27 @@ root
                 <p>Application HTML path.</p>
               </li>
               <li>
-                <h4>debug {Boolean}</h4>
+                <h4>debug=true {Boolean}</h4>
                 <p>If that is true, that build will create a non-compressed "amdquery.debug.js", set the configuration of application to "true" in HTML</p>
               </li>
               <li>
-                <h4>detectUIWidgetCSS {Boolean}</h4>
+                <h4>detectUIWidgetCSS=true {Boolean}</h4>
                 <p>If that is true, then build would detect widget-ui css from "appCombinationXMLPath".</p>
                 <p>If that is false, then build would include all of "ui/css/*.css".</p>
               </li>
               <li>
-                <h4>aQueryConfig {Boolean|String}</h4>
+                <h4>includeLibJSFromHead=true {Boolean}</h4>
+                <p>The lib js in head will be combinate and include in new HTML`s head if this is ture.</p>
+                <div class="admonition-note">
+                  <strong>
+                    <p>
+                      The lib js must in head if not then build could not find the js.
+                    </p>
+                  </strong>
+                </div>
+              </li>
+              <li>
+                <h4>aQueryConfig=false {Boolean|String}</h4>
                 <div class="admonition-note">
                   <strong>
                     <p>If it is a boolean, and it is true then it means you define "aQueryConfig" in inner script. Like this:
@@ -314,7 +346,7 @@ var aQueryConfig = {
   };
 &lt/script&gt
                     </pre>
-                    <p>If it is a string, it means you define "aQueryConfig" in a "*.js" and you add tag "script" to haed before "amdquery.js"
+                    <p>If it is a string, it means you define "aQueryConfig" in a "*.js" and you add tag "script" to head before "amdquery.js"
                       <br />The path is relative to "app.html" path.
                     </p>
                     <pre class="prettyprint">
@@ -322,7 +354,6 @@ var aQueryConfig = {
 &ltscript src="../amdquery/amdquery.js" type="text/javascript"&gt&lt/script&gt
                     </pre>
                     <p>
-                      Whatever you set boolean or string, the build will ignore attribute of tag "script".
                       <br />The most important is: If "aQueryConfig" is null, the tag "script" of amdquery.js must have an attribute which is "app".
                     </p>
                     <pre class="prettyprint">
@@ -335,12 +366,18 @@ var aQueryConfig = {
                 </div>
               </li>
               <li>
-                <h4>UIWidgetCSS</h4>
+                <h4>UIWidgetCSS=[] {Array}</h4>
                 <p>It is a array of "ui/css/some.css", for example: ["tabbar.css", "navmenu.css"]. The array will concat into build-list when building widget-ui css.</p>
                 <p>Do not worry about duplicate css, build would filter same.</p>
               </li>
               <li>
-                <h4>complete</h4>
+                <h4>copyList {Array}</h4>
+                <p>The list of directory or file which will copy to dist.
+                <br />Copy htmlInfo.appDirectoryName+"/"+$name to htmlInfo.appProjectPath+"/"+$name.
+                </p>
+              </li>
+              <li>
+                <h4>complete {Function}</h4>
                 <p>The callback of the Build.</p>
                 <p>You can do some interesting things after the build is completed.</p>
                 <pre class="prettyprint">
@@ -363,21 +400,35 @@ var aQueryConfig = {
   appCombinationCssRelativePath: 'styles/document.css',
   appCombinationCssPath: '/Users/apple/project/my/amdquery/build/dist/apps/document/styles/document.css',
   uiCombinationRelativeCssPath: 'amdquery/ui/css/amdquery-widget.css',
-  distHtmlPath: '/Users/apple/project/my/amdquery/build/dist/apps/document/app.html'
+  distHtmlPath: '/Users/apple/project/my/amdquery/build/dist/apps/document/app.html',
+  beforeLibRelativeJSPath: 'lib/beforelib.js ', // maybe not exists
+  beforeLibJSPath: '/Users/apple/project/my/amdquery/build/dist/apps/document/document/lib/beforelib.js ', // maybe not exists
+  afterLibRelativeJSPath: 'lib/afterlib.js ', // maybe not exists
+  afterLibJSPath: '/Users/apple/project/my/amdquery/build/dist/apps/document/document/lib/afterlib.js ' // maybe not exists
 }
                 </pre>
               </li>
             </ul>
 
+            <div class="admonition-note">
+              <strong>
+                <p>
+                  The aQueryConfig.js or aQueryConfig defintion must be in head.
+                  <br />The amdquery.js must be in head.
+                </p>
+
+              </strong>
+            </div>
+
             <h2 name="Detail">Build Detail</h2>
-            <h3>1.Detecting whether there is "aQueryConfig"</h3>
+            <h3>1.Detecting whether there is "aQueryConfig".</h3>
             <p>
               Find aQueryConfig or not.
             </p>
             <h3>2.Open HTML. Get "HTML" path from the configuration.</h3>
             <p>
               Use "trumpet" to parse html, Get an array of css hrefs and script tag of application. Parse configuration of the tag.
-              <br />If aQueryConfig is found, the build will ignore "amdquery.js" script.
+              <br />The config defined in script attributes is is the highest priority.
             </p>
             <h3>3.Create application directory and copy file.</h3>
             <p>
@@ -395,14 +446,41 @@ var aQueryConfig = {
               <br />Copy AMDQueryJSRootPath + "ui/css" to distPath + "amdquery/ui/css"
               <br />Copy AMDQueryJSRootPath + "ui/images" to distPath + "amdquery/ui/images"
             </p>
-            <h3>4.Build Javascript of Application</h3>
+            <h3>4.Build library Javascript from HTML`head.</h3>
+            <p>
+              Whatever you include a "src" of javascript or modify content in inner of javascript, build will get the content to combinate to two file and save it into directory "lib".
+              <br />One of files is "beforelib.js", another is "afterlib.js".
+              <br />If "Config.debug" is false then minify content.
+            </p>
+            <pre class="prettyprint">
+&ltscript type="text/javascript"&gt
+var applicationCache = null;
+&lt/script&gt
+&ltscript src="lib/aQueryConfig.js" type="text/javascript"&gt&lt/script&gt
+//before amdquery.js
+&ltscript src="../amdquery/amdquery.js" type="text/javascript" app="src:../test/app;debug:1;"&gt&lt/script&gt
+//after amdquery.js
+&ltscript type="text/javascript"&gt
+var bTest = "Test buildLibJSFromHead";
+&lt/script&gt
+&ltscript src="lib/aQueryConfig.js" type="text/javascript"&gt&lt/script&gt
+//                        ||
+//                        || After build
+//                        \/
+&ltscript src="lib/beforelib.js " type="text/javascript"&gt&lt/script&gt
+&ltscript src="../amdquery/amdquery.js" type="text/javascript" app="src:../document/app;development:0;debug:true;viewContentID:aQueryViewContentKey;"&gt&lt/script&gt
+&ltscript src="lib/afterlib.js " type="text/javascript"&gt&lt/script&gt
+            </pre>
+            <p>
+            </p>
+            <h3>5.Build Javascript of Application.</h3>
             <p>
               Get "app.js" path to the directory. Set "require" parameter with the path. ("@app" ==> "../document/app/app")
               <br />"oye.node" could load all js after setting "require" parameter. Then build save the js files to the dist directory. You also can see then log in terminal.
               <br />Save file: /Users/apple/project/my/amdquery/build/dist/apps/document/amdquery/amdquery.js
               <br />Save file: /Users/apple/project/my/amdquery/build/dist/apps/document/amdquery/amdquery.debug.js
             </p>
-            <h3>5.Build XML of Application</h3>
+            <h3>6.Build XML of Application.</h3>
             <p>
               Put all the XML merged into one XML. Root tag is "&lt div id='aQueryViewContentKey' &gt". Each original XML will be wrapped in "&lt aQueryViewContentKey='name' &gt" tag within
               <br />The new XML will be saved as "combination.xml". "combination.xml" is easy for reading.
@@ -413,7 +491,7 @@ var aQueryConfig = {
               <br />Save app Combination xml: /Users/apple/project/my/amdquery/build/dist/apps/document/xml/combination.xml
               <br />
             </p>
-            <h3>6.Build CSS of Application</h3>
+            <h3>7.Build CSS of Application.</h3>
             <p>
               After the first step has been to get all the "CSS" href, this step will be to find those CSS file through the href and use the "clean-css" to merge them into a CSS file.
               <br />The new CSS will be saved as "{#appName}.css" moreover the final step will automatically add a "CSS" tag to "HTML" head, the properties href will be set "styles/{#appName}.css".
@@ -423,7 +501,7 @@ var aQueryConfig = {
               <br />
               <br />Save app Combination css: /Users/apple/project/my/amdquery/build/dist/apps/document/styles/document.css
             </p>
-            <h3>7.Build CSS of AMDQuery UI</h3>
+            <h3>8.Build CSS of AMDQuery UI.</h3>
             <p>
               Build combine all the CSS of AMDQuery UI and save it as "amdquery-widget.css".
               <br />
@@ -434,7 +512,7 @@ var aQueryConfig = {
               <br />
               <br />Save UI amdquery-widget.css:  /Users/apple/project/my/amdquery/build/dist/apps/document/amdquery/ui/css/amdquery-widget.css
             </p>
-            <h3>8.Modify HTML</h3>
+            <h3>9.Modify HTML.</h3>
             <p>
               Remove all CSS in head and add a new CSS into head, the new CSS href is "styles/document.css".
               <br />Modify "amdquery.js" script attribute:

@@ -5,7 +5,7 @@ var $amdquery = path.join( "..", "amdquery" )
 task( "default", function() {
 	jake.logger.log( "jake build[*.js]                       build application and javascript" );
 	jake.logger.log( "jake build                             default is build_config.js" );
-	jake.logger.log( "jake jsdoc[default|docstrap|amdquery]  build javascript api document" );
+	jake.logger.log( "jake jsdoc[default|amdquery]           build javascript api document" );
 	jake.logger.log( "jake jsdoc                             default is amdquery" );
 	jake.logger.log( "jake ui_css                            build css of widget-ui" );
 } );

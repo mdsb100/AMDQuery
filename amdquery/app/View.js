@@ -56,7 +56,7 @@ aQuery.define( "app/View", [
 
 		},
 		initTopElement: function( src ) {
-			src = src || ( getHtmlSrc( this.constructor._AMD.id ) + ".xml" );
+			src = src || ( getHtmlSrc( this.constructor._AMD.id ) );
 			return View.getXML( src );
 		},
 		destroy: function() {
@@ -142,7 +142,7 @@ aQuery.define( "app/View", [
 
 	if ( !config.app.development ) {
 		var $combinationXML = null;
-
+		// must excute after body ready
 		View.getXML = function( htmlSrc ) {
 			var key = "",
 				xml,

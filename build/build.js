@@ -104,7 +104,8 @@
  var trumpet = require( "trumpet" );
  var through = require( "through" );
  var concat = require( 'concat-stream' );
- var beautify_html = require( 'js-beautify' ).html;
+ var beautify_html = require( "js-beautify" ).html;
+ var htmlparser = require( "htmlparser" )
 
  var loadedModule = 'loaded' + ( -new Date() );
  var fileStack = {};
@@ -114,6 +115,8 @@
  var AMDQueryJSPath = PATH.join( buildFileRootPath, buildConfig.amdqueryPath, "amdquery.js" );
  var AMDQueryJSRootPath = PATH.join( buildFileRootPath, buildConfig.amdqueryPath );
  var projectDistPath = PATH.join( buildFileRootPath, buildConfig.distPath );
+
+ var DebugJSSuffix = "-debug.js";
 
  function readBaseAMDQueryJS( next, result ) {
  	oye.readFile( AMDQueryJSPath, function( content ) {
@@ -194,7 +197,7 @@
  		len = list.length;
  		name = name.replace( /^\/+/, '' );
  		path = PATH.join( dirPath, name.replace( /[^\/]*$/, '' ) );
- 		deubugPath = PATH.join( dirPath, name + '.debug.js' );
+ 		deubugPath = PATH.join( dirPath, name + DebugJSSuffix );
  		minPath = PATH.join( dirPath, name + '.js' );
 
  		content = list.join( "\r\n" );
@@ -250,7 +253,7 @@
 
  	if ( appConfig.aQueryConfig == true ) {
  		var tr = trumpet();
- 		var scriptAll = tr.selectAll( "script", function( script ) {
+ 		var scriptAll = tr.selectAll( "head script", function( script ) {
  			var scriptStream = script.createStream();
  			var scriptStr = "";
  			scriptStream.pipe( through( function( buf ) {
@@ -299,35 +302,34 @@
  			}
  		} );
  	} );
- 	if ( !appConfig.aQueryConfig ) {
- 		logger( "[DEBUG]".white, "selectAll script[app]".white );
- 		tr.selectAll( 'script[app]', function( script ) {
- 			script.getAttribute( "app", function( value ) {
- 				// console.log( "app", value );
- 				var list = value.split( /;|,/ ),
- 					item, i, attr;
 
- 				for ( i = list.length - 1; i >= 0; i-- ) {
- 					item = list[ i ];
- 					if ( item ) {
- 						attr = item.split( /=|:/ );
- 						if ( attr[ 1 ] ) {
- 							htmlInfo.appConfig[ attr[ 0 ] ] = attr[ 1 ];
- 						}
+ 	logger( "[DEBUG]".white, "selectAll script[app]".white );
+ 	tr.selectAll( 'script[app]', function( script ) {
+ 		script.getAttribute( "app", function( value ) {
+ 			var list = value.split( /;|,/ ),
+ 				item, i, attr;
+
+ 			for ( i = list.length - 1; i >= 0; i-- ) {
+ 				item = list[ i ];
+ 				if ( item ) {
+ 					attr = item.split( /=|:/ );
+ 					if ( attr[ 1 ] ) {
+ 						htmlInfo.appConfig[ attr[ 0 ] ] = attr[ 1 ];
  					}
  				}
- 				logger( "[DEBUG]".white, "htmlInfo".white, JSON.stringify( htmlInfo ).white );
+ 			}
+ 			logger( "[DEBUG]".white, "htmlInfo".white, JSON.stringify( htmlInfo ).white );
 
- 			} );
  		} );
- 	}
+ 	} );
+
 
  	FSE.createReadStream( htmlInfo.htmlPath ).pipe( tr ).on( 'close', function() {
  		createAppDirAndCopyFile( null, appConfig, htmlInfo );
  	} );
  }
 
- function createAppDirAndCopyFile( appConfig, htmlInfo, buildAppJS ) {
+ function createAppDirAndCopyFile( appConfig, htmlInfo, buildLibJSFromHead ) {
  	var appDistProjectPath = PATH.join( "apps", htmlInfo.appName ),
  		distPath = PATH.join( projectDistPath, appDistProjectPath );
 
@@ -338,7 +340,11 @@
 
  	mkdirSync( distPath );
 
- 	var dirNameList = [ "amdquery/ui" ],
+ 	var dirNameList = [
+  "amdquery/ui",
+  htmlInfo.appDirectoryName + "/assets",
+  htmlInfo.appDirectoryName + "/styles"
+  ],
  		dirName,
  		len = dirNameList.length,
  		i;
@@ -348,6 +354,7 @@
  		console.log( "make directory: " + dirName.red );
  		mkdirSync( dirName );
  	}
+
  	var globalPath = PATH.join( htmlInfo.AMDQueryProjectPath, "global" ),
  		globalDistPath = PATH.join( distPath, "global" );
 
@@ -367,6 +374,12 @@
  	copyDirMap[ htmlInfo.appDirectoryName + "/xml" ] = PATH.join( htmlInfo.appProjectPath, "xml" );
  	copyDirMap[ htmlInfo.appDirectoryName + "/lib" ] = PATH.join( htmlInfo.appProjectPath, "lib" );
 
+ 	if ( appConfig.copyList ) {
+ 		for ( i = 0; i < appConfig.copyList.length; i++ ) {
+ 			copyDirMap[ PATH.join( htmlInfo.appDirectoryName, appConfig.copyList[ i ] ) ] = PATH.join( htmlInfo.appProjectPath, appConfig.copyList[ i ] );
+ 		}
+ 	}
+
  	for ( key in copyDirMap ) {
  		value = copyDirMap[ key ];
  		if ( FSE.existsSync( value ) ) {
@@ -377,7 +390,112 @@
 
  	htmlInfo.projectDistPath = distPath;
 
- 	buildAppJS( null, appConfig, htmlInfo, PATH.join( projectDistPath, appDistProjectPath, "amdquery" ) );
+ 	buildLibJSFromHead( null, appConfig, htmlInfo, PATH.join( projectDistPath, appDistProjectPath, "amdquery" ) );
+ }
+
+ function buildLibJSFromHead( appConfig, htmlInfo, AMDQueryPath, buildAppJS ) {
+ 	if ( appConfig.includeLibJSFromHead ) {
+ 		function getScriptCotent( script ) {
+ 			var script = script[ 0 ],
+ 				content = "";
+ 			if ( script ) {
+ 				if ( script.attribs && script.attribs[ "src" ] ) {
+ 					content += FSE.readFileSync( PATH.join( htmlInfo.appProjectPath, script.attribs[ "src" ] ) ).toString() + "\n";
+ 				} else {
+ 					if ( script.children && script.children[ 0 ] ) {
+ 						content += script.children[ 0 ].data + "\n";
+ 					}
+ 				}
+ 			}
+ 			return content;
+ 		}
+
+ 		var tr = trumpet();
+ 		var scripts = [];
+
+ 		console.log( ( '\r\nBuild library javascript from HTML head of"' + htmlInfo.appName + '"' ).red );
+
+ 		tr.selectAll( "head script", function( script ) {
+ 			var scriptStream = script.createStream( {
+ 				outer: true
+ 			} );
+ 			var scriptStr = "";
+ 			scriptStream.pipe( through( function( buf ) {
+ 				scriptStr += buf.toString();
+ 			}, function() {
+ 				var handler = new htmlparser.DefaultHandler( function( error, dom ) {
+ 					if ( error ) {
+ 						buildAppJS( error );
+ 					}
+ 				} );
+ 				var parser = new htmlparser.Parser( handler );
+ 				parser.parseComplete( scriptStr );
+ 				scripts.push( handler.dom );
+ 			} ) ).pipe( scriptStream );
+
+ 		} );
+
+ 		FSE.createReadStream( htmlInfo.htmlPath ).pipe( tr ).on( 'close', function() {
+ 			var ramdquery = /amdquery\/amdquery\.js/,
+ 				i, script, amdqueryJSIndex = -1;
+ 			//Find amdquery.js index
+ 			for ( i = scripts.length - 1; i >= 0; i-- ) {
+ 				script = scripts[ i ];
+ 				script = script[ 0 ];
+ 				if ( script && script.attribs && ramdquery.test( script.attribs[ "src" ] ) ) {
+ 					amdqueryJSIndex = i;
+ 				}
+ 			}
+
+ 			if ( amdqueryJSIndex == -1 ) {
+ 				buildAppJS( "Can not find 'amdquery/amdquery.js' in '" + htmlInfo.htmlPath + "'" );
+ 			}
+
+ 			htmlInfo._amdqueryJSIndex = amdqueryJSIndex;
+
+ 			var bLibJSContent = "";
+
+ 			for ( i = 0; i < amdqueryJSIndex; i++ ) {
+ 				script = scripts[ i ];
+ 				if ( script ) {
+ 					bLibJSContent += getScriptCotent( script );
+ 				}
+ 			}
+
+ 			if ( bLibJSContent != "" ) {
+ 				console.log( ( "\r\n Save library javascript which before amdquery.js from '" + htmlInfo.htmlPath + "'head " ).red );
+ 				htmlInfo.beforeLibRelativeJSPath = PATH.join( "lib", "beforelib.js" );
+ 				htmlInfo.beforeLibJSPath = PATH.join( htmlInfo.projectDistPath, htmlInfo.appDirectoryName, htmlInfo.beforeLibRelativeJSPath );
+ 				if ( !appConfig.debug ) {
+ 					bLibJSContent = minifyContent( bLibJSContent );
+ 				}
+ 				FSE.writeFileSync( htmlInfo.beforeLibJSPath, bLibJSContent );
+ 			}
+
+ 			var aLibJSContent = "";
+
+ 			for ( i = amdqueryJSIndex + 1; i < scripts.length; i++ ) {
+ 				script = scripts[ i ];
+ 				if ( script ) {
+ 					aLibJSContent += getScriptCotent( script );
+ 				}
+ 			}
+
+ 			if ( aLibJSContent != "" ) {
+ 				console.log( ( "\r\n Save library javascript which after amdquery.js from '" + htmlInfo.htmlPath + "'head" ).red );
+ 				htmlInfo.afterLibRelativeJSPath = PATH.join( "lib", "afterlib.js" );
+ 				htmlInfo.afterLibJSPath = PATH.join( htmlInfo.projectDistPath, htmlInfo.appDirectoryName, htmlInfo.afterLibRelativeJSPath );
+ 				if ( !appConfig.debug ) {
+ 					aLibJSContent = minifyContent( aLibJSContent );
+ 				}
+ 				FSE.writeFileSync( htmlInfo.afterLibJSPath, aLibJSContent );
+ 			}
+
+ 			buildAppJS( null, appConfig, htmlInfo, AMDQueryPath );
+ 		} );
+ 	} else {
+ 		buildAppJS( null, appConfig, htmlInfo, AMDQueryPath );
+ 	}
  }
 
  function buildAppJS( appConfig, htmlInfo, AMDQueryPath, buildAppXML ) {
@@ -407,7 +525,7 @@
  function buildAppXML( appConfig, htmlInfo, XMLAndCSSPathList, buildAppCss ) {
  	console.log( ( '\r\nBuild "' + htmlInfo.appName + '" xml file ' ).red );
  	htmlInfo.viewContentID = "aQueryViewContentKey";
- 	var content = "<div id='" + htmlInfo.viewContentID + "' >",
+ 	var content = '<div id="' + htmlInfo.viewContentID + '" >',
  		xmlPathList = XMLAndCSSPathList.xmlPathList,
  		i = 0,
  		xmlItem = null,
@@ -415,7 +533,7 @@
 
  	for ( ; i < len; i++ ) {
  		xmlItem = xmlPathList[ i ];
- 		content += "\n<div " + htmlInfo.viewContentID + "='" + xmlItem.key + "' >" + FSE.readFileSync( xmlItem.path );
+ 		content += '\n<div ' + htmlInfo.viewContentID + '="' + xmlItem.key + '" >' + FSE.readFileSync( xmlItem.path );
  		content += "\n</div>";
  	}
 
@@ -455,13 +573,17 @@
  		resultPath.push( item.path );
  	} );
 
- 	htmlInfo.appCombinationCssRelativePath = PATH.join( "styles", htmlInfo.appName + ".css" );
+ 	if ( resultPath.length ) {
+ 		htmlInfo.appCombinationCssRelativePath = PATH.join( "styles", htmlInfo.appDirectoryName + ".css" );
 
- 	htmlInfo.appCombinationCssPath = PATH.join( htmlInfo.projectDistPath, htmlInfo.appDirectoryName, htmlInfo.appCombinationCssRelativePath );
+ 		htmlInfo.appCombinationCssPath = PATH.join( htmlInfo.projectDistPath, htmlInfo.appDirectoryName, htmlInfo.appCombinationCssRelativePath );
+ 		console.log( htmlInfo.appCombinationCssPath )
+ 		_buildCssAndSave( resultPath, htmlInfo.appCombinationCssPath );
 
- 	_buildCssAndSave( resultPath, htmlInfo.appCombinationCssPath );
-
- 	console.log( '\r\nSave app Combination css: ' + htmlInfo.appCombinationCssPath );
+ 		console.log( '\r\nSave app Combination css: ' + htmlInfo.appCombinationCssPath );
+ 	} else {
+ 		console.warn( '\r\nDoes not find any css!' );
+ 	}
 
  	buildUICss( null, appConfig, htmlInfo );
  }
@@ -532,11 +654,10 @@
 
  }
 
- function modifyHTML( appConfig, htmlInfo ) {
+ function modifyHTML( appConfig, htmlInfo, finish ) {
  	var linkTr1 = trumpet(),
  		linkTr2 = trumpet(),
- 		scriptTr1 = trumpet(),
- 		scriptTr2 = trumpet(),
+ 		scriptTr = trumpet(),
  		bodyTr = trumpet();
 
 
@@ -560,43 +681,81 @@
  		ws.end( "<!-- annotate by build link.src: " + cssList[ i++ ] + " -->\n" );
  	} );
 
- 	//必须需要有app这个属性
- 	var script1 = scriptTr1.select( "script[app]" );
+ 	var amdqueryJSIndex = htmlInfo._amdqueryJSIndex,
+ 		index = 0;
 
- 	var src = htmlInfo.AMDQueryJSRelativeHTMLPath + ( appConfig.debug ? ".debug" : "" ) + ".js";
- 	script1.setAttribute( "src", src );
- 	logger( "[DEBUG]".white, "script setAttribute src:".white, src.white );
+ 	scriptTr.selectAll( "head script", function( script ) {
 
- 	script1.getAttribute( "app", function( value ) {
- 		var config = splitAttrToObject( value );
+ 		var scriptStream = script.createStream( {
+ 			outer: true
+ 		} );
+ 		if ( index++ == amdqueryJSIndex ) {
+ 			var scriptStr = "";
+ 			scriptStream.pipe( through( function( buf ) {
+ 				scriptStr += buf.toString();
+ 			}, function() {
+ 				var handler = new htmlparser.DefaultHandler( function( error, dom ) {} );
+ 				var parser = new htmlparser.Parser( handler );
+ 				parser.parseComplete( scriptStr );
+ 				var append = "";
 
- 		config.src = PATH.join( "..", htmlInfo.appDirectoryName, "app" );
- 		logger( "[DEBUG]".white, "script setAttribute app".white, ( "src = " + config.src ).white );
- 		config.development = "0";
- 		logger( "[DEBUG]".white, "script setAttribute app".white, ( "development = " + config.development ).white );
- 		config.debug = !! appConfig.debug;
- 		logger( "[DEBUG]".white, "script setAttribute app".white, ( "debug = " + config.debug ).white );
- 		config.viewContentID = htmlInfo.viewContentID
- 		logger( "[DEBUG]".white, "script setAttribute app".white, ( "viewContentID = " + config.viewContentID ).white );
+ 				append = '<link href="' + "../" + htmlInfo.uiCombinationRelativeCssPath + '" rel="stylesheet" type="text/css" />\n';
+ 				logger( "[DEBUG]".white, "add css".white, htmlInfo.uiCombinationRelativeCssPath.white );
 
- 		script1.setAttribute( "app", formatToAttr( config ) );
+ 				if ( htmlInfo.appCombinationCssRelativePath ) {
+ 					append += '<link href="' + htmlInfo.appCombinationCssRelativePath + '" rel="stylesheet" type="text/css" />\n';
+ 					logger( "[DEBUG]".white, "add css".white, htmlInfo.appCombinationCssRelativePath.white );
+ 				}
+
+ 				if ( htmlInfo.beforeLibRelativeJSPath ) {
+ 					append += '<script src="' + htmlInfo.beforeLibRelativeJSPath + '" type="text/javascript"></script>\n';
+ 					logger( "[DEBUG]".white, "add js".white, htmlInfo.beforeLibRelativeJSPath.white );
+ 				}
+
+ 				var config = handler.dom[ 0 ].attribs;
+ 				var app = config.app;
+ 				var appObject = {
+ 					src: PATH.join( "..", htmlInfo.appDirectoryName, "app" ),
+ 					development: "0",
+ 					debug: !! appConfig.debug,
+ 					viewContentID: htmlInfo.viewContentID
+ 				}
+ 				var amdqueryattribs = [];
+
+ 				if ( config.app ) {
+ 					_.extend( splitAttrToObject( config.app ), appObject );
+ 				}
+
+ 				if ( appConfig.debug ) {
+ 					config.src = PATH.join( PATH.dirname( config.src ), PATH.basename( config.src, '.js' ) + DebugJSSuffix );
+ 				}
+
+ 				config.app = formatToAttr( appObject );
+
+ 				for ( var key in config ) {
+ 					amdqueryattribs.push( key + '="' + config[ key ] + '"' );
+ 				}
+
+ 				logger( "[DEBUG]".white, "amdquery.js attributes:".white, amdqueryattribs.join( " " ).white );
+
+ 				logger( "[DEBUG]".white, "script setAttribute app".white, ( "src = " + appObject.src ).white );
+ 				logger( "[DEBUG]".white, "script setAttribute app".white, ( "development = " + appObject.development ).white );
+ 				logger( "[DEBUG]".white, "script setAttribute app".white, ( "debug = " + appObject.debug ).white );
+ 				logger( "[DEBUG]".white, "script setAttribute app".white, ( "viewContentID = " + appObject.viewContentID ).white );
+ 				append += '<script ' + amdqueryattribs.join( " " ) + '></script>\n';
+
+ 				if ( htmlInfo.afterLibRelativeJSPath ) {
+ 					append += '<script src="' + htmlInfo.afterLibRelativeJSPath + '" type="text/javascript"></script>';
+ 					logger( "[DEBUG]".white, "add js".white, htmlInfo.afterLibRelativeJSPath.white );
+ 				}
+
+ 				this.queue( append );
+ 			} ) ).pipe( scriptStream );
+ 		} else {
+ 			scriptStream.end( "" );
+ 		}
+
  	} );
-
- 	var script2 = scriptTr2.select( "script[app]" );
- 	var scriptStr = "";
- 	var scriptStream = script2.createStream( {
- 		outer: true
- 	} );
- 	scriptStream.pipe( through( function( buf ) {
- 		scriptStr += buf.toString();
- 	}, function() {
- 		append = '<link href="' + "../" + htmlInfo.uiCombinationRelativeCssPath + '" rel="stylesheet" type="text/css" />\n';
- 		logger( "[DEBUG]".white, "add css".white, htmlInfo.uiCombinationRelativeCssPath.white );
- 		append += '<link href="' + htmlInfo.appCombinationCssRelativePath + '" rel="stylesheet" type="text/css" />\n';
- 		logger( "[DEBUG]".white, "add css".white, htmlInfo.appCombinationCssRelativePath.white );
- 		append += scriptStr;
- 		this.queue( append );
- 	} ) ).pipe( scriptStream );
 
  	var body = bodyTr.select( "body" );
 
@@ -617,11 +776,11 @@
  			FSE.writeFileSync( htmlInfo.distHtmlPath, beautify_html( FSE.readFileSync( htmlInfo.distHtmlPath ).toString(), {} ) );
  			appConfig.complete.call( appConfig, htmlInfo );
  		}
- 		console.log( '\r\nbuilding finish... '.red );
- 		// buildUICss( null, htmlInfo );
+ 		console.log( ( '\r\n' + htmlInfo.appName + ' building finish... ' ).red );
+ 		finish( null );
  	} );
 
- 	FSE.createReadStream( htmlInfo.htmlPath ).pipe( linkTr1 ).pipe( linkTr2 ).pipe( scriptTr1 ).pipe( scriptTr2 ).pipe( bodyTr ).pipe( write );
+ 	FSE.createReadStream( htmlInfo.htmlPath ).pipe( linkTr1 ).pipe( linkTr2 ).pipe( scriptTr ).pipe( bodyTr ).pipe( write );
  }
 
  function main() {
@@ -663,17 +822,27 @@
  function startBuildApps( result, waterfallNext ) {
  	if ( apps.length ) {
  		var appConfig = apps.shift();
+ 		var defaultConfig = {
+ 			debug: true,
+ 			detectUIWidgetCSS: true,
+ 			UIWidgetCSS: [],
+ 			aQueryConfig: false,
+ 			includeLibJsInHead: true
+ 		}
+
+ 		_.extend( defaultConfig, appConfig );
 
  		console.log( ( '\r\nStart building app ' + appConfig.name + ' ... ' ).magenta );
 
  		async.waterfall( [
 
        function( callback ) {
- 				callback( null, appConfig );
+ 				callback( null, defaultConfig );
        },
        getAppaQueryConfig,
        openHtml,
        createAppDirAndCopyFile,
+       buildLibJSFromHead,
        buildAppJS,
        buildAppXML,
        buildAppCss,
@@ -886,14 +1055,18 @@
  	var list = path.split( r );
  	var l = list.length;
  	var _path;
+ 	console.log( "l", l );
  	for ( var i = 1; i < l; i++ ) {
- 		_path = list.slice( 0, i )
- 			.join( '' );
+ 		_path = list.slice( 0, i ).join( '' );
  		if ( FSE.existsSync( _path ) ) {
  			continue;
  		}
  		FSE.mkdirSync( _path );
  	}
+ 	if ( !FSE.existsSync( path ) ) {
+ 		FSE.mkdirSync( path );
+ 	}
+
  }
 
  function checkJSDirectory( directoryList, suffix ) {
