@@ -27,6 +27,18 @@ exports.apps = [
 		UIWidgetCSS: [],
 		aQueryConfig: false,
 		includeLibJSFromHead: true
+  },
+	{
+		name: "test",
+		path: "../test/app.html",
+		debug: true,
+		complete: function( htmlInfo ) {
+
+		},
+		detectUIWidgetCSS: true,
+		UIWidgetCSS: [],
+		aQueryConfig: false,
+		includeLibJSFromHead: true
   }
  ]
 
