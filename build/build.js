@@ -340,7 +340,11 @@
 
  	mkdirSync( distPath );
 
- 	var dirNameList = [ "amdquery/ui" ],
+ 	var dirNameList = [
+  "amdquery/ui",
+  htmlInfo.appName + "/assets",
+  htmlInfo.appName + "/styles"
+  ],
  		dirName,
  		len = dirNameList.length,
  		i;
@@ -350,6 +354,7 @@
  		console.log( "make directory: " + dirName.red );
  		mkdirSync( dirName );
  	}
+
  	var globalPath = PATH.join( htmlInfo.AMDQueryProjectPath, "global" ),
  		globalDistPath = PATH.join( distPath, "global" );
 
@@ -514,7 +519,7 @@
  function buildAppXML( appConfig, htmlInfo, XMLAndCSSPathList, buildAppCss ) {
  	console.log( ( '\r\nBuild "' + htmlInfo.appName + '" xml file ' ).red );
  	htmlInfo.viewContentID = "aQueryViewContentKey";
- 	var content = "<div id='" + htmlInfo.viewContentID + "' >",
+ 	var content = '<div id="' + htmlInfo.viewContentID + '" >',
  		xmlPathList = XMLAndCSSPathList.xmlPathList,
  		i = 0,
  		xmlItem = null,
@@ -522,7 +527,7 @@
 
  	for ( ; i < len; i++ ) {
  		xmlItem = xmlPathList[ i ];
- 		content += "\n<div " + htmlInfo.viewContentID + "='" + xmlItem.key + "' >" + FSE.readFileSync( xmlItem.path );
+ 		content += '\n<div ' + htmlInfo.viewContentID + '="' + xmlItem.key + '" >' + FSE.readFileSync( xmlItem.path );
  		content += "\n</div>";
  	}
 
@@ -562,13 +567,17 @@
  		resultPath.push( item.path );
  	} );
 
- 	htmlInfo.appCombinationCssRelativePath = PATH.join( "styles", htmlInfo.appName + ".css" );
+ 	if ( resultPath.length ) {
+ 		htmlInfo.appCombinationCssRelativePath = PATH.join( "styles", htmlInfo.appName + ".css" );
 
- 	htmlInfo.appCombinationCssPath = PATH.join( htmlInfo.projectDistPath, htmlInfo.appDirectoryName, htmlInfo.appCombinationCssRelativePath );
+ 		htmlInfo.appCombinationCssPath = PATH.join( htmlInfo.projectDistPath, htmlInfo.appDirectoryName, htmlInfo.appCombinationCssRelativePath );
+ 		console.log( htmlInfo.appCombinationCssPath )
+ 		_buildCssAndSave( resultPath, htmlInfo.appCombinationCssPath );
 
- 	_buildCssAndSave( resultPath, htmlInfo.appCombinationCssPath );
-
- 	console.log( '\r\nSave app Combination css: ' + htmlInfo.appCombinationCssPath );
+ 		console.log( '\r\nSave app Combination css: ' + htmlInfo.appCombinationCssPath );
+ 	} else {
+ 		console.warn( '\r\nDoes not find any css!' );
+ 	}
 
  	buildUICss( null, appConfig, htmlInfo );
  }
@@ -639,7 +648,7 @@
 
  }
 
- function modifyHTML( appConfig, htmlInfo ) {
+ function modifyHTML( appConfig, htmlInfo, finish ) {
  	var linkTr1 = trumpet(),
  		linkTr2 = trumpet(),
  		scriptTr = trumpet(),
@@ -687,8 +696,10 @@
  				append = '<link href="' + "../" + htmlInfo.uiCombinationRelativeCssPath + '" rel="stylesheet" type="text/css" />\n';
  				logger( "[DEBUG]".white, "add css".white, htmlInfo.uiCombinationRelativeCssPath.white );
 
- 				append += '<link href="' + htmlInfo.appCombinationCssRelativePath + '" rel="stylesheet" type="text/css" />\n';
- 				logger( "[DEBUG]".white, "add css".white, htmlInfo.appCombinationCssRelativePath.white );
+ 				if ( htmlInfo.appCombinationCssRelativePath ) {
+ 					append += '<link href="' + htmlInfo.appCombinationCssRelativePath + '" rel="stylesheet" type="text/css" />\n';
+ 					logger( "[DEBUG]".white, "add css".white, htmlInfo.appCombinationCssRelativePath.white );
+ 				}
 
  				if ( htmlInfo.beforeLibRelativeJSPath ) {
  					append += '<script src="' + htmlInfo.beforeLibRelativeJSPath + '" type="text/javascript"></script>\n';
@@ -759,8 +770,8 @@
  			FSE.writeFileSync( htmlInfo.distHtmlPath, beautify_html( FSE.readFileSync( htmlInfo.distHtmlPath ).toString(), {} ) );
  			appConfig.complete.call( appConfig, htmlInfo );
  		}
- 		console.log( '\r\nbuilding finish... '.red );
- 		// buildUICss( null, htmlInfo );
+ 		console.log( ( '\r\n' + htmlInfo.appName + ' building finish... ' ).red );
+ 		finish( null );
  	} );
 
  	FSE.createReadStream( htmlInfo.htmlPath ).pipe( linkTr1 ).pipe( linkTr2 ).pipe( scriptTr ).pipe( bodyTr ).pipe( write );
@@ -1038,14 +1049,18 @@
  	var list = path.split( r );
  	var l = list.length;
  	var _path;
+ 	console.log( "l", l );
  	for ( var i = 1; i < l; i++ ) {
- 		_path = list.slice( 0, i )
- 			.join( '' );
+ 		_path = list.slice( 0, i ).join( '' );
  		if ( FSE.existsSync( _path ) ) {
  			continue;
  		}
  		FSE.mkdirSync( _path );
  	}
+ 	if ( !FSE.existsSync( path ) ) {
+ 		FSE.mkdirSync( path );
+ 	}
+
  }
 
  function checkJSDirectory( directoryList, suffix ) {
