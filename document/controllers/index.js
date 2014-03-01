@@ -2,7 +2,7 @@ aQuery.define( "@app/controllers/index", [
   "module/location",
   "app/Controller",
   "@app/views/index",
-  "@app/controllers/navmenu",
+  "@app/controllers/docnav",
   "@app/controllers/content"
   ], function( $,
 	location,
@@ -14,14 +14,14 @@ aQuery.define( "@app/controllers/index", [
 			this._super( new IndexView( contollerElement ), models );
 			var self = this;
 
-			this.navmenu.on( "navmenu.select", function( e ) {
+			this.docnav.on( "navmenu.select", function( e ) {
 				self.document.loadPath( e.path );
 			} );
-			this.navmenu.on( "navmenu.dblclick", function( e ) {
+			this.docnav.on( "navmenu.dblclick", function( e ) {
 				self.document.openWindow();
 			} );
 
-			this.navmenu.selectDefaultNavmenu( location.getHash( "navmenu" ) );
+			this.docnav.selectDefaultNavmenu( location.getHash( "navmenu" ) );
 
 			// this.api.loadPath( "/document/api/index.html" );
 
@@ -53,7 +53,7 @@ aQuery.define( "@app/controllers/index", [
 			}
 		},
 		destroy: function() {
-			this.navmenu.clearHandlers();
+			this.docnav.clearHandlers();
 			SuperController.invoke( "destroy" );
 		}
 	}, {

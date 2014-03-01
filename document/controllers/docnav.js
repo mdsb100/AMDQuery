@@ -1,4 +1,4 @@
-aQuery.define( "@app/controllers/navmenu", [ "main/attr", "module/location", "app/Controller", "@app/views/navmenu" ], function( $, attr, location, SuperController, NavmenuView ) {
+aQuery.define( "@app/controllers/docnav", [ "main/attr", "module/location", "app/Controller", "@app/views/docnav" ], function( $, attr, location, SuperController, NavmenuView ) {
 	"use strict"; //启用严格模式
 	var ROUTER_MARK = "_",
 		SCROLLTO = "scrollTo",
@@ -13,7 +13,7 @@ aQuery.define( "@app/controllers/navmenu", [ "main/attr", "module/location", "ap
 			this.initsSrollTo = location.getHash( SCROLLTO );
 
 			var controller = this;
-			this.$nav = $( this.view.topElement ).find( "#nav" );
+			this.$nav = $( this.view.topElement ).find( "#docnav" );
 
 			this.$nav.on( "navmenu.select", function( e ) {
 				controller._modifyLocation( e.navitem );
