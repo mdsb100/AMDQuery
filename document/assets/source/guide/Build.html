@@ -43,6 +43,8 @@
               </li>
               <li><a href="#Config">Config</a>
               </li>
+              <li><a href="#Anonymous">Anonymous Module Deifne</a>
+              </li>
               <li><a href="#Detail">Build Detail</a>
               </li>
             </ul>
@@ -211,6 +213,11 @@ root
                       </p>
                     </li>
                   </ul>
+                  <h2 name="Anonymous">Anonymous Module Deifne</h2>
+                  <p>
+                    If you define a module without name, build would add the name which is file name. So javascript can parse successive module by a combination js file.
+                    Best practices is defination the name of each module.
+                  </p>
                   <h2 name="Detail">Build Detail</h2>
                   <p>1.Read base amdquery.js . we should get the content of amdquery.js, amdquery.js is basal. It began in the file.
                     <br />If you want to start using "AMDQuery", you must first load the "amdquery.js". So Build will be a top priority loaded and stored in the file start position.
