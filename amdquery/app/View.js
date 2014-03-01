@@ -56,7 +56,7 @@ aQuery.define( "app/View", [
 
 		},
 		initTopElement: function( src ) {
-			src = src || ( getHtmlSrc( this.constructor._AMD.id ) + ".xml" );
+			src = src || ( getHtmlSrc( this.constructor._AMD.id ) );
 			return View.getXML( src );
 		},
 		destroy: function() {
