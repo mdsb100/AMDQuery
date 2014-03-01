@@ -342,8 +342,8 @@
 
  	var dirNameList = [
   "amdquery/ui",
-  htmlInfo.appName + "/assets",
-  htmlInfo.appName + "/styles"
+  htmlInfo.appDirectoryName + "/assets",
+  htmlInfo.appDirectoryName + "/styles"
   ],
  		dirName,
  		len = dirNameList.length,
@@ -373,6 +373,12 @@
  	copyDirMap[ htmlInfo.appDirectoryName + "/styles" ] = PATH.join( htmlInfo.appProjectPath, "styles" );
  	copyDirMap[ htmlInfo.appDirectoryName + "/xml" ] = PATH.join( htmlInfo.appProjectPath, "xml" );
  	copyDirMap[ htmlInfo.appDirectoryName + "/lib" ] = PATH.join( htmlInfo.appProjectPath, "lib" );
+
+ 	if ( appConfig.copyList ) {
+ 		for ( i = 0; i < appConfig.copyList.length; i++ ) {
+ 			copyDirMap[ PATH.join( htmlInfo.appDirectoryName, appConfig.copyList[ i ] ) ] = PATH.join( htmlInfo.appProjectPath, appConfig.copyList[ i ] );
+ 		}
+ 	}
 
  	for ( key in copyDirMap ) {
  		value = copyDirMap[ key ];
@@ -459,7 +465,7 @@
  			if ( bLibJSContent != "" ) {
  				console.log( ( "\r\n Save library javascript which before amdquery.js from '" + htmlInfo.htmlPath + "'head " ).red );
  				htmlInfo.beforeLibRelativeJSPath = PATH.join( "lib", "beforelib.js" );
- 				htmlInfo.beforeLibJSPath = PATH.join( htmlInfo.projectDistPath, htmlInfo.appName, htmlInfo.beforeLibRelativeJSPath );
+ 				htmlInfo.beforeLibJSPath = PATH.join( htmlInfo.projectDistPath, htmlInfo.appDirectoryName, htmlInfo.beforeLibRelativeJSPath );
  				if ( !appConfig.debug ) {
  					bLibJSContent = minifyContent( bLibJSContent );
  				}
@@ -478,7 +484,7 @@
  			if ( aLibJSContent != "" ) {
  				console.log( ( "\r\n Save library javascript which after amdquery.js from '" + htmlInfo.htmlPath + "'head" ).red );
  				htmlInfo.afterLibRelativeJSPath = PATH.join( "lib", "afterlib.js" );
- 				htmlInfo.afterLibJSPath = PATH.join( htmlInfo.projectDistPath, htmlInfo.appName, htmlInfo.afterLibRelativeJSPath );
+ 				htmlInfo.afterLibJSPath = PATH.join( htmlInfo.projectDistPath, htmlInfo.appDirectoryName, htmlInfo.afterLibRelativeJSPath );
  				if ( !appConfig.debug ) {
  					aLibJSContent = minifyContent( aLibJSContent );
  				}
@@ -568,7 +574,7 @@
  	} );
 
  	if ( resultPath.length ) {
- 		htmlInfo.appCombinationCssRelativePath = PATH.join( "styles", htmlInfo.appName + ".css" );
+ 		htmlInfo.appCombinationCssRelativePath = PATH.join( "styles", htmlInfo.appDirectoryName + ".css" );
 
  		htmlInfo.appCombinationCssPath = PATH.join( htmlInfo.projectDistPath, htmlInfo.appDirectoryName, htmlInfo.appCombinationCssRelativePath );
  		console.log( htmlInfo.appCombinationCssPath )

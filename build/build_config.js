@@ -38,7 +38,8 @@ exports.apps = [
 		detectUIWidgetCSS: true,
 		UIWidgetCSS: [],
 		aQueryConfig: false,
-		includeLibJSFromHead: true
+		includeLibJSFromHead: true,
+		copyList: []
   }
  ]
 
