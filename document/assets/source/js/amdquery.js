@@ -20943,7 +20943,7 @@ aQuery.define( "module/location", [ "base/extend", "main/parse" ], function( $, 
 	 * @exports module/location
 	 * @describe window.location to hash
 	 * @example
-	 * // http://localhost:8080/document/app/asset/source/guide/AMDQuery.html#swapIndex=1!scrollTo=#Config
+	 * // http://mdsb100.github.io/homepage/amdquery/document/document/app.html#navmenu=guide_Build!swapIndex=1
 	 * {
 	 *   swapIndex: "1",
 	 *   scrollTo:  "#Config"
