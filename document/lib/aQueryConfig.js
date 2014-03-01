@@ -10,7 +10,7 @@ var aQueryConfig = {
 		compatibleEvent: 1
 	},
 	app: {
-		src: "../document/app/app",
+		src: "../document/app",
 		debug: 1
 	}
 };
