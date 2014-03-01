@@ -49,7 +49,7 @@
 
  var argvs = process.argv;
 
- var buildFileRootPath = process.argv[ 1 ].replace( /([\\\/])[^\\\/]*$/, '$1' );
+ var buildFileRootPath = PATH.dirname( process.argv[ 1 ] );
 
  var buildConfigFile = process.argv[ 2 ];
  if ( buildConfigFile && /\.js/.test( buildConfigFile ) ) {
