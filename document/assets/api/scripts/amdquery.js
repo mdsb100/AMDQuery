@@ -9265,6 +9265,12 @@ if ( typeof define === "function" && define.amd ) {
 				attr = attr.split( /;|,/ );
 				for ( i = 0, len = attr.length; i < len; i++ ) {
 					item = attr[ i ].split( ":" );
+					if ( item.length > 2 ) {
+						var tempItem = item;
+						item = [];
+						item[ 0 ] = tempItem.shift();
+						item[ 1 ] = tempItem.join( ":" );
+					}
 					if ( item.length == 2 ) {
 						key = item[ 0 ];
 						if ( /^#((?:[\w\u00c0-\uFFFF-]|\\.)+)/.test( item[ 1 ] ) ) {
@@ -17210,6 +17216,18 @@ aQuery.define( "ui/navitem", [
 					this.$arrow.removeClass( "arrowRight" ).removeClass( "arrowBottom" );
 				}
 
+				if ( opt.href ) {
+					this.$title.attr( "href", opt.href );
+				} else {
+					this.$title.removeAttr( "href" );
+				}
+
+				if ( opt.target ) {
+					this.$title.attr( "target", opt.target );
+				} else {
+					this.$title.removeAttr( "target" );
+				}
+
 				return this;
 			},
 			toggle: function() {
@@ -17416,7 +17434,9 @@ aQuery.define( "ui/navitem", [
 				img: "",
 				selected: false,
 				isOpen: false,
-				parent: null
+				parent: null,
+				href: "",
+				target: "_blank"
 			},
 			publics: {
 				render: Widget.AllowPublic,
@@ -17434,14 +17454,18 @@ aQuery.define( "ui/navitem", [
 				img: 1,
 				selected: 1,
 				isOpen: 1,
-				parent: 1
+				parent: 1,
+				href: 1,
+				target: 1
 			},
 			setter: {
 				html: 1,
 				img: 1,
 				selected: 1,
 				isOpen: 1,
-				parent: 0
+				parent: 0,
+				href: 1,
+				target: 1
 			},
 			target: null,
 			toString: function() {
