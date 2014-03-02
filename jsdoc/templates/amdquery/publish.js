@@ -487,6 +487,8 @@ exports.publish = function( taffyData, opts, tutorials ) {
 	// once for all
 	view.nav = buildNav( members );
 
+	buildAMDQueryAPINav( members, templatePath );
+
 	attachModuleSymbols( find( {
 			kind: [ 'class', 'function' ],
 			longname: {
@@ -596,3 +598,171 @@ exports.publish = function( taffyData, opts, tutorials ) {
 	}
 	saveChildren( tutorials );
 };
+
+
+
+buildAMDQueryAPINav = function( members, templatePath ) {
+	var json2html = require( "./json2html" );
+	var
+	apidoc = {
+		"tag": "div",
+		"id": "apinav",
+		"amdquery-widget": "ui.navmenu",
+		"children": [ {
+			tag: "ul",
+			children: []
+  } ]
+	},
+		root = {
+			"tag": "div",
+			"amdquery-widget": "ui.flex;ui.scrollableview",
+			"fillParentWidth": "false;flex:1",
+			"ui-scrollableview": "overflow:V",
+			"style": "width:200px;border-right:1px solid black;",
+			"children": [ apidoc ]
+		};
+
+	var rootUL = apidoc.children[ 0 ];
+
+	var seen = {},
+		hasClassList = false,
+		tree = {};
+
+	_multiCreateTree( members, [ {
+		name: "modules"
+	}, {
+		name: "externals",
+		handleName: function( name ) {
+			return name.replace( /(^"|"$)/g, '' );
+		}
+	}, {
+		name: "classes"
+	}, {
+		name: "events"
+	}, {
+		name: "namespaces"
+	}, {
+		name: "mixins"
+	}, {
+		name: "tutorials"
+	} ], tree, seen );
+
+	if ( members.globals.length ) {
+		var hasNav;
+		tree.globals = {};
+		members.globals.forEach( function( g ) {
+			if ( g.kind !== 'typedef' && !hasOwnProp.call( seen, g.longname ) ) {
+				namePathToObject( g.name.split( "/" ), tree.globals, g.longname, g.name );
+				hasNav = true
+			}
+			seen[ g.longname ] = true;
+		} );
+
+		if ( !hasNav ) {
+			tree.globals.__noChildren = true;
+			tree.longname = "global";
+			tree.name = "Global";
+		}
+	}
+
+	// console.log( tree );
+
+	createNav( tree, rootUL );
+
+	var buildPath = path.join( templatePath, "build" );
+	var apinavPath = path.join( buildPath, "apinav.xml" );
+
+	if ( !fs.existsSync( buildPath ) ) {
+		fs.mkPath( buildPath );
+	}
+
+	console.log( "Save", apinavPath );
+	fs.writeFileSync( apinavPath, json2html.transform( {}, root ), "utf8" );
+}
+
+function _multiCreateTree( members, itemList, tree, seen ) {
+	for ( var i = 0, len = itemList.length, item, name, handleName; i < len; i++ ) {
+		item = itemList[ i ];
+		name = item.name;
+		handleName = item.handleName;
+		if ( members[ name ].length ) {
+			tree[ name ] = {};
+			members[ name ].forEach( function( c ) {
+				if ( !hasOwnProp.call( seen, c.longname ) ) {
+					namePathToObject( c.name.split( "/" ), tree[ name ], c.longname, handleName ? handleName( c.name ) : handleName );
+				}
+				seen[ c.longname ] = true;
+			} );
+		}
+	}
+}
+
+function createNav( obj, UL ) {
+	var key, value, LI, tUL;
+
+	for ( key in obj ) {
+		value = obj[ key ];
+		LI = createLI( key );
+		UL.children.push( LI );
+		if ( value.__noChildren ) {
+			LI.link = getHrefValue( linkto( value.longname, value.name ) );
+			continue;
+		}
+		tUL = createUL();
+		LI.children.push( tUL );
+		createNav( value, tUL );
+	}
+}
+
+function isEmptyObject( obj ) {
+	for ( var key in obj ) {
+		return false;
+	}
+	return true;
+}
+
+function namePathToObject( list, obj, longname, name ) {
+	var origin = obj,
+		i = 0,
+		len = list.length,
+		name;
+	for ( ; i < len; i++ ) {
+		name = list[ i ];
+		if ( !obj[ name ] ) {
+			obj[ name ] = {};
+		}
+		obj = obj[ name ];
+		if ( i === len - 1 ) {
+			obj.__noChildren = true;
+			obj.longname = longname;
+			obj.name = name;
+		}
+	}
+	return origin;
+}
+
+function createLI( text, link ) {
+	// <li amdquery-widget="ui.navitem" ui-navitem="html:guide;img:file">
+	var li = {
+		"tag": "li",
+		"amdquery-widget": "ui.navitem",
+		"ui-navitem": "html:" + text + ";img:module",
+		children: []
+	};
+	if ( link ) {
+		li[ "link" ] = link;
+	}
+	return li;
+}
+
+function createUL( children ) {
+	return {
+		"tag": "ul",
+		children: children || []
+	}
+}
+
+function getHrefValue( a ) {
+	var value = a.match( /href="(.*)"/ );
+	return value[ 1 ];
+}
