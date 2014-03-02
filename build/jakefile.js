@@ -38,20 +38,38 @@ task( "ui_css", {
 desc( "It is inner. Build js api document." );
 task( "jsdoc", {
 	async: true
-}, function( template ) {
-	var $distPath = path.join( "../document/assets/api/" );
-	var $template = path.join( "..", "jsdoc", "templates", template || "amdquery" );
+}, function( opt ) {
+	var defTemplate = "amdquery";
+	opt = opt || defTemplate;
+	var $distPath = path.join( "../document/assets/api" );
+	var $template = path.join( "..", "jsdoc", "templates", opt );
+	var $apinavXMLName = "apinav.xml";
+	var $apinavXMLPath = path.join( $template, "build", $apinavXMLName );
+	var command = [ [ "jsdoc", $amdquery, path.join( $amdquery, "**", "*.js" ), "--template", $template, "--destination", $distPath ].join( " " ) ];
+	var callback = complete;
 	if ( FSE.exists( $template ) ) {
 		jake.logger.warn( $template + " does not exist" );
 		complete();
 		return;
 	}
+
 	jake.rmRf( $distPath );
 	jake.logger.log( "Build jsdoc ..." );
-	jake.exec( [ "jsdoc", $amdquery, path.join( $amdquery, "**", "*.js" ), "--template", $template, "--destination", $distPath ].join( " " ), {
+
+	if ( opt == defTemplate ) {
+		command.push( [ "node beautify.js " + $apinavXMLPath ] );
+		callback = function() {
+			var toPath = path.join( "../document/xml", $apinavXMLName );
+			jake.cpR( $apinavXMLPath, toPath );
+			complete();
+		}
+	}
+
+	jake.exec( command, {
 		printStdout: true,
 		printStderr: true
-	}, complete );
+	}, callback );
+
 } );
 
 desc( "It is inner. commit master." );
