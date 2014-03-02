@@ -222,6 +222,12 @@
 				attr = attr.split( /;|,/ );
 				for ( i = 0, len = attr.length; i < len; i++ ) {
 					item = attr[ i ].split( ":" );
+					if ( item.length > 2 ) {
+						var tempItem = item;
+						item = [];
+						item[ 0 ] = tempItem.shift();
+						item[ 1 ] = tempItem.join( ":" );
+					}
 					if ( item.length == 2 ) {
 						key = item[ 0 ];
 						if ( /^#((?:[\w\u00c0-\uFFFF-]|\\.)+)/.test( item[ 1 ] ) ) {
