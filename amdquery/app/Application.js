@@ -11,9 +11,10 @@ aQuery.define( "app/Application", [
   "app/Model",
   "app/View",
   "app/Controller",
-  "ecma5/array" ], function( $, config, ClassModule, Promise, typed, utilExtend, CustomEvent, object, query, attr, BaseModel, BaseView, BaseController, utilArray, undefined ) {
+  "ecma5/array",
+  "module/location" ], function( $, config, ClassModule, Promise, typed, utilExtend, CustomEvent, object, query, attr, BaseModel, BaseView, BaseController, utilArray, location, undefined ) {
 	"use strict";
-  this.describe( "Super Application Class" );
+	this.describe( "Super Application Class" );
 	var Application = CustomEvent.extend( "Application", {
 		init: function( promiseCallback ) {
 			this._super();
@@ -72,10 +73,10 @@ aQuery.define( "app/Application", [
 			return this;
 		},
 		parseRouter: function() {
-			var hash = window.location.hash,
-				ret = hash.match( /\$(.*)\$/ );
-			if ( ret && ret.length > 1 ) {
-				var controllerSrc = this._routerMap[ ret[ 1 ] ];
+			var appRouter = location.getHash( "appRouter" );
+
+			if ( appRouter ) {
+				var controllerSrc = this._routerMap[ appRouter ];
 				if ( controllerSrc ) {
 					var $body = $( document.body );
 					$body.children( "controller" ).remove();
