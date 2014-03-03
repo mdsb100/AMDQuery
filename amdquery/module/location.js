@@ -4,11 +4,15 @@ aQuery.define( "module/location", [ "base/extend", "main/parse" ], function( $, 
 	var
 	SPLIT_MARK = "!",
 		EQUALS_MARK = "=",
+		SHARP = "#",
 		_location = window.location;
 
 	function hashToString( hash, split1, split2 ) {
 		var key, value, strList = [];
 		for ( key in hash ) {
+			if ( key === SHARP ) {
+				continue;
+			}
 			value = hash[ key ];
 			strList.push( key + split2 + value );
 		}
@@ -44,7 +48,9 @@ aQuery.define( "module/location", [ "base/extend", "main/parse" ], function( $, 
 		 */
 		setHash: function( key, value ) {
 			this.hash[ key ] = value + "";
-			_location.hash = hashToString( this.hash, SPLIT_MARK, EQUALS_MARK );
+			var str = hashToString( this.hash, SPLIT_MARK, EQUALS_MARK );
+			_location.hash = str;
+			this.hash[ SHARP ] = str;
 			return this;
 		},
 		/**
@@ -55,7 +61,9 @@ aQuery.define( "module/location", [ "base/extend", "main/parse" ], function( $, 
 		removeHash: function( key ) {
 			if ( this.hash[ key ] !== undefined ) {
 				delete this.hash[ key ];
-				_location.hash = hashToString( this.hash, SPLIT_MARK, EQUALS_MARK );
+				var str = hashToString( this.hash, SPLIT_MARK, EQUALS_MARK );
+				_location.hash = str;
+				this.hash[ SHARP ] = str;
 			}
 			return this;
 		},
@@ -65,7 +73,9 @@ aQuery.define( "module/location", [ "base/extend", "main/parse" ], function( $, 
 		 */
 		clearHash: function() {
 			window.location.hash = "";
-			this.hash = {};
+			this.hash = {
+				"#": ""
+			};
 			return this;
 		},
 		/**
@@ -73,9 +83,9 @@ aQuery.define( "module/location", [ "base/extend", "main/parse" ], function( $, 
 		 * @returns {this}
 		 */
 		toHash: function() {
-			var hash = _location.hash.replace( "#", "" );
+			var hash = _location.hash.replace( SHARP, "" );
 			this.hash = parse.QueryString( hash, SPLIT_MARK, EQUALS_MARK );
-			this.hash[ "#" ] = hash;
+			this.hash[ SHARP ] = hash;
 			return this;
 		},
 		/**
