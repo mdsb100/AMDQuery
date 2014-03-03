@@ -3,11 +3,12 @@ var FSE = require( 'fs-extra' );
 var $amdquery = path.join( "..", "amdquery" )
 
 task( "default", function() {
-	jake.logger.log( "jake build[*.js]                       build application and javascript" );
-	jake.logger.log( "jake build                             default is build_config.js" );
-	jake.logger.log( "jake jsdoc[default|amdquery]           build javascript api document" );
-	jake.logger.log( "jake jsdoc                             default is amdquery" );
-	jake.logger.log( "jake ui_css                            build css of widget-ui" );
+	jake.logger.log( "jake build[*.js(config file)]                build application and javascript" );
+	jake.logger.log( "jake build                                   default is build_config.js" );
+	jake.logger.log( "jake jsdoc[default|amdquery(template name)]  build javascript api document" );
+	jake.logger.log( "jake jsdoc                                   default is amdquery" );
+	jake.logger.log( "jake ui_css                                  build css of widget-ui" );
+	jake.logger.log( "jake beautify[...file]                       example 'jake beautify[a.html,b.css,c.xml,d.js]'" );
 } );
 
 task( "build", {
@@ -35,6 +36,17 @@ task( "ui_css", {
 	}, complete );
 } );
 
+task( "beautify", {
+	async: true
+}, function() {
+	jake.logger.log( "Beautify files ..." );
+	var arg = [].slice.call( arguments, 0, arguments.length );
+	jake.exec( "node beautify.js " + ( arg.length ? arg.join( " " ) : "" ), {
+		printStdout: true,
+		printStderr: true
+	}, complete );
+} );
+
 desc( "It is inner. Build js api document." );
 task( "jsdoc", {
 	async: true
@@ -57,7 +69,7 @@ task( "jsdoc", {
 	jake.logger.log( "Build jsdoc ..." );
 
 	if ( opt == defTemplate ) {
-		command.push( [ "node beautify.js " + $apinavXMLPath ] );
+		command.push( [ "jake beautify[" + $apinavXMLPath + "]" ] );
 		callback = function() {
 			var toPath = path.join( "../document/xml", $apinavXMLName );
 			jake.cpR( $apinavXMLPath, toPath );
