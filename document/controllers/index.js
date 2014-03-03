@@ -3,6 +3,7 @@ aQuery.define( "@app/controllers/index", [
   "app/Controller",
   "@app/views/index",
   "@app/controllers/docnav",
+  "@app/controllers/apinav",
   "@app/controllers/content"
   ], function( $,
 	location,

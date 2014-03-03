@@ -12,8 +12,7 @@
         <div id="button2" style="width:100px;height:30px;border:0;" amdquery-widget="ui.tabbutton" ui-tabbutton="text:api;title:api"></div>
       </div>
       <controller src="@app/controllers/docnav.js" id="docnav" ></controller>
-      <div ui-flex="fillParentWidth:false;flex:1" widget="ui.flex;" style="width:200px;background-color:red">
-      </div>
+      <controller src="@app/controllers/apinav.js" id="docnav" ></controller>
     </div>
     <div id="contentview" amdquery-widget="ui.swapview;ui.flex" ui-flex="flex:1" ui-swapview="orientation:H">
       <ol>
