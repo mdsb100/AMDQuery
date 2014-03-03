@@ -1,117 +1,117 @@
-<div amdquery-widget="ui.flex;ui.scrollableview" fillParentWidth="false;flex:1" ui-scrollableview="overflow:V" style="width:200px;border-right:1px solid black;">
-    <div id="apinav" amdquery-widget="ui.navmenu">
+<div amdquery-widget="ui.flex;ui.scrollableview" ui-flex="fillParentWidth:false;flex:1" ui-scrollableview="overflow:VH" style="border-right:1px solid black;">
+  <div id="apinav" amdquery-widget="ui.navmenu" style="width:350px;">
+    <ul>
+      <li amdquery-widget="ui.navitem" ui-navitem="html:modules;img:module">
         <ul>
-            <li amdquery-widget="ui.navitem" ui-navitem="html:modules;img:module">
-                <ul>
-                    <li amdquery-widget="ui.navitem" ui-navitem="html:base;img:module">
-                        <ul>
-                            <li amdquery-widget="ui.navitem" ui-navitem="html:array;img:module" link="array.html"></li>
-                            <li amdquery-widget="ui.navitem" ui-navitem="html:ClassModule;img:module" link="ClassModule.html"></li>
-                            <li amdquery-widget="ui.navitem" ui-navitem="html:client;img:module" link="client.html"></li>
-                            <li amdquery-widget="ui.navitem" ui-navitem="html:config;img:module" link="config.html"></li>
-                            <li amdquery-widget="ui.navitem" ui-navitem="html:extend;img:module" link="extend.html"></li>
-                            <li amdquery-widget="ui.navitem" ui-navitem="html:Promise;img:module" link="Promise.html"></li>
-                            <li amdquery-widget="ui.navitem" ui-navitem="html:queue;img:module" link="queue.html"></li>
-                            <li amdquery-widget="ui.navitem" ui-navitem="html:ready;img:module" link="ready.html"></li>
-                            <li amdquery-widget="ui.navitem" ui-navitem="html:support;img:module" link="support.html"></li>
-                            <li amdquery-widget="ui.navitem" ui-navitem="html:typed;img:module" link="typed.html"></li>
-                        </ul>
-                    </li>
-                    <li amdquery-widget="ui.navitem" ui-navitem="html:ecma5;img:module">
-                        <ul>
-                            <li amdquery-widget="ui.navitem" ui-navitem="html:array;img:module" link="array_.html"></li>
-                            <li amdquery-widget="ui.navitem" ui-navitem="html:function;img:module" link="function.html"></li>
-                            <li amdquery-widget="ui.navitem" ui-navitem="html:object;img:module" link="object.html"></li>
-                            <li amdquery-widget="ui.navitem" ui-navitem="html:string;img:module" link="string.html"></li>
-                        </ul>
-                    </li>
-                    <li amdquery-widget="ui.navitem" ui-navitem="html:hash;img:module">
-                        <ul>
-                            <li amdquery-widget="ui.navitem" ui-navitem="html:charcode;img:module" link="charcode.html"></li>
-                            <li amdquery-widget="ui.navitem" ui-navitem="html:cssColors;img:module" link="cssColors.html"></li>
-                        </ul>
-                    </li>
-                    <li amdquery-widget="ui.navitem" ui-navitem="html:html5;img:module">
-                        <ul>
-                            <li amdquery-widget="ui.navitem" ui-navitem="html:applicationCache;img:module" link="applicationCache.html"></li>
-                            <li amdquery-widget="ui.navitem" ui-navitem="html:localStorage;img:module" link="localStorage.html"></li>
-                            <li amdquery-widget="ui.navitem" ui-navitem="html:sessionStorage;img:module" link="sessionStorage.html"></li>
-                            <li amdquery-widget="ui.navitem" ui-navitem="html:Storage;img:module" link="Storage.html"></li>
-                            <li amdquery-widget="ui.navitem" ui-navitem="html:Worker;img:module" link="Worker.html"></li>
-                        </ul>
-                    </li>
-                    <li amdquery-widget="ui.navitem" ui-navitem="html:lib;img:module">
-                        <ul>
-                            <li amdquery-widget="ui.navitem" ui-navitem="html:sizzle;img:module" link="sizzle.html"></li>
-                        </ul>
-                    </li>
-                    <li amdquery-widget="ui.navitem" ui-navitem="html:main;img:module">
-                        <ul>
-                            <li amdquery-widget="ui.navitem" ui-navitem="html:attr;img:module" link="attr.html"></li>
-                            <li amdquery-widget="ui.navitem" ui-navitem="html:class;img:module" link="class.html"></li>
-                            <li amdquery-widget="ui.navitem" ui-navitem="html:communicate;img:module" link="communicate.html"></li>
-                            <li amdquery-widget="ui.navitem" ui-navitem="html:CustomEvent;img:module" link="CustomEvent.html"></li>
-                            <li amdquery-widget="ui.navitem" ui-navitem="html:data;img:module" link="data.html"></li>
-                            <li amdquery-widget="ui.navitem" ui-navitem="html:event;img:module" link="event.html"></li>
-                            <li amdquery-widget="ui.navitem" ui-navitem="html:object;img:module" link="object_.html"></li>
-                            <li amdquery-widget="ui.navitem" ui-navitem="html:parse;img:module" link="parse.html"></li>
-                            <li amdquery-widget="ui.navitem" ui-navitem="html:query;img:module" link="query.html"></li>
-                        </ul>
-                    </li>
-                    <li amdquery-widget="ui.navitem" ui-navitem="html:mobile;img:module">
-                        <ul>
-                            <li amdquery-widget="ui.navitem" ui-navitem="html:event;img:module" link="event_.html"></li>
-                        </ul>
-                    </li>
-                    <li amdquery-widget="ui.navitem" ui-navitem="html:module;img:module">
-                        <ul>
-                            <li amdquery-widget="ui.navitem" ui-navitem="html:location;img:module" link="location.html"></li>
-                            <li amdquery-widget="ui.navitem" ui-navitem="html:Test;img:module" link="Test.html"></li>
-                        </ul>
-                    </li>
-                </ul>
-            </li>
-            <li amdquery-widget="ui.navitem" ui-navitem="html:classes;img:module">
-                <ul>
-                    <li amdquery-widget="ui.navitem" ui-navitem="html:aQuery;img:module" link="aQuery.html"></li>
-                </ul>
-            </li>
-            <li amdquery-widget="ui.navitem" ui-navitem="html:events;img:module">
-                <ul>
-                    <li amdquery-widget="ui.navitem" ui-navitem="html:&quot;ajaxStart&quot;;img:module" link="aQuery.html#event:&quot;ajaxStart&quot;&quot;>&quot;ajaxStart"></li>
-                    <li amdquery-widget="ui.navitem" ui-navitem="html:&quot;ajaxStop&quot;;img:module" link="aQuery.html#event:&quot;ajaxStop&quot;&quot;>&quot;ajaxStop"></li>
-                    <li amdquery-widget="ui.navitem" ui-navitem="html:&quot;ajaxTimeout&quot;;img:module" link="aQuery.html#event:&quot;ajaxTimeout&quot;&quot;>&quot;ajaxTimeout"></li>
-                    <li amdquery-widget="ui.navitem" ui-navitem="html:&quot;jsonpStart&quot;;img:module" link="aQuery.html#event:&quot;jsonpStart&quot;&quot;>&quot;jsonpStart"></li>
-                    <li amdquery-widget="ui.navitem" ui-navitem="html:&quot;jsonpStop&quot;;img:module" link="aQuery.html#event:&quot;jsonpStop&quot;&quot;>&quot;jsonpStop"></li>
-                    <li amdquery-widget="ui.navitem" ui-navitem="html:&quot;jsonpTimeout&quot;;img:module" link="aQuery.html#event:&quot;jsonpTimeout&quot;&quot;>&quot;jsonpTimeout"></li>
-                    <li amdquery-widget="ui.navitem" ui-navitem="html:&quot;test.report&quot;;img:module" link="aQuery.html#event:&quot;test.report&quot;&quot;>&quot;test.report"></li>
-                </ul>
-            </li>
-            <li amdquery-widget="ui.navitem" ui-navitem="html:namespaces;img:module">
-                <ul>
-                    <li amdquery-widget="ui.navitem" ui-navitem="html:util;img:module" link="aQuery.util.html"></li>
-                    <li amdquery-widget="ui.navitem" ui-navitem="html:document;img:module" link="event.document.html"></li>
-                    <li amdquery-widget="ui.navitem" ui-navitem="html:require;img:module" link="require.html"></li>
-                </ul>
-            </li>
-            <li amdquery-widget="ui.navitem" ui-navitem="html:mixins;img:module">
-                <ul>
-                    <li amdquery-widget="ui.navitem" ui-navitem="html:CollectionClassPrototypeMethods;img:module" link="CollectionClassPrototypeMethods.html"></li>
-                    <li amdquery-widget="ui.navitem" ui-navitem="html:ObjectClassStaticMethods;img:module" link="ObjectClassStaticMethods.html"></li>
-                </ul>
-            </li>
-            <li amdquery-widget="ui.navitem" ui-navitem="html:globals;img:module">
-                <ul>
-                    <li amdquery-widget="ui.navitem" ui-navitem="html:AjaxOptions;img:module" link="global.html#AjaxOptions"></li>
-                    <li amdquery-widget="ui.navitem" ui-navitem="html:debug;img:module" link="global.html#debug"></li>
-                    <li amdquery-widget="ui.navitem" ui-navitem="html:define;img:module" link="global.html#define"></li>
-                    <li amdquery-widget="ui.navitem" ui-navitem="html:error;img:module" link="global.html#error"></li>
-                    <li amdquery-widget="ui.navitem" ui-navitem="html:info;img:module" link="global.html#info"></li>
-                    <li amdquery-widget="ui.navitem" ui-navitem="html:JSONPOptions;img:module" link="global.html#JSONPOptions"></li>
-                    <li amdquery-widget="ui.navitem" ui-navitem="html:logger;img:module" link="global.html#logger"></li>
-                    <li amdquery-widget="ui.navitem" ui-navitem="html:require;img:module" link="global.html#require"></li>
-                </ul>
-            </li>
+          <li amdquery-widget="ui.navitem" ui-navitem="html:base;img:module">
+            <ul>
+              <li amdquery-widget="ui.navitem" ui-navitem="html:array;img:file" link="array.html"></li>
+              <li amdquery-widget="ui.navitem" ui-navitem="html:ClassModule;img:file" link="ClassModule.html"></li>
+              <li amdquery-widget="ui.navitem" ui-navitem="html:client;img:file" link="client.html"></li>
+              <li amdquery-widget="ui.navitem" ui-navitem="html:config;img:file" link="config.html"></li>
+              <li amdquery-widget="ui.navitem" ui-navitem="html:extend;img:file" link="extend.html"></li>
+              <li amdquery-widget="ui.navitem" ui-navitem="html:Promise;img:file" link="Promise.html"></li>
+              <li amdquery-widget="ui.navitem" ui-navitem="html:queue;img:file" link="queue.html"></li>
+              <li amdquery-widget="ui.navitem" ui-navitem="html:ready;img:file" link="ready.html"></li>
+              <li amdquery-widget="ui.navitem" ui-navitem="html:support;img:file" link="support.html"></li>
+              <li amdquery-widget="ui.navitem" ui-navitem="html:typed;img:file" link="typed.html"></li>
+            </ul>
+          </li>
+          <li amdquery-widget="ui.navitem" ui-navitem="html:ecma5;img:module">
+            <ul>
+              <li amdquery-widget="ui.navitem" ui-navitem="html:array;img:file" link="array_.html"></li>
+              <li amdquery-widget="ui.navitem" ui-navitem="html:function;img:file" link="function.html"></li>
+              <li amdquery-widget="ui.navitem" ui-navitem="html:object;img:file" link="object.html"></li>
+              <li amdquery-widget="ui.navitem" ui-navitem="html:string;img:file" link="string.html"></li>
+            </ul>
+          </li>
+          <li amdquery-widget="ui.navitem" ui-navitem="html:hash;img:module">
+            <ul>
+              <li amdquery-widget="ui.navitem" ui-navitem="html:charcode;img:file" link="charcode.html"></li>
+              <li amdquery-widget="ui.navitem" ui-navitem="html:cssColors;img:file" link="cssColors.html"></li>
+            </ul>
+          </li>
+          <li amdquery-widget="ui.navitem" ui-navitem="html:html5;img:module">
+            <ul>
+              <li amdquery-widget="ui.navitem" ui-navitem="html:applicationCache;img:file" link="applicationCache.html"></li>
+              <li amdquery-widget="ui.navitem" ui-navitem="html:localStorage;img:file" link="localStorage.html"></li>
+              <li amdquery-widget="ui.navitem" ui-navitem="html:sessionStorage;img:file" link="sessionStorage.html"></li>
+              <li amdquery-widget="ui.navitem" ui-navitem="html:Storage;img:file" link="Storage.html"></li>
+              <li amdquery-widget="ui.navitem" ui-navitem="html:Worker;img:file" link="Worker.html"></li>
+            </ul>
+          </li>
+          <li amdquery-widget="ui.navitem" ui-navitem="html:lib;img:module">
+            <ul>
+              <li amdquery-widget="ui.navitem" ui-navitem="html:sizzle;img:file" link="sizzle.html"></li>
+            </ul>
+          </li>
+          <li amdquery-widget="ui.navitem" ui-navitem="html:main;img:module">
+            <ul>
+              <li amdquery-widget="ui.navitem" ui-navitem="html:attr;img:file" link="attr.html"></li>
+              <li amdquery-widget="ui.navitem" ui-navitem="html:class;img:file" link="class.html"></li>
+              <li amdquery-widget="ui.navitem" ui-navitem="html:communicate;img:file" link="communicate.html"></li>
+              <li amdquery-widget="ui.navitem" ui-navitem="html:CustomEvent;img:file" link="CustomEvent.html"></li>
+              <li amdquery-widget="ui.navitem" ui-navitem="html:data;img:file" link="data.html"></li>
+              <li amdquery-widget="ui.navitem" ui-navitem="html:event;img:file" link="event.html"></li>
+              <li amdquery-widget="ui.navitem" ui-navitem="html:object;img:file" link="object_.html"></li>
+              <li amdquery-widget="ui.navitem" ui-navitem="html:parse;img:file" link="parse.html"></li>
+              <li amdquery-widget="ui.navitem" ui-navitem="html:query;img:file" link="query.html"></li>
+            </ul>
+          </li>
+          <li amdquery-widget="ui.navitem" ui-navitem="html:mobile;img:module">
+            <ul>
+              <li amdquery-widget="ui.navitem" ui-navitem="html:event;img:file" link="event_.html"></li>
+            </ul>
+          </li>
+          <li amdquery-widget="ui.navitem" ui-navitem="html:module;img:module">
+            <ul>
+              <li amdquery-widget="ui.navitem" ui-navitem="html:location;img:file" link="location.html"></li>
+              <li amdquery-widget="ui.navitem" ui-navitem="html:Test;img:file" link="Test.html"></li>
+            </ul>
+          </li>
         </ul>
-    </div>
+      </li>
+      <li amdquery-widget="ui.navitem" ui-navitem="html:classes;img:module">
+        <ul>
+          <li amdquery-widget="ui.navitem" ui-navitem="html:aQuery;img:file" link="aQuery.html"></li>
+        </ul>
+      </li>
+      <li amdquery-widget="ui.navitem" ui-navitem="html:events;img:module">
+        <ul>
+          <li amdquery-widget="ui.navitem" ui-navitem="html:&quot;ajaxStart&quot;;img:file" link="aQuery.html#event:&quot;ajaxStart&quot;&quot;>&quot;ajaxStart"></li>
+          <li amdquery-widget="ui.navitem" ui-navitem="html:&quot;ajaxStop&quot;;img:file" link="aQuery.html#event:&quot;ajaxStop&quot;&quot;>&quot;ajaxStop"></li>
+          <li amdquery-widget="ui.navitem" ui-navitem="html:&quot;ajaxTimeout&quot;;img:file" link="aQuery.html#event:&quot;ajaxTimeout&quot;&quot;>&quot;ajaxTimeout"></li>
+          <li amdquery-widget="ui.navitem" ui-navitem="html:&quot;jsonpStart&quot;;img:file" link="aQuery.html#event:&quot;jsonpStart&quot;&quot;>&quot;jsonpStart"></li>
+          <li amdquery-widget="ui.navitem" ui-navitem="html:&quot;jsonpStop&quot;;img:file" link="aQuery.html#event:&quot;jsonpStop&quot;&quot;>&quot;jsonpStop"></li>
+          <li amdquery-widget="ui.navitem" ui-navitem="html:&quot;jsonpTimeout&quot;;img:file" link="aQuery.html#event:&quot;jsonpTimeout&quot;&quot;>&quot;jsonpTimeout"></li>
+          <li amdquery-widget="ui.navitem" ui-navitem="html:&quot;test.report&quot;;img:file" link="aQuery.html#event:&quot;test.report&quot;&quot;>&quot;test.report"></li>
+        </ul>
+      </li>
+      <li amdquery-widget="ui.navitem" ui-navitem="html:namespaces;img:module">
+        <ul>
+          <li amdquery-widget="ui.navitem" ui-navitem="html:util;img:file" link="aQuery.util.html"></li>
+          <li amdquery-widget="ui.navitem" ui-navitem="html:document;img:file" link="event.document.html"></li>
+          <li amdquery-widget="ui.navitem" ui-navitem="html:require;img:file" link="require.html"></li>
+        </ul>
+      </li>
+      <li amdquery-widget="ui.navitem" ui-navitem="html:mixins;img:module">
+        <ul>
+          <li amdquery-widget="ui.navitem" ui-navitem="html:CollectionClassPrototypeMethods;img:file" link="CollectionClassPrototypeMethods.html"></li>
+          <li amdquery-widget="ui.navitem" ui-navitem="html:ObjectClassStaticMethods;img:file" link="ObjectClassStaticMethods.html"></li>
+        </ul>
+      </li>
+      <li amdquery-widget="ui.navitem" ui-navitem="html:globals;img:module">
+        <ul>
+          <li amdquery-widget="ui.navitem" ui-navitem="html:AjaxOptions;img:file" link="global.html#AjaxOptions"></li>
+          <li amdquery-widget="ui.navitem" ui-navitem="html:debug;img:file" link="global.html#debug"></li>
+          <li amdquery-widget="ui.navitem" ui-navitem="html:define;img:file" link="global.html#define"></li>
+          <li amdquery-widget="ui.navitem" ui-navitem="html:error;img:file" link="global.html#error"></li>
+          <li amdquery-widget="ui.navitem" ui-navitem="html:info;img:file" link="global.html#info"></li>
+          <li amdquery-widget="ui.navitem" ui-navitem="html:JSONPOptions;img:file" link="global.html#JSONPOptions"></li>
+          <li amdquery-widget="ui.navitem" ui-navitem="html:logger;img:file" link="global.html#logger"></li>
+          <li amdquery-widget="ui.navitem" ui-navitem="html:require;img:file" link="global.html#require"></li>
+        </ul>
+      </li>
+    </ul>
+  </div>
 </div>

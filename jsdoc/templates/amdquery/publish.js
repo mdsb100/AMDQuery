@@ -608,6 +608,7 @@ buildAMDQueryAPINav = function( members, templatePath ) {
 		"tag": "div",
 		"id": "apinav",
 		"amdquery-widget": "ui.navmenu",
+		"style": "width:350px;",
 		"children": [ {
 			tag: "ul",
 			children: []
@@ -616,9 +617,9 @@ buildAMDQueryAPINav = function( members, templatePath ) {
 		root = {
 			"tag": "div",
 			"amdquery-widget": "ui.flex;ui.scrollableview",
-			"fillParentWidth": "false;flex:1",
-			"ui-scrollableview": "overflow:V",
-			"style": "width:200px;border-right:1px solid black;",
+			"ui-flex": "fillParentWidth:false;flex:1",
+			"ui-scrollableview": "overflow:VH",
+			"style": "border-right:1px solid black;",
 			"children": [ apidoc ]
 		};
 
@@ -702,13 +703,23 @@ function createNav( obj, UL ) {
 
 	for ( key in obj ) {
 		value = obj[ key ];
-		LI = createLI( key );
+		LI = {
+			"tag": "li",
+			"amdquery-widget": "ui.navitem",
+			"ui-navitem": "html:" + key,
+			children: []
+		};
 		UL.children.push( LI );
 		if ( value.__noChildren ) {
 			LI.link = getHrefValue( linkto( value.longname, value.name ) );
+			LI[ "ui-navitem" ] += ";img:file";
 			continue;
 		}
-		tUL = createUL();
+		LI[ "ui-navitem" ] += ";img:module";
+		tUL = {
+			"tag": "ul",
+			children: []
+		};
 		LI.children.push( tUL );
 		createNav( value, tUL );
 	}
@@ -739,27 +750,6 @@ function namePathToObject( list, obj, longname, name ) {
 		}
 	}
 	return origin;
-}
-
-function createLI( text, link ) {
-	// <li amdquery-widget="ui.navitem" ui-navitem="html:guide;img:file">
-	var li = {
-		"tag": "li",
-		"amdquery-widget": "ui.navitem",
-		"ui-navitem": "html:" + text + ";img:module",
-		children: []
-	};
-	if ( link ) {
-		li[ "link" ] = link;
-	}
-	return li;
-}
-
-function createUL( children ) {
-	return {
-		"tag": "ul",
-		children: children || []
-	}
 }
 
 function getHrefValue( a ) {

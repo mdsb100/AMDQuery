@@ -21,9 +21,18 @@ $.require( [ "main/event", "main/query", "main/attr", "module/location", "ui/scr
 		}
 	}
 
-	$( "body" ).delegate( "a", "click", function() {
+	$( "body" ).delegate( "a", "click", function( e ) {
 		if ( window.parent && window.parent.aQuery && window.parent.aQuery.trigger ) {
-
+			var a = event.document.getTarget( e ),
+				href = attr.getAttr( a, "href" );
+			if ( href ) {
+				var type = "api_iframe.hrefChange";
+				window.parent.aQuery.trigger( type, null, {
+					type: type,
+					href: href,
+					target: a,
+				} );
+			}
 		}
 	} );
 
