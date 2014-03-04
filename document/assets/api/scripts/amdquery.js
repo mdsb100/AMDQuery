@@ -260,7 +260,7 @@
 	util.multiExtend( _config.app, defineConfig.app, attributeConfigs.app );
 
 	/**
-	 * You can config global name. See <a target="_top" href="/document/app/asset/source/guide/AMDQuery.html#scrollTo=Reference_AMDQuery">AMDQuery.html</a> <br/>
+	 * You can config global name. See <a target="_parent" href="../source/guide/AMDQuery.html#scrollTo=Reference_AMDQuery">AMDQuery.html</a> <br/>
 	 * <strong>aQuery("div")</strong> equivalent to <strong>new aQuery("div")</strong>.
 	 * @global
 	 * @class
@@ -394,7 +394,7 @@
 			return "AMDQuery";
 		},
 		/**
-		 * Return module infomation. see <a target="_top" href="/document/app/asset/source/guide/AMDQuery.html#scrollTo=AMD">AMDQuery.html</a>
+		 * Return module infomation. see <a target="_parent" href="../source/guide/AMDQuery.html#scrollTo=AMD">AMDQuery.html</a>
 		 * @returns {String}
 		 */
 		valueOf: function() {
@@ -1944,7 +1944,7 @@
 			 * aQuery define.<br/>
 			 * If the last parameter is a function, then first argument of the function is aQuery(namespace).<br/>
 			 * see {@link define}<br/>
-			 * <a href="/document/app/app.html#navmenu=#AMDQuery!scrollTo=Require_Define" target="_parent">See also.</a>
+			 * <a href="app.html#navmenu=#AMDQuery!scrollTo=Require_Define" target="_parent">See also.</a>
 			 * @param {String} - Module name
 			 * @param {String[]|*} - If arguments[2] is a factory, it can be any object.
 			 * @param {*} [factory] - Usually, it is function(){} or {}.
@@ -1974,7 +1974,7 @@
 			},
 			/**
 			 * aQuery require.<br/>
-			 * <a href="/document/app/app.html#navmenu=#AMDQuery!scrollTo=Require_Define" target="_top">See also.</a>
+			 * <a href="app.html#navmenu=#AMDQuery!scrollTo=Require_Define" target="_parent">See also.</a>
 			 * @param {String} - Module.
 			 * @param {ClassModuleCallback} - The callback Be call when aQuery ready.
 			 * @param {Function} [fail] - An function to the fail callback if loading moudle timeout or error.
@@ -19492,8 +19492,8 @@ aQuery.define( "ui/swapview", [
 
 			opt.index = index;
 
-			var activeView = $( this.$views[ index ] ),
-				deactiveView = $( this.$views[ originIndex ] );
+			var activateView = $( this.$views[ index ] ),
+				deactivateView = $( this.$views[ originIndex ] );
 			var animationOpt;
 
 			if ( opt.orientation === HORIZONTAL ) {
@@ -19509,18 +19509,16 @@ aQuery.define( "ui/swapview", [
 				index: index,
 				originIndex: index
 			};
-			this.target.trigger( animationEvent.type, animationEvent.target, animationEvent );
+			this.target.trigger( animationEvent.type, this.target[ 0 ], animationEvent );
 
 
 			if ( originIndex !== index ) {
-				deactiveView.trigger( "beforeDeactive", deactiveView[ index ], {
-					type: "beforeDeactive"
+				deactivateView.trigger( "beforeDeactivate", deactivateView[ index ], {
+					type: "beforeDeactivate"
 				} );
-				activeView.trigger( "beforeActive", activeView[ index ], {
-					type: "beforeActive"
+				activateView.trigger( "beforeActivate", activateView[ index ], {
+					type: "beforeActivate"
 				} );
-				animationEvent.type = this.getEventName( "change" );
-				this.target.trigger( animationEvent.type, animationEvent.target, animationEvent );
 			}
 
 			this.container.stopAnimation().animate( animationOpt, {
@@ -19532,12 +19530,16 @@ aQuery.define( "ui/swapview", [
 					animationEvent.type = "afterAnimation";
 					self.target.trigger( animationEvent.type, animationEvent.target, animationEvent );
 					if ( originIndex !== index ) {
-						deactiveView.trigger( "deactive", deactiveView[ 0 ], {
-							type: "deactive"
+						deactivateView.trigger( "deactivated", deactivateView[ 0 ], {
+							type: "deactivated"
 						} );
-						activeView.trigger( "active", activeView[ 0 ], {
-							type: "active"
+						activateView.trigger( "activated", activateView[ 0 ], {
+							type: "activated"
 						} );
+						if ( originIndex !== index ) {
+							animationEvent.type = self.getEventName( "change" );
+							self.target.trigger( animationEvent.type, self.target[ 0 ], animationEvent );
+						}
 					}
 					if ( typed.isFun( animationCallback ) ) animationCallback.call( self.target );
 				}
@@ -19984,15 +19986,15 @@ aQuery.define( "ui/tabview", [
 				if ( index !== originIndex ) {
 					this.selectTabbutton( index );
 
-					var activeView = this.$view.eq( index ),
-						deactiveView = this.$view.eq( originIndex );
+					var activateView = this.$view.eq( index ),
+						deactivateView = this.$view.eq( originIndex );
 
-					deactiveView.trigger( "deactive", deactiveView[ 0 ], {
-						type: "deactive"
+					deactivateView.trigger( "deactivated", deactivateView[ 0 ], {
+						type: "deactivated"
 					} );
 
-					activeView.trigger( "active", activeView[ 0 ], {
-						type: "active"
+					activateView.trigger( "activated", activateView[ 0 ], {
+						type: "activated"
 					} );
 
 					var eventName = this.getEventName( "select" );
