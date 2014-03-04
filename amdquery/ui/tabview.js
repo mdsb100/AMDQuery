@@ -65,15 +65,15 @@ aQuery.define( "ui/tabview", [
 				if ( index !== originIndex ) {
 					this.selectTabbutton( index );
 
-					var activeView = this.$view.eq( index ),
-						deactiveView = this.$view.eq( originIndex );
+					var activateView = this.$view.eq( index ),
+						deactivateView = this.$view.eq( originIndex );
 
-					deactiveView.trigger( "deactive", deactiveView[ 0 ], {
-						type: "deactive"
+					deactivateView.trigger( "deactivated", deactivateView[ 0 ], {
+						type: "deactivated"
 					} );
 
-					activeView.trigger( "active", activeView[ 0 ], {
-						type: "active"
+					activateView.trigger( "activated", activateView[ 0 ], {
+						type: "activated"
 					} );
 
 					var eventName = this.getEventName( "select" );

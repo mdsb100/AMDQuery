@@ -1,7 +1,6 @@
-aQuery.define( "@app/views/navmenu", [ "base/client", "main/css", "app/View", "ui/flex", "ui/scrollableview", "ui/navmenu", "ui/navitem" ], function( $, client, css, SuperView ) {
+aQuery.define( "@app/views/apinav", [ "base/client", "main/css", "app/View", "ui/flex", "ui/scrollableview", "ui/navmenu", "ui/navitem" ], function( $, client, css, SuperView ) {
 	"use strict"; //启用严格模式
-	var xmlpath = "@app/xml/navmenu";
-	SuperView.getStyle( "@app/styles/navmenu" );
+	var xmlpath = "@app/xml/apinav";
 
 	var View = SuperView.extend( {
 		init: function( contollerElement ) {

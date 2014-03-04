@@ -60,7 +60,7 @@ $.require([
             <pre class="prettyprint">
 var testCustomEvent = new Test("TestCustomeEvent", function(preResult){
   // preResult is true.
-})
+}, "Test module CustomEvent description.")
 .equal("customEvent is empty.", true, function(preResult){
   // preResult is "Hello Word"
   return customEvent.isEmpty(); // return true;

@@ -173,8 +173,8 @@ aQuery.define( "ui/swapview", [
 
 			opt.index = index;
 
-			var activeView = $( this.$views[ index ] ),
-				deactiveView = $( this.$views[ originIndex ] );
+			var activateView = $( this.$views[ index ] ),
+				deactivateView = $( this.$views[ originIndex ] );
 			var animationOpt;
 
 			if ( opt.orientation === HORIZONTAL ) {
@@ -190,18 +190,16 @@ aQuery.define( "ui/swapview", [
 				index: index,
 				originIndex: index
 			};
-			this.target.trigger( animationEvent.type, animationEvent.target, animationEvent );
+			this.target.trigger( animationEvent.type, this.target[ 0 ], animationEvent );
 
 
 			if ( originIndex !== index ) {
-				deactiveView.trigger( "beforeDeactive", deactiveView[ index ], {
-					type: "beforeDeactive"
+				deactivateView.trigger( "beforeDeactivate", deactivateView[ index ], {
+					type: "beforeDeactivate"
 				} );
-				activeView.trigger( "beforeActive", activeView[ index ], {
-					type: "beforeActive"
+				activateView.trigger( "beforeActivate", activateView[ index ], {
+					type: "beforeActivate"
 				} );
-				animationEvent.type = this.getEventName( "change" );
-				this.target.trigger( animationEvent.type, animationEvent.target, animationEvent );
 			}
 
 			this.container.stopAnimation().animate( animationOpt, {
@@ -213,12 +211,16 @@ aQuery.define( "ui/swapview", [
 					animationEvent.type = "afterAnimation";
 					self.target.trigger( animationEvent.type, animationEvent.target, animationEvent );
 					if ( originIndex !== index ) {
-						deactiveView.trigger( "deactive", deactiveView[ 0 ], {
-							type: "deactive"
+						deactivateView.trigger( "deactivated", deactivateView[ 0 ], {
+							type: "deactivated"
 						} );
-						activeView.trigger( "active", activeView[ 0 ], {
-							type: "active"
+						activateView.trigger( "activated", activateView[ 0 ], {
+							type: "activated"
 						} );
+						if ( originIndex !== index ) {
+							animationEvent.type = self.getEventName( "change" );
+							self.target.trigger( animationEvent.type, self.target[ 0 ], animationEvent );
+						}
 					}
 					if ( typed.isFun( animationCallback ) ) animationCallback.call( self.target );
 				}

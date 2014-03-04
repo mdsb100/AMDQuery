@@ -9265,6 +9265,12 @@ if ( typeof define === "function" && define.amd ) {
 				attr = attr.split( /;|,/ );
 				for ( i = 0, len = attr.length; i < len; i++ ) {
 					item = attr[ i ].split( ":" );
+					if ( item.length > 2 ) {
+						var tempItem = item;
+						item = [];
+						item[ 0 ] = tempItem.shift();
+						item[ 1 ] = tempItem.join( ":" );
+					}
 					if ( item.length == 2 ) {
 						key = item[ 0 ];
 						if ( /^#((?:[\w\u00c0-\uFFFF-]|\\.)+)/.test( item[ 1 ] ) ) {
@@ -17210,6 +17216,18 @@ aQuery.define( "ui/navitem", [
 					this.$arrow.removeClass( "arrowRight" ).removeClass( "arrowBottom" );
 				}
 
+				if ( opt.href ) {
+					this.$title.attr( "href", opt.href );
+				} else {
+					this.$title.removeAttr( "href" );
+				}
+
+				if ( opt.target ) {
+					this.$title.attr( "target", opt.target );
+				} else {
+					this.$title.removeAttr( "target" );
+				}
+
 				return this;
 			},
 			toggle: function() {
@@ -17416,7 +17434,9 @@ aQuery.define( "ui/navitem", [
 				img: "",
 				selected: false,
 				isOpen: false,
-				parent: null
+				parent: null,
+				href: "",
+				target: "_blank"
 			},
 			publics: {
 				render: Widget.AllowPublic,
@@ -17434,14 +17454,18 @@ aQuery.define( "ui/navitem", [
 				img: 1,
 				selected: 1,
 				isOpen: 1,
-				parent: 1
+				parent: 1,
+				href: 1,
+				target: 1
 			},
 			setter: {
 				html: 1,
 				img: 1,
 				selected: 1,
 				isOpen: 1,
-				parent: 0
+				parent: 0,
+				href: 1,
+				target: 1
 			},
 			target: null,
 			toString: function() {
@@ -18626,8 +18650,8 @@ aQuery.define( "ui/scrollableview", [
 		animateToElement: function( ele, animationCallback ) {
 			var $toElement = $( ele );
 			if ( $toElement.length === 1 && query.contains( this.target[ 0 ], $toElement[ 0 ] ) ) {
-				var top = $toElement.getTopWithTranslate3d(),
-					left = $toElement.getLeftWithTranslate3d(),
+				var top = $toElement.getTopWithTranslate3d() - this.target.getTopWithTranslate3d(),
+					left = $toElement.getLeftWithTranslate3d() - this.target.getLeftWithTranslate3d(),
 					self = this,
 					callback = function( overflow ) {
 						animationCallback && animationCallback.apply( this, arguments );
@@ -20928,11 +20952,15 @@ aQuery.define( "module/location", [ "base/extend", "main/parse" ], function( $, 
 	var
 	SPLIT_MARK = "!",
 		EQUALS_MARK = "=",
+		SHARP = "#",
 		_location = window.location;
 
 	function hashToString( hash, split1, split2 ) {
 		var key, value, strList = [];
 		for ( key in hash ) {
+			if ( key === SHARP ) {
+				continue;
+			}
 			value = hash[ key ];
 			strList.push( key + split2 + value );
 		}
@@ -20945,64 +20973,73 @@ aQuery.define( "module/location", [ "base/extend", "main/parse" ], function( $, 
 	 * @example
 	 * // http://mdsb100.github.io/homepage/amdquery/document/document/app.html#navmenu=guide_Build!swapIndex=1
 	 * {
-	 *   swapIndex: "1",
-	 *   scrollTo:  "#Config"
+	 *   "#": navmenu=guide_Build!swapIndex=1 // The "#" alway equals whole hash string.
+	 *   "swapIndex": "1",
+	 *   "scrollTo":  "#Config"
 	 * }
 	 */
 	var location = {
 		/**
-     * Get value form hash.
-     * @param {String}
+		 * Get value form hash.
+		 * @param {String}
 		 * @returns {String}
 		 */
 		getHash: function( key ) {
 			this.toHash();
 			return this.hash[ key ];
 		},
-    /**
-     * Set value to hash by key.
-     * @param {String}
-     * @param {*}
-     * @returns {this}
-     */
+		/**
+		 * Set value to hash by key.
+		 * @param {String}
+		 * @param {*}
+		 * @returns {this}
+		 */
 		setHash: function( key, value ) {
 			this.hash[ key ] = value + "";
-			_location.hash = hashToString( this.hash, SPLIT_MARK, EQUALS_MARK );
+			var str = hashToString( this.hash, SPLIT_MARK, EQUALS_MARK );
+			_location.hash = str;
+			this.hash[ SHARP ] = str;
 			return this;
 		},
-    /**
-     * Remove key from hash.
-     * @param {String}
-     * @returns {this}
-     */
+		/**
+		 * Remove key from hash.
+		 * @param {String}
+		 * @returns {this}
+		 */
 		removeHash: function( key ) {
 			if ( this.hash[ key ] !== undefined ) {
 				delete this.hash[ key ];
-				_location.hash = hashToString( this.hash, SPLIT_MARK, EQUALS_MARK );
+				var str = hashToString( this.hash, SPLIT_MARK, EQUALS_MARK );
+				_location.hash = str;
+				this.hash[ SHARP ] = str;
 			}
 			return this;
 		},
-    /**
-     * Clear window.location.hash
-     * @returns {this}
-     */
+		/**
+		 * Clear window.location.hash
+		 * @returns {this}
+		 */
 		clearHash: function() {
 			window.location.hash = "";
-			this.hash = {};
+			this.hash = {
+				"#": ""
+			};
 			return this;
 		},
-    /**
-     * Parse window.location.hash to object for this.hash.
-     * @returns {this}
-     */
+		/**
+		 * Parse window.location.hash to object for this.hash.
+		 * @returns {this}
+		 */
 		toHash: function() {
-			this.hash = parse.QueryString( _location.hash.replace( "#", "" ), SPLIT_MARK, EQUALS_MARK );
+			var hash = _location.hash.replace( SHARP, "" );
+			this.hash = parse.QueryString( hash, SPLIT_MARK, EQUALS_MARK );
+			this.hash[ SHARP ] = hash;
 			return this;
 		},
-    /**
-     * An object of window.location.hash.
-     * @type {Object}
-     */
+		/**
+		 * An object of window.location.hash.
+		 * @type {Object}
+		 */
 		hash: {}
 	};
 

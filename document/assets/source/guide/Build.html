@@ -43,7 +43,7 @@
               </li>
               <li><a href="#Config">Config</a>
               </li>
-              <li><a href="#Anonymous">Anonymous Module Deifne</a>
+              <li><a href="#Anonymous">Anonymous Module Define</a>
               </li>
               <li><a href="#Detail">Build Detail</a>
               </li>
@@ -62,14 +62,14 @@
               <p/>
               <p>Look the directory: build/dist/defines. Look over "test.js" and "test.debug.js".
                 <p/>
-                <p>cd "dist/apps/document/app", open the "app.html" with a web server.
+                <p>cd "dist/apps/document/document", open the "app.html" with a broswer.
                   <p/>
 
                   <h3 name="Browser">Broswer html</h3>
                   <p>Quick start a web server. Input "npm install -g <a target="_blank" href="https://github.com/senchalabs/connect">connect</a>" or "sudo npm install -g <a target="_blank" href="https://github.com/senchalabs/connect">connect</a>". cd root
                     of amdquery directory, input "node server.js". Open browser and input
                     <Strong>"http://localhost:8080/document/app.html"</Strong> or open
-                    <Strong>"build/dist/apps/document/app.html"</Strong> by browser after built. You should collect the address in browser.</p>
+                    <Strong>"build/dist/apps/document/document/app.html"</Strong> by browser after built. You should collect the address in browser.</p>
                   <p>The
                     <a class="swip_to_app">
                       <img src="../images/right.png" width="13px" height="13px" />"Build Application"</a>has detail guide.</p>
@@ -99,6 +99,8 @@
                     <li><a target="_blank" href="https://github.com/maxogden/node-concat-stream">concat-stream</a><span>~1.0.0</span>
                     </li>
                     <li><a target="_blank" href="https://github.com/Marak/colors.js">colors</a><span>>=0.6.2</span>
+                    </li>
+                    <li><a target="_blank" href="https://github.com/tautologistics/node-htmlparser">htmlparser</a><span>>=1.7.6</span>
                     </li>
                     <li><a target="_blank" href="https://github.com/mde/jake">jake</a><span>Lastest</span>
                     </li>
@@ -213,7 +215,7 @@ root
                       </p>
                     </li>
                   </ul>
-                  <h2 name="Anonymous">Anonymous Module Deifne</h2>
+                  <h2 name="Anonymous">Anonymous Module Define</h2>
                   <p>
                     If you define a module without name, build would add the name which is file name. So javascript can parse successive module by a combination js file.
                     Best practices is defination the name of each module.

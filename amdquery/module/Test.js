@@ -66,13 +66,15 @@ aQuery.define( "module/Test", [ "base/Promise", "base/config", "main/event" ], f
 	 * @constructor
 	 * @param {String} - Name of the test.
 	 * @param {Function=} - The complete function of resoving all promise.
+	 * @parma {String=} - Description to this test, will log when test begin.
 	 * @alias module:module/Test
 	 */
-	function Test( name, complete ) {
+	function Test( name, complete, description ) {
 		this.name = "[" + name + "]";
 		this.complete = complete || function() {};
 		this.promise = new Promise( function( preResult ) {
-			logger( this.name, "userAgent", navigator.userAgent );
+			description && logger( description );
+      logger( this.name, "User Agent:", navigator.userAgent );
 			logger( this.name, "Test start", "Test:" + this.count );
 			return preResult;
 		} ).withContext( this );
@@ -80,38 +82,39 @@ aQuery.define( "module/Test", [ "base/Promise", "base/config", "main/event" ], f
 		this.fail = 0;
 	}
 
-	$.util.extend( Test, /** @lends module:module/Test */{
-		/**
-		 * console.log or log in html.
-		 * @method logger
-		 * @param {...String}
-		 * @memberOf module:module/Test
-		 */
-		logger: logger,
-		/**
-		 * console.error or error in html.
-		 * @method error
-		 * @param {...String}
-		 * @memberOf module:module/Test
-		 */
-		error: error,
-		/**
-		 * console.info or info in html.
-		 * @method info
-		 * @param {...String}
-		 * @memberOf module:module/Test
-		 */
-		info: info,
-		/**
-		 * console.debug or debug in html.
-		 * @method debug
-		 * @param {...String}
-		 * @memberOf module:module/Test
-		 */
-		debug: debug,
-		/** {undefined|DOMElement} */
-		dialog: dialog
-	} );
+	/**
+	 * console.log or log in html.
+	 * @method logger
+	 * @param {...String}
+	 * @memberOf module:module/Test
+	 */
+	Test.logger = logger;
+	/**
+	 * console.error or error in html.
+	 * @method error
+	 * @param {...String}
+	 * @memberOf module:module/Test
+	 */
+	Test.error = error;
+	/**
+	 * console.info or info in html.
+	 * @method info
+	 * @param {...String}
+	 * @memberOf module:module/Test
+	 */
+	Test.info = info;
+	/**
+	 * console.debug or debug in html.
+	 * @method debug
+	 * @param {...String}
+	 * @memberOf module:module/Test
+	 */
+	Test.debug = debug;
+	/**
+	 *{undefined|DOMElement}
+	 * @memberOf module:module/Test
+	 */
+	Test.dialog = dialog;
 
 	var ssuccess = "√",
 		sfail = "X";

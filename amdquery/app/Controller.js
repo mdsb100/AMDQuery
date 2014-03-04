@@ -63,6 +63,20 @@ aQuery.define( "app/Controller", [
 			Controller.collection.removeController( this );
 
 			this.view.destroy();
+		},
+		activate: function() {
+			var event = {
+				type: "activated"
+			}
+			this.trigger( event.type, this, event );
+			return this
+		},
+		deactivate: function() {
+			var event = {
+				type: "deactivate"
+			}
+			this.trigger( event.type, this, event );
+			return this;
 		}
 	}, {
 		getView: function() {

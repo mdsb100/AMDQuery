@@ -2,7 +2,8 @@ aQuery.define( "@app/controllers/index", [
   "module/location",
   "app/Controller",
   "@app/views/index",
-  "@app/controllers/navmenu",
+  "@app/controllers/docnav",
+  "@app/controllers/apinav",
   "@app/controllers/content"
   ], function( $,
 	location,
@@ -14,38 +15,40 @@ aQuery.define( "@app/controllers/index", [
 			this._super( new IndexView( contollerElement ), models );
 			var self = this;
 
-			this.navmenu.on( "navmenu.select", function( e ) {
+			this.docnav.on( "navmenu.select", function( e ) {
 				self.document.loadPath( e.path );
 			} );
-			this.navmenu.on( "navmenu.dblclick", function( e ) {
+			this.docnav.on( "navmenu.dblclick", function( e ) {
 				self.document.openWindow();
 			} );
 
-			this.navmenu.selectDefaultNavmenu( location.getHash( "navmenu" ) );
+			this.docnav.selectDefaultNavmenu();
 
-			// this.api.loadPath( "/document/api/index.html" );
-
-			var $swapview = $( this.view.topElement ).find( "#contentview" );
-
-			$.on( "document_iframe.swapIndexChange", function( e ) {
-				location.removeHash( "scrollTo" );
-				location.setHash( "swapIndex", e.index );
+			this.apinav.on( "navmenu.select", function( e ) {
+				self.api.loadPath( e.path );
 			} );
 
-			$.on( "document_iframe.scrollToChange", function( e ) {
-				location.setHash( "scrollTo", e.name );
+			this.apinav.on( "navmenu.dblclick", function() {
+				self.api.openWindow();
 			} );
 
-			var loadAPIFlag = false;
+			var loadAPIFlag = false,
+				navMap = [ this.docnav, this.apinav ];
+			var $swapview = $( this.view.topElement ).find( "#contentview" ).on( "swapview.change", function( e ) {
+				location.setHash( "tab", e.index );
+				if ( e.index === 1 && loadAPIFlag === false ) {
+					loadAPIFlag = true;
+					self.apinav.selectDefaultNavmenu();
+				}
+
+				navMap[ e.index ].activate();
+				navMap[ e.originIndex ].deactivate();
+
+			} );
+
 			var $tabview = $( "#tabview" );
 			$tabview.on( "tabview.select", function( e ) {
-				$swapview.uiSwapview( "render", e.index, function() {
-					location.setHash( "tab", e.index );
-					if ( e.index === 1 && loadAPIFlag === false ) {
-						loadAPIFlag = true;
-						self.api.loadPath( "assets/api/index.html" );
-					}
-				} );
+				$swapview.uiSwapview( "render", e.index );
 			} );
 
 			if ( location.getHash( "tab" ) != null ) {
@@ -53,7 +56,9 @@ aQuery.define( "@app/controllers/index", [
 			}
 		},
 		destroy: function() {
-			this.navmenu.clearHandlers();
+			$( this.view.topElement ).find( "#contentview" ).clearHandlers();
+			this.docnav.clearHandlers();
+			this.apinav.clearHandlers();
 			SuperController.invoke( "destroy" );
 		}
 	}, {

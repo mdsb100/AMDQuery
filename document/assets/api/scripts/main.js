@@ -6,15 +6,33 @@ $.require( [ "main/event", "main/query", "main/attr", "module/location", "ui/scr
 
 		for ( var i = 0, len = numbered.length, item, html = ""; i < len; i++ ) {
 			item = numbered[ i ];
-			html += i != len - 1 ? "<span class='linenumber' >" + ( i + 1 ) + "</span>" + item + "\n" : "";
+			html += i != len - 1 ? '<span class="linenumber" name="line' + ( i + 1 ) + '" >' + ( i + 1 ) + "</span>" + item + "\n" : "";
 		}
 
 		ele.innerHTML = html;
 	} );
 
-	$( "body" ).delegate( "a", "click", function() {
-		if ( window.parent && window.parent.aQuery && window.parent.aQuery.trigger ) {
+	var hash = location.getHash( "#" );
 
+	if ( hash ) {
+		var target = $( "#main" ).uiScrollableview( "getAnimationToElementByName", hash );
+		if ( target ) {
+			$( "#main" ).uiScrollableview( "animateToElement", target );
+		}
+	}
+
+	$( "body" ).delegate( "a", "click", function( e ) {
+		if ( window.parent && window.parent.aQuery && window.parent.aQuery.trigger ) {
+			var a = event.document.getTarget( e ),
+				href = attr.getAttr( a, "href" );
+			if ( href ) {
+				var type = "api_iframe.hrefChange";
+				window.parent.aQuery.trigger( type, null, {
+					type: type,
+					href: href,
+					target: a,
+				} );
+			}
 		}
 	} );
 

@@ -259,7 +259,7 @@
 	util.multiExtend( _config.app, defineConfig.app, attributeConfigs.app );
 
 	/**
-	 * You can config global name. See <a target="_top" href="/document/app/asset/source/guide/AMDQuery.html#scrollTo=Reference_AMDQuery">AMDQuery.html</a> <br/>
+	 * You can config global name. See <a target="_parent" href="../source/guide/AMDQuery.html#scrollTo=Reference_AMDQuery">AMDQuery.html</a> <br/>
 	 * <strong>aQuery("div")</strong> equivalent to <strong>new aQuery("div")</strong>.
 	 * @global
 	 * @class
@@ -393,7 +393,7 @@
 			return "AMDQuery";
 		},
 		/**
-		 * Return module infomation. see <a target="_top" href="/document/app/asset/source/guide/AMDQuery.html#scrollTo=AMD">AMDQuery.html</a>
+		 * Return module infomation. see <a target="_parent" href="../source/guide/AMDQuery.html#scrollTo=AMD">AMDQuery.html</a>
 		 * @returns {String}
 		 */
 		valueOf: function() {
@@ -1943,7 +1943,7 @@
 			 * aQuery define.<br/>
 			 * If the last parameter is a function, then first argument of the function is aQuery(namespace).<br/>
 			 * see {@link define}<br/>
-			 * <a href="/document/app/app.html#navmenu=#AMDQuery!scrollTo=Require_Define" target="_parent">See also.</a>
+			 * <a href="app.html#navmenu=#AMDQuery!scrollTo=Require_Define" target="_parent">See also.</a>
 			 * @param {String} - Module name
 			 * @param {String[]|*} - If arguments[2] is a factory, it can be any object.
 			 * @param {*} [factory] - Usually, it is function(){} or {}.
@@ -1973,7 +1973,7 @@
 			},
 			/**
 			 * aQuery require.<br/>
-			 * <a href="/document/app/app.html#navmenu=#AMDQuery!scrollTo=Require_Define" target="_top">See also.</a>
+			 * <a href="app.html#navmenu=#AMDQuery!scrollTo=Require_Define" target="_parent">See also.</a>
 			 * @param {String} - Module.
 			 * @param {ClassModuleCallback} - The callback Be call when aQuery ready.
 			 * @param {Function} [fail] - An function to the fail callback if loading moudle timeout or error.

@@ -325,8 +325,8 @@ aQuery.define( "ui/scrollableview", [
 		animateToElement: function( ele, animationCallback ) {
 			var $toElement = $( ele );
 			if ( $toElement.length === 1 && query.contains( this.target[ 0 ], $toElement[ 0 ] ) ) {
-				var top = $toElement.getTopWithTranslate3d(),
-					left = $toElement.getLeftWithTranslate3d(),
+				var top = $toElement.getTopWithTranslate3d() - this.target.getTopWithTranslate3d(),
+					left = $toElement.getLeftWithTranslate3d() - this.target.getLeftWithTranslate3d(),
 					self = this,
 					callback = function( overflow ) {
 						animationCallback && animationCallback.apply( this, arguments );
