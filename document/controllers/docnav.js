@@ -37,10 +37,10 @@ aQuery.define( "@app/controllers/docnav", [ "main/attr", "module/location", "app
 
 		},
 		activate: function() {
-			SuperController.invoke( "activate" );
+			SuperController.invoke( "activate", this );
 		},
 		deactivate: function() {
-			SuperController.invoke( "deactivate" );
+			SuperController.invoke( "deactivate", this );
 		},
 		_modifyLocation: function( target ) {
 			var $target = $( target );

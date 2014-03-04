@@ -34,15 +34,15 @@ aQuery.define( "@app/controllers/index", [
 
 			var loadAPIFlag = false,
 				navMap = [ this.docnav, this.apinav ];
-			var $swapview = $( this.view.topElement ).find( "#contentview" ).on( "change", function( e ) {
+			var $swapview = $( this.view.topElement ).find( "#contentview" ).on( "swapview.change", function( e ) {
 				location.setHash( "tab", e.index );
 				if ( e.index === 1 && loadAPIFlag === false ) {
 					loadAPIFlag = true;
 					self.apinav.selectDefaultNavmenu();
 				}
 
-				navMap[ e.index ].active();
-				navMap[ e.originIndex ].deactive();
+				navMap[ e.index ].activate();
+				navMap[ e.originIndex ].deactivate();
 
 			} );
 
