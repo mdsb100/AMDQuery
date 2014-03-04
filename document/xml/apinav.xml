@@ -1,6 +1,7 @@
 <div amdquery-widget="ui.flex;ui.scrollableview" ui-flex="fillParentWidth:false;flex:1" ui-scrollableview="overflow:VH" style="border-right:1px solid black;">
   <div id="apinav" amdquery-widget="ui.navmenu" style="width:350px;">
     <ul>
+      <li amdquery-widget="ui.navitem" ui-navitem="html:index;img:file" link="index.html"></li>
       <li amdquery-widget="ui.navitem" ui-navitem="html:modules;img:module">
         <ul>
           <li amdquery-widget="ui.navitem" ui-navitem="html:base;img:module">

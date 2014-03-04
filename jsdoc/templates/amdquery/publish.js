@@ -611,7 +611,14 @@ buildAMDQueryAPINav = function( members, templatePath ) {
 		"style": "width:350px;",
 		"children": [ {
 			tag: "ul",
-			children: []
+			children: [
+				{
+					"tag": "li",
+					"amdquery-widget": "ui.navitem",
+					"ui-navitem": "html:index;img:file",
+          "link": "index.html"
+        }
+      ]
   } ]
 	},
 		root = {
