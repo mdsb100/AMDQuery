@@ -2,12 +2,13 @@ aQuery.define( "@app/controllers/docnav", [ "main/attr", "module/location", "app
 	"use strict"; //启用严格模式
 	var ROUTER_MARK = "_",
 		SCROLLTO = "scrollTo",
-		SWAPINDEX = "swapIndex";
+		SWAPINDEX = "swapIndex",
+		NAVMENUKEY = "navmenuKey";
 
 	var Controller = SuperController.extend( {
 		init: function( contollerElement, models ) {
 			this._super( new NavmenuView( contollerElement ), models );
-
+			this.hash = {};
 			this.navitem = null;
 			this.initSwapIndex = location.getHash( SWAPINDEX );
 			this.initsSrollTo = location.getHash( SCROLLTO );
@@ -25,13 +26,28 @@ aQuery.define( "@app/controllers/docnav", [ "main/attr", "module/location", "app
 				} );
 			} );
 
+			$.on( "document_iframe.swapIndexChange", function( e ) {
+				location.removeHash( SCROLLTO );
+				location.setHash( SWAPINDEX, e.index );
+			} );
+
+			$.on( "document_iframe.scrollToChange", function( e ) {
+				location.setHash( SCROLLTO, e.name );
+			} );
+
+		},
+		activate: function() {
+			SuperController.invoke( "activate" );
+		},
+		deactivate: function() {
+			SuperController.invoke( "deactivate" );
 		},
 		_modifyLocation: function( target ) {
 			var $target = $( target );
 
 			if ( $target.isWidget( "ui.navitem" ) ) {
 				var path = $target.navitem( "getOptionToRoot" ).reverse().join( ROUTER_MARK );
-				location.setHash( "navmenu", path );
+				location.setHash( NAVMENUKEY, path );
 				if ( this._modified ) {
 					location.removeHash( SCROLLTO );
 					location.removeHash( SWAPINDEX );
@@ -81,8 +97,12 @@ aQuery.define( "@app/controllers/docnav", [ "main/attr", "module/location", "app
 			return path;
 		},
 		selectDefaultNavmenu: function( target ) {
-			var ret = $( target ? this.$nav.uiNavmenu( "getNavItemsByHtmlPath", target.split( ROUTER_MARK ) ) : "#guide_AMDQuery" );
-			this.$nav.uiNavmenu( "selectNavItem", ret );
+			target = target || location.getHash( NAVMENUKEY ) || "guide_AMDQuery";
+			var ret = this.$nav.uiNavmenu( "getNavItemsByHtmlPath", target.split( ROUTER_MARK ) );
+			if ( ret.length ) {
+				this.$nav.uiNavmenu( "selectNavItem", ret[ 0 ] );
+			}
+
 		},
 		destroy: function() {
 			this.$nav.clearHandlers();

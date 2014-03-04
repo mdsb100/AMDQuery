@@ -7,23 +7,24 @@ aQuery.define( "@app/controllers/apinav", [ "main/attr", "module/location", "app
 	var Controller = SuperController.extend( {
 		init: function( contollerElement, models ) {
 			this._super( new NavmenuView( contollerElement ), models );
-
-			// this.navitem = null;
-			// this.initSwapIndex = location.getHash( SWAPINDEX );
-			// this.initsSrollTo = location.getHash( SCROLLTO );
-
-			// var controller = this;
+			this.hash = {};
+			var controller = this;
 			this.$nav = $( this.view.topElement ).find( "#apinav" );
 
 			this.$nav.on( "navmenu.select", function( e ) {
-				// controller._modifyLocation( e.navitem );
-				// controller.selectNavitem( e.navitem );
+				controller.selectNavitem( e.navitem );
 			} ).on( "dblclick", function( e ) {
 				controller.trigger( "navmenu.dblclick", controller, {
 					type: "navmenu.dblclick",
 					event: e
 				} );
 			} );
+
+		},
+		activate: function() {
+
+		},
+		deactivate: function() {
 
 		},
 		_modifyLocation: function( target ) {
@@ -41,34 +42,23 @@ aQuery.define( "@app/controllers/apinav", [ "main/attr", "module/location", "app
 			// this._modified = true;
 		},
 		selectNavitem: function( navitem ) {
-			// var swapIndex, scrollTo;
-			// if ( this.navitem === null ) {
-			// 	swapIndex = this.initSwapIndex;
-			// 	scrollTo = this.initsSrollTo;
-			// } else {
-			// 	swapIndex = attr.getAttr( navitem, "swap-index" );
-			// 	scrollTo = attr.getAttr( navitem, "scroll-to" );
-			// }
-
-			// this.navitem = navitem;
-
-			// var path = this._getPath( navitem, swapIndex, scrollTo );
-
-			// if ( path != null ) {
-			// 	this.trigger( "navmenu.select", this, {
-			// 		type: "navmenu.select",
-			// 		path: path
-			// 	} );
-			// }
-
+			var link = attr.getAttr( navitem, "link" );
+			if ( link ) {
+				this.trigger( "navmenu.select", this, {
+					type: "navmenu.select",
+					path: "assets/api/" + link
+				} )
+			}
 		},
 		_getPath: function( navitem, swapIndex, scrollTo ) {
 
 			return path;
 		},
 		selectDefaultNavmenu: function( target ) {
-			// var ret = $( target ? this.$nav.uiNavmenu( "getNavItemsByHtmlPath", target.split( ROUTER_MARK ) ) : "#guide_AMDQuery" );
-			// this.$nav.uiNavmenu( "selectNavItem", ret );
+			var navitem = this.$nav.find( "li[link='" + ( target || "index.html" ) + "']" );
+			if ( navitem.length ) {
+				this.$nav.uiNavmenu( "selectNavItem", navitem[ 0 ] );
+			}
 		},
 		destroy: function() {
 			this.$nav.clearHandlers();
