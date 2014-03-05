@@ -28,6 +28,9 @@ var uglifyOptions = {
 var _ = require( "underscore" );
 
 var uglify = require( 'uglify-js' );
+
+var FSE = require( 'fs-extra' );
+
 function minify( orig_code, options ) {
 	options = {}
 	_.extend( options, uglifyOptions );
@@ -63,4 +66,25 @@ exports.minifyContent = function( content, uglifyOptions ) {
 		console.log( errCode.join( '\r\n' ) );
 		return null;
 	}
+}
+
+exports.mkdirSync = function( path ) {
+	if ( !path || FSE.existsSync( path ) ) {
+		return;
+	}
+	var r = /(?=[\\\/]+)/;
+	var list = path.split( r );
+	var l = list.length;
+	var _path;
+	for ( var i = 1; i < l; i++ ) {
+		_path = list.slice( 0, i ).join( '' );
+		if ( FSE.existsSync( _path ) ) {
+			continue;
+		}
+		FSE.mkdirSync( _path );
+	}
+	if ( !FSE.existsSync( path ) ) {
+		FSE.mkdirSync( path );
+	}
+
 }

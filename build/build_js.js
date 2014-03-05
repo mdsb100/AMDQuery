@@ -128,7 +128,7 @@ function saveJSFile( result, dirPath, next ) {
 		deubugPath,
 		minPath;
 
-	mkdirSync( dirPath );
+	util.mkdirSync( dirPath );
 
 	console.log( '\r\nBegin write file'.red );
 
@@ -235,9 +235,6 @@ function _buildjs( modules, name, callback ) {
 			console.info( '\r\nDependencies length of module ' + module._amdID + ': ' + dependencies.length );
 		}
 
-		// list.sort( function( a, b ) {
-		//   return a.index - b.index;
-		// } );
 		var l = list.length;
 
 		var item,
@@ -261,27 +258,6 @@ function _buildjs( modules, name, callback ) {
 
 		callback( name, result, list );
 	} );
-}
-
-function mkdirSync( path ) {
-	if ( !path || FSE.existsSync( path ) ) {
-		return;
-	}
-	var r = /(?=[\\\/]+)/;
-	var list = path.split( r );
-	var l = list.length;
-	var _path;
-	for ( var i = 1; i < l; i++ ) {
-		_path = list.slice( 0, i ).join( '' );
-		if ( FSE.existsSync( _path ) ) {
-			continue;
-		}
-		FSE.mkdirSync( _path );
-	}
-	if ( !FSE.existsSync( path ) ) {
-		FSE.mkdirSync( path );
-	}
-
 }
 
 function editDefine( content, module ) {

@@ -74,54 +74,11 @@
 
  var DebugJSSuffix = "-debug.js";
 
- function readBaseAMDQueryJS( next, result ) {
+ function readBaseAMDQueryJS( appConfig, next ) {
  	oye.readFile( AMDQueryJSPath, function( content ) {
  		amdqueryContent = content;
- 		next( null, content );
+ 		next( null, appConfig );
  	} );
- }
-
- function buildDefines( content, next ) {
- 	var distPath = PATH.join( projectDistPath, "defines" );
- 	if ( !buildConfig.defines ) {
- 		return next( null, {}, distPath );
- 	}
- 	var l = 0,
- 		i = 0,
- 		key;
-
- 	for ( key in buildConfig.defines ) {
- 		l++;
- 	}
-
- 	if ( l === 0 ) {
- 		next( null, {}, distPath );
- 	}
- 	//Process all defines
- 	var n = l,
- 		name,
- 		item,
- 		requireList,
- 		result = {
-
- 		},
- 		callback = function( name, list ) {
- 			n--;
- 			result[ name ] = list;
-
- 			if ( n <= 0 ) {
- 				next( null, result, distPath );
- 			}
- 		};
-
- 	for ( name in buildConfig.defines ) {
- 		item = buildConfig.defines[ name ];
- 		requireList = checkJSDirectory( item.directory );
-
- 		requireList = requireList.concat( filterDependencies( item.path.replace( ".js", "" ) ) );
- 		_buildjs( requireList, name, callback );
- 	}
-
  }
 
  function saveJSFile( result, dirPath, next ) {
@@ -143,7 +100,7 @@
  		deubugPath,
  		minPath;
 
- 	mkdirSync( dirPath );
+ 	util.mkdirSync( dirPath );
 
  	console.log( '\r\nBegin write file'.red );
 
@@ -294,7 +251,7 @@
  		FSE.removeSync( distPath );
  	}
 
- 	mkdirSync( distPath );
+ 	util.mkdirSync( distPath );
 
  	var dirNameList = [
   "amdquery/ui",
@@ -308,7 +265,7 @@
  	for ( i = 0; i < len; i++ ) {
  		dirName = PATH.join( distPath, dirNameList[ i ] );
  		console.log( "make directory: " + dirName.red );
- 		mkdirSync( dirName );
+ 		util.mkdirSync( dirName );
  	}
 
  	var globalPath = PATH.join( htmlInfo.AMDQueryProjectPath, "global" ),
@@ -317,7 +274,7 @@
 
  	logger( "[DEBUG]".white, "copy directory:".white, globalPath, "to", globalDistPath );
 
- 	mkdirSync( globalDistPath );
+ 	util.mkdirSync( globalDistPath );
  	FSE.copySync( globalPath, globalDistPath );
 
  	logger( "[DEBUG]".white, "app project path:".white, htmlInfo.appProjectPath.white );
@@ -741,43 +698,9 @@
  	FSE.createReadStream( htmlInfo.htmlPath ).pipe( linkTr1 ).pipe( linkTr2 ).pipe( scriptTr ).pipe( bodyTr ).pipe( write );
  }
 
- function main() {
- 	async.waterfall( [
-     startBuildDefines,
-     startBuildApps
-   ], function( err, result ) {
- 		if ( err ) {
- 			console.error( "[Error]".red, err.red );
- 		}
- 		console.log( '\r\nBuiding finish'.red );
- 	} );
- }
-
- function startBuildDefines( waterfallNext ) {
- 	console.log( '\r\nStart building defines... '.magenta );
-
- 	setPathVariable( buildConfig.pathVariable );
-
- 	// build defines
- 	async.waterfall( [
-     readBaseAMDQueryJS,
-     buildDefines,
-     saveJSFile
-   ], function( err, result ) {
- 		if ( err ) {
- 			waterfallNext( null, null );
- 			console.error( "[Error]".red, err.red );
- 			return;
- 		}
-
- 		waterfallNext( null, null );
-
- 	} );
- }
-
  var apps = buildConfig.apps.concat();
 
- function startBuildApps( result, waterfallNext ) {
+ function main() {
  	if ( apps.length ) {
  		var appConfig = apps.shift();
  		var defaultConfig = {
@@ -797,6 +720,7 @@
        function( callback ) {
  				callback( null, defaultConfig );
        },
+       readBaseAMDQueryJS,
        getAppaQueryConfig,
        openHtml,
        createAppDirAndCopyFile,
@@ -810,44 +734,11 @@
  			if ( err ) {
  				console.error( "[Error]".red, err.red );
  			}
- 			startBuildApps( null, waterfallNext );
+ 			main();
  		} );
 
- 	} else {
- 		waterfallNext( null, null );
  	}
  }
-
- function setPathVariable( obj ) {
- 	for ( var name in obj ) {
- 		oye.require.variable( name, obj[ name ] );
- 	}
- }
-
- function filterDependencies( url ) {
- 	var result = [],
- 		content = FSE.readFileSync( PATH.join( buildFileRootPath, buildConfig.amdqueryPath, url + ".js" ) )
- 			.toString(),
- 		moduleList = oye.matchDefine( content ),
- 		moduleInfo,
- 		i = 0,
- 		len = moduleList.length;
-
- 	for ( ; i < len; i++ ) {
- 		moduleInfo = moduleList[ i ];
-
- 		if ( moduleInfo.name === "require" && moduleInfo.module ) {
- 			result.push( moduleInfo.module );
- 		}
- 		if ( moduleInfo.depends ) {
- 			result = result.concat( eval( moduleInfo.depends ) );
- 		}
-
- 	}
-
- 	return result;
- }
-
 
  function getXMLAndCSS( htmlInfo, moduleList ) {
  	var i = 0,
@@ -979,62 +870,6 @@
  	}
  	content += "\r\n\r\n/*=======================================================*/\r\n";
  	return content;
- }
-
- function mkdirSync( path ) {
- 	if ( !path || FSE.existsSync( path ) ) {
- 		return;
- 	}
- 	var r = /(?=[\\\/]+)/;
- 	var list = path.split( r );
- 	var l = list.length;
- 	var _path;
- 	for ( var i = 1; i < l; i++ ) {
- 		_path = list.slice( 0, i ).join( '' );
- 		if ( FSE.existsSync( _path ) ) {
- 			continue;
- 		}
- 		FSE.mkdirSync( _path );
- 	}
- 	if ( !FSE.existsSync( path ) ) {
- 		FSE.mkdirSync( path );
- 	}
-
- }
-
- function checkJSDirectory( directoryList, suffix ) {
- 	suffix = suffix || "*.js";
- 	var result = [],
- 		i = 0,
- 		j = 0,
- 		k = 0,
- 		l = directoryList ? directoryList.length : 0,
- 		m,
- 		n,
- 		globOpt,
- 		resultDirectory = [],
- 		directory,
- 		moduleAndDepends,
- 		content;
- 	for ( i = 0; i < l; i++ ) {
- 		directory = directoryList[ i ];
- 		globOpt = {
- 			cwd: PATH.join( AMDQueryJSRootPath, directory )
- 		};
- 		resultDirectory = resultDirectory.concat( glob.sync( suffix, globOpt ) );
- 		for ( j = 0, m = resultDirectory.length; j < m; j++ ) {
- 			content = FSE.readFileSync( PATH.join( globOpt.cwd, resultDirectory[ j ] ) );
- 			moduleAndDepends = oye.matchDefine( content.toString() );
- 			for ( k = 0, n = moduleAndDepends.length; k < n; k++ ) {
- 				if ( moduleAndDepends[ k ].module ) {
- 					result.push( moduleAndDepends[ k ].module );
- 				}
-
- 			}
- 		}
- 	}
-
- 	return result;
  }
 
  main();
