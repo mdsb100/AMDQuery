@@ -308,4 +308,12 @@ pre .linenumber {
     display: block;
     bottom: 30px;
     right: 30px;
+    position: absolute;
+}
+
+.Back {
+    text-align: center;
+    top: 30px;
+    right: 30px;
+    position: absolute;
 }

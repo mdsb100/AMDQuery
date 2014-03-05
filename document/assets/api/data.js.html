@@ -27,6 +27,7 @@
 
     
     <section>
+        <a float="false" id="Back" class="Back">Back</a>
         <article>
             <pre class="prettyprint source">﻿aQuery.define( "main/data", [ "base/extend", "base/typed", "base/support" ], function( $, utilExtend, typed, support, undefined ) {
 	"use strict";
@@ -270,6 +271,16 @@
 	return exports;
 } );</pre>
         </article>
+        <script type="text/javascript">
+          var Back = document.getElementById("Back");
+          if (Back){
+            Back.onclick = function(){
+              if (window.history && window.history.length) {
+                window.history.back();
+              }
+            }
+          }
+        </script>
     </section>
 
 

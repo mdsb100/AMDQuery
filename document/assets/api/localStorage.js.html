@@ -27,6 +27,7 @@
 
     
     <section>
+        <a float="false" id="Back" class="Back">Back</a>
         <article>
             <pre class="prettyprint source">define( "html5/localStorage", [ "html5/Storage" ], function( Storage, undefined ) {
   "use strict";
@@ -41,6 +42,16 @@
   return new Storage( localStorage );
 } );</pre>
         </article>
+        <script type="text/javascript">
+          var Back = document.getElementById("Back");
+          if (Back){
+            Back.onclick = function(){
+              if (window.history && window.history.length) {
+                window.history.back();
+              }
+            }
+          }
+        </script>
     </section>
 
 
