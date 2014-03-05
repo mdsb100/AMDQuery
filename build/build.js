@@ -8,32 +8,6 @@
  	},
  	apps: {},
  	defines: {},
- 	uglifyOptions: {
- 		strict_semicolons: false,
- 		mangle_options: {
- 			mangle: true,
- 			toplevel: false,
- 			defines: null,
- 			except: null,
- 			no_functions: false
- 		},
- 		squeeze_options: {
- 			make_seqs: true,
- 			dead_code: true,
- 			no_warnings: false,
- 			keep_comps: true,
- 			unsafe: false
- 		},
- 		gen_options: {
- 			indent_start: 0,
- 			indent_level: 4,
- 			quote_keys: false,
- 			space_colon: false,
- 			beautify: false,
- 			ascii_only: false,
- 			inline_script: false
- 		}
- 	},
  	cleanCssOptions: {
  		keepSpecialComments: "*",
  		keepBreaks: false,
@@ -69,7 +43,9 @@
  var amdqueryPath = PATH.join( buildFileRootPath, buildConfig.amdqueryPath );
 
  //Configurate project root path
- projectRootPath = PATH.join( buildFileRootPath, buildConfig.projectRootPath );
+ var projectRootPath = PATH.join( buildFileRootPath, buildConfig.projectRootPath );
+
+ var util = require( './lib/util.js' );
 
  var oye = require( './lib/oye.node.js' );
 
@@ -77,26 +53,10 @@
  	'oyeModulePath': amdqueryPath,
  	'projectRootPath': projectRootPath
  } );
- amdRequire = oye.require;
- amdDefine = oye.define;
 
  var logger = buildConfig.debug ? console.info : function() {};
 
  logger( buildFileRootPath );
-
- //Uglify
- var uglify = require( 'uglify-js' );
- var minify = function( orig_code ) {
- 	var options = buildConfig.uglifyOptions;
- 	var jsp = uglify.parser;
- 	var pro = uglify.uglify;
-
- 	var ast = jsp.parse( orig_code, options.strict_semicolons ); // parse code and get the initial AST
- 	ast = pro.ast_mangle( ast, options.mangle_options ); // get a new AST with mangled names
- 	ast = pro.ast_squeeze( ast, options.squeeze_options ); // get an AST with compression optimizations
- 	var final_code = pro.gen_code( ast, options.gen_options ); // compressed code here
- 	return final_code;
- };
 
  var colors = require( "colors" );
  var glob = require( "glob" );
@@ -107,10 +67,6 @@
  var beautify_html = require( "js-beautify" ).html;
  var htmlparser = require( "htmlparser" )
 
- var loadedModule = 'loaded' + ( -new Date() );
- var fileStack = {};
- fileStack[ loadedModule ] = {};
- var baseFileStack = [];
  var amdqueryContent = "";
  var AMDQueryJSPath = PATH.join( buildFileRootPath, buildConfig.amdqueryPath, "amdquery.js" );
  var AMDQueryJSRootPath = PATH.join( buildFileRootPath, buildConfig.amdqueryPath );
@@ -201,7 +157,7 @@
  		minPath = PATH.join( dirPath, name + '.js' );
 
  		content = list.join( "\r\n" );
- 		minContent = minifyContent( content );
+ 		minContent = util.minifyContent( content );
 
  		if ( minContent ) {
  			FSE.writeFile( minPath, minContent, readFileCallback );
@@ -469,7 +425,7 @@
  				htmlInfo.beforeLibRelativeJSPath = PATH.join( "lib", "beforelib.js" );
  				htmlInfo.beforeLibJSPath = PATH.join( htmlInfo.projectDistPath, htmlInfo.appDirectoryName, htmlInfo.beforeLibRelativeJSPath );
  				if ( !appConfig.debug ) {
- 					bLibJSContent = minifyContent( bLibJSContent );
+ 					bLibJSContent = util.minifyContent( bLibJSContent );
  				}
  				FSE.writeFileSync( htmlInfo.beforeLibJSPath, bLibJSContent );
  			}
@@ -488,7 +444,7 @@
  				htmlInfo.afterLibRelativeJSPath = PATH.join( "lib", "afterlib.js" );
  				htmlInfo.afterLibJSPath = PATH.join( htmlInfo.projectDistPath, htmlInfo.appDirectoryName, htmlInfo.afterLibRelativeJSPath );
  				if ( !appConfig.debug ) {
- 					aLibJSContent = minifyContent( aLibJSContent );
+ 					aLibJSContent = util.minifyContent( aLibJSContent );
  				}
  				FSE.writeFileSync( htmlInfo.afterLibJSPath, aLibJSContent );
  			}
@@ -1013,30 +969,6 @@
  	}
 
  	return result;
- }
-
- function minifyContent( content ) {
- 	try {
- 		var minContent = minify( content );
- 		return minContent;
- 	} catch ( e ) {
- 		var line = e.line,
- 			start = ( line > 10 ? line - 10 : 0 ),
- 			end = line + 10;
- 		//var line = e.line, start = 0, end = undefined;
- 		console.log( ( e.message + ' Line: ' + line ).red );
- 		content = content.split( /(?:\r\n|[\r\n])/ )
- 			.slice( start, end );
- 		var errCode = [],
- 			lineNumber, code;
- 		for ( var i = 0; i < content.length; i++ ) {
- 			lineNumber = i + start + 1;
- 			code = ( lineNumber === line ) ? ( ( lineNumber + ' ' + content[ i ] ).red ) : ( lineNumber + content[ i ] ).red;
- 			errCode.push( code );
- 		}
- 		console.log( errCode.join( '\r\n' ) );
- 		return null;
- 	}
  }
 
  function editDefine( content, module ) {
