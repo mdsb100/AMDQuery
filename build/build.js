@@ -1,7 +1,7 @@
  var buildConfig = {
  	debug: false,
  	amdqueryPath: '../amdquery/',
- 	projectRootPath: '../../',
+ 	projectRootPath: '../', // server root
  	distPath: 'dist/',
  	pathVariable: {
 
@@ -356,10 +356,12 @@
  	}
 
  	var globalPath = PATH.join( htmlInfo.AMDQueryProjectPath, "global" ),
- 		globalDistPath = PATH.join( distPath, "global" );
+ 		globalDirectoryName = globalPath.replace( projectRootPath, "" ),
+ 		globalDistPath = PATH.join( distPath, globalDirectoryName );
 
  	logger( "[DEBUG]".white, "copy directory:".white, globalPath, "to", globalDistPath );
 
+ 	mkdirSync( globalDistPath );
  	FSE.copySync( globalPath, globalDistPath );
 
  	logger( "[DEBUG]".white, "app project path:".white, htmlInfo.appProjectPath.white );

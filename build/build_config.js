@@ -1,8 +1,8 @@
 //Configure amdquery.js
 exports.amdqueryPath = '../amdquery/';
 
-//Configure project root path
-exports.projectRootPath = '../../';
+//Configure project root path (server root)
+exports.projectRootPath = '../';
 
 //All build files will save to distPath
 exports.distPath = 'dist/';
