@@ -30,6 +30,7 @@ var _ = require( "underscore" );
 var uglify = require( 'uglify-js' );
 
 var FSE = require( 'fs-extra' );
+var PATH = require( 'path' );
 
 function minify( orig_code, options ) {
 	options = {}
@@ -88,3 +89,139 @@ exports.mkdirSync = function( path ) {
 	}
 
 }
+
+var async = require( "async" );
+var oye = require( './oye.node.js' );
+var DebugJSSuffix = "-debug.js";
+
+function JSBuilder( AMDQueryJSPath, oyeOpt ) {
+	this.AMDQueryJSPath = AMDQueryJSPath;
+	this.originOyeOpt = {
+		oyeModulePath: oye.getBasePath(),
+		projectRootPath: oye.getRootPath()
+	}
+	oye.setPath( oyeOpt || this.originOpt );
+
+}
+
+JSBuilder.amdqueryContent = "";
+
+JSBuilder.prototype = {
+	constructor: JSBuilder,
+	editDefine: function( content, module ) {
+		content = "/*===================" + module + "===========================*/\r\n" + content;
+		var r = /define\s*\(\s*(['"])[^\1]*\1/i;
+		if ( !r.test( content ) ) {
+			content = content.replace( /define\(/, 'define("' + module + '",' );
+		}
+		content += "\r\n\r\n/*=======================================================*/\r\n";
+		return content;
+	},
+	launch: function( name, distPath, modules, callback ) {
+		var jsBuilder = this;
+
+		function readBaseAMDQueryJS( next, result ) {
+			if ( JSBuilder.amdqueryContent ) {
+				next( null );
+			} else {
+				oye.readFile( jsBuilder.AMDQueryJSPath, function( content ) {
+					JSBuilder.amdqueryContent = content;
+					next( null );
+				} );
+			}
+		}
+
+		function buildjs( next ) {
+			oye.require( modules, function( Module ) { //Asynchronous
+				var
+				args = arguments,
+					len = args.length,
+					i = 0,
+					module,
+					dependencies,
+					list = [];
+
+				for ( ; i < len; i++ ) {
+					module = args[ i ];
+					dependencies = module.getDependenciesList();
+					list = list.concat( dependencies );
+					console.info( '\r\nDependencies length of module ' + module._amdID + ': ' + dependencies.length );
+				}
+
+				var l = list.length;
+
+				var item,
+					moduleName, result = [],
+					pathMap = {};
+
+				pathMap[ jsBuilder.AMDQueryJSPath ] = true;
+
+				result.push( jsBuilder.editDefine( JSBuilder.amdqueryContent, "amdquery" ) );
+
+				for ( i = 0; i < l; i++ ) {
+					item = list[ i ];
+
+					if ( !pathMap[ item.path ] ) {
+						result.push( jsBuilder.editDefine( item.content, item.name ) );
+						pathMap[ item.path ] = true;
+					}
+				}
+
+				console.info( ( '\r\nthe defines "' + name + '" Dependencies length of file ' + result.length ).red );
+
+				next( null, result, list );
+			} );
+		}
+
+		function saveJSFile( contentList, moduleList, next ) {
+
+			var readFileCallback = function( err ) {
+				if ( err ) {
+					console.error( err );
+				}
+			},
+				content,
+				minContent,
+				defineConfig,
+				path,
+				deubugPath,
+				minPath;
+
+			exports.mkdirSync( distPath );
+
+			console.log( '\r\nBegin write file'.red );
+
+			len = contentList.length;
+			name = name.replace( /^\/+/, '' );
+			path = PATH.join( distPath, name.replace( /[^\/]*$/, '' ) );
+			deubugPath = PATH.join( distPath, name + DebugJSSuffix );
+			minPath = PATH.join( distPath, name + '.js' );
+
+			content = contentList.join( "\r\n" );
+			minContent = exports.minifyContent( content );
+
+			if ( minContent ) {
+				FSE.writeFile( minPath, minContent, readFileCallback );
+				console.log( '\r\nSave file: ' + minPath );
+			}
+
+			FSE.writeFile( deubugPath, content, readFileCallback );
+			console.log( '\r\nSave file: ' + deubugPath );
+
+			next( null, moduleList, minPath, minContent, deubugPath, content );
+
+		}
+
+		async.waterfall( [ readBaseAMDQueryJS, buildjs, saveJSFile ], function( err, moduleList, minPath, minContent, deubugPath, content ) {
+			if ( err ) {
+				console.error( "[Error]".red, "JSBuilder:".red, err.red );
+				return;
+			}
+			oye.setPath( jsBuilder.originOyeOpt );
+			callback( name, moduleList, minPath, minContent, deubugPath, content );
+		} );
+
+	}
+};
+
+exports.JSBuilder = JSBuilder;
