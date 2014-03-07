@@ -101,13 +101,16 @@ function JSBuilder( AMDQueryJSPath, oyeOpt ) {
 		projectRootPath: oye.getRootPath()
 	}
 	oye.setPath( oyeOpt || this.originOpt );
-
+	this.uglifyOptions = {};
 }
 
 JSBuilder.amdqueryContent = "";
 
 JSBuilder.prototype = {
 	constructor: JSBuilder,
+	setUglifyOptions: function( uglifyOptions ) {
+		this.uglifyOptions = uglifyOptions;
+	},
 	editDefine: function( content, module ) {
 		content = "/*===================" + module + "===========================*/\r\n" + content;
 		var r = /define\s*\(\s*(['"])[^\1]*\1/i;
@@ -198,7 +201,8 @@ JSBuilder.prototype = {
 			minPath = PATH.join( distPath, name + '.js' );
 
 			content = contentList.join( "\r\n" );
-			minContent = exports.minifyContent( content );
+
+			minContent = exports.minifyContent( content, jsBuilder.uglifyOptions );
 
 			if ( minContent ) {
 				FSE.writeFile( minPath, minContent, readFileCallback );

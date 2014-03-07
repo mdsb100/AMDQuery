@@ -6,7 +6,8 @@ var buildConfig = {
 	pathVariable: {
 
 	},
-	defines: {}
+	defines: {},
+	uglifyOptions: {}
 };
 var _ = require( "underscore" );
 
@@ -17,13 +18,15 @@ var argvs = process.argv;
 var buildFileRootPath = PATH.dirname( process.argv[ 1 ] );
 
 var buildConfigFile = process.argv[ 2 ];
-if ( buildConfigFile && /\.js/.test( buildConfigFile ) ) {
-	if ( !( /^\.*\//.test( buildConfigFile ) ) ) {
-		buildConfigFile = PATH.join( buildFileRootPath, "build_js_config.js" );
-	}
-	buildConfigFile = require( buildConfigFile );
-	buildConfig = _.extend( buildConfig, buildConfigFile );
+
+if ( !buildConfigFile || !/\.js/.test( buildConfigFile ) ) {
+	buildConfigFile = "build_app_config.js";
 }
+if ( !( /^\.*\//.test( buildConfigFile ) ) ) {
+	buildConfigFile = PATH.join( buildFileRootPath, buildConfigFile );
+}
+buildConfigFile = require( buildConfigFile );
+buildConfig = _.extend( buildConfig, buildConfigFile );
 
 
 var FSE = require( 'fs-extra' );
@@ -53,6 +56,7 @@ function buildDefines() {
 
 	var distPath = PATH.join( projectDistPath, "defines" );
 	if ( !buildConfig.defines ) {
+    console.log( "No javascript to build" );
 		return;
 	}
 	var l = 0,
@@ -65,6 +69,7 @@ function buildDefines() {
 	}
 
 	if ( l === 0 ) {
+    console.log( "No javascript to build" );
 		return;
 	}
 	var jsBuilder = new JSBuilder( AMDQueryJSPath, {
@@ -87,6 +92,7 @@ function buildDefines() {
 		requireList = checkJSDirectory( item.directory );
 
 		requireList = requireList.concat( filterDependencies( item.path.replace( ".js", "" ) ) );
+		jsBuilder.setUglifyOptions( buildConfig.uglifyOptions );
 		jsBuilder.launch( name, distPath, requireList, function( name, moduleList, minPath, minContent, deubugPath, content ) {
 			var defineConfig = buildConfig.defines[ name ];
 			if ( defineConfig && typeof defineConfig.complete === "function" ) {

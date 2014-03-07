@@ -6,8 +6,7 @@
  	pathVariable: {
 
  	},
- 	apps: {},
- 	defines: {},
+ 	apps: [],
  	cleanCssOptions: {
  		keepSpecialComments: "*",
  		keepBreaks: false,
@@ -15,7 +14,8 @@
  		noRebase: false,
  		noAdvanced: false,
  		selectorsMergeMode: "*"
- 	}
+ 	},
+ 	uglifyOptions: {}
  };
  var _ = require( "underscore" );
 
@@ -26,13 +26,15 @@
  var buildFileRootPath = PATH.dirname( process.argv[ 1 ] );
 
  var buildConfigFile = process.argv[ 2 ];
- if ( buildConfigFile && /\.js/.test( buildConfigFile ) ) {
- 	if ( !( /^\.*\//.test( buildConfigFile ) ) ) {
- 		buildConfigFile = PATH.join( buildFileRootPath, "build_config.js" );
- 	}
- 	buildConfigFile = require( buildConfigFile );
- 	buildConfig = _.extend( buildConfig, buildConfigFile );
+
+ if ( !buildConfigFile || !/\.js/.test( buildConfigFile ) ) {
+ 	buildConfigFile = "build_app_config.js";
  }
+ if ( !( /^\.*\//.test( buildConfigFile ) ) ) {
+ 	buildConfigFile = PATH.join( buildFileRootPath, buildConfigFile );
+ }
+ buildConfigFile = require( buildConfigFile );
+ buildConfig = _.extend( buildConfig, buildConfigFile );
 
 
  var FSE = require( 'fs-extra' );
@@ -359,6 +361,8 @@
  		'projectRootPath': projectRootPath
  	} );
 
+ 	jsBuilder.setUglifyOptions( buildConfig.uglifyOptions );
+
  	oye.require.variablePrefix( "@" );
  	oye.require.variable( "app", dirPath );
 
@@ -368,8 +372,8 @@
  	htmlInfo.AMDQueryJSRelativeHTMLPath = "../amdquery/amdquery";
 
  	jsBuilder.launch( htmlInfo.appName, htmlInfo.AMDQueryJSPath, htmlInfo.appConfig.src, function( name, moduleList, minPath, minContent, deubugPath, content ) {
-      var XMLAndCSSPathList = getXMLAndCSS( htmlInfo, moduleList );
-      buildAppXML( null, appConfig, htmlInfo, XMLAndCSSPathList );
+ 		var XMLAndCSSPathList = getXMLAndCSS( htmlInfo, moduleList );
+ 		buildAppXML( null, appConfig, htmlInfo, XMLAndCSSPathList );
  	} );
 
  }
@@ -751,6 +755,10 @@
  	}
 
  	return result;
+ }
+
+ if ( !apps.length ) {
+  console.log( "No application to build" );
  }
 
  main();
