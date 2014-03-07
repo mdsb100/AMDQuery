@@ -143,7 +143,7 @@ aQuery.define( "ui/navmenu", [
 				var $target = $( this.getNavItem( target ) || [] ),
 					opt = this.options;
 				if ( $target.isWidget( "ui.navitem" ) ) {
-					if ( opt.selectedNavItem && opt.selectedNavItem !== target ) {
+					if ( opt.selectedNavItem && opt.selectedNavItem[0] !== target ) {
 						$( opt.selectedNavItem ).uiNavitem( "cancel" );
 					}
 					opt.selectedNavItem = $target;
