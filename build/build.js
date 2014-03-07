@@ -39,7 +39,6 @@
 
  var amdqueryProjectPath = PATH.join( buildFileRootPath, ".." );
 
- //Configurate oye.js
  var amdqueryPath = PATH.join( buildFileRootPath, buildConfig.amdqueryPath );
 
  //Configurate project root path
@@ -48,11 +47,6 @@
  var util = require( './lib/util.js' );
 
  var oye = require( './lib/oye.node.js' );
-
- oye.setPath( {
- 	'oyeModulePath': amdqueryPath,
- 	'projectRootPath': projectRootPath
- } );
 
  var logger = buildConfig.debug ? console.info : function() {};
 
@@ -73,66 +67,6 @@
  var projectDistPath = PATH.join( buildFileRootPath, buildConfig.distPath );
 
  var DebugJSSuffix = "-debug.js";
-
- function readBaseAMDQueryJS( appConfig, next ) {
- 	oye.readFile( AMDQueryJSPath, function( content ) {
- 		amdqueryContent = content;
- 		next( null, appConfig );
- 	} );
- }
-
- function saveJSFile( result, dirPath, next ) {
-
- 	var list,
- 		i = 0,
- 		len,
- 		p,
- 		readFileCallback = function( err ) {
- 			if ( err ) {
- 				console.error( err );
- 			}
- 		},
- 		content,
- 		minContent,
- 		defineConfig,
- 		name,
- 		path,
- 		deubugPath,
- 		minPath;
-
- 	util.mkdirSync( dirPath );
-
- 	console.log( '\r\nBegin write file'.red );
-
- 	for ( name in result ) {
- 		list = result[ name ];
- 		defineConfig = buildConfig.defines[ name ];
- 		len = list.length;
- 		name = name.replace( /^\/+/, '' );
- 		path = PATH.join( dirPath, name.replace( /[^\/]*$/, '' ) );
- 		deubugPath = PATH.join( dirPath, name + DebugJSSuffix );
- 		minPath = PATH.join( dirPath, name + '.js' );
-
- 		content = list.join( "\r\n" );
- 		minContent = util.minifyContent( content );
-
- 		if ( minContent ) {
- 			FSE.writeFile( minPath, minContent, readFileCallback );
- 			console.log( '\r\nSave file: ' + minPath );
- 		}
-
- 		FSE.writeFile( deubugPath, content, readFileCallback );
- 		console.log( '\r\nSave file: ' + deubugPath );
-
- 		if ( defineConfig && typeof defineConfig.complete === "function" ) {
- 			defineConfig.complete.call( defineConfig, minPath, minContent, deubugPath, content );
- 		}
-
- 	}
-
- 	next( null, null );
-
- }
 
  function getAppaQueryConfig( appConfig, openHtml ) {
  	var htmlPath = PATH.join( AMDQueryJSRootPath, appConfig.path );
@@ -419,22 +353,25 @@
  	}
 
  	var dirPath = PATH.dirname( htmlInfo.appConfig.src );
- 	dirPath = dirPath.replace( /\/$/, "" );
+ 	dirPath = dirPath.replace( /\/$/, "" ),
+ 	jsBuilder = new util.JSBuilder( AMDQueryJSPath, {
+ 		'oyeModulePath': amdqueryPath,
+ 		'projectRootPath': projectRootPath
+ 	} );
 
  	oye.require.variablePrefix( "@" );
  	oye.require.variable( "app", dirPath );
 
  	console.log( ( '\r\nBuild "' + htmlInfo.appName + '" js file' ).red );
- 	_buildjs( htmlInfo.appConfig.src, htmlInfo.appName, function( name, contentList, moduleList ) {
- 		var obj = {};
- 		obj.amdquery = contentList;
- 		var XMLAndCSSPathList = getXMLAndCSS( htmlInfo, moduleList );
- 		saveJSFile( obj, AMDQueryPath, function() {
- 			htmlInfo.AMDQueryJSPath = PATH.join( AMDQueryPath, "amdquery" );
- 			htmlInfo.AMDQueryJSRelativeHTMLPath = "../amdquery/amdquery";
- 			buildAppXML( null, appConfig, htmlInfo, XMLAndCSSPathList );
- 		} );
+
+ 	htmlInfo.AMDQueryJSPath = PATH.join( AMDQueryPath, "amdquery" );
+ 	htmlInfo.AMDQueryJSRelativeHTMLPath = "../amdquery/amdquery";
+
+ 	jsBuilder.launch( htmlInfo.appName, htmlInfo.AMDQueryJSPath, htmlInfo.appConfig.src, function( name, moduleList, minPath, minContent, deubugPath, content ) {
+      var XMLAndCSSPathList = getXMLAndCSS( htmlInfo, moduleList );
+      buildAppXML( null, appConfig, htmlInfo, XMLAndCSSPathList );
  	} );
+
  }
 
  function buildAppXML( appConfig, htmlInfo, XMLAndCSSPathList, buildAppCss ) {
@@ -720,7 +657,6 @@
        function( callback ) {
  				callback( null, defaultConfig );
        },
-       readBaseAMDQueryJS,
        getAppaQueryConfig,
        openHtml,
        createAppDirAndCopyFile,
@@ -772,51 +708,6 @@
  	}
  }
 
- function _buildjs( modules, name, callback ) {
- 	oye.require( modules, function( Module ) { //Asynchronous
- 		var
- 		args = arguments,
- 			len = args.length,
- 			i = 0,
- 			module,
- 			dependencies,
- 			list = [];
-
- 		for ( ; i < len; i++ ) {
- 			module = args[ i ];
- 			dependencies = module.getDependenciesList();
- 			list = list.concat( dependencies );
- 			console.info( '\r\nDependencies length of module ' + module._amdID + ': ' + dependencies.length );
- 		}
-
- 		// list.sort( function( a, b ) {
- 		//   return a.index - b.index;
- 		// } );
- 		var l = list.length;
-
- 		var item,
- 			moduleName, result = [],
- 			pathMap = {};
-
- 		pathMap[ AMDQueryJSPath ] = true;
-
- 		result.push( editDefine( amdqueryContent, "amdquery" ) );
-
- 		for ( i = 0; i < l; i++ ) {
- 			item = list[ i ];
-
- 			if ( !pathMap[ item.path ] ) {
- 				result.push( editDefine( item.content, item.name ) );
- 				pathMap[ item.path ] = true;
- 			}
- 		}
-
- 		console.info( ( '\r\nthe defines "' + name + '" Dependencies length of file ' + result.length ).red );
-
- 		callback( name, result, list );
- 	} );
- }
-
  function _buildCssAndSave( cssPathList, dist, cwd ) {
  	var
  	len = cssPathList.length,
@@ -860,16 +751,6 @@
  	}
 
  	return result;
- }
-
- function editDefine( content, module ) {
- 	content = "/*===================" + module + "===========================*/\r\n" + content;
- 	var r = /define\s*\(\s*(['"])[^\1]*\1/i;
- 	if ( !r.test( content ) ) {
- 		content = content.replace( /define\(/, 'define("' + module + '",' );
- 	}
- 	content += "\r\n\r\n/*=======================================================*/\r\n";
- 	return content;
  }
 
  main();

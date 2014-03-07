@@ -28,7 +28,6 @@ if ( buildConfigFile && /\.js/.test( buildConfigFile ) ) {
 
 var FSE = require( 'fs-extra' );
 
-//Configurate oye.js
 var amdqueryPath = PATH.join( buildFileRootPath, buildConfig.amdqueryPath );
 
 //Configurate project root path
@@ -37,10 +36,6 @@ var projectRootPath = PATH.join( buildFileRootPath, buildConfig.projectRootPath 
 var util = require( './lib/util.js' );
 
 var oye = require( './lib/oye.node.js' );
-
-var logger = buildConfig.debug ? console.info : function() {};
-
-logger( buildFileRootPath );
 
 var colors = require( "colors" );
 

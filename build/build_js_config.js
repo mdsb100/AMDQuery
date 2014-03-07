@@ -12,8 +12,6 @@ exports.pathVariable = {
 
 }
 
-exports.debug = false;
-
 exports.defines = {
 	document: {
 		path: "../document/assets/source/js/main.js",

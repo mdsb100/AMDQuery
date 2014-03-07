@@ -218,7 +218,7 @@ JSBuilder.prototype = {
 				return;
 			}
 			oye.setPath( jsBuilder.originOyeOpt );
-			callback( name, moduleList, minPath, minContent, deubugPath, content );
+			callback && callback( name, moduleList, minPath, minContent, deubugPath, content );
 		} );
 
 	}
