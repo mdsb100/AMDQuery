@@ -229,3 +229,12 @@ JSBuilder.prototype = {
 };
 
 exports.JSBuilder = JSBuilder;
+
+exports.fixPath = function( item, relativePath, rooPath ) {
+	var rsuffix = /^\//;
+	if ( rsuffix.test( item ) ) {
+		return PATH.join( rooPath, item.replace( rsuffix, "" ) );
+	} else {
+		return PATH.join( PATH.dirname( relativePath ), item );
+	}
+}

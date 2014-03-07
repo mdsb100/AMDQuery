@@ -251,7 +251,8 @@
  				content = "";
  			if ( script ) {
  				if ( script.attribs && script.attribs[ "src" ] ) {
- 					content += FSE.readFileSync( PATH.join( htmlInfo.appProjectPath, script.attribs[ "src" ] ) ).toString() + "\n";
+ 					var path = util.fixPath( script.attribs[ "src" ], htmlInfo.htmlPath, projectRootPath );
+ 					content += FSE.readFileSync( path ).toString() + "\n";
  				} else {
  					if ( script.children && script.children[ 0 ] ) {
  						content += script.children[ 0 ].data + "\n";
@@ -414,13 +415,8 @@
  		CSSPathList = XMLAndCSSPathList.cssPathList;
 
  	pathList.forEach( function( item, index ) {
- 		var path = "";
- 		//绝对路径 项目路径下
- 		if ( /^\//.test( item ) ) {
- 			path = PATH.join( amdqueryPath, "..", item.replace( /^\//, "" ) );
- 		} else {
- 			path = PATH.join( PATH.dirname( htmlInfo.htmlPath ), item );
- 		}
+ 		var path = util.fixPath( item, htmlInfo.htmlPath, projectRootPath );
+
  		console.log( "buildAppCss css path:", path );
  		resultPath.push( path );
  	} );
@@ -758,7 +754,7 @@
  }
 
  if ( !apps.length ) {
-  console.log( "No application to build" );
+ 	console.log( "No application to build" );
  }
 
  main();
