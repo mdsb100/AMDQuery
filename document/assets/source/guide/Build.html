@@ -220,6 +220,8 @@ root
             <ul class="guide">
               <li><a href="#Overview">Overview</a>
               </li>
+              <li><a href="#Quick">Quick Start</a>
+              </li>
               <li><a href="#Config">Config</a>
               </li>
               <li><a href="#Detail">Detail</a>
@@ -235,10 +237,47 @@ root
               <br />If you want to build your own js file or css file, you can refer to <a target="_blank" href="https://github.com/mishoo/UglifyJS">uglifyOptions</a> and <a target="_blank" href="https://github.com/GoalSmashers/clean-css">cleanCssOptions</a>.
             </p>
 
-            <h2 name="Config">Config</h2>
-            <p>Reference "build_config.js". "apps" is an array, each of which is object.
+            <h2 name="Quick">Quick Start</h2>
+            <p>
+            Download nodejs and install nodejs. Open terminal and cd directory of amdquery project, <strong>cd build</strong>.
+            Input <strong>"npm install"</strong> or <strong>"sudo npm install"</strong> in terminal before start building. NPM will download and install some node modules.
+            Input <strong>"node build_app.js build_app_config.js"</strong> and watch the log.
+            Look the directory: build/dist/apps.
             </p>
-            <pre class="prettyprint">
+
+            <h2 name="Config">Config</h2>
+            <ul class="ul">
+              <li>
+                <h4>amdqueryPath</h4>
+                <p>Configure amdquery.js path. It is relative of build_js.js .</p>
+                <p>exports.amdqueryPath = '../amdquery/'; (--amdquery)</p>
+              </li>
+              <li>
+                <h4>projectRootPath</h4>
+                <p>Configure project root path. It is relative of build_js.js .</p>
+                <p>exports.projectRootPath = '../'; (--root)</p>
+                <p>It is important: "projectRootPath" is sever root.</p>
+              </li>
+              <li>
+                <h4>distPath</h4>
+                <p>All build files will save to distPath. It is relative of build.js .</p>
+                <p>exports.distPath = 'dist/'; (--dist)</p>
+              </li>
+              <li>
+                <h4>pathVariable</h4>
+                <p>exports path to load js. "@app" will parse to "../document/app" when you use "require(@app/index.js)"</p>
+                <pre class="prettyprint">
+{
+  "@app":"../document/app",
+  "@mypath:":"../test/app"
+}
+            </pre>
+            </li>
+
+            <li>
+              <h4>apps</h4>
+              <p>apps is an array of config.</p>
+              <pre class="prettyprint">
 {
   name: "document",
   path: "../document/app.html",
@@ -385,6 +424,22 @@ var aQueryConfig = {
 }
                 </pre>
               </li>
+            </ul>
+            </li>
+            <li>
+              <h4>uglifyOptions</h4>
+              <p>
+                <a class="swip_to_options">
+                  <img src="../images/right.png" width="13px" height="13px" />"cleanCss And uglify options"</a>
+              </p>
+            </li>
+            <li>
+              <h4>cleanCssOptions</h4>
+              <p>
+                <a class="swip_to_options">
+                  <img src="../images/right.png" width="13px" height="13px" />"cleanCss And uglify options"</a>
+              </p>
+            </li>
             </ul>
 
             <div class="admonition-note">
@@ -657,9 +712,14 @@ var bTest = "Test buildLibJSFromHead";
             <p>
               In terminal, cd build directory, "npm install" or "sudo npm install". Jake is automatically installed for global.
               <br />Input "jake", you will see building options.
-              <br />"jake build[build_config.js]"   build application and javascript
-              <br />"jake ui_css"                   build css of widget-ui
-              <br />"jake jsdoc"                    build javascript api document
+              <br /><strong>jake buildapp[*.js(config file)]           </strong> &nbsp&nbsp&nbsp build application
+              <br /><strong>jake buildapp                              </strong> &nbsp&nbsp&nbsp default is build_app_config.js
+              <br /><strong>jake buildjs[*.js(config file)]            </strong> &nbsp&nbsp&nbsp build javascript
+              <br /><strong>jake buildjs                               </strong> &nbsp&nbsp&nbsp default is build_js_config.js
+              <br /><strong>jake jsdoc[default|amdquery(template name)]</strong> &nbsp&nbsp&nbsp build javascript api document
+              <br /><strong>jake jsdoc                                 </strong> &nbsp&nbsp&nbsp default is amdquery
+              <br /><strong>jake ui_css                                </strong> &nbsp&nbsp&nbsp build css of widget-ui
+              <br /><strong>jake beautify[...file]                     </strong> &nbsp&nbsp&nbsp example 'jake beautify[a.html,b.css,c.xml,d.js]'
             </p>
             <h3 name="Contributor">As a Contributor</h3>
             <p>
