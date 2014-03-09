@@ -11,8 +11,10 @@ aQuery.define( "@app/controllers/apinav", [ "main/attr", "module/location", "app
 
 			this.$nav.on( "navmenu.select", function( e ) {
 				var link = attr.getAttr( e.navitem, "link" );
-				controller.linkTo( link );
-				controller._modifyLocation( link );
+				if ( link ) {
+					controller.linkTo( link );
+					controller._modifyLocation( link );
+				}
 			} ).on( "dblclick", function( e ) {
 				controller.trigger( "navmenu.dblclick", controller, {
 					type: "navmenu.dblclick",
