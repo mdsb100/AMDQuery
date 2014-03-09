@@ -39,7 +39,7 @@ aQuery.define( "ui/navmenu", [
 							self.target.trigger( type, target[ 0 ], para );
 							break;
 						case "navitem.select":
-							self.changeSelectedNavItem( e.target );
+							self.selectNavItem( e.target );
 							break;
 					}
 				};
@@ -128,32 +128,30 @@ aQuery.define( "ui/navmenu", [
 			getNavItemList: function() {
 				return this.target.find( "li[ui-navitem]" ).reverse().eles;
 			},
-			selectNavItem: function( target ) {
+			selectNavItem: function( target, isTrigger ) {
 				var $target = $( this.getNavItem( target ) || [] ),
 					opt = this.options;
 				if ( $target.isWidget( "ui.navitem" ) ) {
 					if ( opt.selectedNavItem && opt.selectedNavItem !== target ) {
 						$( opt.selectedNavItem ).uiNavitem( "cancel" );
 					}
-					$target.uiNavitem( "select" );
-					opt.selectedNavItem = $target;
-				}
-			},
-			changeSelectedNavItem: function( target ) {
-				var $target = $( this.getNavItem( target ) || [] ),
-					opt = this.options;
-				if ( $target.isWidget( "ui.navitem" ) ) {
-					if ( opt.selectedNavItem && opt.selectedNavItem[0] !== target ) {
-						$( opt.selectedNavItem ).uiNavitem( "cancel" );
+
+					if ( !opt.selectedNavItem || opt.selectedNavItem !== target ) {
+						opt.selectedNavItem = target;
+						$target.uiNavitem( "select" );
+
+						if ( isTrigger === undefined ) {
+							isTrigger = true;
+						}
+						if ( isTrigger ) {
+							var para = {
+								navitem: target
+							}, type;
+
+							type = para.type = this.getEventName( "select" );
+							this.target.trigger( type, this.target[ 0 ], para );
+						}
 					}
-					opt.selectedNavItem = $target;
-
-					var para = {
-						navitem: target
-					}, type;
-
-					type = para.type = this.getEventName( "select" );
-					this.target.trigger( type, this.target[ 0 ], para );
 				}
 			},
 			init: function( opt, target ) {
@@ -205,8 +203,7 @@ aQuery.define( "ui/navmenu", [
 				selectNavItem: Widget.AllowPublic,
 				refreshNavItem: Widget.AllowPublic,
 				addNavItem: Widget.AllowPublic,
-				removeNavItem: Widget.AllowPublic,
-				changeSelectedNavItem: Widget.AllowPublic
+				removeNavItem: Widget.AllowPublic
 			},
 			customEventName: [ "open", "close" ],
 			target: null,
