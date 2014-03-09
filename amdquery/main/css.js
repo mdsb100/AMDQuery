@@ -114,16 +114,25 @@ aQuery.define( "main/css", [ "base/typed", "base/extend", "base/array", "base/su
 			return ret === "" ? "auto" : ret;
 		};
 	}
-
+	/**
+	 * @exports main/css
+	 * @requires module:base/typed
+	 * @requires module:base/extend
+	 * @requires module:base/array
+	 * @requires module:base/support
+	 * @requires module:base/client
+	 * @requires module:main/data
+	 * @requires module:main/query
+	 */
 	var css = {
+		/**
+		 * Get or set style from Element.
+		 * @param {Element}
+		 * @param {String} - style name: "margin-left" or "marginLeft"
+		 * @param {String|Number}
+		 * @returns {this}
+		 */
 		css: function( ele, name, value, style, extra ) {
-			/// <summary>为元素添加样式</summary>
-			/// <param name="ele" type="Element">元素</param>
-			/// <param name="name" type="String">样式名</param>
-			/// <param name="value" type="str/num">值</param>
-			/// <param name="style" type="Object">样式表</param>
-			/// <param name="extra" type="Boolean">是否返回num</param>
-			/// <returns type="self" />
 			if ( !ele || ele.nodeType === 3 || ele.nodeType === 8 || !ele.style ) {
 				return;
 			}
@@ -177,6 +186,14 @@ aQuery.define( "main/css", [ "base/typed", "base/extend", "base/array", "base/su
 				return this;
 			}
 		},
+		/**
+		 * Get current style from Element.
+		 * @method curCss
+		 * @memberOf module:main/css
+		 * @param ele {Element}
+		 * @param name {String} - style name: "margin-left" or "marginLeft"
+		 * @returns {this}
+		 */
 		curCss: curCSS,
 		cssProps: cssProps,
 		style: function( ele, type, head ) {
