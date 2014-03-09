@@ -369,10 +369,9 @@
 
  	console.log( ( '\r\nBuild "' + htmlInfo.appName + '" js file' ).red );
 
- 	htmlInfo.AMDQueryJSPath = PATH.join( AMDQueryPath, "amdquery" );
- 	htmlInfo.AMDQueryJSRelativeHTMLPath = "../amdquery/amdquery";
+ 	htmlInfo.AMDQueryJSPath = PATH.join( AMDQueryPath );
 
- 	jsBuilder.launch( htmlInfo.appName, htmlInfo.AMDQueryJSPath, htmlInfo.appConfig.src, function( name, moduleList, minPath, minContent, deubugPath, content ) {
+ 	jsBuilder.launch( "amdquery", htmlInfo.AMDQueryJSPath, htmlInfo.appConfig.src, function( name, moduleList, minPath, minContent, deubugPath, content ) {
  		var XMLAndCSSPathList = getXMLAndCSS( htmlInfo, moduleList );
  		buildAppXML( null, appConfig, htmlInfo, XMLAndCSSPathList );
  	} );
@@ -580,6 +579,7 @@
 
  				if ( appConfig.debug ) {
  					config.src = PATH.join( PATH.dirname( config.src ), PATH.basename( config.src, '.js' ) + DebugJSSuffix );
+          htmlInfo.AMDQueryJSRelativeHTMLPath = config.src;
  				}
 
  				config.app = formatToAttr( appObject );
