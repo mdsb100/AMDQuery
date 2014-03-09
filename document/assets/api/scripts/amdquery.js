@@ -18799,7 +18799,7 @@ aQuery.define( "ui/scrollableview", [
 			"hideStatusBar": Widget.AllowPublic,
 			"render": Widget.AllowPublic,
 			"getAnimationToElementByName": Widget.AllowReturn,
-      "getAnimationToElementById": Widget.AllowReturn,
+			"getAnimationToElementById": Widget.AllowReturn,
 			"animateToElement": Widget.AllowPublic,
 			"toH": Widget.AllowPublic,
 			"toV": Widget.AllowPublic,
@@ -21049,7 +21049,7 @@ aQuery.define( "module/location", [ "base/extend", "main/parse" ], function( $, 
 		 */
 		setHash: function( key, value ) {
 			this.hash[ key ] = value + "";
-			var str = hashToString( this.hash, SPLIT_MARK, EQUALS_MARK );
+			var str = key === SHARP ? value : hashToString( this.hash, SPLIT_MARK, EQUALS_MARK );
 			_location.hash = str;
 			this.hash[ SHARP ] = str;
 			return this;
