@@ -141,7 +141,7 @@
 
         $.extend({
           pic: function() {
-            $.showMsg("自己写的JQuery测试extend");
+
           }
         })
         $.pic();
@@ -213,7 +213,7 @@
         }, 'div', document.body)
           .addClass('css2')
           .addHandler('click', function() {
-            di.antonymVisible();
+            di.toggleVisible();
             var j = $("div:hidden");
             var k = $("div:visible");
           }).data("test1", "500");

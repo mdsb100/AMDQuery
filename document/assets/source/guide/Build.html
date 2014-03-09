@@ -37,8 +37,6 @@
               </li>
               <li><a href="#Quick">Quick Start</a>
               </li>
-              <li><a href="#Browser">Broswer html</a>
-              </li>
               <li><a href="#Dependencies">Build Dependencies</a>
               </li>
               <li><a href="#Config">Config</a>
@@ -58,57 +56,44 @@
             <h3 name="Quick">Quick Start</h3>
             <p>Download nodejs and install nodejs. Open terminal and cd directory of amdquery project, <strong>cd build</strong>.</p>
             <p>Input <strong>"npm install"</strong> or <strong>"sudo npm install"</strong> in terminal before start building. NPM will download and install some node modules.</p>
-            <p>Input <strong>"node build.js build_config.js"</strong> and watch the log.
-              <p/>
-              <p>Look the directory: build/dist/defines. Look over "test.js" and "test.debug.js".
-                <p/>
-                <p>cd "dist/apps/document/document", open the "app.html" with a broswer.
-                  <p/>
+            <p>Input <strong>"node build_js.js build_js_config.js"</strong> and watch the log.<p/>
+            <p>Look the directory: build/dist/defines. Look over "test.js" and "test.debug.js".<p/>
 
-                  <h3 name="Browser">Broswer html</h3>
-                  <p>Quick start a web server. Input "npm install -g <a target="_blank" href="https://github.com/senchalabs/connect">connect</a>" or "sudo npm install -g <a target="_blank" href="https://github.com/senchalabs/connect">connect</a>". cd root
-                    of amdquery directory, input "node server.js". Open browser and input
-                    <Strong>"http://localhost:8080/document/app.html"</Strong> or open
-                    <Strong>"build/dist/apps/document/document/app.html"</Strong> by browser after built. You should collect the address in browser.</p>
-                  <p>The
-                    <a class="swip_to_app">
-                      <img src="../images/right.png" width="13px" height="13px" />"Build Application"</a>has detail guide.</p>
-
-                  <h3 name="Dependencies">Build Dependencies</h3>
-                  <p>There are node modules to support Build. The "UglifyJS" be used to minify js and detect syntax error. The clean-css be used to minify css. The "trumpet" be used to parse HTML and compile HTML.</p>
-                  <p>If you want more infomation, please click the link and read "build.js".</p>
-                  <ul class="guide" style="margin-top: 0">
-                    <li><a target="_blank" href="http://http://www.nodejs.org//">nodejs</a><span>>0.8.8</span>
-                    </li>
-                    <li><a target="_blank" href="https://github.com/isaacs/node-glob">glob</a><span>>3.x.x</span>
-                    </li>
-                    <li><a target="_blank" href="https://github.com/caolan/async">async</a><span>>0.0.0</span>
-                    </li>
-                    <li><a target="_blank" href="https://github.com/mishoo/UglifyJS">uglify-js</a><span>~1.x.x</span>
-                    </li>
-                    <li><a target="_blank" href="https://github.com/GoalSmashers/clean-css">clean-css</a><span>>0.0.0</span>
-                    </li>
-                    <li><a target="_blank" href="https://github.com/substack/node-trumpet">trumpet</a><span>>0.0.0</span>
-                    </li>
-                    <li><a target="_blank" href="https://github.com/jashkenas/underscore">underscore</a><span>>0.0.0</span>
-                    </li>
-                    <li><a target="_blank" href="https://github.com/jprichardson/node-fs-extra">fs-extra</a><span>>0.0.0</span>
-                    </li>
-                    <li><a target="_blank" href="https://github.com/dominictarr/through">through</a><span>~2.3.4</span>
-                    </li>
-                    <li><a target="_blank" href="https://github.com/maxogden/node-concat-stream">concat-stream</a><span>~1.0.0</span>
-                    </li>
-                    <li><a target="_blank" href="https://github.com/Marak/colors.js">colors</a><span>>=0.6.2</span>
-                    </li>
-                    <li><a target="_blank" href="https://github.com/tautologistics/node-htmlparser">htmlparser</a><span>>=1.7.6</span>
-                    </li>
-                    <li><a target="_blank" href="https://github.com/mde/jake">jake</a><span>Lastest</span>
-                    </li>
-                  </ul>
-                  <h2 name="Config">Config</h2>
-                  <p>This guide would explain how to config build.</p>
-                  <p>cd "build/", open "build_config.js".</p>
-                  <pre class="prettyprint" name="DirectoryStructure">
+            <h3 name="Dependencies">Build Dependencies</h3>
+            <p>There are node modules to support Build. The "UglifyJS" be used to minify js and detect syntax error. The clean-css be used to minify css. The "trumpet" be used to parse HTML and compile HTML.</p>
+            <p>If you want more infomation, please click the link and read "build_js.js" or "build_app.js".</p>
+            <ul class="guide" style="margin-top: 0">
+              <li><a target="_blank" href="http://http://www.nodejs.org//">nodejs</a><span>>0.8.8</span>
+              </li>
+              <li><a target="_blank" href="https://github.com/isaacs/node-glob">glob</a><span>>3.x.x</span>
+              </li>
+              <li><a target="_blank" href="https://github.com/caolan/async">async</a><span>>0.0.0</span>
+              </li>
+              <li><a target="_blank" href="https://github.com/mishoo/UglifyJS">uglify-js</a><span>~1.x.x</span>
+              </li>
+              <li><a target="_blank" href="https://github.com/GoalSmashers/clean-css">clean-css</a><span>>0.0.0</span>
+              </li>
+              <li><a target="_blank" href="https://github.com/substack/node-trumpet">trumpet</a><span>>0.0.0</span>
+              </li>
+              <li><a target="_blank" href="https://github.com/jashkenas/underscore">underscore</a><span>>0.0.0</span>
+              </li>
+              <li><a target="_blank" href="https://github.com/jprichardson/node-fs-extra">fs-extra</a><span>>0.0.0</span>
+              </li>
+              <li><a target="_blank" href="https://github.com/dominictarr/through">through</a><span>~2.3.4</span>
+              </li>
+              <li><a target="_blank" href="https://github.com/maxogden/node-concat-stream">concat-stream</a><span>~1.0.0</span>
+              </li>
+              <li><a target="_blank" href="https://github.com/Marak/colors.js">colors</a><span>>=0.6.2</span>
+              </li>
+              <li><a target="_blank" href="https://github.com/tautologistics/node-htmlparser">htmlparser</a><span>>=1.7.6</span>
+              </li>
+              <li><a target="_blank" href="https://github.com/mde/jake">jake</a><span>Lastest</span>
+              </li>
+            </ul>
+            <h2 name="Config">Config</h2>
+            <p>This guide would explain how to config build.</p>
+            <p>cd "build/", open "build_config.js".</p>
+            <pre class="prettyprint" name="DirectoryStructure">
 Directory Structure
 root
   |- amdquery
@@ -116,8 +101,10 @@ root
   |- document
   |- global
   |- build
-      |- build.js
-      |- build_config.js
+      |- build_js.js
+      |- build_js_config.js
+      |- build_app.js
+      |- build_app_config.js
       |- test
          \- test.js
       \- dist
@@ -142,47 +129,39 @@ root
                   \- global
                       |- js
                       \- styles
-                 </pre>
-                  <ul class="ul">
-                    <li>
-                      <h4>amdqueryPath</h4>
-                      <p>Configure amdquery.js path. It is relative of build.js .</p>
-                      <p>exports.amdqueryPath = '../amdquery/'; (--amdquery)</p>
-                    </li>
-                    <li>
-                      <h4>projectRootPath</h4>
-                      <p>Configure project root path. It is relative of build.js .</p>
-                      <p>exports.projectRootPath = '../../'; (--root)</p>
-                    </li>
-                    <li>
-                      <h4>distPath</h4>
-                      <p>All build files will save to distPath. It is relative of build.js .</p>
-                      <p>exports.distPath = 'dist/'; (--dist)</p>
-                    </li>
-                    <li>
-                      <h4>pathVariable</h4>
-                      <p>exports path to load js. "@app" will parse to "../document/app" when you use "require(@app/index.js)"</p>
-                      <pre class="prettyprint">
+            </pre>
+
+            <ul class="ul">
+              <li>
+                <h4>amdqueryPath</h4>
+                <p>Configure amdquery.js path. It is relative of build_js.js .</p>
+                <p>exports.amdqueryPath = '../amdquery/'; (--amdquery)</p>
+              </li>
+              <li>
+                <h4>projectRootPath</h4>
+                <p>Configure project root path. It is relative of build_js.js .</p>
+                <p>exports.projectRootPath = '../'; (--root)</p>
+                <p>It is important: "projectRootPath" is sever root.</p>
+              </li>
+              <li>
+                <h4>distPath</h4>
+                <p>All build files will save to distPath. It is relative of build.js .</p>
+                <p>exports.distPath = 'dist/'; (--dist)</p>
+              </li>
+              <li>
+                <h4>pathVariable</h4>
+                <p>exports path to load js. "@app" will parse to "../document/app" when you use "require(@app/index.js)"</p>
+                <pre class="prettyprint">
 {
   "@app":"../document/app",
   "@mypath:":"../test/app"
 }
-                      </pre>
-                    </li>
-                    <li>
-                      <h4>debug</h4>
-                      <p>whether print log, true or false</p>
-                    </li>
-                    <li>
-                      <h4>apps</h4>
-                      <p>
-                        <a class="swip_to_app">
-                          <img src="../images/right.png" width="13px" height="13px" />"Build Application"</a>
-                      </p>
-                    </li>
-                    <li>
-                      <h4>defines</h4>
-                      <pre class="prettyprint">
+            </pre>
+            </li>
+
+            <li>
+              <h4>defines</h4>
+              <pre class="prettyprint">
 {
   //The "document" is name of dist javascript which will be create in directory "defines".
   document: {
@@ -191,52 +170,48 @@ root
     //The "directory" is array of folder, Building would include all of js under the item-folder.It is relative "amdquery.js".
     directory: [ "ui/" ],
     //The "complete" function will be call when building complete.
-    complete: function( minPath, minContent, deubugPath, debugContent ) {
+    complete: function( moduleList, minPath, minContent, debugPath, debugContent ) {
       var FSE = require( 'fs-extra' );
       var path = "../document/assets/source/js/amdquery.js";
       FSE.writeFile( path, debugContent );
     }
   }
 }
-                      </pre>
-                    </li>
-                    <li>
-                      <h4>uglifyOptions</h4>
-                      <p>
-                        <a class="swip_to_options">
-                          <img src="../images/right.png" width="13px" height="13px" />"cleanCss And uglify options"</a>
-                      </p>
-                    </li>
-                    <li>
-                      <h4>cleanCssOptions</h4>
-                      <p>
-                        <a class="swip_to_options">
-                          <img src="../images/right.png" width="13px" height="13px" />"cleanCss And uglify options"</a>
-                      </p>
-                    </li>
-                  </ul>
-                  <h2 name="Anonymous">Anonymous Module Define</h2>
-                  <p>
-                    If you define a module without name, build would add the name which is file name. So javascript can parse successive module by a combination js file.
-                    Best practices is defination the name of each module.
-                  </p>
-                  <h2 name="Detail">Build Detail</h2>
-                  <p>1.Read base amdquery.js . we should get the content of amdquery.js, amdquery.js is basal. It began in the file.
-                    <br />If you want to start using "AMDQuery", you must first load the "amdquery.js". So Build will be a top priority loaded and stored in the file start position.
-                  </p>
-                  <p>2.Build defines. Get the main of js from config. Path is "../document/app/assets/source/js/scrollTo.js"
-                    <br />The "scrollTo.js" require "[ "main/query", "hash/locationHash", "ui/swapview", "ui/scrollableview" ]".
-                    <br />The "oye.node" will find and load these js file, detect dependencies of these js.
-                    <br />Finally, get the all of js then combine to a stream.
-                  </p>
-                  <p>3.Save js file.According to config, to save js. For this example:
-                    <br />save "test.debug.js" into "dist/defines". "test.debug.js" is not compress, it could debug.
-                    <br />save "test.js" into "dist/defines". "test.js" is compress.
-                  </P>
-                  <p>4. If you increase the "complete" function in the configuration, You can do some interesting things after the build is completed.
-                    <br />For this example, I write the contents to a new file.
-                  </p>
-                  <a float="false" href="#Definition" class="Top">Top</a>
+            </pre>
+            </li>
+            <li>
+              <h4>uglifyOptions</h4>
+              <p>
+                <a class="swip_to_options">
+                  <img src="../images/right.png" width="13px" height="13px" />"cleanCss And uglify options"</a>
+              </p>
+            </li>
+            </ul>
+            <h2 name="Anonymous">Anonymous Module Define</h2>
+            <div class="admonition-note">
+              <strong>
+                If you define a module without name, build would add the name which is file name. So javascript can parse successive module by a combination js file.
+                <br />Best practices is defination the name of each module.
+                <br />Define a module using a relative path. Module path is relatived "amdquery.js".
+              </strong>
+            </div>
+            <h2 name="Detail">Build Detail</h2>
+            <p>1.Read base amdquery.js . we should get the content of amdquery.js, amdquery.js is basal. It began in the file.
+              <br />If you want to start using "AMDQuery", you must first load the "amdquery.js". So Build will be a top priority loaded and stored in the file start position.
+            </p>
+            <p>2.Build defines. Get the main of js from config. Path is "../document/app/assets/source/js/scrollTo.js"
+              <br />The "scrollTo.js" require "[ "main/query", "hash/locationHash", "ui/swapview", "ui/scrollableview" ]".
+              <br />The "oye.node" will find and load these js file, detect dependencies of these js.
+              <br />Finally, get the all of js then combine to a stream.
+            </p>
+            <p>3.Save js file.According to config, to save js. For this example:
+              <br />save "test.debug.js" into "dist/defines". "test.debug.js" is not compress, it could debug.
+              <br />save "test.js" into "dist/defines". "test.js" is compress.
+            </P>
+            <p>4. If you increase the "complete" function in the configuration, You can do some interesting things after the build is completed.
+              <br />For this example, I write the contents to a new file.
+            </p>
+            <a float="false" href="#Definition" class="Top">Top</a>
           </div>
         </li>
         <li>
@@ -244,6 +219,8 @@ root
             <h1 name="Application">Building Application</h1>
             <ul class="guide">
               <li><a href="#Overview">Overview</a>
+              </li>
+              <li><a href="#Quick">Quick Start</a>
               </li>
               <li><a href="#Config">Config</a>
               </li>
@@ -260,10 +237,47 @@ root
               <br />If you want to build your own js file or css file, you can refer to <a target="_blank" href="https://github.com/mishoo/UglifyJS">uglifyOptions</a> and <a target="_blank" href="https://github.com/GoalSmashers/clean-css">cleanCssOptions</a>.
             </p>
 
-            <h2 name="Config">Config</h2>
-            <p>Reference "build_config.js". "apps" is an array, each of which is object.
+            <h2 name="Quick">Quick Start</h2>
+            <p>
+            Download nodejs and install nodejs. Open terminal and cd directory of amdquery project, <strong>cd build</strong>.
+            Input <strong>"npm install"</strong> or <strong>"sudo npm install"</strong> in terminal before start building. NPM will download and install some node modules.
+            Input <strong>"node build_app.js build_app_config.js"</strong> and watch the log.
+            Look the directory: build/dist/apps.
             </p>
-            <pre class="prettyprint">
+
+            <h2 name="Config">Config</h2>
+            <ul class="ul">
+              <li>
+                <h4>amdqueryPath</h4>
+                <p>Configure amdquery.js path. It is relative of build_js.js .</p>
+                <p>exports.amdqueryPath = '../amdquery/'; (--amdquery)</p>
+              </li>
+              <li>
+                <h4>projectRootPath</h4>
+                <p>Configure project root path. It is relative of build_js.js .</p>
+                <p>exports.projectRootPath = '../'; (--root)</p>
+                <p>It is important: "projectRootPath" is sever root.</p>
+              </li>
+              <li>
+                <h4>distPath</h4>
+                <p>All build files will save to distPath. It is relative of build.js .</p>
+                <p>exports.distPath = 'dist/'; (--dist)</p>
+              </li>
+              <li>
+                <h4>pathVariable</h4>
+                <p>exports path to load js. "@app" will parse to "../document/app" when you use "require(@app/index.js)"</p>
+                <pre class="prettyprint">
+{
+  "@app":"../document/app",
+  "@mypath:":"../test/app"
+}
+            </pre>
+            </li>
+
+            <li>
+              <h4>apps</h4>
+              <p>apps is an array of config.</p>
+              <pre class="prettyprint">
 {
   name: "document",
   path: "../document/app.html",
@@ -410,6 +424,22 @@ var aQueryConfig = {
 }
                 </pre>
               </li>
+            </ul>
+            </li>
+            <li>
+              <h4>uglifyOptions</h4>
+              <p>
+                <a class="swip_to_options">
+                  <img src="../images/right.png" width="13px" height="13px" />"cleanCss And uglify options"</a>
+              </p>
+            </li>
+            <li>
+              <h4>cleanCssOptions</h4>
+              <p>
+                <a class="swip_to_options">
+                  <img src="../images/right.png" width="13px" height="13px" />"cleanCss And uglify options"</a>
+              </p>
+            </li>
             </ul>
 
             <div class="admonition-note">
@@ -682,9 +712,14 @@ var bTest = "Test buildLibJSFromHead";
             <p>
               In terminal, cd build directory, "npm install" or "sudo npm install". Jake is automatically installed for global.
               <br />Input "jake", you will see building options.
-              <br />"jake build[build_config.js]"   build application and javascript
-              <br />"jake ui_css"                   build css of widget-ui
-              <br />"jake jsdoc"                    build javascript api document
+              <br /><strong>jake buildapp[*.js(config file)]           </strong> &nbsp&nbsp&nbsp build application
+              <br /><strong>jake buildapp                              </strong> &nbsp&nbsp&nbsp default is build_app_config.js
+              <br /><strong>jake buildjs[*.js(config file)]            </strong> &nbsp&nbsp&nbsp build javascript
+              <br /><strong>jake buildjs                               </strong> &nbsp&nbsp&nbsp default is build_js_config.js
+              <br /><strong>jake jsdoc[default|amdquery(template name)]</strong> &nbsp&nbsp&nbsp build javascript api document
+              <br /><strong>jake jsdoc                                 </strong> &nbsp&nbsp&nbsp default is amdquery
+              <br /><strong>jake ui_css                                </strong> &nbsp&nbsp&nbsp build css of widget-ui
+              <br /><strong>jake beautify[...file]                     </strong> &nbsp&nbsp&nbsp example 'jake beautify[a.html,b.css,c.xml,d.js]'
             </p>
             <h3 name="Contributor">As a Contributor</h3>
             <p>

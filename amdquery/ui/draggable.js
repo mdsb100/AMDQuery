@@ -50,7 +50,7 @@
 		initPositionParent = function() {
 			var result;
 			this.target.parents().each( function( ele ) {
-				switch ( $.style( ele, "position" ) ) {
+				switch ( css.style( ele, "position" ) ) {
 					case "absolute":
 					case "relative":
 						result = ele;
@@ -59,7 +59,7 @@
 			} );
 			if ( !result ) {
 				result = document.body;
-				$.css( result, "position", "relative" );
+				css.css( result, "position", "relative" );
 			}
 
 			this.positionParent = $( result );

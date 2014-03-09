@@ -1,4 +1,35 @@
-aQuery.define( "main/css", [ "base/typed", "base/extend", "base/array", "base/support", "base/client", "main/data", "main/query" ], function( $, typed, utilExtend, utilArray, support, client, utilData, query, undefined ) {
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: main/css.js</title>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="../../../global/styles/reset.css" />
+    <link type="text/css" rel="stylesheet" href="../../../global/styles/prettify-tomorrow.css" />
+    <link type="text/css" rel="stylesheet" href="../../../amdquery/ui/css/widget-ui.css" />
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+    <script src="../../../global/js/prettify.js" type="text/javascript"></script>
+    <script src="../../../global/js/lang-css.js"></script>
+    <script src="scripts/amdquery.js" amdquery="debug:false;" amd="detectCR=1" module="transitionToAnimation:1" ui="initWidget:1;isTransform3d:0;autoFetchCss:0"> </script>
+    <script src="scripts/main.js"> </script>
+</head>
+
+<body style="width: 100%; height: 100%;" onload="prettyPrint()">
+
+<div id="main" style="width: 100%; height: 100%;" amdquery-widget="ui.scrollableview" ui-scrollableview="orientation:V;enableKeyboard:true;focus:true">
+
+    <h1 id="page-title" name="page-title" class="page-title">Source: main/css.js</h1>
+
+    
+
+
+    
+    <section>
+        <a float="false" id="Back" class="Back">Back</a>
+        <article>
+            <pre class="prettyprint source">aQuery.define( "main/css", [ "base/typed", "base/extend", "base/array", "base/support", "base/client", "main/data", "main/query" ], function( $, typed, utilExtend, utilArray, support, client, utilData, query, undefined ) {
 	"use strict";
 	this.describe( "consult JQuery1.9.1" );
 	var rnumnonpx = /^-?(?:\d*\.)?\d+(?!px)[^\d\s]+$/i,
@@ -42,7 +73,7 @@ aQuery.define( "main/css", [ "base/typed", "base/extend", "base/array", "base/su
 				}
 
 				// A tribute to the "awesome hack by Dean Edwards"
-				// Chrome < 17 and Safari 5.0 uses "computed value" instead of "used value" for margin-right
+				// Chrome &lt; 17 and Safari 5.0 uses "computed value" instead of "used value" for margin-right
 				// Safari 5.1.7 (at least) returns percentage for a larger set of values, but width seems to be reliably pixels
 				// this is against the CSSOM draft spec: http://dev.w3.org/csswg/cssom/#resolved-values
 				if ( rnumnonpx.test( ret ) && rmargin.test( name ) ) {
@@ -211,7 +242,7 @@ aQuery.define( "main/css", [ "base/typed", "base/extend", "base/array", "base/su
 		 * @method getStyles
 		 * @memberOf module:main/css
 		 * @param {Element}
-		 * @returns {Object<String,String>}
+		 * @returns {Object&lt;String,String>}
 		 */
 		getStyles: getStyles,
 
@@ -315,11 +346,11 @@ aQuery.define( "main/css", [ "base/typed", "base/extend", "base/array", "base/su
 		},
 		/**
 		 * Swap Element style.
-		 * <br />Set options`s style to element.
-		 * <br />do callback.
-		 * <br />Swap origin style to element.
+		 * &lt;br />Set options`s style to element.
+		 * &lt;br />do callback.
+		 * &lt;br />Swap origin style to element.
 		 * @param {Element}
-		 * @param {Object<String, String|Number>}
+		 * @param {Object&lt;String, String|Number>}
 		 * @param {Function}
 		 * @param {Array=} - Callback arguments
 		 * @returns {*} - return callback result;
@@ -351,7 +382,7 @@ aQuery.define( "main/css", [ "base/typed", "base/extend", "base/array", "base/su
 		 * @variation 1
 		 * @method css
 		 * @memberOf aQuery.prototype
-		 * @param styles {Object<String,String|Number>}
+		 * @param styles {Object&lt;String,String|Number>}
 		 * @returns {this}
 		 */
 
@@ -410,7 +441,7 @@ aQuery.define( "main/css", [ "base/typed", "base/extend", "base/array", "base/su
 		},
 		/**
 		 * Get style table from first Element.
-		 * @returns {Object<String,String>}
+		 * @returns {Object&lt;String,String>}
 		 */
 		getStyles: function() {
 			return css.getStyles( this[ 0 ] );
@@ -468,8 +499,8 @@ aQuery.define( "main/css", [ "base/typed", "base/extend", "base/array", "base/su
 		 * @returns {this}
 		 */
 		show: function() {
-			/// <summary>显示所有元素</summary>
-			/// <returns type="self" />
+			/// &lt;summary>显示所有元素&lt;/summary>
+			/// &lt;returns type="self" />
 			return this.each( function( ele ) {
 				css.show( ele );
 			} );
@@ -511,4 +542,28 @@ aQuery.define( "main/css", [ "base/typed", "base/extend", "base/array", "base/su
 	} );
 
 	return css;
-} );
+} );</pre>
+        </article>
+        <script type="text/javascript">
+          var Back = document.getElementById("Back");
+          if (Back){
+            Back.onclick = function(){
+              if (window.history && window.history.length) {
+                window.history.back();
+              }
+            }
+          }
+        </script>
+    </section>
+
+
+
+
+
+    <a float="false" href="#page-title" class="Top">Top</a>
+</div>
+
+<br clear="both">
+
+</body>
+</html>

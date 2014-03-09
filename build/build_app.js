@@ -1,39 +1,12 @@
  var buildConfig = {
  	debug: false,
  	amdqueryPath: '../amdquery/',
- 	projectRootPath: '../../',
+ 	projectRootPath: '../', // server root
  	distPath: 'dist/',
  	pathVariable: {
 
  	},
- 	apps: {},
- 	defines: {},
- 	uglifyOptions: {
- 		strict_semicolons: false,
- 		mangle_options: {
- 			mangle: true,
- 			toplevel: false,
- 			defines: null,
- 			except: null,
- 			no_functions: false
- 		},
- 		squeeze_options: {
- 			make_seqs: true,
- 			dead_code: true,
- 			no_warnings: false,
- 			keep_comps: true,
- 			unsafe: false
- 		},
- 		gen_options: {
- 			indent_start: 0,
- 			indent_level: 4,
- 			quote_keys: false,
- 			space_colon: false,
- 			beautify: false,
- 			ascii_only: false,
- 			inline_script: false
- 		}
- 	},
+ 	apps: [],
  	cleanCssOptions: {
  		keepSpecialComments: "*",
  		keepBreaks: false,
@@ -41,7 +14,8 @@
  		noRebase: false,
  		noAdvanced: false,
  		selectorsMergeMode: "*"
- 	}
+ 	},
+ 	uglifyOptions: {}
  };
  var _ = require( "underscore" );
 
@@ -52,51 +26,33 @@
  var buildFileRootPath = PATH.dirname( process.argv[ 1 ] );
 
  var buildConfigFile = process.argv[ 2 ];
- if ( buildConfigFile && /\.js/.test( buildConfigFile ) ) {
- 	if ( !( /^\.*\//.test( buildConfigFile ) ) ) {
- 		buildConfigFile = PATH.join( buildFileRootPath, "build_config.js" );
- 	}
- 	buildConfigFile = require( buildConfigFile );
- 	buildConfig = _.extend( buildConfig, buildConfigFile );
+
+ if ( !buildConfigFile || !/\.js/.test( buildConfigFile ) ) {
+ 	buildConfigFile = "build_app_config.js";
  }
+ if ( !( /^\.*\//.test( buildConfigFile ) ) ) {
+ 	buildConfigFile = PATH.join( buildFileRootPath, buildConfigFile );
+ }
+ buildConfigFile = require( buildConfigFile );
+ buildConfig = _.extend( buildConfig, buildConfigFile );
 
 
  var FSE = require( 'fs-extra' );
 
  var amdqueryProjectPath = PATH.join( buildFileRootPath, ".." );
 
- //Configurate oye.js
  var amdqueryPath = PATH.join( buildFileRootPath, buildConfig.amdqueryPath );
 
  //Configurate project root path
- projectRootPath = PATH.join( buildFileRootPath, buildConfig.projectRootPath );
+ var projectRootPath = PATH.join( buildFileRootPath, buildConfig.projectRootPath );
+
+ var util = require( './lib/util.js' );
 
  var oye = require( './lib/oye.node.js' );
-
- oye.setPath( {
- 	'oyeModulePath': amdqueryPath,
- 	'projectRootPath': projectRootPath
- } );
- amdRequire = oye.require;
- amdDefine = oye.define;
 
  var logger = buildConfig.debug ? console.info : function() {};
 
  logger( buildFileRootPath );
-
- //Uglify
- var uglify = require( 'uglify-js' );
- var minify = function( orig_code ) {
- 	var options = buildConfig.uglifyOptions;
- 	var jsp = uglify.parser;
- 	var pro = uglify.uglify;
-
- 	var ast = jsp.parse( orig_code, options.strict_semicolons ); // parse code and get the initial AST
- 	ast = pro.ast_mangle( ast, options.mangle_options ); // get a new AST with mangled names
- 	ast = pro.ast_squeeze( ast, options.squeeze_options ); // get an AST with compression optimizations
- 	var final_code = pro.gen_code( ast, options.gen_options ); // compressed code here
- 	return final_code;
- };
 
  var colors = require( "colors" );
  var glob = require( "glob" );
@@ -107,119 +63,12 @@
  var beautify_html = require( "js-beautify" ).html;
  var htmlparser = require( "htmlparser" )
 
- var loadedModule = 'loaded' + ( -new Date() );
- var fileStack = {};
- fileStack[ loadedModule ] = {};
- var baseFileStack = [];
  var amdqueryContent = "";
  var AMDQueryJSPath = PATH.join( buildFileRootPath, buildConfig.amdqueryPath, "amdquery.js" );
  var AMDQueryJSRootPath = PATH.join( buildFileRootPath, buildConfig.amdqueryPath );
  var projectDistPath = PATH.join( buildFileRootPath, buildConfig.distPath );
 
  var DebugJSSuffix = "-debug.js";
-
- function readBaseAMDQueryJS( next, result ) {
- 	oye.readFile( AMDQueryJSPath, function( content ) {
- 		amdqueryContent = content;
- 		next( null, content );
- 	} );
- }
-
- function buildDefines( content, next ) {
- 	var distPath = PATH.join( projectDistPath, "defines" );
- 	if ( !buildConfig.defines ) {
- 		return next( null, {}, distPath );
- 	}
- 	var l = 0,
- 		i = 0,
- 		key;
-
- 	for ( key in buildConfig.defines ) {
- 		l++;
- 	}
-
- 	if ( l === 0 ) {
- 		next( null, {}, distPath );
- 	}
- 	//Process all defines
- 	var n = l,
- 		name,
- 		item,
- 		requireList,
- 		result = {
-
- 		},
- 		callback = function( name, list ) {
- 			n--;
- 			result[ name ] = list;
-
- 			if ( n <= 0 ) {
- 				next( null, result, distPath );
- 			}
- 		};
-
- 	for ( name in buildConfig.defines ) {
- 		item = buildConfig.defines[ name ];
- 		requireList = checkJSDirectory( item.directory );
-
- 		requireList = requireList.concat( filterDependencies( item.path.replace( ".js", "" ) ) );
- 		_buildjs( requireList, name, callback );
- 	}
-
- }
-
- function saveJSFile( result, dirPath, next ) {
-
- 	var list,
- 		i = 0,
- 		len,
- 		p,
- 		readFileCallback = function( err ) {
- 			if ( err ) {
- 				console.error( err );
- 			}
- 		},
- 		content,
- 		minContent,
- 		defineConfig,
- 		name,
- 		path,
- 		deubugPath,
- 		minPath;
-
- 	mkdirSync( dirPath );
-
- 	console.log( '\r\nBegin write file'.red );
-
- 	for ( name in result ) {
- 		list = result[ name ];
- 		defineConfig = buildConfig.defines[ name ];
- 		len = list.length;
- 		name = name.replace( /^\/+/, '' );
- 		path = PATH.join( dirPath, name.replace( /[^\/]*$/, '' ) );
- 		deubugPath = PATH.join( dirPath, name + DebugJSSuffix );
- 		minPath = PATH.join( dirPath, name + '.js' );
-
- 		content = list.join( "\r\n" );
- 		minContent = minifyContent( content );
-
- 		if ( minContent ) {
- 			FSE.writeFile( minPath, minContent, readFileCallback );
- 			console.log( '\r\nSave file: ' + minPath );
- 		}
-
- 		FSE.writeFile( deubugPath, content, readFileCallback );
- 		console.log( '\r\nSave file: ' + deubugPath );
-
- 		if ( defineConfig && typeof defineConfig.complete === "function" ) {
- 			defineConfig.complete.call( defineConfig, minPath, minContent, deubugPath, content );
- 		}
-
- 	}
-
- 	next( null, null );
-
- }
 
  function getAppaQueryConfig( appConfig, openHtml ) {
  	var htmlPath = PATH.join( AMDQueryJSRootPath, appConfig.path );
@@ -338,7 +187,7 @@
  		FSE.removeSync( distPath );
  	}
 
- 	mkdirSync( distPath );
+ 	util.mkdirSync( distPath );
 
  	var dirNameList = [
   "amdquery/ui",
@@ -352,14 +201,16 @@
  	for ( i = 0; i < len; i++ ) {
  		dirName = PATH.join( distPath, dirNameList[ i ] );
  		console.log( "make directory: " + dirName.red );
- 		mkdirSync( dirName );
+ 		util.mkdirSync( dirName );
  	}
 
  	var globalPath = PATH.join( htmlInfo.AMDQueryProjectPath, "global" ),
- 		globalDistPath = PATH.join( distPath, "global" );
+ 		globalDirectoryName = globalPath.replace( projectRootPath, "" ),
+ 		globalDistPath = PATH.join( distPath, globalDirectoryName );
 
  	logger( "[DEBUG]".white, "copy directory:".white, globalPath, "to", globalDistPath );
 
+ 	util.mkdirSync( globalDistPath );
  	FSE.copySync( globalPath, globalDistPath );
 
  	logger( "[DEBUG]".white, "app project path:".white, htmlInfo.appProjectPath.white );
@@ -400,7 +251,8 @@
  				content = "";
  			if ( script ) {
  				if ( script.attribs && script.attribs[ "src" ] ) {
- 					content += FSE.readFileSync( PATH.join( htmlInfo.appProjectPath, script.attribs[ "src" ] ) ).toString() + "\n";
+ 					var path = util.fixPath( script.attribs[ "src" ], htmlInfo.htmlPath, projectRootPath );
+ 					content += FSE.readFileSync( path ).toString() + "\n";
  				} else {
  					if ( script.children && script.children[ 0 ] ) {
  						content += script.children[ 0 ].data + "\n";
@@ -467,7 +319,7 @@
  				htmlInfo.beforeLibRelativeJSPath = PATH.join( "lib", "beforelib.js" );
  				htmlInfo.beforeLibJSPath = PATH.join( htmlInfo.projectDistPath, htmlInfo.appDirectoryName, htmlInfo.beforeLibRelativeJSPath );
  				if ( !appConfig.debug ) {
- 					bLibJSContent = minifyContent( bLibJSContent );
+ 					bLibJSContent = util.minifyContent( bLibJSContent );
  				}
  				FSE.writeFileSync( htmlInfo.beforeLibJSPath, bLibJSContent );
  			}
@@ -486,7 +338,7 @@
  				htmlInfo.afterLibRelativeJSPath = PATH.join( "lib", "afterlib.js" );
  				htmlInfo.afterLibJSPath = PATH.join( htmlInfo.projectDistPath, htmlInfo.appDirectoryName, htmlInfo.afterLibRelativeJSPath );
  				if ( !appConfig.debug ) {
- 					aLibJSContent = minifyContent( aLibJSContent );
+ 					aLibJSContent = util.minifyContent( aLibJSContent );
  				}
  				FSE.writeFileSync( htmlInfo.afterLibJSPath, aLibJSContent );
  			}
@@ -504,22 +356,26 @@
  	}
 
  	var dirPath = PATH.dirname( htmlInfo.appConfig.src );
- 	dirPath = dirPath.replace( /\/$/, "" );
+ 	dirPath = dirPath.replace( /\/$/, "" ),
+ 	jsBuilder = new util.JSBuilder( AMDQueryJSPath, {
+ 		'oyeModulePath': amdqueryPath,
+ 		'projectRootPath': projectRootPath
+ 	} );
+
+ 	jsBuilder.setUglifyOptions( buildConfig.uglifyOptions );
 
  	oye.require.variablePrefix( "@" );
  	oye.require.variable( "app", dirPath );
 
  	console.log( ( '\r\nBuild "' + htmlInfo.appName + '" js file' ).red );
- 	_buildjs( htmlInfo.appConfig.src, htmlInfo.appName, function( name, contentList, moduleList ) {
- 		var obj = {};
- 		obj.amdquery = contentList;
+
+ 	htmlInfo.AMDQueryJSPath = PATH.join( AMDQueryPath );
+
+ 	jsBuilder.launch( "amdquery", htmlInfo.AMDQueryJSPath, htmlInfo.appConfig.src, function( name, moduleList, minPath, minContent, deubugPath, content ) {
  		var XMLAndCSSPathList = getXMLAndCSS( htmlInfo, moduleList );
- 		saveJSFile( obj, AMDQueryPath, function() {
- 			htmlInfo.AMDQueryJSPath = PATH.join( AMDQueryPath, "amdquery" );
- 			htmlInfo.AMDQueryJSRelativeHTMLPath = "../amdquery/amdquery";
- 			buildAppXML( null, appConfig, htmlInfo, XMLAndCSSPathList );
- 		} );
+ 		buildAppXML( null, appConfig, htmlInfo, XMLAndCSSPathList );
  	} );
+
  }
 
  function buildAppXML( appConfig, htmlInfo, XMLAndCSSPathList, buildAppCss ) {
@@ -558,13 +414,8 @@
  		CSSPathList = XMLAndCSSPathList.cssPathList;
 
  	pathList.forEach( function( item, index ) {
- 		var path = "";
- 		//绝对路径 项目路径下
- 		if ( /^\//.test( item ) ) {
- 			path = PATH.join( amdqueryPath, "..", item.replace( /^\//, "" ) );
- 		} else {
- 			path = PATH.join( PATH.dirname( htmlInfo.htmlPath ), item );
- 		}
+ 		var path = util.fixPath( item, htmlInfo.htmlPath, projectRootPath );
+
  		console.log( "buildAppCss css path:", path );
  		resultPath.push( path );
  	} );
@@ -728,6 +579,7 @@
 
  				if ( appConfig.debug ) {
  					config.src = PATH.join( PATH.dirname( config.src ), PATH.basename( config.src, '.js' ) + DebugJSSuffix );
+          htmlInfo.AMDQueryJSRelativeHTMLPath = config.src;
  				}
 
  				config.app = formatToAttr( appObject );
@@ -783,43 +635,9 @@
  	FSE.createReadStream( htmlInfo.htmlPath ).pipe( linkTr1 ).pipe( linkTr2 ).pipe( scriptTr ).pipe( bodyTr ).pipe( write );
  }
 
- function main() {
- 	async.waterfall( [
-     startBuildDefines,
-     startBuildApps
-   ], function( err, result ) {
- 		if ( err ) {
- 			console.error( "[Error]".red, err.red );
- 		}
- 		console.log( '\r\nBuiding finish'.red );
- 	} );
- }
-
- function startBuildDefines( waterfallNext ) {
- 	console.log( '\r\nStart building defines... '.magenta );
-
- 	setPathVariable( buildConfig.pathVariable );
-
- 	// build defines
- 	async.waterfall( [
-     readBaseAMDQueryJS,
-     buildDefines,
-     saveJSFile
-   ], function( err, result ) {
- 		if ( err ) {
- 			waterfallNext( null, null );
- 			console.error( "[Error]".red, err.red );
- 			return;
- 		}
-
- 		waterfallNext( null, null );
-
- 	} );
- }
-
  var apps = buildConfig.apps.concat();
 
- function startBuildApps( result, waterfallNext ) {
+ function main() {
  	if ( apps.length ) {
  		var appConfig = apps.shift();
  		var defaultConfig = {
@@ -852,44 +670,11 @@
  			if ( err ) {
  				console.error( "[Error]".red, err.red );
  			}
- 			startBuildApps( null, waterfallNext );
+ 			main();
  		} );
 
- 	} else {
- 		waterfallNext( null, null );
  	}
  }
-
- function setPathVariable( obj ) {
- 	for ( var name in obj ) {
- 		oye.require.variable( name, obj[ name ] );
- 	}
- }
-
- function filterDependencies( url ) {
- 	var result = [],
- 		content = FSE.readFileSync( PATH.join( buildFileRootPath, buildConfig.amdqueryPath, url + ".js" ) )
- 			.toString(),
- 		moduleList = oye.matchDefine( content ),
- 		moduleInfo,
- 		i = 0,
- 		len = moduleList.length;
-
- 	for ( ; i < len; i++ ) {
- 		moduleInfo = moduleList[ i ];
-
- 		if ( moduleInfo.name === "require" && moduleInfo.module ) {
- 			result.push( moduleInfo.module );
- 		}
- 		if ( moduleInfo.depends ) {
- 			result = result.concat( eval( moduleInfo.depends ) );
- 		}
-
- 	}
-
- 	return result;
- }
-
 
  function getXMLAndCSS( htmlInfo, moduleList ) {
  	var i = 0,
@@ -921,51 +706,6 @@
  		xmlPathList: xmlPathList,
  		cssPathList: cssPathList
  	}
- }
-
- function _buildjs( modules, name, callback ) {
- 	oye.require( modules, function( Module ) { //Asynchronous
- 		var
- 		args = arguments,
- 			len = args.length,
- 			i = 0,
- 			module,
- 			dependencies,
- 			list = [];
-
- 		for ( ; i < len; i++ ) {
- 			module = args[ i ];
- 			dependencies = module.getDependenciesList();
- 			list = list.concat( dependencies );
- 			console.info( '\r\nDependencies length of module ' + module._amdID + ': ' + dependencies.length );
- 		}
-
- 		// list.sort( function( a, b ) {
- 		//   return a.index - b.index;
- 		// } );
- 		var l = list.length;
-
- 		var item,
- 			moduleName, result = [],
- 			pathMap = {};
-
- 		pathMap[ AMDQueryJSPath ] = true;
-
- 		result.push( editDefine( amdqueryContent, "amdquery" ) );
-
- 		for ( i = 0; i < l; i++ ) {
- 			item = list[ i ];
-
- 			if ( !pathMap[ item.path ] ) {
- 				result.push( editDefine( item.content, item.name ) );
- 				pathMap[ item.path ] = true;
- 			}
- 		}
-
- 		console.info( ( '\r\nthe defines "' + name + '" Dependencies length of file ' + result.length ).red );
-
- 		callback( name, result, list );
- 	} );
  }
 
  function _buildCssAndSave( cssPathList, dist, cwd ) {
@@ -1013,94 +753,8 @@
  	return result;
  }
 
- function minifyContent( content ) {
- 	try {
- 		var minContent = minify( content );
- 		return minContent;
- 	} catch ( e ) {
- 		var line = e.line,
- 			start = ( line > 10 ? line - 10 : 0 ),
- 			end = line + 10;
- 		//var line = e.line, start = 0, end = undefined;
- 		console.log( ( e.message + ' Line: ' + line ).red );
- 		content = content.split( /(?:\r\n|[\r\n])/ )
- 			.slice( start, end );
- 		var errCode = [],
- 			lineNumber, code;
- 		for ( var i = 0; i < content.length; i++ ) {
- 			lineNumber = i + start + 1;
- 			code = ( lineNumber === line ) ? ( ( lineNumber + ' ' + content[ i ] ).red ) : ( lineNumber + content[ i ] ).red;
- 			errCode.push( code );
- 		}
- 		console.log( errCode.join( '\r\n' ) );
- 		return null;
- 	}
- }
-
- function editDefine( content, module ) {
- 	content = "/*===================" + module + "===========================*/\r\n" + content;
- 	var r = /define\s*\(\s*(['"])[^\1]*\1/i;
- 	if ( !r.test( content ) ) {
- 		content = content.replace( /define\(/, 'define("' + module + '",' );
- 	}
- 	content += "\r\n\r\n/*=======================================================*/\r\n";
- 	return content;
- }
-
- function mkdirSync( path ) {
- 	if ( !path || FSE.existsSync( path ) ) {
- 		return;
- 	}
- 	var r = /(?=[\\\/]+)/;
- 	var list = path.split( r );
- 	var l = list.length;
- 	var _path;
- 	for ( var i = 1; i < l; i++ ) {
- 		_path = list.slice( 0, i ).join( '' );
- 		if ( FSE.existsSync( _path ) ) {
- 			continue;
- 		}
- 		FSE.mkdirSync( _path );
- 	}
- 	if ( !FSE.existsSync( path ) ) {
- 		FSE.mkdirSync( path );
- 	}
-
- }
-
- function checkJSDirectory( directoryList, suffix ) {
- 	suffix = suffix || "*.js";
- 	var result = [],
- 		i = 0,
- 		j = 0,
- 		k = 0,
- 		l = directoryList ? directoryList.length : 0,
- 		m,
- 		n,
- 		globOpt,
- 		resultDirectory = [],
- 		directory,
- 		moduleAndDepends,
- 		content;
- 	for ( i = 0; i < l; i++ ) {
- 		directory = directoryList[ i ];
- 		globOpt = {
- 			cwd: PATH.join( AMDQueryJSRootPath, directory )
- 		};
- 		resultDirectory = resultDirectory.concat( glob.sync( suffix, globOpt ) );
- 		for ( j = 0, m = resultDirectory.length; j < m; j++ ) {
- 			content = FSE.readFileSync( PATH.join( globOpt.cwd, resultDirectory[ j ] ) );
- 			moduleAndDepends = oye.matchDefine( content.toString() );
- 			for ( k = 0, n = moduleAndDepends.length; k < n; k++ ) {
- 				if ( moduleAndDepends[ k ].module ) {
- 					result.push( moduleAndDepends[ k ].module );
- 				}
-
- 			}
- 		}
- 	}
-
- 	return result;
+ if ( !apps.length ) {
+ 	console.log( "No application to build" );
  }
 
  main();

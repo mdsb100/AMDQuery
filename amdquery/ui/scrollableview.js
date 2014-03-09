@@ -275,8 +275,10 @@ aQuery.define( "ui/scrollableview", [
 						self.layout();
 
 						var $a = $( this ),
-							href = ( $a.attr( "href" ) || "" ).replace( window.location.href, "" ).replace( "#", "" );
-						self.animateToElement( self.getAnimationToElementByName( href ) );
+							href = ( $a.attr( "href" ) || "" ).replace( window.location.href, "" ).replace( "#", "" ),
+							elementId = self.getAnimationToElementById( href );
+
+						self.animateToElement( elementId.length ? elementId : self.getAnimationToElementByName( href ) );
 						break;
 
 					case keyType.CombinationLeft:
@@ -321,6 +323,9 @@ aQuery.define( "ui/scrollableview", [
 		},
 		getAnimationToElementByName: function( name ) {
 			return this.target.find( "[name=" + ( name || "__undefined" ) + "]" );
+		},
+		getAnimationToElementById: function( name ) {
+			return this.target.find( "#" + name );
 		},
 		animateToElement: function( ele, animationCallback ) {
 			var $toElement = $( ele );
@@ -424,6 +429,7 @@ aQuery.define( "ui/scrollableview", [
 			"hideStatusBar": Widget.AllowPublic,
 			"render": Widget.AllowPublic,
 			"getAnimationToElementByName": Widget.AllowReturn,
+			"getAnimationToElementById": Widget.AllowReturn,
 			"animateToElement": Widget.AllowPublic,
 			"toH": Widget.AllowPublic,
 			"toV": Widget.AllowPublic,

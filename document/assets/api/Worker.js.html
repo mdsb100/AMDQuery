@@ -27,6 +27,7 @@
 
     
     <section>
+        <a float="false" id="Back" class="Back">Back</a>
         <article>
             <pre class="prettyprint source">﻿aQuery.define( "html5/Worker", function( $, undefined ) {
 	"use strict";
@@ -125,6 +126,16 @@
 	return MyWorker;
 } );</pre>
         </article>
+        <script type="text/javascript">
+          var Back = document.getElementById("Back");
+          if (Back){
+            Back.onclick = function(){
+              if (window.history && window.history.length) {
+                window.history.back();
+              }
+            }
+          }
+        </script>
     </section>
 
 

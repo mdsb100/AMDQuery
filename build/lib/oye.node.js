@@ -1210,6 +1210,14 @@ exports.setPath = function( opt ) {
   _rootPath = opt.projectRootPath;
 };
 
+exports.getBasePath = function(){
+  return _basePath;
+}
+
+exports.getRootPath = function(){
+  return _rootPath;
+}
+
 exports.require = require;
 
 exports.define = define;

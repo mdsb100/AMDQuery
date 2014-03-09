@@ -8,9 +8,11 @@ aQuery.define( "@app/controllers/content", [ "base/client", "module/src", "app/C
 			this.$content = $content;
 		},
 		loadPath: function( path ) {
-			this.$content.src( {
-				src: path
-			} )
+			if ( this.getSrc() !== path ) {
+				this.$content.src( {
+					src: path
+				} );
+			}
 		},
 		getSrc: function() {
 			return this.$content.attr( "src" );

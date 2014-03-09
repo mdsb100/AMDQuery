@@ -27,6 +27,7 @@
 
     
     <section>
+        <a float="false" id="Back" class="Back">Back</a>
         <article>
             <pre class="prettyprint source">﻿aQuery.define( "base/client", [ "base/extend" ], function( $, extend ) {
 	this.describe( "Cline of Browser" );
@@ -231,6 +232,16 @@
 	return client;
 } );</pre>
         </article>
+        <script type="text/javascript">
+          var Back = document.getElementById("Back");
+          if (Back){
+            Back.onclick = function(){
+              if (window.history && window.history.length) {
+                window.history.back();
+              }
+            }
+          }
+        </script>
     </section>
 
 

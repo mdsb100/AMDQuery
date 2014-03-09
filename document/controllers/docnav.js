@@ -3,7 +3,7 @@ aQuery.define( "@app/controllers/docnav", [ "main/attr", "module/location", "app
 	var ROUTER_MARK = "_",
 		SCROLLTO = "scrollTo",
 		SWAPINDEX = "swapIndex",
-		NAVMENUKEY = "navmenuKey";
+		DOCNAVMENUKEY = "docNavmenuKey";
 
 	var Controller = SuperController.extend( {
 		init: function( contollerElement, models ) {
@@ -47,7 +47,7 @@ aQuery.define( "@app/controllers/docnav", [ "main/attr", "module/location", "app
 
 			if ( $target.isWidget( "ui.navitem" ) ) {
 				var path = $target.navitem( "getOptionToRoot" ).reverse().join( ROUTER_MARK );
-				location.setHash( NAVMENUKEY, path );
+				location.setHash( DOCNAVMENUKEY, path );
 				if ( this._modified ) {
 					location.removeHash( SCROLLTO );
 					location.removeHash( SWAPINDEX );
@@ -97,7 +97,7 @@ aQuery.define( "@app/controllers/docnav", [ "main/attr", "module/location", "app
 			return path;
 		},
 		selectDefaultNavmenu: function( target ) {
-			target = target || location.getHash( NAVMENUKEY ) || "guide_AMDQuery";
+			target = target || location.getHash( DOCNAVMENUKEY ) || "guide_AMDQuery";
 			var ret = this.$nav.uiNavmenu( "getNavItemsByHtmlPath", target.split( ROUTER_MARK ) );
 			if ( ret.length ) {
 				this.$nav.uiNavmenu( "selectNavItem", ret[ 0 ] );

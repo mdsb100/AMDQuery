@@ -3,23 +3,39 @@ var FSE = require( 'fs-extra' );
 var $amdquery = path.join( "..", "amdquery" )
 
 task( "default", function() {
-	jake.logger.log( "jake build[*.js(config file)]                build application and javascript" );
-	jake.logger.log( "jake build                                   default is build_config.js" );
+	jake.logger.log( "jake buildapp[*.js(config file)]             build application" );
+	jake.logger.log( "jake buildapp                                default is build_app_config.js" );
+	jake.logger.log( "jake buildjs[*.js(config file)]              build javascript" );
+	jake.logger.log( "jake buildjs                                 default is build_js_config.js" );
 	jake.logger.log( "jake jsdoc[default|amdquery(template name)]  build javascript api document" );
 	jake.logger.log( "jake jsdoc                                   default is amdquery" );
 	jake.logger.log( "jake ui_css                                  build css of widget-ui" );
 	jake.logger.log( "jake beautify[...file]                       example 'jake beautify[a.html,b.css,c.xml,d.js]'" );
 } );
 
-task( "build", {
+task( "buildapp", {
 	async: true
 }, function( config ) {
 	if ( !config ) {
-		config = "build_config.js";
+		config = "build_app_config.js";
 	}
 	jake.logger.log( "build application and javascript ..." );
 
-	jake.exec( "node build.js " + config, {
+	jake.exec( "node build_app.js " + config, {
+		printStdout: true,
+		printStderr: true
+	}, complete );
+} );
+
+task( "buildjs", {
+	async: true
+}, function( config ) {
+	if ( !config ) {
+		config = "build_js_config.js";
+	}
+	jake.logger.log( "build application and javascript ..." );
+
+	jake.exec( "node build_js.js " + config, {
 		printStdout: true,
 		printStderr: true
 	}, complete );
@@ -48,7 +64,7 @@ task( "beautify", {
 } );
 
 desc( "It is inner. Build js api document." );
-task( "jsdoc", {
+task( "jsdoc", [ "buildjs" ], {
 	async: true
 }, function( opt ) {
 	var defTemplate = "amdquery";
@@ -85,7 +101,7 @@ task( "jsdoc", {
 } );
 
 desc( "It is inner. commit master." );
-task( "master", [ "jsdoc", "build" ], {
+task( "master", [ "jsdoc", "buildapp" ], {
 	async: true
 }, function( a ) {
 	jake.exec(

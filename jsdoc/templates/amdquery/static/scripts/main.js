@@ -6,7 +6,7 @@ $.require( [ "main/event", "main/query", "main/attr", "module/location", "ui/scr
 
 		for ( var i = 0, len = numbered.length, item, html = ""; i < len; i++ ) {
 			item = numbered[ i ];
-			html += i != len - 1 ? '<span class="linenumber" name="line' + ( i + 1 ) + '" >' + ( i + 1 ) + "</span>" + item + "\n" : "";
+			html += i != len - 1 ? '<span class="linenumber" id="line' + ( i + 1 ) + '" >' + ( i + 1 ) + "</span>" + item + "\n" : "";
 		}
 
 		ele.innerHTML = html;
@@ -15,7 +15,7 @@ $.require( [ "main/event", "main/query", "main/attr", "module/location", "ui/scr
 	var hash = location.getHash( "#" );
 
 	if ( hash ) {
-		var target = $( "#main" ).uiScrollableview( "getAnimationToElementByName", hash );
+		var target = $( "#main" ).uiScrollableview( "getAnimationToElementById", hash );
 		if ( target ) {
 			$( "#main" ).uiScrollableview( "animateToElement", target );
 		}
