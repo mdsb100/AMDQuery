@@ -17756,7 +17756,7 @@ aQuery.define( "ui/navmenu", [
 							self.target.trigger( type, target[ 0 ], para );
 							break;
 						case "navitem.select":
-							self.changeSelectedNavItem( e.target );
+							self.selectNavItem( e.target );
 							break;
 					}
 				};
@@ -17845,32 +17845,30 @@ aQuery.define( "ui/navmenu", [
 			getNavItemList: function() {
 				return this.target.find( "li[ui-navitem]" ).reverse().eles;
 			},
-			selectNavItem: function( target ) {
+			selectNavItem: function( target, isTrigger ) {
 				var $target = $( this.getNavItem( target ) || [] ),
 					opt = this.options;
 				if ( $target.isWidget( "ui.navitem" ) ) {
 					if ( opt.selectedNavItem && opt.selectedNavItem !== target ) {
 						$( opt.selectedNavItem ).uiNavitem( "cancel" );
 					}
-					$target.uiNavitem( "select" );
-					opt.selectedNavItem = $target;
-				}
-			},
-			changeSelectedNavItem: function( target ) {
-				var $target = $( this.getNavItem( target ) || [] ),
-					opt = this.options;
-				if ( $target.isWidget( "ui.navitem" ) ) {
-					if ( opt.selectedNavItem && opt.selectedNavItem[0] !== target ) {
-						$( opt.selectedNavItem ).uiNavitem( "cancel" );
+
+					if ( !opt.selectedNavItem || opt.selectedNavItem !== target ) {
+						opt.selectedNavItem = target;
+						$target.uiNavitem( "select" );
+
+						if ( isTrigger === undefined ) {
+							isTrigger = true;
+						}
+						if ( isTrigger ) {
+							var para = {
+								navitem: target
+							}, type;
+
+							type = para.type = this.getEventName( "select" );
+							this.target.trigger( type, this.target[ 0 ], para );
+						}
 					}
-					opt.selectedNavItem = $target;
-
-					var para = {
-						navitem: target
-					}, type;
-
-					type = para.type = this.getEventName( "select" );
-					this.target.trigger( type, this.target[ 0 ], para );
 				}
 			},
 			init: function( opt, target ) {
@@ -17922,8 +17920,7 @@ aQuery.define( "ui/navmenu", [
 				selectNavItem: Widget.AllowPublic,
 				refreshNavItem: Widget.AllowPublic,
 				addNavItem: Widget.AllowPublic,
-				removeNavItem: Widget.AllowPublic,
-				changeSelectedNavItem: Widget.AllowPublic
+				removeNavItem: Widget.AllowPublic
 			},
 			customEventName: [ "open", "close" ],
 			target: null,
@@ -18648,8 +18645,10 @@ aQuery.define( "ui/scrollableview", [
 						self.layout();
 
 						var $a = $( this ),
-							href = ( $a.attr( "href" ) || "" ).replace( window.location.href, "" ).replace( "#", "" );
-						self.animateToElement( self.getAnimationToElementByName( href ) );
+							href = ( $a.attr( "href" ) || "" ).replace( window.location.href, "" ).replace( "#", "" ),
+							elementId = self.getAnimationToElementById( href );
+
+						self.animateToElement( elementId.length ? elementId : self.getAnimationToElementByName( href ) );
 						break;
 
 					case keyType.CombinationLeft:
@@ -18694,6 +18693,9 @@ aQuery.define( "ui/scrollableview", [
 		},
 		getAnimationToElementByName: function( name ) {
 			return this.target.find( "[name=" + ( name || "__undefined" ) + "]" );
+		},
+		getAnimationToElementById: function( name ) {
+			return this.target.find( "#" + name );
 		},
 		animateToElement: function( ele, animationCallback ) {
 			var $toElement = $( ele );
@@ -18797,6 +18799,7 @@ aQuery.define( "ui/scrollableview", [
 			"hideStatusBar": Widget.AllowPublic,
 			"render": Widget.AllowPublic,
 			"getAnimationToElementByName": Widget.AllowReturn,
+      "getAnimationToElementById": Widget.AllowReturn,
 			"animateToElement": Widget.AllowPublic,
 			"toH": Widget.AllowPublic,
 			"toV": Widget.AllowPublic,
