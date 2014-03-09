@@ -1,49 +1,51 @@
-﻿aQuery.define( "animation/effect", [ "base/typed", "main/data", "animation/animate" ], function( $, typed, utilData, animate, undefined ) {
+﻿aQuery.define( "animation/effect", [ "base/typed", "main/data", "main/css", "animation/animate" ], function( $, typed, utilData, css, animate, undefined ) {
 	"use strict";
 	var slideDownComplete = function() {
 		utilData.set( this, "slideOriginHeight", null );
 	},
 		slideUpComplete = function( opt ) {
-			$._hide( this, opt.visible ).css( this, "height", utilData.get( this, "slideOriginHeight" ) );
+			css.hide( this, opt.visible );
+			css.css( this, "height", utilData.get( this, "slideOriginHeight" ) );
 			utilData.set( this, "slideOriginHeight", null );
 		},
 		fadeInComplete = function() {
 			utilData.set( this, "slideOriginOpacity", null );
 		},
 		fadeOutComplete = function( opt ) {
-			$._hide( this, opt.visible ).setOpacity( this, utilData.get( this, "slideOriginOpacity" ) );
+			css.hide( this, opt.visible );
+			css.setOpacity( this, utilData.get( this, "slideOriginOpacity" ) );
 			utilData.set( this, "slideOriginOpacity", null );
 		};
 
 	var effect = {
-		_show: $.show,
-		_hide: $.hide,
-
 		fadeIn: function( ele, option ) {
 			/// <summary>淡入</summary>
 			/// <param name="ele" type="Element">dom元素</param>
 			/// <param name="option" type="Object">动画选项</param>
 			/// <returns type="self" />
-			if ( $.isVisible( ele ) ) {
+			if ( css.isVisible( ele ) ) {
 				return this;
 			}
 
 			var o, opt = $._getAnimateOpt( option );
 			o = utilData.get( ele, "slideOriginOpacity" );
-			o = o != null ? o : ( $.css( ele, "opacity" ) || 1 );
+			o = o != null ? o : ( css.css( ele, "opacity" ) || 1 );
 
 			utilData.set( ele, "slideOriginOpacity", o );
 			opt.complete = fadeInComplete;
-			return $.setOpacity( ele, 0 )._show( ele ).animate( ele, {
+			css.setOpacity( ele, 0 );
+			css.show( ele );
+			$.animate( ele, {
 				opacity: o
 			}, opt );
+			return this;
 		},
 		fadeOut: function( ele, option ) {
 			/// <summary>淡出</summary>
 			/// <param name="ele" type="Element">dom元素</param>
 			/// <param name="option" type="Object">动画选项</param>
 			/// <returns type="self" />
-			if ( !$.isVisible( ele ) ) {
+			if ( !css.isVisible( ele ) ) {
 				return this;
 			}
 			option = option || {
@@ -52,13 +54,15 @@
 
 			var o, opt = $._getAnimateOpt( option );
 			o = utilData.get( ele, "slideOriginOpacity" );
-			o = o != null ? o : $.css( ele, "opacity" );
+			o = o != null ? o : css.css( ele, "opacity" );
 
 			utilData.set( ele, "slideOriginOpacity", o );
 			opt.complete = fadeOutComplete;
-			return $._show( ele ).animate( ele, {
+			css.show( ele )
+			$.animate( ele, {
 				opacity: 0
 			}, opt );
+			return this;
 		},
 
 		hide: function( ele, type, option ) {
@@ -70,10 +74,10 @@
 			/// <param name="option" type="Object">动画选项</param>
 			/// <returns type="self" />
 			///  name="visible" type="Boolean/undefined">true:隐藏后任然占据文档流中
-			if ( typed.isStr( type ) && $[ type ] ) {
-				$[ type ]( ele, option );
+			if ( typed.isStr( type ) && effect[ type ] ) {
+				effect[ type ]( ele, option );
 			} else {
-				$._hide( ele );
+				css.hide( ele );
 			}
 			return this;
 		},
@@ -86,10 +90,10 @@
 			/// <param name="type" type="String/undefined">动画类型</param>
 			/// <param name="option" type="Object">动画选项</param>
 			/// <returns type="self" />
-			if ( typed.isStr( type ) && $[ type ] ) {
-				$[ type ]( ele, option );
+			if ( typed.isStr( type ) && effect[ type ] ) {
+				effect[ type ]( ele, option );
 			} else {
-				$._show( ele );
+				css.show( ele );
 			}
 			return this;
 		},
@@ -98,40 +102,43 @@
 			/// <param name="ele" type="Element">dom元素</param>
 			/// <param name="option" type="Object">动画选项</param>
 			/// <returns type="self" />
-			if ( $.isVisible( ele ) ) {
+			if ( css.isVisible( ele ) ) {
 				return this;
 			}
 
-			var h = utilData.get( ele, "slideOriginHeight" ) || $.css( ele, "height" ),
+			var h = utilData.get( ele, "slideOriginHeight" ) || css.css( ele, "height" ),
 				opt = $._getAnimateOpt( option );
 			utilData.set( ele, "slideOriginHeight", h );
-			$.css( ele, "height", 0 );
+			css.css( ele, "height", 0 );
 			opt.complete.push( slideDownComplete );
-			return $.css( ele, "height", 0 )._show( ele ).animate( ele, {
+			css.css( ele, "height", 0 );
+			css.show( ele )
+			$.animate( ele, {
 				height: h
 			}, opt );
+			return this;
 		},
 		slideUp: function( ele, option ) {
 			/// <summary>滑动淡出</summary>
 			/// <param name="ele" type="Element">dom元素</param>
 			/// <param name="option" type="Object">动画选项</param>
 			/// <returns type="self" />
-			if ( !$.isVisible( ele ) || utilData.get( ele, "_sliedeDown" ) ) {
+			if ( !css.isVisible( ele ) || utilData.get( ele, "_sliedeDown" ) ) {
 				return this;
 			}
 
-			var h = utilData.get( ele, "slideOriginHeight" ) || $.css( ele, "height" ),
+			var h = utilData.get( ele, "slideOriginHeight" ) || css.css( ele, "height" ),
 				opt = $._getAnimateOpt( option );
-			$.css( ele, "height", h );
+			css.css( ele, "height", h );
 			utilData.set( ele, "slideOriginHeight", h );
 			opt.complete.push( slideUpComplete );
-			return $._show( ele ).animate( ele, {
+			css.show( ele );
+			$.animate( ele, {
 				height: "0px"
 			}, opt );
+			return this;
 		}
 	};
-
-	$.extend( effect );
 
 	$.fn.extend( {
 		fadeIn: function( option ) {
@@ -139,7 +146,7 @@
 			/// <param name="option" type="Object">动画选项</param>
 			/// <returns type="self" />
 			return this.each( function( ele ) {
-				$.fadeIn( ele, option );
+				effect.fadeIn( ele, option );
 			} );
 		},
 		fadeOut: function( option ) {
@@ -147,7 +154,7 @@
 			/// <param name="option" type="Object">动画选项</param>
 			/// <returns type="self" />
 			return this.each( function( ele ) {
-				$.fadeOut( ele, option );
+				effect.fadeOut( ele, option );
 			} );
 		},
 
@@ -159,7 +166,7 @@
 			/// <param name="option" type="Object">动画选项</param>
 			/// <returns type="self" />
 			return this.each( function( ele ) {
-				$.hide( ele, type, option );
+				effect.hide( ele, type, option );
 			} );
 		},
 
@@ -171,7 +178,7 @@
 			/// <param name="option" type="Object">动画选项</param>
 			/// <returns type="self" />
 			return this.each( function( ele ) {
-				$.show( ele, type, option );
+				effect.show( ele, type, option );
 			} );
 		},
 		slideDown: function( option ) {
@@ -179,7 +186,7 @@
 			/// <param name="option" type="Object">动画选项</param>
 			/// <returns type="self" />
 			return this.each( function( ele ) {
-				$.slideDown( ele, option );
+				effect.slideDown( ele, option );
 			} );
 		},
 		slideUp: function( option ) {
@@ -187,9 +194,11 @@
 			/// <param name="option" type="Object">动画选项</param>
 			/// <returns type="self" />
 			return this.each( function( ele ) {
-				$.slideUp( ele, option );
+				effect.slideUp( ele, option );
 			} );
 		}
 	} );
+
+
 	return effect;
 } );

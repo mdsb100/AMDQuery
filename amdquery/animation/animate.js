@@ -54,11 +54,11 @@
 				}
 
 				if ( ( p === "height" || p === "width" ) && ele.style ) {
-					opt.display = ele.style.display; //$.css(ele, "display");
+					opt.display = ele.style.display;
 
 					opt.overflow = ele.style.overflow;
 
-					ele.style.display = "block"; //是否对呢？
+					ele.style.display = "block"; //？
 				}
 
 				count++;

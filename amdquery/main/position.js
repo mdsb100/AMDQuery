@@ -99,7 +99,7 @@ aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "
 	function getSize( ele, name, extra ) {
 		extra = extra || "content";
 		return ele.offsetWidth === 0 && rdisplayswap.test( css.css( ele, "display" ) ) ?
-			$.swap( ele, cssShow, function() {
+			css.swap( ele, cssShow, function() {
 				return getWidthOrHeight( ele, name, extra );
 			} ) : getWidthOrHeight( ele, name, extra );
 	}

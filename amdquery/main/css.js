@@ -24,7 +24,6 @@ aQuery.define( "main/css", [ "base/typed", "base/extend", "base/array", "base/su
 		};
 
 	if ( window.getComputedStyle ) {
-		//quote from jquery1.9.0
 		getStyles = function( elem ) {
 			return window.getComputedStyle( elem, null );
 		};
@@ -38,8 +37,8 @@ aQuery.define( "main/css", [ "base/typed", "base/extend", "base/array", "base/su
 
 			if ( computed ) {
 
-				if ( ret === "" && !$.contains( ele.ownerDocument.documentElement, ele ) ) {
-					ret = $.style( ele, name );
+				if ( ret === "" && !query.contains( ele.ownerDocument.documentElement, ele ) ) {
+					ret = css.style( ele, name );
 				}
 
 				// A tribute to the "awesome hack by Dean Edwards"
@@ -141,7 +140,7 @@ aQuery.define( "main/css", [ "base/typed", "base/extend", "base/array", "base/su
 			var originName = $.util.camelCase( name );
 
 			var hooks = cssHooks[ name ] || {};
-			name = $.cssProps[ originName ] || ( $.cssProps[ originName ] = css.vendorPropName( style, originName ) );
+			name = css.cssProps[ originName ] || ( css.cssProps[ originName ] = css.vendorPropName( style, originName ) );
 
 			if ( value == undefined ) {
 				var val = hooks.get ? hooks.get( ele, name ) : curCSS( ele, name, style );
@@ -157,7 +156,7 @@ aQuery.define( "main/css", [ "base/typed", "base/extend", "base/array", "base/su
 
 				// convert relative number strings (+= or -=) to relative numbers. #7345
 				if ( type === "string" && ( ret = rrelNum.exec( value ) ) ) {
-					value = ( ret[ 1 ] + 1 ) * ret[ 2 ] + parseFloat( $.css( ele, name ) );
+					value = ( ret[ 1 ] + 1 ) * ret[ 2 ] + parseFloat( css.css( ele, name ) );
 					type = "number";
 				}
 
@@ -226,7 +225,7 @@ aQuery.define( "main/css", [ "base/typed", "base/extend", "base/array", "base/su
 
 			var o;
 			if ( support.opacity ) {
-				o = $.styleTable( ele ).opacity;
+				o = css.styleTable( ele ).opacity;
 				if ( o == "" || o == undefined ) {
 					o = 1;
 				} else {
@@ -234,7 +233,7 @@ aQuery.define( "main/css", [ "base/typed", "base/extend", "base/array", "base/su
 				}
 			} else {
 				//return ele.style.filter ? (ele.style.filter.match(/\d+/)[0] / 100) : 1;
-				var f = $.styleTable( ele ).filter;
+				var f = css.styleTable( ele ).filter;
 				o = 1;
 				if ( f ) {
 					o = f.match( /\d+/ )[ 0 ] / 100;
@@ -266,7 +265,7 @@ aQuery.define( "main/css", [ "base/typed", "base/extend", "base/array", "base/su
 			/// <summary>返回元素是否可见</summary>
 			/// <param name="ele" type="Element">element元素</param>
 			/// <returns type="Boolean" />
-			var t = $.styleTable( ele );
+			var t = css.styleTable( ele );
 			if ( t.display == "none" ) {
 				return false;
 			}
@@ -295,21 +294,21 @@ aQuery.define( "main/css", [ "base/typed", "base/extend", "base/array", "base/su
 				n = "none",
 				h = "hidden",
 				nEle, v;
-			if ( $.curCss( ele, "display" ) == n ) {
+			if ( css.curCss( ele, "display" ) == n ) {
 				v = utilData.get( ele, "_visible_display" );
 				if ( !v ) {
 					nEle = $.createEle( ele.tagName );
 					if ( ele.parentNode ) {
 						document.body.appendChild( nEle );
 					}
-					v = $.curCss( nEle, "display" ) || "";
+					v = css.curCss( nEle, "display" ) || "";
 					document.body.removeChild( nEle );
 					nEle = null;
 				}
 
 				s.display = v;
 			}
-			if ( $.curCss( ele, "visibility" ) == h ) {
+			if ( css.curCss( ele, "visibility" ) == h ) {
 				s.visibility = "visible";
 			}
 
@@ -349,15 +348,15 @@ aQuery.define( "main/css", [ "base/typed", "base/extend", "base/array", "base/su
 			if ( typed.isObj( style ) ) {
 				for ( var key in style ) {
 					this.each( function( ele ) {
-						$.css( ele, key, style[ key ] );
+						css.css( ele, key, style[ key ] );
 					} );
 				}
 			} else if ( typed.isStr( style ) ) {
 				if ( value === undefined ) {
-					return $.css( this[ 0 ], style );
+					return css.css( this[ 0 ], style );
 				} else {
 					this.each( function( ele ) {
-						$.css( ele, style, value );
+						css.css( ele, style, value );
 					} );
 				}
 			}
@@ -367,7 +366,7 @@ aQuery.define( "main/css", [ "base/typed", "base/extend", "base/array", "base/su
 			/// <summary>返回样式原始值 可能有bug</summary>
 			/// <param name="name" type="String">样式名</param>
 			/// <returns type="any" />
-			return $.curCss( this[ 0 ], name );
+			return css.curCss( this[ 0 ], name );
 		},
 		style: function( type, head ) {
 			/// <summary>返回第一个元素样式表中的某个样式</summary>
@@ -375,12 +374,12 @@ aQuery.define( "main/css", [ "base/typed", "base/extend", "base/array", "base/su
 			/// <param name="head" type="String">样式名的头 缺省则无</param>
 			/// <returns type="String" />
 
-			return $.style( this[ 0 ], type, head );
+			return css.style( this[ 0 ], type, head );
 		},
 		styleTable: function() {
 			/// <summary>返回第一个元素样式表</summary>
 			/// <returns type="Object" />
-			return $.styleTable( this[ 0 ] );
+			return css.styleTable( this[ 0 ] );
 		},
 
 		antonymVisible: function( a ) {
@@ -399,7 +398,7 @@ aQuery.define( "main/css", [ "base/typed", "base/extend", "base/array", "base/su
 			//            a ? this.css({ vi: "hidden" }) : this.css({ d: "none" })
 			//            return this;
 			return this.each( function( ele ) {
-				$.hide( ele, visible );
+				css.hide( ele, visible );
 			} );
 		},
 
@@ -419,12 +418,7 @@ aQuery.define( "main/css", [ "base/typed", "base/extend", "base/array", "base/su
 		isVisible: function() {
 			/// <summary>返回元素是否可见</summary>
 			/// <returns type="Boolean" />
-			//            if (this.css("visibility") == "hidden")
-			//                return false;
-			//            if (this.css("d") == "none")
-			//                return false;
-			// return true;
-			return $.isVisible( this[ 0 ] );
+			return css.isVisible( this[ 0 ] );
 		},
 
 		opacity: function( alpha ) {
@@ -434,20 +428,15 @@ aQuery.define( "main/css", [ "base/typed", "base/extend", "base/array", "base/su
 			/// <param name="alpha" type="Number/null">透明度（0~1）可选，为空为获取透明度</param>
 			/// <returns type="self" />
 			return typed.isNum( alpha ) ? this.each( function( ele ) {
-				$.setOpacity( ele, alpha );
-			} ) : $.getOpacity( this[ 0 ] );
+				css.setOpacity( ele, alpha );
+			} ) : css.getOpacity( this[ 0 ] );
 		},
 
 		show: function() {
 			/// <summary>显示所有元素</summary>
 			/// <returns type="self" />
-			//            if (this.css("visibility") == "hidden")
-			//                this.css({ vi: "visible" });
-			//            else if (this.css("d") == "none")
-			//                this.css({ d: "" });
-			//            return this;
 			return this.each( function( ele ) {
-				$.show( ele );
+				css.show( ele );
 			} );
 		}
 
@@ -476,8 +465,6 @@ aQuery.define( "main/css", [ "base/typed", "base/extend", "base/array", "base/su
 	}
 
 	css.cssHooks = cssHooks;
-
-	$.extend( css );
 
 	// do not extend $
 	css.vendorPropName = function( style, name ) {
