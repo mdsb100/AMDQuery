@@ -153,6 +153,7 @@
 	 * @requires module:base/client
 	 * @requires module:main/data
 	 * @requires module:main/query
+	 * @borrows module:main/query.contains as contains
 	 */
 	var css = {
 		/**
@@ -222,41 +223,39 @@
 		 * @memberOf module:main/css
 		 * @param ele {Element}
 		 * @param name {String} - style name: "margin-left" or "marginLeft"
-		 * @returns {this}
+		 * @returns {String}
 		 */
 		curCss: curCSS,
 		cssProps: cssProps,
+		/**
+		 * Get style from Element by type.
+		 * @param {Element}
+		 * @param {String} - style name: "margin-left" or "marginLeft"
+		 * @param {String} - Head likes "webkit"
+		 * @returns {String}
+		 */
 		style: function( ele, type, head ) {
-			/// &lt;summary>返回元素样式表中的某个样式&lt;/summary>
-			/// &lt;param name="ele" type="Element">element元素&lt;/param>
-			/// &lt;param name="type" type="String">样式名 缺省返回""&lt;/param>
-			/// &lt;param name="head" type="String">样式名的头 缺省则无&lt;/param>
-			/// &lt;returns type="String" />
-			return css.styleTable( ele )[ $.util.camelCase( type, head ) ];
+			return css.getStyles( ele )[ $.util.camelCase( type, head ) ];
 		},
-		styleTable: function( ele ) {
-			/// &lt;summary>返回元素样式表&lt;/summary>
-			/// &lt;param name="ele" type="Element">dom元素&lt;/param>
-			/// &lt;returns type="Object" />
-			var style;
-			if ( document.defaultView && document.defaultView.getComputedStyle ) style = document.defaultView.getComputedStyle( ele, null );
-			else {
-				style = ele.currentStyle;
-
-			}
-			return style;
-		},
+		/**
+		 * Get style table from Element.
+		 * @method getStyles
+		 * @memberOf module:main/css
+		 * @param {Element}
+		 * @returns {Object&lt;String,String>}
+		 */
+		getStyles: getStyles,
 
 		contains: query.contains,
-
+		/**
+		 * Get opacity from Element.
+		 * @param {Element}
+		 * @returns {Number} - from 0 to 1
+		 */
 		getOpacity: function( ele ) {
-			/// &lt;summary>获得ele的透明度&lt;/summary>
-			/// &lt;param name="ele" type="Element">element元素&lt;/param>
-			/// &lt;returns type="Number" />
-
 			var o;
 			if ( support.opacity ) {
-				o = css.styleTable( ele ).opacity;
+				o = css.getStyles( ele ).opacity;
 				if ( o == "" || o == undefined ) {
 					o = 1;
 				} else {
@@ -264,7 +263,7 @@
 				}
 			} else {
 				//return ele.style.filter ? (ele.style.filter.match(/\d+/)[0] / 100) : 1;
-				var f = css.styleTable( ele ).filter;
+				var f = css.getStyles( ele ).filter;
 				o = 1;
 				if ( f ) {
 					o = f.match( /\d+/ )[ 0 ] / 100;
@@ -273,14 +272,13 @@
 			}
 			return o;
 		},
-		getStyles: getStyles,
-
-
+		/**
+		 * Hide Element.
+		 * @param {Element}
+		 * @param {Boolean=} - If true then Element is still block
+		 * @returns {this}
+		 */
 		hide: function( ele, visible ) {
-			/// &lt;summary>隐藏元素&lt;/summary>
-			/// &lt;param name="ele" type="Element">element元素&lt;/param>
-			/// &lt;param name="visible" type="Boolean">true:隐藏后任然占据文档流中&lt;/param>
-			/// &lt;returns type="self" />
 			if ( visible ) {
 				ele.style.visibility = "hidden";
 			} else {
@@ -288,15 +286,15 @@
 				ele.style.display = "none";
 			}
 
-			//a ? this.css({ vi: "hidden" }) : this.css({ d: "none" })
 			return this;
 		},
-
+		/**
+		 * Is Elment visible.
+		 * @param {Element}
+		 * @returns {Boolean}
+		 */
 		isVisible: function( ele ) {
-			/// &lt;summary>返回元素是否可见&lt;/summary>
-			/// &lt;param name="ele" type="Element">element元素&lt;/param>
-			/// &lt;returns type="Boolean" />
-			var t = css.styleTable( ele );
+			var t = css.getStyles( ele );
 			if ( t.display == "none" ) {
 				return false;
 			}
@@ -305,22 +303,23 @@
 			}
 			return true;
 		},
-
+		/**
+		 * Set opacity to Element.
+		 * @param {Number} - from 0 to 1
+		 * @returns {this}
+		 */
 		setOpacity: function( ele, alpha ) {
-			/// &lt;summary>改变ele的透明度
-			/// &lt;/summary>
-			/// &lt;param name="ele" type="Element">element元素&lt;/param>
-			/// &lt;param name="alpha" type="Number">0-1&lt;/param>
-			/// &lt;returns type="self" />
 			alpha = $.between( 0, 1, alpha );
 			if ( support.opacity ) ele.style.opacity = alpha;
 			else ele.style.filter = "Alpha(opacity=" + ( alpha * 100 ) + ")"; //progid:DXImageTransform.Microsoft.
 			return this;
 		},
+		/**
+		 * Show Element.
+		 * @param {Element}
+		 * @returns {this}
+		 */
 		show: function( ele ) {
-			/// &lt;summary>显示元素&lt;/summary>
-			/// &lt;param name="ele" type="Element">element元素&lt;/param>
-			/// &lt;returns type="self" />
 			var s = ele.style,
 				n = "none",
 				h = "hidden",
@@ -345,6 +344,17 @@
 
 			return this;
 		},
+		/**
+		 * Swap Element style.
+		 * &lt;br />Set options`s style to element.
+		 * &lt;br />do callback.
+		 * &lt;br />Swap origin style to element.
+		 * @param {Element}
+		 * @param {Object&lt;String, String|Number>}
+		 * @param {Function}
+		 * @param {Array=} - Callback arguments
+		 * @returns {*} - return callback result;
+		 */
 		swap: function( ele, options, callback, args ) {
 			var ret, name,
 				old = {},
@@ -366,16 +376,35 @@
 		}
 	};
 
-	$.fn.extend( {
+	$.fn.extend( /** @lends aQuery.prototype */ {
+		/**
+		 * Set style.
+		 * @variation 1
+		 * @method css
+		 * @memberOf aQuery.prototype
+		 * @param styles {Object&lt;String,String|Number>}
+		 * @returns {this}
+		 */
+
+		/**
+		 * Set style.
+		 * @variation 2
+		 * @method css
+		 * @memberOf aQuery.prototype
+		 * @param style {String} - style name: "margin-left" or "marginLeft"
+		 * @param value {String|Number}
+		 * @returns {this}
+		 */
+
+    /**
+     * Get style by type.
+     * @variation 3
+     * @method css
+     * @memberOf aQuery.prototype
+     * @param type {String}
+     * @returns {String}
+     */
 		css: function( style, value ) {
-			/// &lt;summary>添加或获得样式
-			/// &lt;para>如果要获得样式 返回为String&lt;/para>
-			/// &lt;para>fireFox10有个问题，请不要写成带-的形式&lt;/para>
-			/// &lt;/summary>
-			/// &lt;param name="style" type="Object/String">obj为赋样式 str为获得一个样式&lt;/param>
-			/// &lt;param name="value" type="String/Number/undefined">当style是字符串，并且value存在&lt;/param>
-			/// &lt;returns type="self" />
-			// var result, tmp;
 			if ( typed.isObj( style ) ) {
 				for ( var key in style ) {
 					this.each( function( ele ) {
@@ -393,76 +422,82 @@
 			}
 			return this;
 		},
+		/**
+		 * Get current style from first Element.
+		 * @param name {String} - style name: "margin-left" or "marginLeft"
+		 * @returns {String}
+		 */
 		curCss: function( name ) {
-			/// &lt;summary>返回样式原始值 可能有bug&lt;/summary>
-			/// &lt;param name="name" type="String">样式名&lt;/param>
-			/// &lt;returns type="any" />
 			return css.curCss( this[ 0 ], name );
 		},
+		/**
+		 * Get style from first Element by type.
+		 * @param {String} - style name: "margin-left" or "marginLeft"
+		 * @param {String} - Head likes "webkit"
+		 * @returns {String}
+		 */
 		style: function( type, head ) {
-			/// &lt;summary>返回第一个元素样式表中的某个样式&lt;/summary>
-			/// &lt;param name="type" type="String">样式名 缺省返回""&lt;/param>
-			/// &lt;param name="head" type="String">样式名的头 缺省则无&lt;/param>
-			/// &lt;returns type="String" />
-
 			return css.style( this[ 0 ], type, head );
 		},
-		styleTable: function() {
-			/// &lt;summary>返回第一个元素样式表&lt;/summary>
-			/// &lt;returns type="Object" />
-			return css.styleTable( this[ 0 ] );
+		/**
+		 * Get style table from first Element.
+		 * @returns {Object&lt;String,String>}
+		 */
+		getStyles: function() {
+			return css.getStyles( this[ 0 ] );
 		},
-
-		antonymVisible: function( a ) {
-			/// &lt;summary>添加兼容滚轮事件&lt;/summary>
-			/// &lt;param name="a" type="Boolean">如果隐藏，隐藏的种类，true表示任然占据文档流&lt;/param>
-			/// &lt;returns type="self" />
+		/**
+		 * Toggle visible
+		 * @param {Boolean=} - {@link module:main/css.hide}
+		 * @returns {this}
+		 */
+		toggleVisible: function( a ) {
 			if ( this.isVisible() ) this.hide( a );
 			else this.show();
 			return this;
 		},
-
+		/**
+		 * Hide Elements.
+		 * @param {Boolean=} - {@link module:main/css.hide}
+		 * @returns {this}
+		 */
 		hide: function( visible ) {
-			/// &lt;summary>设置所有元素隐藏&lt;/summary>
-			/// &lt;param name="visible" type="Boolean">true:隐藏后任然占据文档流中&lt;/param>
-			/// &lt;returns type="self" />
-			//            a ? this.css({ vi: "hidden" }) : this.css({ d: "none" })
-			//            return this;
 			return this.each( function( ele ) {
 				css.hide( ele, visible );
 			} );
 		},
-
-		insertText: function( str ) {
-			/// &lt;summary>给当前对象的所有ele插入TextNode&lt;/summary>
-			/// &lt;param name="str" type="String">字符串&lt;/param>
-			/// &lt;returns type="self" />
-			if ( typed.isStr( str ) && str.length > 0 ) {
-				var nodeText;
-				this.each( function( ele ) {
-					nodeText = document.createTextNode( str );
-					ele.appendChild( nodeText );
-				} );
-			}
-			return this;
-		},
+		/**
+		 * Is first elemnt visible.
+		 * @returns {Boolean}
+		 */
 		isVisible: function() {
-			/// &lt;summary>返回元素是否可见&lt;/summary>
-			/// &lt;returns type="Boolean" />
 			return css.isVisible( this[ 0 ] );
 		},
+		/**
+     * Set opacity to every Element.
+     * @variation 1
+     * @method opacity
+     * @memberOf aQuery.prototype
+     * @param alpha {Number} - from 0 to 1
+     * @returns {this}
+     */
 
+     /**
+     * Get opacity from first Element.
+     * @variation 2
+     * @method opacity
+     * @memberOf aQuery.prototype
+     * @returns {Number}
+     */
 		opacity: function( alpha ) {
-			/// &lt;summary>设置当前对象所有元素的透明度或获取当前对象第一个元素的透明度
-			/// &lt;para>获得时返回Number&lt;/para>
-			/// &lt;/summary>
-			/// &lt;param name="alpha" type="Number/null">透明度（0~1）可选，为空为获取透明度&lt;/param>
-			/// &lt;returns type="self" />
 			return typed.isNum( alpha ) ? this.each( function( ele ) {
 				css.setOpacity( ele, alpha );
 			} ) : css.getOpacity( this[ 0 ] );
 		},
-
+		/**
+		 * Show Elements.
+		 * @returns {this}
+		 */
 		show: function() {
 			/// &lt;summary>显示所有元素&lt;/summary>
 			/// &lt;returns type="self" />
