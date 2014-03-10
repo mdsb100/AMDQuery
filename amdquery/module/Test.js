@@ -74,7 +74,7 @@ aQuery.define( "module/Test", [ "base/Promise", "base/config", "main/event" ], f
 		this.complete = complete || function() {};
 		this.promise = new Promise( function( preResult ) {
 			description && logger( description );
-      logger( this.name, "User Agent:", navigator.userAgent );
+			logger( this.name, "User Agent:", navigator.userAgent );
 			logger( this.name, "Test start", "Test:" + this.count );
 			return preResult;
 		} ).withContext( this );
@@ -245,7 +245,12 @@ aQuery.define( "module/Test", [ "base/Promise", "base/config", "main/event" ], f
 		 */
 		report: function() {
 			if ( window.parent && window.parent.aQuery && window.parent.aQuery.trigger ) {
-				window.parent.aQuery.trigger( TestEventType, null, this.name, this.count, this.fail );
+				window.parent.aQuery.trigger( TestEventType, null, {
+					type: TestEventType,
+					name: this.name,
+					count: this.count,
+					fail: this.fail
+				} );
 			}
 			return this;
 		}

@@ -1,6 +1,7 @@
 <div id="navmenu" amdquery-widget="ui.scrollableview" ui-scrollableview="overflow:V" style="width:200px;height:100%;border-right:1px solid black;">
   <div id="nav" amdquery-widget="ui.navmenu">
     <ul>
+      <li test="true" id="index-navitem" amdquery-widget="ui.navitem" ui-navitem="html:index;img:class"></li>
       <li amdquery-widget="ui.navitem" ui-navitem="html:app;img:module">
         <ul>
           <li amdquery-widget="ui.navitem" ui-navitem="html:app;img:class"></li>
@@ -20,12 +21,12 @@
       </li>
       <li amdquery-widget="ui.navitem" ui-navitem="html:main;img:module">
         <ul>
-          <li amdquery-widget="ui.navitem" ui-navitem="html:CustomEvent;img:class"></li>
+          <li amdquery-widget="ui.navitem" ui-navitem="html:CustomEvent;img:class" test="true"></li>
           <li amdquery-widget="ui.navitem" ui-navitem="html:Query;img:class"></li>
           <li amdquery-widget="ui.navitem" ui-navitem="html:Communicate;img:class"></li>
           <li amdquery-widget="ui.navitem" ui-navitem="html:Css;img:class"></li>
           <li amdquery-widget="ui.navitem" ui-navitem="html:Dom;img:class"></li>
-          <li amdquery-widget="ui.navitem" ui-navitem="html:Event;img:class"></li>
+          <li amdquery-widget="ui.navitem" ui-navitem="html:Event;img:class" test="true"></li>
           <li amdquery-widget="ui.navitem" ui-navitem="html:Object;img:class"></li>
           <li amdquery-widget="ui.navitem" ui-navitem="html:Data;img:class"></li>
         </ul>
@@ -37,7 +38,7 @@
       </li>
       <li amdquery-widget="ui.navitem" ui-navitem="html:module;img:module">
         <ul>
-          <li amdquery-widget="ui.navitem" ui-navitem="html:Test;img:class"></li>
+          <li amdquery-widget="ui.navitem" ui-navitem="html:Test;img:class" test="true"></li>
           <li amdquery-widget="ui.navitem" ui-navitem="html:Color;img:class"></li>
           <li amdquery-widget="ui.navitem" ui-navitem="html:Promise;img:class"></li>
           <li amdquery-widget="ui.navitem" ui-navitem="html:Thread;img:class"></li>
@@ -52,7 +53,7 @@
           <li amdquery-widget="ui.navitem" ui-navitem="html:Drag;img:class"></li>
           <li amdquery-widget="ui.navitem" ui-navitem="html:Keyboard;img:class"></li>
           <li amdquery-widget="ui.navitem" ui-navitem="html:swapview;img:class"></li>
-          <li id="ScrollableView-navItem" amdquery-widget="ui.navitem" ui-navitem="html:ScrollableView;img:class"></li>
+          <li amdquery-widget="ui.navitem" ui-navitem="html:ScrollableView;img:class"></li>
           <li amdquery-widget="ui.navitem" ui-navitem="html:Widget;img:class"></li>
           <li amdquery-widget="ui.navitem" ui-navitem="html:flex;img:class"></li>
           <li amdquery-widget="ui.navitem" ui-navitem="html:TabView;img:class"></li>
