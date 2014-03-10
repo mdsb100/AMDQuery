@@ -616,7 +616,7 @@ buildAMDQueryAPINav = function( members, templatePath ) {
 					"tag": "li",
 					"amdquery-widget": "ui.navitem",
 					"ui-navitem": "html:index;img:file",
-          "link": "index.html"
+					"link": "index.html"
         }
       ]
   } ]
@@ -666,16 +666,20 @@ buildAMDQueryAPINav = function( members, templatePath ) {
 			seen[ g.longname ] = true;
 		} );
 
-		if ( !hasNav ) {
-			tree.globals.__noChildren = true;
-			tree.longname = "global";
-			tree.name = "Global";
-		}
+		// if ( !hasNav ) {
+		// 	tree.globals.__noChildren = true;
+		// 	tree.longname = "global";
+		// 	tree.name = "Global";
+		// }
 	}
 
-	// console.log( tree );
-
 	createNav( tree, rootUL );
+
+	var globalElement = rootUL.children.pop();
+
+	globalElement.link = getHrefValue( linkto( "global", "Global" ) );
+
+	rootUL.children.push( globalElement );
 
 	var buildPath = path.join( templatePath, "build" );
 	var apinavPath = path.join( buildPath, "apinav.xml" );

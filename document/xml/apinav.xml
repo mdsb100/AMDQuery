@@ -102,7 +102,7 @@
           <li amdquery-widget="ui.navitem" ui-navitem="html:ObjectClassStaticMethods;img:file" link="ObjectClassStaticMethods.html"></li>
         </ul>
       </li>
-      <li amdquery-widget="ui.navitem" ui-navitem="html:globals;img:module">
+      <li amdquery-widget="ui.navitem" ui-navitem="html:globals;img:module" link="global.html">
         <ul>
           <li amdquery-widget="ui.navitem" ui-navitem="html:AjaxOptions;img:file" link="global.html#AjaxOptions"></li>
           <li amdquery-widget="ui.navitem" ui-navitem="html:debug;img:file" link="global.html#debug"></li>
