@@ -1,0 +1,83 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+  <title></title>
+  <link href="../../../global/styles/reset.css" rel="stylesheet" type="text/css" />
+  <script src="../../../amdquery/amdquery.js" type="text/javascript" amdquery="define:$;package:main;" amd="detectCR:1;" module="compatibleEvent:1;testLogByHTML:1"></script>
+  <script type="text/javascript">
+  $.require( [ "base/Promise", "main/communicate", "main/attr", "main/parse", "main/event", "main/css", "main/dom" ], function( Promise, communicate, attr, parse ) {
+    var htmlPromise = new Promise;
+
+    function createDiv() {
+      var
+      $border = $( {
+        height: 200,
+        border: "1px solid black",
+        display: "block"
+      }, "p" ),
+        $div = $( {
+          height: 200,
+          width: "25%",
+          float: "left"
+        }, "div" ).append( $border );
+
+
+      $( "body" ).append( $div );
+
+      return $border;
+    };
+    communicate.ajax( {
+      url: "../xml/navmenu.xml",
+      dataType: "xml",
+      complete: function( xml ) {
+        $( xml ).find( "li[test='true']" ).each( function( li ) {
+          var $parent = $( li ).parents( "li" );
+          if ( $parent.length ) {
+            var pathList = [];
+            $parent.push( li ).reverse().each( function( li ) {
+              var value = attr.getAttr( li, "ui-navitem" ),
+                obj;
+              if ( value ) {
+                obj = parse.QueryString( value, /;|,/, ":" );
+                pathList.push( obj.html );
+              }
+            } );
+            if ( pathList.length ) {
+              var htmlPath = pathList.reverse().join( "/" ) + ".html";
+              htmlPromise = htmlPromise.then( function() {
+                var promise = new Promise;
+                var $border = createDiv();
+                $border.html( "Open html:" + htmlPath + "to test..." );
+                $.once( "test.report", function( e ) {
+                  var innerHtml = [
+                    "Source:", htmlPath, "<br />",
+                    "Test:", e.name, "<br />",
+                    "count:", e.count, "<br />",
+                    "fail:", e.fail, "<br />"
+                  ];
+
+                  $border.html( innerHtml.join( " " ) );
+
+                  $border.css( "color", e.fail == 0 ? "green" : "red" );
+                  promise.resolve();
+                } );
+                $( "#iframe" ).attr( "src", htmlPath );
+                return promise;
+              } );
+            }
+          }
+        } );
+
+        htmlPromise.root().resolve();
+      }
+    } );
+  } );
+  </script>
+</head>
+
+<body style="overflow: auto">
+  <iframe id="iframe" style="position:absolute;display:none;width:1280px;height:679px;"></iframe>
+</body>
+
+</html>

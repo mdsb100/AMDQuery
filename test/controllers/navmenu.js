@@ -19,7 +19,7 @@ aQuery.define( "@app/controllers/navmenu", [ "module/location", "app/Controller"
 					ret = target.uiNavitem( "getOptionToRoot" ),
 					path;
 
-				if ( ret.length > 1 ) {
+				if ( target.children("ul").length === 0 ) {
 					location.setHash( "navmenu", ret.concat().reverse().join( "_" ) );
 					ret.push( "assets" );
 					path = ret.reverse().join( "/" ) + ".html";
@@ -39,7 +39,7 @@ aQuery.define( "@app/controllers/navmenu", [ "module/location", "app/Controller"
 
 		},
 		selectDefaultNavmenu: function( target ) {
-			var ret = "ScrollableView-navItem";
+			var ret = "index-navitem";
 			if ( target ) {
 				var navItem = this.$nav.uiNavmenu( "getNavItemsByHtmlPath", target.split( /\W/ ) )[ 0 ];
 				ret = navItem || ret;
