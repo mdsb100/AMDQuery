@@ -22,7 +22,6 @@
           float: "left"
         }, "div" ).append( $border );
 
-
       $( "body" ).append( $div );
 
       return $border;
@@ -59,7 +58,9 @@
 
                   $border.html( innerHtml.join( " " ) );
 
-                  $border.css( "color", e.fail == 0 ? "green" : "red" );
+                  $border.css( "color", e.fail == 0 ? "green" : "red" ).click(function(){
+                    window.open( htmlPath );
+                  });
                   promise.resolve();
                 } );
                 $( "#iframe" ).attr( "src", htmlPath );
