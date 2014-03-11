@@ -65,11 +65,13 @@
 				ele.onload = function() {
 					clearTimeout( timeId );
 					o.complete && o.complete.call( o.context || this, this );
+					ele.onload = ele.onerror = null;
 					ele = timeId = o = null;
 				};
 				ele.onerror = function( e ) {
 					clearTimeout( timeId );
 					o.error && o.timeoutFun.call( ele, e );
+					ele.onload = ele.onerror = null;
 					ele = o = timeId = null;
 				};
 
