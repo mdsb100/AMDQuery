@@ -78,6 +78,7 @@
 				if ( o.timeout ) {
 					timeId = setTimeout( function() {
 						o.timeoutFun && o.timeoutFun.call( ele, o );
+						ele.onload = ele.onerror = null;
 						ele = o = timeId = null;
 					}, o.timeout );
 				}
