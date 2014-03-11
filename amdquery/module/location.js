@@ -2,7 +2,7 @@ aQuery.define( "module/location", [ "base/extend", "main/parse" ], function( $, 
 	this.describe( "Location to Hash" );
 
 	var
-	SPLIT_MARK = "!",
+	SPLIT_MARK = "&",
 		EQUALS_MARK = "=",
 		SHARP = "#",
 		_location = window.location;

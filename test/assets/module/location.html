@@ -5,30 +5,36 @@
 <head>
   <title></title>
   <link href="../../../global/styles/reset.css" rel="stylesheet" type="text/css" />
-  <script src="../../../amdquery/amdquery.js" type="text/javascript" amdquery="define:$;" amd="detectCR:1;"></script>
+  <script src="../../../amdquery/amdquery.js" type="text/javascript" amdquery="define:$;" amd="detectCR:1;" module="testLogByHTML:1"></script>
   <script type="text/javascript">
-    $.require(["main/query", "module/location", "base/Promise"], function( query, location, Promise ) {
-      new Promise( function(){
-        alert( "see url" );
-      } ).then( function(){
-        location.setHash( "test", true );
-        alert( "set test = true" );
-      } ).then( function(){
-        location.setHash( "delete", true );
-        alert( "set delete = true" );
-      } ).then( function(){
-        location.removeHash( "delete", true );
-        alert("remove delete");
-      } ).then( function(){
-        alert("get test " + location.getHash( "test" ) );
-      } ).then( function(){
-        alert("get delete " + location.getHash( "delete" ) );
-      } ).then( function(){
+  $.require( [
+        "module/location",
+        "module/Test",
+      ], function( location, Test ) {
+    var testLocation = new Test( "TestLocation" );
+    testLocation
+      .equal( "Clear location.hash, window.location.hash is ''.", "", function( preResult ) {
         location.clearHash();
-        alert( "clear hash" );
-      } ).root().resolve();
+        return window.location.hash;
+      } ).equal( "Set location.hash ('name', 'Jarry'), window.location.hash is '#name=Jarry'.", "#name=Jarry", function( preResult ) {
+        location.setHash( "name", "Jarry" );
+        return window.location.hash;
+      } ).equal( "Set location.hash ('age', '18'), window.location.hash is '#name=Jarry&age=18'.", "#name=Jarry&age=18", function( preResult ) {
+        location.setHash( "age", "18" );
+        return window.location.hash;
+      } ).equal( "Get location.hash ('age'), result is '18'.", "18", function( preResult ) {
+        return location.getHash( "age" );
+      } ).equal( "Get location.hash ('name'), result is 'Jarry'.", "Jarry", function( preResult ) {
+        return location.getHash( "name" );
+      } ).equal( "Remove location.hash ('name'), window.location.hash is '#age=18'.", "#age=18", function( preResult ) {
+        location.removeHash( "name" );
+        return window.location.hash;
+      } ).equal( "Clear location.hash again, window.location.hash is ''.", "", function( preResult ) {
+        location.clearHash();
+        return window.location.hash;
+      } ).start();
 
-    })
+  } );
   </script>
 </head>
 

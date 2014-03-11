@@ -6,7 +6,7 @@
   <link href="../../../global/styles/reset.css" rel="stylesheet" type="text/css" />
   <script src="../../../amdquery/amdquery.js" type="text/javascript" amdquery="define:$;package:main;" amd="detectCR:1;" module="compatibleEvent:1;testLogByHTML:1"></script>
   <script type="text/javascript">
-  $.require( [ "base/Promise", "main/communicate", "main/attr", "main/parse", "main/event", "main/css", "main/dom" ], function( Promise, communicate, attr, parse ) {
+  $.require( [ "base/Promise", "main/communicate", "main/attr", "main/parse", "module/src", "main/event", "main/css", "main/dom" ], function( Promise, communicate, attr, parse, src ) {
     var htmlPromise = new Promise;
 
     function createDiv() {
@@ -50,20 +50,42 @@
                 $border.html( "Open html:" + htmlPath + "to test..." );
                 $.once( "test.report", function( e ) {
                   var innerHtml = [
-                    "Source:", htmlPath, "<br />",
-                    "Test:", e.name, "<br />",
-                    "count:", e.count, "<br />",
-                    "fail:", e.fail, "<br />"
-                  ];
+                      "Source:", htmlPath, "<br />",
+                      "Test:", e.name, "<br />",
+                      "count:", e.count, "<br />",
+                      "fail:", e.fail, "<br />"
+                    ];
 
                   $border.html( innerHtml.join( " " ) );
 
-                  $border.css( "color", e.fail == 0 ? "green" : "red" ).click(function(){
+                  $border.css( "color", e.fail == 0 ? "green" : "red" ).click( function() {
                     window.open( htmlPath );
-                  });
+                  } );
                   promise.resolve();
                 } );
-                $( "#iframe" ).attr( "src", htmlPath );
+
+                $( "#iframe" ).src( {
+                  src: htmlPath,
+                  error: function() {
+                    var innerHtml = [
+                      "Open", htmlPath, "error"
+                    ];
+
+                    $border.html( innerHtml.join( " " ) );
+
+                    promise.resolve();
+                  },
+                  timeoutFun: function() {
+                    var innerHtml = [
+                      "Open", htmlPath, "timeout"
+                    ];
+
+                    $border.html( innerHtml.join( " " ) );
+
+                    promise.resolve();
+                  },
+                  timeout: 10000
+                } );
                 return promise;
               } );
             }
