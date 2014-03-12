@@ -59,7 +59,7 @@
  var async = require( "async" );
  var trumpet = require( "trumpet" );
  var through = require( "through" );
- var concat = require( 'concat-stream' );
+ var DOMParser = require('xmldom').DOMParser;
  var beautify_html = require( "js-beautify" ).html;
  var htmlparser = require( "htmlparser" )
 
@@ -88,11 +88,9 @@
  	var doNext = function( aQueryConfigStr ) {
  		try {
  			eval( aQueryConfigStr );
- 			if ( aQueryConfig.app ) {
+ 			if ( typeof aQueryConfig ) {
  				_.extend( htmlInfo.appConfig, aQueryConfig.app );
  				openHtml( null, appConfig, htmlInfo );
- 			} else {
- 				openHtml( "getAppaQueryConfig: Find aQueryConfig but aQueryConfig.app is not defined." );
  			}
 
  		} catch ( e ) {
