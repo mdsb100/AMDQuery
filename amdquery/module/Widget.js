@@ -520,7 +520,7 @@
 					} else {
 						if ( a === "destroy" ) {
 							data[ a ].call( data );
-							$.removeData( ele, key );
+							utilData.removeData( ele, key );
 						} else if ( typed.isObj( a ) ) {
 							data.option( a );
 							data.render();
@@ -562,7 +562,7 @@
 					var data = utilData.get( ele, key );
 					if ( data ) {
 						data.destroy.call( data );
-						$.removeData( ele, key );
+						utilData.removeData( ele, key );
 					}
 				} );
 			};

@@ -107,8 +107,6 @@
         var testSearch7 = $("#F #search");
         var testSearch8 = $("#F>*");
 
-        $.getRealChild($("#F")[0], 1);
-        $.getSelfIndex($("#F")[0]);
 
         var a = $("input:checked")
         var b = $("#li1,#li2").ancestors(".parent");
@@ -125,7 +123,7 @@
           mytest2: 100
         });
         result = select.data();
-        $.removeData(select[0], "mytest1");
+        // $.removeData(select[0], "mytest1");
 
         var empty = {};
         var defaults = {

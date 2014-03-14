@@ -445,7 +445,7 @@
 			/// <param name="ele" type="Element"></param>
 			/// <returns type="self" />
 			for ( var i = ele.childNodes.length - 1; i >= 0; i-- ) {
-				$.removeChild( ele, ele.childNodes[ i ] );
+				dom.removeChild( ele, ele.childNodes[ i ] );
 			}
 			return this;
 		},
@@ -540,15 +540,15 @@
 			this.each( function( ele ) {
 				$.each( $.posterity( ele ), function( child ) {
 					if ( typed.isEle( child ) ) {
-						$.removeData( child );
-						$.remove( child );
+						utilData.removeData( child );
+						dom.remove( child );
 					}
 					//移除事件
 				} );
-				$.setHtml( ele, str, bool );
+				dom.setHtml( ele, str, bool );
 			} )
 
-			: $.getHtml( this[ 0 ] );
+			: dom.getHtml( this[ 0 ] );
 		},
 
 		after: function( refChild ) {
@@ -595,23 +595,23 @@
 			/// <returns type="self" />
 			var temp;
 			if ( typed.isNum( child ) ) this.each( function( ele ) {
-				temp = $.getRealChild( ele, child );
+				temp = dom.getRealChild( ele, child );
 				event.clearHandlers( temp );
-				$.removeData( temp );
+				utilData.removeData( temp );
 				ele.removeChild( temp );
 
 			} );
 			else if ( typed.isEle( child ) ) {
 				try {
 					event.clearHandlers( child );
-					$.removeData( child );
+					utilData.removeData( child );
 					this.eles[ 0 ].removeChild( child );
 				} catch ( e ) {}
 			} else if ( typed.is$( child ) ) this.each( function( ele ) {
 				child.each( function( son ) {
 					try {
 						event.clearHandlers( son );
-						$.removeData( son );
+						utilData.removeData( son );
 						ele.removeChild( son );
 					} catch ( e ) {}
 				} );
@@ -624,10 +624,10 @@
 			/// <returns type="self" />
 			$.each( $.posterity( this.eles ), function( ele ) {
 				event.clearHandlers( ele );
-				$.removeData( ele );
+				utilData.removeData( ele );
 			} );
 			return this.each( function( ele ) {
-				$.removeChildren( ele );
+				dom.removeChildren( ele );
 			} );
 		},
 		replace: function( newChild ) {
@@ -640,8 +640,8 @@
 					father = ele.parentNode;
 					try {
 						father.replaceChild( newChild, ele );
-						$.removeData( ele );
-						$.clearHandlers( ele );
+						utilData.removeData( ele );
+						event.clearHandlers( ele );
 						//移除事件
 						return false;
 					} catch ( e ) {}
@@ -653,8 +653,8 @@
 						try {
 							father.replaceChild( ele2, ele1 );
 							father.appendChild( ele2 );
-							$.removeData( ele1 );
-							$.clearHandlers( ele1 );
+							utilData.removeData( ele1 );
+							event.clearHandlers( ele1 );
 							//移除事件
 						} catch ( e ) {}
 					} );
@@ -672,9 +672,9 @@
 			$.each( newChild, function( newNode ) {
 				if ( typed.isNum( child ) ) this.each( function( ele ) {
 					try {
-						temp = $.getRealChild( ele, child );
+						temp = dom.getRealChild( ele, child );
 						ele.replaceChild( newNode, temp );
-						$.removeData( temp );
+						utilData.removeData( temp );
 						//移除事件
 						return false;
 					} catch ( e ) {}
@@ -682,7 +682,7 @@
 				else if ( typed.isEle( child ) ) this.each( function( ele ) {
 					try {
 						ele.replaceChild( newNode, child );
-						$.removeData( child );
+						utilData.removeData( child );
 						//移除事件
 						return false;
 					} catch ( e ) {}
@@ -691,7 +691,7 @@
 					child.each( function( son ) {
 						try {
 							ele.replaceChild( newNode, son );
-							$.removeData( son );
+							utilData.removeData( son );
 							//移除事件
 							return false;
 						} catch ( e ) {}
@@ -925,8 +925,6 @@
 			return $( ret );
 		};
 	} );
-
-	$.extend( dom );
 
 	$.interfaces.achieve( "constructorDom", function( type, dollar, cssObj, ele, parentNode ) {
 		parentNode && ( typed.isEle( parentNode ) || typed.is$( parentNode ) ) && dollar.appendTo( parentNode );
