@@ -54,6 +54,7 @@
               <li amdquery-widget="ui.navitem" ui-navitem="html:css;img:file" link="css.html"></li>
               <li amdquery-widget="ui.navitem" ui-navitem="html:CustomEvent;img:file" link="CustomEvent.html"></li>
               <li amdquery-widget="ui.navitem" ui-navitem="html:data;img:file" link="data.html"></li>
+              <li amdquery-widget="ui.navitem" ui-navitem="html:dom;img:file" link="dom.html"></li>
               <li amdquery-widget="ui.navitem" ui-navitem="html:event;img:file" link="event.html"></li>
               <li amdquery-widget="ui.navitem" ui-navitem="html:object;img:file" link="object_.html"></li>
               <li amdquery-widget="ui.navitem" ui-navitem="html:parse;img:file" link="parse.html"></li>
