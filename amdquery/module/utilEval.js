@@ -18,7 +18,7 @@
 			return ( new Function( "return " + s ) ).call( context );
 		},
 
-		globalEval: function( data, notRemove ) {
+		scriptEval: function( data, notRemove ) {
 			///	<summary>
 			///	把一段String用js的方式声明为全局的
 			///	</summary>

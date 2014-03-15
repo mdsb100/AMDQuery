@@ -20,7 +20,7 @@
 	}
 
 	var
-	expando = "AMDQuery" + $.now(),
+	expando = "aQuery" + $.now(),
 		uuid = 0,
 		windowData = {}, emptyObject = {};
 	/**

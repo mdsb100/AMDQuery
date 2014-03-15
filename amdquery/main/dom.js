@@ -1,8 +1,9 @@
-﻿aQuery.define( "main/dom", [ "base/typed", "base/extend", "base/array", "base/support", "main/data", "main/event", "main/query" ], function( $, typed, utilExtend, utilArray, support, utilData, event, query, undefined ) {
+﻿aQuery.define( "main/dom", [ "base/typed", "base/extend", "base/array", "base/support", "main/data", "main/event", "main/query", "main/communicate" ], function( $, typed, utilExtend, utilArray, support, utilData, event, query, communicate, undefined ) {
 	"use strict";
-  this.describe( "consult JQuery1.9.1" );
+	this.describe( "refer JQuery1.9.1" );
 	var nodeNames = "abbr|article|aside|audio|bdi|canvas|data|datalist|details|figcaption|figure|footer|" +
 		"header|hgroup|mark|meter|nav|output|progress|section|summary|time|video",
+		rsingleTag = /^<(\w+)\s*\/?>(?:<\/\1>|)$/,
 		rinlineaQuery = / aQuery\d+="(?:null|\d+)"/g,
 		rnoshimcache = new RegExp( "<(?:" + nodeNames + ")[\\s/>]", "i" ),
 		rleadingWhitespace = /^\s+/,
@@ -187,7 +188,19 @@
 		// $.extend( true, curData, oldData.data );
 	}
 
+	/**
+	 * @exports main/dom
+	 * @requires module:base/typed
+	 * @requires module:base/extend
+	 * @requires module:base/array
+	 * @requires module:base/support
+	 * @requires module:main/data
+	 * @requires module:main/event
+	 * @requires module:main/query
+	 * @borrows module:main/query.contains as contains
+	 */
 	var dom = {
+		/** @inner */
 		buildFragment: function( elems, context, scripts, selection ) {
 			var j, elem, contains,
 				tmp, tag, tbody, wrap,
@@ -314,7 +327,13 @@
 
 			return safe;
 		},
-
+		/**
+		 * Clone element.
+		 * @param {Element}
+		 * @param {Boolean} [dataAndEvents=false]
+		 * @param {Boolean} [deepDataAndEvents=false]
+		 * @returns {Element}
+		 */
 		clone: function( elem, dataAndEvents, deepDataAndEvents ) {
 			var destElements, node, clone, i, srcElements,
 				inPage = query.contains( elem.ownerDocument, elem );
@@ -372,30 +391,78 @@
 			// Return the cloned set
 			return clone;
 		},
+		/**
+		 * HTMLString.
+		 * @param {HTMLString}
+		 * @param {String|Boolean} [context] - If specified, the fragment will be created in this context, defaults to document.
+		 * @param {Boolean} [keepScripts] - If true, will include scripts passed in the html string.
+		 * @returns {Array<Element>}
+		 */
+		parseHTML: function( data, context, keepScripts ) {
+			if ( !data || typeof data !== "string" ) {
+				return null;
+			}
+			if ( typeof context === "boolean" ) {
+				keepScripts = context;
+				context = false;
+			}
+			context = context || document;
+
+			var parsed = rsingleTag.exec( data ),
+				scripts = !keepScripts && [];
+
+			// Single tag
+			if ( parsed ) {
+				return [ context.createElement( parsed[ 1 ] ) ];
+			}
+
+			parsed = dom.buildFragment( [ data ], context, scripts );
+			if ( scripts ) {
+				$( scripts ).remove();
+			}
+			return $.merge( [], parsed.childNodes );
+		},
 
 		contains: query.contains,
 
-		getHtml: function( ele ) {
-			/// <summary>获得元素的innerHTML</summary>
-			/// <param name="ele" type="Element">element元素</param>
-			/// <returns type="String" />
-			return ele.innerHTML;
+		/**
+		 * Clear element data including all sub-elements or clean array of elemnts data.
+		 * @param {Element|Array<Element>}
+		 * @returns {this}
+		 */
+		cleanData: function( ele ) {
+			var eles;
+			if ( typed.isEle( ele ) ) {
+				eles = getAll( ele );
+			} else if ( typed.isArr( ele ) ) {
+				eles = ele;
+			}
+			$.each( eles, function( ele ) {
+				event.clearHandlers( ele );
+				utilData.removeData( ele );
+			} );
+			return this
 		},
+
+		/**
+		 * Get last child.
+		 * @param {Element}
+		 * @returns {Element}
+		 */
 		getLastChild: function( ele ) {
-			/// <summary>获得当前DOM元素的最后个真DOM元素</summary>
-			/// <param name="ele" type="Element">dom元素</param>
-			/// <returns type="Element" />
 			var x = ele.lastChild;
 			while ( x && !typed.isEle( x ) ) {
 				x = x.previousSibling;
 			}
 			return x;
 		},
+		/**
+		 * Get real child by index.
+		 * @param {Element}
+		 * @param {Number}
+		 * @returns {Element}
+		 */
 		getRealChild: function( father, index ) {
-			/// <summary>通过序号获得当前DOM元素某个真子DOM元素</summary>
-			/// <param name="father" type="Element">dom元素</param>
-			/// <param name="index" type="Number">序号</param>
-			/// <returns type="Element" />
 			var i = -1,
 				child;
 			var ele = father.firstChild;
@@ -408,19 +475,17 @@
 			}
 			return child;
 		},
-
+		/**
+		 * Remove this element,
+		 * @param {Element}
+		 * @param {String} - Filter
+		 * @param {Boolean} [keepData=false] - Whether keep data.
+		 * @returns {this}
+		 */
 		remove: function( ele, selector, keepData ) {
-			/// <summary>把元素从文档流里移除</summary>
-			/// <param name="ele" type="Object">对象</param>
-			/// <param name="selector" type="String">查询字符串</param>
-			/// <param name="keepData" type="Boolean">是否保留数据</param>
-			/// <returns type="self" />
 			if ( !selector || query.filter( selector, [ ele ] ).length > 0 ) {
 				if ( !keepData && ele.nodeType === 1 ) {
-					$.each( getAll( ele ), function( ele ) {
-						event.clearHandlers( ele );
-						utilData.removeData( ele );
-					} );
+					dom.cleanData( ele );
 				}
 
 				if ( ele.parentNode ) {
@@ -432,43 +497,68 @@
 			}
 			return this;
 		},
-		removeChild: function( ele, child ) {
-			/// <summary>删除子元素</summary>
-			/// <param name="ele" type="Element"></param>
-			/// <param name="child" type="Element"></param>
-			/// <returns type="self" />
-			ele.removeChild( child );
-			return this;
-		},
-		removeChildren: function( ele ) {
-			/// <summary>删除所有子元素</summary>
-			/// <param name="ele" type="Element"></param>
-			/// <returns type="self" />
-			for ( var i = ele.childNodes.length - 1; i >= 0; i-- ) {
-				dom.removeChild( ele, ele.childNodes[ i ] );
+		/**
+		 * Remove child element of this parent element,
+		 * @param {Element}
+		 * @param {Element}
+		 * @param {Boolean} [keepData=false] - Whether keep data.
+		 * @returns {this}
+		 */
+		removeChild: function( ele, child, keepData ) {
+			if ( query.contains( ele, child ) ) {
+				dom.remove( child, false, keepData );
 			}
 			return this;
 		},
-
-		setHtml: function( ele, str, bool ) {
-			/// <summary>设置元素的innerHTML
-			/// <para>IE678的的select.innerHTML("<option></option>")存在问题</para>
-			/// <para>bool为true相当于+=这样做是有风险的，除了IE678外的浏览器会重置为过去的文档流</para>
-			/// </summary>
-			/// <param name="ele" type="Element">element元素</param>
-			/// <param name="str" type="String">缺省 则返回innerHTML</param>
-			/// <param name="bool" type="Boolean">true添加 false覆盖</param>
-			/// <returns type="self" />
-			if ( bool == true ) {
-				ele.innerHTML += str;
-			} else {
-				ele.innerHTML = str;
+		/**
+		 * Remove all child elements of this parent element,
+		 * @param {Element}
+		 * @param {Boolean} [keepData=false] - Whether keep data.
+		 * @returns {this}
+		 */
+		removeChildren: function( ele, keepData ) {
+			for ( var i = ele.childNodes.length - 1; i >= 0; i-- ) {
+				dom.remove( ele.childNodes[ i ], false, keepData );
 			}
 			return this;
 		}
 	};
 
-	$.fn.extend( {
+	/**
+	 * html string "&ltb&gthello&lt/b&gtwait&ltb&gtbye&lt/b&gt"
+	 * @typedef {String} HTMLString
+	 */
+
+	/**
+	 * A function that returns an HTML string, DOM element(s), or aQuery object to insert at the end of each element in the set of matched elements.<br />
+	 * Receives the index position of the element in the set and the old HTML value of the element as arguments.<br />
+	 * Within the function, this refers to the current element in the set.
+	 * @callback DOMElementCallback
+	 * @param index {Number}
+	 * @param ele {Element|aQuery}
+	 */
+
+	/**
+	 * A function returning the HTML content to set. <br />
+	 * aQuery empties the element before calling the function; use the oldhtml argument to reference the previous content. Within the function, this refers to the current element in the set.
+	 * @callback HTMLStringCallback
+	 * @param index {Number} - Receives the index position of the element in the set.
+	 * @param html {HTMLString} - The old HTML value as arguments.
+	 */
+
+
+	/**
+	 * DOM element, array of elements, HTML string, or aQuery object to insert at the end of each element in the set of matched elements.
+	 * @typedef {(Element|Array<Element>|aQuery|HTMLString)} DOMArguments
+	 */
+
+	$.fn.extend( /** @lends aQuery.prototype */ {
+		/**
+		 * Clone element.
+		 * @param {Boolean} [dataAndEvents=false]
+		 * @param {Boolean} [deepDataAndEvents=false]
+		 * @returns {this}
+		 */
 		clone: function( dataAndEvents, deepDataAndEvents ) {
 			dataAndEvents = dataAndEvents == null ? false : dataAndEvents;
 			deepDataAndEvents = deepDataAndEvents == null ? dataAndEvents : deepDataAndEvents;
@@ -476,109 +566,191 @@
 				return dom.clone( this, dataAndEvents, deepDataAndEvents );
 			} );
 		},
-		append: function( child ) {
-			/// <summary>为$的第一个元素添加子元素
-			/// <para>字符串是标签名:div</para>
-			/// <para>DOM元素</para>
-			/// <para>若为$，则为此$第一个元素添加另一个$的所有元素</para>
-			/// <para>也可以为这种形式："<span></span><input/>"</para>
-			/// <para>select去append("<option></option>")存在问题</para>
-			/// <para>$({ i:"abc" }, "option")可以以这样方式实现</para>
-			/// </summary>
-			/// <param name="child" type="String/Element/$">子元素类型</param>
-			/// <returns type="self" />
+		/**
+		 * Insert every element in the set of matched elements to the end of the target.<br />
+		 * The .append() and .appendTo() methods perform the same task. The major difference is in the syntax-specifically, in the placement of the content and target. With .append(), the selector expression preceding the method is the container into which the content is inserted. With .appendTo(), on the other hand, the content precedes the method, either as a selector expression or as markup created on the fly, and it is inserted into the target container.
+		 * @method appendTo
+		 * @memberOf aQuery.prototype
+		 * @param target {DOMArguments}
+		 * @returns {this}
+		 */
 
-			var c = child,
-				ele = this.eles[ 0 ];
-			if ( !c ) return this;
-			if ( typed.isStr( c ) ) {
-				var str, childNodes, i = 0,
-					len;
-				str = c.match( /^<\w.+[\/>|<\/\w.>]$/ );
-				// 若是写好的html还是使用parse.html
-				if ( str ) {
-					c = str[ 0 ];
-					this.each( function( ele ) {
+		/**
+		 * Insert content, specified by the parameter, to the end of each element in the set of matched elements.
+		 * @variation 1
+		 * @method append
+		 * @memberOf aQuery.prototype
+		 * @param fn {DOMElementCallback}
+		 * @returns {this}
+		 */
 
-						childNodes = $.createEle( c );
-
-						for ( i = 0, len = childNodes.length; i < len; i++ ) {
-							ele.appendChild( childNodes[ i ] );
-						}
-						//delete div;
-					} );
+		/**
+		 * Insert content, specified by the parameter, to the end of each element in the set of matched elements.
+		 * @param child {DOMArguments}
+		 * @param childs {...DOMArguments} - One or more additional arguments.
+		 * @returns {this}
+		 */
+		append: function() {
+			return this.domManip( arguments, true, function( ele ) {
+				if ( this.nodeType === 1 || this.nodeType === 11 || this.nodeType === 9 ) {
+					this.appendChild( ele );
 				}
-			} else if ( typed.isEle( c ) || c.nodeType === 3 || c.nodeType === 8 ) ele.appendChild( c );
-			else if ( typed.is$( c ) ) {
-				c.each( function( son ) {
-					ele.appendChild( son );
-				} );
+			} );
+		},
+		/**
+		 * Insert every element in the set of matched elements to the end of the target.<br />
+		 * The .prepend() and .prependTo() methods perform the same task. The major difference is in the syntax-specifically, in the placement of the content and target. With .prepend(), the selector expression preceding the method is the container into which the content is inserted. With .prependTo(), on the other hand, the content precedes the method, either as a selector expression or as markup created on the fly, and it is inserted into the target container.
+		 * @method prependTo
+		 * @memberOf aQuery.prototype
+		 * @param target {DOMArguments}
+		 * @returns {this}
+		 */
+
+		/**
+		 * Insert content, specified by the parameter, to the beginning of each element in the set of matched elements.
+		 * @variation 1
+		 * @method prepend
+		 * @memberOf aQuery.prototype
+		 * @param fn {DOMElementCallback}
+		 * @returns {this}
+		 */
+
+		/**
+		 * Insert content, specified by the parameter, to the beginning of each element in the set of matched elements.
+		 * @param child {DOMArguments}
+		 * @param childs {...DOMArguments} - One or more additional arguments.
+		 * @returns {this}
+		 */
+		prepend: function() {
+			return this.domManip( arguments, true, function( ele ) {
+				if ( this.nodeType === 1 || this.nodeType === 11 || this.nodeType === 9 ) {
+					this.insertBefore( ele, this.firstChild );
+				}
+			} );
+		},
+		/**
+		 * Get the HTML contents of the first element in the set of matched elements.
+		 * @variation 1
+		 * @method html
+		 * @memberOf aQuery.prototype
+		 * @returns {String}
+		 */
+
+		/**
+		 * Set the HTML contents of every matched element.
+		 * @param value {HTMLStringCallback|HTMLString}
+		 * @returns {this}
+		 */
+		html: function( value ) {
+			var ele = this[ 0 ] || {},
+				i = 0,
+				l = this.length;
+			if ( value === undefined ) {
+				return ele.nodeType === 1 ?
+					ele.innerHTML.replace( rinlineaQuery, "" ) : undefined;;
+			} else if ( typed.isFun( value ) ) {
+				var ele;
+				for ( ; i < length; i++ ) {
+					ele = this[ i ]
+					value.call( ele, i, $( ele ).html() );
+				}
+			} else {
+				if ( typeof value === "string" && !rnoInnerhtml.test( value ) &&
+					( support.htmlSerialize || !rnoshimcache.test( value ) ) &&
+					( support.leadingWhitespace || !rleadingWhitespace.test( value ) ) && !wrapMap[ ( rtagName.exec( value ) || [ "", "" ] )[ 1 ].toLowerCase() ] ) {
+
+					value = value.replace( rxhtmlTag, "<$1></$2>" );
+
+					try {
+						for ( ; i < l; i++ ) {
+							// Remove element nodes and prevent memory leaks
+							ele = this[ i ] || {};
+							if ( ele.nodeType === 1 ) {
+								dom.cleanData( getAll( ele, false ) );
+								ele.innerHTML = value;
+							}
+						}
+
+						ele = 0;
+
+						// If using innerHTML throws an exception, use the fallback method
+					} catch ( e ) {}
+				}
+
+				if ( ele ) {
+					this.empty().append( value );
+				}
 			}
 			return this;
 		},
+		/**
+		 * Insert every element in the set of matched elements after the target. <br />
+		 * The .after() and .insertAfter() methods perform the same task. The major difference is in the syntax-specifically, in the placement of the content and target. With .after(), the selector expression preceding the method is the container after which the content is inserted. With .insertAfter(), on the other hand, the content precedes the method, either as a selector expression or as markup created on the fly, and it is inserted after the target container.
+		 * @method insertAfter
+		 * @memberOf aQuery.prototype
+		 * @param target {DOMArguments}
+		 * @returns {this}
+		 */
 
-		prepend: function() {
-			return this.domManip( arguments, true, function( elem ) {
-				if ( this.nodeType === 1 || this.nodeType === 11 || this.nodeType === 9 ) {
-					this.insertBefore( elem, this.firstChild );
-				}
-			} );
-		},
+		/**
+		 * Insert content, specified by the parameter, after each element in the set of matched elements.
+		 * @variation 1
+		 * @method after
+		 * @memberOf aQuery.prototype
+		 * @param fn {function} - function(index)
+		 * @returns {this}
+		 */
 
-		html: function( str, bool ) {
-			/// <summary>设置所有元素的innerHTML或返回第一元素的innerHTML
-			/// <para>IE678的的select.innerHTML("<option></option>")存在问题</para>
-			/// <para>$({ i:"abc" }, "option")可以以这样方式实现</para>
-			/// <para>为true相当于+=这样做是有风险的，除了IE678外的浏览器会重置为过去的文档流</para>
-			/// <para>获得时返回String</para>
-			/// </summary>
-			/// <param name="str" type="String">缺省 则返回innerHTML</param>
-			/// <param name="bool" type="Boolean">true添加 false覆盖</param>
-			/// <returns type="self" />
-			return typed.isStr( str ) ?
-
-			this.each( function( ele ) {
-				$.each( $.posterity( ele ), function( child ) {
-					if ( typed.isEle( child ) ) {
-						utilData.removeData( child );
-						dom.remove( child );
-					}
-					//移除事件
-				} );
-				dom.setHtml( ele, str, bool );
-			} )
-
-			: dom.getHtml( this[ 0 ] );
-		},
-
+		/**
+		 * Insert content, specified by the parameter, after each element in the set of matched elements.
+		 * @param refChild {DOMArguments}
+		 * @param refChilds {...DOMArguments} - One or more additional arguments.
+		 * @returns {this}
+		 */
 		after: function( refChild ) {
-			/// <summary>添加某个元素到$后面
-			/// </summary>
-			/// <param name="refChild" type="String/Element/$">已有元素</param>
-			/// <returns type="self" />
-			return this.domManip( arguments, false, function( elem ) {
+			return this.domManip( arguments, false, function( ele ) {
 				if ( this.parentNode ) {
-					this.parentNode.insertBefore( elem, this.nextSibling );
+					this.parentNode.insertBefore( ele, this.nextSibling );
 				}
 			} );
 		},
-		before: function( refChild ) {
-			/// <summary>添加某个元素到$前面
-			/// </summary>
-			/// <param name="father" type="Element/$">父元素</param>
-			/// <param name="refChild" type="String/Element/$">已有元素</param>
-			/// <returns type="self" />
+		/**
+		 * Insert every element in the set of matched elements before the target. <br />
+		 * The .before() and .insertBefore() methods perform the same task. The major difference is in the syntax-specifically, in the placement of the content and target. With .before(), the selector expression preceding the method is the container before which the content is inserted. With .insertBefore(), on the other hand, the content precedes the method, either as a selector expression or as markup created on the fly, and it is inserted before the target container.
+		 * @method insertBefore
+		 * @memberOf aQuery.prototype
+		 * @param target {DOMArguments}
+		 * @returns {this}
+		 */
 
-			return this.domManip( arguments, false, function( elem ) {
+		/**
+		 * Insert content, specified by the parameter, after each element in the set of matched elements.
+		 * @variation 1
+		 * @method before
+		 * @memberOf aQuery.prototype
+		 * @param fn {function} - function(index)
+		 * @returns {this}
+		 */
+
+		/**
+		 * Insert content, specified by the parameter, after each element in the set of matched elements.
+		 * @param refChild {DOMArguments}
+		 * @param refChilds {...DOMArguments} - One or more additional arguments.
+		 * @returns {this}
+		 */
+		before: function( refChild ) {
+			return this.domManip( arguments, false, function( ele ) {
 				if ( this.parentNode ) {
-					this.parentNode.insertBefore( elem, this );
+					this.parentNode.insertBefore( ele, this );
 				}
 			} );
 		},
+		/**
+		 * Insert text.
+		 * @param {String}
+		 * @returns {this}
+		 */
 		insertText: function( str ) {
-			/// <summary>给当前对象的所有ele插入TextNode</summary>
-			/// <param name="str" type="String">字符串</param>
-			/// <returns type="self" />
 			if ( typed.isStr( str ) && str.length > 0 ) {
 				var nodeText;
 				this.each( function( ele ) {
@@ -588,135 +760,63 @@
 			}
 			return this;
 		},
-
-		removeChild: function( child ) {
-			/// <summary>删除某个子元素</summary>
-			/// <param name="child" type="Number/Element/$"></param>
-			/// <returns type="self" />
-			var temp;
-			if ( typed.isNum( child ) ) this.each( function( ele ) {
-				temp = dom.getRealChild( ele, child );
-				event.clearHandlers( temp );
-				utilData.removeData( temp );
-				ele.removeChild( temp );
-
-			} );
-			else if ( typed.isEle( child ) ) {
-				try {
-					event.clearHandlers( child );
-					utilData.removeData( child );
-					this.eles[ 0 ].removeChild( child );
-				} catch ( e ) {}
-			} else if ( typed.is$( child ) ) this.each( function( ele ) {
-				child.each( function( son ) {
-					try {
-						event.clearHandlers( son );
-						utilData.removeData( son );
-						ele.removeChild( son );
-					} catch ( e ) {}
-				} );
-			} );
-			return this;
-		},
-		removeChildren: function() {
-			/// <summary>删除所有子元素</summary>
-			/// <param name="child" type="Number/Element/$"></param>
-			/// <returns type="self" />
-			$.each( $.posterity( this.eles ), function( ele ) {
-				event.clearHandlers( ele );
-				utilData.removeData( ele );
-			} );
-			return this.each( function( ele ) {
-				dom.removeChildren( ele );
-			} );
-		},
-		replace: function( newChild ) {
-			/// <summary>把所有元素替换成新元素</summary>
-			/// <param name="newChild" type="Element/$">要替换的元素</param>
-			/// <returns type="self" />
-			var father;
-			if ( typed.isEle( newChild ) ) {
-				this.each( function( ele ) {
-					father = ele.parentNode;
-					try {
-						father.replaceChild( newChild, ele );
-						utilData.removeData( ele );
-						event.clearHandlers( ele );
-						//移除事件
-						return false;
-					} catch ( e ) {}
-				} );
-			} else if ( typed.is$( newChild ) ) {
-				this.each( function( ele1 ) {
-					father = ele1.parentNode;
-					newChild.each( function( ele2 ) {
-						try {
-							father.replaceChild( ele2, ele1 );
-							father.appendChild( ele2 );
-							utilData.removeData( ele1 );
-							event.clearHandlers( ele1 );
-							//移除事件
-						} catch ( e ) {}
-					} );
-				} );
-			}
-			return this;
-		},
-		replaceChild: function( newChild, child ) {
-			/// <summary>替换子元素</summary>
-			/// <param name="newChild" type="Element">新元素</param>
-			/// <param name="child" type="Element">要替换的元素</param>
-			/// <returns type="self" />
-			newChild = $.getEle( newChild );
-			var temp;
-			$.each( newChild, function( newNode ) {
-				if ( typed.isNum( child ) ) this.each( function( ele ) {
-					try {
-						temp = dom.getRealChild( ele, child );
-						ele.replaceChild( newNode, temp );
-						utilData.removeData( temp );
-						//移除事件
-						return false;
-					} catch ( e ) {}
-				} );
-				else if ( typed.isEle( child ) ) this.each( function( ele ) {
-					try {
-						ele.replaceChild( newNode, child );
-						utilData.removeData( child );
-						//移除事件
-						return false;
-					} catch ( e ) {}
-				} );
-				else if ( typed.is$( child ) ) this.each( function( ele ) {
-					child.each( function( son ) {
-						try {
-							ele.replaceChild( newNode, son );
-							utilData.removeData( son );
-							//移除事件
-							return false;
-						} catch ( e ) {}
-					} );
-				} );
-			}, this );
-			return this;
-		},
-
+		/**
+		 * Remove the set of matched elements from the DOM. <br />
+		 * Similar to .empty(), the .remove() method takes elements out of the DOM. Use .remove() when you want to remove the element itself, as well as everything inside it. In addition to the elements themselves, all bound events and aQuery data associated with the elements are removed. To remove the elements without removing data and events, use .detach() instead.
+		 * @param {String}
+		 * @returns {this}
+		 */
 		remove: function( selector, keepData ) {
-			var elem,
+			var ele,
 				i = 0;
 
 			for ( ;
-				( elem = this[ i ] ) != null; i++ ) {
-				dom.remove( elem, selector, keepData );
+				( ele = this[ i ] ) != null; i++ ) {
+				dom.remove( ele, selector, keepData );
+			}
+
+			return this;
+		},
+		/**
+		 * Remove the set of matched elements from the DOM. <br />
+		 * The .detach() method is the same as .remove(), except that .detach() keeps all aQuery data associated with the removed elements. This method is useful when removed elements are to be reinserted into the DOM at a later time.
+		 * @param {String}
+		 * @returns {this}
+		 */
+		detach: function( selector ) {
+			return this.remove( selector, true );
+		},
+		/**
+		 * Remove all child nodes of the set of matched elements from the DOM.
+		 * @returns {this}
+		 */
+		empty: function() {
+			var ele,
+				i = 0;
+
+			for ( ;
+				( ele = this[ i ] ) != null; i++ ) {
+				// Remove eleent nodes and prevent memory leaks
+				if ( ele.nodeType === 1 ) {
+					dom.cleanData( getAll( ele, false ) );
+				}
+
+				// Remove any remaining nodes
+				while ( ele.firstChild ) {
+					ele.removeChild( ele.firstChild );
+				}
+
+				// If this is a select, ensure that it displays empty (#12336)
+				// Support: IE<9
+				if ( ele.options && typed.isNode( ele, "select" ) ) {
+					ele.options.length = 0;
+				}
 			}
 
 			return this;
 		},
 
-		detach: function( selector ) {
-			return this.remove( selector, true );
-		},
-
+		/** @inner */
 		domManip: function( args, table, callback ) {
 			// Flatten any nested arrays
 			args = [].concat.apply( [], args );
@@ -732,7 +832,7 @@
 
 			// We can't cloneNode fragments that contain checked, in WebKit
 			if ( isFunction || !( l <= 1 || typeof value !== "string" || support.checkClone || !rchecked.test( value ) ) ) {
-				return this.each( function( index ) {
+				return this.each( function( html, index ) {
 					var self = set.eq( index );
 					if ( isFunction ) {
 						args[ 0 ] = value.call( this, index, table ? self.html() : undefined );
@@ -778,33 +878,35 @@
 					}
 
 					// not support script
-					// if ( hasScripts ) {
-					// 	doc = scripts[ scripts.length - 1 ].ownerDocument;
+					if ( hasScripts ) {
+						doc = scripts[ scripts.length - 1 ].ownerDocument;
 
-					// 	// Reenable scripts
-					// 	query.map( scripts, restoreScript );
+						// Reenable scripts
+						query.map( scripts, restoreScript );
 
-					// 	// Evaluate executable scripts on first document insertion
-					// 	for ( i = 0; i < hasScripts; i++ ) {
-					// 		node = scripts[ i ];
-					// 		if ( rscriptType.test( node.type || "" ) && !jQuery._data( node, "globalEval" ) && jQuery.contains( doc, node ) ) {
+						// Evaluate executable scripts on first document insertion
+						for ( i = 0; i < hasScripts; i++ ) {
+							node = scripts[ i ];
+							if ( rscriptType.test( node.type || "" ) && !utilData.get( node, "globalEval" ) && query.contains( doc, node ) ) {
 
-					// 			if ( node.src ) {
-					// 				// Hope ajax is available...
-					// 				jQuery.ajax( {
-					// 					url: node.src,
-					// 					type: "GET",
-					// 					dataType: "script",
-					// 					async: false,
-					// 					global: false,
-					// 					"throws": true
-					// 				} );
-					// 			} else {
-					// 				jQuery.globalEval( ( node.text || node.textContent || node.innerHTML || "" ).replace( rcleanScript, "" ) );
-					// 			}
-					// 		}
-					// 	}
-					// }
+								if ( node.src ) {
+									// Hope ajax is available...
+									communicate.ajax( {
+										url: node.src,
+										type: "GET",
+										dataType: "text",
+										async: false,
+										complete: function( script ) {
+											eval( script );
+										}
+									} );
+
+								} else {
+									$.util.globalEval( ( node.text || node.textContent || node.innerHTML || "" ).replace( rcleanScript, "" ) );
+								}
+							}
+						}
+					}
 
 					// Fix #11809: Avoid leaking memory
 					fragment = first = null;
@@ -813,7 +915,29 @@
 
 			return this;
 		},
+		/**
+		 * Replace each target element with the set of matched elements. <br />
+		 * The .replaceAll() method is corollary to .replaceWith(), but with the source and target reversed.
+		 * @method replaceAll
+		 * @memberOf aQuery.prototype
+		 * @param target {DOMArguments}
+		 * @returns {this}
+		 */
 
+		/**
+		 * Replace each element in the set of matched elements with the provided new content and return the set of elements that was removed.
+		 * @variation 1
+		 * @method prepend
+		 * @memberOf aQuery.prototype
+		 * @param fn {Function} -  Function(). A function that returns content with which to replace the set of matched elements.
+		 * @returns {this}
+		 */
+
+		/**
+		 * Replace each element in the set of matched elements with the provided new content and return the set of elements that was removed.
+		 * @param child {DOMArguments}
+		 * @returns {this}
+		 */
 		replaceWith: function( value ) {
 			var isFunc = typed.isFun( value );
 
@@ -823,17 +947,22 @@
 				value = $( value ).not( this ).detach();
 			}
 
-			return this.domManip( [ value ], true, function( elem ) {
+			return this.domManip( [ value ], true, function( ele ) {
 				var next = this.nextSibling,
 					parent = this.parentNode;
 
 				if ( parent ) {
 					$( this ).remove();
-					parent.insertBefore( elem, next );
+					parent.insertBefore( ele, next );
 				}
 			} );
 		},
-
+		/**
+		 * Wrap an HTML structure around all elements in the set of matched elements. <br />
+		 * The .wrapAll() function can take any string or object that could be passed to the $() function to specify a DOM structure. This structure may be nested several levels deep, but should contain only one inmost element. The structure will be wrapped around all of the elements in the set of matched elements, as a single group.
+		 * @param {DOMArguments}
+		 * @returns {this}
+		 */
 		wrapAll: function( html ) {
 			if ( typed.isFun( html ) ) {
 				return this.each( function( ele, i ) {
@@ -850,19 +979,33 @@
 				}
 
 				wrap.map( function() {
-					var elem = this;
+					var ele = this;
 
-					while ( elem.firstChild && elem.firstChild.nodeType === 1 ) {
-						elem = elem.firstChild;
+					while ( ele.firstChild && ele.firstChild.nodeType === 1 ) {
+						ele = ele.firstChild;
 					}
 
-					return elem;
+					return ele;
 				} ).append( this );
 			}
 
 			return this;
 		},
+		/**
+		 * Wrap an HTML structure around the content of each element in the set of matched elements. <br />
+		 * @method wrapInner
+		 * @variation 1
+		 * @memberOf aQuery.prototype
+		 * @param fn {Function} - Function(index)
+		 * @returns {this}
+		 */
 
+		/**
+		 * Wrap an HTML structure around the content of each element in the set of matched elements. <br />
+		 * The .wrapInner() function can take any string or object that could be passed to the $() factory function to specify a DOM structure. This structure may be nested several levels deep, but should contain only one inmost element. The structure will be wrapped around the content of each of the elements in the set of matched elements.
+		 * @param {DOMArguments}
+		 * @returns {this}
+		 */
 		wrapInner: function( html ) {
 			if ( typed.isFun( html ) ) {
 				return this.each( function( ele, i ) {
@@ -882,7 +1025,21 @@
 				}
 			} );
 		},
+		/**
+		 * Wrap an HTML structure around each element in the set of matched elements.
+		 * @method wrap
+		 * @variation 1
+		 * @memberOf aQuery.prototype
+		 * @param fn {Function} - Function(index)
+		 * @returns {this}
+		 */
 
+		/**
+		 * Wrap an HTML structure around each element in the set of matched elements. <br />
+		 * The .wrap() function can take any string or object that could be passed to the $() factory function to specify a DOM structure. This structure may be nested several levels deep, but should contain only one inmost element. A copy of this structure will be wrapped around each of the elements in the set of matched elements. This method returns the original set of elements for chaining purposes.
+		 * @param {DOMArguments}
+		 * @returns {this}
+		 */
 		wrap: function( html ) {
 			var isFunction = typed.isFun( html );
 
@@ -890,13 +1047,18 @@
 				$( ele ).wrapAll( isFunction ? html.call( this, i ) : html );
 			} );
 		},
-
+		/**
+		 * Remove the parents of the set of matched elements from the DOM, leaving the matched elements in their place.
+		 * The .unwrap() method removes the element's parent. This is effectively the inverse of the .wrap() method. The matched elements (and their siblings, if any) replace their parents within the DOM structure.
+		 * @returns {this}
+		 */
 		unwrap: function() {
-			return this.parent().each( function( ele ) {
+			this.parent().each( function( ele ) {
 				if ( !typed.isNode( this, "body" ) ) {
 					$( ele ).replaceWith( this.childNodes );
 				}
-			} ).end();
+			} );
+			return this;
 		}
 	} );
 
