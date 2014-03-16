@@ -54,7 +54,11 @@
                       "Test:", e.name, "<br />",
                       "count:", e.count, "<br />",
                       "fail:", e.fail, "<br />"
-                    ];
+                    ], i = 0, len = e.failInfoList.length;
+
+                    for (;i<len;i++) {
+                      innerHtml.push( "    ", e.failInfoList[i], "<br />");
+                    }
 
                   $border.html( innerHtml.join( " " ) );
 

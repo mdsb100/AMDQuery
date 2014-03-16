@@ -25,7 +25,7 @@
           <li amdquery-widget="ui.navitem" ui-navitem="html:Query;img:class"></li>
           <li amdquery-widget="ui.navitem" ui-navitem="html:Communicate;img:class"></li>
           <li amdquery-widget="ui.navitem" ui-navitem="html:Css;img:class"></li>
-          <li amdquery-widget="ui.navitem" ui-navitem="html:Dom;img:class"></li>
+          <li amdquery-widget="ui.navitem" ui-navitem="html:Dom;img:class" test="true"></li>
           <li amdquery-widget="ui.navitem" ui-navitem="html:Event;img:class" test="true"></li>
           <li amdquery-widget="ui.navitem" ui-navitem="html:Object;img:class"></li>
           <li amdquery-widget="ui.navitem" ui-navitem="html:Data;img:class"></li>
