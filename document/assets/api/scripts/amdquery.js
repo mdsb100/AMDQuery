@@ -626,7 +626,7 @@
 			isEqual: function( objA, objB ) {
 				if ( this.is( objA, objB ) )
 					return true;
-				if ( objA.constructor !== objB.constructor )
+				if ( objA && objB && objA.constructor !== objB.constructor )
 					return false;
 				var aMemberCount = 0;
 				for ( var a in objA ) {
