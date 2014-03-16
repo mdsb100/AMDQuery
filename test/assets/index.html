@@ -68,28 +68,31 @@
                   promise.resolve();
                 } );
 
-                $( "#iframe" ).src( {
-                  src: htmlPath,
-                  error: function() {
-                    var innerHtml = [
-                      "Open", htmlPath, "error"
-                    ];
+                setTimeout(function(){
+                  $( "#iframe" ).src( {
+                    src: htmlPath,
+                    error: function() {
+                      var innerHtml = [
+                        "Open", htmlPath, "error"
+                      ];
 
-                    $border.html( innerHtml.join( " " ) );
+                      $border.html( innerHtml.join( " " ) );
 
-                    promise.resolve();
-                  },
-                  timeoutFun: function() {
-                    var innerHtml = [
-                      "Open", htmlPath, "timeout"
-                    ];
+                      promise.resolve();
+                    },
+                    timeoutFun: function() {
+                      var innerHtml = [
+                        "Open", htmlPath, "timeout"
+                      ];
 
-                    $border.html( innerHtml.join( " " ) );
+                      $border.html( innerHtml.join( " " ) );
 
-                    promise.resolve();
-                  },
-                  timeout: 10000
-                } );
+                      promise.resolve();
+                    },
+                    timeout: 10000
+                  } );
+                }, 20);
+
                 return promise;
               } );
             }
