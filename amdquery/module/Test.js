@@ -51,6 +51,7 @@ aQuery.define( "module/Test", [ "base/Promise", "base/config", "main/event" ], f
 	 * @param {String} name  - Test name.
 	 * @param {Number} count - Test count.
 	 * @param {Number} fail  - fail count.
+	 * @param {Array<String>} failInfoList  - List of fail information.
 	 */
 
 	/**
@@ -80,6 +81,7 @@ aQuery.define( "module/Test", [ "base/Promise", "base/config", "main/event" ], f
 		} ).withContext( this );
 		this.count = 0;
 		this.fail = 0;
+		this.failInfoList = [];
 	}
 
 	/**
@@ -121,6 +123,12 @@ aQuery.define( "module/Test", [ "base/Promise", "base/config", "main/event" ], f
 
 	Test.prototype = /** @lends module:module/Test.prototype */ {
 		constructor: Test,
+
+		_fail: function() {
+			this.fail++;
+			this.failInfoList.push( $.util.argToArray( arguments ).join( " " ) );
+		},
+
 		/**
 		 * Execute a function and non-return.
 		 * @param {String} - The describe of this test.
@@ -162,7 +170,7 @@ aQuery.define( "module/Test", [ "base/Promise", "base/config", "main/event" ], f
 				executeFn( preResult );
 				logger( this.name, describe, ssuccess );
 			} catch ( e ) {
-				this.fail++;
+				this._fail( describe, sfail, e );
 				error( this.name, describe, sfail, e );
 				this.report();
 				throw e;
@@ -209,19 +217,64 @@ aQuery.define( "module/Test", [ "base/Promise", "base/config", "main/event" ], f
 			try {
 				var result = resultBackFn( preResult );
 			} catch ( e ) {
-				this.fail++;
+				this._fail( describe, sfail, e );
 				error( this.name, describe, sfail, e );
 				this.report();
 				throw e;
 			}
-			if ( result === value ) {
+			if ( $.util.isEqual( result, value ) ) {
 				logger( this.name, describe, ssuccess );
 			} else {
-				this.fail++;
+				this._fail( describe, sfail );
 				error( this.name, describe, sfail );
 				this.report();
 			}
 			return result;
+		},
+		/**
+		 * Create a task for testing.
+		 * @param {String} - The describe of this test.
+		 * @param {Function} - The function of this test.
+		 * @param {Promise=} - If get a Promise instance then this test will be async.
+		 * @returns {this}
+		 * @example
+		 * var testTest = new Test("TestTest", function(preResult){
+		 *   // complete
+		 * })
+		 * .task("Test task", function(preResult, equal, execute){
+		 *   equal("Test equal", true, true, preResult);
+		 *   execute("Test execute", function(){}, preResult);
+		 *   return preResult;
+		 * })
+		 * .start();
+		 */
+		task: function( describe, fn, promise ) {
+			var self = this;
+			var equal = function( equalDesc, value, result, preResult ) {
+				var newDescribe = "\\--------" + equalDesc;
+				self.count++
+				self._equal( newDescribe, value, function() {
+					return result;
+				}, preResult );
+			},
+				execute = function( executeDesc, executeFn, preResult ) {
+					var newDescribe = "\\--------" + executeDesc;
+					self.count++
+					self._execute( newDescribe, executeFn, preResult );
+				};
+
+			this.promise = this.promise.then( function( preResult ) {
+				logger( this.name, "Do task:", describe );
+				if ( Promise.forinstance( promise ) ) {
+					promise.then( function( result ) {
+						return fn( result != null ? result : preResult, equal, execute );
+					} ).withContext( this );
+					return promise;
+				} else {
+					return fn( preResult, equal, execute );
+				}
+			} );
+			return this;
 		},
 		/**
 		 * Start test
@@ -249,7 +302,8 @@ aQuery.define( "module/Test", [ "base/Promise", "base/config", "main/event" ], f
 					type: TestEventType,
 					name: this.name,
 					count: this.count,
-					fail: this.fail
+					fail: this.fail,
+					failInfoList: this.failInfoList
 				} );
 			}
 			return this;
