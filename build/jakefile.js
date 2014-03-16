@@ -33,7 +33,7 @@ task( "buildjs", {
 	if ( !config ) {
 		config = "build_js_config.js";
 	}
-	jake.logger.log( "build application and javascript ..." );
+	jake.logger.log( "build javascript ..." );
 
 	jake.exec( "node build_js.js " + config, {
 		printStdout: true,
