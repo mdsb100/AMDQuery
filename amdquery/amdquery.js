@@ -625,7 +625,7 @@
 			isEqual: function( objA, objB ) {
 				if ( this.is( objA, objB ) )
 					return true;
-				if ( objA.constructor !== objB.constructor )
+				if ( objA && objB && objA.constructor !== objB.constructor )
 					return false;
 				var aMemberCount = 0;
 				for ( var a in objA ) {
@@ -639,6 +639,21 @@
 					if ( objB.hasOwnProperty( a ) )
 					--aMemberCount;
 				return aMemberCount ? false : true;
+			},
+			/**
+			 * Evaluates a script in a global context. Workarounds based on findings by Jim Driscoll. {@link http://weblogs.java.net/blog/driscoll/archive/2009/09/08/eval-javascript-global-context|refer}
+			 * @param {String}
+			 * @returns {Boolean}
+			 */
+			globalEval: function( data ) {
+				if ( data && this.trim( data ) ) {
+					// We use execScript on Internet Explorer
+					// We use an anonymous function so that context is window
+					// rather than jQuery in Firefox
+					( window.execScript || function( data ) {
+						window[ "eval" ].call( window, data );
+					} )( data );
+				}
 			},
 			removeSuffix: util.removeSuffix,
 			version: version

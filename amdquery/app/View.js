@@ -8,7 +8,7 @@ aQuery.define( "app/View", [
   "main/object",
   "main/attr",
   "main/CustomEvent",
-  "main/parse",
+  "main/dom",
   "module/Widget",
   "module/src"
    ], function( $,
@@ -21,7 +21,7 @@ aQuery.define( "app/View", [
 	object,
 	attr,
 	CustomEvent,
-	parse,
+	dom,
 	Widget,
 	src, undefined ) {
 	//View need require depend on Widget
@@ -178,7 +178,7 @@ aQuery.define( "app/View", [
 					async: false,
 					dataType: "string",
 					complete: function( xml ) {
-						define( htmlSrc, parse.HTML( xml ) );
+						define( htmlSrc, dom.parseHTML( xml ) );
 					},
 					timeout: View.timeout,
 					timeoutFun: View.error

@@ -1,38 +1,69 @@
-﻿aQuery.define( "main/dom", [ "base/typed", "base/extend", "base/array", "base/support", "main/data", "main/event", "main/query", "main/communicate" ], function( $, typed, utilExtend, utilArray, support, utilData, event, query, communicate, undefined ) {
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: main/dom.js</title>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="../../../global/styles/reset.css" />
+    <link type="text/css" rel="stylesheet" href="../../../global/styles/prettify-tomorrow.css" />
+    <link type="text/css" rel="stylesheet" href="../../../amdquery/ui/css/widget-ui.css" />
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+    <script src="../../../global/js/prettify.js" type="text/javascript"></script>
+    <script src="../../../global/js/lang-css.js"></script>
+    <script src="scripts/amdquery.js" amdquery="debug:false;" amd="detectCR=1" module="transitionToAnimation:1" ui="initWidget:1;isTransform3d:0;autoFetchCss:0"> </script>
+    <script src="scripts/main.js"> </script>
+</head>
+
+<body style="width: 100%; height: 100%;" onload="prettyPrint()">
+
+<div id="main" style="width: 100%; height: 100%;" amdquery-widget="ui.scrollableview" ui-scrollableview="orientation:V;enableKeyboard:true;focus:true">
+
+    <h1 id="page-title" name="page-title" class="page-title">Source: main/dom.js</h1>
+
+    
+
+
+    
+    <section>
+        <a float="false" id="Back" class="Back">Back</a>
+        <article>
+            <pre class="prettyprint source">﻿aQuery.define( "main/dom", [ "base/typed", "base/extend", "base/array", "base/support", "main/data", "main/event", "main/query", "main/communicate" ], function( $, typed, utilExtend, utilArray, support, utilData, event, query, communicate, undefined ) {
 	"use strict";
 	this.describe( "refer JQuery1.9.1" );
 	var nodeNames = "abbr|article|aside|audio|bdi|canvas|data|datalist|details|figcaption|figure|footer|" +
 		"header|hgroup|mark|meter|nav|output|progress|section|summary|time|video",
-		rsingleTag = /^<(\w+)\s*\/?>(?:<\/\1>|)$/,
+		rsingleTag = /^&lt;(\w+)\s*\/?>(?:&lt;\/\1>|)$/,
 		rinlineaQuery = / aQuery\d+="(?:null|\d+)"/g,
-		rnoshimcache = new RegExp( "<(?:" + nodeNames + ")[\\s/>]", "i" ),
+		rnoshimcache = new RegExp( "&lt;(?:" + nodeNames + ")[\\s/>]", "i" ),
 		rleadingWhitespace = /^\s+/,
-		rxhtmlTag = /<(?!area|br|col|embed|hr|img|input|link|meta|param)(([\w:]+)[^>]*)\/>/gi,
-		rtagName = /<([\w:]+)/,
-		rtbody = /<tbody/i,
-		rhtml = /<|&#?\w+;/,
-		rnoInnerhtml = /<(?:script|style|link)/i,
+		rxhtmlTag = /&lt;(?!area|br|col|embed|hr|img|input|link|meta|param)(([\w:]+)[^>]*)\/>/gi,
+		rtagName = /&lt;([\w:]+)/,
+		rtbody = /&lt;tbody/i,
+		rhtml = /&lt;|&#?\w+;/,
+		rnoInnerhtml = /&lt;(?:script|style|link)/i,
 		manipulation_rcheckableType = /^(?:checkbox|radio)$/i,
 		// checked="checked" or checked
 		rchecked = /checked\s*(?:[^=]|=\s*.checked.)/i,
 		rscriptType = /^$|\/(?:java|ecma)script/i,
 		rscriptTypeMasked = /^true\/(.*)/,
-		rcleanScript = /^\s*<!(?:\[CDATA\[|--)|(?:\]\]|--)>\s*$/g,
+		rcleanScript = /^\s*&lt;!(?:\[CDATA\[|--)|(?:\]\]|--)>\s*$/g,
 
 		// We have to close these tags to support XHTML (#13200)
 		wrapMap = {
-			option: [ 1, "<select multiple='multiple'>", "</select>" ],
-			legend: [ 1, "<fieldset>", "</fieldset>" ],
-			area: [ 1, "<map>", "</map>" ],
-			param: [ 1, "<object>", "</object>" ],
-			thead: [ 1, "<table>", "</table>" ],
-			tr: [ 2, "<table><tbody>", "</tbody></table>" ],
-			col: [ 2, "<table><tbody></tbody><colgroup>", "</colgroup></table>" ],
-			td: [ 3, "<table><tbody><tr>", "</tr></tbody></table>" ],
+			option: [ 1, "&lt;select multiple='multiple'>", "&lt;/select>" ],
+			legend: [ 1, "&lt;fieldset>", "&lt;/fieldset>" ],
+			area: [ 1, "&lt;map>", "&lt;/map>" ],
+			param: [ 1, "&lt;object>", "&lt;/object>" ],
+			thead: [ 1, "&lt;table>", "&lt;/table>" ],
+			tr: [ 2, "&lt;table>&lt;tbody>", "&lt;/tbody>&lt;/table>" ],
+			col: [ 2, "&lt;table>&lt;tbody>&lt;/tbody>&lt;colgroup>", "&lt;/colgroup>&lt;/table>" ],
+			td: [ 3, "&lt;table>&lt;tbody>&lt;tr>", "&lt;/tr>&lt;/tbody>&lt;/table>" ],
 
 			// IE6-8 can't serialize link, script, style, or any html5 (NoScope) tags,
 			// unless wrapped in a div with non-breaking characters in front of it.
-			_default: support.htmlSerialize ? [ 0, "", "" ] : [ 1, "X<div>", "</div>" ]
+			_default: support.htmlSerialize ? [ 0, "", "" ] : [ 1, "X&lt;div>", "&lt;/div>" ]
 		},
 		safeFragment = createSafeFragment( document ),
 		fragmentDiv = safeFragment.appendChild( document.createElement( "div" ) );
@@ -212,7 +243,7 @@
 				nodes = [],
 				i = 0;
 
-			for ( ; i < l; i++ ) {
+			for ( ; i &lt; l; i++ ) {
 				elem = elems[ i ];
 
 				if ( elem || elem === 0 ) {
@@ -233,7 +264,7 @@
 						tag = ( rtagName.exec( elem ) || [ "", "" ] )[ 1 ].toLowerCase();
 						wrap = wrapMap[ tag ] || wrapMap._default;
 
-						tmp.innerHTML = wrap[ 1 ] + elem.replace( rxhtmlTag, "<$1></$2>" ) + wrap[ 2 ];
+						tmp.innerHTML = wrap[ 1 ] + elem.replace( rxhtmlTag, "&lt;$1>&lt;/$2>" ) + wrap[ 2 ];
 
 						// Descend through wrappers to the right content
 						j = wrap[ 0 ];
@@ -246,15 +277,15 @@
 							nodes.push( context.createTextNode( rleadingWhitespace.exec( elem )[ 0 ] ) );
 						}
 
-						// Remove IE's autoinserted <tbody> from table fragments
+						// Remove IE's autoinserted &lt;tbody> from table fragments
 						if ( !support.tbody ) {
 
-							// String was a <table>, *may* have spurious <tbody>
+							// String was a &lt;table>, *may* have spurious &lt;tbody>
 							elem = tag === "table" && !rtbody.test( elem ) ?
 								tmp.firstChild :
 
-							// String was a bare <thead> or <tfoot>
-							wrap[ 1 ] === "<table>" && !rtbody.test( elem ) ?
+							// String was a bare &lt;thead> or &lt;tfoot>
+							wrap[ 1 ] === "&lt;table>" && !rtbody.test( elem ) ?
 								tmp :
 								0;
 
@@ -338,10 +369,10 @@
 			var destElements, node, clone, i, srcElements,
 				inPage = query.contains( elem.ownerDocument, elem );
 
-			if ( support.html5Clone || typed.isXML( elem ) || !rnoshimcache.test( "<" + elem.nodeName + ">" ) ) {
+			if ( support.html5Clone || typed.isXML( elem ) || !rnoshimcache.test( "&lt;" + elem.nodeName + ">" ) ) {
 				clone = elem.cloneNode( true );
 
-				// IE<=8 does not properly clone detached, unknown element nodes
+				// IE&lt;=8 does not properly clone detached, unknown element nodes
 			} else {
 				fragmentDiv.innerHTML = elem.outerHTML;
 				fragmentDiv.removeChild( clone = fragmentDiv.firstChild );
@@ -396,7 +427,7 @@
 		 * @param {HTMLString}
 		 * @param {String|Boolean} [context] - If specified, the fragment will be created in this context, defaults to document.
 		 * @param {Boolean} [keepScripts] - If true, will include scripts passed in the html string.
-		 * @returns {Array<Element>}
+		 * @returns {Array&lt;Element>}
 		 */
 		parseHTML: function( data, context, keepScripts ) {
 			if ( !data || typeof data !== "string" ) {
@@ -427,7 +458,7 @@
 
 		/**
 		 * Clear element data including all sub-elements or clean array of elemnts data.
-		 * @param {Element|Array<Element>}
+		 * @param {Element|Array&lt;Element>}
 		 * @returns {this}
 		 */
 		cleanData: function( ele ) {
@@ -530,8 +561,8 @@
 	 */
 
 	/**
-	 * A function that returns an HTML string, DOM element(s), or aQuery object to insert at the end of each element in the set of matched elements.<br />
-	 * Receives the index position of the element in the set and the old HTML value of the element as arguments.<br />
+	 * A function that returns an HTML string, DOM element(s), or aQuery object to insert at the end of each element in the set of matched elements.&lt;br />
+	 * Receives the index position of the element in the set and the old HTML value of the element as arguments.&lt;br />
 	 * Within the function, this refers to the current element in the set.
 	 * @callback DOMElementCallback
 	 * @param index {Number}
@@ -539,7 +570,7 @@
 	 */
 
 	/**
-	 * A function returning the HTML content to set. <br />
+	 * A function returning the HTML content to set. &lt;br />
 	 * aQuery empties the element before calling the function; use the oldhtml argument to reference the previous content. Within the function, this refers to the current element in the set.
 	 * @callback HTMLStringCallback
 	 * @param index {Number} - Receives the index position of the element in the set.
@@ -549,7 +580,7 @@
 
 	/**
 	 * DOM element, array of elements, HTML string, or aQuery object to insert at the end of each element in the set of matched elements.
-	 * @typedef {(Element|Array<Element>|aQuery|HTMLString)} DOMArguments
+	 * @typedef {(Element|Array&lt;Element>|aQuery|HTMLString)} DOMArguments
 	 */
 
 	$.fn.extend( /** @lends aQuery.prototype */ {
@@ -567,7 +598,7 @@
 			} );
 		},
 		/**
-		 * Insert every element in the set of matched elements to the end of the target.<br />
+		 * Insert every element in the set of matched elements to the end of the target.&lt;br />
 		 * The .append() and .appendTo() methods perform the same task. The major difference is in the syntax-specifically, in the placement of the content and target. With .append(), the selector expression preceding the method is the container into which the content is inserted. With .appendTo(), on the other hand, the content precedes the method, either as a selector expression or as markup created on the fly, and it is inserted into the target container.
 		 * @method appendTo
 		 * @memberOf aQuery.prototype
@@ -598,7 +629,7 @@
 			} );
 		},
 		/**
-		 * Insert every element in the set of matched elements to the end of the target.<br />
+		 * Insert every element in the set of matched elements to the end of the target.&lt;br />
 		 * The .prepend() and .prependTo() methods perform the same task. The major difference is in the syntax-specifically, in the placement of the content and target. With .prepend(), the selector expression preceding the method is the container into which the content is inserted. With .prependTo(), on the other hand, the content precedes the method, either as a selector expression or as markup created on the fly, and it is inserted into the target container.
 		 * @method prependTo
 		 * @memberOf aQuery.prototype
@@ -650,7 +681,7 @@
 					ele.innerHTML.replace( rinlineaQuery, "" ) : undefined;;
 			} else if ( typed.isFun( value ) ) {
 				var ele;
-				for ( ; i < length; i++ ) {
+				for ( ; i &lt; length; i++ ) {
 					ele = this[ i ]
 					value.call( ele, i, $( ele ).html() );
 				}
@@ -659,10 +690,10 @@
 					( support.htmlSerialize || !rnoshimcache.test( value ) ) &&
 					( support.leadingWhitespace || !rleadingWhitespace.test( value ) ) && !wrapMap[ ( rtagName.exec( value ) || [ "", "" ] )[ 1 ].toLowerCase() ] ) {
 
-					value = value.replace( rxhtmlTag, "<$1></$2>" );
+					value = value.replace( rxhtmlTag, "&lt;$1>&lt;/$2>" );
 
 					try {
-						for ( ; i < l; i++ ) {
+						for ( ; i &lt; l; i++ ) {
 							// Remove element nodes and prevent memory leaks
 							ele = this[ i ] || {};
 							if ( ele.nodeType === 1 ) {
@@ -684,7 +715,7 @@
 			return this;
 		},
 		/**
-		 * Insert every element in the set of matched elements after the target. <br />
+		 * Insert every element in the set of matched elements after the target. &lt;br />
 		 * The .after() and .insertAfter() methods perform the same task. The major difference is in the syntax-specifically, in the placement of the content and target. With .after(), the selector expression preceding the method is the container after which the content is inserted. With .insertAfter(), on the other hand, the content precedes the method, either as a selector expression or as markup created on the fly, and it is inserted after the target container.
 		 * @method insertAfter
 		 * @memberOf aQuery.prototype
@@ -715,7 +746,7 @@
 			} );
 		},
 		/**
-		 * Insert every element in the set of matched elements before the target. <br />
+		 * Insert every element in the set of matched elements before the target. &lt;br />
 		 * The .before() and .insertBefore() methods perform the same task. The major difference is in the syntax-specifically, in the placement of the content and target. With .before(), the selector expression preceding the method is the container before which the content is inserted. With .insertBefore(), on the other hand, the content precedes the method, either as a selector expression or as markup created on the fly, and it is inserted before the target container.
 		 * @method insertBefore
 		 * @memberOf aQuery.prototype
@@ -761,7 +792,7 @@
 			return this;
 		},
 		/**
-		 * Remove the set of matched elements from the DOM. <br />
+		 * Remove the set of matched elements from the DOM. &lt;br />
 		 * Similar to .empty(), the .remove() method takes elements out of the DOM. Use .remove() when you want to remove the element itself, as well as everything inside it. In addition to the elements themselves, all bound events and aQuery data associated with the elements are removed. To remove the elements without removing data and events, use .detach() instead.
 		 * @param {String}
 		 * @returns {this}
@@ -778,7 +809,7 @@
 			return this;
 		},
 		/**
-		 * Remove the set of matched elements from the DOM. <br />
+		 * Remove the set of matched elements from the DOM. &lt;br />
 		 * The .detach() method is the same as .remove(), except that .detach() keeps all aQuery data associated with the removed elements. This method is useful when removed elements are to be reinserted into the DOM at a later time.
 		 * @param {String}
 		 * @returns {this}
@@ -807,7 +838,7 @@
 				}
 
 				// If this is a select, ensure that it displays empty (#12336)
-				// Support: IE<9
+				// Support: IE&lt;9
 				if ( ele.options && typed.isNode( ele, "select" ) ) {
 					ele.options.length = 0;
 				}
@@ -831,7 +862,7 @@
 				isFunction = typed.isFun( value );
 
 			// We can't cloneNode fragments that contain checked, in WebKit
-			if ( isFunction || !( l <= 1 || typeof value !== "string" || support.checkClone || !rchecked.test( value ) ) ) {
+			if ( isFunction || !( l &lt;= 1 || typeof value !== "string" || support.checkClone || !rchecked.test( value ) ) ) {
 				return this.each( function( html, index ) {
 					var self = set.eq( index );
 					if ( isFunction ) {
@@ -856,7 +887,7 @@
 
 					// Use the original fragment for the last item instead of the first because it can end up
 					// being emptied incorrectly in certain situations (#8070).
-					for ( ; i < l; i++ ) {
+					for ( ; i &lt; l; i++ ) {
 						node = fragment;
 
 						if ( i !== iNoClone ) {
@@ -885,7 +916,7 @@
 						query.map( scripts, restoreScript );
 
 						// Evaluate executable scripts on first document insertion
-						for ( i = 0; i < hasScripts; i++ ) {
+						for ( i = 0; i &lt; hasScripts; i++ ) {
 							node = scripts[ i ];
 							if ( rscriptType.test( node.type || "" ) && !utilData.get( node, "globalEval" ) && query.contains( doc, node ) ) {
 
@@ -916,7 +947,7 @@
 			return this;
 		},
 		/**
-		 * Replace each target element with the set of matched elements. <br />
+		 * Replace each target element with the set of matched elements. &lt;br />
 		 * The .replaceAll() method is corollary to .replaceWith(), but with the source and target reversed.
 		 * @method replaceAll
 		 * @memberOf aQuery.prototype
@@ -958,7 +989,7 @@
 			} );
 		},
 		/**
-		 * Wrap an HTML structure around all elements in the set of matched elements. <br />
+		 * Wrap an HTML structure around all elements in the set of matched elements. &lt;br />
 		 * The .wrapAll() function can take any string or object that could be passed to the $() function to specify a DOM structure. This structure may be nested several levels deep, but should contain only one inmost element. The structure will be wrapped around all of the elements in the set of matched elements, as a single group.
 		 * @param {DOMArguments}
 		 * @returns {this}
@@ -992,7 +1023,7 @@
 			return this;
 		},
 		/**
-		 * Wrap an HTML structure around the content of each element in the set of matched elements. <br />
+		 * Wrap an HTML structure around the content of each element in the set of matched elements. &lt;br />
 		 * @method wrapInner
 		 * @variation 1
 		 * @memberOf aQuery.prototype
@@ -1001,7 +1032,7 @@
 		 */
 
 		/**
-		 * Wrap an HTML structure around the content of each element in the set of matched elements. <br />
+		 * Wrap an HTML structure around the content of each element in the set of matched elements. &lt;br />
 		 * The .wrapInner() function can take any string or object that could be passed to the $() factory function to specify a DOM structure. This structure may be nested several levels deep, but should contain only one inmost element. The structure will be wrapped around the content of each of the elements in the set of matched elements.
 		 * @param {DOMArguments}
 		 * @returns {this}
@@ -1035,7 +1066,7 @@
 		 */
 
 		/**
-		 * Wrap an HTML structure around each element in the set of matched elements. <br />
+		 * Wrap an HTML structure around each element in the set of matched elements. &lt;br />
 		 * The .wrap() function can take any string or object that could be passed to the $() factory function to specify a DOM structure. This structure may be nested several levels deep, but should contain only one inmost element. A copy of this structure will be wrapped around each of the elements in the set of matched elements. This method returns the original set of elements for chaining purposes.
 		 * @param {DOMArguments}
 		 * @returns {this}
@@ -1076,7 +1107,7 @@
 				insert = $( selector ),
 				last = insert.length - 1;
 
-			for ( ; i <= last; i++ ) {
+			for ( ; i &lt;= last; i++ ) {
 				elems = i === last ? this : this.clone( true );
 				$( insert[ i ] )[ original ]( elems );
 
@@ -1093,4 +1124,28 @@
 	} );
 
 	return dom;
-} );
+} );</pre>
+        </article>
+        <script type="text/javascript">
+          var Back = document.getElementById("Back");
+          if (Back){
+            Back.onclick = function(){
+              if (window.history && window.history.length) {
+                window.history.back();
+              }
+            }
+          }
+        </script>
+    </section>
+
+
+
+
+
+    <a float="false" href="#page-title" class="Top">Top</a>
+</div>
+
+<br clear="both">
+
+</body>
+</html>

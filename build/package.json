@@ -17,15 +17,13 @@
     "glob": ">3.x.x",
     "async": ">0.0.0",
     "clean-css": ">0.0.0",
-    "trumpet": ">0.0.0",
     "underscore": ">0.0.0",
     "fs-extra": ">0.0.0",
-    "through": "~2.3.4",
-    "concat-stream" : "~1.0.0",
     "uglify-js": "~1.x.x",
     "js-beautify": "1.4.2",
     "colors": ">=0.6.2",
-    "htmlparser": ">=1.7.6"
+    "htmlparser": ">=1.7.6",
+    "xmldom": ">=0.1.19"
   },
   "engines": {
     "node": ">=0.8.0"

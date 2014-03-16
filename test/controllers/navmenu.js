@@ -1,4 +1,4 @@
-aQuery.define( "@app/controllers/navmenu", [ "module/location", "app/Controller", "@app/views/navmenu" ], function( $, location, SuperController, NavmenuView ) {
+aQuery.define( "@app/controllers/navmenu", [ "main/query", "module/location", "app/Controller", "@app/views/navmenu" ], function( $, query, location, SuperController, NavmenuView ) {
 	"use strict"; //启用严格模式
 	var Controller = SuperController.extend( {
 		init: function( contollerElement, models ) {
@@ -19,7 +19,7 @@ aQuery.define( "@app/controllers/navmenu", [ "module/location", "app/Controller"
 					ret = target.uiNavitem( "getOptionToRoot" ),
 					path;
 
-				if ( target.children("ul").length === 0 ) {
+				if ( target.children( "ul" ).length === 0 ) {
 					location.setHash( "navmenu", ret.concat().reverse().join( "_" ) );
 					ret.push( "assets" );
 					path = ret.reverse().join( "/" ) + ".html";
@@ -39,7 +39,7 @@ aQuery.define( "@app/controllers/navmenu", [ "module/location", "app/Controller"
 
 		},
 		selectDefaultNavmenu: function( target ) {
-			var ret = "index-navitem";
+			var ret = $( "#index-navitem" );
 			if ( target ) {
 				var navItem = this.$nav.uiNavmenu( "getNavItemsByHtmlPath", target.split( /\W/ ) )[ 0 ];
 				ret = navItem || ret;

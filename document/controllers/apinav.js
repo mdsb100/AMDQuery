@@ -55,7 +55,7 @@ aQuery.define( "@app/controllers/apinav", [ "main/attr", "module/location", "app
 			return navitem.length ? navitem[ 0 ] : null;
 		},
 		selectDefaultNavmenu: function( target ) {
-			var src = location.getHash( APINAVMENUKEY ) || target || "index.html";
+			var src = target || location.getHash( APINAVMENUKEY ) || "index.html";
 			var navitem = this.findLink( src );
 			if ( navitem ) {
 				this.linkTo( src );

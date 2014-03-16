@@ -1,6 +1,5 @@
-﻿aQuery.define( "main/parse", [ "main/dom" ], function( $, dom ) {
+﻿aQuery.define( "main/parse", function( $ ) {
 	"use strict";
-	var rsingleTag = /^<(\w+)\s*\/?>(?:<\/\1>|)$/;
 
 	function createDocument() {
 		if ( typeof createDocument.activeXString != "string" ) {
@@ -50,37 +49,6 @@
 				throw new Error( "Invalid JSON: " + data, "EvalError" );
 			}
 			return null;
-		},
-		/**
-		 * Data: string of html.
-		 * @param {String}
-		 * @param {String|Boolean} [context] - If specified, the fragment will be created in this context, defaults to document.
-		 * @param {Boolean} [keepScripts] - If true, will include scripts passed in the html string.
-		 * @returns {JSON}
-		 */
-		HTML: function( data, context, keepScripts ) {
-			if ( !data || typeof data !== "string" ) {
-				return null;
-			}
-			if ( typeof context === "boolean" ) {
-				keepScripts = context;
-				context = false;
-			}
-			context = context || document;
-
-			var parsed = rsingleTag.exec( data ),
-				scripts = !keepScripts && [];
-
-			// Single tag
-			if ( parsed ) {
-				return [ context.createElement( parsed[ 1 ] ) ];
-			}
-
-			parsed = dom.buildFragment( [ data ], context, scripts );
-			if ( scripts ) {
-				$( scripts ).remove();
-			}
-			return $.merge( [], parsed.childNodes );
 		},
 		/**
 		 * @example

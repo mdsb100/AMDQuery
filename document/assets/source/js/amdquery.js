@@ -626,7 +626,7 @@
 			isEqual: function( objA, objB ) {
 				if ( this.is( objA, objB ) )
 					return true;
-				if ( objA.constructor !== objB.constructor )
+				if ( objA && objB && objA.constructor !== objB.constructor )
 					return false;
 				var aMemberCount = 0;
 				for ( var a in objA ) {
@@ -640,6 +640,21 @@
 					if ( objB.hasOwnProperty( a ) )
 					--aMemberCount;
 				return aMemberCount ? false : true;
+			},
+			/**
+			 * Evaluates a script in a global context. Workarounds based on findings by Jim Driscoll. {@link http://weblogs.java.net/blog/driscoll/archive/2009/09/08/eval-javascript-global-context|refer}
+			 * @param {String}
+			 * @returns {Boolean}
+			 */
+			globalEval: function( data ) {
+				if ( data && this.trim( data ) ) {
+					// We use execScript on Internet Explorer
+					// We use an anonymous function so that context is window
+					// rather than jQuery in Firefox
+					( window.execScript || function( data ) {
+						window[ "eval" ].call( window, data );
+					} )( data );
+				}
 			},
 			removeSuffix: util.removeSuffix,
 			version: version
@@ -4095,7 +4110,7 @@ aQuery.define( "base/array", [ "base/typed", "base/extend" ], function( $, typed
 	}
 
 	var
-	expando = "AMDQuery" + $.now(),
+	expando = "aQuery" + $.now(),
 		uuid = 0,
 		windowData = {}, emptyObject = {};
 	/**
@@ -9009,7 +9024,7 @@ if ( typeof define === "function" && define.amd ) {
 			return ( new Function( "return " + s ) ).call( context );
 		},
 
-		globalEval: function( data, notRemove ) {
+		scriptEval: function( data, notRemove ) {
 			///	<summary>
 			///	把一段String用js的方式声明为全局的
 			///	</summary>
@@ -9566,7 +9581,7 @@ if ( typeof define === "function" && define.amd ) {
 					} else {
 						if ( a === "destroy" ) {
 							data[ a ].call( data );
-							$.removeData( ele, key );
+							utilData.removeData( ele, key );
 						} else if ( typed.isObj( a ) ) {
 							data.option( a );
 							data.render();
@@ -9608,7 +9623,7 @@ if ( typeof define === "function" && define.amd ) {
 					var data = utilData.get( ele, key );
 					if ( data ) {
 						data.destroy.call( data );
-						$.removeData( ele, key );
+						utilData.removeData( ele, key );
 					}
 				} );
 			};
@@ -11015,12 +11030,592 @@ aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "
 
 /*=======================================================*/
 
-/*===================main/dom===========================*/
-﻿aQuery.define( "main/dom", [ "base/typed", "base/extend", "base/array", "base/support", "main/data", "main/event", "main/query" ], function( $, typed, utilExtend, utilArray, support, utilData, event, query, undefined ) {
+/*===================main/parse===========================*/
+﻿aQuery.define( "main/parse", function( $ ) {
 	"use strict";
-  this.describe( "consult JQuery1.9.1" );
+
+	function createDocument() {
+		if ( typeof createDocument.activeXString != "string" ) {
+			var i = 0,
+				versions = [ "Microsoft.XMLDOM", "MSXML2.DOMDocument.6.0", "MSXML2.DOMDocument.5.0", "MSXML2.DOMDocument.4.0", "MSXML2.DOMDocument.3.0", "MSXML2.DOMDocument" ],
+				len = versions.length,
+				xmlDom;
+			for ( ; i < len; i++ ) {
+				try {
+					xmlDom = new ActiveXObject( versions[ i ] );
+					createDocument.activeXString = versions[ i ];
+					return xmlDom;
+				} catch ( e ) {
+
+				}
+			}
+		}
+		return new ActiveXObject( createDocument.activeXString );
+	};
+
+	/**
+	 * @pubilc
+	 * @exports main/parse
+	 * @requires module:main/dom
+	 */
+	var parse = {
+		/**
+		 * @param {String}
+		 * @returns {JSON}
+		 */
+		JSON: function( data ) {
+			if ( typeof data !== "string" || !data ) {
+				return null;
+			}
+			// Make sure the incoming data is actual JSON
+			// Logic borrowed from http://json.org/json2.js
+			if ( /^[\],:{}\s]*$/.test( data.replace( /\\(?:["\\\/bfnrt]|u[0-9a-fA-F]{4})/g, "@" )
+				.replace( /"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g, "]" )
+				.replace( /(?:^|:|,)(?:\s*\[)+/g, "" ) ) ) {
+
+				// Try to use the native JSON parser first
+				return window.JSON && window.JSON.parse ?
+					window.JSON.parse( data ) :
+					( new Function( "return " + data ) )();
+
+			} else {
+				throw new Error( "Invalid JSON: " + data, "EvalError" );
+			}
+			return null;
+		},
+		/**
+		 * @example
+		 * parse.QueryString("name=Jarry&age=27")
+		 * //{
+		 * //  name: "Jarry",
+		 * //  name: "27"
+		 * //}
+		 * @param {String}
+		 * @param {String} [split1="&"]
+		 * @param {String} [split2="="]
+		 * @returns {Object}
+		 */
+		QueryString: function( str, split1, split2 ) {
+			var qs = str || ( location.search.length > 0 ? location.search.substring( 1 ) : "" ),
+				args = {};
+			if ( qs ) {
+				$.each( qs.split( split1 || "&" ), function( item ) {
+					item = item.split( split2 || "=" );
+					if ( item[ 1 ] !== undefined ) {
+						args[ decodeURIComponent( item[ 0 ] ) ] = decodeURIComponent( item[ 1 ] );
+					}
+				} );
+			}
+			return args;
+		},
+		/**
+		 * @param {String}
+		 * @returns {Document}
+		 */
+		XML: ( function( xml ) {
+			var parseXML;
+			if ( typeof DOMParser != "undefined" ) {
+				parseXML = function( xml ) {
+					var xmldom = ( new DOMParser() ).parseFromString( xml, "text/xml" ),
+						errors = xmldom.getElementsByTagName( "parsererror" );
+					if ( errors.length ) {
+						throw new Error( "parseXML: " + errors[ 0 ].textContent + " SyntaxError" )
+					}
+					return xmldom;
+				};
+			} else if ( document.implementation.hasFeature( "LS", "3.0" ) ) {
+				parseXML = function( xml ) {
+					var implementation = document.implementation,
+						parser = implementation.createLSParser( implementation.MODE_SYNCHRONOUS, null ),
+						input = implementation.createLSInput();
+					input.stringData = xml;
+					return parser.parse( input );
+				};
+			} else if ( typeof ActiveXObject != "undefined" ) {
+				parseXML = function( xml ) {
+					var xmldom = createDocument();
+					xml.async = "false";
+					xmldom.loadXML( xml );
+					if ( xmldom.parseError != 0 ) {
+						throw new Error( "parseXML: " + xmldom.parseError.reason + " SyntaxError" )
+					}
+					return xmldom;
+				};
+			} else {
+				throw ( "No XML parser available", "Error" );
+			}
+			return parseXML;
+		} )()
+	};
+
+	return parse;
+} );
+
+/*=======================================================*/
+
+/*===================main/communicate===========================*/
+﻿aQuery.define( "main/communicate", [ "base/typed", "base/extend", "main/event", "main/parse" ], function( $, typed, utilExtend, parse, undefined ) {
+	"use strict";
+	/**
+	 * @inner
+	 * @name AjaxOptions
+	 * @property options {Object}
+	 * @property [options.type="GET"] {String} - "GET" or "POST"
+	 * @property options.url {String}
+	 * @property [options.data=""] {String|Object<String,String>|Array<Object<String,String>>} - See {@link module:main/communicate.getURLParam}
+	 * @property [options.async=true] {Boolean}
+	 * @property [options.complete] {Function}
+	 * @property [options.header] {Object<String,String>}
+	 * @property [options.isRandom] {Boolean}
+	 * @property [options.timeout=10000] {Number}
+	 * @property [options.routing=""] {String}
+	 * @property [options.timeoutFun] {Function} - Timeout handler.
+	 * @property [options.dataType="text"] {String} - "json"|"xml"|"text"|"html"
+	 * @property [options.contentType="application/x-www-form-urlencoded"] {String}
+	 * @property [options.context=null] {Object} - Complete context.
+	 */
+
+	/**
+	 * @inner
+	 * @name JSONPOptions
+	 * @property options {Object}
+	 * @property options.url {String}
+	 * @property [options.charset="GBK"] {String}
+	 * @property [options.complete] {Function}
+	 * @property [options.error] {Function} - Error handler
+	 * @property [options.isDelete=true] {Boolean} - Does delete the script.
+	 * @property [options.context=null] {Object} - Complete context.
+	 * @property [options.isRandom=false] {Boolean}
+	 * @property [options.checkString=""] {String} - Then JSONP back string.
+	 * @property [options.timeout=10000] {Number}
+	 * @property [options.timeoutFun] {Function} - Timeout handler.
+	 * @property [options.routing=""] {String}
+	 * @property [options.JSONP] {String|Boolean} - True is aQuery. String is JSONP.
+	 */
+
+	/**
+	 * Event reporting that an ajax start.
+	 * @event aQuery#"ajaxStart"
+	 * @param {AjaxOptions}
+	 */
+
+	/**
+	 * Event reporting that an ajax stop.
+	 * @event aQuery#"ajaxStop"
+	 * @param {AjaxOptions}
+	 */
+
+	/**
+	 * Event reporting that an ajax timeout.
+	 * @event aQuery#"ajaxTimeout"
+	 * @param {AjaxOptions}
+	 */
+
+	/**
+	 * Event reporting that an JSONP start.
+	 * @event aQuery#"jsonpStart"
+	 * @param {AjaxOptions}
+	 */
+
+	/**
+	 * Event reporting that an JSONP stop.
+	 * @event aQuery#"jsonpStop"
+	 * @param {AjaxOptions}
+	 */
+
+	/**
+	 * Event reporting that an JSONP timeout.
+	 * @event aQuery#"jsonpTimeout"
+	 * @param {AjaxOptions}
+	 */
+
+	/**
+	 * Export network requests.
+	 * <br /> JSONP or AJAX.
+	 * @exports main/communicate
+	 * @requires module:base/typed
+	 * @requires module:base/extend
+	 * @requires module:main/event
+	 * @requires module:main/parse
+	 */
+	var communicate = {
+		/**
+		 * @param options {AjaxOptions}
+		 * @returns {this}
+		 */
+		ajax: function( options ) {
+			var _ajax, _timeId, o;
+			if ( options ) {
+				_ajax = communicate.getXhrObject();
+
+				if ( _ajax ) {
+
+					o = utilExtend.extend( {}, communicate.ajaxSetting, options );
+
+					o.data = communicate.getURLParam( o.data );
+
+					if ( o.isRandom == true && o.type == "get" ) {
+						o.data += "&random=" + $.now();
+					}
+					o.url += o.routing;
+					switch ( o.type ) {
+						case "get":
+							if ( o.data ) {
+								o.url += "?" + o.data;
+							}
+							break;
+						case "post":
+							break;
+					}
+
+					if ( o.username ) {
+						_ajax.open( o.type, o.url, o.async, o.username, o.password );
+					} else {
+						_ajax.open( o.type, o.url, o.async );
+					}
+
+					try {
+						for ( var item in o.header ) {
+							_ajax.setRequestHeader( item, o.header[ item ] );
+						}
+						_ajax.setRequestHeader( "Accept", o.dataType && o.accepts[ o.dataType ] ? o.accepts[ o.dataType ] + ", */*" : o.accepts._default );
+
+					} catch ( e ) {}
+					if ( o.data || options ) {
+						_ajax.setRequestHeader( "Content-Type", o.contentType );
+					}
+					//_ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+					//type == "post" && _ajax.setRequestHeader("Content-type", "");
+					_ajax.onreadystatechange = function() {
+						if ( ( _ajax.readyState == 4 || _ajax.readyState == 0 ) && ( ( _ajax.status >= 200 && _ajax.status < 300 ) || _ajax.status == 304 ) ) {
+							var response;
+							clearTimeout( _timeId );
+							$.trigger( "ajaxStop", _ajax, o );
+							switch ( o.dataType ) {
+								case "json":
+									response = parse.JSON( "(" + _ajax.responseText + ")" );
+									break;
+								case "xml":
+									response = _ajax.responseXML;
+									if ( !response ) {
+										try {
+											response = parse.parseXML( _ajax.responseText );
+										} catch ( e ) {}
+									}
+									break;
+								default:
+								case "text":
+									response = _ajax.responseText;
+									break;
+							}
+							try {
+								o.complete && o.complete.call( o.context || _ajax, response );
+							} finally {
+								o = null;
+								_ajax = null;
+							}
+						}
+					};
+					if ( o.timeout ) {
+						_timeId = setTimeout( function() {
+							_ajax && _ajax.abort();
+							$.trigger( "ajaxTimeout", _ajax, o );
+							o.timeoutFun.call( _ajax, o );
+							o = null;
+							_ajax = null;
+						}, o.timeout );
+					}
+					$.trigger( "ajaxStart", _ajax, o );
+					_ajax.send( o.type == "get" ? "NULL" : ( o.data || "NULL" ) );
+				}
+			}
+			return this;
+		},
+		/**
+		 * @deprecated
+		 */
+		ajaxByFinal: function( list, complete, context ) {
+			var sum = list.length,
+				count = 0;
+			return $.each( list, function( item ) {
+				item._complete = item.complete;
+				item.complete = function() {
+					count++;
+					item._complete && item._complete.apply( this, arguments );
+					if ( count == sum ) {
+						complete && complete.apply( window, context );
+						count = null;
+						sum = null;
+					}
+				};
+				communicate.ajax( item );
+			} );
+		},
+
+		ajaxSetting:
+		/**
+		 * @name ajaxSetting
+		 * @memberOf module:main/communicate
+		 * @property {Object}   ajaxSetting                     - AJAX default setting.
+		 * @property {String}   ajaxSetting.url
+		 * @property {String}   ajaxSetting.dataType            - "text".
+		 * @property {String}   ajaxSetting.type                - "GET".
+		 * @property {String}   ajaxSetting.contentType         - "application/x-www-form-urlencoded".
+		 * @property {Object}   ajaxSetting.context             - Complete context.
+		 * @property {Number}   ajaxSetting.timeout             - 10000 millisecond.
+		 * @property {Function} ajaxSetting.timeoutFun          - Timeout handler.
+		 * @property {String}   ajaxSetting.routing             - "".
+		 * @property {null}     ajaxSetting.header
+		 * @property {Boolean}  ajaxSetting.isRandom            - False.
+		 * @property {Object}   ajaxSetting.accepts
+		 * @property {String}   ajaxSetting.accepts.xml         - "application/xml, text/xml".
+		 * @property {String}   ajaxSetting.accepts.html        - "text/html".
+		 * @property {String}   ajaxSetting.accepts.json        - "application/json, text/javascript".
+		 * @property {String}   ajaxSetting.accepts.text        - "text/plain".
+		 */
+		{
+			url: location.href,
+			dataType: "text",
+			type: "GET",
+			contentType: "application/x-www-form-urlencoded",
+			context: null,
+			async: true,
+			timeout: 10000,
+			timeoutFun: function( o ) {
+				$.logger( "aQuery.ajax", o.url + "of ajax is timeout:" + ( o.timeout / 1000 ) + "second" );
+			},
+			routing: "",
+			header: null,
+			isRandom: false,
+			accepts: {
+				xml: "application/xml, text/xml",
+				html: "text/html",
+				json: "application/json, text/javascript",
+				text: "text/plain",
+				_default: "*/*"
+			}
+		},
+		/**
+		 * @param options {Object}
+		 * @param options.url {String}
+		 * @param [options.charset="GBK"] {String}
+		 * @param [options.complete] {Function}
+		 * @param [options.error] {Function} - Error handler
+		 * @param [options.isDelete=true] {Boolean} - Does delete the script.
+		 * @param [options.context=null] {Object} - Complete context.
+		 * @param [options.isRandom=false] {Boolean}
+		 * @param [options.checkString=""] {String} - Then JSONP back string.
+		 * @param [options.timeout=10000] {Number}
+		 * @param [options.timeoutFun] {Function} - Timeout handler.
+		 * @param [options.routing=""] {String}
+		 * @param [options.JSONP] {String|Boolean} - True is aQuery. String is JSONP.
+		 * @returns {this}
+		 */
+		jsonp: function( options ) {
+			var _scripts = document.createElement( "script" ),
+				_head = document.getElementsByTagName( "HEAD" ).item( 0 ),
+				o = utilExtend.extend( {}, communicate.jsonpSetting, options ),
+				_data = "",
+				_timeId, random = "";
+			//            , _checkString = o.checkString
+			//            , isDelete = options.isDelete || false;
+
+			_data = communicate.getURLParam( o.data );
+
+
+			if ( o.JSONP ) {
+				random = ( "aQuery" + $.now() ) + parseInt( Math.random() * 10 );
+				window[ random ] = function() {
+					typed.isFun( o.complete ) && o.complete.apply( o.context || window, arguments );
+				};
+				//o.JSONP = random;
+				_data += "&" + ( o.JSONP ) + "=" + random;
+				//_data += "&complete=" + random;
+			}
+			//            if (typed.isStr(o.JSONP)) {
+			//                _data += "&" + (o.JSONPKey) + "=" + o.JSONP;
+			//            }
+
+			o.isRandom == true && ( _data += "&random=" + $.now() );
+
+			o.url += o.routing + ( _data == "" ? _data : "?" + _data );
+
+			//IE和其他浏览器 不一样
+
+			_scripts.onload = _scripts.onreadystatechange = function() {
+				if ( !this.readyState || this.readyState == "loaded" || this.readyState == "complete" ) {
+					clearTimeout( _timeId );
+					$.trigger( "jsonpStop", _scripts, o );
+					var js = typeof window[ o.checkString ] != "undefined" ? window[ o.checkString ] : undefined;
+					!o.JSONP && typed.isFun( o.complete ) && o.complete.call( o.context || this, js );
+					//typed.isFun(o.complete) && o.complete.call(o.context || this, js);
+					this.nodeName.toLowerCase() == "script" && o.isDelete == true && _head.removeChild( this );
+					this.onerror = this.onload = o = _head = null;
+					if ( window[ random ] ) {
+						window[ random ] = undefined;
+						random = null;
+					}
+				}
+			};
+
+			_scripts.onerror = o.error;
+
+			o.timeout && ( _timeId = setTimeout( function() {
+				$.trigger( "jsonpTimeout", _scripts, o );
+				o.timeoutFun.call( this, o );
+				_scripts = _scripts.onerror = _scripts.onload = o.error = _head = null;
+				if ( window[ random ] ) {
+					window[ random ] = undefined;
+					random = null;
+				}
+			}, o.timeout ) );
+
+			_scripts.setAttribute( "src", o.url );
+			o.charset && _scripts.setAttribute( "charset", o.charset );
+			_scripts.setAttribute( "type", "text/javascript" );
+			_scripts.setAttribute( "language", "javascript" );
+
+			$.trigger( "jsonpStart", _scripts, o );
+			_head.insertBefore( _scripts, _head.firstChild );
+			return this;
+		},
+		jsonpSetting:
+		/**
+		 * @name ajaxSetting
+		 * @memberOf module:main/communicate
+		 * @property {Object}         jsonpSetting                    - JSONP default setting.
+		 * @property {String}         ajaxSetting.url                 - "".
+		 * @property {String}         ajaxSetting.charset             - "GBK".
+		 * @property {String}         ajaxSetting.checkString         - "".
+		 * @property {Function}       ajaxSetting.error
+		 * @property {Boolean}        ajaxSetting.isDelete            - true.
+		 * @property {Boolean}        ajaxSetting.isRandom            - false.
+		 * @property {String|Boolean} ajaxSetting.JSONP               - false.
+		 * @property {String}         ajaxSetting.routing             - "".
+		 * @property {Number}         ajaxSetting.timeout             - 10000 millisecond.
+		 * @property {Function}       ajaxSetting.timeoutFun          - Timeout handler.
+		 */
+		{
+			charset: "GBK",
+			checkString: "",
+			error: function() {
+				$.logger( "aQuery.jsonp", ( this.src || "(empty)" ) + " of javascript getting error" );
+			},
+			isDelete: true,
+			isRandom: false,
+			JSONP: false,
+			routing: "",
+			timeout: 10000,
+			timeoutFun: function( o ) {
+				$.logger( aQuery.jsonp, ( o.url || "(empty)" ) + "of ajax is timeout:" + ( o.timeout / 1000 ) + "second" );
+			},
+			url: ""
+		},
+		/**
+		 * @deprecated
+		 */
+		jsonpsByFinal: function( list, complete, context ) {
+			/// <summary>加载几段script，当他们都加载完毕触发个事件
+			/// </summary>
+			/// <param name="list" type="Array:[options]">包含获取js配置的数组，参考jsonp</param>
+			/// <param name="complete" type="Function">complete</param>
+			/// <param name="context" type="Object">作用域</param>
+			/// <returns type="self" />
+			var sum = list.length,
+				count = 0;
+			$.each( list, function( item ) {
+				item._complete = item.complete;
+				item.complete = function() {
+					count++;
+					item._complete && item._complete.apply( this, arguments );
+					if ( count == sum ) {
+						complete && complete.apply( window, context );
+						count = null;
+						sum = null;
+					}
+				};
+				communicate.jsonp( item );
+			} );
+			return this;
+		},
+		/**
+		 * @example
+		 * communicate.getURLParam( {
+		 *   id: "00001",
+		 *   name: "Jarry"
+		 * } );
+		 * communicate.getURLParam( [
+		 *   {
+		 *     name: "id",
+		 *     value: "000001"
+		 *   },
+		 *   {
+		 *     name: "name",
+		 *     value: "Jarry"
+		 *   }
+		 * ] );
+		 * // output: "id=00001&name=Jarry"
+		 * @param {String|Object<String, String>|Array<Object<String,String>>}
+		 * @returns {String}
+		 */
+		getURLParam: function( content ) {
+			var list = [];
+			if ( typed.isObj( content ) ) {
+				$.each( content, function( value, name ) {
+					value = typed.isFun( value ) ? value() : value;
+					!typed.isNul( value ) && list.push( encodeURIComponent( name ) + "=" + encodeURIComponent( value ) );
+				} );
+				content = list.join( "&" );
+			} else if ( typed.isArr( content ) ) {
+				$.each( content, function( item ) {
+					!typed.isNul( item.value ) && list.push( encodeURIComponent( item.name ) + "=" + encodeURIComponent( item.value ) );
+				} );
+				content = list.join( "&" );
+			} else if ( !typed.isStr( content ) ) {
+				content = "";
+			}
+			return content;
+		},
+		/**
+		 * If return null means it does not support XMLHttpRequest.
+		 * @returns {?XMLHttpRequest}
+		 */
+		getXhrObject: function() {
+			var xhr = null;
+			if ( window.ActiveXObject ) {
+				$.each( [ "Microsoft.XMLHttp", "MSXML2.XMLHttp", "MSXML2.XMLHttp.6.0", "MSXML2.XMLHttp.5.0", "MSXML2.XMLHttp.4.0", "MSXML2.XMLHttp.3.0" ], function( value ) {
+					try {
+						xhr = new ActiveXObject( value );
+						return xhr;
+					} catch ( e ) {
+
+					}
+				}, this );
+			} else {
+				try {
+					xhr = new XMLHttpRequest();
+				} catch ( e ) {}
+			}
+			if ( !xhr ) {
+				$.logger( "getXhrObject", "broswer no support AJAX" );
+			}
+
+			return xhr;
+		}
+	};
+
+	return communicate;
+} );
+
+/*=======================================================*/
+
+/*===================main/dom===========================*/
+﻿aQuery.define( "main/dom", [ "base/typed", "base/extend", "base/array", "base/support", "main/data", "main/event", "main/query", "main/communicate" ], function( $, typed, utilExtend, utilArray, support, utilData, event, query, communicate, undefined ) {
+	"use strict";
+	this.describe( "refer JQuery1.9.1" );
 	var nodeNames = "abbr|article|aside|audio|bdi|canvas|data|datalist|details|figcaption|figure|footer|" +
 		"header|hgroup|mark|meter|nav|output|progress|section|summary|time|video",
+		rsingleTag = /^<(\w+)\s*\/?>(?:<\/\1>|)$/,
 		rinlineaQuery = / aQuery\d+="(?:null|\d+)"/g,
 		rnoshimcache = new RegExp( "<(?:" + nodeNames + ")[\\s/>]", "i" ),
 		rleadingWhitespace = /^\s+/,
@@ -11205,7 +11800,19 @@ aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "
 		// $.extend( true, curData, oldData.data );
 	}
 
+	/**
+	 * @exports main/dom
+	 * @requires module:base/typed
+	 * @requires module:base/extend
+	 * @requires module:base/array
+	 * @requires module:base/support
+	 * @requires module:main/data
+	 * @requires module:main/event
+	 * @requires module:main/query
+	 * @borrows module:main/query.contains as contains
+	 */
 	var dom = {
+		/** @inner */
 		buildFragment: function( elems, context, scripts, selection ) {
 			var j, elem, contains,
 				tmp, tag, tbody, wrap,
@@ -11332,7 +11939,13 @@ aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "
 
 			return safe;
 		},
-
+		/**
+		 * Clone element.
+		 * @param {Element}
+		 * @param {Boolean} [dataAndEvents=false]
+		 * @param {Boolean} [deepDataAndEvents=false]
+		 * @returns {Element}
+		 */
 		clone: function( elem, dataAndEvents, deepDataAndEvents ) {
 			var destElements, node, clone, i, srcElements,
 				inPage = query.contains( elem.ownerDocument, elem );
@@ -11390,30 +12003,78 @@ aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "
 			// Return the cloned set
 			return clone;
 		},
+		/**
+		 * HTMLString.
+		 * @param {HTMLString}
+		 * @param {String|Boolean} [context] - If specified, the fragment will be created in this context, defaults to document.
+		 * @param {Boolean} [keepScripts] - If true, will include scripts passed in the html string.
+		 * @returns {Array<Element>}
+		 */
+		parseHTML: function( data, context, keepScripts ) {
+			if ( !data || typeof data !== "string" ) {
+				return null;
+			}
+			if ( typeof context === "boolean" ) {
+				keepScripts = context;
+				context = false;
+			}
+			context = context || document;
+
+			var parsed = rsingleTag.exec( data ),
+				scripts = !keepScripts && [];
+
+			// Single tag
+			if ( parsed ) {
+				return [ context.createElement( parsed[ 1 ] ) ];
+			}
+
+			parsed = dom.buildFragment( [ data ], context, scripts );
+			if ( scripts ) {
+				$( scripts ).remove();
+			}
+			return $.merge( [], parsed.childNodes );
+		},
 
 		contains: query.contains,
 
-		getHtml: function( ele ) {
-			/// <summary>获得元素的innerHTML</summary>
-			/// <param name="ele" type="Element">element元素</param>
-			/// <returns type="String" />
-			return ele.innerHTML;
+		/**
+		 * Clear element data including all sub-elements or clean array of elemnts data.
+		 * @param {Element|Array<Element>}
+		 * @returns {this}
+		 */
+		cleanData: function( ele ) {
+			var eles;
+			if ( typed.isEle( ele ) ) {
+				eles = getAll( ele );
+			} else if ( typed.isArr( ele ) ) {
+				eles = ele;
+			}
+			$.each( eles, function( ele ) {
+				event.clearHandlers( ele );
+				utilData.removeData( ele );
+			} );
+			return this
 		},
+
+		/**
+		 * Get last child.
+		 * @param {Element}
+		 * @returns {Element}
+		 */
 		getLastChild: function( ele ) {
-			/// <summary>获得当前DOM元素的最后个真DOM元素</summary>
-			/// <param name="ele" type="Element">dom元素</param>
-			/// <returns type="Element" />
 			var x = ele.lastChild;
 			while ( x && !typed.isEle( x ) ) {
 				x = x.previousSibling;
 			}
 			return x;
 		},
+		/**
+		 * Get real child by index.
+		 * @param {Element}
+		 * @param {Number}
+		 * @returns {Element}
+		 */
 		getRealChild: function( father, index ) {
-			/// <summary>通过序号获得当前DOM元素某个真子DOM元素</summary>
-			/// <param name="father" type="Element">dom元素</param>
-			/// <param name="index" type="Number">序号</param>
-			/// <returns type="Element" />
 			var i = -1,
 				child;
 			var ele = father.firstChild;
@@ -11426,19 +12087,17 @@ aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "
 			}
 			return child;
 		},
-
+		/**
+		 * Remove this element,
+		 * @param {Element}
+		 * @param {String} - Filter
+		 * @param {Boolean} [keepData=false] - Whether keep data.
+		 * @returns {this}
+		 */
 		remove: function( ele, selector, keepData ) {
-			/// <summary>把元素从文档流里移除</summary>
-			/// <param name="ele" type="Object">对象</param>
-			/// <param name="selector" type="String">查询字符串</param>
-			/// <param name="keepData" type="Boolean">是否保留数据</param>
-			/// <returns type="self" />
 			if ( !selector || query.filter( selector, [ ele ] ).length > 0 ) {
 				if ( !keepData && ele.nodeType === 1 ) {
-					$.each( getAll( ele ), function( ele ) {
-						event.clearHandlers( ele );
-						utilData.removeData( ele );
-					} );
+					dom.cleanData( ele );
 				}
 
 				if ( ele.parentNode ) {
@@ -11450,43 +12109,68 @@ aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "
 			}
 			return this;
 		},
-		removeChild: function( ele, child ) {
-			/// <summary>删除子元素</summary>
-			/// <param name="ele" type="Element"></param>
-			/// <param name="child" type="Element"></param>
-			/// <returns type="self" />
-			ele.removeChild( child );
-			return this;
-		},
-		removeChildren: function( ele ) {
-			/// <summary>删除所有子元素</summary>
-			/// <param name="ele" type="Element"></param>
-			/// <returns type="self" />
-			for ( var i = ele.childNodes.length - 1; i >= 0; i-- ) {
-				$.removeChild( ele, ele.childNodes[ i ] );
+		/**
+		 * Remove child element of this parent element,
+		 * @param {Element}
+		 * @param {Element}
+		 * @param {Boolean} [keepData=false] - Whether keep data.
+		 * @returns {this}
+		 */
+		removeChild: function( ele, child, keepData ) {
+			if ( query.contains( ele, child ) ) {
+				dom.remove( child, false, keepData );
 			}
 			return this;
 		},
-
-		setHtml: function( ele, str, bool ) {
-			/// <summary>设置元素的innerHTML
-			/// <para>IE678的的select.innerHTML("<option></option>")存在问题</para>
-			/// <para>bool为true相当于+=这样做是有风险的，除了IE678外的浏览器会重置为过去的文档流</para>
-			/// </summary>
-			/// <param name="ele" type="Element">element元素</param>
-			/// <param name="str" type="String">缺省 则返回innerHTML</param>
-			/// <param name="bool" type="Boolean">true添加 false覆盖</param>
-			/// <returns type="self" />
-			if ( bool == true ) {
-				ele.innerHTML += str;
-			} else {
-				ele.innerHTML = str;
+		/**
+		 * Remove all child elements of this parent element,
+		 * @param {Element}
+		 * @param {Boolean} [keepData=false] - Whether keep data.
+		 * @returns {this}
+		 */
+		removeChildren: function( ele, keepData ) {
+			for ( var i = ele.childNodes.length - 1; i >= 0; i-- ) {
+				dom.remove( ele.childNodes[ i ], false, keepData );
 			}
 			return this;
 		}
 	};
 
-	$.fn.extend( {
+	/**
+	 * html string "&ltb&gthello&lt/b&gtwait&ltb&gtbye&lt/b&gt"
+	 * @typedef {String} HTMLString
+	 */
+
+	/**
+	 * A function that returns an HTML string, DOM element(s), or aQuery object to insert at the end of each element in the set of matched elements.<br />
+	 * Receives the index position of the element in the set and the old HTML value of the element as arguments.<br />
+	 * Within the function, this refers to the current element in the set.
+	 * @callback DOMElementCallback
+	 * @param index {Number}
+	 * @param ele {Element|aQuery}
+	 */
+
+	/**
+	 * A function returning the HTML content to set. <br />
+	 * aQuery empties the element before calling the function; use the oldhtml argument to reference the previous content. Within the function, this refers to the current element in the set.
+	 * @callback HTMLStringCallback
+	 * @param index {Number} - Receives the index position of the element in the set.
+	 * @param html {HTMLString} - The old HTML value as arguments.
+	 */
+
+
+	/**
+	 * DOM element, array of elements, HTML string, or aQuery object to insert at the end of each element in the set of matched elements.
+	 * @typedef {(Element|Array<Element>|aQuery|HTMLString)} DOMArguments
+	 */
+
+	$.fn.extend( /** @lends aQuery.prototype */ {
+		/**
+		 * Clone element.
+		 * @param {Boolean} [dataAndEvents=false]
+		 * @param {Boolean} [deepDataAndEvents=false]
+		 * @returns {this}
+		 */
 		clone: function( dataAndEvents, deepDataAndEvents ) {
 			dataAndEvents = dataAndEvents == null ? false : dataAndEvents;
 			deepDataAndEvents = deepDataAndEvents == null ? dataAndEvents : deepDataAndEvents;
@@ -11494,109 +12178,191 @@ aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "
 				return dom.clone( this, dataAndEvents, deepDataAndEvents );
 			} );
 		},
-		append: function( child ) {
-			/// <summary>为$的第一个元素添加子元素
-			/// <para>字符串是标签名:div</para>
-			/// <para>DOM元素</para>
-			/// <para>若为$，则为此$第一个元素添加另一个$的所有元素</para>
-			/// <para>也可以为这种形式："<span></span><input/>"</para>
-			/// <para>select去append("<option></option>")存在问题</para>
-			/// <para>$({ i:"abc" }, "option")可以以这样方式实现</para>
-			/// </summary>
-			/// <param name="child" type="String/Element/$">子元素类型</param>
-			/// <returns type="self" />
+		/**
+		 * Insert every element in the set of matched elements to the end of the target.<br />
+		 * The .append() and .appendTo() methods perform the same task. The major difference is in the syntax-specifically, in the placement of the content and target. With .append(), the selector expression preceding the method is the container into which the content is inserted. With .appendTo(), on the other hand, the content precedes the method, either as a selector expression or as markup created on the fly, and it is inserted into the target container.
+		 * @method appendTo
+		 * @memberOf aQuery.prototype
+		 * @param target {DOMArguments}
+		 * @returns {this}
+		 */
 
-			var c = child,
-				ele = this.eles[ 0 ];
-			if ( !c ) return this;
-			if ( typed.isStr( c ) ) {
-				var str, childNodes, i = 0,
-					len;
-				str = c.match( /^<\w.+[\/>|<\/\w.>]$/ );
-				// 若是写好的html还是使用parse.html
-				if ( str ) {
-					c = str[ 0 ];
-					this.each( function( ele ) {
+		/**
+		 * Insert content, specified by the parameter, to the end of each element in the set of matched elements.
+		 * @variation 1
+		 * @method append
+		 * @memberOf aQuery.prototype
+		 * @param fn {DOMElementCallback}
+		 * @returns {this}
+		 */
 
-						childNodes = $.createEle( c );
-
-						for ( i = 0, len = childNodes.length; i < len; i++ ) {
-							ele.appendChild( childNodes[ i ] );
-						}
-						//delete div;
-					} );
+		/**
+		 * Insert content, specified by the parameter, to the end of each element in the set of matched elements.
+		 * @param child {DOMArguments}
+		 * @param childs {...DOMArguments} - One or more additional arguments.
+		 * @returns {this}
+		 */
+		append: function() {
+			return this.domManip( arguments, true, function( ele ) {
+				if ( this.nodeType === 1 || this.nodeType === 11 || this.nodeType === 9 ) {
+					this.appendChild( ele );
 				}
-			} else if ( typed.isEle( c ) || c.nodeType === 3 || c.nodeType === 8 ) ele.appendChild( c );
-			else if ( typed.is$( c ) ) {
-				c.each( function( son ) {
-					ele.appendChild( son );
-				} );
+			} );
+		},
+		/**
+		 * Insert every element in the set of matched elements to the end of the target.<br />
+		 * The .prepend() and .prependTo() methods perform the same task. The major difference is in the syntax-specifically, in the placement of the content and target. With .prepend(), the selector expression preceding the method is the container into which the content is inserted. With .prependTo(), on the other hand, the content precedes the method, either as a selector expression or as markup created on the fly, and it is inserted into the target container.
+		 * @method prependTo
+		 * @memberOf aQuery.prototype
+		 * @param target {DOMArguments}
+		 * @returns {this}
+		 */
+
+		/**
+		 * Insert content, specified by the parameter, to the beginning of each element in the set of matched elements.
+		 * @variation 1
+		 * @method prepend
+		 * @memberOf aQuery.prototype
+		 * @param fn {DOMElementCallback}
+		 * @returns {this}
+		 */
+
+		/**
+		 * Insert content, specified by the parameter, to the beginning of each element in the set of matched elements.
+		 * @param child {DOMArguments}
+		 * @param childs {...DOMArguments} - One or more additional arguments.
+		 * @returns {this}
+		 */
+		prepend: function() {
+			return this.domManip( arguments, true, function( ele ) {
+				if ( this.nodeType === 1 || this.nodeType === 11 || this.nodeType === 9 ) {
+					this.insertBefore( ele, this.firstChild );
+				}
+			} );
+		},
+		/**
+		 * Get the HTML contents of the first element in the set of matched elements.
+		 * @variation 1
+		 * @method html
+		 * @memberOf aQuery.prototype
+		 * @returns {String}
+		 */
+
+		/**
+		 * Set the HTML contents of every matched element.
+		 * @param value {HTMLStringCallback|HTMLString}
+		 * @returns {this}
+		 */
+		html: function( value ) {
+			var ele = this[ 0 ] || {},
+				i = 0,
+				l = this.length;
+			if ( value === undefined ) {
+				return ele.nodeType === 1 ?
+					ele.innerHTML.replace( rinlineaQuery, "" ) : undefined;;
+			} else if ( typed.isFun( value ) ) {
+				var ele;
+				for ( ; i < length; i++ ) {
+					ele = this[ i ]
+					value.call( ele, i, $( ele ).html() );
+				}
+			} else {
+				if ( typeof value === "string" && !rnoInnerhtml.test( value ) &&
+					( support.htmlSerialize || !rnoshimcache.test( value ) ) &&
+					( support.leadingWhitespace || !rleadingWhitespace.test( value ) ) && !wrapMap[ ( rtagName.exec( value ) || [ "", "" ] )[ 1 ].toLowerCase() ] ) {
+
+					value = value.replace( rxhtmlTag, "<$1></$2>" );
+
+					try {
+						for ( ; i < l; i++ ) {
+							// Remove element nodes and prevent memory leaks
+							ele = this[ i ] || {};
+							if ( ele.nodeType === 1 ) {
+								dom.cleanData( getAll( ele, false ) );
+								ele.innerHTML = value;
+							}
+						}
+
+						ele = 0;
+
+						// If using innerHTML throws an exception, use the fallback method
+					} catch ( e ) {}
+				}
+
+				if ( ele ) {
+					this.empty().append( value );
+				}
 			}
 			return this;
 		},
+		/**
+		 * Insert every element in the set of matched elements after the target. <br />
+		 * The .after() and .insertAfter() methods perform the same task. The major difference is in the syntax-specifically, in the placement of the content and target. With .after(), the selector expression preceding the method is the container after which the content is inserted. With .insertAfter(), on the other hand, the content precedes the method, either as a selector expression or as markup created on the fly, and it is inserted after the target container.
+		 * @method insertAfter
+		 * @memberOf aQuery.prototype
+		 * @param target {DOMArguments}
+		 * @returns {this}
+		 */
 
-		prepend: function() {
-			return this.domManip( arguments, true, function( elem ) {
-				if ( this.nodeType === 1 || this.nodeType === 11 || this.nodeType === 9 ) {
-					this.insertBefore( elem, this.firstChild );
-				}
-			} );
-		},
+		/**
+		 * Insert content, specified by the parameter, after each element in the set of matched elements.
+		 * @variation 1
+		 * @method after
+		 * @memberOf aQuery.prototype
+		 * @param fn {function} - function(index)
+		 * @returns {this}
+		 */
 
-		html: function( str, bool ) {
-			/// <summary>设置所有元素的innerHTML或返回第一元素的innerHTML
-			/// <para>IE678的的select.innerHTML("<option></option>")存在问题</para>
-			/// <para>$({ i:"abc" }, "option")可以以这样方式实现</para>
-			/// <para>为true相当于+=这样做是有风险的，除了IE678外的浏览器会重置为过去的文档流</para>
-			/// <para>获得时返回String</para>
-			/// </summary>
-			/// <param name="str" type="String">缺省 则返回innerHTML</param>
-			/// <param name="bool" type="Boolean">true添加 false覆盖</param>
-			/// <returns type="self" />
-			return typed.isStr( str ) ?
-
-			this.each( function( ele ) {
-				$.each( $.posterity( ele ), function( child ) {
-					if ( typed.isEle( child ) ) {
-						$.removeData( child );
-						$.remove( child );
-					}
-					//移除事件
-				} );
-				$.setHtml( ele, str, bool );
-			} )
-
-			: $.getHtml( this[ 0 ] );
-		},
-
+		/**
+		 * Insert content, specified by the parameter, after each element in the set of matched elements.
+		 * @param refChild {DOMArguments}
+		 * @param refChilds {...DOMArguments} - One or more additional arguments.
+		 * @returns {this}
+		 */
 		after: function( refChild ) {
-			/// <summary>添加某个元素到$后面
-			/// </summary>
-			/// <param name="refChild" type="String/Element/$">已有元素</param>
-			/// <returns type="self" />
-			return this.domManip( arguments, false, function( elem ) {
+			return this.domManip( arguments, false, function( ele ) {
 				if ( this.parentNode ) {
-					this.parentNode.insertBefore( elem, this.nextSibling );
+					this.parentNode.insertBefore( ele, this.nextSibling );
 				}
 			} );
 		},
-		before: function( refChild ) {
-			/// <summary>添加某个元素到$前面
-			/// </summary>
-			/// <param name="father" type="Element/$">父元素</param>
-			/// <param name="refChild" type="String/Element/$">已有元素</param>
-			/// <returns type="self" />
+		/**
+		 * Insert every element in the set of matched elements before the target. <br />
+		 * The .before() and .insertBefore() methods perform the same task. The major difference is in the syntax-specifically, in the placement of the content and target. With .before(), the selector expression preceding the method is the container before which the content is inserted. With .insertBefore(), on the other hand, the content precedes the method, either as a selector expression or as markup created on the fly, and it is inserted before the target container.
+		 * @method insertBefore
+		 * @memberOf aQuery.prototype
+		 * @param target {DOMArguments}
+		 * @returns {this}
+		 */
 
-			return this.domManip( arguments, false, function( elem ) {
+		/**
+		 * Insert content, specified by the parameter, after each element in the set of matched elements.
+		 * @variation 1
+		 * @method before
+		 * @memberOf aQuery.prototype
+		 * @param fn {function} - function(index)
+		 * @returns {this}
+		 */
+
+		/**
+		 * Insert content, specified by the parameter, after each element in the set of matched elements.
+		 * @param refChild {DOMArguments}
+		 * @param refChilds {...DOMArguments} - One or more additional arguments.
+		 * @returns {this}
+		 */
+		before: function( refChild ) {
+			return this.domManip( arguments, false, function( ele ) {
 				if ( this.parentNode ) {
-					this.parentNode.insertBefore( elem, this );
+					this.parentNode.insertBefore( ele, this );
 				}
 			} );
 		},
+		/**
+		 * Insert text.
+		 * @param {String}
+		 * @returns {this}
+		 */
 		insertText: function( str ) {
-			/// <summary>给当前对象的所有ele插入TextNode</summary>
-			/// <param name="str" type="String">字符串</param>
-			/// <returns type="self" />
 			if ( typed.isStr( str ) && str.length > 0 ) {
 				var nodeText;
 				this.each( function( ele ) {
@@ -11606,135 +12372,63 @@ aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "
 			}
 			return this;
 		},
-
-		removeChild: function( child ) {
-			/// <summary>删除某个子元素</summary>
-			/// <param name="child" type="Number/Element/$"></param>
-			/// <returns type="self" />
-			var temp;
-			if ( typed.isNum( child ) ) this.each( function( ele ) {
-				temp = $.getRealChild( ele, child );
-				event.clearHandlers( temp );
-				$.removeData( temp );
-				ele.removeChild( temp );
-
-			} );
-			else if ( typed.isEle( child ) ) {
-				try {
-					event.clearHandlers( child );
-					$.removeData( child );
-					this.eles[ 0 ].removeChild( child );
-				} catch ( e ) {}
-			} else if ( typed.is$( child ) ) this.each( function( ele ) {
-				child.each( function( son ) {
-					try {
-						event.clearHandlers( son );
-						$.removeData( son );
-						ele.removeChild( son );
-					} catch ( e ) {}
-				} );
-			} );
-			return this;
-		},
-		removeChildren: function() {
-			/// <summary>删除所有子元素</summary>
-			/// <param name="child" type="Number/Element/$"></param>
-			/// <returns type="self" />
-			$.each( $.posterity( this.eles ), function( ele ) {
-				event.clearHandlers( ele );
-				$.removeData( ele );
-			} );
-			return this.each( function( ele ) {
-				$.removeChildren( ele );
-			} );
-		},
-		replace: function( newChild ) {
-			/// <summary>把所有元素替换成新元素</summary>
-			/// <param name="newChild" type="Element/$">要替换的元素</param>
-			/// <returns type="self" />
-			var father;
-			if ( typed.isEle( newChild ) ) {
-				this.each( function( ele ) {
-					father = ele.parentNode;
-					try {
-						father.replaceChild( newChild, ele );
-						$.removeData( ele );
-						$.clearHandlers( ele );
-						//移除事件
-						return false;
-					} catch ( e ) {}
-				} );
-			} else if ( typed.is$( newChild ) ) {
-				this.each( function( ele1 ) {
-					father = ele1.parentNode;
-					newChild.each( function( ele2 ) {
-						try {
-							father.replaceChild( ele2, ele1 );
-							father.appendChild( ele2 );
-							$.removeData( ele1 );
-							$.clearHandlers( ele1 );
-							//移除事件
-						} catch ( e ) {}
-					} );
-				} );
-			}
-			return this;
-		},
-		replaceChild: function( newChild, child ) {
-			/// <summary>替换子元素</summary>
-			/// <param name="newChild" type="Element">新元素</param>
-			/// <param name="child" type="Element">要替换的元素</param>
-			/// <returns type="self" />
-			newChild = $.getEle( newChild );
-			var temp;
-			$.each( newChild, function( newNode ) {
-				if ( typed.isNum( child ) ) this.each( function( ele ) {
-					try {
-						temp = $.getRealChild( ele, child );
-						ele.replaceChild( newNode, temp );
-						$.removeData( temp );
-						//移除事件
-						return false;
-					} catch ( e ) {}
-				} );
-				else if ( typed.isEle( child ) ) this.each( function( ele ) {
-					try {
-						ele.replaceChild( newNode, child );
-						$.removeData( child );
-						//移除事件
-						return false;
-					} catch ( e ) {}
-				} );
-				else if ( typed.is$( child ) ) this.each( function( ele ) {
-					child.each( function( son ) {
-						try {
-							ele.replaceChild( newNode, son );
-							$.removeData( son );
-							//移除事件
-							return false;
-						} catch ( e ) {}
-					} );
-				} );
-			}, this );
-			return this;
-		},
-
+		/**
+		 * Remove the set of matched elements from the DOM. <br />
+		 * Similar to .empty(), the .remove() method takes elements out of the DOM. Use .remove() when you want to remove the element itself, as well as everything inside it. In addition to the elements themselves, all bound events and aQuery data associated with the elements are removed. To remove the elements without removing data and events, use .detach() instead.
+		 * @param {String}
+		 * @returns {this}
+		 */
 		remove: function( selector, keepData ) {
-			var elem,
+			var ele,
 				i = 0;
 
 			for ( ;
-				( elem = this[ i ] ) != null; i++ ) {
-				dom.remove( elem, selector, keepData );
+				( ele = this[ i ] ) != null; i++ ) {
+				dom.remove( ele, selector, keepData );
+			}
+
+			return this;
+		},
+		/**
+		 * Remove the set of matched elements from the DOM. <br />
+		 * The .detach() method is the same as .remove(), except that .detach() keeps all aQuery data associated with the removed elements. This method is useful when removed elements are to be reinserted into the DOM at a later time.
+		 * @param {String}
+		 * @returns {this}
+		 */
+		detach: function( selector ) {
+			return this.remove( selector, true );
+		},
+		/**
+		 * Remove all child nodes of the set of matched elements from the DOM.
+		 * @returns {this}
+		 */
+		empty: function() {
+			var ele,
+				i = 0;
+
+			for ( ;
+				( ele = this[ i ] ) != null; i++ ) {
+				// Remove eleent nodes and prevent memory leaks
+				if ( ele.nodeType === 1 ) {
+					dom.cleanData( getAll( ele, false ) );
+				}
+
+				// Remove any remaining nodes
+				while ( ele.firstChild ) {
+					ele.removeChild( ele.firstChild );
+				}
+
+				// If this is a select, ensure that it displays empty (#12336)
+				// Support: IE<9
+				if ( ele.options && typed.isNode( ele, "select" ) ) {
+					ele.options.length = 0;
+				}
 			}
 
 			return this;
 		},
 
-		detach: function( selector ) {
-			return this.remove( selector, true );
-		},
-
+		/** @inner */
 		domManip: function( args, table, callback ) {
 			// Flatten any nested arrays
 			args = [].concat.apply( [], args );
@@ -11750,7 +12444,7 @@ aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "
 
 			// We can't cloneNode fragments that contain checked, in WebKit
 			if ( isFunction || !( l <= 1 || typeof value !== "string" || support.checkClone || !rchecked.test( value ) ) ) {
-				return this.each( function( index ) {
+				return this.each( function( html, index ) {
 					var self = set.eq( index );
 					if ( isFunction ) {
 						args[ 0 ] = value.call( this, index, table ? self.html() : undefined );
@@ -11796,33 +12490,35 @@ aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "
 					}
 
 					// not support script
-					// if ( hasScripts ) {
-					// 	doc = scripts[ scripts.length - 1 ].ownerDocument;
+					if ( hasScripts ) {
+						doc = scripts[ scripts.length - 1 ].ownerDocument;
 
-					// 	// Reenable scripts
-					// 	query.map( scripts, restoreScript );
+						// Reenable scripts
+						query.map( scripts, restoreScript );
 
-					// 	// Evaluate executable scripts on first document insertion
-					// 	for ( i = 0; i < hasScripts; i++ ) {
-					// 		node = scripts[ i ];
-					// 		if ( rscriptType.test( node.type || "" ) && !jQuery._data( node, "globalEval" ) && jQuery.contains( doc, node ) ) {
+						// Evaluate executable scripts on first document insertion
+						for ( i = 0; i < hasScripts; i++ ) {
+							node = scripts[ i ];
+							if ( rscriptType.test( node.type || "" ) && !utilData.get( node, "globalEval" ) && query.contains( doc, node ) ) {
 
-					// 			if ( node.src ) {
-					// 				// Hope ajax is available...
-					// 				jQuery.ajax( {
-					// 					url: node.src,
-					// 					type: "GET",
-					// 					dataType: "script",
-					// 					async: false,
-					// 					global: false,
-					// 					"throws": true
-					// 				} );
-					// 			} else {
-					// 				jQuery.globalEval( ( node.text || node.textContent || node.innerHTML || "" ).replace( rcleanScript, "" ) );
-					// 			}
-					// 		}
-					// 	}
-					// }
+								if ( node.src ) {
+									// Hope ajax is available...
+									communicate.ajax( {
+										url: node.src,
+										type: "GET",
+										dataType: "text",
+										async: false,
+										complete: function( script ) {
+											eval( script );
+										}
+									} );
+
+								} else {
+									$.util.globalEval( ( node.text || node.textContent || node.innerHTML || "" ).replace( rcleanScript, "" ) );
+								}
+							}
+						}
+					}
 
 					// Fix #11809: Avoid leaking memory
 					fragment = first = null;
@@ -11831,7 +12527,29 @@ aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "
 
 			return this;
 		},
+		/**
+		 * Replace each target element with the set of matched elements. <br />
+		 * The .replaceAll() method is corollary to .replaceWith(), but with the source and target reversed.
+		 * @method replaceAll
+		 * @memberOf aQuery.prototype
+		 * @param target {DOMArguments}
+		 * @returns {this}
+		 */
 
+		/**
+		 * Replace each element in the set of matched elements with the provided new content and return the set of elements that was removed.
+		 * @variation 1
+		 * @method prepend
+		 * @memberOf aQuery.prototype
+		 * @param fn {Function} -  Function(). A function that returns content with which to replace the set of matched elements.
+		 * @returns {this}
+		 */
+
+		/**
+		 * Replace each element in the set of matched elements with the provided new content and return the set of elements that was removed.
+		 * @param child {DOMArguments}
+		 * @returns {this}
+		 */
 		replaceWith: function( value ) {
 			var isFunc = typed.isFun( value );
 
@@ -11841,17 +12559,22 @@ aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "
 				value = $( value ).not( this ).detach();
 			}
 
-			return this.domManip( [ value ], true, function( elem ) {
+			return this.domManip( [ value ], true, function( ele ) {
 				var next = this.nextSibling,
 					parent = this.parentNode;
 
 				if ( parent ) {
 					$( this ).remove();
-					parent.insertBefore( elem, next );
+					parent.insertBefore( ele, next );
 				}
 			} );
 		},
-
+		/**
+		 * Wrap an HTML structure around all elements in the set of matched elements. <br />
+		 * The .wrapAll() function can take any string or object that could be passed to the $() function to specify a DOM structure. This structure may be nested several levels deep, but should contain only one inmost element. The structure will be wrapped around all of the elements in the set of matched elements, as a single group.
+		 * @param {DOMArguments}
+		 * @returns {this}
+		 */
 		wrapAll: function( html ) {
 			if ( typed.isFun( html ) ) {
 				return this.each( function( ele, i ) {
@@ -11868,19 +12591,33 @@ aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "
 				}
 
 				wrap.map( function() {
-					var elem = this;
+					var ele = this;
 
-					while ( elem.firstChild && elem.firstChild.nodeType === 1 ) {
-						elem = elem.firstChild;
+					while ( ele.firstChild && ele.firstChild.nodeType === 1 ) {
+						ele = ele.firstChild;
 					}
 
-					return elem;
+					return ele;
 				} ).append( this );
 			}
 
 			return this;
 		},
+		/**
+		 * Wrap an HTML structure around the content of each element in the set of matched elements. <br />
+		 * @method wrapInner
+		 * @variation 1
+		 * @memberOf aQuery.prototype
+		 * @param fn {Function} - Function(index)
+		 * @returns {this}
+		 */
 
+		/**
+		 * Wrap an HTML structure around the content of each element in the set of matched elements. <br />
+		 * The .wrapInner() function can take any string or object that could be passed to the $() factory function to specify a DOM structure. This structure may be nested several levels deep, but should contain only one inmost element. The structure will be wrapped around the content of each of the elements in the set of matched elements.
+		 * @param {DOMArguments}
+		 * @returns {this}
+		 */
 		wrapInner: function( html ) {
 			if ( typed.isFun( html ) ) {
 				return this.each( function( ele, i ) {
@@ -11900,7 +12637,21 @@ aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "
 				}
 			} );
 		},
+		/**
+		 * Wrap an HTML structure around each element in the set of matched elements.
+		 * @method wrap
+		 * @variation 1
+		 * @memberOf aQuery.prototype
+		 * @param fn {Function} - Function(index)
+		 * @returns {this}
+		 */
 
+		/**
+		 * Wrap an HTML structure around each element in the set of matched elements. <br />
+		 * The .wrap() function can take any string or object that could be passed to the $() factory function to specify a DOM structure. This structure may be nested several levels deep, but should contain only one inmost element. A copy of this structure will be wrapped around each of the elements in the set of matched elements. This method returns the original set of elements for chaining purposes.
+		 * @param {DOMArguments}
+		 * @returns {this}
+		 */
 		wrap: function( html ) {
 			var isFunction = typed.isFun( html );
 
@@ -11908,13 +12659,18 @@ aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "
 				$( ele ).wrapAll( isFunction ? html.call( this, i ) : html );
 			} );
 		},
-
+		/**
+		 * Remove the parents of the set of matched elements from the DOM, leaving the matched elements in their place.
+		 * The .unwrap() method removes the element's parent. This is effectively the inverse of the .wrap() method. The matched elements (and their siblings, if any) replace their parents within the DOM structure.
+		 * @returns {this}
+		 */
 		unwrap: function() {
-			return this.parent().each( function( ele ) {
+			this.parent().each( function( ele ) {
 				if ( !typed.isNode( this, "body" ) ) {
 					$( ele ).replaceWith( this.childNodes );
 				}
-			} ).end();
+			} );
+			return this;
 		}
 	} );
 
@@ -11943,8 +12699,6 @@ aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "
 			return $( ret );
 		};
 	} );
-
-	$.extend( dom );
 
 	$.interfaces.achieve( "constructorDom", function( type, dollar, cssObj, ele, parentNode ) {
 		parentNode && ( typed.isEle( parentNode ) || typed.is$( parentNode ) ) && dollar.appendTo( parentNode );
@@ -20842,161 +21596,6 @@ aQuery.define( "ui/turnBook", [ "base/support", "base/typed", "main/css", "main/
 	};
 
 	return turnBook;
-} );
-
-/*=======================================================*/
-
-/*===================main/parse===========================*/
-﻿aQuery.define( "main/parse", [ "main/dom" ], function( $, dom ) {
-	"use strict";
-	var rsingleTag = /^<(\w+)\s*\/?>(?:<\/\1>|)$/;
-
-	function createDocument() {
-		if ( typeof createDocument.activeXString != "string" ) {
-			var i = 0,
-				versions = [ "Microsoft.XMLDOM", "MSXML2.DOMDocument.6.0", "MSXML2.DOMDocument.5.0", "MSXML2.DOMDocument.4.0", "MSXML2.DOMDocument.3.0", "MSXML2.DOMDocument" ],
-				len = versions.length,
-				xmlDom;
-			for ( ; i < len; i++ ) {
-				try {
-					xmlDom = new ActiveXObject( versions[ i ] );
-					createDocument.activeXString = versions[ i ];
-					return xmlDom;
-				} catch ( e ) {
-
-				}
-			}
-		}
-		return new ActiveXObject( createDocument.activeXString );
-	};
-
-	/**
-	 * @pubilc
-	 * @exports main/parse
-	 * @requires module:main/dom
-	 */
-	var parse = {
-		/**
-		 * @param {String}
-		 * @returns {JSON}
-		 */
-		JSON: function( data ) {
-			if ( typeof data !== "string" || !data ) {
-				return null;
-			}
-			// Make sure the incoming data is actual JSON
-			// Logic borrowed from http://json.org/json2.js
-			if ( /^[\],:{}\s]*$/.test( data.replace( /\\(?:["\\\/bfnrt]|u[0-9a-fA-F]{4})/g, "@" )
-				.replace( /"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g, "]" )
-				.replace( /(?:^|:|,)(?:\s*\[)+/g, "" ) ) ) {
-
-				// Try to use the native JSON parser first
-				return window.JSON && window.JSON.parse ?
-					window.JSON.parse( data ) :
-					( new Function( "return " + data ) )();
-
-			} else {
-				throw new Error( "Invalid JSON: " + data, "EvalError" );
-			}
-			return null;
-		},
-		/**
-		 * Data: string of html.
-		 * @param {String}
-		 * @param {String|Boolean} [context] - If specified, the fragment will be created in this context, defaults to document.
-		 * @param {Boolean} [keepScripts] - If true, will include scripts passed in the html string.
-		 * @returns {JSON}
-		 */
-		HTML: function( data, context, keepScripts ) {
-			if ( !data || typeof data !== "string" ) {
-				return null;
-			}
-			if ( typeof context === "boolean" ) {
-				keepScripts = context;
-				context = false;
-			}
-			context = context || document;
-
-			var parsed = rsingleTag.exec( data ),
-				scripts = !keepScripts && [];
-
-			// Single tag
-			if ( parsed ) {
-				return [ context.createElement( parsed[ 1 ] ) ];
-			}
-
-			parsed = dom.buildFragment( [ data ], context, scripts );
-			if ( scripts ) {
-				$( scripts ).remove();
-			}
-			return $.merge( [], parsed.childNodes );
-		},
-		/**
-		 * @example
-		 * parse.QueryString("name=Jarry&age=27")
-		 * //{
-		 * //  name: "Jarry",
-		 * //  name: "27"
-		 * //}
-		 * @param {String}
-		 * @param {String} [split1="&"]
-		 * @param {String} [split2="="]
-		 * @returns {Object}
-		 */
-		QueryString: function( str, split1, split2 ) {
-			var qs = str || ( location.search.length > 0 ? location.search.substring( 1 ) : "" ),
-				args = {};
-			if ( qs ) {
-				$.each( qs.split( split1 || "&" ), function( item ) {
-					item = item.split( split2 || "=" );
-					if ( item[ 1 ] !== undefined ) {
-						args[ decodeURIComponent( item[ 0 ] ) ] = decodeURIComponent( item[ 1 ] );
-					}
-				} );
-			}
-			return args;
-		},
-		/**
-		 * @param {String}
-		 * @returns {Document}
-		 */
-		XML: ( function( xml ) {
-			var parseXML;
-			if ( typeof DOMParser != "undefined" ) {
-				parseXML = function( xml ) {
-					var xmldom = ( new DOMParser() ).parseFromString( xml, "text/xml" ),
-						errors = xmldom.getElementsByTagName( "parsererror" );
-					if ( errors.length ) {
-						throw new Error( "parseXML: " + errors[ 0 ].textContent + " SyntaxError" )
-					}
-					return xmldom;
-				};
-			} else if ( document.implementation.hasFeature( "LS", "3.0" ) ) {
-				parseXML = function( xml ) {
-					var implementation = document.implementation,
-						parser = implementation.createLSParser( implementation.MODE_SYNCHRONOUS, null ),
-						input = implementation.createLSInput();
-					input.stringData = xml;
-					return parser.parse( input );
-				};
-			} else if ( typeof ActiveXObject != "undefined" ) {
-				parseXML = function( xml ) {
-					var xmldom = createDocument();
-					xml.async = "false";
-					xmldom.loadXML( xml );
-					if ( xmldom.parseError != 0 ) {
-						throw new Error( "parseXML: " + xmldom.parseError.reason + " SyntaxError" )
-					}
-					return xmldom;
-				};
-			} else {
-				throw ( "No XML parser available", "Error" );
-			}
-			return parseXML;
-		} )()
-	};
-
-	return parse;
 } );
 
 /*=======================================================*/

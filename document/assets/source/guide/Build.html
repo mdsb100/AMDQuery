@@ -60,7 +60,7 @@
             <p>Look the directory: build/dist/defines. Look over "test.js" and "test.debug.js".<p/>
 
             <h3 name="Dependencies">Build Dependencies</h3>
-            <p>There are node modules to support Build. The "UglifyJS" be used to minify js and detect syntax error. The clean-css be used to minify css. The "trumpet" be used to parse HTML and compile HTML.</p>
+            <p>There are node modules to support Build. The "UglifyJS" be used to minify js and detect syntax error. The clean-css be used to minify css. The "xmldom" be used to parse HTML and compile HTML.</p>
             <p>If you want more infomation, please click the link and read "build_js.js" or "build_app.js".</p>
             <ul class="guide" style="margin-top: 0">
               <li><a target="_blank" href="http://http://www.nodejs.org//">nodejs</a><span>>0.8.8</span>
@@ -73,15 +73,11 @@
               </li>
               <li><a target="_blank" href="https://github.com/GoalSmashers/clean-css">clean-css</a><span>>0.0.0</span>
               </li>
-              <li><a target="_blank" href="https://github.com/substack/node-trumpet">trumpet</a><span>>0.0.0</span>
+              <li><a target="_blank" href="https://github.com/jindw/xmldom">xmldom</a><span>>0.0.0</span>
               </li>
               <li><a target="_blank" href="https://github.com/jashkenas/underscore">underscore</a><span>>0.0.0</span>
               </li>
               <li><a target="_blank" href="https://github.com/jprichardson/node-fs-extra">fs-extra</a><span>>0.0.0</span>
-              </li>
-              <li><a target="_blank" href="https://github.com/dominictarr/through">through</a><span>~2.3.4</span>
-              </li>
-              <li><a target="_blank" href="https://github.com/maxogden/node-concat-stream">concat-stream</a><span>~1.0.0</span>
               </li>
               <li><a target="_blank" href="https://github.com/Marak/colors.js">colors</a><span>>=0.6.2</span>
               </li>
@@ -459,7 +455,7 @@ var aQueryConfig = {
             </p>
             <h3>2.Open HTML. Get "HTML" path from the configuration.</h3>
             <p>
-              Use "trumpet" to parse html, Get an array of css hrefs and script tag of application. Parse configuration of the tag.
+              Use "xmldom" to parse html, Get an array of css hrefs and script tag of application. Parse configuration of the tag.
               <br />The config defined in script attributes is is the highest priority.
             </p>
             <h3>3.Create application directory and copy file.</h3>

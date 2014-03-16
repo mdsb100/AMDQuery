@@ -29,6 +29,11 @@
       .equal("Test has dialog result should true.", true, function(){
         return !!Test.dialog;
       })
+      .task("Test task", function(preResult, equal, execute){
+        equal("Test equal", true, true);
+        execute("Test execute", function(){});
+        return preResult;
+      })
       .execute("Test execute async. After 1 seconds, 'promise1.resolve'. ", function(){
         setTimeout(function(){
           promise1.resolve();
