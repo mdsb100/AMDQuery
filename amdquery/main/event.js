@@ -6,6 +6,7 @@
 		html = "blur focus focusin focusout".split( " " ),
 		key = "keydown keypress keyup".split( " " ),
 		other = "resize scroll change select submit DomNodeInserted DomNodeRemoved".split( " " ),
+		mobile = "touchstart touchmove touchend touchcancel gesturestart gesturechange gestureend orientationchange",
 		// _eventNameList = [].concat( mouse, mutation, html, key, other ),
 		domEventList = {},
 		eventHooks = {
@@ -967,6 +968,15 @@
 			} );
 		},
 		/**
+		 * Has the first element an event handler.
+		 * @param {String} - "click", "swap.down"
+		 * @param {Function}
+		 * @returns {this}
+		 */
+		hasHandler: function( type, fn ) {
+			return event.hasHandler( this[ 0 ], type, fn );
+		},
+		/**
 		 * Delegate children event handler from parentNode.
 		 * @param {String} - "div>a"
 		 * @param {String} - "click", "swap.down"
@@ -1322,6 +1332,9 @@
 	}
 	for ( i = 0, len = other.length; i < len; i++ ) {
 		domEventList[ other[ i ] ] = 1;
+	}
+	for ( i = 0, len = mobile.length; i < len; i++ ) {
+		domEventList[ mobile[ i ] ] = 1;
 	}
 
 	return event;
