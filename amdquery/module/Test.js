@@ -172,7 +172,6 @@ aQuery.define( "module/Test", [ "base/Promise", "base/config", "main/event" ], f
 			} catch ( e ) {
 				this._fail( describe, sfail, e );
 				error( this.name, describe, sfail, e );
-				this.report();
 				throw e;
 			}
 		},
@@ -219,7 +218,6 @@ aQuery.define( "module/Test", [ "base/Promise", "base/config", "main/event" ], f
 			} catch ( e ) {
 				this._fail( describe, sfail, e );
 				error( this.name, describe, sfail, e );
-				this.report();
 				throw e;
 			}
 			if ( $.util.isEqual( result, value ) ) {
@@ -227,7 +225,6 @@ aQuery.define( "module/Test", [ "base/Promise", "base/config", "main/event" ], f
 			} else {
 				this._fail( describe, sfail );
 				error( this.name, describe, sfail );
-				this.report();
 			}
 			return result;
 		},
