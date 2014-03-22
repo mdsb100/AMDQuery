@@ -460,11 +460,11 @@
 		 * Get real child by index.
 		 * @param {Element}
 		 * @param {Number}
-		 * @returns {Element}
+		 * @returns {Element|null}
 		 */
 		getRealChild: function( father, index ) {
 			var i = -1,
-				child;
+				child = null;
 			var ele = father.firstChild;
 			while ( ele ) {
 				if ( typed.isEle( ele ) && ++i == index ) {
@@ -518,7 +518,7 @@
 		 */
 		removeChildren: function( ele, keepData ) {
 			for ( var i = ele.childNodes.length - 1; i >= 0; i-- ) {
-				dom.remove( ele.childNodes[ i ], false, keepData );
+				dom.removeChild( ele, ele.childNodes[ i ], keepData );
 			}
 			return this;
 		}
