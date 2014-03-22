@@ -218,7 +218,7 @@
 				if ( elem || elem === 0 ) {
 
 					// Add nodes directly
-					if ( typed.isObj( elem ) ) {
+					if ( typed.type( elem ) === "object" ) {
 						$.merge( nodes, elem.nodeType ? [ elem ] : elem );
 
 						// Convert non-html into a text node
