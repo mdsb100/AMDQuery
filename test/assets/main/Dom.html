@@ -121,13 +121,13 @@
 
         equal("Div 'wrap' last child is p", typed.isNode(dom.getRealChild(wrapDiv[0], 2), "p"), true);
 
-        execute("Div 'wrap' > p wrapInner '<div></div>'", function(){
+        execute("Div 'wrap' > p wrapInner 'div'", function(){
           wrapDiv.find("p").wrapInner("<div></div>");
         });
 
-        equal("Div 'wrap' last child is p and p`s child is div", typed.isNode(dom.getRealChild(wrapDiv[0], 2).childNodes[0], "div"), true);
+        equal("Div 'wrap' last child is p and p`s child is div", typed.isNode(dom.getRealChild(wrapDiv[0], 2), "div"), true);
 
-        equal("The div inner html is 'c'", dom.getRealChild(wrapDiv[0], 2).innerHTML, "c");
+        equal("The div inner html is 'c'", dom.getRealChild(wrapDiv[0], 2).childNodes[0].innerHTML, "c");
 
       }).start();
     });

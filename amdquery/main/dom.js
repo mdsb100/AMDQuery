@@ -966,7 +966,7 @@
 		wrapAll: function( html ) {
 			if ( typed.isFun( html ) ) {
 				return this.each( function( ele, i ) {
-					$( ele ).wrapAll( html.call( this, i ) );
+					$( ele ).wrapAll( html.call( ele, i ) );
 				} );
 			}
 
@@ -1044,7 +1044,7 @@
 			var isFunction = typed.isFun( html );
 
 			return this.each( function( ele, i ) {
-				$( ele ).wrapAll( isFunction ? html.call( this, i ) : html );
+				$( ele ).wrapAll( isFunction ? html.call( ele, i ) : html );
 			} );
 		},
 		/**
@@ -1054,8 +1054,8 @@
 		 */
 		unwrap: function() {
 			this.parent().each( function( ele ) {
-				if ( !typed.isNode( this, "body" ) ) {
-					$( ele ).replaceWith( this.childNodes );
+				if ( !typed.isNode( ele, "body" ) ) {
+					$( ele ).replaceWith( ele.childNodes );
 				}
 			} );
 			return this;
