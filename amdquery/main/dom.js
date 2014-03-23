@@ -1089,10 +1089,10 @@
 	} );
 
 	$.interfaces.achieve( "constructorDom", function( type, dollar, arg1, arg2, parentNode ) {
-		if ( parentNode && ( typed.isEle( parentNode ) || typed.is$( parentNode ) ) ) {
+		if ( typeof arg1 === "string" && rsingleTag.test( arg1 ) ) {
+			return dom.parseHTML( arg1, arg2 || document, false );
+		} else if ( parentNode && ( typed.isEle( parentNode ) || typed.is$( parentNode ) ) ) {
 			dollar.appendTo( parentNode );
-		} else if ( typeof arg1 === "string" && typeof arg2 === "object" ) {
-			return dom.buildFragment( arg1, arg2, false, dollar ).firstChild;
 		}
 	} );
 

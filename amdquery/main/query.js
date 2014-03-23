@@ -156,12 +156,8 @@
 				tmp;
 			if ( typed.isStr( ele ) ) {
 				ele = $.util.trim( ele );
-				if ( /^<.*>$/.test( ele ) ) {
-					list = $.elementCollectionToArray( $.createEle( ele ), false );
-				} else {
-					tmp = context || document;
-					list = $.find( ele, tmp.documentElement || context );
-				}
+				tmp = context || document;
+				list = $.find( ele, tmp.documentElement || context );
 			} else if ( typed.isEle( ele ) || ( ele && ele.nodeType === 3 ) )
 				list = [ ele ];
 			else if ( typed.isArr( ele ) ) {

@@ -297,15 +297,11 @@
 
 				obj = null;
 
-			} else if ( typeof elem === "string" && typeof tagName === "object" ) {
-				var obj = $.interfaces.trigger( "constructorDom", this, elem, tagName, parent );
-				this.init( obj );
 			} else if ( elem ) {
-				var result;
-				if ( result = $.interfaces.trigger( "constructorQuery", elem, tagName ) ) {
+				var result = $.interfaces.trigger( "constructorDom", this, elem, tagName ) || $.interfaces.trigger( "constructorQuery", elem, tagName );
+				if ( result ) {
 					count++;
-					this.init( result, elem );
-
+					this.init( result, tagName );
 				}
 			}
 		} else if ( typeof elem == "function" ) {
