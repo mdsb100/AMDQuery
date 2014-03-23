@@ -1088,8 +1088,12 @@
 		};
 	} );
 
-	$.interfaces.achieve( "constructorDom", function( type, dollar, cssObj, ele, parentNode ) {
-		parentNode && ( typed.isEle( parentNode ) || typed.is$( parentNode ) ) && dollar.appendTo( parentNode );
+	$.interfaces.achieve( "constructorDom", function( type, dollar, arg1, arg2, parentNode ) {
+		if ( parentNode && ( typed.isEle( parentNode ) || typed.is$( parentNode ) ) ) {
+			dollar.appendTo( parentNode );
+		} else if ( typeof arg1 === "string" && typeof arg2 === "object" ) {
+			return dom.buildFragment( arg1, arg2, false, dollar ).firstChild;
+		}
 	} );
 
 	return dom;

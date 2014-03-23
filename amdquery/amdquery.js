@@ -297,6 +297,9 @@
 
 				obj = null;
 
+			} else if ( typeof elem === "string" && typeof tagName === "object" ) {
+				var obj = $.interfaces.trigger( "constructorDom", this, elem, tagName, parent );
+				this.init( obj );
 			} else if ( elem ) {
 				var result;
 				if ( result = $.interfaces.trigger( "constructorQuery", elem, tagName ) ) {
