@@ -7,24 +7,128 @@
   <link href="../../../global/styles/reset.css" rel="stylesheet" type="text/css" />
   <script src="../../../amdquery/amdquery.js" type="text/javascript" amdquery="define:$;" amd="detectCR:1;" module="compatibleEvent:1;testLogByHTML:1"></script>
   <script type="text/javascript">
-    $.require(["main/query", "main/css", "main/dom", "module/Test"], function(query, css, dom, Test) {
+    $.require([ "base/typed", "main/query", "main/css", "main/dom", "main/event", "main/data", "module/Test"], function(typed, query, css, dom, event, utilData, Test) {
       var testDOM = new Test("TestDOM");
-      testDOM.equal("Test parseHTML &ltdiv style='background-color:red' id='parseHTML'&gt&ltspan id='span'&gt&lt/span&gt&lt/div&gt then element child id is 'span'.", 'span', function(preResult){
-        var div = dom.parseHTML("<div style='background-color:red' id='parseHTML'><span id='span'></span></div>");
-        return div[0].childNodes[0].id;
-      }).equal("Test parseHTML &ltdiv &gthello, world&lt/div&gt then element inner html is 'hello, world'.", 'hello, world', function(preResult){
-        var div = dom.parseHTML("<div>hello, world</div>");
-        return div[0].innerHTML;
-      }).equal("Test parseHTML &ltdiv &gthello, world&lt/div&gt then element inner html is 'hello, world'.", 'hello, world', function(preResult){
-        var div = dom.parseHTML("<div>hello, world</div>");
-        return div[0].innerHTML;
-      }).task("clone div#test", function(preResult, equal, execute){
+
+      var testClick = function(){
+
+      }
+
+      testDOM.task("Test parseHTML &ltdiv style='background-color:red' id='parseHTML'&gt&ltspan id='span'&gthello,world&lt/span&gt&lt/div&gt .", function(preResult, equal, execute){
+        var div = dom.parseHTML("<div style='background-color:red' id='parseHTML'><span id='span'>hello,world</span></div>");
+        equal("element div style background-color is 'red'.", div[0].style.backgroundColor, "red");
+        equal("element child id is 'span'.",div[0].childNodes[0].id, "span");
+        equal("element child inner html is 'hello,world'.",div[0].childNodes[0].innerHTML, "hello,world");
+
+      }).task("Test clone", function(preResult, equal, execute){
         var test = $("#test");
-        var clone = test.clone();
+        var cloneTest = test.clone();
 
-        equal("New div`style width should be '100px'", clone[0].style.width, "100px");
+        equal("New cloneTest`style width should be '100px'.", cloneTest[0].style.width, "100px");
 
-        return preResult;
+        var target = $("#target");
+
+        var inner = target.find("#inner").data("name", "Amanda").click(testClick);
+
+        target.click(testClick);
+
+        var clonetarget = target.clone(true);
+
+        equal("'click' handler in clonetarget div is function 'testClick'.", clonetarget.hasHandler("click", testClick) > -1, true);
+
+        equal("Div target has not data.", target.hasData(), false);
+
+        execute("Clone target by deep event and data.", function(){
+          clonetarget = target.clone(true, true);
+        });
+
+        equal("'click' handler in div inner is function 'testClick'.", clonetarget.find("div").hasHandler("click", testClick) > -1, true);
+
+        return clonetarget;
+      }).task("Test dom.cleanData", function(clonetarget, equal, execute){
+        dom.cleanData(clonetarget[0]);
+        equal("'click' handler in div is undefined", clonetarget.hasHandler("click", testClick), -1);
+        equal("'click' handler in div inner has not any data.", clonetarget.find("div").hasData(), false);
+      }).equal("Test dom.getLastChild, the last child in div 'dom' is div 'last'.", query.getEleById("last"), function(){
+        return dom.getLastChild( query.getEleById("dom") );
+      }).equal("Test dom.getRealChild(1), the second child in div is 'span'.", query.getEleById("span"), function(){
+        return dom.getRealChild( query.getEleById("dom"), 1 );
+      }).task("Test dom.removeChildren(), div 'target' removeChildren.", function(preResult, equal, execute){
+        var target = query.getEleById("target");
+        var inner = query.getEleById("inner");
+
+        equal("Div inner has data.", utilData.hasData(inner), true);
+
+        execute("Remove children and does not keep data.", function(){
+          dom.removeChildren(target, false)
+        });
+
+        equal("The length of div 'target'`s child nodes is 0", target.childNodes.length, 0);
+
+        equal("Div inner has not data.", utilData.hasData(inner), false);
+
+      }).task("Test dom operation", function(preResult, equal, execute){
+        var test = $("#test");
+        var div1 = $.createEle("div");
+        var div2 = $.createEle("div");
+        var ul1 = $.createEle("ul");
+        var ol1 = "<ol id='ol1'><ol>";
+        var ul2 = $.createEle("ul");
+
+        execute("Div 'test' append div1.", function(){
+          test.append(div1);
+        });
+
+        equal("Div 'test' first child is div1", dom.getRealChild(test[0], 0), div1);
+
+        execute("Div 'test' prepend ul1.", function(){
+          test.prepend(ul1);
+        });
+
+        equal("Div 'test' first child is ul1", dom.getRealChild(test[0], 0), ul1);
+
+        execute("Div 'test', ul1 after $(div2).", function(){
+          $(ul1).after($(div2));
+        });
+
+        equal("Div 'test' second child is div2", dom.getRealChild(test[0], 1), div2);
+
+        execute("Div 'test', div2 after <ol id='ol1'><ol>.", function(){
+          $(div2).before(ol1);
+        });
+
+        equal("Div 'test' second child id is 'ol1'", dom.getRealChild(test[0], 1).id, "ol1");
+
+        execute("Div 'test', ul1 replaceWith ul2", function(){
+          $(ul1).replaceWith(ul2);
+        });
+
+        equal("Div 'test' first child id is 'ul2'", dom.getRealChild(test[0], 0), ul2);
+
+      }).task("Test dom wrap, wrapInner, wrapAll, upwrap", function(preResult, equal, execute){
+        var wrapDiv = $("#wrap");
+        execute("Div 'wrap' > p wrap a div", function(){
+          wrapDiv.find("p").wrap("<div></div>");
+        });
+
+        equal("Div 'wrap' first child is div", typed.isNode(dom.getRealChild(wrapDiv[0], 0), "div"), true);
+        equal("Div 'wrap' second child is div", typed.isNode(dom.getRealChild(wrapDiv[0], 1), "div"), true);
+        equal("Div 'wrap' last child is div", typed.isNode(dom.getRealChild(wrapDiv[0], 2), "div"), true);
+
+        execute("Div 'wrap' > p unwrap", function(){
+          wrapDiv.find("p").unwrap();
+        });
+
+        equal("Div 'wrap' last child is p", typed.isNode(dom.getRealChild(wrapDiv[0], 2), "p"), true);
+
+        execute("Div 'wrap' > p wrapInner '<div></div>'", function(){
+          wrapDiv.find("p").wrapInner("<div></div>");
+        });
+
+        equal("Div 'wrap' last child is p and p`s child is div", typed.isNode(dom.getRealChild(wrapDiv[0], 2).childNodes[0], "div"), true);
+
+        equal("The div inner html is 'c'", dom.getRealChild(wrapDiv[0], 2).innerHTML, "c");
+
       }).start();
     });
   </script>
@@ -34,8 +138,26 @@
   <div id="test" style="dispaly:block;clear:left;border:10px solid green;width:100px;height:100px;padding-left:20px;margin-right:40px;background-color: red;">
 
   </div>
-  <div id="wrap" style="dispaly:block;clear:left;width:100px;height:100px;background-color: green;">
-
+  <div id="target" style="dispaly:block;clear:left;width:100px;height:100px;background-color: green;">
+    <div id="inner"></div>
+    pcc
+    <div>
+      <span></span>
+    </div>
+    html
+  </div>
+  <div id="dom">
+    <div id="first"></div>
+    abc
+    <span id="span"></span>
+    cbc
+    <div id="last"></div>
+    efg
+  </div>
+  <div id="wrap">
+    <p>a</p>
+    <p>b</p>
+    <p>c</p>
   </div>
 </body>
 
