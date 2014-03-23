@@ -162,11 +162,13 @@
 					tmp = context || document;
 					list = $.find( ele, tmp.documentElement || context );
 				}
-			} else if ( typed.isEle( ele ) )
+			} else if ( typed.isEle( ele ) || ( ele && ele.nodeType === 3 ) )
 				list = [ ele ];
 			else if ( typed.isArr( ele ) ) {
 				$.each( ele, function( result ) {
-					typed.isEle( result ) && list.push( result );
+					if ( typed.isEle( result ) || ( result && result.nodeType === 3 ) ) {
+						list.push( result );
+					}
 				}, this );
 				list = array.filterSame( list );
 			} else if ( ele instanceof $ )
@@ -199,7 +201,7 @@
 		 * @returns {Element}
 		 */
 		getEleById: function( ID, context ) {
-			return $.expr.find[ "ID" ]( ID, context || document )[0];
+			return $.expr.find[ "ID" ]( ID, context || document )[ 0 ];
 		},
 		/**
 		 * Get elements of array by tag name.
@@ -521,7 +523,7 @@
 		 * @returns {aQuery}
 		 */
 		contents: function( ele ) {
-			return $.nodeName( ele, "iframe" ) ?
+			return typed.isNode( ele, "iframe" ) ?
 				ele.contentDocument || ele.contentWindow.document :
 				$.merge( [], ele.childNodes );
 		}
