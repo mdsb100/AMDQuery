@@ -299,11 +299,10 @@
 				obj = null;
 
 			} else if ( elem ) {
-				var result;
-				if ( result = $.interfaces.trigger( "constructorQuery", elem, tagName ) ) {
+				var result = $.interfaces.trigger( "constructorDom", this, elem, tagName ) || $.interfaces.trigger( "constructorQuery", elem, tagName );
+				if ( result ) {
 					count++;
-					this.init( result, elem );
-
+					this.init( result, tagName );
 				}
 			}
 		} else if ( typeof elem == "function" ) {
@@ -626,8 +625,13 @@
 			isEqual: function( objA, objB ) {
 				if ( this.is( objA, objB ) )
 					return true;
-				if ( objA && objB && objA.constructor !== objB.constructor )
+
+				if ( objA === null || objA === undefined || objB === null || objB === undefined )
 					return false;
+
+				if ( objA.constructor !== objB.constructor )
+					return false;
+
 				var aMemberCount = 0;
 				for ( var a in objA ) {
 					if ( !objA.hasOwnProperty( a ) )
@@ -4236,7 +4240,6 @@ aQuery.define( "base/array", [ "base/typed", "base/extend" ], function( $, typed
 		expando: expando,
 		/** A hash of Element which does not support data. */
 		noData: {
-			//quote from jQuery-1.4.1
 			"embed": true,
 			"object": true,
 			"applet": true
@@ -6479,17 +6482,15 @@ if ( typeof define === "function" && define.amd ) {
 				tmp;
 			if ( typed.isStr( ele ) ) {
 				ele = $.util.trim( ele );
-				if ( /^<.*>$/.test( ele ) ) {
-					list = $.elementCollectionToArray( $.createEle( ele ), false );
-				} else {
-					tmp = context || document;
-					list = $.find( ele, tmp.documentElement || context );
-				}
-			} else if ( typed.isEle( ele ) )
+				tmp = context || document;
+				list = $.find( ele, tmp.documentElement || context );
+			} else if ( typed.isEle( ele ) || ( ele && ele.nodeType === 3 ) )
 				list = [ ele ];
 			else if ( typed.isArr( ele ) ) {
 				$.each( ele, function( result ) {
-					typed.isEle( result ) && list.push( result );
+					if ( typed.isEle( result ) || ( result && result.nodeType === 3 ) ) {
+						list.push( result );
+					}
 				}, this );
 				list = array.filterSame( list );
 			} else if ( ele instanceof $ )
@@ -6522,7 +6523,7 @@ if ( typeof define === "function" && define.amd ) {
 		 * @returns {Element}
 		 */
 		getEleById: function( ID, context ) {
-			return $.expr.find[ "ID" ]( ID, context || document )[0];
+			return $.expr.find[ "ID" ]( ID, context || document )[ 0 ];
 		},
 		/**
 		 * Get elements of array by tag name.
@@ -6844,7 +6845,7 @@ if ( typeof define === "function" && define.amd ) {
 		 * @returns {aQuery}
 		 */
 		contents: function( ele ) {
-			return $.nodeName( ele, "iframe" ) ?
+			return typed.isNode( ele, "iframe" ) ?
 				ele.contentDocument || ele.contentWindow.document :
 				$.merge( [], ele.childNodes );
 		}
@@ -7327,6 +7328,7 @@ if ( typeof define === "function" && define.amd ) {
 		html = "blur focus focusin focusout".split( " " ),
 		key = "keydown keypress keyup".split( " " ),
 		other = "resize scroll change select submit DomNodeInserted DomNodeRemoved".split( " " ),
+		mobile = "touchstart touchmove touchend touchcancel gesturestart gesturechange gestureend orientationchange",
 		// _eventNameList = [].concat( mouse, mutation, html, key, other ),
 		domEventList = {},
 		eventHooks = {
@@ -8288,6 +8290,15 @@ if ( typeof define === "function" && define.amd ) {
 			} );
 		},
 		/**
+		 * Has the first element an event handler.
+		 * @param {String} - "click", "swap.down"
+		 * @param {Function}
+		 * @returns {this}
+		 */
+		hasHandler: function( type, fn ) {
+			return event.hasHandler( this[ 0 ], type, fn );
+		},
+		/**
 		 * Delegate children event handler from parentNode.
 		 * @param {String} - "div>a"
 		 * @param {String} - "click", "swap.down"
@@ -8643,6 +8654,9 @@ if ( typeof define === "function" && define.amd ) {
 	}
 	for ( i = 0, len = other.length; i < len; i++ ) {
 		domEventList[ other[ i ] ] = 1;
+	}
+	for ( i = 0, len = mobile.length; i < len; i++ ) {
+		domEventList[ mobile[ i ] ] = 1;
 	}
 
 	return event;
@@ -10646,12 +10660,11 @@ aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "
 	}
 
 	var position = {
+		/**
+		 * Get size of page. { width: pageWidth, height: pageHeight }
+		 * @returns {Object}
+		 */
 		getPageSize: function() {
-			/// <summary>返回页面大小
-			/// <para>obj.width</para>
-			/// <para>obj.height</para>
-			/// </summary>
-			/// <returns type="Object" />
 			var pageH = window.innerHeight,
 				pageW = window.innerWidth;
 			if ( !typed.isNum( pageW ) ) {
@@ -10668,19 +10681,20 @@ aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "
 				height: pageH
 			};
 		},
-
+		/**
+		 * Get height from element.
+		 * @param {Element}
+		 * @returns {Number}
+		 */
 		getHeight: function( ele ) {
-			/// <summary>获得元素的高度
-			/// </summary>
-			//  <param name="ele" type="Element">element元素</param>
-			/// <returns type="Number" />
 			return position.getWidth( ele, "height" );
 		},
+		/**
+		 * Get width from element.
+		 * @param {Element}
+		 * @returns {Number}
+		 */
 		getWidth: function( ele ) {
-			/// <summary>获得元素的宽度
-			/// </summary>
-			//  <param name="ele" type="Element">element元素</param>
-			/// <returns type="Number" />
 			var name = arguments[ 1 ] ? "height" : "width",
 				bName = name == "width" ? "Width" : "Height";
 			if ( typed.isWindow( ele ) ) {
@@ -10700,11 +10714,12 @@ aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "
 			}
 			return css.css( ele, name );
 		},
-
+		/**
+		 * Get top from element.
+		 * @param {Element}
+		 * @returns {Number}
+		 */
 		getTop: function( ele ) {
-			/// <summary>获得元素离上边框的总长度</summary>
-			/// <param name="ele" type="Element">dom元素</param>
-			/// <returns type="Number" />
 			var t = ele.offsetTop || 0,
 				cur = ele.offsetParent;
 			while ( cur != null ) {
@@ -10713,10 +10728,12 @@ aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "
 			}
 			return t;
 		},
+		/**
+		 * Get left from element.
+		 * @param {Element}
+		 * @returns {Number}
+		 */
 		getLeft: function( ele ) {
-			/// <summary>获得元素离左边框的总长度</summary>
-			/// <param name="ele" type="Element">dom元素</param>
-			/// <returns type="Number" />
 			var l = ele.offsetLeft || 0,
 				cur = ele.offsetParent;
 			while ( cur != null ) {
@@ -10725,14 +10742,19 @@ aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "
 			}
 			return l;
 		},
-
+		/**
+		 * Get offset left from element.
+		 * @param {Element}
+		 * @returns {Number}
+		 */
 		getOffsetL: function( ele ) {
-			/// <summary>返回元素的左边距离
-			/// <para>left:相对于显示部分</para>
-			/// </summary>
-			/// <returns type="Number" />
 			return ele.offsetLeft;
 		},
+		/**
+		 * Get offset top from element.
+		 * @param {Element}
+		 * @returns {Number}
+		 */
 		getOffsetT: function( ele ) {
 			/// <summary>返回元素的顶边距离
 			/// <para>top:相对于显示部分</para>
@@ -10740,7 +10762,11 @@ aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "
 			/// <returns type="Number" />
 			return ele.offsetTop;
 		},
-
+		/**
+		 * Get inner height from element.
+		 * @param {Element}
+		 * @returns {Number}
+		 */
 		getInnerH: function( ele ) {
 			/// <summary>返回元素的内高度
 			/// </summary>
@@ -10748,6 +10774,11 @@ aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "
 			/// <returns type="Number" />
 			return parseFloat( getSize( ele, "height", "padding" ) );
 		},
+		/**
+		 * Get inner width from element.
+		 * @param {Element}
+		 * @returns {Number}
+		 */
 		getInnerW: function( ele ) {
 			/// <summary>返回元素的内宽度
 			/// </summary>
@@ -10755,7 +10786,11 @@ aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "
 			/// <returns type="Number" />
 			return parseFloat( getSize( ele, "width", "padding" ) );
 		},
-
+		/**
+		 * Get outer height from element.
+		 * @param {Element}
+		 * @returns {Number}
+		 */
 		getOuterH: function( ele, bol ) {
 			/// <summary>返回元素的外高度
 			/// </summary>
@@ -10764,6 +10799,11 @@ aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "
 			/// <returns type="Number" />
 			return parseFloat( getSize( ele, "height", bol === true ? "margin" : "border" ) );
 		},
+		/**
+		 * Get outer width from element.
+		 * @param {Element}
+		 * @returns {Number}
+		 */
 		getOuterW: function( ele, bol ) {
 			/// <summary>返回元素的外宽度
 			/// </summary>
@@ -10772,15 +10812,21 @@ aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "
 			/// <returns type="Number" />
 			return parseFloat( getSize( ele, "width", bol === true ? "margin" : "border" ) );
 		},
-
+		/**
+		 * Set height to element.
+		 * @param {Element}
+		 * @param {Number|String}
+		 * @returns {this}
+		 */
 		setHeight: function( ele, value ) {
-			/// <summary>设置元素的高度
-			/// </summary>
-			/// <param name="ele" type="Element">element元素</param>
-			/// <param name="value" type="Number/String">值</param>
-			/// <returns type="self" />
-			return $.setWidth( ele, value, "height" );
+			return position.setWidth( ele, value, "height" );
 		},
+		/**
+		 * Set width to element.
+		 * @param {Element}
+		 * @param {Number|String}
+		 * @returns {this}
+		 */
 		setWidth: function( ele, value ) {
 			/// <summary>设置元素的宽度
 			/// </summary>
@@ -10793,36 +10839,33 @@ aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "
 
 			return this;
 		},
-
+		/**
+		 * Set inner height to element.
+		 * @param {Element}
+		 * @param {Number|String}
+		 * @returns {this}
+		 */
 		setInnerH: function( ele, height ) {
-			/// <summary>设置元素的内高度
-			/// <para>height:相对于显示部分</para>
-			/// </summary>
-			/// <param name="ele" type="Element">element元素</param>
-			/// <param name="height" type="Number/String">值</param>
-			/// <returns type="self" />
 			ele.style.height = setSize( ele, "height", height, "padding" );
 			return this;
 		},
+		/**
+		 * Set inner width to element.
+		 * @param {Element}
+		 * @param {Number|String}
+		 * @returns {this}
+		 */
 		setInnerW: function( ele, width ) {
-			/// <summary>设置元素的内宽度
-			/// <para>width:相对于显示部分</para>
-			/// </summary>
-			/// <param name="ele" type="Element">element元素</param>
-			/// <param name="width" type="Number/String">值</param>
-			/// <returns type="self" />
 			ele.style.width = setSize( ele, "width", width, "padding" );
 			return this;
 		},
-
+		/**
+		 * Set offset left to element.
+		 * @param {Element}
+		 * @param {Number|String}
+		 * @returns {this}
+		 */
 		setOffsetL: function( ele, left ) {
-			/// <summary>设置元素左边距
-			/// <para>left:相对于显示部分</para>
-			/// <para>单位默认为px</para>
-			/// </summary>
-			/// <param name="ele" type="Element">element元素</param>
-			/// <param name="left" type="Number/String/undefined">值 可缺省 缺省则返回</param>
-			/// <returns type="self" />
 			switch ( typeof left ) {
 				case "number":
 					left += "px";
@@ -10834,14 +10877,13 @@ aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "
 			}
 			return this;
 		},
+		/**
+		 * Set inner top to element.
+		 * @param {Element}
+		 * @param {Number|String}
+		 * @returns {this}
+		 */
 		setOffsetT: function( ele, top ) {
-			/// <summary>设置元素左边距
-			/// <para>left:相对于显示部分</para>
-			/// <para>单位默认为px</para>
-			/// </summary>
-			/// <param name="ele" type="Element">element元素</param>
-			/// <param name="left" type="Number/String/undefined">值 可缺省 缺省则返回</param>
-			/// <returns type="self" />
 			switch ( typeof top ) {
 				case "number":
 					top += "px";
@@ -10854,143 +10896,206 @@ aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "
 
 			return this;
 		},
-
+		/**
+		 * Set outer height to element.
+		 * @param {Element}
+		 * @param {Number|String}
+		 * @param {Boolean} - If true is "margin" else then border
+		 * @returns {this}
+		 */
 		setOuterH: function( ele, height, bol ) {
-			/// <summary>设置元素的外高度
-			/// </summary>
-			/// <param name="ele" type="Element">element元素</param>
-			/// <param name="height" type="Number/String">值</param>
-			/// <param name="bol" type="Boolean">是否包括margin</param>
-			/// <returns type="self" />
 			ele.style.height = setSize( ele, "height", height, bol === true ? "margin" : "border" );
 			return this;
 		},
+		/**
+		 * Set outer width to element.
+		 * @param {Element}
+		 * @param {Number|String}
+		 * @param {Boolean} - If true is "margin" else then border
+		 * @returns {this}
+		 */
 		setOuterW: function( ele, width, bol ) {
-			/// <summary>设置元素的外宽度
-			/// </summary>
-			/// <param name="ele" type="Element">element元素</param>
-			/// <param name="width" type="Number/String">值</param>
-			/// <param name="bol" type="Boolean">是否包括margin</param>
-			/// <returns type="self" />
 			ele.style.width = setSize( ele, "width", width, bol === true ? "margin" : "border" );
 			return this;
 		}
 	};
 
-	$.extend( position );
-
 	$.fn.extend( {
+		/*
+		 * Set width to Element.
+		 * @variation 1
+		 * @method width
+		 * @memberOf aQuery.prototype
+		 * @param width {Number|String}
+		 * @returns {this}
+		 */
+
+		/**
+		 * Get first Element width.
+		 * @returns {Number}
+		 */
 		width: function( width ) {
-			/// <summary>返回或设置第一个元素的宽度
-			/// </summary>
-			/// <param name="width" type="Number/String">宽度</param>
-			/// <returns type="Number" />
-			return typed.isNul( width ) ? parseFloat( $.getWidth( this[ 0 ] ) ) : this.each( function( ele ) {
-				$.setWidth( ele, width );
+			return typed.isNul( width ) ? parseFloat( position.getWidth( this[ 0 ] ) ) : this.each( function( ele ) {
+				position.setWidth( ele, width );
 			} );
 		},
+		/*
+		 * Set height to Element.
+		 * @variation 1
+		 * @method height
+		 * @memberOf aQuery.prototype
+		 * @param height {Number|String}
+		 * @returns {this}
+		 */
+
+		/**
+		 * Get first Element height.
+		 * @returns {Number}
+		 */
 		height: function( height ) {
-			/// <summary>返回或设置第一个元素的高度
-			/// </summary>
-			/// <param name="height" type="Number/String">高度</param>
-			/// <returns type="Number" />
-			return typed.isNul( height ) ? parseFloat( $.getHeight( this[ 0 ] ) ) : this.each( function( ele ) {
-				$.setHeight( ele, height );
+			return typed.isNul( height ) ? parseFloat( position.getHeight( this[ 0 ] ) ) : this.each( function( ele ) {
+				position.setHeight( ele, height );
 			} );
 		},
-
+		/**
+		 * Get left from first Element.
+		 * @returns {Number}
+		 */
 		getLeft: function() {
-			/// <summary>获得第一个元素离左边框的总长度
-			/// <para>left:相对于父级</para>
-			/// </summary>
-			/// <returns type="Number" />
-			return $.getLeft( this[ 0 ] );
+			return position.getLeft( this[ 0 ] );
 		},
+		/**
+		 * Get top from first Element.
+		 * @returns {Number}
+		 */
 		getTop: function() {
-			/// <summary>获得第一个元素离上边框的总长度
-			/// <para>left:相对于父级</para>
-			/// </summary>
-			/// <returns type="Number" />
-			return $.getTop( this[ 0 ] );
+			return position.getTop( this[ 0 ] );
 		},
+		/*
+		 * Set offset left to Element.
+		 * @variation 1
+		 * @method offsetLeft
+		 * @memberOf aQuery.prototype
+		 * @param left {Number|String}
+		 * @returns {this}
+		 */
 
-
+		/**
+		 * Get offset left from first Element.
+		 * @returns {Number}
+		 */
 		offsetLeft: function( left ) {
-			/// <summary>获得或设置元素left
-			/// <para>为数字时则返回this 设置left</para>
-			/// <para>单位默认为px</para>
-			/// </summary>
-			/// <param name="left" type="num/any">宽度</param>
-			/// <returns type="self" />
-			return typed.isNum( left ) ? this.each( function( ele ) {
-				$.setOffsetL( ele, left );
-			} ) : $.getOffsetL( this[ 0 ] );
+			return !typed.isNul( left ) ? this.each( function( ele ) {
+				position.setOffsetL( ele, left );
+			} ) : position.getOffsetL( this[ 0 ] );
 		},
+		/*
+		 * Set offset top to Element.
+		 * @variation 1
+		 * @method offsetTop
+		 * @memberOf aQuery.prototype
+		 * @param top {Number|String}
+		 * @returns {this}
+		 */
+
+		/**
+		 * Get offset top from first Element.
+		 * @returns {Number}
+		 */
 		offsetTop: function( top ) {
-			/// <summary>获得或设置元素top
-			/// <para>为数字时则返回this 设置top</para>
-			/// <para>单位默认为px</para>
-			/// </summary>
-			/// <param name="top" type="num/any">宽度</param>
-			/// <returns type="self" />
-			return typed.isNum( top ) ? this.each( function( ele ) {
-				$.setOffsetT( ele, top );
-			} ) : $.getOffsetT( this[ 0 ] );
+			return !typed.isNul( top ) ? this.each( function( ele ) {
+				position.setOffsetT( ele, top );
+			} ) : position.getOffsetT( this[ 0 ] );
 		},
+		/*
+		 * Set inner height to Element.
+		 * @variation 1
+		 * @method innerHeight
+		 * @memberOf aQuery.prototype
+		 * @param height {Number|String}
+		 * @returns {this}
+		 */
 
-
+		/**
+		 * Get first Element inner height.
+		 * @returns {Number}
+		 */
 		innerHeight: function( height ) {
-			/// <summary>返回或设置第一个元素内高度
-			/// </summary>
-			/// <param name="height" type="Number">高度</param>
-			/// <returns type="Number" />
 			return !typed.isNul( height ) ? this.each( function( ele ) {
-				$.setInnerH( ele, height );
-			} ) : $.getInnerH( this[ 0 ] );
+				position.setInnerH( ele, height );
+			} ) : position.getInnerH( this[ 0 ] );
 		},
-		innerWidth: function( width ) {
-			/// <summary>返回第一个元素内宽度
-			/// </summary>
-			/// <param name="height" type="Number">宽度</param>
-			/// <returns type="Number" />
-			return !typed.isNul( width ) ? this.each( function( ele ) {
-				$.setInnerW( ele, width );
-			} ) : $.getInnerW( this[ 0 ] );
-		},
+		/*
+		 * Set inner width to Element.
+		 * @variation 1
+		 * @method innerWidth
+		 * @memberOf aQuery.prototype
+		 * @param width {Number|String}
+		 * @returns {this}
+		 */
 
+		/**
+		 * Get first Element inner width.
+		 * @returns {Number}
+		 */
+		innerWidth: function( width ) {
+			return !typed.isNul( width ) ? this.each( function( ele ) {
+				position.setInnerW( ele, width );
+			} ) : position.getInnerW( this[ 0 ] );
+		},
+		/*
+		 * Set outer height to Element.
+		 * @variation 1
+		 * @method outerHeight
+		 * @memberOf aQuery.prototype
+		 * @param height {Number|String}
+		 * @param [bol] {Boolean} - If true then contains "margin"
+		 * @returns {this}
+		 */
+
+		/**
+		 * Get first Element outer height.
+		 * @param [bol] {Boolean} - If true then contains "margin"
+		 * @returns {Number}
+		 */
 		outerHeight: function( height, bol ) {
-			/// <summary>返回或设置第一个元素的外高度
-			/// </summary>
-			/// <param name="height" type="Number">高度</param>
-			/// <param name="bol" type="bol">margin是否计算在内</param>
-			/// <returns type="Number" />
 			if ( arguments.length == 1 && typed.isBol( height ) ) {
 				bol = height;
 				height = null;
 			}
-			return typed.isNul( height ) ? $.getOuterH( this[ 0 ], bol ) : this.each( function( ele ) {
-				$.setOuterH( ele, height, bol );
+			return typed.isNul( height ) ? position.getOuterH( this[ 0 ], bol ) : this.each( function( ele ) {
+				position.setOuterH( ele, height, bol );
 			} );
 		},
+		/*
+		 * Set outer width to Element.
+		 * @variation 1
+		 * @method outerWidth
+		 * @memberOf aQuery.prototype
+		 * @param width {Number|String}
+		 * @param [bol] {Boolean} - If true then contains "margin"
+		 * @returns {this}
+		 */
+
+		/**
+		 * Get first Element outer width.
+		 * @param [bol] {Boolean} - If true then contains "margin"
+		 * @returns {Number}
+		 */
 		outerWidth: function( width, bol ) {
-			/// <summary>返回或设置第一个元素的外宽度
-			/// </summary>
-			/// <param name="width" type="Number">宽度</param>
-			/// <returns type="Number" />
 			if ( arguments.length == 1 && typed.isBol( width ) ) {
 				bol = width;
 				width = null;
 			}
-			return typed.isNul( width ) ? $.getOuterW( this[ 0 ], bol ) : this.each( function( ele ) {
-				$.setOuterW( ele, width, bol );
+			return typed.isNul( width ) ? position.getOuterW( this[ 0 ], bol ) : this.each( function( ele ) {
+				position.setOuterW( ele, width, bol );
 			} );
 		},
-
+		/**
+		 * Get first Element scroll height.
+		 * @returns {Number}
+		 */
 		scrollHeight: function() {
-			/// <summary>返回第一个元素的高度
-			/// <para>Height:相对于整个大小</para>
-			/// </summary>
-			/// <returns type="Number" />
 			var height = this.height();
 			return css.swap( this[ 0 ], {
 				"overflow": "scroll"
@@ -10998,11 +11103,11 @@ aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "
 				return Math.max( height, this.scrollHeight || 0 );
 			} );
 		},
+		/**
+		 * Get first Element scroll width.
+		 * @returns {Number}
+		 */
 		scrollWidth: function() {
-			/// <summary>返回第一个元素的宽度
-			/// <para>Width:相对于整个大小</para>
-			/// </summary>
-			/// <returns type="Number" />
 			var width = this.width();
 			return css.swap( this[ 0 ], {
 				"overflow": "scroll"
@@ -11830,7 +11935,7 @@ aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "
 				if ( elem || elem === 0 ) {
 
 					// Add nodes directly
-					if ( typed.isObj( elem ) ) {
+					if ( typed.type( elem ) === "object" ) {
 						$.merge( nodes, elem.nodeType ? [ elem ] : elem );
 
 						// Convert non-html into a text node
@@ -12072,11 +12177,11 @@ aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "
 		 * Get real child by index.
 		 * @param {Element}
 		 * @param {Number}
-		 * @returns {Element}
+		 * @returns {Element|null}
 		 */
 		getRealChild: function( father, index ) {
 			var i = -1,
-				child;
+				child = null;
 			var ele = father.firstChild;
 			while ( ele ) {
 				if ( typed.isEle( ele ) && ++i == index ) {
@@ -12130,7 +12235,7 @@ aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "
 		 */
 		removeChildren: function( ele, keepData ) {
 			for ( var i = ele.childNodes.length - 1; i >= 0; i-- ) {
-				dom.remove( ele.childNodes[ i ], false, keepData );
+				dom.removeChild( ele, ele.childNodes[ i ], keepData );
 			}
 			return this;
 		}
@@ -12578,7 +12683,7 @@ aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "
 		wrapAll: function( html ) {
 			if ( typed.isFun( html ) ) {
 				return this.each( function( ele, i ) {
-					$( ele ).wrapAll( html.call( this, i ) );
+					$( ele ).wrapAll( html.call( ele, i ) );
 				} );
 			}
 
@@ -12656,7 +12761,7 @@ aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "
 			var isFunction = typed.isFun( html );
 
 			return this.each( function( ele, i ) {
-				$( ele ).wrapAll( isFunction ? html.call( this, i ) : html );
+				$( ele ).wrapAll( isFunction ? html.call( ele, i ) : html );
 			} );
 		},
 		/**
@@ -12666,8 +12771,8 @@ aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "
 		 */
 		unwrap: function() {
 			this.parent().each( function( ele ) {
-				if ( !typed.isNode( this, "body" ) ) {
-					$( ele ).replaceWith( this.childNodes );
+				if ( !typed.isNode( ele, "body" ) ) {
+					$( ele ).replaceWith( ele.childNodes );
 				}
 			} );
 			return this;
@@ -12700,8 +12805,12 @@ aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "
 		};
 	} );
 
-	$.interfaces.achieve( "constructorDom", function( type, dollar, cssObj, ele, parentNode ) {
-		parentNode && ( typed.isEle( parentNode ) || typed.is$( parentNode ) ) && dollar.appendTo( parentNode );
+	$.interfaces.achieve( "constructorDom", function( type, dollar, arg1, arg2, parentNode ) {
+		if ( typeof arg1 === "string" && rsingleTag.test( arg1 ) ) {
+			return dom.parseHTML( arg1, arg2 || document, false );
+		} else if ( parentNode && ( typed.isEle( parentNode ) || typed.is$( parentNode ) ) ) {
+			dollar.appendTo( parentNode );
+		}
 	} );
 
 	return dom;

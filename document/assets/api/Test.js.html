@@ -203,7 +203,6 @@
 			} catch ( e ) {
 				this._fail( describe, sfail, e );
 				error( this.name, describe, sfail, e );
-				this.report();
 				throw e;
 			}
 		},
@@ -250,7 +249,6 @@
 			} catch ( e ) {
 				this._fail( describe, sfail, e );
 				error( this.name, describe, sfail, e );
-				this.report();
 				throw e;
 			}
 			if ( $.util.isEqual( result, value ) ) {
@@ -258,7 +256,6 @@
 			} else {
 				this._fail( describe, sfail );
 				error( this.name, describe, sfail );
-				this.report();
 			}
 			return result;
 		},

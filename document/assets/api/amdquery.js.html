@@ -329,11 +329,10 @@
 				obj = null;
 
 			} else if ( elem ) {
-				var result;
-				if ( result = $.interfaces.trigger( "constructorQuery", elem, tagName ) ) {
+				var result = $.interfaces.trigger( "constructorDom", this, elem, tagName ) || $.interfaces.trigger( "constructorQuery", elem, tagName );
+				if ( result ) {
 					count++;
-					this.init( result, elem );
-
+					this.init( result, tagName );
 				}
 			}
 		} else if ( typeof elem == "function" ) {
@@ -656,8 +655,13 @@
 			isEqual: function( objA, objB ) {
 				if ( this.is( objA, objB ) )
 					return true;
-				if ( objA && objB && objA.constructor !== objB.constructor )
+
+				if ( objA === null || objA === undefined || objB === null || objB === undefined )
 					return false;
+
+				if ( objA.constructor !== objB.constructor )
+					return false;
+
 				var aMemberCount = 0;
 				for ( var a in objA ) {
 					if ( !objA.hasOwnProperty( a ) )
