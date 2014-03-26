@@ -146,7 +146,6 @@
 		expando: expando,
 		/** A hash of Element which does not support data. */
 		noData: {
-			//quote from jQuery-1.4.1
 			"embed": true,
 			"object": true,
 			"applet": true
