@@ -7,33 +7,33 @@
   <script src="../../../amdquery/amdquery.js" type="text/javascript" amdquery="define:$;" amd="detectCR:1;"></script>
 
   <script type="text/javascript">
-    $.require(["main/query", "main/data"], function( query, utilData ) {
-      // var test = $("#test");
-      // console.log( "hasData", test.hasData() );
-      // test.data("name");
-      // test.data("name", "test");
-      // console.log( "hasData", test.hasData() );
-      // console.log( "name value", test.data("name") );
-      // test.removeData("name");
-      // console.log( "name value", test.data("name") );
-      // console.log( "hasData", test.hasData() );
+    $.require(["main/query", "main/data", "module/Test"], function( query, utilData, Test ) {
 
       var test = $( "#test" )[0];
-      console.log( "hasData", utilData.hasData( test ) );
-      utilData.get( test, "name");
-      utilData.set( test, "name", "test" );
-      console.log( "hasData", utilData.hasData( test ) );
-      console.log( "name value", utilData.get( test, "name" ) );
-      utilData.removeData( test, "name" );
-      console.log( "name value", utilData.get( test, "name" ) );
-      console.log( "hasData", utilData.hasData( test ) );
 
-      utilData.set( test, { name: "test", id: "101" } );
-      console.log( "name value", utilData.get( test, "name" ) );
-      console.log( "id value", utilData.get( test, "id" ) );
-      console.log( "object", utilData.get( test ) );
-      utilData.removeData( test );
-      console.log( "hasData", utilData.hasData( test ) );
+      var testCustomEvent = new Test("TestCustomeEvent", function(preResult){
+        // complete
+      }).equal("Div test has not data.", true , function(preResult){
+        return !utilData.hasData( test );
+      }).execute("Set name 'Amanda' into Div test`s data.", function(preResult){
+        utilData.set( test, "name", "Amanda" );
+      }).equal("Div test has data.", true , function(preResult){
+        return utilData.hasData( test );
+      }).equal("Div test has name 'Amanda' in data.", "Amanda" , function(preResult){
+        return utilData.get( test, "name" );
+      }).execute("Set age '19' into div test`s data.", function(preResult){
+        utilData.set( test, "age", 19 );
+      }).equal("Get data cache from div test`s data.", { name: "Amanda", age: 19 }, function(preResult){
+        return utilData.get( test );
+      }).execute("Remove age from div test`s data.", function(preResult){
+        utilData.removeData( test, "age" );
+      }).equal("Get age from div test`s data, result is undefined.", undefined, function(preResult){
+        return utilData.get( test, "age" );
+      }).execute("Remove all from div test`s data.", function(preResult){
+        utilData.removeData( test );
+      }).equal("Div test has not data.", true, function(preResult){
+        return !utilData.hasData( test );
+      }).start();
 
     });
   </script>
