@@ -271,7 +271,6 @@
 					j = 0,
 					len = 0,
 					i, item, fn;
-				event.clearHandlers( tarEle );
 
 				for ( i in handlerMap ) {
 					item = customEvent.getHandlers( i );

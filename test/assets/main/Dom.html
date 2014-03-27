@@ -30,13 +30,13 @@
 
         var inner = target.find("#inner").data("name", "Amanda").click(testClick);
 
+        equal("Div target has not data.", target.hasData(), false);
+
         target.click(testClick);
 
         var clonetarget = target.clone(true);
 
         equal("'click' handler in clonetarget div is function 'testClick'.", clonetarget.hasHandler("click", testClick) > -1, true);
-
-        equal("Div target has not data.", target.hasData(), false);
 
         execute("Clone target by deep event and data.", function(){
           clonetarget = target.clone(true, true);
@@ -125,7 +125,9 @@
           wrapDiv.find("p").wrapInner("<div></div>");
         });
 
-        equal("Div 'wrap' last child is p and p`s child is div", typed.isNode(dom.getRealChild(wrapDiv[0], 2), "div"), true);
+        equal("Div 'wrap' last child is p", typed.isNode(dom.getRealChild(wrapDiv[0], 2), "p"), true);
+
+        equal("p`s child is div", typed.isNode(dom.getRealChild(wrapDiv[0], 2).childNodes[0], "div"), true);
 
         equal("The div inner html is 'c'", dom.getRealChild(wrapDiv[0], 2).childNodes[0].innerHTML, "c");
 
