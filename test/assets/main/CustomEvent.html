@@ -7,9 +7,10 @@
   <script src="../../../amdquery/amdquery.js" type="text/javascript" amdquery="define:$;package:main;" amd="detectCR:1;" module="compatibleEvent:1;testLogByHTML:1"></script>
   <script type="text/javascript">
     $.require([
+      "base/typed",
       "main/CustomEvent",
       "module/Test"
-    ], function(CustomEvent, Test) {
+    ], function(typed, CustomEvent, Test) {
 
       var customEvent = new CustomEvent();
       var testTriggerResult = "";
@@ -49,7 +50,7 @@
         return customEvent.getHandlers("b") instanceof Array;
       })
       .equal("customEvent clone, the new customEvent handlers is equal to origin customEvent handlers.", true, function(preResult){
-        return $.util.isEqual(customEvent.getHandlers(), customEvent.clone().getHandlers());
+        return typed.isEqual(customEvent.getHandlers(), customEvent.clone().getHandlers());
       })
       .equal("customEvent getHandlers with type 'b', the result[1] is fn1.", true, function(preResult){
         return customEvent.getHandlers("b")[1] === fn1;

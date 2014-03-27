@@ -46,7 +46,7 @@
       })
       .equal("diva clone to div b, diva handlers equal div b.", true, function(preResult){
         event.cloneHandlers(b, a);
-        return $.util.isEqual(event.getHandlers(a), event.getHandlers(b));
+        return typed.isEqual(event.getHandlers(a), event.getHandlers(b));
       })
       .equal("diva trigger foo, the fn result and context equal.", true, function(preResult){
         event.trigger(diva, "foo", diva, "result");

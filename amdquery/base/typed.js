@@ -305,6 +305,75 @@ aQuery.define( "base/typed", function( $ ) {
 		isWindow: function( a ) {
 			return a != null && a == a.window;
 		},
+		/**
+		 * Object.is is a proposed addition to the ECMA-262 standard
+		 * @param {Object}
+		 * @param {Object}
+		 * @returns {Boolean}
+		 * @example
+		 * Object.is("foo", "foo");     // true
+		 * Object.is(window, window);   // true
+		 *
+		 * Object.is("foo", "bar");     // false
+		 * Object.is([], []);           // false
+		 *
+		 * var test = {a: 1};
+		 * Object.is(test, test);       // true
+		 *
+		 * Object.is(null, null);       // true
+		 *
+		 * // Special Cases
+		 * Object.is(0, -0);            // false
+		 * Object.is(-0, -0);           // true
+		 * Object.is(NaN, 0/0);         // true
+		 */
+		is: function( v1, v2 ) {
+			if ( Object.is ) {
+				return Object.is( v1, v2 );
+			}
+			if ( v1 === 0 && v2 === 0 ) {
+				return 1 / v1 === 1 / v2;
+			}
+			if ( v1 !== v1 ) {
+				return v2 !== v2;
+			}
+			return v1 === v2;
+		},
+		/**
+		 * Object A is equal to Object B.
+		 * @param {Object}
+		 * @param {Object}
+		 * @returns {Boolean}
+		 * @example
+		 * var a = { foo : { fu : "bar" } };
+		 * var b = { foo : { fu : "bar" } };
+		 * aQuery.util.isEqual(a, b) //return true
+		 */
+		isEqual: function( x, y ) {
+			if ( this.is( x, y ) )
+				return true;
+
+			if ( !( x instanceof Object ) || !( y instanceof Object ) ) return false;
+
+			if ( x.constructor !== y.constructor ) return false;
+
+			for ( var p in x ) {
+				if ( !x.hasOwnProperty( p ) ) continue;
+
+				if ( !y.hasOwnProperty( p ) ) return false;
+
+				if ( x[ p ] === y[ p ] ) continue;
+
+				if ( typeof( x[ p ] ) !== "object" ) return false;
+
+				if ( !typed.isEqual( x[ p ], y[ p ] ) ) return false;
+			}
+
+			for ( p in y ) {
+				if ( y.hasOwnProperty( p ) && !x.hasOwnProperty( p ) ) return false;
+			}
+			return true;
+		},
 		is$: $.forinstance,
 		/**
 		 * Return object type.

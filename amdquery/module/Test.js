@@ -1,4 +1,4 @@
-aQuery.define( "module/Test", [ "base/Promise", "base/config", "main/event" ], function( $, Promise, config, event ) {
+aQuery.define( "module/Test", [ "base/typed", "base/Promise", "base/config", "main/event" ], function( $, typed, Promise, config, event ) {
 	"use strict";
 	this.describe( "Test Module" );
 	var TestEventType = "test.report";
@@ -220,7 +220,7 @@ aQuery.define( "module/Test", [ "base/Promise", "base/config", "main/event" ], f
 				error( this.name, describe, sfail, e );
 				throw e;
 			}
-			if ( $.util.isEqual( result, value ) ) {
+			if ( typed.isEqual( result, value ) ) {
 				logger( this.name, describe, ssuccess );
 			} else {
 				this._fail( describe, sfail );
