@@ -227,6 +227,15 @@ aQuery.define( "base/typed", function( $ ) {
 			return a !== undefined ? typed.isType( a, "[object Object]" ) : false;
 		},
 		/**
+		 * Whether it is the prototype property.
+		 * @param {*}
+		 * @param {String}
+		 * @returns {Boolean}
+		 */
+		isPrototypeProperty: function( obj, name ) {
+			return "hasOwnProperty" in obj && !obj.hasOwnProperty( name ) && ( name in obj );
+		},
+		/**
 		 * Is it plain Object?
 		 * @param {*}
 		 * @returns {Boolean}

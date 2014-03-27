@@ -430,7 +430,7 @@
 		getObjectPropertiesCount: function( obj, bool ) {
 			var count = 0;
 			for ( var i in obj ) {
-				bool == true ? object.isPrototypeProperty( obj, i ) || count++ : count++;
+				bool == true ? typed.isPrototypeProperty( obj, i ) || count++ : count++;
 			}
 			return count;
 		},
@@ -479,19 +479,6 @@
 		inheritProtypeWithCombination: function( Sub, Super ) {
 			Sub.prototype = new Super();
 			return this;
-		},
-		/**
-		 * Whether it is the prototype property.
-		 * @param {*}
-		 * @param {String}
-		 * @returns {Boolean}
-		 */
-		isPrototypeProperty: function( obj, name ) {
-			/// <summary>是否是原型对象的属性</summary>
-			/// <param name="obj" type="any">任意对象</param>
-			/// <param name="name" type="String">属性名</param>
-			/// <returns type="Boolean" />
-			return "hasOwnProperty" in obj && !obj.hasOwnProperty( name ) && ( name in obj );
 		},
 		/**
 		 * Create Getter or Setter for this constructor.prototype.
