@@ -12,46 +12,71 @@
     ], function(Promise, Test) {
 
       var promise1 = new Promise;
-      var promise2 = new Promise;
 
       var testTest = new Test("TestTest", function(preResult){
         // complete
-      })
-      .execute("Test execute.", function(preResult){
+      }).describe("Test Test function", function(preResult, test, logger){
+        var testTarget = {
 
-      })
-      .equal("Test equal.", true, function(preResult){
-        return true;
-      })
-      .equal("Test preResult is true.", true, function(preResult){
-        return preResult;
-      })
-      .equal("Test has dialog result should true.", true, function(){
-        return !!Test.dialog;
-      })
-      .task("Test task", function(preResult, equal, execute){
-        equal("Test equal", true, true);
-        execute("Test execute", function(){});
-        return preResult;
-      })
-      .execute("Test execute async. After 1 seconds, 'promise1.resolve'. ", function(){
-        setTimeout(function(){
-          promise1.resolve();
-        }, 1000);
-      })
-      .execute("Test execute async. After 1 seconds, the next test is executed. ", function(){
+        };
+        test(testTarget, "testTarget").should.be.an("object");
 
-      }, promise1)
-      .equal("Test equal async. After 1 seconds, 'promise2.resolve'. ", true, function(){
-        setTimeout(function(){
-          promise2.resolve();
-        }, 1000);
-        return true;
-      })
-      .equal("Test equal async. After 1 seconds, the next test is executed and preResult is true. ", true, function(preResult){
-        return preResult;
-      }, promise2)
-      .start();
+        var myName = "Jarray";
+        test(myName, "My name").should.be.a("string");
+
+        var notThrowFunction = function(){
+          var age = 28;
+        };
+        test(notThrowFunction, "'notThrowFunction'").should.not.Throw(notThrowFunction);
+
+        var throwFunction = function(){
+          age();
+        };
+        test(throwFunction, "'throwFunction'").should.Throw(notThrowFunction);
+
+        var object = {
+          name: "Jarry",
+          age: 28
+        };
+        test(object, "object").should.equal({
+          name: "Jarry",
+          age: 28
+        });
+        test(object, "object").should.not.equal({
+          name: "Jarry",
+          age: 28,
+          face: {
+            eye: 2
+          }
+        });
+
+        test(object, "object").should.exists();
+        var global;
+        test(global, "Value global").should.not.exists();
+
+        var anArray = [1,2,3,4,5];
+        test(anArray, "An array").should.have.length(5);
+
+        var anObject = {
+          name: "Jarry",
+          anArray: anArray
+        };
+        test(anObject, "An anObject").should.have.property("anArray").with.should.have.length(5);
+
+        return "Jarry";
+
+      }).describe("Test previous result", function(preResult, test, logger){
+        test(preResult, "Previous result").should.equal("Jarry");
+
+        logger("Set timeout 1 seconds to call next describe");
+
+        setTimeout( function() {
+          promise1.resolve(1000);
+        }, 1000 );
+
+      }).describe("Test promise", function(preResult, test, logger){
+        test(preResult, "Previous result").should.equal(1000);
+      }, promise1).start();
 
     });
   </script>
