@@ -13,121 +13,121 @@
 
       var testPosition = new Test("TestPosition", function(preResult){
         // complete
-      }).task("Test div rect width:", function(preResult, equal, execute){
-        equal("Width is 50, because it`s parent is 50.", rect.width(), 50);
+      }).describe("Test div rect width", function(preResult, test, logger){
+        test(rect.width(), "rect width").should.equal( 50 );
 
-        execute("Set width 30", function(){
+        test(function(){
           rect.width(30);
-        });
-        equal("Width is 30.", rect.width(), 30);
+        }, "Set width 30").should.not.Throw();
+        test(rect.width(), "rect width").should.equal( 30 );
 
-        execute("Set width '60px'", function(){
-          rect.width("60px");
-        });
-        equal("Width is 60.", rect.width(), 60);
+        test(function(){
+          rect.width(60);
+        }, "Set width 60").should.not.Throw();
+        test(rect.width(), "rect width").should.equal( 60 );
 
-        execute("Set padding-left '5px' and padding-right '5px'", function(){
+        test(function(){
           rect.css({
             "padding-left": "5px",
             "padding-right": "5px"
           });
-        });
-        equal("Width is 60.", rect.width(), 60);
-        equal("Inner width is 70.", rect.innerWidth(), 70);
+        }, "Set padding-left '5px' and padding-right '5px'").should.not.Throw();
+        test(rect.width(), "rect width").should.equal( 60 );
+        test(rect.innerWidth(), "rect inner width").should.equal( 70 );
 
-        execute("Set inner width 40", function(){
+        test(function(){
           rect.innerWidth(40);
-        });
-        equal("Width is 30.", rect.width(), 30);
-        equal("Inner width is 40.", rect.innerWidth(), 40);
+        }, "Set inner width 40").should.not.Throw();
+        test(rect.width(), "rect width").should.equal( 30 );
+        test(rect.innerWidth(), "rect inner width").should.equal( 40 );
 
-        execute("Set outer width 80", function(){
+        test(function(){
           rect.outerWidth(80);
-        });
-        equal(" Width is 70.", rect.width(), 70);
-        equal("Inner width is 80.", rect.innerWidth(), 80);
+        }, "Set outer width 80").should.not.Throw();
+        test(rect.width(), "rect width").should.equal( 70 );
+        test(rect.innerWidth(), "rect inner width").should.equal( 80 );
 
-        execute("Set margin-left '5px' and margin-right '5px'", function(){
+        test(function(){
           rect.css({
             "margin-left": "5px",
             "margin-right": "5px"
           });
-        });
+        }, "Set margin-left '5px' and margin-right '5px'").should.not.Throw();
 
-        equal("Width is 70.", rect.width(), 70);
-        equal("Inner width is 80.", rect.innerWidth(), 80);
-        equal("Outer width is 80.", rect.outerWidth(), 80);
+        test(rect.width(), "rect width").should.equal( 70 );
+        test(rect.innerWidth(), "rect inner width").should.equal( 80 );
+        test(rect.outerWidth(), "rect outer width").should.equal( 80 );
 
-        execute("Set border-left '5px' and border-right '5px'", function(){
+        test(function(){
           rect.css({
             "border-left": "5px solid black",
             "border-right": "5px solid black"
           });
-        });
-        equal("Width is 70.", rect.width(), 70);
-        equal("Inner width is 80.", rect.innerWidth(), 80);
-        equal("Outer width is 90.", rect.outerWidth(), 90);
-        equal("Outer width and border is 100.", rect.outerWidth(true), 100);
+        }, "Set margin-left '5px' and margin-right '5px'").should.not.Throw();
+        test(rect.width(), "rect width").should.equal( 70 );
+        test(rect.innerWidth(), "rect inner width").should.equal( 80 );
+        test(rect.outerWidth(), "rect outer width").should.equal( 90 );
+        test(rect.outerWidth(true), "rect outer width and border is 100").should.equal( 100 );
 
-      }).task("Test div rect height:", function(preResult, equal, execute){
-        equal("Height is 0.", rect.height(), 0);
+      }).describe("Test div rect height", function(preResult, test, logger){
+        test(rect.height(), "rect height").should.equal( 0 );
 
-        execute("Set height 30", function(){
+        test(function(){
           rect.height(30);
-        });
-        equal("Height is 30.", rect.height(), 30);
+        }, "Set height 30").should.not.Throw();
+        test(rect.height(), "rect height").should.equal( 30 );
 
-        execute("Set height '60px'", function(){
-          rect.height("60px");
-        });
-        equal("Height is 60.", rect.height(), 60);
+        test(function(){
+          rect.height(60);
+        }, "Set height 60").should.not.Throw();
+        test(rect.height(), "rect height").should.equal( 60 );
 
-        execute("Set padding-top '5px' and padding-bottom '5px'", function(){
+        test(function(){
           rect.css({
             "padding-top": "5px",
             "padding-bottom": "5px"
           });
-        });
-        equal("Height is 60.", rect.height(), 60);
-        equal("Inner height is 70.", rect.innerHeight(), 70);
+        }, "Set padding-top '5px' and padding-bottom '5px'").should.not.Throw();
+        test(rect.height(), "rect height").should.equal( 60 );
+        test(rect.innerHeight(), "rect inner height").should.equal( 70 );
 
-        execute("Set inner height 40", function(){
+        test(function(){
           rect.innerHeight(40);
-        });
-        equal("Height is 30.", rect.height(), 30);
-        equal("Inner height is 40.", rect.innerHeight(), 40);
+        }, "Set inner height 40").should.not.Throw();
+        test(rect.height(), "rect height").should.equal( 30 );
+        test(rect.innerHeight(), "rect inner height").should.equal( 40 );
 
-        execute("Set outer height 80", function(){
+        test(function(){
           rect.outerHeight(80);
-        });
-        equal(" Height is 70.", rect.height(), 70);
-        equal("Inner height is 80.", rect.innerHeight(), 80);
+        }, "Set outer height 80").should.not.Throw();
+        test(rect.height(), "rect height").should.equal( 70 );
+        test(rect.innerHeight(), "rect inner height").should.equal( 80 );
 
-        execute("Set margin-top '5px' and margin-bottom '5px'", function(){
+        test(function(){
           rect.css({
             "margin-top": "5px",
             "margin-bottom": "5px"
           });
-        });
+        }, "Set margin-top '5px' and margin-bottom '5px'").should.not.Throw();
 
-        equal("Height is 70.", rect.height(), 70);
-        equal("Inner height is 80.", rect.innerHeight(), 80);
-        equal("Outer height is 80.", rect.outerHeight(), 80);
+        test(rect.height(), "rect height").should.equal( 70 );
+        test(rect.innerHeight(), "rect inner height").should.equal( 80 );
+        test(rect.outerHeight(), "rect outer height").should.equal( 80 );
 
-        execute("Set border-top '5px' and border-bottom '5px'", function(){
+        test(function(){
           rect.css({
             "border-top": "5px solid black",
             "border-bottom": "5px solid black"
           });
-        });
-        equal("Height is 70.", rect.height(), 70);
-        equal("Inner height is 80.", rect.innerHeight(), 80);
-        equal("Outer height is 90.", rect.outerHeight(), 90);
-        equal("Outer height and border is 100.", rect.outerHeight(true), 100);
+        }, "Set margin-top '5px' and margin-bottom '5px'").should.not.Throw();
+        test(rect.height(), "rect height").should.equal( 70 );
+        test(rect.innerHeight(), "rect inner height").should.equal( 80 );
+        test(rect.outerHeight(), "rect outer height").should.equal( 90 );
+        test(rect.outerHeight(true), "rect outer height and border is 100").should.equal( 100 );
 
-      }).task("Test scroll size.", function(preResult, equal, execute){
-        equal("Div rect parent`s scroll width is greate than 50", rect.parent().scrollWidth() > 50, true);
-        equal("Div rect parent`s scroll height is greate than 50", rect.parent().scrollHeight() > 50, true);
+      }).describe("Test scroll size.", function(preResult, test, logger){
+        test(rect.parent().scrollWidth(), "Div rect parent`s scroll width").should.be.greater.than(50);
+        test(rect.parent().scrollHeight(), "Div rect parent`s scroll height").should.be.greater.than(50);
       }).start();
     });
   </script>
