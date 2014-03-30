@@ -77,6 +77,20 @@
 
         return "Jarry";
 
+      }).describe("Test should be", function(preResult, test, logger){
+        var elementCollection = document.getElementsByTagName("body");
+
+        test(elementCollection).should.be.eleConllection();
+
+        test(arguments).should.be.arguments(arguments);
+
+        test(NaN).should.be.NaN();
+
+        test(elementCollection[0]).should.be.node("body");
+
+        test(1 / 0).should.not.be.finite();
+
+        return preResult;
       }).describe("Test previous result", function(preResult, test, logger){
         test(preResult, "Previous result").should.equal("Jarry");
 

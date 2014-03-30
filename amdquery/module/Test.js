@@ -206,6 +206,9 @@ aQuery.define( "module/Test", [ "base/typed", "base/Promise", "base/config", "ma
 		 *  //should.have.property
 		 *  //should.have.property().with
 		 *  //should.have.index().with
+		 *  //typed extend function
+		 *  //should.should.be.node
+     *  //should.should.not.be.node
 		 * }, promise)
 		 * .start();
 		 */
@@ -361,7 +364,8 @@ aQuery.define( "module/Test", [ "base/typed", "base/Promise", "base/config", "ma
 				Throw: function() {
 					testObject._beCall( testWrapper.combineString( describe, "'" + String( target ) + "'", "should", "not", "Throw" ), target );
 					return testWrapper;
-				}
+				},
+				be: {}
 			},
 			Throw: function() {
 				testObject._beCall( testWrapper.combineString( describe, "'" + String( target ) + "'", "should", "Throw" ), target, true );
@@ -381,6 +385,33 @@ aQuery.define( "module/Test", [ "base/typed", "base/Promise", "base/config", "ma
 				return testWrapper;
 			}
 		}
+
+		var except = {
+			"XML": 1,
+			"NaN": 1,
+			"RegExp": 1
+		}
+
+		$.each( typed, function( fn, name ) {
+			if ( name.indexOf( "is" ) === 0 && name.length > 2 ) {
+				var fnName = name.replace( "is", "" );
+
+				if ( !except[ fnName ] ) {
+					fnName = fnName[ 0 ].toLowerCase() + fnName.slice( 1 );
+				}
+
+				testWrapper.should.be[ fnName ] = function( value ) {
+					testObject._isEqual( testWrapper.combineString( describe, "'" + String( target ) + "'", "should", "be", fnName ), typed[ name ]( target, value ), true );
+					return testWrapper;
+				}
+
+				testWrapper.should.not.be[ fnName ] = function( value ) {
+					testObject._isEqual( testWrapper.combineString( describe, "'" + String( target ) + "'", "should", "not", "be", fnName ), typed[ name ]( target, value ), false );
+					return testWrapper;
+				}
+			}
+		} );
+
 	}
 
 	TestWrapper.prototype.combineString = function() {
