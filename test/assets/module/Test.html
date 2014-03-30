@@ -50,12 +50,24 @@
           }
         });
 
+        test(object.age, "object age").should.be.greater.than(27);
+
+        test(object.age, "object age").should.be.less.than(29);
+
+        test(object.age, "object age").should.be.greater.than.or.equal(28);
+
+        test(object.age, "object age").should.be.less.than.or.equal(28);
+
+        test(object, "object age").should.be.instance.of(Object);
+
         test(object, "object").should.exists();
         var global;
         test(global, "Value global").should.not.exists();
 
         var anArray = [1,2,3,4,5];
         test(anArray, "An array").should.have.length(5);
+
+        test(anArray, "An array").should.have.index(4).with.should.equal(5);
 
         var anObject = {
           name: "Jarry",

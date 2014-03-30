@@ -191,6 +191,11 @@ aQuery.define( "module/Test", [ "base/typed", "base/Promise", "base/config", "ma
 		 * .describe("Test a", function(preResult, test, logger){
 		 *  //should.be.an
 		 *  //should.be.a
+		 *  //should.be.greater.than
+		 *  //should.be.less.than
+		 *  //should.be.greater.than.or.equal
+		 *  //should.be.less.than.or.equal
+		 *  //should.be.instance.of
 		 *  //should.equal
 		 *  //should.not.equal
 		 *  //should.exists
@@ -200,6 +205,7 @@ aQuery.define( "module/Test", [ "base/typed", "base/Promise", "base/config", "ma
 		 *  //should.have.length
 		 *  //should.have.property
 		 *  //should.have.property().with
+		 *  //should.have.index().with
 		 * }, promise)
 		 * .start();
 		 */
@@ -217,6 +223,7 @@ aQuery.define( "module/Test", [ "base/typed", "base/Promise", "base/config", "ma
 						try {
 							return fn( result != null ? result : preResult, testWrapper, logger );
 						} catch ( e ) {
+							error( e );
 							throw e;
 							return;
 						}
@@ -226,6 +233,7 @@ aQuery.define( "module/Test", [ "base/typed", "base/Promise", "base/config", "ma
 					try {
 						return fn( preResult, testWrapper, logger );
 					} catch ( e ) {
+						error( e );
 						throw e;
 						return;
 					}
@@ -273,16 +281,34 @@ aQuery.define( "module/Test", [ "base/typed", "base/Promise", "base/config", "ma
 		this.should = {
 			be: {
 				a: function( value ) {
-					testObject._isEqual( testWrapper.combineString( describe, "should", "be", "a", String( value ) ), typeof target, value );
+					testObject._isEqual( testWrapper.combineString( describe, "'" + String( target ) + "'", "should", "be", "a", "'" + String( value ) + "'" ), typeof target, value );
 					return testWrapper;
 				},
 				an: function( value ) {
-					testObject._isEqual( testWrapper.combineString( describe, "should", "be", "an", String( value ) ), typeof target, value );
+					testObject._isEqual( testWrapper.combineString( describe, "'" + String( target ) + "'", "should", "be", "an", "'" + String( value ) + "'" ), typeof target, value );
 					return testWrapper;
+				},
+				greater: {
+					than: function( value ) {
+						testObject._isEqual( testWrapper.combineString( describe, "'" + String( target ) + "'", "should", "be", "greater", "than", "'" + String( value ) + "'" ), target > value, true );
+						return testWrapper;
+					}
+				},
+				less: {
+					than: function( value ) {
+						testObject._isEqual( testWrapper.combineString( describe, "'" + String( target ) + "'", "should", "be", "less", "than", "'" + String( value ) + "'" ), target < value, true );
+						return testWrapper;
+					}
+				},
+				instance: {
+					of: function( value ) {
+						testObject._beCall( testWrapper.combineString( describe, "'" + String( target ) + "'", "should", "instance", "of", value.name || "'" + String( value ) + "'" ), target instanceof value, true );
+						return testWrapper;
+					}
 				}
 			},
 			equal: function( value ) {
-				testObject._isEqual( testWrapper.combineString( describe, "should", "equal", String( value ) ), target, value );
+				testObject._isEqual( testWrapper.combineString( describe, "'" + String( target ) + "'", "should", "equal", "'" + String( value ) + "'" ), target, value );
 				return testWrapper;
 			},
 			have: {
@@ -297,42 +323,64 @@ aQuery.define( "module/Test", [ "base/typed", "base/Promise", "base/config", "ma
 						testObject._fail( describe, "parameter", "value is not a number", sfail );
 						return testWrapper;
 					}
-					testObject._isEqual( testWrapper.combineString( describe, "should", "have", "length", String( value ) ), target.length, value );
+					testObject._isEqual( testWrapper.combineString( describe, "'" + String( target ) + "'", "should", "have", "length", "'" + String( value ) + "'" ), target.length, value );
 					return testWrapper;
 				},
 				property: function( name ) {
 					var bol = target != null || target[ name ] !== undefined;
-					testObject._isEqual( testWrapper.combineString( describe, "should", "have", String( name ), "property" ), bol, true );
+					testObject._isEqual( testWrapper.combineString( describe, "'" + String( target ) + "'", "should", "have", String( name ), "property" ), bol, true );
 					if ( bol ) {
 						testWrapper = new TestWrapper( target[ name ], "With property " + name, testObject );
+						testWrapper.with = testWrapper;
+					}
+					return testWrapper;
+				},
+				index: function( index ) {
+					var bol = target != null || target[ index ] !== undefined;
+					testObject._isEqual( testWrapper.combineString( describe, "'" + String( target ) + "'", "should", "have", "index", index ), bol, true );
+					if ( bol ) {
+						testWrapper = new TestWrapper( target[ index ], "With index " + index, testObject );
 						testWrapper.with = testWrapper;
 					}
 					return testWrapper;
 				}
 			},
 			exists: function() {
-				testObject._isEqual( testWrapper.combineString( describe, "should", "exists" ), target !== undefined && target !== null, true );
+				testObject._isEqual( testWrapper.combineString( describe, "'" + String( target ) + "'", "should", "exists" ), target !== undefined && target !== null, true );
 				return testWrapper;
 			},
 			not: {
 				equal: function( value ) {
-					testObject._isEqual( testWrapper.combineString( describe, "should", "not", "equal", String( value ) ), target, value, true );
+					testObject._isEqual( testWrapper.combineString( describe, "'" + String( target ) + "'", "should", "not", "equal", "'" + String( value ) + "'" ), target, value, true );
 					return testWrapper;
 				},
 				exists: function() {
-					testObject._isEqual( testWrapper.combineString( describe, "should", "not", "exists" ), target == null, true );
+					testObject._isEqual( testWrapper.combineString( describe, "'" + String( target ) + "'", "should", "not", "exists" ), target == null, true );
 					return testWrapper;
 				},
 				Throw: function() {
-					testObject._beCall( testWrapper.combineString( describe, "should", "not", "Throw" ), target );
+					testObject._beCall( testWrapper.combineString( describe, "'" + String( target ) + "'", "should", "not", "Throw" ), target );
 					return testWrapper;
 				}
 			},
 			Throw: function() {
-				testObject._beCall( testWrapper.combineString( describe, "should", "Throw" ), target, true );
+				testObject._beCall( testWrapper.combineString( describe, "'" + String( target ) + "'", "should", "Throw" ), target, true );
 				return testWrapper;
 			}
 		};
+
+		this.should.be.greater.than.or = {
+			equal: function( value ) {
+				testObject._isEqual( testWrapper.combineString( describe, "'" + String( target ) + "'", "should", "be", "greater", "than", "or", "equal", "'" + String( value ) + "'" ), target >= value, true );
+				return testWrapper;
+			}
+		}
+		this.should.be.less.than.or = {
+			equal: function( value ) {
+				testObject._isEqual( testWrapper.combineString( describe, "'" + String( target ) + "'", "should", "be", "less", "than", "or", "equal", "'" + String( value ) + "'" ), target <= value, true );
+				return testWrapper;
+			}
+		}
 	}
 
 	TestWrapper.prototype.combineString = function() {
