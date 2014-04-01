@@ -227,7 +227,6 @@ aQuery.define( "module/Test", [ "base/typed", "base/Promise", "base/config", "ma
 							return fn( result != null ? result : preResult, testWrapper, logger );
 						} catch ( e ) {
 							error( e );
-							throw e;
 							return;
 						}
 					} ).withContext( this );
@@ -237,7 +236,6 @@ aQuery.define( "module/Test", [ "base/typed", "base/Promise", "base/config", "ma
 						return fn( preResult, testWrapper, logger );
 					} catch ( e ) {
 						error( e );
-						throw e;
 						return;
 					}
 				}
