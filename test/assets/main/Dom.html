@@ -14,122 +14,153 @@
 
       }
 
-      testDOM.task("Test parseHTML &ltdiv style='background-color:red' id='parseHTML'&gt&ltspan id='span'&gthello,world&lt/span&gt&lt/div&gt .", function(preResult, equal, execute){
-        var div = dom.parseHTML("<div style='background-color:red' id='parseHTML'><span id='span'>hello,world</span></div>");
-        equal("element div style background-color is 'red'.", div[0].style.backgroundColor, "red");
-        equal("element child id is 'span'.",div[0].childNodes[0].id, "span");
-        equal("element child inner html is 'hello,world'.",div[0].childNodes[0].innerHTML, "hello,world");
+      testDOM.describe("Test parseHTML", function(preResult, test, logger){
+        var div = null;
+        test(function(){
+          div = dom.parseHTML("<div style='background-color:red' id='parseHTML'><span id='span'>hello,world</span></div>");
+        }).should.not.Throw();
 
-      }).task("Test clone", function(preResult, equal, execute){
-        var test = $("#test");
-        var cloneTest = test.clone();
+        test(div).should.have.index(0).with.should.have.property("tagName").with.should.equal("DIV");
 
-        equal("New cloneTest`style width should be '100px'.", cloneTest[0].style.width, "100px");
+        div = div[0];
+
+        test(div.style.backgroundColor, "element div.style.backgroundColor").should.equal("red");
+
+        test(div.childNodes, "element div child nodes").should.have.index(0).with.should.have.property("id").with.should.equal("span");
+
+        test(div.childNodes[0].innerHTML, "element div child`s inner html").should.equal("hello,world");
+
+      }).describe("Test clone", function(preResult, test, logger){
+        var divTest = $("#test");
+        var cloneTest = null;
+
+        test(function(){
+          cloneTest = divTest.clone()[0];
+        }).should.not.Throw();
+
+        test(cloneTest, "Div 'test'").should.have.property("tagName").with.should.equal("DIV");
+
+        test(cloneTest.style.width, "Div 'test' style.width").should.equal("100px");
 
         var target = $("#target");
 
         var inner = target.find("#inner").data("name", "Amanda").click(testClick);
 
-        equal("Div target has not data.", target.hasData(), false);
+        logger("Div inner add data and bind click");
+
+        test(target.hasData(), "aQuery target has data").should.equal(false);
 
         target.click(testClick);
 
-        var clonetarget = target.clone(true);
+        logger("Div target bind click");
 
-        equal("'click' handler in clonetarget div is function 'testClick'.", clonetarget.hasHandler("click", testClick) > -1, true);
+        var clonetarget = null;
 
-        execute("Clone target by deep event and data.", function(){
+        test(function(){
+          clonetarget = target.clone(true);
+        }, "Clone div target with data and event").should.not.Throw();
+
+        test(clonetarget.hasHandler("click", testClick), "aQuery clonetarget has handler").should.be.greater.than(-1);
+
+        test(function(){
           clonetarget = target.clone(true, true);
-        });
+        }, "Clone div target with data and event, Clone all child`s data and event").should.not.Throw();
 
-        equal("'click' handler in div inner is function 'testClick'.", clonetarget.find("div").hasHandler("click", testClick) > -1, true);
+        test(clonetarget.find("div").hasHandler("click", testClick), "aQuery clonetarget`s child has handler").should.be.greater.than(-1);
 
         return clonetarget;
-      }).task("Test dom.cleanData", function(clonetarget, equal, execute){
-        dom.cleanData(clonetarget[0]);
-        equal("'click' handler in div is undefined", clonetarget.hasHandler("click", testClick), -1);
-        equal("'click' handler in div inner has not any data.", clonetarget.find("div").hasData(), false);
-      }).equal("Test dom.getLastChild, the last child in div 'dom' is div 'last'.", query.getEleById("last"), function(){
-        return dom.getLastChild( query.getEleById("dom") );
-      }).equal("Test dom.getRealChild(1), the second child in div is 'span'.", query.getEleById("span"), function(){
-        return dom.getRealChild( query.getEleById("dom"), 1 );
-      }).task("Test dom.removeChildren(), div 'target' removeChildren.", function(preResult, equal, execute){
+      }).describe("Test dom.cleanData", function(preResult, test, logger){
+        clonetarget = preResult;
+
+        test(function(){
+          dom.cleanData(clonetarget[0]);
+        }).should.not.Throw();
+
+        test(clonetarget.hasHandler("click", testClick), "aQuery clonetarget has handler").should.equal(-1);
+
+        test(clonetarget.find("div").hasData(), "aQuery clonetarget child has data").should.equal(false);
+
+      }).describe("Test dom function", function(preResult, test, logger){
+        test(dom.getLastChild( query.getEleById("dom") ), "Div dom`s last child").should.equal(query.getEleById("last"));
+        test(dom.getRealChild( query.getEleById("dom"), 1 ), "Div dom`s second read child").should.equal(query.getEleById("span"));
+      }).describe("Test dom.removeChildren()", function(preResult, test, logger){
         var target = query.getEleById("target");
         var inner = query.getEleById("inner");
 
-        equal("Div inner has data.", utilData.hasData(inner), true);
+        test(utilData.hasData(inner), "Div inner has data").should.equal(true);
 
-        execute("Remove children and does not keep data.", function(){
+        test(function(){
           dom.removeChildren(target, false)
-        });
+        }, "Remove children and does not keep data").should.not.Throw();
 
-        equal("The length of div 'target'`s child nodes is 0", target.childNodes.length, 0);
+        test(target.childNodes, "Div target child nodes").should.have.length(0);
 
-        equal("Div inner has not data.", utilData.hasData(inner), false);
+        test(utilData.hasData(inner), "Div inner has data").should.equal(false);
 
-      }).task("Test dom operation", function(preResult, equal, execute){
-        var test = $("#test");
+      }).describe("Test dom operation", function(preResult, test, logger){
+        var divTest = $("#test");
         var div1 = $.createEle("div");
         var div2 = $.createEle("div");
         var ul1 = $.createEle("ul");
         var ol1 = "<ol id='ol1'><ol>";
         var ul2 = $.createEle("ul");
 
-        execute("Div 'test' append div1.", function(){
-          test.append(div1);
-        });
+        test(function(){
+          divTest.append(div1);
+        }).should.not.Throw();
 
-        equal("Div 'test' first child is div1", dom.getRealChild(test[0], 0), div1);
+        test(dom.getRealChild(divTest[0], 0), "Div test`s first child").should.equal(div1);
 
-        execute("Div 'test' prepend ul1.", function(){
-          test.prepend(ul1);
-        });
+        test(function(){
+          divTest.prepend(ul1);
+        }).should.not.Throw();
 
-        equal("Div 'test' first child is ul1", dom.getRealChild(test[0], 0), ul1);
+        test(dom.getRealChild(divTest[0], 0), "Div test`s first child").should.equal(ul1);
 
-        execute("Div 'test', ul1 after $(div2).", function(){
+        test(function(){
           $(ul1).after($(div2));
-        });
+        }).should.not.Throw();
 
-        equal("Div 'test' second child is div2", dom.getRealChild(test[0], 1), div2);
+        test(dom.getRealChild(divTest[0], 1), "Div test`s second child").should.equal(div2);
 
-        execute("Div 'test', div2 after <ol id='ol1'><ol>.", function(){
+        test(function(){
           $(div2).before(ol1);
-        });
+        }).should.not.Throw();
 
-        equal("Div 'test' second child id is 'ol1'", dom.getRealChild(test[0], 1).id, "ol1");
+        test(dom.getRealChild(divTest[0], 1).id, "Div test`s second child`s id").should.equal("ol1");
 
-        execute("Div 'test', ul1 replaceWith ul2", function(){
+        test(function(){
           $(ul1).replaceWith(ul2);
-        });
+        }).should.not.Throw();
 
-        equal("Div 'test' first child id is 'ul2'", dom.getRealChild(test[0], 0), ul2);
+        test(dom.getRealChild(divTest[0], 0), "Div test`s first child`s id").should.equal(ul2);
 
-      }).task("Test dom wrap, wrapInner, wrapAll, upwrap", function(preResult, equal, execute){
+      }).describe("Test dom wrap, wrapInner, wrapAll, upwrap", function(preResult, test, logger){
         var wrapDiv = $("#wrap");
-        execute("Div 'wrap' > p wrap a div", function(){
+
+        test(function(){
           wrapDiv.find("p").wrap("<div></div>");
-        });
+        }).should.not.Throw();
 
-        equal("Div 'wrap' first child is div", typed.isNode(dom.getRealChild(wrapDiv[0], 0), "div"), true);
-        equal("Div 'wrap' second child is div", typed.isNode(dom.getRealChild(wrapDiv[0], 1), "div"), true);
-        equal("Div 'wrap' last child is div", typed.isNode(dom.getRealChild(wrapDiv[0], 2), "div"), true);
+        test(dom.getRealChild(wrapDiv[0], 0), "Div 'wrap' first child").should.be.node("div");
+        test(dom.getRealChild(wrapDiv[0], 1), "Div 'wrap' second child").should.be.node("div");
+        test(dom.getRealChild(wrapDiv[0], 2), "Div 'wrap' last child").should.be.node("div");
 
-        execute("Div 'wrap' > p unwrap", function(){
+        test(function(){
           wrapDiv.find("p").unwrap();
-        });
+        }).should.not.Throw();
 
-        equal("Div 'wrap' last child is p", typed.isNode(dom.getRealChild(wrapDiv[0], 2), "p"), true);
+        test(dom.getRealChild(wrapDiv[0], 2), "Div 'wrap' last child").should.be.node("p");
 
-        execute("Div 'wrap' > p wrapInner 'div'", function(){
+        test(function(){
           wrapDiv.find("p").wrapInner("<div></div>");
-        });
+        }).should.not.Throw();
 
-        equal("Div 'wrap' last child is p", typed.isNode(dom.getRealChild(wrapDiv[0], 2), "p"), true);
+        test(dom.getRealChild(wrapDiv[0], 2), "Div 'wrap' last child").should.be.node("p");
 
-        equal("p`s child is div", typed.isNode(dom.getRealChild(wrapDiv[0], 2).childNodes[0], "div"), true);
+        test(dom.getRealChild(wrapDiv[0], 2).childNodes[0], "p`s child").should.be.node("div");
 
-        equal("The div inner html is 'c'", dom.getRealChild(wrapDiv[0], 2).childNodes[0].innerHTML, "c");
+        test(dom.getRealChild(wrapDiv[0], 2).childNodes[0].innerHTML, "the div inner html").should.equal("c");
 
       }).start();
     });
