@@ -140,7 +140,10 @@
 			},
 			replaceClass: replaceClass,
 			classLength: function( ele ) {
-				return ( $.util.trim( ele.className ).split( " " ) ).length;
+				var
+				list = $.util.trim( ele.className ).split( " " ),
+					length = list.length;
+				return length ? length === 1 && list[ 0 ] === "" ? 0 : length : 0;
 			},
 			getClassByIndex: function( ele, index ) {
 				return ( $.util.trim( ele.className ).split( " " ) )[ index ] || null;

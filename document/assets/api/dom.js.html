@@ -212,7 +212,12 @@
 		}
 
 		var oldData = utilData.get( src );
-		var curData = utilData.set( dest, oldData );
+
+		var srcData = {};
+
+		utilExtend.extend( true, srcData, oldData );
+
+		utilData.set( dest, srcData );
 
 		event.cloneHandlers( dest, src );
 

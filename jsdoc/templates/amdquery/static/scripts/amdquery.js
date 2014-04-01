@@ -579,73 +579,6 @@
 				return name;
 			},
 			/**
-			 * Object.is is a proposed addition to the ECMA-262 standard
-			 * @param {Object}
-			 * @param {Object}
-			 * @returns {Boolean}
-			 * @example
-			 * Object.is("foo", "foo");     // true
-			 * Object.is(window, window);   // true
-			 *
-			 * Object.is("foo", "bar");     // false
-			 * Object.is([], []);           // false
-			 *
-			 * var test = {a: 1};
-			 * Object.is(test, test);       // true
-			 *
-			 * Object.is(null, null);       // true
-			 *
-			 * // Special Cases
-			 * Object.is(0, -0);            // false
-			 * Object.is(-0, -0);           // true
-			 * Object.is(NaN, 0/0);         // true
-			 */
-			is: function( v1, v2 ) {
-				if ( Object.is ) {
-					return Object.is( v1, v2 );
-				}
-				if ( v1 === 0 && v2 === 0 ) {
-					return 1 / v1 === 1 / v2;
-				}
-				if ( v1 !== v1 ) {
-					return v2 !== v2;
-				}
-				return v1 === v2;
-			},
-			/**
-			 * Object A is equal to Object B.
-			 * @param {Object}
-			 * @param {Object}
-			 * @returns {Boolean}
-			 * @example
-			 * var a = { foo : { fu : "bar" } };
-			 * var b = { foo : { fu : "bar" } };
-			 * aQuery.util.isEqual(a, b) //return true
-			 */
-			isEqual: function( objA, objB ) {
-				if ( this.is( objA, objB ) )
-					return true;
-
-				if ( objA === null || objA === undefined || objB === null || objB === undefined )
-					return false;
-
-				if ( objA.constructor !== objB.constructor )
-					return false;
-
-				var aMemberCount = 0;
-				for ( var a in objA ) {
-					if ( !objA.hasOwnProperty( a ) )
-						continue;
-					if ( typeof objA[ a ] === 'object' && typeof objB[ a ] === 'object' ? !$.util.isEqual( objA[ a ], objB[ a ] ) : objA[ a ] !== objB[ a ] )
-						return false;
-					++aMemberCount;
-				}
-				for ( var a in objB )
-					if ( objB.hasOwnProperty( a ) )
-					--aMemberCount;
-				return aMemberCount ? false : true;
-			},
-			/**
 			 * Evaluates a script in a global context. Workarounds based on findings by Jim Driscoll. {@link http://weblogs.java.net/blog/driscoll/archive/2009/09/08/eval-javascript-global-context|refer}
 			 * @param {String}
 			 * @returns {Boolean}
@@ -2731,6 +2664,15 @@ aQuery.define( "base/typed", function( $ ) {
 			return a !== undefined ? typed.isType( a, "[object Object]" ) : false;
 		},
 		/**
+		 * Whether it is the prototype property.
+		 * @param {*}
+		 * @param {String}
+		 * @returns {Boolean}
+		 */
+		isPrototypeProperty: function( obj, name ) {
+			return "hasOwnProperty" in obj && !obj.hasOwnProperty( name ) && ( name in obj );
+		},
+		/**
 		 * Is it plain Object?
 		 * @param {*}
 		 * @returns {Boolean}
@@ -2799,6 +2741,75 @@ aQuery.define( "base/typed", function( $ ) {
 		 */
 		isWindow: function( a ) {
 			return a != null && a == a.window;
+		},
+		/**
+		 * Object.is is a proposed addition to the ECMA-262 standard
+		 * @param {Object}
+		 * @param {Object}
+		 * @returns {Boolean}
+		 * @example
+		 * Object.is("foo", "foo");     // true
+		 * Object.is(window, window);   // true
+		 *
+		 * Object.is("foo", "bar");     // false
+		 * Object.is([], []);           // false
+		 *
+		 * var test = {a: 1};
+		 * Object.is(test, test);       // true
+		 *
+		 * Object.is(null, null);       // true
+		 *
+		 * // Special Cases
+		 * Object.is(0, -0);            // false
+		 * Object.is(-0, -0);           // true
+		 * Object.is(NaN, 0/0);         // true
+		 */
+		is: function( v1, v2 ) {
+			if ( Object.is ) {
+				return Object.is( v1, v2 );
+			}
+			if ( v1 === 0 && v2 === 0 ) {
+				return 1 / v1 === 1 / v2;
+			}
+			if ( v1 !== v1 ) {
+				return v2 !== v2;
+			}
+			return v1 === v2;
+		},
+		/**
+		 * Object A is equal to Object B.
+		 * @param {Object}
+		 * @param {Object}
+		 * @returns {Boolean}
+		 * @example
+		 * var a = { foo : { fu : "bar" } };
+		 * var b = { foo : { fu : "bar" } };
+		 * aQuery.util.isEqual(a, b) //return true
+		 */
+		isEqual: function( x, y ) {
+			if ( this.is( x, y ) )
+				return true;
+
+			if ( !( x instanceof Object ) || !( y instanceof Object ) ) return false;
+
+			if ( x.constructor !== y.constructor ) return false;
+
+			for ( var p in x ) {
+				if ( !x.hasOwnProperty( p ) ) continue;
+
+				if ( !y.hasOwnProperty( p ) ) return false;
+
+				if ( x[ p ] === y[ p ] ) continue;
+
+				if ( typeof( x[ p ] ) !== "object" ) return false;
+
+				if ( !typed.isEqual( x[ p ], y[ p ] ) ) return false;
+			}
+
+			for ( p in y ) {
+				if ( y.hasOwnProperty( p ) && !x.hasOwnProperty( p ) ) return false;
+			}
+			return true;
 		},
 		is$: $.forinstance,
 		/**
@@ -3546,7 +3557,7 @@ aQuery.define( "base/array", [ "base/typed", "base/extend" ], function( $, typed
 		getObjectPropertiesCount: function( obj, bool ) {
 			var count = 0;
 			for ( var i in obj ) {
-				bool == true ? object.isPrototypeProperty( obj, i ) || count++ : count++;
+				bool == true ? typed.isPrototypeProperty( obj, i ) || count++ : count++;
 			}
 			return count;
 		},
@@ -3595,19 +3606,6 @@ aQuery.define( "base/array", [ "base/typed", "base/extend" ], function( $, typed
 		inheritProtypeWithCombination: function( Sub, Super ) {
 			Sub.prototype = new Super();
 			return this;
-		},
-		/**
-		 * Whether it is the prototype property.
-		 * @param {*}
-		 * @param {String}
-		 * @returns {Boolean}
-		 */
-		isPrototypeProperty: function( obj, name ) {
-			/// <summary>是否是原型对象的属性</summary>
-			/// <param name="obj" type="any">任意对象</param>
-			/// <param name="name" type="String">属性名</param>
-			/// <returns type="Boolean" />
-			return "hasOwnProperty" in obj && !obj.hasOwnProperty( name ) && ( name in obj );
 		},
 		/**
 		 * Create Getter or Setter for this constructor.prototype.
@@ -7593,7 +7591,6 @@ if ( typeof define === "function" && define.amd ) {
 					j = 0,
 					len = 0,
 					i, item, fn;
-				event.clearHandlers( tarEle );
 
 				for ( i in handlerMap ) {
 					item = customEvent.getHandlers( i );
@@ -9949,7 +9946,10 @@ if ( typeof define === "function" && define.amd ) {
 			},
 			replaceClass: replaceClass,
 			classLength: function( ele ) {
-				return ( $.util.trim( ele.className ).split( " " ) ).length;
+				var
+				list = $.util.trim( ele.className ).split( " " ),
+					length = list.length;
+				return length ? length === 1 && list[ 0 ] === "" ? 0 : length : 0;
 			},
 			getClassByIndex: function( ele, index ) {
 				return ( $.util.trim( ele.className ).split( " " ) )[ index ] || null;
@@ -11898,7 +11898,12 @@ aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "
 		}
 
 		var oldData = utilData.get( src );
-		var curData = utilData.set( dest, oldData );
+
+		var srcData = {};
+
+		utilExtend.extend( true, srcData, oldData );
+
+		utilData.set( dest, srcData );
 
 		event.cloneHandlers( dest, src );
 

@@ -101,6 +101,183 @@
         <dl>
             
 <dt>
+    <h4 class="name" id="is"><span class="type-signature">&lt;static> </span>is<span class="signature">(v1, v2)</span><span class="type-signature"> &rarr; {Boolean}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Object.is is a proposed addition to the ECMA-262 standard
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>v1</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last"></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>v2</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last"></td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="typed.js.html">base/typed.js</a>, <a href="typed.js.html#line330">line 330</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">Boolean</span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+        <h5>Example</h5>
+        
+    <pre class="prettyprint">Object.is("foo", "foo");     // true
+Object.is(window, window);   // true
+
+Object.is("foo", "bar");     // false
+Object.is([], []);           // false
+
+var test = {a: 1};
+Object.is(test, test);       // true
+
+Object.is(null, null);       // true
+
+// Special Cases
+Object.is(0, -0);            // false
+Object.is(-0, -0);           // true
+Object.is(NaN, 0/0);         // true</pre>
+
+    
+</dd>
+
+        
+            
+<dt>
     <h4 class="name" id="is$"><span class="type-signature">&lt;static> </span>is$<span class="signature">(obj)</span><span class="type-signature"> &rarr; {Boolean}</span></h4>
     
     
@@ -1596,6 +1773,171 @@ typed.isEmpty(e); // true</pre>
     <pre class="prettyprint">var a = [], b = {};
 typed.isEmptyObj(a); // true
 typed.isEmptyObj(b); // true</pre>
+
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="isEqual"><span class="type-signature">&lt;static> </span>isEqual<span class="signature">(x, y)</span><span class="type-signature"> &rarr; {Boolean}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Object A is equal to Object B.
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>x</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last"></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>y</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last"></td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="typed.js.html">base/typed.js</a>, <a href="typed.js.html#line352">line 352</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">Boolean</span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+        <h5>Example</h5>
+        
+    <pre class="prettyprint">var a = { foo : { fu : "bar" } };
+var b = { foo : { fu : "bar" } };
+aQuery.util.isEqual(a, b) //return true</pre>
 
     
 </dd>
@@ -3206,7 +3548,165 @@ typed.isNumeric("5"); // true</pre>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="typed.js.html">base/typed.js</a>, <a href="typed.js.html#line234">line 234</a>
+        <a href="typed.js.html">base/typed.js</a>, <a href="typed.js.html#line243">line 243</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">Boolean</span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="isPrototypeProperty"><span class="type-signature">&lt;static> </span>isPrototypeProperty<span class="signature">(obj, name)</span><span class="type-signature"> &rarr; {Boolean}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Whether it is the prototype property.
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>obj</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">*</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last"></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>name</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last"></td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="typed.js.html">base/typed.js</a>, <a href="typed.js.html#line235">line 235</a>
     </li></ul></dd>
     
 
@@ -3341,7 +3841,7 @@ typed.isNumeric("5"); // true</pre>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="typed.js.html">base/typed.js</a>, <a href="typed.js.html#line258">line 258</a>
+        <a href="typed.js.html">base/typed.js</a>, <a href="typed.js.html#line267">line 267</a>
     </li></ul></dd>
     
 
@@ -3476,7 +3976,7 @@ typed.isNumeric("5"); // true</pre>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="typed.js.html">base/typed.js</a>, <a href="typed.js.html#line266">line 266</a>
+        <a href="typed.js.html">base/typed.js</a>, <a href="typed.js.html#line275">line 275</a>
     </li></ul></dd>
     
 
@@ -3630,7 +4130,7 @@ typed.isNumeric("5"); // true</pre>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="typed.js.html">base/typed.js</a>, <a href="typed.js.html#line276">line 276</a>
+        <a href="typed.js.html">base/typed.js</a>, <a href="typed.js.html#line285">line 285</a>
     </li></ul></dd>
     
 
@@ -3770,7 +4270,7 @@ typed.isNumeric("5"); // true</pre>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="typed.js.html">base/typed.js</a>, <a href="typed.js.html#line296">line 296</a>
+        <a href="typed.js.html">base/typed.js</a>, <a href="typed.js.html#line305">line 305</a>
     </li></ul></dd>
     
 
@@ -3905,7 +4405,7 @@ typed.isNumeric("5"); // true</pre>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="typed.js.html">base/typed.js</a>, <a href="typed.js.html#line284">line 284</a>
+        <a href="typed.js.html">base/typed.js</a>, <a href="typed.js.html#line293">line 293</a>
     </li></ul></dd>
     
 
@@ -4040,7 +4540,7 @@ typed.isNumeric("5"); // true</pre>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="typed.js.html">base/typed.js</a>, <a href="typed.js.html#line305">line 305</a>
+        <a href="typed.js.html">base/typed.js</a>, <a href="typed.js.html#line383">line 383</a>
     </li></ul></dd>
     
 
