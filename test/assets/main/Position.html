@@ -1,0 +1,142 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+  <title></title>
+  <link href="../../../global/styles/reset.css" rel="stylesheet" type="text/css" />
+  <script src="../../../amdquery/amdquery.js" type="text/javascript" amdquery="define:$;" amd="detectCR:1;" module="compatibleEvent:1;testLogByHTML:1"></script>
+
+  <script type="text/javascript">
+    $.require(["main/query", "main/position", "main/css", "module/Test"], function( query, position, css, Test ) {
+
+      var rect = $( "#rect" );
+
+      var testPosition = new Test("TestPosition", function(preResult){
+        // complete
+      }).describe("Test div rect width", function(preResult, test, logger){
+        test(rect.width(), "rect width").should.equal( 50 );
+
+        test(function(){
+          rect.width(30);
+        }, "Set width 30").should.not.Throw();
+        test(rect.width(), "rect width").should.equal( 30 );
+
+        test(function(){
+          rect.width(60);
+        }, "Set width 60").should.not.Throw();
+        test(rect.width(), "rect width").should.equal( 60 );
+
+        test(function(){
+          rect.css({
+            "padding-left": "5px",
+            "padding-right": "5px"
+          });
+        }, "Set padding-left '5px' and padding-right '5px'").should.not.Throw();
+        test(rect.width(), "rect width").should.equal( 60 );
+        test(rect.innerWidth(), "rect inner width").should.equal( 70 );
+
+        test(function(){
+          rect.innerWidth(40);
+        }, "Set inner width 40").should.not.Throw();
+        test(rect.width(), "rect width").should.equal( 30 );
+        test(rect.innerWidth(), "rect inner width").should.equal( 40 );
+
+        test(function(){
+          rect.outerWidth(80);
+        }, "Set outer width 80").should.not.Throw();
+        test(rect.width(), "rect width").should.equal( 70 );
+        test(rect.innerWidth(), "rect inner width").should.equal( 80 );
+
+        test(function(){
+          rect.css({
+            "margin-left": "5px",
+            "margin-right": "5px"
+          });
+        }, "Set margin-left '5px' and margin-right '5px'").should.not.Throw();
+
+        test(rect.width(), "rect width").should.equal( 70 );
+        test(rect.innerWidth(), "rect inner width").should.equal( 80 );
+        test(rect.outerWidth(), "rect outer width").should.equal( 80 );
+
+        test(function(){
+          rect.css({
+            "border-left": "5px solid black",
+            "border-right": "5px solid black"
+          });
+        }, "Set margin-left '5px' and margin-right '5px'").should.not.Throw();
+        test(rect.width(), "rect width").should.equal( 70 );
+        test(rect.innerWidth(), "rect inner width").should.equal( 80 );
+        test(rect.outerWidth(), "rect outer width").should.equal( 90 );
+        test(rect.outerWidth(true), "rect outer width and border is 100").should.equal( 100 );
+
+      }).describe("Test div rect height", function(preResult, test, logger){
+        test(rect.height(), "rect height").should.equal( 0 );
+
+        test(function(){
+          rect.height(30);
+        }, "Set height 30").should.not.Throw();
+        test(rect.height(), "rect height").should.equal( 30 );
+
+        test(function(){
+          rect.height(60);
+        }, "Set height 60").should.not.Throw();
+        test(rect.height(), "rect height").should.equal( 60 );
+
+        test(function(){
+          rect.css({
+            "padding-top": "5px",
+            "padding-bottom": "5px"
+          });
+        }, "Set padding-top '5px' and padding-bottom '5px'").should.not.Throw();
+        test(rect.height(), "rect height").should.equal( 60 );
+        test(rect.innerHeight(), "rect inner height").should.equal( 70 );
+
+        test(function(){
+          rect.innerHeight(40);
+        }, "Set inner height 40").should.not.Throw();
+        test(rect.height(), "rect height").should.equal( 30 );
+        test(rect.innerHeight(), "rect inner height").should.equal( 40 );
+
+        test(function(){
+          rect.outerHeight(80);
+        }, "Set outer height 80").should.not.Throw();
+        test(rect.height(), "rect height").should.equal( 70 );
+        test(rect.innerHeight(), "rect inner height").should.equal( 80 );
+
+        test(function(){
+          rect.css({
+            "margin-top": "5px",
+            "margin-bottom": "5px"
+          });
+        }, "Set margin-top '5px' and margin-bottom '5px'").should.not.Throw();
+
+        test(rect.height(), "rect height").should.equal( 70 );
+        test(rect.innerHeight(), "rect inner height").should.equal( 80 );
+        test(rect.outerHeight(), "rect outer height").should.equal( 80 );
+
+        test(function(){
+          rect.css({
+            "border-top": "5px solid black",
+            "border-bottom": "5px solid black"
+          });
+        }, "Set margin-top '5px' and margin-bottom '5px'").should.not.Throw();
+        test(rect.height(), "rect height").should.equal( 70 );
+        test(rect.innerHeight(), "rect inner height").should.equal( 80 );
+        test(rect.outerHeight(), "rect outer height").should.equal( 90 );
+        test(rect.outerHeight(true), "rect outer height and border is 100").should.equal( 100 );
+
+      }).describe("Test scroll size.", function(preResult, test, logger){
+        test(rect.parent().scrollWidth(), "Div rect parent`s scroll width").should.be.greater.than(50);
+        test(rect.parent().scrollHeight(), "Div rect parent`s scroll height").should.be.greater.than(50);
+      }).start();
+    });
+  </script>
+</head>
+
+<body style="overflow: auto;position: absolute">
+  <div id="parent" style="position:absolute;width:50px;height:50px;top:50px;left:50px;">
+    <div id="rect" style="background-color:red;"></div>
+  </div>
+</body>
+
+</html>

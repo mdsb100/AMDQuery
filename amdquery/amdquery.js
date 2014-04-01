@@ -298,11 +298,10 @@
 				obj = null;
 
 			} else if ( elem ) {
-				var result;
-				if ( result = $.interfaces.trigger( "constructorQuery", elem, tagName ) ) {
+				var result = $.interfaces.trigger( "constructorDom", this, elem, tagName ) || $.interfaces.trigger( "constructorQuery", elem, tagName );
+				if ( result ) {
 					count++;
-					this.init( result, elem );
-
+					this.init( result, tagName );
 				}
 			}
 		} else if ( typeof elem == "function" ) {
@@ -577,68 +576,6 @@
 				name = name.replace( /([A-Z]|^ms)/g, "-$1" ).toLowerCase();
 				head && ( name = head + "-" + name );
 				return name;
-			},
-			/**
-			 * Object.is is a proposed addition to the ECMA-262 standard
-			 * @param {Object}
-			 * @param {Object}
-			 * @returns {Boolean}
-			 * @example
-			 * Object.is("foo", "foo");     // true
-			 * Object.is(window, window);   // true
-			 *
-			 * Object.is("foo", "bar");     // false
-			 * Object.is([], []);           // false
-			 *
-			 * var test = {a: 1};
-			 * Object.is(test, test);       // true
-			 *
-			 * Object.is(null, null);       // true
-			 *
-			 * // Special Cases
-			 * Object.is(0, -0);            // false
-			 * Object.is(-0, -0);           // true
-			 * Object.is(NaN, 0/0);         // true
-			 */
-			is: function( v1, v2 ) {
-				if ( Object.is ) {
-					return Object.is( v1, v2 );
-				}
-				if ( v1 === 0 && v2 === 0 ) {
-					return 1 / v1 === 1 / v2;
-				}
-				if ( v1 !== v1 ) {
-					return v2 !== v2;
-				}
-				return v1 === v2;
-			},
-			/**
-			 * Object A is equal to Object B.
-			 * @param {Object}
-			 * @param {Object}
-			 * @returns {Boolean}
-			 * @example
-			 * var a = { foo : { fu : "bar" } };
-			 * var b = { foo : { fu : "bar" } };
-			 * aQuery.util.isEqual(a, b) //return true
-			 */
-			isEqual: function( objA, objB ) {
-				if ( this.is( objA, objB ) )
-					return true;
-				if ( objA && objB && objA.constructor !== objB.constructor )
-					return false;
-				var aMemberCount = 0;
-				for ( var a in objA ) {
-					if ( !objA.hasOwnProperty( a ) )
-						continue;
-					if ( typeof objA[ a ] === 'object' && typeof objB[ a ] === 'object' ? !$.util.isEqual( objA[ a ], objB[ a ] ) : objA[ a ] !== objB[ a ] )
-						return false;
-					++aMemberCount;
-				}
-				for ( var a in objB )
-					if ( objB.hasOwnProperty( a ) )
-					--aMemberCount;
-				return aMemberCount ? false : true;
 			},
 			/**
 			 * Evaluates a script in a global context. Workarounds based on findings by Jim Driscoll. {@link http://weblogs.java.net/blog/driscoll/archive/2009/09/08/eval-javascript-global-context|refer}

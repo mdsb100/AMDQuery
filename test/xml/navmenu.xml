@@ -22,13 +22,14 @@
       <li amdquery-widget="ui.navitem" ui-navitem="html:main;img:module">
         <ul>
           <li amdquery-widget="ui.navitem" ui-navitem="html:CustomEvent;img:class" test="true"></li>
+          <li amdquery-widget="ui.navitem" ui-navitem="html:Position;img:class" test="true"></li>
           <li amdquery-widget="ui.navitem" ui-navitem="html:Query;img:class"></li>
           <li amdquery-widget="ui.navitem" ui-navitem="html:Communicate;img:class"></li>
-          <li amdquery-widget="ui.navitem" ui-navitem="html:Css;img:class"></li>
+          <li amdquery-widget="ui.navitem" ui-navitem="html:Class;img:class" test="true"></li>
           <li amdquery-widget="ui.navitem" ui-navitem="html:Dom;img:class" test="true"></li>
           <li amdquery-widget="ui.navitem" ui-navitem="html:Event;img:class" test="true"></li>
           <li amdquery-widget="ui.navitem" ui-navitem="html:Object;img:class"></li>
-          <li amdquery-widget="ui.navitem" ui-navitem="html:Data;img:class"></li>
+          <li amdquery-widget="ui.navitem" ui-navitem="html:Data;img:class"  test="true"></li>
         </ul>
       </li>
       <li amdquery-widget="ui.navitem" ui-navitem="html:animation;img:module">
@@ -42,7 +43,7 @@
           <li amdquery-widget="ui.navitem" ui-navitem="html:Color;img:class"></li>
           <li amdquery-widget="ui.navitem" ui-navitem="html:Promise;img:class"></li>
           <li amdquery-widget="ui.navitem" ui-navitem="html:Thread;img:class"></li>
-          <li test="true" amdquery-widget="ui.navitem" ui-navitem="html:location;img:class"></li>
+          <li amdquery-widget="ui.navitem" ui-navitem="html:location;img:class" test="true"></li>
         </ul>
       </li>
       <li amdquery-widget="ui.navitem" ui-navitem="html:ui;img:module">

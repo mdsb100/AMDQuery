@@ -143,7 +143,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Test.js.html">module/Test.js</a>, <a href="Test.js.html#line119">line 119</a>
+        <a href="Test.js.html">module/Test.js</a>, <a href="Test.js.html#line118">line 118</a>
     </li></ul></dd>
     
 
@@ -264,7 +264,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Test.js.html">module/Test.js</a>, <a href="Test.js.html#line108">line 108</a>
+        <a href="Test.js.html">module/Test.js</a>, <a href="Test.js.html#line107">line 107</a>
     </li></ul></dd>
     
 
@@ -389,7 +389,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Test.js.html">module/Test.js</a>, <a href="Test.js.html#line94">line 94</a>
+        <a href="Test.js.html">module/Test.js</a>, <a href="Test.js.html#line93">line 93</a>
     </li></ul></dd>
     
 
@@ -514,7 +514,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Test.js.html">module/Test.js</a>, <a href="Test.js.html#line101">line 101</a>
+        <a href="Test.js.html">module/Test.js</a>, <a href="Test.js.html#line100">line 100</a>
     </li></ul></dd>
     
 
@@ -639,7 +639,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Test.js.html">module/Test.js</a>, <a href="Test.js.html#line87">line 87</a>
+        <a href="Test.js.html">module/Test.js</a>, <a href="Test.js.html#line86">line 86</a>
     </li></ul></dd>
     
 
@@ -667,718 +667,7 @@
         
             
 <dt>
-    <h4 class="name" id="equal"><span class="type-signature"></span>equal<span class="signature">(describe, value, resultBackFn, <span class="optional">promise</span>)</span><span class="type-signature"> &rarr; {this}</span></h4>
-    
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        Execute a function and return a result.
-    </div>
-    
-
-    
-    
-    
-    
-    
-        <h5>Parameters:</h5>
-        
-
-<table class="params">
-    <thead>
-	<tr>
-		
-		<th>Name</th>
-		
-		
-		<th>Type</th>
-		
-		
-		<th>Argument</th>
-		
-		
-		
-		
-		<th class="last">Description</th>
-	</tr>
-	</thead>
-	
-	<tbody>
-	
-	
-        <tr>
-            
-                <td class="name"><code>describe</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">String</span>
-
-
-            
-            </td>
-            
-            
-                <td class="attributes">
-                
-                    
-                
-                    
-                
-                </td>
-            
-            
-            
-            
-            <td class="description last">The describe of this test.</td>
-        </tr>
-	
-	
-	
-        <tr>
-            
-                <td class="name"><code>value</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">*</span>
-
-
-            
-            </td>
-            
-            
-                <td class="attributes">
-                
-                    
-                
-                    
-                
-                </td>
-            
-            
-            
-            
-            <td class="description last">The result.</td>
-        </tr>
-	
-	
-	
-        <tr>
-            
-                <td class="name"><code>resultBackFn</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">function</span>
-
-
-            
-            </td>
-            
-            
-                <td class="attributes">
-                
-                    
-                
-                    
-                
-                </td>
-            
-            
-            
-            
-            <td class="description last">The function of this test.</td>
-        </tr>
-	
-	
-	
-        <tr>
-            
-                <td class="name"><code>promise</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">Promise</span>
-
-
-            
-            </td>
-            
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-                    
-                
-                    
-                
-                </td>
-            
-            
-            
-            
-            <td class="description last">If get a Promise instance then this test will be async.</td>
-        </tr>
-	
-	
-	</tbody>
-</table>
-    
-    
-    
-<dl class="details">
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Test.js.html">module/Test.js</a>, <a href="Test.js.html#line202">line 202</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-    
-    
-
-    
-
-    
-    
-    
-    
-    
-    <h5>Returns:</h5>
-    
-            
-
-
-<dl>
-	<dt>
-		Type
-	</dt>
-	<dd>
-		
-<span class="param-type">this</span>
-
-
-	</dd>
-</dl>
-
-        
-    
-    
-        <h5>Example</h5>
-        
-    <pre class="prettyprint">var promise1 = new Promise;
-new Test("TestTest", function(preResult){
-  // complete
-})
-.equal("Test equal async. After 1 seconds, 'promise1.resolve'. ", true, function(){
-  setTimeout(function(){
-    promise1.resolve();
-  }, 1000);
-  return true;
-})
-.equal("Test equal async. After 1 seconds, the next test is executed and preResult is true. ", true, function(preResult){
-  return preResult;
-}, promise1)
-.start();</pre>
-
-    
-</dd>
-
-        
-            
-<dt>
-    <h4 class="name" id="execute"><span class="type-signature"></span>execute<span class="signature">(describe, executeFn, <span class="optional">promise</span>)</span><span class="type-signature"> &rarr; {this}</span></h4>
-    
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        Execute a function and non-return.
-    </div>
-    
-
-    
-    
-    
-    
-    
-        <h5>Parameters:</h5>
-        
-
-<table class="params">
-    <thead>
-	<tr>
-		
-		<th>Name</th>
-		
-		
-		<th>Type</th>
-		
-		
-		<th>Argument</th>
-		
-		
-		
-		
-		<th class="last">Description</th>
-	</tr>
-	</thead>
-	
-	<tbody>
-	
-	
-        <tr>
-            
-                <td class="name"><code>describe</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">String</span>
-
-
-            
-            </td>
-            
-            
-                <td class="attributes">
-                
-                    
-                
-                    
-                
-                </td>
-            
-            
-            
-            
-            <td class="description last">The describe of this test.</td>
-        </tr>
-	
-	
-	
-        <tr>
-            
-                <td class="name"><code>executeFn</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">function</span>
-
-
-            
-            </td>
-            
-            
-                <td class="attributes">
-                
-                    
-                
-                    
-                
-                </td>
-            
-            
-            
-            
-            <td class="description last">The function of this test.</td>
-        </tr>
-	
-	
-	
-        <tr>
-            
-                <td class="name"><code>promise</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">Promise</span>
-
-
-            
-            </td>
-            
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-                    
-                
-                    
-                
-                </td>
-            
-            
-            
-            
-            <td class="description last">If get a Promise instance then this test will be async.</td>
-        </tr>
-	
-	
-	</tbody>
-</table>
-    
-    
-    
-<dl class="details">
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Test.js.html">module/Test.js</a>, <a href="Test.js.html#line153">line 153</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-    
-    
-
-    
-
-    
-    
-    
-    
-    
-    <h5>Returns:</h5>
-    
-            
-
-
-<dl>
-	<dt>
-		Type
-	</dt>
-	<dd>
-		
-<span class="param-type">this</span>
-
-
-	</dd>
-</dl>
-
-        
-    
-    
-        <h5>Example</h5>
-        
-    <pre class="prettyprint">var promise1 = new Promise;
-new Test("TestTest", function(preResult){
-  // complete
-})
-.execute("Test execute async. After 1 seconds, 'promise1.resolve'. ", function(){
-  setTimeout(function(){
-    promise1.resolve();
-  }, 1000);
-})
-.execute("Test execute async. After 1 seconds, the next test is executed. ", function(){
-
-}, promise1)
-.start();</pre>
-
-    
-</dd>
-
-        
-            
-<dt>
-    <h4 class="name" id="report"><span class="type-signature"></span>report<span class="signature">()</span><span class="type-signature"> &rarr; {this}</span></h4>
-    
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        If window.parent.aQuery is exists then trigger "test" event.
-    </div>
-    
-
-    
-    
-    
-    
-    
-    
-    
-<dl class="details">
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Test.js.html">module/Test.js</a>, <a href="Test.js.html#line299">line 299</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-    
-    
-    <h5>Fires:</h5>
-    <ul>
-        <li><a href="aQuery.html#event:"test.report"">aQuery#event:"test.report"</a></li>
-    </ul>
-    
-
-    
-
-    
-    
-    
-    
-    
-    <h5>Returns:</h5>
-    
-            
-
-
-<dl>
-	<dt>
-		Type
-	</dt>
-	<dd>
-		
-<span class="param-type">this</span>
-
-
-	</dd>
-</dl>
-
-        
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <h4 class="name" id="start"><span class="type-signature"></span>start<span class="signature">(firstResult)</span><span class="type-signature"> &rarr; {this}</span></h4>
-    
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        Start test
-    </div>
-    
-
-    
-    
-    
-    
-    
-        <h5>Parameters:</h5>
-        
-
-<table class="params">
-    <thead>
-	<tr>
-		
-		<th>Name</th>
-		
-		
-		<th>Type</th>
-		
-		
-		
-		
-		
-		<th class="last">Description</th>
-	</tr>
-	</thead>
-	
-	<tbody>
-	
-	
-        <tr>
-            
-                <td class="name"><code>firstResult</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">*</span>
-
-
-            
-            </td>
-            
-            
-            
-            
-            
-            <td class="description last">The first result.</td>
-        </tr>
-	
-	
-	</tbody>
-</table>
-    
-    
-    
-<dl class="details">
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Test.js.html">module/Test.js</a>, <a href="Test.js.html#line284">line 284</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-    
-    
-
-    
-
-    
-    
-    
-    
-    
-    <h5>Returns:</h5>
-    
-            
-
-
-<dl>
-	<dt>
-		Type
-	</dt>
-	<dd>
-		
-<span class="param-type">this</span>
-
-
-	</dd>
-</dl>
-
-        
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <h4 class="name" id="task"><span class="type-signature"></span>task<span class="signature">(describe, fn, <span class="optional">promise</span>)</span><span class="type-signature"> &rarr; {this}</span></h4>
+    <h4 class="name" id="describe"><span class="type-signature"></span>describe<span class="signature">(describe, fn, <span class="optional">promise</span>)</span><span class="type-signature"> &rarr; {this}</span></h4>
     
     
 </dt>
@@ -1541,7 +830,7 @@ new Test("TestTest", function(preResult){
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Test.js.html">module/Test.js</a>, <a href="Test.js.html#line251">line 251</a>
+        <a href="Test.js.html">module/Test.js</a>, <a href="Test.js.html#line215">line 215</a>
     </li></ul></dd>
     
 
@@ -1587,13 +876,269 @@ new Test("TestTest", function(preResult){
     <pre class="prettyprint">var testTest = new Test("TestTest", function(preResult){
   // complete
 })
-.task("Test task", function(preResult, equal, execute){
-  equal("Test equal", true, true, preResult);
-  execute("Test execute", function(){}, preResult);
-  return preResult;
+.describe("Test a", function(preResult, test, logger){
+ var testTarget = {
+
+ };
+ test(testTarget, "testTarget").should.be.an("object");
+
+ var myName = "Jarray";
+ test(myName, "My name").should.be.a("string");
+ setTimeout(function(){
+   promise.resolve(preResult)
+ }, 3000)
 })
+.describe("Test a", function(preResult, test, logger){
+ //should.be.an
+ //should.be.a
+ //should.be.greater.than
+ //should.be.less.than
+ //should.be.greater.than.or.equal
+ //should.be.less.than.or.equal
+ //should.be.instance.of
+ //should.equal
+ //should.not.equal
+ //should.exists
+ //should.not.exists
+ //should.Throw
+ //should.not.Throw
+ //should.have.length
+ //should.have.property
+ //should.have.property().with
+ //should.have.index().with
+ //typed extend function
+ //should.should.be.node
+ //should.should.not.be.node
+}, promise)
 .start();</pre>
 
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="report"><span class="type-signature"></span>report<span class="signature">()</span><span class="type-signature"> &rarr; {this}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        If window.parent.aQuery is exists then trigger "test" event.
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="Test.js.html">module/Test.js</a>, <a href="Test.js.html#line266">line 266</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+    
+    
+    <h5>Fires:</h5>
+    <ul>
+        <li><a href="aQuery.html#event:"test.report"">aQuery#event:"test.report"</a></li>
+    </ul>
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">this</span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="start"><span class="type-signature"></span>start<span class="signature">(firstResult)</span><span class="type-signature"> &rarr; {this}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Start test
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>firstResult</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">*</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">The first result.</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="Test.js.html">module/Test.js</a>, <a href="Test.js.html#line251">line 251</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">this</span>
+
+
+	</dd>
+</dl>
+
+        
+    
     
 </dd>
 

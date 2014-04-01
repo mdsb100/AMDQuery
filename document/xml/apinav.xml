@@ -109,10 +109,22 @@
           <li amdquery-widget="ui.navitem" ui-navitem="html:debug;img:file" link="global.html#debug"></li>
           <li amdquery-widget="ui.navitem" ui-navitem="html:define;img:file" link="global.html#define"></li>
           <li amdquery-widget="ui.navitem" ui-navitem="html:error;img:file" link="global.html#error"></li>
+          <li amdquery-widget="ui.navitem" ui-navitem="html:getLeft;img:file" link="global.html#getLeft"></li>
+          <li amdquery-widget="ui.navitem" ui-navitem="html:getTop;img:file" link="global.html#getTop"></li>
+          <li amdquery-widget="ui.navitem" ui-navitem="html:height;img:file" link="global.html#height"></li>
           <li amdquery-widget="ui.navitem" ui-navitem="html:info;img:file" link="global.html#info"></li>
+          <li amdquery-widget="ui.navitem" ui-navitem="html:innerHeight;img:file" link="global.html#innerHeight"></li>
+          <li amdquery-widget="ui.navitem" ui-navitem="html:innerWidth;img:file" link="global.html#innerWidth"></li>
           <li amdquery-widget="ui.navitem" ui-navitem="html:JSONPOptions;img:file" link="global.html#JSONPOptions"></li>
           <li amdquery-widget="ui.navitem" ui-navitem="html:logger;img:file" link="global.html#logger"></li>
+          <li amdquery-widget="ui.navitem" ui-navitem="html:offsetLeft;img:file" link="global.html#offsetLeft"></li>
+          <li amdquery-widget="ui.navitem" ui-navitem="html:offsetTop;img:file" link="global.html#offsetTop"></li>
+          <li amdquery-widget="ui.navitem" ui-navitem="html:outerHeight;img:file" link="global.html#outerHeight"></li>
+          <li amdquery-widget="ui.navitem" ui-navitem="html:outerWidth;img:file" link="global.html#outerWidth"></li>
           <li amdquery-widget="ui.navitem" ui-navitem="html:require;img:file" link="global.html#require"></li>
+          <li amdquery-widget="ui.navitem" ui-navitem="html:scrollHeight;img:file" link="global.html#scrollHeight"></li>
+          <li amdquery-widget="ui.navitem" ui-navitem="html:scrollWidth;img:file" link="global.html#scrollWidth"></li>
+          <li amdquery-widget="ui.navitem" ui-navitem="html:width;img:file" link="global.html#width"></li>
         </ul>
       </li>
     </ul>

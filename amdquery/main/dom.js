@@ -181,7 +181,12 @@
 		}
 
 		var oldData = utilData.get( src );
-		var curData = utilData.set( dest, oldData );
+
+		var srcData = {};
+
+		utilExtend.extend( true, srcData, oldData );
+
+		utilData.set( dest, srcData );
 
 		event.cloneHandlers( dest, src );
 
@@ -218,7 +223,7 @@
 				if ( elem || elem === 0 ) {
 
 					// Add nodes directly
-					if ( typed.isObj( elem ) ) {
+					if ( typed.type( elem ) === "object" ) {
 						$.merge( nodes, elem.nodeType ? [ elem ] : elem );
 
 						// Convert non-html into a text node
@@ -460,11 +465,11 @@
 		 * Get real child by index.
 		 * @param {Element}
 		 * @param {Number}
-		 * @returns {Element}
+		 * @returns {Element|null}
 		 */
 		getRealChild: function( father, index ) {
 			var i = -1,
-				child;
+				child = null;
 			var ele = father.firstChild;
 			while ( ele ) {
 				if ( typed.isEle( ele ) && ++i == index ) {
@@ -518,7 +523,7 @@
 		 */
 		removeChildren: function( ele, keepData ) {
 			for ( var i = ele.childNodes.length - 1; i >= 0; i-- ) {
-				dom.remove( ele.childNodes[ i ], false, keepData );
+				dom.removeChild( ele, ele.childNodes[ i ], keepData );
 			}
 			return this;
 		}
@@ -966,7 +971,7 @@
 		wrapAll: function( html ) {
 			if ( typed.isFun( html ) ) {
 				return this.each( function( ele, i ) {
-					$( ele ).wrapAll( html.call( this, i ) );
+					$( ele ).wrapAll( html.call( ele, i ) );
 				} );
 			}
 
@@ -1044,7 +1049,7 @@
 			var isFunction = typed.isFun( html );
 
 			return this.each( function( ele, i ) {
-				$( ele ).wrapAll( isFunction ? html.call( this, i ) : html );
+				$( ele ).wrapAll( isFunction ? html.call( ele, i ) : html );
 			} );
 		},
 		/**
@@ -1054,8 +1059,8 @@
 		 */
 		unwrap: function() {
 			this.parent().each( function( ele ) {
-				if ( !typed.isNode( this, "body" ) ) {
-					$( ele ).replaceWith( this.childNodes );
+				if ( !typed.isNode( ele, "body" ) ) {
+					$( ele ).replaceWith( ele.childNodes );
 				}
 			} );
 			return this;
@@ -1088,8 +1093,12 @@
 		};
 	} );
 
-	$.interfaces.achieve( "constructorDom", function( type, dollar, cssObj, ele, parentNode ) {
-		parentNode && ( typed.isEle( parentNode ) || typed.is$( parentNode ) ) && dollar.appendTo( parentNode );
+	$.interfaces.achieve( "constructorDom", function( type, dollar, arg1, arg2, parentNode ) {
+		if ( typeof arg1 === "string" && rsingleTag.test( arg1 ) ) {
+			return dom.parseHTML( arg1, arg2 || document, false );
+		} else if ( parentNode && ( typed.isEle( parentNode ) || typed.is$( parentNode ) ) ) {
+			dollar.appendTo( parentNode );
+		}
 	} );
 
 	return dom;

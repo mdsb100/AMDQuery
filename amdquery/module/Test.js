@@ -1,4 +1,4 @@
-aQuery.define( "module/Test", [ "base/Promise", "base/config", "main/event" ], function( $, Promise, config, event ) {
+aQuery.define( "module/Test", [ "base/typed", "base/Promise", "base/config", "main/event" ], function( $, typed, Promise, config, event ) {
 	"use strict";
 	this.describe( "Test Module" );
 	var TestEventType = "test.report";
@@ -76,7 +76,6 @@ aQuery.define( "module/Test", [ "base/Promise", "base/config", "main/event" ], f
 		this.promise = new Promise( function( preResult ) {
 			description && logger( description );
 			logger( this.name, "User Agent:", navigator.userAgent );
-			logger( this.name, "Test start", "Test:" + this.count );
 			return preResult;
 		} ).withContext( this );
 		this.count = 0;
@@ -126,110 +125,46 @@ aQuery.define( "module/Test", [ "base/Promise", "base/config", "main/event" ], f
 
 		_fail: function() {
 			this.fail++;
-			this.failInfoList.push( $.util.argToArray( arguments ).join( " " ) );
+			var describe = $.util.argToArray( arguments ).join( " " )
+			this.failInfoList.push( describe );
+			error( describe );
 		},
-
-		/**
-		 * Execute a function and non-return.
-		 * @param {String} - The describe of this test.
-		 * @param {Function} - The function of this test.
-		 * @param {Promise=} - If get a Promise instance then this test will be async.
-		 * @returns {this}
-		 * @example
-		 * var promise1 = new Promise;
-		 * new Test("TestTest", function(preResult){
-		 *   // complete
-		 * })
-		 * .execute("Test execute async. After 1 seconds, 'promise1.resolve'. ", function(){
-		 *   setTimeout(function(){
-		 *     promise1.resolve();
-		 *   }, 1000);
-		 * })
-		 * .execute("Test execute async. After 1 seconds, the next test is executed. ", function(){
-		 *
-		 * }, promise1)
-		 * .start();
-		 */
-		execute: function( describe, executeFn, promise ) {
+		_isEqual: function( describe, result, value, not ) {
 			this.count++;
-			this.promise = this.promise.then( function( preResult ) {
-				if ( Promise.forinstance( promise ) ) {
-					promise.then( function( result ) {
-						this._execute( describe, executeFn, result != null ? result : preResult );
-					} ).withContext( this );
-					return promise;
-				} else {
-					this._execute( describe, executeFn, preResult );
-					return preResult;
-				}
-			} );
-			return this;
-		},
-		_execute: function( describe, executeFn, preResult ) {
-			try {
-				executeFn( preResult );
-				logger( this.name, describe, ssuccess );
-			} catch ( e ) {
-				this._fail( describe, sfail, e );
-				error( this.name, describe, sfail, e );
-				this.report();
-				throw e;
+			var bol = typed.isEqual( result, value );
+			if ( not ) {
+				bol = !bol;
 			}
-		},
-		/**
-		 * Execute a function and return a result.
-		 * @param {String} - The describe of this test.
-		 * @param {*} - The result.
-		 * @param {Function} - The function of this test.
-		 * @param {Promise=} - If get a Promise instance then this test will be async.
-		 * @returns {this}
-		 * @example
-		 * var promise1 = new Promise;
-		 * new Test("TestTest", function(preResult){
-		 *   // complete
-		 * })
-		 * .equal("Test equal async. After 1 seconds, 'promise1.resolve'. ", true, function(){
-		 *   setTimeout(function(){
-		 *     promise1.resolve();
-		 *   }, 1000);
-		 *   return true;
-		 * })
-		 * .equal("Test equal async. After 1 seconds, the next test is executed and preResult is true. ", true, function(preResult){
-		 *   return preResult;
-		 * }, promise1)
-		 * .start();
-		 */
-		equal: function( describe, value, resultBackFn, promise ) {
-			this.count++;
-			this.promise = this.promise.then( function( preResult ) {
-				if ( Promise.forinstance( promise ) ) {
-					promise.then( function( result ) {
-						return this._equal( describe, value, resultBackFn, result != null ? result : preResult );
-					} ).withContext( this );
-					return promise;
-				} else {
-					return this._equal( describe, value, resultBackFn, preResult );
-				}
-			} );
-			return this;
-		},
-		_equal: function( describe, value, resultBackFn, preResult ) {
-			try {
-				var result = resultBackFn( preResult );
-			} catch ( e ) {
-				this._fail( describe, sfail, e );
-				error( this.name, describe, sfail, e );
-				this.report();
-				throw e;
-			}
-			if ( $.util.isEqual( result, value ) ) {
-				logger( this.name, describe, ssuccess );
+			if ( bol ) {
+				logger( describe, ssuccess );
 			} else {
 				this._fail( describe, sfail );
-				error( this.name, describe, sfail );
-				this.report();
 			}
-			return result;
+		},
+		_beCall: function( describe, todoFn, isThrow ) {
+			this.count++;
+			var err = null,
+				bol = false;
+			try {
+				todoFn();
+			} catch ( e ) {
+				err = e;
+				bol = true;
+			}
+
+			if ( isThrow ) {
+				bol = !bol;
+				if ( !err ) {
+					error = "";
+				}
+			}
+
+			if ( bol ) {
+				this._fail( describe, sfail, err );
+			} else {
+				logger( describe, ssuccess );
+			}
+
 		},
 		/**
 		 * Create a task for testing.
@@ -241,39 +176,71 @@ aQuery.define( "module/Test", [ "base/Promise", "base/config", "main/event" ], f
 		 * var testTest = new Test("TestTest", function(preResult){
 		 *   // complete
 		 * })
-		 * .task("Test task", function(preResult, equal, execute){
-		 *   equal("Test equal", true, true, preResult);
-		 *   execute("Test execute", function(){}, preResult);
-		 *   return preResult;
+		 * .describe("Test a", function(preResult, test, logger){
+		 *  var testTarget = {
+		 *
+		 *  };
+		 *  test(testTarget, "testTarget").should.be.an("object");
+		 *
+		 *  var myName = "Jarray";
+		 *  test(myName, "My name").should.be.a("string");
+		 *  setTimeout(function(){
+		 *    promise.resolve(preResult)
+		 *  }, 3000)
 		 * })
+		 * .describe("Test a", function(preResult, test, logger){
+		 *  //should.be.an
+		 *  //should.be.a
+		 *  //should.be.greater.than
+		 *  //should.be.less.than
+		 *  //should.be.greater.than.or.equal
+		 *  //should.be.less.than.or.equal
+		 *  //should.be.instance.of
+		 *  //should.equal
+		 *  //should.not.equal
+		 *  //should.exists
+		 *  //should.not.exists
+		 *  //should.Throw
+		 *  //should.not.Throw
+		 *  //should.have.length
+		 *  //should.have.property
+		 *  //should.have.property().with
+		 *  //should.have.index().with
+		 *  //typed extend function
+		 *  //should.should.be.node
+     *  //should.should.not.be.node
+		 * }, promise)
 		 * .start();
 		 */
-		task: function( describe, fn, promise ) {
+		describe: function( describe, fn, promise ) {
 			var self = this;
-			var equal = function( equalDesc, value, result, preResult ) {
-				var newDescribe = "\\--------" + equalDesc;
-				self.count++
-				self._equal( newDescribe, value, function() {
-					return result;
-				}, preResult );
-			},
-				execute = function( executeDesc, executeFn, preResult ) {
-					var newDescribe = "\\--------" + executeDesc;
-					self.count++
-					self._execute( newDescribe, executeFn, preResult );
-				};
+
+			function testWrapper( target, describe ) {
+				return new TestWrapper( target, describe || "", self );
+			}
 
 			this.promise = this.promise.then( function( preResult ) {
-				logger( this.name, "Do task:", describe );
+				logger( this.name, describe );
 				if ( Promise.forinstance( promise ) ) {
 					promise.then( function( result ) {
-						return fn( result != null ? result : preResult, equal, execute );
+						try {
+							return fn( result != null ? result : preResult, testWrapper, logger );
+						} catch ( e ) {
+							error( e );
+							return;
+						}
 					} ).withContext( this );
 					return promise;
 				} else {
-					return fn( preResult, equal, execute );
+					try {
+						return fn( preResult, testWrapper, logger );
+					} catch ( e ) {
+						error( e );
+						return;
+					}
 				}
 			} );
+
 			return this;
 		},
 		/**
@@ -309,6 +276,145 @@ aQuery.define( "module/Test", [ "base/Promise", "base/config", "main/event" ], f
 			return this;
 		}
 	};
+
+	function TestWrapper( target, describe, testObject ) {
+		var testWrapper = this;
+		this.should = {
+			be: {
+				a: function( value ) {
+					testObject._isEqual( testWrapper.combineString( describe, "'" + String( target ) + "'", "should", "be", "a", "'" + String( value ) + "'" ), typeof target, value );
+					return testWrapper;
+				},
+				an: function( value ) {
+					testObject._isEqual( testWrapper.combineString( describe, "'" + String( target ) + "'", "should", "be", "an", "'" + String( value ) + "'" ), typeof target, value );
+					return testWrapper;
+				},
+				greater: {
+					than: function( value ) {
+						testObject._isEqual( testWrapper.combineString( describe, "'" + String( target ) + "'", "should", "be", "greater", "than", "'" + String( value ) + "'" ), target > value, true );
+						return testWrapper;
+					}
+				},
+				less: {
+					than: function( value ) {
+						testObject._isEqual( testWrapper.combineString( describe, "'" + String( target ) + "'", "should", "be", "less", "than", "'" + String( value ) + "'" ), target < value, true );
+						return testWrapper;
+					}
+				},
+				instance: {
+					of: function( value ) {
+						testObject._beCall( testWrapper.combineString( describe, "'" + String( target ) + "'", "should", "instance", "of", value.name || "'" + String( value ) + "'" ), target instanceof value, true );
+						return testWrapper;
+					}
+				}
+			},
+			equal: function( value ) {
+				testObject._isEqual( testWrapper.combineString( describe, "'" + String( target ) + "'", "should", "equal", "'" + String( value ) + "'" ), target, value );
+				return testWrapper;
+			},
+			have: {
+				length: function( value ) {
+					if ( typeof target.length !== "number" ) {
+						testObject.count++
+						testObject._fail( describe, "target", "have", "not", "length", sfail );
+						return testWrapper;
+					}
+					if ( typeof value !== "number" ) {
+						testObject.count++
+						testObject._fail( describe, "parameter", "value is not a number", sfail );
+						return testWrapper;
+					}
+					testObject._isEqual( testWrapper.combineString( describe, "'" + String( target ) + "'", "should", "have", "length", "'" + String( value ) + "'" ), target.length, value );
+					return testWrapper;
+				},
+				property: function( name ) {
+					var bol = target != null || target[ name ] !== undefined;
+					testObject._isEqual( testWrapper.combineString( describe, "'" + String( target ) + "'", "should", "have", String( name ), "property" ), bol, true );
+					if ( bol ) {
+						testWrapper = new TestWrapper( target[ name ], "With property " + name, testObject );
+						testWrapper.with = testWrapper;
+					}
+					return testWrapper;
+				},
+				index: function( index ) {
+					var bol = target != null || target[ index ] !== undefined;
+					testObject._isEqual( testWrapper.combineString( describe, "'" + String( target ) + "'", "should", "have", "index", index ), bol, true );
+					if ( bol ) {
+						testWrapper = new TestWrapper( target[ index ], "With index " + index, testObject );
+						testWrapper.with = testWrapper;
+					}
+					return testWrapper;
+				}
+			},
+			exists: function() {
+				testObject._isEqual( testWrapper.combineString( describe, "'" + String( target ) + "'", "should", "exists" ), target !== undefined && target !== null, true );
+				return testWrapper;
+			},
+			not: {
+				equal: function( value ) {
+					testObject._isEqual( testWrapper.combineString( describe, "'" + String( target ) + "'", "should", "not", "equal", "'" + String( value ) + "'" ), target, value, true );
+					return testWrapper;
+				},
+				exists: function() {
+					testObject._isEqual( testWrapper.combineString( describe, "'" + String( target ) + "'", "should", "not", "exists" ), target == null, true );
+					return testWrapper;
+				},
+				Throw: function() {
+					testObject._beCall( testWrapper.combineString( describe, "'" + String( target ) + "'", "should", "not", "Throw" ), target );
+					return testWrapper;
+				},
+				be: {}
+			},
+			Throw: function() {
+				testObject._beCall( testWrapper.combineString( describe, "'" + String( target ) + "'", "should", "Throw" ), target, true );
+				return testWrapper;
+			}
+		};
+
+		this.should.be.greater.than.or = {
+			equal: function( value ) {
+				testObject._isEqual( testWrapper.combineString( describe, "'" + String( target ) + "'", "should", "be", "greater", "than", "or", "equal", "'" + String( value ) + "'" ), target >= value, true );
+				return testWrapper;
+			}
+		}
+		this.should.be.less.than.or = {
+			equal: function( value ) {
+				testObject._isEqual( testWrapper.combineString( describe, "'" + String( target ) + "'", "should", "be", "less", "than", "or", "equal", "'" + String( value ) + "'" ), target <= value, true );
+				return testWrapper;
+			}
+		}
+
+		var except = {
+			"XML": 1,
+			"NaN": 1,
+			"RegExp": 1
+		}
+
+		$.each( typed, function( fn, name ) {
+			if ( name.indexOf( "is" ) === 0 && name.length > 2 ) {
+				var fnName = name.replace( "is", "" );
+
+				if ( !except[ fnName ] ) {
+					fnName = fnName[ 0 ].toLowerCase() + fnName.slice( 1 );
+				}
+
+				testWrapper.should.be[ fnName ] = function( value ) {
+					testObject._isEqual( testWrapper.combineString( describe, "'" + String( target ) + "'", "should", "be", fnName ), typed[ name ]( target, value ), true );
+					return testWrapper;
+				}
+
+				testWrapper.should.not.be[ fnName ] = function( value ) {
+					testObject._isEqual( testWrapper.combineString( describe, "'" + String( target ) + "'", "should", "not", "be", fnName ), typed[ name ]( target, value ), false );
+					return testWrapper;
+				}
+			}
+		} );
+
+	}
+
+	TestWrapper.prototype.combineString = function() {
+		return $.util.argToArray( arguments ).join( " " );
+	}
 
 	return Test;
 } );
