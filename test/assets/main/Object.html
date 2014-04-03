@@ -86,8 +86,8 @@
 
       }).describe("Test object function", function(preResult, test, logger){
         function Animal(name, age){
-          this.age = age;
           this.name = name;
+          this.age = age;
         }
 
         Animal.prototype.eat = function(){};
@@ -145,9 +145,11 @@
 
         var cat = new Cat("kiki", 5);
 
-        test(object.getObjectPrototypeMembersCount(cat)).should.equal(3);
+        test(object.getObjectPrototypeMembersCount(cat)).should.equal(4);
 
         test(object.getObjectMembersCount(cat, true)).should.equal(3);
+
+        test(cat).should.have.property("constructor").with.should.equal(Cat);
 
         test(cat).should.have.property("eat");
 
@@ -175,9 +177,11 @@
 
         var sheep = new Sheep("Marry", 5);
 
-        test(object.getObjectPrototypeMembersCount(sheep)).should.equal(3);
+        test(object.getObjectPrototypeMembersCount(sheep)).should.equal(4);
 
         test(object.getObjectMembersCount(sheep, true)).should.equal(3);
+
+        test(sheep).should.have.property("constructor").with.should.equal(Sheep);
 
         test(sheep).should.have.property("eat");
 
@@ -192,6 +196,103 @@
         delete Animal.prototype.run;
 
         return Animal;
+      }).describe("Test object.extend", function(Animal, test, logger){
+        var Chicken = object.extend("Chicken", {
+          init: function(name, age){
+            this._super(name, age);
+          }
+        }, {});
+
+        test(Chicken).should.have.property("inherit").with.should.be.function();
+
+        Chicken.inherit(Animal);
+
+        var nini = new Chicken("nini", 2);
+
+        test(nini).should.have.property("eat").with.should.be.function();
+
+        test(nini).should.have.property("constructor").with.should.equal(Chicken);
+
+        var Dog = object.extend("Dog", {
+          init: function(name, age, color){
+            this._super(name, age);
+            this.color = color;
+          },
+          eat: function(){
+            this.food = food;
+          },
+          play: function(){
+
+          }
+        }, {
+          loyal: true
+        }, Animal);
+
+        test(Dog).should.have.property("extend").with.should.be.function();
+
+        test(Dog).should.have.property("joinPrototype").with.should.be.function();
+
+        test(Dog).should.have.property("forinstance").with.should.be.function();
+
+        test(Dog).should.have.property("createGetterSetter").with.should.be.function();
+
+        test(Dog).should.have.property("fn").with.should.be.object();
+
+        test(function(){
+          Dog.joinPrototype({
+            bark: function(){}
+          });
+        }).should.not.Throw();
+
+        test(function(){
+          Dog.createGetterSetter({
+            name: "-pu -w -r"
+          });
+        }).should.not.Throw();
+
+        var ashley = new Dog("ashley", 3);
+
+        test(ashley).should.have.property("bark").with.should.be.function();
+
+        test(Dog.forinstance(ashley)).should.equal(true);
+
+        test(ashley).should.have.property("setName").with.should.be.function();
+
+        test(ashley).should.have.property("getName").with.should.be.function();
+
+        var Labrador = Dog.extend(function Labrador(name, age, color){
+          this._super(name, age, color);
+          this.toy = null;
+        },{
+          play: function(toy){
+            this.toy = toy;
+          }
+        }, {
+          naughty: true
+        });
+
+        test(Labrador).should.have.property("naughty").with.should.equal(true);
+
+        var penny = new Labrador("penny", 4);
+
+        penny.play("tennis");
+
+        test(penny).should.have.property("age").with.should.equal(4);
+
+        test(penny).should.have.property("toy").with.should.equal("tennis");
+
+        test(penny).should.have.property("watch").with.should.be.function();
+
+        var BlackLabrador = Labrador.extend({
+          init: function(name, age){
+            this._super(name, age, "black");
+          }
+        });
+
+        var tony = new BlackLabrador("tony", 3);
+
+        test(tony).should.have.property("color").should.equal("black");
+
       }).start();
 
     });

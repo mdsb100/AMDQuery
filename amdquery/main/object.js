@@ -55,12 +55,7 @@
 				return ( ret && ret[ 1 ] ) || "";
 			}
 		},
-		_defaultPrototype = {
-			init: function() {
-				return this;
-			}
-		},
-		inerit = function( Sub, Super, name ) {
+		inherit = function( Sub, Super, name ) {
 			object.inheritProtypeWithParasitic( Sub, Super, name );
 			Sub.prototype.__superConstructor = Super;
 			Sub.prototype._super = _superInit;
@@ -95,7 +90,7 @@
 		 * @returns {this}
 		 */
 		inherit: function( Super ) {
-			inerit( this, Super );
+			inherit( this, Super );
 			return this;
 		},
 		/**
@@ -152,8 +147,8 @@
 
 		 * @param {Object<String,Object>|String|Function}
 		 */
-		createGetterSetter: function( object ) {
-			object.createPropertyGetterSetter( this, object );
+		createGetterSetter: function( fn ) {
+			object.createPropertyGetterSetter( this, fn );
 		},
 		/** fn is pointer of this.prototype */
 		fn: null
@@ -270,13 +265,16 @@
 					anonymous = function anonymous() {
 						this.init.apply( this, arguments );
 					};
+          var temp = prototype;
+          prototype = name;
+          statics = temp;
 			}
 
 			if ( Super ) {
-				inerit( anonymous, Super );
+				inherit( anonymous, Super );
 			}
 
-			prototype = utilExtend.extend( {}, _defaultPrototype, prototype );
+			prototype = utilExtend.extend( {}, prototype );
 			prototype.constructor = anonymous;
 
 			utilExtend.easyExtend( anonymous.prototype, prototype );
@@ -474,7 +472,7 @@
 			//var prototype = Object(Super.prototype);
 			//Sub.prototype = prototype;
 			utilExtend.easyExtend( Sub.prototype, originPrototype );
-			//Sub.prototype.constructor = Sub;
+			Sub.prototype.constructor = Sub;
 
 			return this;
 		},
