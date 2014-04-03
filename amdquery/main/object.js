@@ -60,9 +60,6 @@
 				return this;
 			}
 		},
-		defaultValidate = function() {
-			return 1;
-		},
 		inerit = function( Sub, Super, name ) {
 			object.inheritProtypeWithParasitic( Sub, Super, name );
 			Sub.prototype.__superConstructor = Super;
@@ -426,7 +423,7 @@
 		 * @param {Object}
 		 * @returns {Number}
 		 */
-    getObjectMembersCount: function( obj ) {
+		getObjectMembersCount: function( obj ) {
 			var count = 0;
 			for ( var i in obj ) {
 				typed.isPrototypeProperty( obj, i ) || count++;
@@ -532,7 +529,7 @@
 
 			return $.each( object, function( value, key ) {
 				var purview = defaultPurview,
-					validate = defaultValidate,
+					validate = null,
 					defaultValue,
 					edit;
 				switch ( typeof value ) {
@@ -564,12 +561,9 @@
 				if ( purview.match( /\-w([u|a])?[\s]?/ ) ) {
 					getPrefix = RegExp.$1 == "a" ? "_" : "";
 					this[ ( getPrefix || prefix ) + $.util.camelCase( key, "set" ) ] = function( a ) {
-						if ( validate.call( this, a ) ) {
+						if ( typed.isFunction( validate ) ? validate.call( this, a ) : true ) {
 							this[ key ] = a;
-						} else if ( defaultValidate !== undefined ) {
-							this[ key ] = defaultValue;
 						}
-
 						return this;
 					};
 				}
