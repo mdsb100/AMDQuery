@@ -10,9 +10,9 @@
 		tween = {
 			getFun: function( name ) {
 				var fun;
-				if ( typed.isFun( name ) ) {
+				if ( typed.isFunction( name ) ) {
 					fun = name;
-				} else if ( typed.isStr( name ) ) {
+				} else if ( typed.isString( name ) ) {
 					name = name.split( "." );
 					fun = this;
 					$.each( name, function( str ) {

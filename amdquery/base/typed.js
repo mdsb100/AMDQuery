@@ -21,12 +21,12 @@ aQuery.define( "base/typed", function( $ ) {
 		 * @param {*}
 		 * @returns {Boolean}
 		 */
-		isEleConllection: function( a ) {
+		isElementCollection: function( a ) {
 			return typed.isType( a, "[object NodeList]" ) ||
 				typed.isType( a, "[object HTMLCollection]" ) ||
-				( typed.isNum( a.length ) && !typed.isArr( a.length ) &&
-				( a.length > 0 ? typed.isEle( a[ 0 ] ) : true ) &&
-				( typed.isObj( a.item ) || typed.isStr( a.item ) ) );
+				( typed.isNumber( a.length ) && !typed.isArray( a.length ) &&
+				( a.length > 0 ? typed.isElement( a[ 0 ] ) : true ) &&
+				( typed.isObject( a.item ) || typed.isString( a.item ) ) );
 		},
 		/**
 		 * Is an event of Dom?
@@ -42,14 +42,14 @@ aQuery.define( "base/typed", function( $ ) {
 		 * @returns {Boolean}
 		 */
 		isArguments: function( a ) {
-			return !!a && "callee" in a && this.isNum( a.length );
+			return !!a && "callee" in a && this.isNumber( a.length );
 		},
 		/**
 		 * Is it a array?
 		 * @param {*}
 		 * @returns {Boolean}
 		 */
-		isArr: function( a ) {
+		isArray: function( a ) {
 			return typed.isType( a, "[object Array]" );
 		},
 		/**
@@ -57,7 +57,7 @@ aQuery.define( "base/typed", function( $ ) {
 		 * @param {*}
 		 * @returns {Boolean}
 		 */
-		isArrlike: function( obj ) {
+		isArraylike: function( obj ) {
 			var length = obj.length,
 				type = typed.type( obj );
 
@@ -78,7 +78,7 @@ aQuery.define( "base/typed", function( $ ) {
 		 * @param {*}
 		 * @returns {Boolean}
 		 */
-		isBol: function( a ) {
+		isBoolean: function( a ) {
 			return typed.isType( a, "[object Boolean]" );
 		},
 		/**
@@ -94,7 +94,7 @@ aQuery.define( "base/typed", function( $ ) {
 		 * @param {*}
 		 * @returns {Boolean}
 		 */
-		isDoc: function( a ) {
+		isDocument: function( a ) {
 			return !!toString.call( a ).match( /document/i );
 		},
 		/**
@@ -102,7 +102,7 @@ aQuery.define( "base/typed", function( $ ) {
 		 * @param {*}
 		 * @returns {Boolean}
 		 */
-		isEle: function( a ) {
+		isElement: function( a ) {
 			if ( !a || a === document ) return false;
 			var str = ( a.constructor && a.constructor.toString() ) + Object.prototype.toString.call( a )
 			if ( ( str.indexOf( "HTML" ) > -1 && str.indexOf( "Collection" ) == -1 ) || a.nodeType === 1 ) {
@@ -124,8 +124,8 @@ aQuery.define( "base/typed", function( $ ) {
 		 */
 		isEmpty: function( a ) {
 			if ( a == null ) return true;
-			if ( typed.isArr( a ) || typed.isStr( a ) ) return a.length == 0;
-			return typed.isEmptyObj( a );
+			if ( typed.isArray( a ) || typed.isString( a ) ) return a.length == 0;
+			return typed.isEmptyObject( a );
 		},
 		/**
 		 * Is it empty object?
@@ -133,10 +133,10 @@ aQuery.define( "base/typed", function( $ ) {
 		 * @returns {Boolean}
 		 * @example
 		 * var a = [], b = {};
-		 * typed.isEmptyObj(a); // true
-		 * typed.isEmptyObj(b); // true
+		 * typed.isEmptyObject(a); // true
+		 * typed.isEmptyObject(b); // true
 		 */
-		isEmptyObj: function( obj ) {
+		isEmptyObject: function( obj ) {
 			for ( var name in obj ) {
 				return false;
 			}
@@ -163,7 +163,7 @@ aQuery.define( "base/typed", function( $ ) {
 		 * @param {*}
 		 * @returns {Boolean}
 		 */
-		isFun: function( a ) {
+		isFunction: function( a ) {
 			return typed.isType( a, "[object Function]" );
 		},
 		/**
@@ -180,14 +180,14 @@ aQuery.define( "base/typed", function( $ ) {
 		 * @returns {Boolean}
 		 */
 		isNaN: function( a ) {
-			return typed.isNum( a ) && a != +a;
+			return typed.isNumber( a ) && a != +a;
 		},
 		/**
 		 * Is it a Number?
 		 * @param {*}
 		 * @returns {Boolean}
 		 */
-		isNum: function( a ) {
+		isNumber: function( a ) {
 			return typed.isType( a, "[object Number]" );
 		},
 		/**
@@ -195,8 +195,8 @@ aQuery.define( "base/typed", function( $ ) {
 		 * @param {*}
 		 * @returns {Boolean}
 		 * @example
-		 * typed.isNum("5"); // false
-		 * typed.isNumeric("5"); // true
+		 * typed.isNumber("5"); // false
+		 * typed.isNumbereric("5"); // true
 		 */
 		isNumeric: function( a ) {
 			return !isNaN( parseFloat( a ) ) && isFinite( a );
@@ -216,14 +216,14 @@ aQuery.define( "base/typed", function( $ ) {
 		 * @returns {Boolean}
 		 */
 		isNode: function( ele, name ) {
-			return typed.isEle( ele ) ? ( ele.nodeName && ele.nodeName.toUpperCase() === name.toUpperCase() ) : false;
+			return typed.isElement( ele ) ? ( ele.nodeName && ele.nodeName.toUpperCase() === name.toUpperCase() ) : false;
 		},
 		/**
 		 * Is it Object? "undefined" is not Object.
 		 * @param {*}
 		 * @returns {Boolean}
 		 */
-		isObj: function( a ) {
+		isObject: function( a ) {
 			return a !== undefined ? typed.isType( a, "[object Object]" ) : false;
 		},
 		/**
@@ -240,8 +240,8 @@ aQuery.define( "base/typed", function( $ ) {
 		 * @param {*}
 		 * @returns {Boolean}
 		 */
-		isPlainObj: function( obj ) {
-			if ( !obj || !typed.isObj( obj ) || obj.nodeType || obj.setInterval ) {
+		isPlainObject: function( obj ) {
+			if ( !obj || !typed.isObject( obj ) || obj.nodeType || obj.setInterval ) {
 				return false;
 			}
 
@@ -272,7 +272,7 @@ aQuery.define( "base/typed", function( $ ) {
 		 * @param {*}
 		 * @returns {Boolean}
 		 */
-		isStr: function( a ) {
+		isString: function( a ) {
 			return typed.isType( a, "[object String]" );
 		},
 		/**

@@ -113,7 +113,7 @@
 		 * @returns {this}
 		 */
 		addHandler: function( ele, type, fn ) {
-			if ( typed.isEle( ele ) || typed.isWindow( ele ) ) {
+			if ( typed.isElement( ele ) || typed.isWindow( ele ) ) {
 				var customEvent, proxy, item, types = type.split( " " ),
 					i = types.length - 1;
 
@@ -141,7 +141,7 @@
 		 * @returns {this}
 		 */
 		once: function( ele, type, fn ) {
-			if ( ( typed.isEle( ele ) || typed.isWindow( ele ) ) ) {
+			if ( ( typed.isElement( ele ) || typed.isWindow( ele ) ) ) {
 				var customEvent = event._initHandler( ele ),
 					types = type.split( " " ),
 					i = types.length - 1,
@@ -190,7 +190,7 @@
 		 * @returns {this}
 		 */
 		removeHandler: function( ele, type, fn ) {
-			if ( typed.isEle( ele ) || typed.isWindow( ele ) ) {
+			if ( typed.isElement( ele ) || typed.isWindow( ele ) ) {
 				var customEvent = utilData.get( ele, _handlersKey ),
 					proxy = fn.__proxy || fn,
 					types = type.split( " " ),
@@ -221,7 +221,7 @@
 		 * @returns {this}
 		 */
 		clearHandlers: function( ele, type ) {
-			if ( typed.isEle( ele ) || typed.isWindow( ele ) ) {
+			if ( typed.isElement( ele ) || typed.isWindow( ele ) ) {
 				var customEvent = utilData.get( ele, _handlersKey );
 				if ( !customEvent ) {
 					return this;
@@ -290,7 +290,7 @@
 		 * @returns {Number} fn - "-1" means has not.
 		 */
 		hasHandler: function( ele, type, fn ) {
-			if ( typed.isEle( ele ) || typed.isWindow( ele ) ) {
+			if ( typed.isElement( ele ) || typed.isWindow( ele ) ) {
 				var customEvent = utilData.get( ele, _handlersKey );
 				if ( customEvent ) {
 					return customEvent.hasHandler( type, fn );
@@ -305,7 +305,7 @@
 		 * @returns {Array|Object|null}
 		 */
 		getHandlers: function( ele, type ) {
-			if ( typed.isEle( ele ) || typed.isWindow( ele ) ) {
+			if ( typed.isElement( ele ) || typed.isWindow( ele ) ) {
 				var customEvent = utilData.get( ele, _handlersKey );
 				if ( customEvent ) {
 					var handlers = customEvent.getHandlers( type );
@@ -740,11 +740,11 @@
 		 * @returns {this}
 		 */
 		trigger: function( ele, type, context, paras ) {
-			if ( typed.isEle( ele ) || typed.isWindow( ele ) ) {
+			if ( typed.isElement( ele ) || typed.isWindow( ele ) ) {
 				var data;
 				if ( data = domEventList[ type ] ) {
 					type = eventHooks.type( type );
-					typed.isFun( data ) ? data( ele, type, paras ) : $.logger( "trigger", "triggering" + type + " is not supported" );
+					typed.isFunction( data ) ? data( ele, type, paras ) : $.logger( "trigger", "triggering" + type + " is not supported" );
 				} else if ( data = utilData.get( ele, _handlersKey ) ) {
 					data.trigger.apply( data, [ type, context ].concat( $.util.argToArray( arguments, 3 ) ) );
 				}
@@ -938,7 +938,7 @@
 		 * @returns {this}
 		 */
 		addHandler: function( type, fn ) {
-			if ( !typed.isStr( type ) || !( typed.isFun( fn ) || fn === null ) ) return this;
+			if ( !typed.isString( type ) || !( typed.isFunction( fn ) || fn === null ) ) return this;
 			return this.each( function( ele ) {
 				event.addHandler( ele, type, fn );
 			} );
@@ -951,7 +951,7 @@
 		 * @returns {this}
 		 */
 		once: function( type, fn ) {
-			if ( !typed.isStr( type ) || !( typed.isFun( fn ) || fn === null ) ) return this;
+			if ( !typed.isString( type ) || !( typed.isFunction( fn ) || fn === null ) ) return this;
 			return this.each( function( ele ) {
 				event.once( ele, type, fn );
 			} );
@@ -1004,7 +1004,7 @@
 		 * @returns {this}
 		 */
 		removeHandler: function( type, fn ) {
-			if ( !typed.isStr( type ) || !typed.isFun( fn ) ) return this;
+			if ( !typed.isString( type ) || !typed.isFunction( fn ) ) return this;
 			return this.each( function( ele ) {
 				event.removeHandler( ele, type, fn );
 			} );
@@ -1028,7 +1028,7 @@
 		 * @returns {this}
 		 */
 		toggle: function( funParas ) {
-			var arg = typed.isArr( funParas ) ? funParas : $.util.argToArray( arguments, 0 ),
+			var arg = typed.isArray( funParas ) ? funParas : $.util.argToArray( arguments, 0 ),
 				temp, i = 0,
 				ele;
 			for ( ; ele = this.eles[ i++ ]; ) {

@@ -75,12 +75,14 @@
         };
         test(anObject, "An anObject").should.have.property("anArray").with.should.have.length(5);
 
+        test(anObject, "An anObject").should.not.have.property("any");
+
         return "Jarry";
 
       }).describe("Test should be", function(preResult, test, logger){
         var elementCollection = document.getElementsByTagName("body");
 
-        test(elementCollection).should.be.eleConllection();
+        test(elementCollection).should.be.elementCollection();
 
         test(arguments).should.be.arguments(arguments);
 

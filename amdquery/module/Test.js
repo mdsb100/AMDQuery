@@ -202,13 +202,14 @@ aQuery.define( "module/Test", [ "base/typed", "base/Promise", "base/config", "ma
 		 *  //should.not.exists
 		 *  //should.Throw
 		 *  //should.not.Throw
+		 *  //should.not.have.property
 		 *  //should.have.length
 		 *  //should.have.property
 		 *  //should.have.property().with
 		 *  //should.have.index().with
 		 *  //typed extend function
 		 *  //should.should.be.node
-     *  //should.should.not.be.node
+		 *  //should.should.not.be.node
 		 * }, promise)
 		 * .start();
 		 */
@@ -227,6 +228,7 @@ aQuery.define( "module/Test", [ "base/typed", "base/Promise", "base/config", "ma
 							return fn( result != null ? result : preResult, testWrapper, logger );
 						} catch ( e ) {
 							error( e );
+							throw e;
 							return;
 						}
 					} ).withContext( this );
@@ -236,6 +238,7 @@ aQuery.define( "module/Test", [ "base/typed", "base/Promise", "base/config", "ma
 						return fn( preResult, testWrapper, logger );
 					} catch ( e ) {
 						error( e );
+						throw e;
 						return;
 					}
 				}
@@ -363,7 +366,14 @@ aQuery.define( "module/Test", [ "base/typed", "base/Promise", "base/config", "ma
 					testObject._beCall( testWrapper.combineString( describe, "'" + String( target ) + "'", "should", "not", "Throw" ), target );
 					return testWrapper;
 				},
-				be: {}
+				be: {},
+				have: {
+					property: function( name ) {
+						var bol = target == null || !( name in target );
+						testObject._isEqual( testWrapper.combineString( describe, "'" + String( target ) + "'", "should", "not", "have", String( name ), "property" ), bol, true );
+						return testWrapper;
+					},
+				}
 			},
 			Throw: function() {
 				testObject._beCall( testWrapper.combineString( describe, "'" + String( target ) + "'", "should", "Throw" ), target, true );

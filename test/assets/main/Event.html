@@ -111,7 +111,7 @@
           event.clear(diva);
         }).should.not.Throw();
 
-        test(typed.isEmptyObj(event.getHandlers(diva))).should.equal(true);
+        test(typed.isEmptyObject(event.getHandlers(diva))).should.equal(true);
 
         test(function(){
           event.once(diva, "click once", fn2);

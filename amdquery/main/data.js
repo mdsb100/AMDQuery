@@ -8,7 +8,7 @@
 		for ( name in obj ) {
 
 			// if the public data object is empty, the private is still empty
-			if ( name === "data" && typed.isEmptyObj( obj[ name ] ) ) {
+			if ( name === "data" && typed.isEmptyObject( obj[ name ] ) ) {
 				continue;
 			}
 			if ( name !== "toJSON" ) {
@@ -55,7 +55,7 @@
 			if ( !id )
 				id = ++uuid;
 
-			if ( typed.isPlainObj( name ) ) {
+			if ( typed.isPlainObject( name ) ) {
 				ele[ expando ] = id;
 				thisCache = cache[ id ] = utilExtend.extend( true, {}, name );
 			} else if ( cache[ id ] ) {
@@ -71,7 +71,7 @@
 				thisCache[ name ] = data;
 			}
 
-			return typed.isStr( name ) ? thisCache[ name ] : thisCache;
+			return typed.isString( name ) ? thisCache[ name ] : thisCache;
 		},
 
 		_getTarget: function( ele ) {
@@ -124,7 +124,7 @@
 			if ( !id )
 				id = ++uuid;
 
-			if ( typed.isPlainObj( name ) ) {
+			if ( typed.isPlainObject( name ) ) {
 				ele[ expando ] = id;
 				thisCache = cache[ id ] = utilExtend.extend( true, {}, name );
 			} else if ( cache[ id ] ) {
@@ -172,7 +172,7 @@
 				if ( thisCache ) {
 					delete thisCache[ name ];
 
-					if ( typed.isEmptyObj( thisCache ) )
+					if ( typed.isEmptyObject( thisCache ) )
 						exports.removeData( ele );
 
 				}
@@ -209,7 +209,7 @@
 		data: function( key, value ) {
 			if ( key === undefined && this.length ) {
 				return exports.get( this[ 0 ] );
-			} else if ( typed.isObj( key ) ) {
+			} else if ( typed.isObject( key ) ) {
 				return this.each( function( ele ) {
 					exports.get( ele, key );
 				} );

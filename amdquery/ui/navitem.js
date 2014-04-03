@@ -205,7 +205,7 @@ aQuery.define( "ui/navitem", [
 				return ret;
 			},
 			getAttrToRoot: function( attrName ) {
-				if ( !typed.isStr( attrName ) ) {
+				if ( !typed.isString( attrName ) ) {
 					return [];
 				}
 				var opt = this.options,

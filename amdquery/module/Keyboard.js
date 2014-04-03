@@ -36,7 +36,7 @@
 		addKey: function( obj ) {
 			var keyCode = obj.keyCode,
 				ret;
-			if ( typed.isArr( keyCode ) ) {
+			if ( typed.isArray( keyCode ) ) {
 				for ( var i = 0, len = keyCode.length, nObj; i < len; i++ ) {
 					nObj = {};
 					utilExtend.easyExtend( nObj, obj );
@@ -58,7 +58,7 @@
 			}
 			var i = 0,
 				len;
-			if ( !typed.isArr( keyList ) ) {
+			if ( !typed.isArray( keyList ) ) {
 				keyList = [ keyList ];
 			}
 			for ( len = keyList.length; i < len; i++ ) {
@@ -76,7 +76,7 @@
 		},
 		removeKey: function( obj ) {
 			var item, ret, keyCode = obj.keyCode;
-			if ( typed.isArr( keyCode ) ) {
+			if ( typed.isArray( keyCode ) ) {
 				for ( var i = 0, len = keyCode.length, nObj; i < len; i++ ) {
 					utilExtend.easyExtend( {}, obj );
 					nObj = obj;
@@ -139,25 +139,25 @@
 			var keyCode = obj.keyCode;
 			//若有组合键 会把type强制转换
 			if ( obj.combinationKey && obj.combinationKey.length ) {
-				if ( typed.isStr( keyCode ) ) {
+				if ( typed.isString( keyCode ) ) {
 					keyCode = keyCode.length > 1 ? keyCode : keyCode.toUpperCase();
 				}
 				obj.type = array.inArray( obj.combinationKey, "cmd" ) > -1 ? "keydown" : "keyup";
 			}
-			if ( typed.isStr( keyCode ) ) {
+			if ( typed.isString( keyCode ) ) {
 				obj.keyCode = Keyboard.stringToCode( keyCode );
 			}
 
 			return obj;
 		},
 		codeToChar: function( code ) {
-			return typed.isNum( code ) ? String.fromCharCode( code ) : code;
+			return typed.isNumber( code ) ? String.fromCharCode( code ) : code;
 		},
 		codeToString: function( code ) {
 			return Keyboard.codeToStringReflect[ code ] || Keyboard.codeToChar( code );
 		},
 		charToCode: function( c ) {
-			return typed.isStr( c ) ? c.charCodeAt( 0 ) : c;
+			return typed.isString( c ) ? c.charCodeAt( 0 ) : c;
 		},
 		stringToCode: function( s ) {
 			return Keyboard.stringToCodeReflect[ s ] || Keyboard.charToCode( s );

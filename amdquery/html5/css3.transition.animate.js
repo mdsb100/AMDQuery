@@ -139,7 +139,7 @@
 					//para肯定要在这里用
 					easing = opt.specialEasing && opt.specialEasing[ key ] ? $.getTransitionEasing( opt.specialEasing[ key ] ) : defaultEasing;
 					opt.easing = opt.originEasing;
-					if ( typed.isFun( FX.hooks[ key ] ) ) {
+					if ( typed.isFunction( FX.hooks[ key ] ) ) {
 						ret = FX.hooks[ key ]( ele, opt, value, key );
 						temp = ret[ 0 ]._originCss;
 						//opt._transitionList.push(temp);
@@ -196,7 +196,7 @@
 			animateByTransition: function( ele, property, option ) {
 				option = $._getAnimateByTransitionOpt( option );
 
-				if ( typed.isEmptyObj( property ) ) {
+				if ( typed.isEmptyObject( property ) ) {
 					return option.complete( ele );
 				} else {
 					if ( option.queue === false ) {
@@ -217,7 +217,7 @@
 					type, fx, i, item;
 				for ( type in transitionList ) {
 					fx = transitionList[ type ];
-					if ( typed.isArr( fx ) ) {
+					if ( typed.isArray( fx ) ) {
 						for ( i = fx.length - 1; i >= 0; i-- ) {
 							item = fx[ i ];
 							item.isInDelay() ? item.update( null, fx.from ) : item.step();
@@ -237,12 +237,12 @@
 				var duration = FX.getDuration( opt.duration ),
 					delay = FX.getDelay( opt.delay ),
 					tCompelete;
-				if ( typed.isArr( opt.complete ) ) {
+				if ( typed.isArray( opt.complete ) ) {
 					tCompelete = opt.complete;
 					if ( tCompelete[ 0 ] !== originComplete ) {
 						tCompelete.splice( 0, 0, originComplete );
 					}
-				} else if ( typed.isFun( opt.complete ) ) {
+				} else if ( typed.isFunction( opt.complete ) ) {
 					tCompelete = [ opt.complete, originComplete ];
 				} else {
 					tCompelete = [ originComplete ];
@@ -262,10 +262,10 @@
 			},
 			getTransitionEasing: function( easing ) {
 				var name = easing;
-				// if (typed.isArr(easing)) {
+				// if (typed.isArray(easing)) {
 				//     name = easing.splice(0, 1)[0];
 				// }
-				if ( easing && typed.isStr( easing ) ) {
+				if ( easing && typed.isString( easing ) ) {
 					if ( name.indexOf( "cubic-bezier" ) > -1 ) {
 						return name;
 					}
@@ -305,7 +305,7 @@
 				/// <param name="option" type="Object">参数</param>
 				/// <returns type="self" />
 				option = $._getAnimateByTransitionOpt( option );
-				if ( typed.isEmptyObj( property ) ) {
+				if ( typed.isEmptyObject( property ) ) {
 					return this.each( option.complete );
 				} else {
 					return this[ option.queue === false ? "each" : "queue" ]( function( ele ) {

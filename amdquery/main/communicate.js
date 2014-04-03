@@ -270,13 +270,13 @@
 			if ( o.JSONP ) {
 				random = ( "aQuery" + $.now() ) + parseInt( Math.random() * 10 );
 				window[ random ] = function() {
-					typed.isFun( o.complete ) && o.complete.apply( o.context || window, arguments );
+					typed.isFunction( o.complete ) && o.complete.apply( o.context || window, arguments );
 				};
 				//o.JSONP = random;
 				_data += "&" + ( o.JSONP ) + "=" + random;
 				//_data += "&complete=" + random;
 			}
-			//            if (typed.isStr(o.JSONP)) {
+			//            if (typed.isString(o.JSONP)) {
 			//                _data += "&" + (o.JSONPKey) + "=" + o.JSONP;
 			//            }
 
@@ -291,8 +291,8 @@
 					clearTimeout( _timeId );
 					$.trigger( "jsonpStop", _scripts, o );
 					var js = typeof window[ o.checkString ] != "undefined" ? window[ o.checkString ] : undefined;
-					!o.JSONP && typed.isFun( o.complete ) && o.complete.call( o.context || this, js );
-					//typed.isFun(o.complete) && o.complete.call(o.context || this, js);
+					!o.JSONP && typed.isFunction( o.complete ) && o.complete.call( o.context || this, js );
+					//typed.isFunction(o.complete) && o.complete.call(o.context || this, js);
 					this.nodeName.toLowerCase() == "script" && o.isDelete == true && _head.removeChild( this );
 					this.onerror = this.onload = o = _head = null;
 					if ( window[ random ] ) {
@@ -404,18 +404,18 @@
 		 */
 		getURLParam: function( content ) {
 			var list = [];
-			if ( typed.isObj( content ) ) {
+			if ( typed.isObject( content ) ) {
 				$.each( content, function( value, name ) {
-					value = typed.isFun( value ) ? value() : value;
+					value = typed.isFunction( value ) ? value() : value;
 					!typed.isNul( value ) && list.push( encodeURIComponent( name ) + "=" + encodeURIComponent( value ) );
 				} );
 				content = list.join( "&" );
-			} else if ( typed.isArr( content ) ) {
+			} else if ( typed.isArray( content ) ) {
 				$.each( content, function( item ) {
 					!typed.isNul( item.value ) && list.push( encodeURIComponent( item.name ) + "=" + encodeURIComponent( item.value ) );
 				} );
 				content = list.join( "&" );
-			} else if ( !typed.isStr( content ) ) {
+			} else if ( !typed.isString( content ) ) {
 				content = "";
 			}
 			return content;

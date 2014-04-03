@@ -124,7 +124,7 @@ aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "
 		getPageSize: function() {
 			var pageH = window.innerHeight,
 				pageW = window.innerWidth;
-			if ( !typed.isNum( pageW ) ) {
+			if ( !typed.isNumber( pageW ) ) {
 				if ( document.compatMode == "CSS1Compat" ) {
 					pageH = document.documentElement.clientHeight;
 					pageW = document.documentElement.clientWidth;
@@ -516,7 +516,7 @@ aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "
 		 * @returns {Number}
 		 */
 		outerHeight: function( height, bol ) {
-			if ( arguments.length == 1 && typed.isBol( height ) ) {
+			if ( arguments.length == 1 && typed.isBoolean( height ) ) {
 				bol = height;
 				height = null;
 			}
@@ -540,7 +540,7 @@ aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "
 		 * @returns {Number}
 		 */
 		outerWidth: function( width, bol ) {
-			if ( arguments.length == 1 && typed.isBol( width ) ) {
+			if ( arguments.length == 1 && typed.isBoolean( width ) ) {
 				bol = width;
 				width = null;
 			}

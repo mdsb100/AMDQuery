@@ -79,8 +79,8 @@
 
 	/**
 	 * @callback CollectionEachCallback
-   * @param item {*}
-   * @param index {Number}
+	 * @param item {*}
+	 * @param index {Number}
 	 */
 
 	/**
@@ -110,7 +110,7 @@
 		 */
 		extend: function( name, prototype, statics ) {
 			var arg = $.util.argToArray( arguments );
-			if ( typed.isObj( name ) ) {
+			if ( typed.isObject( name ) ) {
 				arg.splice( 0, 0, _getFunctionName( this ) || name.name || "anonymous" );
 			}
 			arg.push( this );
@@ -125,7 +125,7 @@
 		joinPrototype: function() {
 			for ( var i = 0, len = arguments.length, obj; i < len; i++ ) {
 				obj = arguments[ i ];
-				typed.isPlainObj( obj ) && utilExtend.extend( this.prototype, obj );
+				typed.isPlainObject( obj ) && utilExtend.extend( this.prototype, obj );
 			}
 			return this;
 		},
@@ -422,15 +422,26 @@
 			return object.extend( name, _prototype, _statics, Super );
 		},
 		/**
-		 * Get the object properties count.
+		 * Get the object members count without prototype.
 		 * @param {Object}
-		 * @param {Boolean} - If true , does not count prototype.
 		 * @returns {Number}
 		 */
-		getObjectPropertiesCount: function( obj, bool ) {
+    getObjectMembersCount: function( obj ) {
 			var count = 0;
 			for ( var i in obj ) {
-				bool == true ? typed.isPrototypeProperty( obj, i ) || count++ : count++;
+				typed.isPrototypeProperty( obj, i ) || count++;
+			}
+			return count;
+		},
+		/**
+		 * Get the object prototype members count.
+		 * @param {Object}
+		 * @returns {Number}
+		 */
+		getObjectPrototypeMembersCount: function( obj ) {
+			var count = 0;
+			for ( var i in obj ) {
+				typed.isPrototypeProperty( obj, i ) && count++;
 			}
 			return count;
 		},
@@ -494,7 +505,7 @@
 		 *  mark: {
 		 *    purview: "-wa -ru",
 		 *    defaultValue: 0, // set prototype.mark = 0.
-		 *    validate: function( mark ){ return mark >= 0 && mark <= 100; } // validate param when setting.
+		 *    validate: function( mark ){ return mark >= 0 && mark <= 100; }, // validate param when setting.
 		 *    edit: function( value ){ return value + ""; } // edit value when getting.
 		 *  },
 		 *  height: function( h ){ return h >= 100 && h <= 220; } // validate param when setting.
@@ -515,7 +526,7 @@
 		 * return {obj.prototype}
 		 */
 		createPropertyGetterSetter: function( obj, object ) {
-			if ( !typed.isPlainObj( object ) ) {
+			if ( !typed.isPlainObject( object ) ) {
 				return this;
 			}
 
@@ -529,13 +540,13 @@
 						purview = value;
 						break;
 					case "object":
-						if ( typed.isStr( value.purview ) ) {
+						if ( typed.isString( value.purview ) ) {
 							purview = value.purview;
 						}
-						if ( typed.isFun( value.validate ) ) {
+						if ( typed.isFunction( value.validate ) ) {
 							validate = value.validate;
 						}
-						if ( typed.isFun( value.edit ) ) {
+						if ( typed.isFunction( value.edit ) ) {
 							edit = value.edit;
 						}
 						defaultValue = value.defaultValue; //undefinded always undefinded

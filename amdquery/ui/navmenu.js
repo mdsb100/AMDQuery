@@ -95,7 +95,7 @@ aQuery.define( "ui/navmenu", [
 					ele,
 					checkFn;
 
-				if ( typed.isStr( item ) ) {
+				if ( typed.isString( item ) ) {
 					checkFn = function( ele, item ) {
 						return attr.getAttr( ele, "id" ) === item;
 					};
@@ -107,7 +107,7 @@ aQuery.define( "ui/navmenu", [
 					checkFn = function( ele, item ) {
 						return $( ele ).navitem( "equals", item );
 					};
-				} else if ( typed.isEle( item ) ) {
+				} else if ( typed.isElement( item ) ) {
 					checkFn = function( ele, item ) {
 						return ele === item;
 					};
