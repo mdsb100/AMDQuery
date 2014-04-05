@@ -1,0 +1,92 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+  <title></title>
+  <link href="../../../global/styles/reset.css" rel="stylesheet" type="text/css" />
+  <script src="../../../amdquery/amdquery.js" type="text/javascript" amdquery="define:$;package:main;" amd="detectCR:1;" module="compatibleEvent:1;testLogByHTML:1"></script>
+  <script type="text/javascript">
+    $.require([
+      "base/typed",
+      "main/parse",
+      "main/communicate",
+      "module/Test"
+    ], function(typed, parse, communicate, Test) {
+      var JSONStr ='{"firstName": "John","lastName": "Smith","isAlive": true,"age": 25,"height_cm": 167.64,"address": {"streetAddress": "21 2nd Street","city": "New York","state": "NY","postalCode": "10021-3100"},"phoneNumbers": [{ "type": "home", "number": "212 555-1234" },{ "type": "fax",  "number": "646 555-4567" }]}';
+      var testParse = new Test("TestParse")
+      .describe("Test parse JSON", function(preResult, test, logger){
+        var person;
+        test(function(){
+          person = parse.JSON(JSONStr);
+        }).should.not.Throw();
+
+        test(function(){
+          parse.JSON(JSONStr+"abc");
+        }).should.Throw();
+
+        test(person).should.have.property("firstName").with.should.equal("John");
+
+        test(person).should.have.property("age").with.should.equal(25);
+
+        test(person).should.have.property("isAlive").with.should.equal(true);
+
+        test(person).should.have.property("height_cm").with.should.equal(167.64);
+
+        test(person).should.have.property("address").with.should.be.plainObject();
+
+        var address = person.address;
+
+        test(address).should.have.property("city").with.should.be.equal("New York");
+
+        var phoneNumbers = person.phoneNumbers;
+
+        test(phoneNumbers).should.be.array();
+
+        test(phoneNumbers).should.have.length(2);
+
+        test(phoneNumbers).should.have.index(0).with.should.have.property("type").with.should.be.equal("home");
+
+        test(phoneNumbers).should.have.index(1).with.should.have.property("number").with.should.be.equal("646 555-4567");
+
+      }).describe("Test parse QueryString", function(preResult, test, logger){
+        var queryString = null;
+        test(function(){
+          queryString = parse.QueryString("name=Jarry&age=15");
+        }).should.not.Throw();
+
+        test(queryString).should.have.property("name").with.should.equal("Jarry");
+        test(queryString).should.have.property("age").with.should.equal("15");
+
+        test(function(){
+          queryString = parse.QueryString("name:Jarry!age:15", "!", ":");
+        }).should.not.Throw();
+
+        test(queryString).should.have.property("name").with.should.equal("Jarry");
+        test(queryString).should.have.property("age").with.should.equal("15");
+
+      }).describe("Test parse XML", function(preResult, test, logger){
+        var doc = null;
+
+        communicate.ajax({
+          async: false,
+          url: "../../xml/navmenu.xml",
+          dataType: "text",
+          complete: function(text){
+            doc = parse.XML(text);
+          }
+        });
+
+        test(doc).should.have.property("getElementById").with.should.be.function();
+
+        test(doc.getElementById("index-navitem")).should.be.node("li");
+
+      }).start();
+
+    });
+  </script>
+</head>
+
+<body style="overflow: auto">
+</body>
+
+</html>
