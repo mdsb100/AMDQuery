@@ -11,6 +11,7 @@
         <ul>
           <li amdquery-widget="ui.navitem" ui-navitem="html:AMDQuery;img:class"></li>
           <li amdquery-widget="ui.navitem" ui-navitem="html:Ready;img:class"></li>
+          <li amdquery-widget="ui.navitem" ui-navitem="html:Promise;img:class" test="true"></li>
           <li amdquery-widget="ui.navitem" ui-navitem="html:Require;img:class"></li>
         </ul>
       </li>
@@ -42,7 +43,6 @@
         <ul>
           <li amdquery-widget="ui.navitem" ui-navitem="html:Test;img:class" test="true"></li>
           <li amdquery-widget="ui.navitem" ui-navitem="html:Color;img:class"></li>
-          <li amdquery-widget="ui.navitem" ui-navitem="html:Promise;img:class"></li>
           <li amdquery-widget="ui.navitem" ui-navitem="html:Thread;img:class"></li>
           <li amdquery-widget="ui.navitem" ui-navitem="html:location;img:class" test="true"></li>
         </ul>

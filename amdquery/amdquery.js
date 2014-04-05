@@ -1988,25 +1988,14 @@
 	aQuery.define( "base/Promise", function( $ ) {
 		"use strict";
 		this.describe( "Class Promise" );
-		var checkArg = function( todo, fail, progress, name ) {
-			var arg = util.argToArray( arguments ),
-				len = arg.length,
-				last = arg[ len - 1 ],
-				hasName = typeof last == "string",
-				result, i = len,
-				begin;
-
-			begin = hasName ? len - 1 : len;
-			for ( ; i < 4; i++ ) {
-				arg.splice( begin, 0, null );
-			}
-			return arg;
-		},
-			random = 0,
-			count = 0;
+		var count = 0,
+			todoFn = function( obj ) {
+				return obj;
+			};
 
 		/**
-		 * @see http://wiki.commonjs.org/wiki/Promises/A
+		 * @see http://wiki.commonjs.org/wiki/Promises/A <br />
+		 *  <a target="_parent" href="../../../../test/test/assets/base/Promise.html" >test</a>
 		 * @public
 		 * @module base/Promise
 		 * @example
@@ -2024,18 +2013,68 @@
 			this.init( todo, fail, progress );
 		}
 
+		util.extend( Promise, {
+			TODO: "todo",
+			DONE: "done",
+			FAIL: "fail",
+			PROGRESS: "progress"
+		} );
 
 		Promise.prototype = {
 			constructor: Promise,
 			/**
-			 * Do next
+			 * Do next resolve.
 			 * @private
 			 */
-			_next: function( result ) {
-				for ( var i = 0, len = this.thens.length, promise; i < len; i++ ) {
-					// 依次调用该任务的后续任务
-					promise = this.thens[ i ];
-					promise.resolve( result );
+			_nextResolve: function( result ) {
+				var i = 0,
+					len,
+					allDone = true,
+					parent = this.parent,
+					promise;
+
+				if ( parent ) {
+					i = 0;
+					len = parent.thens.length;
+					for ( ; i < len; i++ ) {
+						promise = parent.thens[ i ];
+						if ( promise.state !== Promise.DONE ) {
+							allDone = false;
+							break;
+						}
+					}
+				}
+
+				if ( allDone ) {
+					i = 0;
+					len = this.thens.length;
+					if ( len ) {
+						for ( ; i < len; i++ ) {
+							promise = this.thens[ i ];
+							promise.resolve( result );
+						}
+					} else {
+						this._finally( result );
+					}
+				}
+				return this;
+			},
+			/**
+			 * Do next reject.
+			 * @private
+			 */
+			_nextReject: function( result ) {
+				var i = 0,
+					len = this.thens.length,
+					promise;
+
+				if ( len ) {
+					for ( ; i < len; i++ ) {
+						promise = this.thens[ i ];
+						promise.reject( result );
+					}
+				} else {
+					this._finally( result );
 				}
 				return this;
 			},
@@ -2055,12 +2094,12 @@
 			 */
 			call: function( name, result ) {
 				switch ( name ) {
-					case "fail":
-					case "progress":
+					case Promise.FAIL:
+					case Promise.PROGRESS:
 						break;
-					case "todo":
+					case Promise.TODO:
 					default:
-						name = "todo";
+						name = Promise.TODO;
 				}
 
 				return this[ name ].call( this.context, result );
@@ -2089,18 +2128,27 @@
 			 * @returns {Promise}
 			 */
 			then: function( nextToDo, nextFail, nextProgress ) {
-				var promise = new Promise( nextToDo, nextFail, nextProgress );
+				var promise;
+				if ( Promise.forinstance( nextToDo ) && !nextToDo.parent ) {
+					promise = nextToDo;
+				} else {
+					promise = new Promise( nextToDo, nextFail, nextProgress );
+				}
+
 				if ( this.context !== this ) {
 					promise.withContext( this.context );
 				}
 				promise.parent = this;
-				if ( this.state != "todo" ) {
-					// 如果当前状态是已完成，则nextOK会被立即调用
-					promise.resolve( this.result );
-				} else {
-					// 否则将会被加入队列中
-					this._push( promise );
+
+				switch ( this.state ) {
+					case Promise.FAIL:
+					case Promise.DONE:
+						promise.resolve( this.result );
+						break;
+					default:
+						this._push( promise );
 				}
+
 				return promise;
 			},
 			/**
@@ -2110,24 +2158,47 @@
 			 * @param {Function=}
 			 */
 			init: function( todo, fail, progress ) {
-				var arg = checkArg.apply( this, arguments );
-
 				this.context = this;
 				this.__promiseFlag = true;
-				this.state = "todo";
+				this.state = Promise.TODO;
 				this.result = null;
 				this.thens = [];
-				this.todo = arg[ 0 ] || function( obj ) {
-					return obj;
-				};
-				this.fail = arg[ 1 ] || null;
-				this.progress = arg[ 2 ] || null;
+				this.todo = todo || todoFn;
+				this.fail = fail || todoFn;
+				this.progress = progress || todoFn;
 				this.parent = null;
-				this.friend = 0;
-				this.asyncCount = 0;
 				this.id = count++;
-
+				this._done = null;
 				return this;
+			},
+			/**
+			 * Add a function which be call finally.<br/>
+			 * Add a promise instance will call resolve.<br/>
+			 * If add 'done' then destroy promise from root.
+			 * @parma {Function|Promise}
+			 * @returns {this} - Return root promise. So you can done().resolve(); .
+			 */
+			done: function( fn ) {
+				var root = this.root();
+				root._done = fn || function() {
+
+				};
+				return root;
+			},
+			/**
+			 * Do it when finish all task or fail.
+			 * @private
+			 */
+			_finally: function( result ) {
+				var root = this.root();
+				if ( root._done ) {
+					if ( Promise.forinstance( root._done ) ) {
+						root._done.withContext( this.context ).resolve( result );
+					} else {
+						root._done.call( this.context, result );
+					}
+					root.destroy();
+				}
 			},
 			/**
 			 * Clear property.
@@ -2136,10 +2207,12 @@
 			_clearProperty: function() {
 				this.result = null;
 				this.thens = [];
-				this.todo = null;
-				this.fail = null;
-				this.progress = null;
+				this.todo = todoFn;
+				this.fail = todoFn;
+				this.progress = todoFn;
 				this.parent = null;
+				this.state = Promise.TODO;
+				this._done = null;
 				return this;
 			},
 			/**
@@ -2167,11 +2240,7 @@
 			 * @returns {this}
 			 */
 			resolve: function( obj ) {
-				if ( this.state != "todo" ) {
-					// util.error( {
-					//   fn: "Promise.resolve",
-					//   msg: "already resolved"
-					// } )
+				if ( this.state != Promise.TODO ) {
 					return this;
 				}
 
@@ -2180,36 +2249,105 @@
 					return this;
 				} else if ( this.fail ) {
 					try {
-						this.state = "done";
-						this.result = this.call( "todo", obj );
+						this.state = Promise.DONE;
+						this.result = this.call( Promise.TODO, obj );
 
 					} catch ( e ) {
-						this.state = "fail";
-						this.result = this.call( "fail", obj );
-
+						this.state = Promise.TODO;
+						return this.reject( obj );
 					}
 				} else {
-					this.state = "done";
-					this.result = this.call( "todo", obj );
-
+					this.state = Promise.DONE;
+					this.result = this.call( Promise.TODO, obj );
 				}
 
 				if ( Promise.forinstance( this.result ) && this.result !== this ) {
 					var
-					self = this,
-						state = this.state,
-						callback = function( result ) {
-							self.state = state;
+					promise = this.result,
+						self = this,
+						todo = function( result ) {
+							self.state = Promise.DONE;
 							self.result = result;
-							self._next( result );
-							self = null;
-						};
+							self._nextResolve( result );
+							self = fail = todo = progress = null;
+						},
+						fail = this.result.fail,
+						progress = this.result.progress;
 
-					this.state = "todo";
-					this.result.then( callback );
+					if ( promise.state !== Promise.DONE ) {
+						this.state = Promise.TODO;
+					}
+
+					if ( promise.state === Promise.FAIL ) {
+						self.reject( promise.result );
+						self = fail = todo = progress = null;
+					} else {
+						promise.fail = function( result ) {
+							fail.call( this, result );
+							self.reject( result );
+							self = fail = todo = progress = null;
+						}
+					}
+
+					promise.progress = function( result ) {
+						progress.call( this, result );
+						return self.progress( result );
+					}
+
+					promise.then( todo ).done();
 				} else {
-					this._next( this.result );
+					this._nextResolve( this.result );
 				}
+				return this;
+			},
+			/**
+			 * If fail return a promise then do next.
+			 * @param {*=} - result.
+			 * @returns {this}
+			 */
+			reject: function( obj ) {
+				if ( this.state != Promise.TODO ) {
+					return this;
+				}
+
+				this.state = Promise.FAIL;
+				this.result = this.call( Promise.FAIL, obj );
+
+				if ( Promise.forinstance( this.result ) && this.result !== this ) {
+					var promise = this.result;
+					switch ( promise.state ) {
+						case Promise.TODO:
+							this._nextResolve( obj );
+							break;
+						case Promise.DONE:
+							this._nextResolve( promise.result );
+							break;
+						case Promise.FAIL:
+							this._nextReject( promise.result );
+							break;
+					}
+
+				} else {
+					this._finally( this.result );
+				}
+				return this;
+			},
+			/**
+			 * If sum is great than or equal 100 then do next. The default sum is 0.
+			 * @param {Number}.
+			 * @returns {this}
+			 */
+			reprocess: function( obj ) {
+				if ( this.state != Promise.TODO ) {
+					return this;
+				}
+
+				var result = this.progress( obj );
+
+				if ( Promise.forinstance( result ) && result !== this ) {
+					this.resolve( result.resolve( obj ).result );
+				}
+
 				return this;
 			},
 			/**
@@ -2224,60 +2362,19 @@
 			and: function( todo, fail, progress ) {
 				var self = this.parent || this,
 					promise = self.then( todo, fail, progress );
-				promise.friend = 1;
-				self.asyncCount += 1;
 				return promise;
-			},
-			/**
-			 * Relative method "and".
-			 * @param {Promise} [promise=this]
-			 * @param {*=} - result
-			 * @returns {Promise}
-			 * @example
-			 * function delay(ms) {
-			 *   return function (obj) {
-			 *       var promise = new Promise;
-			 *       var self = this;
-			 *       setTimeout(function () {
-			 *           promise.together(self, obj);
-			 *       }, ms);
-			 *       return promise;
-			 *   };
-			 * };
-			 * new Promise().and(delay(1000)).and(delay(2000));
-			 */
-			together: function( promise, obj ) {
-				var i = 0,
-					parent = promise.parent || this.parent,
-					thens = parent.thens,
-					len = thens.length,
-					then;
-				parent.asyncCount = Math.max( --parent.asyncCount, 0 );
-				for ( i = 0; i < len; i++ ) {
-					then = thens[ i ];
-					if ( then.friend ) {
-						if ( parent.asyncCount > 0 ) {
-							return this;
-						}
-					}
-				}
-				for ( i = 0; i < len; i++ ) {
-					then = thens[ i ];
-					Promise.forinstance( then.result ) && then.result.resolve( obj );
-				}
-				return this;
 			},
 			/**
 			 * @returns {Boolean}
 			 */
 			finished: function() {
-				return this.state === "done";
+				return this.state === Promise.DONE || this.state === Promise.FAIL;
 			},
 			/**
 			 * @returns {Boolean}
 			 */
 			unfinished: function() {
-				return this.state === "todo";
+				return this.state === Promise.TODO;
 			},
 			/**
 			 * Get root promise.

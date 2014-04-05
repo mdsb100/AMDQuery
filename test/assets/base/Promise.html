@@ -5,119 +5,175 @@
 <head>
   <title></title>
   <link href="../../../global/styles/reset.css" rel="stylesheet" type="text/css" />
-  <style>
-    #test {
-      background: #0000FF;
-      width: 100px;
-      height: 100px;
-    }
-  </style>
-  <script src="../../../amdquery/amdquery.js" type="text/javascript" amdquery="define:$;" amd="detectCR:1;"></script>
+  <script src="../../../amdquery/amdquery.js" type="text/javascript" amdquery="define:$;" amd="detectCR:1;" module="compatibleEvent:1;testLogByHTML:1"></script>
   <script type="text/javascript">
-    $.require("base/Promise", function(Promise) {
-      var div = document.getElementsByTagName("div"),
-        write = function(s) {
-          div[0].innerHTML = div[0].innerHTML += s + "<br>";
-        }
+    $.require(["base/Promise", "module/Test"], function(Promise, Test) {
+      var testPromise = new Test("TestPromise")
+      .describe("Test resolve", function(preResult, test, logger){
+        var resolvePromise = new Promise;
 
-        function add1(num) {
-          //write(num);
-          a + num;
-          return num;
-        }
+        var promise = new Promise(function(result){
+          test(result).should.equal(0);
+          return result + 1;
+        }).then(function(result){
+          test(result).should.equal(1);
+        }).then(function(){
+          var promise = new Promise();
+          setTimeout(function(){
+            promise.resolve("resolve");
+          }, 200);
+          return promise;
+        }).then(function(result){
+          test(result).should.equal("resolve");
+          var promise = new Promise(function(result){
+            return result;
+          });
+          promise.resolve("resolve by sync");
+          return promise;
+        }).then(function(result){
+          test(result).should.equal("resolve by sync");
+          return "done";
+        }).done(function(result){
+          test(result).should.equal("done");
+          setTimeout(function(){
+            resolvePromise.resolve({
+              info: "next describe",
+              promise: promise
+            });
+          }, 0)
+        }).resolve(0);
 
-        function add(num, space) {
-          space = space || "";
-          write(space + "add: " + num + " + 1 = " + (num + 1));
-          return num + 1;
-        }
+        return resolvePromise;
 
+      }).describe("Test done, destroy", function(preResult, test, logger){
+        test(preResult.info).should.equal("next describe");
+        test(preResult.promise).should.have.property("thens").with.should.have.length(0);
+      }).describe("Test reject", function(preResult, test, logger){
+        var resolvePromise = new Promise(function(result){
+          test(result).should.equal("goto done");
+          return "next reject";
+        });
+
+        var promise = new Promise(function(result){
+          logger("go to fail function");
+          a;
+          a[0];
+        }, function(result){
+          test(result).should.equal(0);
+          logger("Reject return instance promise, it will do next.");
+          return new Promise;
+        }).then(function(result){
+          test(result).should.equal(0);
+          var promise = new Promise;
+          promise.reject("goto fail");
+          return promise;
+        }, function(result){
+          test(result).should.equal("goto fail");
+          var promise = new Promise;
+          promise.reject("goto next reject");
+          return promise;
+        }).then(function(result){
+          logger("It does not be call");
+          test(result).should.not.equal(1);
+        }, function(result){
+          test(result).should.equal("goto next reject");
+          return "goto done";
+        }).done(resolvePromise).resolve(0);
+
+        return resolvePromise;
+
+      }).describe("Test reject", function(preResult, test, logger){
+        test(preResult).should.equal("next reject");
+        var resolvePromise = new Promise(function(result){
+          test(result).should.equal("goto done");
+          return "next progress";
+        });
+
+        var promise = new Promise(function(result){
+
+        }, function(result){
+          test(result).should.equal(0);
+          logger("Reject return instance promise, it will do next.");
+          return new Promise;
+        }).then(function(result){
+          test(result).should.equal(0);
+          var promise = new Promise;
+
+          setTimeout(function(){
+            promise.reject("goto done");
+          }, 100);
+
+          return promise;
+        }).then(function(result){
+          logger("It does not be call");
+          test(result).should.not.equal(1);
+        }, function(result){
+          logger("It does not be call");
+          test(result).should.not.equal(1);
+        }).done(resolvePromise).reject(0);
+
+        return resolvePromise;
+
+      }).describe("Test progress", function(preResult, test, logger){
+        test(preResult).should.equal("next progress");
+        var resolvePromise = new Promise(function(result){
+          test(sum).should.equal(10);
+          test(result).should.equal("goto done");
+          return "next all";
+        });
+
+        var sum = 0;
+
+        var promise = new Promise(function(result){
+          return result;
+        }).then(function(result){
+          var promise = new Promise;
+          var interval = setInterval(function(){
+            promise.reprocess(interval);
+          }, 20);
+          return promise;
+        }, function(){}, function(interval){
+          if(sum === 10){
+            clearInterval(interval);
+            return new Promise(function(){
+              return "goto done"
+            });
+          }
+          sum++;
+        }).done(resolvePromise).resolve(0);
+
+        return resolvePromise;
+
+      }).describe("Test all", function(preResult, test, logger){
+        test(preResult).should.equal("next all");
+        var delayBeCallSum = 0;
         function delay(ms) {
           return function(obj) {
-            write("");
-            write("delay " + ms + " begin");
-            var promise = new Promise;
-            var self = this;
+            var promise = new Promise();
             setTimeout(function() {
-              write("delay " + ms + " stop");
-              write("do together");
-              //promise.resolve(obj);
-              promise.together(self, obj);
+              obj.delay = Math.max(obj.delay, ms);
+              delayBeCallSum++;
+              promise.resolve(obj);
             }, ms);
             return promise;
           };
-        }
+        };
 
-      var promise = new Promise(add1, function(num) {
-        write("add1 is fail so: tag will save 'fail'")
-        return add(num);
-      })
-        .then(function(num) {
-          write("");
-          write("tag back" + ";num:" + num);
-          return num;
-        })
-        .and(delay(3000))
-        .and(delay(2000))
-        .and(delay(1000))
-      //.then(delay(3000))
-      .then(function(num) {
-        write("ready!!!!!")
-        return num
-      })
-        .then(function(num) {
-          write(" ")
-          write("already reBranch");
-          return num;
-        })
-        .then(function(num) {
-          return add(num, "--");
-        })
-        .then(function(num) {
-          return add(num, "--");
-        })
-        .then(function(num) {
-          return add(num, "--");
-        })
-        .then(function(num) {
-          return add(num, "--");
-        })
-        .then(function(num) {
-          return add(num, "--");
-        })
-        .rootResolve(0);
+        var resolvePromise = new Promise(function(result){
+          test(result.delay).should.equal(300);
+          test(delayBeCallSum).should.equal(3);
+        });
 
-      setTimeout(function() {
-        var back = promise
-        write("");
-        write("");
-        write("tag back");
-        write("setTimeout 6000...Is already done?");
-        write("status:" + back.state);
+        var promise = new Promise()
+        .and(delay(100))
+        .and(delay(200))
+        .and(delay(300))
+        .done(resolvePromise).resolve({delay: 0});
 
-        back
-          .then(function(num) {
-            write("");
-            return num;
-          })
-          .then(function(num) {
-            return add(num, "--");
-          })
+        return resolvePromise;
 
-      }, 6000);
+      }).start();
 
-      var promiseDelete = new Promise(add1, add);
-      promiseDelete.then(add)
-        .and(add)
-        .and(add)
-        .then(add)
-        .then(add)
-        .then(add)
-        .then(add)
-        .root.destroy();
-      write("");
-      write("promiseDelete.thens.length:" + promiseDelete.thens.length);
-      write("");
     });
   </script>
 </head>

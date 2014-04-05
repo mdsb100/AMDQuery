@@ -11,8 +11,6 @@
       "module/Test"
     ], function(Promise, Test) {
 
-      var promise1 = new Promise;
-
       var testTest = new Test("TestTest", function(preResult){
         // complete
       }).describe("Test Test function", function(preResult, test, logger){
@@ -98,13 +96,17 @@
 
         logger("Set timeout 1 seconds to call next describe");
 
+        var promise1 = new Promise;
+
         setTimeout( function() {
           promise1.resolve(1000);
         }, 1000 );
 
+
+        return promise1;
       }).describe("Test promise", function(preResult, test, logger){
         test(preResult, "Previous result").should.equal(1000);
-      }, promise1).start();
+      }).start();
 
     });
   </script>

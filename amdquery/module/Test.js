@@ -184,9 +184,13 @@ aQuery.define( "module/Test", [ "base/typed", "base/Promise", "base/config", "ma
 		 *
 		 *  var myName = "Jarray";
 		 *  test(myName, "My name").should.be.a("string");
+		 *  var promise = new Promise;
+		 *
 		 *  setTimeout(function(){
 		 *    promise.resolve(preResult)
 		 *  }, 3000)
+		 *
+		 *  return promise;
 		 * })
 		 * .describe("Test a", function(preResult, test, logger){
 		 *  //should.be.an
@@ -210,10 +214,10 @@ aQuery.define( "module/Test", [ "base/typed", "base/Promise", "base/config", "ma
 		 *  //typed extend function
 		 *  //should.should.be.node
 		 *  //should.should.not.be.node
-		 * }, promise)
+		 * })
 		 * .start();
 		 */
-		describe: function( describe, fn, promise ) {
+		describe: function( describe, fn ) {
 			var self = this;
 
 			function testWrapper( target, describe ) {
@@ -222,25 +226,12 @@ aQuery.define( "module/Test", [ "base/typed", "base/Promise", "base/config", "ma
 
 			this.promise = this.promise.then( function( preResult ) {
 				logger( this.name, describe );
-				if ( Promise.forinstance( promise ) ) {
-					promise.then( function( result ) {
-						try {
-							return fn( result != null ? result : preResult, testWrapper, logger );
-						} catch ( e ) {
-							error( e );
-							throw e;
-							return;
-						}
-					} ).withContext( this );
-					return promise;
-				} else {
-					try {
-						return fn( preResult, testWrapper, logger );
-					} catch ( e ) {
-						error( e );
-						throw e;
-						return;
-					}
+				try {
+					return fn( preResult, testWrapper, logger );
+				} catch ( e ) {
+					error( e );
+					throw e;
+					return;
 				}
 			} );
 
@@ -252,12 +243,11 @@ aQuery.define( "module/Test", [ "base/typed", "base/Promise", "base/config", "ma
 		 * @returns {this}
 		 */
 		start: function( firstResult ) {
-			this.promise.then( function() {
+			this.promise.done( function() {
 				Test[ this.fail == 0 ? "logger" : "error" ]( this.name, "Test stop", "Test:" + this.count, "Success" + ( this.count - this.fail ), "Fail:" + this.fail );
 				this.complete();
 				this.report();
-			} );
-			this.promise.root().resolve( firstResult );
+			} ).resolve( firstResult );
 			return this;
 		},
 		/**
