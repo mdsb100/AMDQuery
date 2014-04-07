@@ -388,10 +388,12 @@ aQuery.define( "module/Test", [ "base/typed", "base/Promise", "base/config", "ma
 			"XML": 1,
 			"NaN": 1,
 			"RegExp": 1
-		}
+		}, ignore = {
+				"isEqual": 1
+			};
 
 		$.each( typed, function( fn, name ) {
-			if ( name.indexOf( "is" ) === 0 && name.length > 2 ) {
+			if ( name.indexOf( "is" ) === 0 && name.length > 2 && !ignore[ name ] ) {
 				var fnName = name.replace( "is", "" );
 
 				if ( !except[ fnName ] ) {

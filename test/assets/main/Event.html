@@ -82,9 +82,9 @@
           event.off(diva, "bar click", fn);
         }).should.not.Throw();
 
-        test(event.hasHandler(diva, "bar", fn)).should.be.equal(-1);
+        test(event.hasHandler(diva, "bar", fn)).should.equal(-1);
 
-        test(event.hasHandler(diva, "click", fn)).should.be.equal(-1);
+        test(event.hasHandler(diva, "click", fn)).should.equal(-1);
 
         test(fn.__proxy).should.not.exists();
 

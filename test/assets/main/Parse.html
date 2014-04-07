@@ -44,9 +44,9 @@
 
         test(phoneNumbers).should.have.length(2);
 
-        test(phoneNumbers).should.have.index(0).with.should.have.property("type").with.should.be.equal("home");
+        test(phoneNumbers).should.have.index(0).with.should.have.property("type").with.should.equal("home");
 
-        test(phoneNumbers).should.have.index(1).with.should.have.property("number").with.should.be.equal("646 555-4567");
+        test(phoneNumbers).should.have.index(1).with.should.have.property("number").with.should.equal("646 555-4567");
 
       }).describe("Test parse QueryString", function(preResult, test, logger){
         var queryString = null;
