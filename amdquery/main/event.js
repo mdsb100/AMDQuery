@@ -869,14 +869,6 @@
 			return $.addHandler( "ajaxStop", fn );
 		},
 		/**
-		 * Add "ajaxTimeout" event Handler to bus.
-		 * @param {Function}
-		 * @returns {this}
-		 */
-		ajaxTimeout: function( fn ) {
-			return $.addHandler( "ajaxTimeout", fn );
-		},
-		/**
 		 * Add "getJSStart" event Handler to bus.
 		 * @param {Function}
 		 * @returns {this}
@@ -891,15 +883,7 @@
 		 */
 		jsonpStop: function( fn ) {
 			return $.addHandler( "jsonpStop", fn );
-		},
-		/**
-		 * Add "jsonpTimeout" event Handler to bus.
-		 * @param {Function}
-		 * @returns {this}
-		 */
-		jsonpTimeout: function( fn ) {
-			return $.addHandler( "jsonpTimeout", fn );
-		},
+		}
 	} );
 
 	$.extend( {

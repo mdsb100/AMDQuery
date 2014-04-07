@@ -1,4 +1,4 @@
-﻿aQuery.define( "main/communicate", [ "base/typed", "base/extend", "main/event", "main/parse" ], function( $, typed, utilExtend, parse, undefined ) {
+﻿aQuery.define( "main/communicate", [ "base/Promise", "base/typed", "base/extend", "main/event", "main/parse" ], function( $, Promise, typed, utilExtend, event, parse, undefined ) {
 	"use strict";
 	/**
 	 * @inner
@@ -11,7 +11,7 @@
 	 * @property [options.complete] {Function}
 	 * @property [options.header] {Object<String,String>}
 	 * @property [options.isRandom] {Boolean}
-	 * @property [options.timeout=10000] {Number}
+	 * @property [options.timeout=7000] {Number}
 	 * @property [options.routing=""] {String}
 	 * @property [options.timeoutFun] {Function} - Timeout handler.
 	 * @property [options.dataType="text"] {String} - "json"|"xml"|"text"|"html"
@@ -31,7 +31,7 @@
 	 * @property [options.context=null] {Object} - Complete context.
 	 * @property [options.isRandom=false] {Boolean}
 	 * @property [options.checkString=""] {String} - Then JSONP back string.
-	 * @property [options.timeout=10000] {Number}
+	 * @property [options.timeout=7000] {Number}
 	 * @property [options.timeoutFun] {Function} - Timeout handler.
 	 * @property [options.routing=""] {String}
 	 * @property [options.JSONP] {String|Boolean} - True is aQuery. String is JSONP.
@@ -143,7 +143,7 @@
 									response = _ajax.responseXML;
 									if ( !response ) {
 										try {
-											response = parse.parseXML( _ajax.responseText );
+											response = parse.XML( _ajax.responseText );
 										} catch ( e ) {}
 									}
 									break;
@@ -206,7 +206,7 @@
 		 * @property {String}   ajaxSetting.type                - "GET".
 		 * @property {String}   ajaxSetting.contentType         - "application/x-www-form-urlencoded".
 		 * @property {Object}   ajaxSetting.context             - Complete context.
-		 * @property {Number}   ajaxSetting.timeout             - 10000 millisecond.
+		 * @property {Number}   ajaxSetting.timeout             - 7000 millisecond.
 		 * @property {Function} ajaxSetting.timeoutFun          - Timeout handler.
 		 * @property {String}   ajaxSetting.routing             - "".
 		 * @property {null}     ajaxSetting.header
@@ -224,7 +224,7 @@
 			contentType: "application/x-www-form-urlencoded",
 			context: null,
 			async: true,
-			timeout: 10000,
+			timeout: 7000,
 			timeoutFun: function( o ) {
 				$.logger( "aQuery.ajax", o.url + "of ajax is timeout:" + ( o.timeout / 1000 ) + "second" );
 			},
@@ -244,84 +244,88 @@
 		 * @param options.url {String}
 		 * @param [options.charset="GBK"] {String}
 		 * @param [options.complete] {Function}
-		 * @param [options.error] {Function} - Error handler
+		 * @param [options.fail] {Function} - Error handler
 		 * @param [options.isDelete=true] {Boolean} - Does delete the script.
 		 * @param [options.context=null] {Object} - Complete context.
 		 * @param [options.isRandom=false] {Boolean}
 		 * @param [options.checkString=""] {String} - Then JSONP back string.
-		 * @param [options.timeout=10000] {Number}
-		 * @param [options.timeoutFun] {Function} - Timeout handler.
+		 * @param [options.timeout=7000] {Number}
 		 * @param [options.routing=""] {String}
 		 * @param [options.JSONP] {String|Boolean} - True is aQuery. String is JSONP.
+		 * @param [options.data={}] {Object<String,String>}
 		 * @returns {this}
 		 */
 		jsonp: function( options ) {
 			var _scripts = document.createElement( "script" ),
 				_head = document.getElementsByTagName( "HEAD" ).item( 0 ),
-				o = utilExtend.extend( {}, communicate.jsonpSetting, options ),
+				o = utilExtend.extend( true, {}, communicate.jsonpSetting, options ),
+				e = utilExtend.extend( e, o ),
 				_data = "",
-				_timeId, random = "";
-			//            , _checkString = o.checkString
-			//            , isDelete = options.isDelete || false;
-
-			_data = communicate.getURLParam( o.data );
-
+				_timeId, random = "",
+				promise;
 
 			if ( o.JSONP ) {
 				random = ( "aQuery" + $.now() ) + parseInt( Math.random() * 10 );
-				window[ random ] = function() {
-					typed.isFunction( o.complete ) && o.complete.apply( o.context || window, arguments );
+				window[ random ] = function( json ) {
+					o.json = json;
 				};
-				//o.JSONP = random;
-				_data += "&" + ( o.JSONP ) + "=" + random;
-				//_data += "&complete=" + random;
+				o.data[ o.JSONP ] = random
 			}
-			//            if (typed.isString(o.JSONP)) {
-			//                _data += "&" + (o.JSONPKey) + "=" + o.JSONP;
-			//            }
 
-			o.isRandom == true && ( _data += "&random=" + $.now() );
+			if ( o.isRandom == true ) {
+				o.data.random = $.now();
+			};
+
+			_data = communicate.getURLParam( o.data );
 
 			o.url += o.routing + ( _data == "" ? _data : "?" + _data );
 
-			//IE和其他浏览器 不一样
+			promise = new Promise( function( json ) {
+				clearTimeout( _timeId );
+				typed.isNode( this.nodeName, "script" ) && o.isDelete == true && _head.removeChild( this );
+				this.onerror = this.onload = _head = null;
+				if ( window[ random ] ) {
+					delete window[ random ];
+					random = null;
+				}
+				e.type = "jsonpStop";
+				$.trigger( e.type, _scripts, e );
+				e = null;
+				var promise = new Promise();
+				if ( json !== undefined ) {
+					typed.isFunction( o.complete ) && o.complete.call( o.context || this, json );
+					promise.resolve( json );
+				} else {
+					o.fail.call( o.context || null, o );
+					promise.reject();
+				}
+				return promise;
+			}, function() {
+				var promise = new Promise;
+				promise.reject();
+				return promise;
+			} );
 
 			_scripts.onload = _scripts.onreadystatechange = function() {
 				if ( !this.readyState || this.readyState == "loaded" || this.readyState == "complete" ) {
-					clearTimeout( _timeId );
-					$.trigger( "jsonpStop", _scripts, o );
-					var js = typeof window[ o.checkString ] != "undefined" ? window[ o.checkString ] : undefined;
-					!o.JSONP && typed.isFunction( o.complete ) && o.complete.call( o.context || this, js );
-					//typed.isFunction(o.complete) && o.complete.call(o.context || this, js);
-					this.nodeName.toLowerCase() == "script" && o.isDelete == true && _head.removeChild( this );
-					this.onerror = this.onload = o = _head = null;
-					if ( window[ random ] ) {
-						window[ random ] = undefined;
-						random = null;
-					}
+					promise.withContext( _scripts ).resolve( o.json );
 				}
 			};
 
-			_scripts.onerror = o.error;
+			_scripts.onerror = function() {
+				promise.withContext( _scripts ).resolve();
+			};
 
-			o.timeout && ( _timeId = setTimeout( function() {
-				$.trigger( "jsonpTimeout", _scripts, o );
-				o.timeoutFun.call( this, o );
-				_scripts = _scripts.onerror = _scripts.onload = o.error = _head = null;
-				if ( window[ random ] ) {
-					window[ random ] = undefined;
-					random = null;
-				}
-			}, o.timeout ) );
+			o.timeout && ( _timeId = setTimeout( _scripts.onerror, o.timeout ) );
 
 			_scripts.setAttribute( "src", o.url );
 			o.charset && _scripts.setAttribute( "charset", o.charset );
 			_scripts.setAttribute( "type", "text/javascript" );
 			_scripts.setAttribute( "language", "javascript" );
-
-			$.trigger( "jsonpStart", _scripts, o );
+			e.type = "jsonpStart";
+			$.trigger( e.type, _scripts, e );
 			_head.insertBefore( _scripts, _head.firstChild );
-			return this;
+			return promise;
 		},
 		jsonpSetting:
 		/**
@@ -330,57 +334,66 @@
 		 * @property {Object}         jsonpSetting                    - JSONP default setting.
 		 * @property {String}         ajaxSetting.url                 - "".
 		 * @property {String}         ajaxSetting.charset             - "GBK".
-		 * @property {String}         ajaxSetting.checkString         - "".
 		 * @property {Function}       ajaxSetting.error
 		 * @property {Boolean}        ajaxSetting.isDelete            - true.
 		 * @property {Boolean}        ajaxSetting.isRandom            - false.
-		 * @property {String|Boolean} ajaxSetting.JSONP               - false.
+		 * @property {String}         ajaxSetting.JSONP               - "callback".
 		 * @property {String}         ajaxSetting.routing             - "".
-		 * @property {Number}         ajaxSetting.timeout             - 10000 millisecond.
+		 * @property {Number}         ajaxSetting.timeout             - 7000 millisecond.
 		 * @property {Function}       ajaxSetting.timeoutFun          - Timeout handler.
+		 * @property {Object}         ajaxSetting.data                - Query string.
 		 */
 		{
 			charset: "GBK",
-			checkString: "",
 			error: function() {
 				$.logger( "aQuery.jsonp", ( this.src || "(empty)" ) + " of javascript getting error" );
 			},
 			isDelete: true,
 			isRandom: false,
-			JSONP: false,
+			JSONP: "callback",
 			routing: "",
-			timeout: 10000,
+			timeout: 7000,
 			timeoutFun: function( o ) {
 				$.logger( aQuery.jsonp, ( o.url || "(empty)" ) + "of ajax is timeout:" + ( o.timeout / 1000 ) + "second" );
 			},
-			url: ""
+			url: "",
+			data: {}
 		},
 		/**
 		 * @deprecated
 		 */
-		jsonpsByFinal: function( list, complete, context ) {
+		jsonps: function( list, ignoreFail ) {
 			/// <summary>加载几段script，当他们都加载完毕触发个事件
 			/// </summary>
 			/// <param name="list" type="Array:[options]">包含获取js配置的数组，参考jsonp</param>
 			/// <param name="complete" type="Function">complete</param>
 			/// <param name="context" type="Object">作用域</param>
 			/// <returns type="self" />
-			var sum = list.length,
-				count = 0;
-			$.each( list, function( item ) {
-				item._complete = item.complete;
-				item.complete = function() {
-					count++;
-					item._complete && item._complete.apply( this, arguments );
-					if ( count == sum ) {
-						complete && complete.apply( window, context );
-						count = null;
-						sum = null;
+			var retPromise = new Promise().then( function( result ) {
+				return result;
+			} ),
+				retList = [];
+
+			$.each( list, function( item, index ) {
+				var promise = communicate.jsonp( item ).then( function( json ) {
+					if ( json ) {
+						retList[ index ] = json;
 					}
-				};
-				communicate.jsonp( item );
+					return retList;
+				} );
+
+				retPromise = retPromise.and( function() {
+					return promise;
+				} );
+
+				promise.done();
 			} );
-			return this;
+
+			setTimeout( function() {
+				retPromise.root().resolve( retList )
+			}, 0 );
+
+			return retPromise;
 		},
 		/**
 		 * @example
