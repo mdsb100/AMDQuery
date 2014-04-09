@@ -2,39 +2,37 @@
 	"use strict";
 	/**
 	 * @inner
-	 * @name AjaxOptions
-	 * @property options {Object}
-	 * @property [options.type="GET"] {String} - "GET" or "POST"
-	 * @property options.url {String}
-	 * @property [options.data=""] {String|Object<String,String>|Array<Object<String,String>>} - See {@link module:main/communicate.getURLParam}
-	 * @property [options.async=true] {Boolean}
-	 * @property [options.complete] {Function}
-	 * @property [options.header] {Object<String,String>}
-	 * @property [options.isRandom] {Boolean}
-	 * @property [options.timeout=7000] {Number}
-	 * @property [options.routing=""] {String}
-	 * @property [options.timeoutFun] {Function} - Timeout handler.
-	 * @property [options.dataType="text"] {String} - "json"|"xml"|"text"|"html"
-	 * @property [options.contentType="application/x-www-form-urlencoded"] {String}
-	 * @property [options.context=null] {Object} - Complete context.
+	 * @typedef {Object} AjaxOptions
+	 * @property AjaxOptions {Object}
+	 * @property [AjaxOptions.type="GET"] {String} - "GET" or "POST"
+	 * @property AjaxOptions.url {String}
+	 * @property [AjaxOptions.data=""] {String|Object<String,String>|Array<Object<String,String>>} - See {@link module:main/communicate.getURLParam}
+	 * @property [AjaxOptions.async=true] {Boolean}
+	 * @property [AjaxOptions.complete] {Function}
+	 * @property [AjaxOptions.header] {Object<String,String>}
+	 * @property [AjaxOptions.isRandom] {Boolean}
+	 * @property [AjaxOptions.timeout=7000] {Number}
+	 * @property [AjaxOptions.routing=""] {String}
+	 * @property [AjaxOptions.timeoutFun] {Function} - Timeout handler.
+	 * @property [AjaxOptions.dataType="text"] {String} - "json"|"xml"|"text"|"html"
+	 * @property [AjaxOptions.contentType="application/x-www-form-urlencoded"] {String}
+	 * @property [AjaxOptions.context=null] {Object} - Complete context.
 	 */
 
 	/**
 	 * @inner
-	 * @name JSONPOptions
-	 * @property options {Object}
-	 * @property options.url {String}
-	 * @property [options.charset="GBK"] {String}
-	 * @property [options.complete] {Function}
-	 * @property [options.error] {Function} - Error handler
-	 * @property [options.isDelete=true] {Boolean} - Does delete the script.
-	 * @property [options.context=null] {Object} - Complete context.
-	 * @property [options.isRandom=false] {Boolean}
-	 * @property [options.checkString=""] {String} - Then JSONP back string.
-	 * @property [options.timeout=7000] {Number}
-	 * @property [options.timeoutFun] {Function} - Timeout handler.
-	 * @property [options.routing=""] {String}
-	 * @property [options.JSONP] {String|Boolean} - True is aQuery. String is JSONP.
+	 * @typedef {Object} JSONPOptions
+	 * @property JSONPOptions.url {String}
+	 * @property [JSONPOptions.charset="GBK"] {String}
+	 * @property [JSONPOptions.complete] {Function}
+	 * @property [JSONPOptions.isDelete=true] {Boolean} - Does delete the script.
+	 * @property [JSONPOptions.context=null] {Object} - Complete context.
+	 * @property [JSONPOptions.isRandom=false] {Boolean}
+	 * @property [JSONPOptions.checkString=""] {String} - Then JSONP back string.
+	 * @property [JSONPOptions.timeout=7000] {Number}
+	 * @property [JSONPOptions.fail] {Function} - Error handler.
+	 * @property [JSONPOptions.routing=""] {String}
+	 * @property [JSONPOptions.JSONP] {String|Boolean} - True is aQuery. String is JSONP.
 	 */
 
 	/**
@@ -50,28 +48,17 @@
 	 */
 
 	/**
-	 * Event reporting that an ajax timeout.
-	 * @event aQuery#"ajaxTimeout"
-	 * @param {AjaxOptions}
-	 */
-
-	/**
 	 * Event reporting that an JSONP start.
 	 * @event aQuery#"jsonpStart"
-	 * @param {AjaxOptions}
+	 * @param {JSONPOptions}
 	 */
 
 	/**
 	 * Event reporting that an JSONP stop.
 	 * @event aQuery#"jsonpStop"
-	 * @param {AjaxOptions}
+	 * @param {JSONPOptions}
 	 */
 
-	/**
-	 * Event reporting that an JSONP timeout.
-	 * @event aQuery#"jsonpTimeout"
-	 * @param {AjaxOptions}
-	 */
 
 	/**
 	 * Export network requests.
@@ -240,28 +227,16 @@
 			}
 		},
 		/**
-		 * @param options {Object}
-		 * @param options.url {String}
-		 * @param [options.charset="GBK"] {String}
-		 * @param [options.complete] {Function}
-		 * @param [options.fail] {Function} - Error handler
-		 * @param [options.isDelete=true] {Boolean} - Does delete the script.
-		 * @param [options.context=null] {Object} - Complete context.
-		 * @param [options.isRandom=false] {Boolean}
-		 * @param [options.checkString=""] {String} - Then JSONP back string.
-		 * @param [options.timeout=7000] {Number}
-		 * @param [options.routing=""] {String}
-		 * @param [options.JSONP] {String|Boolean} - True is aQuery. String is JSONP.
-		 * @param [options.data={}] {Object<String,String>}
-		 * @returns {this}
+		 * @param options {JSONPOptions}
+		 * @returns {module:base/Promise}
 		 */
 		jsonp: function( options ) {
-			var _scripts = document.createElement( "script" ),
-				_head = document.getElementsByTagName( "HEAD" ).item( 0 ),
+			var scripts = document.createElement( "script" ),
+				head = document.getElementsByTagName( "HEAD" ).item( 0 ),
 				o = utilExtend.extend( true, {}, communicate.jsonpSetting, options ),
 				e = utilExtend.extend( e, o ),
-				_data = "",
-				_timeId, random = "",
+				data = "",
+				timeId, random = "",
 				promise;
 
 			if ( o.JSONP ) {
@@ -276,20 +251,20 @@
 				o.data.random = $.now();
 			};
 
-			_data = communicate.getURLParam( o.data );
+			data = communicate.getURLParam( o.data );
 
-			o.url += o.routing + ( _data == "" ? _data : "?" + _data );
+			o.url += o.routing + ( data == "" ? data : "?" + data );
 
 			promise = new Promise( function( json ) {
-				clearTimeout( _timeId );
-				typed.isNode( this.nodeName, "script" ) && o.isDelete == true && _head.removeChild( this );
-				this.onerror = this.onload = _head = null;
+				clearTimeout( timeId );
+				typed.isNode( this.nodeName, "script" ) && o.isDelete == true && head.removeChild( this );
+				this.onerror = this.onload = head = null;
 				if ( window[ random ] ) {
 					delete window[ random ];
 					random = null;
 				}
 				e.type = "jsonpStop";
-				$.trigger( e.type, _scripts, e );
+				$.trigger( e.type, scripts, e );
 				e = null;
 				var promise = new Promise();
 				if ( json !== undefined ) {
@@ -306,25 +281,25 @@
 				return promise;
 			} );
 
-			_scripts.onload = _scripts.onreadystatechange = function() {
+			scripts.onload = scripts.onreadystatechange = function() {
 				if ( !this.readyState || this.readyState == "loaded" || this.readyState == "complete" ) {
-					promise.withContext( _scripts ).resolve( o.json );
+					promise.withContext( scripts ).resolve( o.json );
 				}
 			};
 
-			_scripts.onerror = function() {
-				promise.withContext( _scripts ).resolve();
+			scripts.onerror = function() {
+				promise.withContext( scripts ).resolve();
 			};
 
-			o.timeout && ( _timeId = setTimeout( _scripts.onerror, o.timeout ) );
+			o.timeout && ( timeId = setTimeout( scripts.onerror, o.timeout ) );
 
-			_scripts.setAttribute( "src", o.url );
-			o.charset && _scripts.setAttribute( "charset", o.charset );
-			_scripts.setAttribute( "type", "text/javascript" );
-			_scripts.setAttribute( "language", "javascript" );
+			scripts.setAttribute( "src", o.url );
+			o.charset && scripts.setAttribute( "charset", o.charset );
+			scripts.setAttribute( "type", "text/javascript" );
+			scripts.setAttribute( "language", "javascript" );
 			e.type = "jsonpStart";
-			$.trigger( e.type, _scripts, e );
-			_head.insertBefore( _scripts, _head.firstChild );
+			$.trigger( e.type, scripts, e );
+			head.insertBefore( scripts, head.firstChild );
 			return promise;
 		},
 		jsonpSetting:
@@ -334,18 +309,17 @@
 		 * @property {Object}         jsonpSetting                    - JSONP default setting.
 		 * @property {String}         ajaxSetting.url                 - "".
 		 * @property {String}         ajaxSetting.charset             - "GBK".
-		 * @property {Function}       ajaxSetting.error
 		 * @property {Boolean}        ajaxSetting.isDelete            - true.
 		 * @property {Boolean}        ajaxSetting.isRandom            - false.
 		 * @property {String}         ajaxSetting.JSONP               - "callback".
 		 * @property {String}         ajaxSetting.routing             - "".
 		 * @property {Number}         ajaxSetting.timeout             - 7000 millisecond.
-		 * @property {Function}       ajaxSetting.timeoutFun          - Timeout handler.
+		 * @property {Function}       ajaxSetting.fiail               - Error handler.
 		 * @property {Object}         ajaxSetting.data                - Query string.
 		 */
 		{
 			charset: "GBK",
-			error: function() {
+			fail: function() {
 				$.logger( "aQuery.jsonp", ( this.src || "(empty)" ) + " of javascript getting error" );
 			},
 			isDelete: true,
@@ -353,22 +327,14 @@
 			JSONP: "callback",
 			routing: "",
 			timeout: 7000,
-			timeoutFun: function( o ) {
-				$.logger( aQuery.jsonp, ( o.url || "(empty)" ) + "of ajax is timeout:" + ( o.timeout / 1000 ) + "second" );
-			},
 			url: "",
 			data: {}
 		},
 		/**
-		 * @deprecated
+		 * @param list {Array<JSONPOptions>}
+		 * @returns {module:base/Promise}
 		 */
-		jsonps: function( list, ignoreFail ) {
-			/// <summary>加载几段script，当他们都加载完毕触发个事件
-			/// </summary>
-			/// <param name="list" type="Array:[options]">包含获取js配置的数组，参考jsonp</param>
-			/// <param name="complete" type="Function">complete</param>
-			/// <param name="context" type="Object">作用域</param>
-			/// <returns type="self" />
+		jsonps: function( list ) {
 			var retPromise = new Promise().then( function( result ) {
 				return result;
 			} ),
