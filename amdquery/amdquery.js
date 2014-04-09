@@ -2185,15 +2185,18 @@
 				};
 				return root;
 			},
-      /**
-       * Auto release.
-       * @parma {Function|Promise}
-       * @returns {this}
-       */
-      release: function() {
-				root._done = function() {
-
-				};
+			/**
+			 * Auto release.
+			 * @parma {Function|Promise}
+			 * @returns {this}
+			 */
+			autoRelease: function() {
+				var
+				root = this.root(),
+					_done = root._done;
+				if ( !_done ) {
+					root._done = function() {};
+				}
 				return this;
 			},
 			/**
