@@ -8,6 +8,20 @@
   <script src="../../../amdquery/amdquery.js" type="text/javascript" amdquery="define:$;" amd="detectCR:1;" module="compatibleEvent:1;testLogByHTML:1"></script>
   <script type="text/javascript">
     $.require(["base/Promise", "module/Test"], function(Promise, Test) {
+      function doPromiseTest(){
+        var promise = new Promise(function(){
+          var p = new Promise;
+          for(var i=0;i<100;i++){
+            p = p.then(function(){})
+          }
+          return p.done().resolve();
+        });
+
+        return promise;
+      }
+
+      var pr = doPromiseTest().done().resolve();
+
       var testPromise = new Test("TestPromise")
       .describe("Test resolve", function(preResult, test, logger){
         var resolvePromise = new Promise;
