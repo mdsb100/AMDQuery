@@ -2176,7 +2176,7 @@
 			 * Add a promise instance will call resolve.<br/>
 			 * If add 'done' then destroy promise from root.
 			 * @parma {Function|Promise}
-			 * @returns {this} - Return root promise. So you can done().resolve(); .
+			 * @returns {Promise} - Return root promise. So you can done().resolve(); .
 			 */
 			done: function( fn ) {
 				var root = this.root();
@@ -2184,6 +2184,17 @@
 
 				};
 				return root;
+			},
+      /**
+       * Auto release.
+       * @parma {Function|Promise}
+       * @returns {this}
+       */
+      release: function() {
+				root._done = function() {
+
+				};
+				return this;
 			},
 			/**
 			 * Do it when finish all task or fail.
@@ -2345,9 +2356,18 @@
 				var result = this.progress( obj );
 
 				if ( Promise.forinstance( result ) && result !== this ) {
-					this.resolve( result.resolve( obj ).result );
+					switch ( result.state ) {
+						case Promise.TODO:
+							this.resolve( result.resolve( obj ).result );
+							break;
+						case Promise.DONE:
+							this.resolve( result.result );
+							break;
+						case Promise.FAIL:
+							this.reject( result.result );
+							break;
+					}
 				}
-
 				return this;
 			},
 			/**
