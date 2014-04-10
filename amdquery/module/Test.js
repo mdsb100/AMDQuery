@@ -1,4 +1,4 @@
-aQuery.define( "module/Test", [ "base/typed", "base/Promise", "base/config", "main/event" ], function( $, typed, Promise, config, event ) {
+aQuery.define( "module/Test", [ "base/typed", "base/Promise", "base/config", "main/event", "main/dom", "main/css", "html5/css3" ], function( $, typed, Promise, config, event, dom, css, css3 ) {
 	"use strict";
 	this.describe( "Test Module" );
 	var TestEventType = "test.report";
@@ -11,7 +11,7 @@ aQuery.define( "module/Test", [ "base/typed", "base/Promise", "base/config", "ma
 	} else {
 		var dialog = $.createEle( "pre" );
 
-		dialog.style.cssText = "display:block;position:absolute;width:600px;height:200px;overflow:scroll;z-index:1000000;";
+		dialog.style.cssText = "display:block;position:absolute;width:600px;height:200px;overflow-y:scroll;overflow-x:hidden;z-index:1000000;background-color:black;";
 		dialog.style.right = "0px";
 		dialog.style.top = "0px";
 		document.body.appendChild( dialog );
@@ -24,7 +24,21 @@ aQuery.define( "module/Test", [ "base/typed", "base/Promise", "base/config", "ma
 		};
 
 		var input = function( type, arg ) {
-			dialog.innerHTML = ( dialog.innerHTML + '<p style="color:' + colorMap[ type ] + '" >' + "<strong>" + type + ":<strong>" + arg.join( " " ) + '</p>' + "\n" );
+			var $p = $( dom.parseHTML( '<p>' + "<strong>" + type + ":<strong>" + arg.join( " " ) + '</p>' ) );
+			$p.css( {
+				display: "block",
+				color: "white",
+				backgroundColor: colorMap[ type ],
+				borderBottom: "1px solid #EEEEEE",
+				width: "600px",
+				fontSize: "14px",
+				padding: "3px",
+				wordWrap: "break-word",
+				whiteSpace: "normal"
+			} ).css3( {
+				borderRadius: "5px"
+			} );
+			dialog.appendChild( $p[ 0 ] );
 			dialog.scrollTop = dialog.scrollHeight;
 		};
 
