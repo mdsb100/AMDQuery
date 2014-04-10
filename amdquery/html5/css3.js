@@ -1,6 +1,6 @@
 ﻿aQuery.define( "html5/css3", [ "base/support", "base/extend", "base/typed", "base/client", "base/array", "main/css" ], function( $, support, utilExtend, typed, client, array, css2, undefined ) {
 	"use strict";
-  this.describe("HTML5 CSS3");
+	this.describe( "HTML5 CSS3" );
 	var css3Head = ( function() {
 		var head = "";
 		if ( client.engine.ie )
@@ -269,7 +269,11 @@
 			/// <param name="value" type="String/Number/undefined">值</param>
 			/// <returns type="self" />
 			if ( hasCss3 ) {
-				return css2.css( ele, $.util.camelCase( name, css3Head ), value );
+				name = $.util.camelCase( name );
+				if ( !name in domStyle ) {
+					name = $.util.camelCase( name, css3Head )
+				}
+				css2.css( ele, name, value );
 			}
 			return this;
 		},
