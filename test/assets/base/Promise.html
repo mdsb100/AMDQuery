@@ -10,21 +10,26 @@
     $.require(["base/Promise", "module/Test"], function(Promise, Test) {
       function doPromiseTest(){
         var promise = new Promise(function(){
-          var p = new Promise;
+          var p = Promise();
           for(var i=0;i<100;i++){
             p = p.then(function(){})
           }
           return p.done().resolve();
         });
 
+        for (var i=0;i<50;i++) {
+          promise.then(function(){});
+        };
+
         return promise;
       }
 
-      var pr = doPromiseTest().done().resolve();
+      var pr = doPromiseTest().root().resolve();
+      pr = null;
 
       var testPromise = new Test("TestPromise")
       .describe("Test resolve", function(preResult, test, logger){
-        var resolvePromise = new Promise;
+        var resolvePromise = Promise();
 
         var promise = new Promise(function(result){
           test(result).should.equal(0);
@@ -63,10 +68,7 @@
         test(preResult.info).should.equal("next describe");
         test(preResult.promise).should.have.property("thens").with.should.have.length(0);
       }).describe("Test reject", function(preResult, test, logger){
-        var resolvePromise = new Promise(function(result){
-          test(result).should.equal("goto done");
-          return "next reject";
-        });
+        var resolvePromise = new Promise();
 
         var promise = new Promise(function(result){
           logger("go to fail function");
@@ -75,15 +77,15 @@
         }, function(result){
           test(result).should.equal(0);
           logger("Reject return instance promise, it will do next.");
-          return new Promise;
+          return Promise();
         }).then(function(result){
           test(result).should.equal(0);
-          var promise = new Promise;
+          var promise = Promise();
           promise.reject("goto fail");
           return promise;
         }, function(result){
           test(result).should.equal("goto fail");
-          var promise = new Promise;
+          var promise = Promise();
           promise.reject("goto next reject");
           return promise;
         }).then(function(result){
@@ -92,26 +94,28 @@
         }, function(result){
           test(result).should.equal("goto next reject");
           return "goto done";
-        }).done(resolvePromise).resolve(0);
+        }).done(function(result){
+          resolvePromise.resolve("next reject");
+        }, function(result){
+          test(result).should.equal("goto done");
+          resolvePromise.resolve("next reject");
+        }).resolve(0);
 
         return resolvePromise;
 
       }).describe("Test reject", function(preResult, test, logger){
         test(preResult).should.equal("next reject");
-        var resolvePromise = new Promise(function(result){
-          test(result).should.equal("goto done");
-          return "next progress";
-        });
+        var resolvePromise = new Promise();
 
         var promise = new Promise(function(result){
 
         }, function(result){
           test(result).should.equal(0);
           logger("Reject return instance promise, it will do next.");
-          return new Promise;
+          return Promise();
         }).then(function(result){
           test(result).should.equal(0);
-          var promise = new Promise;
+          var promise = Promise();
 
           setTimeout(function(){
             promise.reject("goto done");
@@ -124,24 +128,23 @@
         }, function(result){
           logger("It does not be call");
           test(result).should.not.equal(1);
-        }).done(resolvePromise).reject(0);
+        }).done(function(result){
+          resolvePromise.resolve("next progress");
+        }, function(result){
+          test(result).should.equal("goto done");
+          resolvePromise.resolve("next progress");
+        }).reject(0);
 
         return resolvePromise;
 
       }).describe("Test progress", function(preResult, test, logger){
         test(preResult).should.equal("next progress");
-        var resolvePromise = new Promise(function(result){
-          test(sum).should.equal(10);
-          test(result).should.equal("goto done");
-          return "next all";
-        });
-
         var sum = 0;
 
-        var promise = new Promise(function(result){
+        return new Promise(function(result){
           return result;
         }).then(function(result){
-          var promise = new Promise;
+          var promise = Promise();
           var interval = setInterval(function(){
             promise.reprocess(interval);
           }, 20);
@@ -154,9 +157,11 @@
             });
           }
           sum++;
-        }).done(resolvePromise).resolve(0);
-
-        return resolvePromise;
+        }).done(function(result){
+          test(sum).should.equal(10);
+          test(result).should.equal("goto done");
+          return "next all";
+        }).resolve(0);
 
       }).describe("Test all", function(preResult, test, logger){
         test(preResult).should.equal("next all");

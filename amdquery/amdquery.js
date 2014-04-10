@@ -2010,7 +2010,11 @@
 		 * @constructor
 		 */
 		var Promise = function( todo, fail, progress ) {
-			this.init( todo, fail, progress );
+			if ( Promise.forinstance( this ) ) {
+				this.init( todo, fail, progress );
+			} else {
+				return new Promise( todo, fail, progress );
+			}
 		}
 
 		util.extend( Promise, {
@@ -2054,7 +2058,7 @@
 							promise.resolve( result );
 						}
 					} else {
-						this._finally( result );
+						this._finally( result, Promise.DONE );
 					}
 				}
 				return this;
@@ -2074,7 +2078,7 @@
 						promise.reject( result );
 					}
 				} else {
-					this._finally( result );
+					this._finally( result, Promise.FAIL );
 				}
 				return this;
 			},
@@ -2175,41 +2179,27 @@
 			 * Add a function which be call finally.<br/>
 			 * Add a promise instance will call resolve.<br/>
 			 * If add 'done' then destroy promise from root.
-			 * @parma {Function|Promise}
+			 * @parma {Function|Promise} - todo
+			 * @parma {Function} - fail
 			 * @returns {Promise} - Return root promise. So you can done().resolve(); .
 			 */
-			done: function( fn ) {
+			done: function( todo, fail ) {
 				var root = this.root();
-				root._done = fn || function() {
-
-				};
+				root._done = Promise.forinstance( todo ) ? todo : new Promise( todo, fail );
 				return root;
-			},
-			/**
-			 * Auto release.
-			 * @parma {Function|Promise}
-			 * @returns {this}
-			 */
-			autoRelease: function() {
-				var
-				root = this.root(),
-					_done = root._done;
-				if ( !_done ) {
-					root._done = function() {};
-				}
-				return this;
 			},
 			/**
 			 * Do it when finish all task or fail.
 			 * @private
 			 */
-			_finally: function( result ) {
+			_finally: function( result, state ) {
 				var root = this.root();
 				if ( root._done ) {
-					if ( Promise.forinstance( root._done ) ) {
-						root._done.withContext( this.context ).resolve( result );
-					} else {
-						root._done.call( this.context, result );
+					root._done.withContext( this.context );
+					if ( state === Promise.DONE ) {
+						root._done.resolve( result );
+					} else if ( state === Promise.FAIL ) {
+						root._done.reject( result );
 					}
 					root.destroy();
 				}
@@ -2277,7 +2267,7 @@
 
 				if ( Promise.forinstance( this.result ) && this.result !== this ) {
 					var
-					promise = this.result,
+					promise = this.result._done || this.result,
 						self = this,
 						todo = function( result ) {
 							self.state = Promise.DONE;
@@ -2342,7 +2332,7 @@
 					}
 
 				} else {
-					this._finally( this.result );
+					this._finally( this.result, Promise.FAIL );
 				}
 				return this;
 			},
