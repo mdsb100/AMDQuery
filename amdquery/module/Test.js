@@ -41,23 +41,24 @@ aQuery.define( "module/Test", [ "base/typed", "base/Promise", "base/config", "ma
 			$p.css( {
 				display: "block",
 				color: "white",
-				borderBottom: "1px solid #EEEEEE",
+				borderTop: "1px solid rgba(0, 0, 0, 0.098)",
+				borderBottom: "1px solid rgba(0, 0, 0, 0.24)",
 				width: "594px",
 				fontSize: "14px",
 				padding: "3px",
 				wordWrap: "break-word",
-				whiteSpace: "normal"
+				whiteSpace: "normal",
 			} ).css3( {
-				borderRadius: "5px"
+				borderRadius: "3px"
 			} ).linearGradient( {
 				defaultColor: colors.backgroundColor2,
-        orientation: "left top",
-        colorStops: [ {
-          stop: 0,
-          color: colors.backgroundColor1
+				orientation: "left top",
+				colorStops: [ {
+					stop: 0,
+					color: colors.backgroundColor1
         }, {
-          stop: 1,
-          color: colors.backgroundColor2
+					stop: 1,
+					color: colors.backgroundColor2
         } ]
 			} );
 			dialog.appendChild( $p[ 0 ] );
