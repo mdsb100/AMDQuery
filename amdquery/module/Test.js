@@ -12,31 +12,53 @@ aQuery.define( "module/Test", [ "base/typed", "base/Promise", "base/config", "ma
 		var dialog = $.createEle( "pre" );
 
 		dialog.style.cssText = "display:block;position:absolute;width:600px;height:200px;overflow-y:scroll;overflow-x:hidden;z-index:1000000;background-color:black;";
-		dialog.style.right = "0px";
-		dialog.style.top = "0px";
+		dialog.style.right = "5px";
+		dialog.style.top = "5px";
 		document.body.appendChild( dialog );
 
 		var colorMap = {
-			log: "green",
-			error: "red",
-			info: "black",
-			debug: "orange"
+			log: {
+				backgroundColor1: "#62c462",
+				backgroundColor2: "#57a957"
+			},
+			error: {
+				backgroundColor1: "#ee5f5b",
+				backgroundColor2: "#c43c35"
+			},
+			info: {
+				backgroundColor1: "#5bc0de",
+				backgroundColor2: "#339bb9"
+			},
+			debug: {
+				backgroundColor1: "#5bc0de",
+				backgroundColor2: "#339bb9"
+			}
 		};
 
 		var input = function( type, arg ) {
 			var $p = $( dom.parseHTML( '<p>' + "<strong>" + type + ":<strong>" + arg.join( " " ) + '</p>' ) );
+			var colors = colorMap[ type ];
 			$p.css( {
 				display: "block",
 				color: "white",
-				backgroundColor: colorMap[ type ],
 				borderBottom: "1px solid #EEEEEE",
-				width: "600px",
+				width: "594px",
 				fontSize: "14px",
 				padding: "3px",
 				wordWrap: "break-word",
 				whiteSpace: "normal"
 			} ).css3( {
 				borderRadius: "5px"
+			} ).linearGradient( {
+				defaultColor: colors.backgroundColor2,
+        orientation: "left top",
+        colorStops: [ {
+          stop: 0,
+          color: colors.backgroundColor1
+        }, {
+          stop: 1,
+          color: colors.backgroundColor2
+        } ]
 			} );
 			dialog.appendChild( $p[ 0 ] );
 			dialog.scrollTop = dialog.scrollHeight;
@@ -88,8 +110,8 @@ aQuery.define( "module/Test", [ "base/typed", "base/Promise", "base/config", "ma
 		this.name = "[" + name + "]";
 		this.complete = complete || function() {};
 		this.promise = new Promise( function( preResult ) {
-			description && logger( description );
-			logger( this.name, "User Agent:", navigator.userAgent );
+			description && info( description );
+			info( this.name, "User Agent:", navigator.userAgent );
 			return preResult;
 		} ).withContext( this );
 		this.count = 0;
@@ -239,9 +261,9 @@ aQuery.define( "module/Test", [ "base/typed", "base/Promise", "base/config", "ma
 			}
 
 			this.promise = this.promise.then( function( preResult ) {
-				logger( this.name, describe );
+				info( this.name, describe );
 				try {
-					return fn( preResult, testWrapper, logger );
+					return fn( preResult, testWrapper, info );
 				} catch ( e ) {
 					error( e );
 					throw e;
