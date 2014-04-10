@@ -167,17 +167,17 @@
           this.food = null;
         }
 
+        object.inheritProtypeWithCombination(Sheep, Animal);
+
         Sheep.prototype.eat = function(food){
           this.food = food;
         };
 
         Sheep.prototype.run = function(){};
 
-        object.inheritProtypeWithParasitic(Sheep, Animal);
-
         var sheep = new Sheep("Marry", 5);
 
-        test(object.getObjectPrototypeMembersCount(sheep)).should.equal(4);
+        test(object.getObjectPrototypeMembersCount(sheep)).should.equal(3);
 
         test(object.getObjectMembersCount(sheep, true)).should.equal(3);
 
@@ -191,9 +191,9 @@
 
         test(sheep).should.have.property("food").with.should.equal("grass");
 
-        test(animal).should.have.property("run");
+        // test(animal).should.have.property("run");
 
-        delete Animal.prototype.run;
+        // delete Animal.prototype.run;
 
         return Animal;
       }).describe("Test object.extend", function(Animal, test, logger){

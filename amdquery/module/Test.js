@@ -358,7 +358,7 @@ aQuery.define( "module/Test", [ "base/typed", "base/Promise", "base/config", "ma
 					return testWrapper;
 				},
 				property: function( name ) {
-					var bol = target != null || target[ name ] !== undefined;
+					var bol = target != null && name in target;
 					testObject._isEqual( testWrapper.combineString( describe, "'" + String( target ) + "'", "should", "have", String( name ), "property" ), bol, true );
 					if ( bol ) {
 						testWrapper = new TestWrapper( target[ name ], "With property " + name, testObject );
@@ -367,7 +367,7 @@ aQuery.define( "module/Test", [ "base/typed", "base/Promise", "base/config", "ma
 					return testWrapper;
 				},
 				index: function( index ) {
-					var bol = target != null || target[ index ] !== undefined;
+					var bol = target != null && target[ index ] !== undefined;
 					testObject._isEqual( testWrapper.combineString( describe, "'" + String( target ) + "'", "should", "have", "index", index ), bol, true );
 					if ( bol ) {
 						testWrapper = new TestWrapper( target[ index ], "With index " + index, testObject );

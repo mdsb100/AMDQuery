@@ -477,7 +477,7 @@
 			return this;
 		},
 		/**
-		 * Use classic combination to inherit prototype. Contains the same memory address.
+		 * Use classic combination to inherit prototype.
 		 * @param {Sub}
 		 * @param {Super}
 		 * @returns {this}
