@@ -30,7 +30,9 @@
       url: "../xml/navmenu.xml",
       dataType: "xml",
       complete: function( xml ) {
-        $( xml ).find( "li[test='true']" ).each( function( li ) {
+        $( xml ).find( "li[test='true']" ).sort(function(a, b){
+          return attr.getAttr(a, "sort") - attr.getAttr(b, "sort");
+        }).each( function( li ) {
           var $parent = $( li ).parents( "li" );
           if ( $parent.length ) {
             var pathList = [];
