@@ -283,7 +283,7 @@
 	 * aQuery(null,"div", document.body);
 	 */
 	var aQuery = function( elem, tagName, parent ) {
-		if ( $.forinstance( this ) ) {
+		if ( $.constructorOf( this ) ) {
 			if ( !elem && !tagName ) return;
 			if ( ( typeof elem === "object" || elem === undefined || elem === null ) && typeof tagName == "string" ) {
 				count++;
@@ -493,7 +493,7 @@
 		 * @param {*}
 		 * @returns {Boolean}
 		 */
-		forinstance: function( obj ) {
+		constructorOf: function( obj ) {
 			return obj instanceof $ || ( obj && obj.toString() == "AMDQuery" );
 		},
 		/**
@@ -2010,7 +2010,7 @@
 		 * @constructor
 		 */
 		var Promise = function( todo, fail, progress ) {
-			if ( Promise.forinstance( this ) ) {
+			if ( Promise.constructorOf( this ) ) {
 				this.init( todo, fail, progress );
 			} else {
 				return new Promise( todo, fail, progress );
@@ -2132,7 +2132,7 @@
 				}
 
 				var promise;
-				if ( Promise.forinstance( nextToDo ) && !nextToDo.prev ) {
+				if ( Promise.constructorOf( nextToDo ) && !nextToDo.prev ) {
 					promise = nextToDo;
 				} else {
 					promise = new Promise( nextToDo, nextFail, nextProgress );
@@ -2188,7 +2188,7 @@
 			 */
 			done: function( todo, fail ) {
 				var root = this.root();
-				root._done = Promise.forinstance( todo ) ? todo : new Promise( todo, fail );
+				root._done = Promise.constructorOf( todo ) ? todo : new Promise( todo, fail );
 				return root;
 			},
 			/**
@@ -2249,7 +2249,7 @@
 					return this;
 				}
 
-				if ( Promise.forinstance( this.result ) ) {
+				if ( Promise.constructorOf( this.result ) ) {
 					this.result.resolve( obj );
 					return this;
 				} else if ( this.fail ) {
@@ -2266,7 +2266,7 @@
 					this.result = this.call( Promise.TODO, obj );
 				}
 
-				if ( Promise.forinstance( this.result ) && this.result !== this ) {
+				if ( Promise.constructorOf( this.result ) && this.result !== this ) {
 					var
 					promise = this.result._done || this.result,
 						self = this,
@@ -2336,7 +2336,7 @@
 				this.state = Promise.FAIL;
 				this.result = this.call( Promise.FAIL, obj );
 
-				if ( Promise.forinstance( this.result ) && this.result !== this ) {
+				if ( Promise.constructorOf( this.result ) && this.result !== this ) {
 					var promise = this.result;
 					switch ( promise.state ) {
 						case Promise.TODO:
@@ -2368,7 +2368,7 @@
 
 				var result = this.call( Promise.PROGRESS, obj );
 
-				if ( Promise.forinstance( result ) && result !== this ) {
+				if ( Promise.constructorOf( result ) && result !== this ) {
 					switch ( result.state ) {
 						case Promise.TODO:
 							this.resolve( result.resolve( obj ).result );
@@ -2442,7 +2442,7 @@
 		 * @param {Promise}
 		 * @returns {Boolean}
 		 */
-		Promise.forinstance = function( promise ) {
+		Promise.constructorOf = function( promise ) {
 			return promise instanceof Promise || ( promise ? promise.__promiseFlag === true : false );
 		}
 

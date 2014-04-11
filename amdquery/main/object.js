@@ -126,7 +126,7 @@
 		 * @param {Object} - A new instance.
 		 * @returns {this}
 		 */
-		forinstance: function( target ) {
+		constructorOf: function( target ) {
 			var constructor = this,
 				ret = target instanceof this;
 
@@ -223,7 +223,7 @@
 		 * } );
 		 * sub.foo();sub.pad();
 		 *
-		 * Super.forinstance( sub ) // true
+		 * Super.constructorOf( sub ) // true
 		 *
 		 * Sub.createGetterSetter( {
 		 *   name: "-pa"

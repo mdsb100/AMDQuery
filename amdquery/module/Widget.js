@@ -315,12 +315,12 @@
 				constructor = Widget.get( item );
 			}
 			if ( typed.isFunction( constructor ) ) {
-				return constructor.forinstance ? constructor.forinstance( this ) : ( this instanceof constructor );
+				return constructor.constructorOf ? constructor.constructorOf( this ) : ( this instanceof constructor );
 			}
 			return false;
 		},
 		equals: function( item ) {
-			if ( this.forinstance( item ) ) {
+			if ( this.constructorOf( item ) ) {
 				return this.getElement() === item.getElement() && this[ this.widgetName ]( "getSelf" ) === item[ this.widgetName ]( "getSelf" );
 			}
 			return false;

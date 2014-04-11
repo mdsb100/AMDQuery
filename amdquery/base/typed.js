@@ -13,7 +13,7 @@ aQuery.define( "base/typed", function( $ ) {
 	 * Determine the type of object。
 	 * @public
 	 * @exports base/typed
-	 * @borrows aQuery.forinstance as is$
+	 * @borrows aQuery.constructorOf as is$
 	 */
 	var typed = {
 		/**
@@ -374,7 +374,7 @@ aQuery.define( "base/typed", function( $ ) {
 			}
 			return true;
 		},
-		is$: $.forinstance,
+		is$: $.constructorOf,
 		/**
 		 * Return object type.
 		 * @param {*}

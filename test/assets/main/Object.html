@@ -232,7 +232,7 @@
 
         test(Dog).should.have.property("joinPrototype").with.should.be.function();
 
-        test(Dog).should.have.property("forinstance").with.should.be.function();
+        test(Dog).should.have.property("constructorOf").with.should.be.function();
 
         test(Dog).should.have.property("createGetterSetter").with.should.be.function();
 
@@ -254,7 +254,7 @@
 
         test(ashley).should.have.property("bark").with.should.be.function();
 
-        test(Dog.forinstance(ashley)).should.equal(true);
+        test(Dog.constructorOf(ashley)).should.equal(true);
 
         test(ashley).should.have.property("setName").with.should.be.function();
 
