@@ -167,27 +167,33 @@
         test(preResult).should.equal("next and");
         var delayBeCallSum = 0;
         function delay(ms) {
-          return function(obj) {
+          return function(result) {
             var promise = new Promise();
+            test(result, "in delay").should.equal(0);
             setTimeout(function() {
-              obj.delay = Math.max(obj.delay, ms);
-              delayBeCallSum++;
-              promise.resolve(obj);
+              promise.resolve(ms);
             }, ms);
             return promise;
           };
         };
 
         var resolvePromise = new Promise(function(result){
-          test(result.delay).should.equal(300);
-          test(delayBeCallSum).should.equal(3);
+          test(result).should.be.array();
+          test(result).should.have.length(4);
+          test(result[0]).should.equal(0);
+          test(result[1]).should.equal(100);
+          test(result[2]).should.equal(200);
+          test(result[3]).should.equal(300);
         });
 
-        Promise()
+        Promise(function(result){
+          test(result).should.equal(0);
+          return result;
+        })
         .and(delay(100))
         .and(delay(200))
         .and(delay(300))
-        .done(resolvePromise).resolve({delay: 0});
+        .done(resolvePromise).resolve(0);
 
         return resolvePromise;
 

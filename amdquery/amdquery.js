@@ -1991,6 +1991,19 @@
 		var count = 0,
 			todoFn = function( obj ) {
 				return obj;
+			},
+			andFn = function( result ) {
+				var andsState = this._checkAndsState(),
+					results;
+				if ( andsState.size === andsState[ Promise.DONE ] + andsState[ Promise.FAIL ] ) {
+					results = andsState.results.concat();
+					results.splice( 0, 0, this.result );
+					if ( andsState[ Promise.FAIL ] ) {
+						this._finally( results );
+					} else {
+						this._nextResolve( results );
+					}
+				}
 			};
 
 		/**
@@ -2035,10 +2048,12 @@
 					len,
 					allDone = this.state === Promise.DONE,
 					next = this.next,
+					andsState,
 					promise;
 
 				if ( allDone ) {
-					allDone = this._checkAndsState();
+					andsState = this._checkAndsState();
+					allDone = andsState.size === andsState[ Promise.DONE ];
 				}
 
 				if ( allDone || enforce ) {
@@ -2050,19 +2065,31 @@
 				}
 				return this;
 			},
+			/**
+			 * @private
+			 */
 			_checkAndsState: function() {
 				var allDone = true,
 					i = 0,
 					len = this.ands.length,
+					result = {
+						size: len,
+						results: []
+					},
 					promise;
+
+				result[ Promise.TODO ] = 0;
+				result[ Promise.PROGRESS ] = 0;
+				result[ Promise.FAIL ] = 0;
+				result[ Promise.DONE ] = 0;
+
 				for ( ; i < len; i++ ) {
 					promise = this.ands[ i ];
-					if ( promise.state !== Promise.DONE ) {
-						allDone = false;
-						break;
-					}
+					result[ promise.state ]++;
+					result.results.push( promise.result );
 				}
-				return allDone;
+
+				return result;
 			},
 			/**
 			 * Do next reject.
@@ -2328,25 +2355,27 @@
 			 * @param {*=} - result.
 			 * @returns {this}
 			 */
-			reject: function( obj ) {
+			reject: function( result ) {
 				if ( this.state != Promise.TODO ) {
 					return this;
 				}
 
 				this.state = Promise.FAIL;
-				this.result = this.call( Promise.FAIL, obj );
+				this.result = this.call( Promise.FAIL, result );
 
 				if ( Promise.constructorOf( this.result ) && this.result !== this ) {
 					var promise = this.result;
 					switch ( promise.state ) {
 						case Promise.TODO:
-							this._nextResolve( obj, true );
+							this.result = result;
+							this._nextResolve( result, true );
 							break;
 						case Promise.DONE:
 							this.result = promise.result;
 							this._nextResolve( promise.result, true );
 							break;
 						case Promise.FAIL:
+							this.result = promise.result;
 							this._nextReject( promise.result );
 							break;
 					}
@@ -2392,26 +2421,12 @@
 			 * new Promise().and(todo).and(todo);
 			 */
 			and: function( todo, fail ) {
-				var promise = Promise( todo, fail ).withContext( this ).done( function( result ) {
-					this._nextResolve( result );
-				} );
+				var promise = Promise( todo, fail ).withContext( this ).done( andFn, andFn );
 				this._push( promise );
 				if ( this.state === Promise.DONE ) {
 					promise.resolve( this.result );
 				}
 				return this;
-			},
-			/**
-			 * @returns {Boolean}
-			 */
-			finished: function() {
-				return this.state === Promise.DONE;
-			},
-			/**
-			 * @returns {Boolean}
-			 */
-			unfinished: function() {
-				return this.state === Promise.TODO;
 			},
 			/**
 			 * Get root promise.
