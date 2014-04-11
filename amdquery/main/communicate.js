@@ -12,9 +12,8 @@
 	 * @property [AjaxOptions.header] {Object<String,String>}
 	 * @property [AjaxOptions.isRandom] {Boolean}
 	 * @property [AjaxOptions.timeout=7000] {Number}
-	 * @property [AjaxOptions.routing=""] {String}
-	 * @property [AjaxOptions.timeoutFun] {Function} - Timeout handler.
-	 * @property [AjaxOptions.dataType="text"] {String} - "json"|"xml"|"text"|"html"
+	 * @property [AjaxOptions.fail] {Function} - Fail handler.
+	 * @property [AjaxOptions.dataType="text"] {String} - "json"|"xml"|"text"
 	 * @property [AjaxOptions.contentType="application/x-www-form-urlencoded"] {String}
 	 * @property [AjaxOptions.context=null] {Object} - Complete context.
 	 */
@@ -31,7 +30,6 @@
 	 * @property [JSONPOptions.checkString=""] {String} - Then JSONP back string.
 	 * @property [JSONPOptions.timeout=7000] {Number}
 	 * @property [JSONPOptions.fail] {Function} - Error handler.
-	 * @property [JSONPOptions.routing=""] {String}
 	 * @property [JSONPOptions.JSONP] {String|Boolean} - True is aQuery. String is JSONP.
 	 */
 
@@ -72,115 +70,141 @@
 	var communicate = {
 		/**
 		 * @param options {AjaxOptions}
-		 * @returns {this}
+		 * @returns {module:base/Promise}
 		 */
 		ajax: function( options ) {
-			var _ajax, _timeId, o;
+			var ajax, timeId, o, e, type, promise;
 			if ( options ) {
-				_ajax = communicate.getXhrObject();
+				ajax = communicate.getXhrObject();
 
-				if ( _ajax ) {
+				if ( ajax ) {
 
 					o = utilExtend.extend( {}, communicate.ajaxSetting, options );
 
+					type = o.type.toUpperCase();
+
+					if ( o.isRandom == true && type == "GET" ) {
+						o.data.random = $.now();
+					}
+
+					e = utilExtend.extend( {}, o );
+
 					o.data = communicate.getURLParam( o.data );
 
-					if ( o.isRandom == true && o.type == "get" ) {
-						o.data += "&random=" + $.now();
-					}
-					o.url += o.routing;
-					switch ( o.type ) {
-						case "get":
+					o.url = o.url.replace( /\?$/, "" );
+
+					switch ( type ) {
+						case "GET":
 							if ( o.data ) {
 								o.url += "?" + o.data;
 							}
 							break;
-						case "post":
+						case "POST":
 							break;
 					}
 
 					if ( o.username ) {
-						_ajax.open( o.type, o.url, o.async, o.username, o.password );
+						ajax.open( type, o.url, o.async, o.username, o.password );
 					} else {
-						_ajax.open( o.type, o.url, o.async );
+						ajax.open( type, o.url, o.async );
 					}
 
 					try {
 						for ( var item in o.header ) {
-							_ajax.setRequestHeader( item, o.header[ item ] );
+							ajax.setRequestHeader( item, o.header[ item ] );
 						}
-						_ajax.setRequestHeader( "Accept", o.dataType && o.accepts[ o.dataType ] ? o.accepts[ o.dataType ] + ", */*" : o.accepts._default );
+						ajax.setRequestHeader( "Accept", o.dataType && o.accepts[ o.dataType ] ? o.accepts[ o.dataType ] + ", */*" : o.accepts._default );
 
 					} catch ( e ) {}
 					if ( o.data || options ) {
-						_ajax.setRequestHeader( "Content-Type", o.contentType );
+						ajax.setRequestHeader( "Content-Type", o.contentType );
 					}
-					//_ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-					//type == "post" && _ajax.setRequestHeader("Content-type", "");
-					_ajax.onreadystatechange = function() {
-						if ( ( _ajax.readyState == 4 || _ajax.readyState == 0 ) && ( ( _ajax.status >= 200 && _ajax.status < 300 ) || _ajax.status == 304 ) ) {
-							var response;
-							clearTimeout( _timeId );
-							$.trigger( "ajaxStop", _ajax, o );
-							switch ( o.dataType ) {
-								case "json":
-									response = parse.JSON( "(" + _ajax.responseText + ")" );
-									break;
-								case "xml":
-									response = _ajax.responseXML;
-									if ( !response ) {
-										try {
-											response = parse.XML( _ajax.responseText );
-										} catch ( e ) {}
-									}
-									break;
-								default:
-								case "text":
-									response = _ajax.responseText;
-									break;
-							}
-							try {
-								o.complete && o.complete.call( o.context || _ajax, response );
-							} finally {
-								o = null;
-								_ajax = null;
+					//ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+					//type == "post" && ajax.setRequestHeader("Content-type", "");
+
+					promise = new Promise( function( ajax ) {
+						var response;
+						clearTimeout( timeId );
+						e.type = "ajaxStop";
+						$.trigger( e.type, ajax, e );
+						switch ( o.dataType ) {
+							case "json":
+								response = parse.JSON( ajax.responseText );
+								break;
+							case "xml":
+								response = ajax.responseXML;
+								if ( !response ) {
+									try {
+										response = parse.XML( ajax.responseText );
+									} catch ( e ) {}
+								}
+								break;
+							default:
+							case "text":
+								response = ajax.responseText;
+								break;
+						}
+						o.complete && o.complete.call( o.context || ajax, response );
+
+						o = null;
+						return response;
+					}, function( ajax ) {
+						ajax && ajax.abort();
+						e.type = "ajaxStart";
+						$.trigger( e.type, ajax, e );
+						o.fail.call( o.context || ajax, ajax );
+						o = null;
+						return new Promise().reject( ajax );
+					}, function( ajax ) {
+						if ( ajax.readyState == 4 ) {
+							if ( ( ajax.status >= 200 && ajax.status < 300 ) || ajax.status == 304 ) {
+								return new Promise().resolve( ajax );
+							} else {
+								return new Promise().reject( ajax );
 							}
 						}
+					} );
+
+					ajax.onreadystatechange = function() {
+						promise.reprocess( ajax );
 					};
 					if ( o.timeout ) {
-						_timeId = setTimeout( function() {
-							_ajax && _ajax.abort();
-							$.trigger( "ajaxTimeout", _ajax, o );
-							o.timeoutFun.call( _ajax, o );
-							o = null;
-							_ajax = null;
+						timeId = setTimeout( function() {
+							promise.reject( ajax );
 						}, o.timeout );
 					}
-					$.trigger( "ajaxStart", _ajax, o );
-					_ajax.send( o.type == "get" ? "NULL" : ( o.data || "NULL" ) );
+					e.type = "ajaxStart";
+					$.trigger( e.type, ajax, e );
+					ajax.send( type == "GET" ? "NULL" : ( o.data || "NULL" ) );
 				}
 			}
-			return this;
+
+			return promise;
 		},
 		/**
-		 * @deprecated
+		 * @param list {Array<AjaxOptions>}
+		 * @returns {module:base/Promise}
 		 */
-		ajaxByFinal: function( list, complete, context ) {
-			var sum = list.length,
-				count = 0;
-			return $.each( list, function( item ) {
-				item._complete = item.complete;
-				item.complete = function() {
-					count++;
-					item._complete && item._complete.apply( this, arguments );
-					if ( count == sum ) {
-						complete && complete.apply( window, context );
-						count = null;
-						sum = null;
+		ajaxs: function( list ) {
+			var retPromise = new Promise(),
+				retList = [];
+
+			$.each( list, function( item, index ) {
+				var promise = communicate.ajax( item ).then( function( resp ) {
+					if ( resp ) {
+						retList[ index ] = resp;
 					}
-				};
-				communicate.ajax( item );
+					return retList;
+				} );
+
+				retPromise.and( function() {
+					return promise;
+				} );
+
+				promise.done();
 			} );
+
+			return retPromise.resolve( retList );
 		},
 
 		ajaxSetting:
@@ -194,8 +218,7 @@
 		 * @property {String}   ajaxSetting.contentType         - "application/x-www-form-urlencoded".
 		 * @property {Object}   ajaxSetting.context             - Complete context.
 		 * @property {Number}   ajaxSetting.timeout             - 7000 millisecond.
-		 * @property {Function} ajaxSetting.timeoutFun          - Timeout handler.
-		 * @property {String}   ajaxSetting.routing             - "".
+		 * @property {Function} ajaxSetting.fail                - Fail handler.
 		 * @property {null}     ajaxSetting.header
 		 * @property {Boolean}  ajaxSetting.isRandom            - False.
 		 * @property {Object}   ajaxSetting.accepts
@@ -212,10 +235,9 @@
 			context: null,
 			async: true,
 			timeout: 7000,
-			timeoutFun: function( o ) {
-				$.logger( "aQuery.ajax", o.url + "of ajax is timeout:" + ( o.timeout / 1000 ) + "second" );
+			fail: function() {
+				$.logger( "ajax fail" );
 			},
-			routing: "",
 			header: null,
 			isRandom: false,
 			accepts: {
@@ -253,7 +275,9 @@
 
 			data = communicate.getURLParam( o.data );
 
-			o.url += o.routing + ( data == "" ? data : "?" + data );
+			o.url = o.url.replace( /\?$/, "" );
+
+			o.url += data == "" ? data : "?" + data;
 
 			promise = new Promise( function( json ) {
 				clearTimeout( timeId );
@@ -312,7 +336,6 @@
 		 * @property {Boolean}        ajaxSetting.isDelete            - true.
 		 * @property {Boolean}        ajaxSetting.isRandom            - false.
 		 * @property {String}         ajaxSetting.JSONP               - "callback".
-		 * @property {String}         ajaxSetting.routing             - "".
 		 * @property {Number}         ajaxSetting.timeout             - 7000 millisecond.
 		 * @property {Function}       ajaxSetting.fiail               - Error handler.
 		 * @property {Object}         ajaxSetting.data                - Query string.
@@ -325,7 +348,6 @@
 			isDelete: true,
 			isRandom: false,
 			JSONP: "callback",
-			routing: "",
 			timeout: 7000,
 			url: "",
 			data: {}
@@ -335,9 +357,7 @@
 		 * @returns {module:base/Promise}
 		 */
 		jsonps: function( list ) {
-			var retPromise = new Promise().then( function( result ) {
-				return result;
-			} ),
+			var retPromise = new Promise(),
 				retList = [];
 
 			$.each( list, function( item, index ) {
@@ -355,11 +375,7 @@
 				promise.done();
 			} );
 
-			setTimeout( function() {
-				retPromise.root().resolve( retList )
-			}, 0 );
-
-			return retPromise;
+			return retPromise.resolve( retList );
 		},
 		/**
 		 * @example
