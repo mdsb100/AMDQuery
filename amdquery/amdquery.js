@@ -2030,53 +2030,48 @@
 			 * Do next resolve.
 			 * @private
 			 */
-			_nextResolve: function( result ) {
+			_nextResolve: function( result, enforce ) {
 				var i = 0,
 					len,
-					allDone = true,
-					parent = this.parent,
+					allDone = this.state === Promise.DONE,
+					next = this.next,
 					promise;
 
-				if ( parent ) {
-					i = 0;
-					len = parent.thens.length;
-					for ( ; i < len; i++ ) {
-						promise = parent.thens[ i ];
-						if ( promise.state !== Promise.DONE ) {
-							allDone = false;
-							break;
-						}
-					}
+				if ( allDone ) {
+					allDone = this._checkAndsState();
 				}
 
-				if ( allDone ) {
-					i = 0;
-					len = this.thens.length;
-					if ( len ) {
-						for ( ; i < len; i++ ) {
-							promise = this.thens[ i ];
-							promise.resolve( result );
-						}
+				if ( allDone || enforce ) {
+					if ( next ) {
+						next.resolve( result );
 					} else {
 						this._finally( result, Promise.DONE );
 					}
 				}
 				return this;
 			},
+			_checkAndsState: function() {
+				var allDone = true,
+					i = 0,
+					len = this.ands.length,
+					promise;
+				for ( ; i < len; i++ ) {
+					promise = this.ands[ i ];
+					if ( promise.state !== Promise.DONE ) {
+						allDone = false;
+						break;
+					}
+				}
+				return allDone;
+			},
 			/**
 			 * Do next reject.
 			 * @private
 			 */
 			_nextReject: function( result ) {
-				var i = 0,
-					len = this.thens.length,
-					promise;
-
-				if ( len ) {
-					for ( ; i < len; i++ ) {
-						promise = this.thens[ i ];
-						promise.reject( result );
-					}
+				var next = this.next;
+				if ( next ) {
+					this.next.reject( result );
 				} else {
 					this._finally( result, Promise.FAIL );
 				}
@@ -2087,7 +2082,7 @@
 			 * @private
 			 */
 			_push: function( nextPromise ) {
-				this.thens.push( nextPromise );
+				this.ands.push( nextPromise );
 				return this;
 			},
 			/**
@@ -2100,8 +2095,8 @@
 				switch ( name ) {
 					case Promise.FAIL:
 					case Promise.PROGRESS:
-						break;
 					case Promise.TODO:
+						break;
 					default:
 						name = Promise.TODO;
 				}
@@ -2132,8 +2127,12 @@
 			 * @returns {Promise}
 			 */
 			then: function( nextToDo, nextFail, nextProgress ) {
+				if ( this.next ) {
+					return this.next;
+				}
+
 				var promise;
-				if ( Promise.forinstance( nextToDo ) && !nextToDo.parent ) {
+				if ( Promise.forinstance( nextToDo ) && !nextToDo.prev ) {
 					promise = nextToDo;
 				} else {
 					promise = new Promise( nextToDo, nextFail, nextProgress );
@@ -2142,15 +2141,18 @@
 				if ( this.context !== this ) {
 					promise.withContext( this.context );
 				}
-				promise.parent = this;
+				promise.prev = this;
+
+				this.next = promise;
 
 				switch ( this.state ) {
 					case Promise.FAIL:
+						break;
 					case Promise.DONE:
-						promise.resolve( this.result );
+						this._nextResolve( this.result );
 						break;
 					default:
-						this._push( promise );
+						break;
 				}
 
 				return promise;
@@ -2166,12 +2168,13 @@
 				this.__promiseFlag = true;
 				this.state = Promise.TODO;
 				this.result = null;
-				this.thens = [];
+				this.ands = [];
 				this.todo = todo || todoFn;
 				this.fail = fail || todoFn;
 				this.progress = progress || todoFn;
-				this.parent = null;
+				this.prev = null;
 				this.id = count++;
+				this.next = null;
 				this._done = null;
 				return this;
 			},
@@ -2204,18 +2207,16 @@
 					root.destroy();
 				}
 			},
-			/**
-			 * Clear property.
-			 * @private
-			 */
+
 			_clearProperty: function() {
-				this.result = null;
-				this.thens = [];
+				// this.result = null;
+				this.ands = [];
 				this.todo = todoFn;
 				this.fail = todoFn;
 				this.progress = todoFn;
-				this.parent = null;
-				this.state = Promise.TODO;
+				this.prev = null;
+				this.next = null;
+				// this.state = Promise.TODO;
 				this._done = null;
 				return this;
 			},
@@ -2224,19 +2225,19 @@
 			 * @returns {void}
 			 */
 			destroy: function() {
-				var ancester = this,
-					thens = ancester.thens,
-					i, len = thens.length,
-					result = 0,
-					then;
-				if ( thens.length ) {
-					for ( i = len - 1; i >= 0; i-- ) {
-						then = thens[ i ];
-						then.destroy();
-						then = thens.pop();
-						then._clearProperty();
-					}
+				var ands = this.ands,
+					i, len = ands.length,
+					promise;
+				for ( i = len - 1; i >= 0; i-- ) {
+					promise = ands[ i ];
+					promise.destroy();
+					promise = ands.pop();
 				}
+
+				if ( this.next ) {
+					this.next.destroy();
+				}
+
 				this._clearProperty();
 			},
 			/**
@@ -2244,7 +2245,7 @@
 			 * @returns {this}
 			 */
 			resolve: function( obj ) {
-				if ( this.state != Promise.TODO ) {
+				if ( this.state !== Promise.TODO ) {
 					return this;
 				}
 
@@ -2272,6 +2273,7 @@
 						todo = function( result ) {
 							self.state = Promise.DONE;
 							self.result = result;
+							self._resolveAnds( result );
 							self._nextResolve( result );
 							self = fail = todo = progress = null;
 						},
@@ -2300,9 +2302,26 @@
 
 					promise.then( todo ).done();
 				} else {
+					this._resolveAnds( this.result );
 					this._nextResolve( this.result );
 				}
 				return this;
+			},
+			/**
+			 * @private
+			 */
+			_resolveAnds: function( result ) {
+				for ( var i = 0, len = this.ands.length; i < len; i++ ) {
+					this.ands[ i ].resolve( result );
+				}
+			},
+			/**
+			 * @private
+			 */
+			_reprocessAnds: function( result ) {
+				for ( var i = 0, len = this.ands.length; i < len; i++ ) {
+					this.ands[ i ].reprocess( result );
+				}
 			},
 			/**
 			 * If fail return a promise then do next.
@@ -2321,10 +2340,11 @@
 					var promise = this.result;
 					switch ( promise.state ) {
 						case Promise.TODO:
-							this._nextResolve( obj );
+							this._nextResolve( obj, true );
 							break;
 						case Promise.DONE:
-							this._nextResolve( promise.result );
+							this.result = promise.result;
+							this._nextResolve( promise.result, true );
 							break;
 						case Promise.FAIL:
 							this._nextReject( promise.result );
@@ -2337,7 +2357,7 @@
 				return this;
 			},
 			/**
-			 * If sum is great than or equal 100 then do next. The default sum is 0.
+			 * If result is a Promise then resolve or reject.
 			 * @param {Number}.
 			 * @returns {this}
 			 */
@@ -2346,7 +2366,7 @@
 					return this;
 				}
 
-				var result = this.progress( obj );
+				var result = this.call( Promise.PROGRESS, obj );
 
 				if ( Promise.forinstance( result ) && result !== this ) {
 					switch ( result.state ) {
@@ -2365,23 +2385,27 @@
 			},
 			/**
 			 * The new promise is siblings.
-			 * @param {Function=}
-			 * @param {Function=}
+			 * @param {Function|Promise=}
 			 * @param {Function=}
 			 * @returns {Promise}
 			 * @example
 			 * new Promise().and(todo).and(todo);
 			 */
-			and: function( todo, fail, progress ) {
-				var self = this.parent || this,
-					promise = self.then( todo, fail, progress );
-				return promise;
+			and: function( todo, fail ) {
+				var promise = Promise( todo, fail ).withContext( this ).done( function( result ) {
+					this._nextResolve( result );
+				} );
+				this._push( promise );
+				if ( this.state === Promise.DONE ) {
+					promise.resolve( this.result );
+				}
+				return this;
 			},
 			/**
 			 * @returns {Boolean}
 			 */
 			finished: function() {
-				return this.state === Promise.DONE || this.state === Promise.FAIL;
+				return this.state === Promise.DONE;
 			},
 			/**
 			 * @returns {Boolean}
@@ -2394,11 +2418,22 @@
 			 * @returns {Promise}
 			 */
 			root: function() {
-				var parent = this;
-				while ( parent.parent ) {
-					parent = parent.parent;
+				var prev = this;
+				while ( prev.prev ) {
+					prev = prev.prev;
 				}
-				return parent;
+				return prev;
+			},
+			/**
+			 * Get end promise.
+			 * @returns {Promise}
+			 */
+			end: function() {
+				var end = this;
+				while ( end.next ) {
+					end = end.next;
+				}
+				return end;
 			}
 		};
 

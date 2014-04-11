@@ -66,7 +66,7 @@
 
       }).describe("Test done, destroy", function(preResult, test, logger){
         test(preResult.info).should.equal("next describe");
-        test(preResult.promise).should.have.property("thens").with.should.have.length(0);
+        test(preResult.promise).should.have.property("ands").with.should.have.length(0);
       }).describe("Test reject", function(preResult, test, logger){
         var resolvePromise = new Promise();
 
@@ -160,11 +160,11 @@
         }).done(function(result){
           test(sum).should.equal(10);
           test(result).should.equal("goto done");
-          return "next all";
+          return "next and";
         }).resolve(0);
 
-      }).describe("Test all", function(preResult, test, logger){
-        test(preResult).should.equal("next all");
+      }).describe("Test and", function(preResult, test, logger){
+        test(preResult).should.equal("next and");
         var delayBeCallSum = 0;
         function delay(ms) {
           return function(obj) {
@@ -183,7 +183,7 @@
           test(delayBeCallSum).should.equal(3);
         });
 
-        var promise = new Promise()
+        Promise()
         .and(delay(100))
         .and(delay(200))
         .and(delay(300))
