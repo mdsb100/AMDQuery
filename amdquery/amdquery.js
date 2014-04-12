@@ -2050,12 +2050,12 @@
 					andsState,
 					promise;
 
-				if ( allDone ) {
+				if ( allDone || enforce ) {
 					andsState = this._checkAndsState( this.result );
-					allDone = andsState.size === andsState[ Promise.DONE ];
+					allDone = andsState.size === andsState[ Promise.DONE ] + andsState[ Promise.FAIL ];
 				}
 
-				if ( allDone || enforce ) {
+				if ( allDone ) {
 					if ( next ) {
 						next.resolve( result );
 					} else {
@@ -2094,13 +2094,19 @@
 			 * Do next reject.
 			 * @private
 			 */
-			_nextReject: function( result ) {
-				var next = this.next;
-				if ( next ) {
-					this.next.reject( result );
-				} else {
-					this._finally( result, Promise.FAIL );
+			_nextReject: function( result, Finally ) {
+				var next = this.next,
+					andsState = this._checkAndsState( this.result ),
+					allDone = andsState.size === andsState[ Promise.DONE ] + andsState[ Promise.FAIL ];
+
+				if ( allDone ) {
+					if ( next && !Finally ) {
+						this.next.reject( result );
+					} else {
+						this._finally( result, Promise.FAIL );
+					}
 				}
+
 				return this;
 			},
 			/**
@@ -2242,6 +2248,7 @@
 					}
 					// root.destroy();
 				}
+				return this;
 			},
 
 			_clearProperty: function() {
@@ -2385,28 +2392,18 @@
 					switch ( promise.state ) {
 						case Promise.DONE:
 							this.result = promise.result;
-							if ( !this.ands.length ) {
-								this._nextResolve( promise.result, true );
-							} else {
-								this._resolveAnds( result );
-							}
+							this._nextResolve( promise.result, true );
 							break;
 						case Promise.FAIL:
 							this.result = promise.result;
-							if ( !this.ands.length ) {
-								this._nextReject( promise.result );
-							} else {
-								this._resolveAnds( result );
-							}
+							this._nextReject( promise.result );
 							break;
 					}
 
-				} else if ( !this.ands.length ) {
-					this._finally( this.result, Promise.FAIL );
 				} else {
-					this._resolveAnds( result );
+					this._nextReject( this.result, true );
 				}
-				return this;
+				return this._resolveAnds( result );;
 			},
 			/**
 			 * If result is a Promise then resolve or reject.
