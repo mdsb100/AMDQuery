@@ -1999,7 +1999,7 @@
 					results = andsState.results.concat();
 					results.splice( 0, 0, this.result );
 					if ( andsState[ Promise.FAIL ] ) {
-						this._finally( results );
+						this._finally( results, Promise.FAIL );
 					} else {
 						this._nextResolve( results );
 					}
@@ -2231,19 +2231,19 @@
 					} else if ( state === Promise.FAIL ) {
 						root._done.reject( result );
 					}
-					root.destroy();
+					// root.destroy();
 				}
 			},
 
 			_clearProperty: function() {
-				// this.result = null;
+				this.result = null;
 				this.ands = [];
 				this.todo = todoFn;
 				this.fail = todoFn;
 				this.progress = todoFn;
 				this.prev = null;
 				this.next = null;
-				// this.state = Promise.TODO;
+				this.state = Promise.TODO;
 				this._done = null;
 				return this;
 			},
@@ -2285,6 +2285,7 @@
 						this.result = this.call( Promise.TODO, obj );
 
 					} catch ( e ) {
+						$.logger( e );
 						this.state = Promise.TODO;
 						return this.reject( obj );
 					}
@@ -2303,6 +2304,7 @@
 							self._resolveAnds( result );
 							self._nextResolve( result );
 							self = fail = todo = progress = null;
+							this.destroy();
 						},
 						fail = this.result.fail,
 						progress = this.result.progress;
@@ -2319,6 +2321,7 @@
 							fail.call( this, result );
 							self.reject( result );
 							self = fail = todo = progress = null;
+							this.destroy()
 						}
 					}
 
@@ -2327,7 +2330,7 @@
 						return self.progress( result );
 					}
 
-					promise.then( todo ).done();
+					promise.then( todo );
 				} else {
 					this._resolveAnds( this.result );
 					this._nextResolve( this.result );
@@ -2366,10 +2369,6 @@
 				if ( Promise.constructorOf( this.result ) && this.result !== this ) {
 					var promise = this.result;
 					switch ( promise.state ) {
-						case Promise.TODO:
-							this.result = result;
-							this._nextResolve( result, true );
-							break;
 						case Promise.DONE:
 							this.result = promise.result;
 							this._nextResolve( promise.result, true );
