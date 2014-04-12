@@ -2289,22 +2289,14 @@
 					return this;
 				}
 
-				if ( Promise.constructorOf( this.result ) ) {
-					this.result.resolve( obj );
-					return this;
-				} else if ( this.fail ) {
-					try {
-						this.state = Promise.DONE;
-						this.result = this.call( Promise.TODO, obj );
-
-					} catch ( e ) {
-						$.logger( e );
-						this.state = Promise.TODO;
-						return this.reject( obj );
-					}
-				} else {
+				try {
 					this.state = Promise.DONE;
 					this.result = this.call( Promise.TODO, obj );
+
+				} catch ( e ) {
+					$.logger( e );
+					this.state = Promise.TODO;
+					return this.reject( obj );
 				}
 
 				if ( Promise.constructorOf( this.result ) && this.result !== this ) {
@@ -2312,7 +2304,6 @@
 					switch ( promise ) {
 						case Promise.DONE:
 							this.result = Promise.result;
-							this._resolveAnds( obj );
 							this._nextResolve( this.result );
 							return;
 						case Promise:
@@ -2325,7 +2316,6 @@
 						todo = function( result ) {
 							self.state = Promise.DONE;
 							self.result = result;
-							self._resolveAnds( obj );
 							self._nextResolve( result );
 							self = fail = todo = progress = null;
 							promise.next.destroy();
@@ -2355,10 +2345,9 @@
 					promise.then( todo );
 
 				} else {
-					this._resolveAnds( obj );
 					this._nextResolve( this.result );
 				}
-				return this;
+				return this._resolveAnds( obj );
 			},
 			/**
 			 * @private
@@ -2367,6 +2356,7 @@
 				for ( var i = 0, len = this.ands.length; i < len; i++ ) {
 					this.ands[ i ].resolve( result );
 				}
+				return this;
 			},
 			/**
 			 * @private
@@ -2375,6 +2365,7 @@
 				for ( var i = 0, len = this.ands.length; i < len; i++ ) {
 					this.ands[ i ].reprocess( result );
 				}
+				return this;
 			},
 			/**
 			 * If fail return a promise then do next.
@@ -2443,7 +2434,7 @@
 							break;
 					}
 				}
-				return this;
+				return this._reprocessAnds( obj );
 			},
 			/**
 			 * The new promise is siblings
