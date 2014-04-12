@@ -1992,14 +1992,13 @@
 			todoFn = function( obj ) {
 				return obj;
 			},
-			andFn = function( result ) {
-				var andsState = this._checkAndsState( this.result ),
-					results;
+			andFn = function() {
+				var andsState = this._checkAndsState( this.result );
 				if ( andsState.size === andsState[ Promise.DONE ] + andsState[ Promise.FAIL ] ) {
 					if ( andsState[ Promise.FAIL ] ) {
-						this._nextReject( andsState.results );
+						this._nextReject( this.result );
 					} else {
-						this._nextResolve( andsState.results );
+						this._nextResolve( this.result );
 					}
 				}
 			};
@@ -2051,11 +2050,12 @@
 					promise;
 
 				if ( allDone || enforce ) {
-					andsState = this._checkAndsState( this.result );
+					andsState = this._checkAndsState( result );
 					allDone = andsState.size === andsState[ Promise.DONE ] + andsState[ Promise.FAIL ];
 				}
 
 				if ( allDone ) {
+					result = andsState.result;
 					if ( next ) {
 						next.resolve( result );
 					} else {
@@ -2071,24 +2071,24 @@
 				var allDone = true,
 					i = 0,
 					len = this.ands.length,
-					result = {
+					andsState = {
 						size: len,
-						results: [ result ]
+						result: len ? [ result ] : result
 					},
 					promise;
 
-				result[ Promise.TODO ] = 0;
-				result[ Promise.PROGRESS ] = 0;
-				result[ Promise.FAIL ] = 0;
-				result[ Promise.DONE ] = 0;
+				andsState[ Promise.TODO ] = 0;
+				andsState[ Promise.PROGRESS ] = 0;
+				andsState[ Promise.FAIL ] = 0;
+				andsState[ Promise.DONE ] = 0;
 
 				for ( ; i < len; i++ ) {
 					promise = this.ands[ i ];
-					result[ promise.state ]++;
-					result.results.push( promise.result );
+					andsState[ promise.state ]++;
+					andsState.result.push( promise.result );
 				}
 
-				return result;
+				return andsState;
 			},
 			/**
 			 * Do next reject.
@@ -2096,10 +2096,11 @@
 			 */
 			_nextReject: function( result, Finally ) {
 				var next = this.next,
-					andsState = this._checkAndsState( this.result ),
+					andsState = this._checkAndsState( result ),
 					allDone = andsState.size === andsState[ Promise.DONE ] + andsState[ Promise.FAIL ];
 
 				if ( allDone ) {
+					result = andsState.result;
 					if ( next && !Finally ) {
 						this.next.reject( result );
 					} else {
@@ -2302,6 +2303,7 @@
 
 				} catch ( e ) {
 					$.logger( e );
+					e.stack && $.logger( e.stack );
 					this.state = Promise.TODO;
 					return this.reject( obj );
 				}
@@ -2392,18 +2394,18 @@
 					switch ( promise.state ) {
 						case Promise.DONE:
 							this.result = promise.result;
-							this._nextResolve( promise.result, true );
+							this._nextResolve( this.result, true );
 							break;
 						case Promise.FAIL:
 							this.result = promise.result;
-							this._nextReject( promise.result );
+							this._nextReject( this.result );
 							break;
 					}
 
 				} else {
 					this._nextReject( this.result, true );
 				}
-				return this._resolveAnds( result );;
+				return this._resolveAnds( result );
 			},
 			/**
 			 * If result is a Promise then resolve or reject.
