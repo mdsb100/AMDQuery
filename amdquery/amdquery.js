@@ -2408,7 +2408,7 @@
 			},
 			/**
 			 * If result is a Promise then resolve or reject.
-			 * @param {*}.
+			 * @param {*=}.
 			 * @returns {this}
 			 */
 			reprocess: function( obj ) {
