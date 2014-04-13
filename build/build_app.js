@@ -193,7 +193,7 @@ function createAppDirAndCopyFile( appConfig, htmlInfo, buildLibJSFromHead ) {
 "amdquery/ui",
 htmlInfo.appDirectoryName + "/assets",
 htmlInfo.appDirectoryName + "/styles"
-],
+ ],
 		dirName,
 		len = dirNameList.length,
 		i;
@@ -582,9 +582,8 @@ function modifyHTML( appConfig, htmlInfo, finish ) {
 		originSrc = aQueryScript.getAttribute( "src" ),
 			src = PATH.join( PATH.dirname( originSrc ), PATH.basename( originSrc, '.js' ) + DebugJSSuffix );
 		htmlInfo.AMDQueryJSRelativeHTMLPath = src;
+		aQueryScript.setAttribute( "src", htmlInfo.AMDQueryJSRelativeHTMLPath );
 	}
-
-	aQueryScript.setAttribute( "src", htmlInfo.AMDQueryJSRelativeHTMLPath );
 
 	if ( htmlInfo.afterLibRelativeJSPath ) {
 		var afterLibJS = doc.createElement( "script" );
