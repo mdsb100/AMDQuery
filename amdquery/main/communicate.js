@@ -13,7 +13,7 @@
 	 * @property [AjaxOptions.isRandom] {Boolean}
 	 * @property [AjaxOptions.timeout=7000] {Number}
 	 * @property [AjaxOptions.fail] {Function} - Fail handler.
-	 * @property [AjaxOptions.dataType="text"] {String} - "json"|"xml"|"text"
+	 * @property [AjaxOptions.dataType="text"] {String} - "json"|"xml"|"text"|"html"
 	 * @property [AjaxOptions.contentType="application/x-www-form-urlencoded"] {String}
 	 * @property [AjaxOptions.context=null] {Object} - Complete context.
 	 */
@@ -122,7 +122,7 @@
 					//ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 					//type == "post" && ajax.setRequestHeader("Content-type", "");
 
-					promise = new Promise( function( ajax ) {
+					promise = Promise( function( ajax ) {
 						var response;
 						clearTimeout( timeId );
 						e.type = "ajaxStop";
@@ -149,18 +149,19 @@
 						o = null;
 						return response;
 					}, function( ajax ) {
+						clearTimeout( timeId );
 						ajax && ajax.abort();
 						e.type = "ajaxStart";
 						$.trigger( e.type, ajax, e );
 						o.fail.call( o.context || ajax, ajax );
 						o = null;
-						return new Promise().reject( ajax );
+						return Promise().reject( ajax );
 					}, function( ajax ) {
 						if ( ajax.readyState == 4 ) {
 							if ( ( ajax.status >= 200 && ajax.status < 300 ) || ajax.status == 304 ) {
-								return new Promise().resolve( ajax );
+								return Promise().resolve( ajax );
 							} else {
-								return new Promise().reject( ajax );
+								return Promise().reject( ajax );
 							}
 						}
 					} );
@@ -186,25 +187,22 @@
 		 * @returns {module:base/Promise}
 		 */
 		ajaxs: function( list ) {
-			var retPromise = new Promise(),
-				retList = [];
+			var retPromise;
 
 			$.each( list, function( item, index ) {
-				var promise = communicate.ajax( item ).then( function( resp ) {
-					if ( resp ) {
-						retList[ index ] = resp;
-					}
-					return retList;
-				} );
 
-				retPromise.and( function() {
-					return promise;
-				} );
+				if ( retPromise ) {
+					var promise = communicate.ajax( item );
+					retPromise.and( function() {
+						return promise;
+					} );
+				} else {
+					retPromise = communicate.ajax( item );
+				}
 
-				promise.done();
 			} );
 
-			return retPromise.resolve( retList );
+			return retPromise;
 		},
 
 		ajaxSetting:
@@ -231,7 +229,7 @@
 			url: location.href,
 			dataType: "text",
 			type: "GET",
-			contentType: "application/x-www-form-urlencoded",
+			contentType: "application/x-www-form-urlencoded; charset=UTF-8",
 			context: null,
 			async: true,
 			timeout: 7000,
@@ -278,41 +276,42 @@
 			o.url = o.url.replace( /\?$/, "" );
 
 			o.url += data == "" ? data : "?" + data;
+			console.log( o.url );
 
-			promise = new Promise( function( json ) {
+			function clear() {
 				clearTimeout( timeId );
-				typed.isNode( this.nodeName, "script" ) && o.isDelete == true && head.removeChild( this );
-				this.onerror = this.onload = head = null;
 				if ( window[ random ] ) {
 					delete window[ random ];
 					random = null;
 				}
 				e.type = "jsonpStop";
 				$.trigger( e.type, scripts, e );
-				e = null;
-				var promise = new Promise();
-				if ( json !== undefined ) {
-					typed.isFunction( o.complete ) && o.complete.call( o.context || this, json );
-					promise.resolve( json );
-				} else {
-					o.fail.call( o.context || null, o );
-					promise.reject();
-				}
-				return promise;
+				typed.isNode( scripts.nodeName, "script" ) && o.isDelete == true && head.removeChild( this );
+				head = scripts = scripts.onload = scripts.onreadystatechange = scripts.onerror = null;
+			}
+
+			promise = Promise( function( json ) {
+				typed.isFunction( o.complete ) && o.complete.call( o.context || scripts, json );
+				clear();
+				return json;
 			}, function() {
-				var promise = new Promise;
-				promise.reject();
-				return promise;
+				typed.isFunction( o.fail ) && o.fail.call( o.context || scripts, o );
+				clear();
+				return Promise().reject( o );
+			}, function() {
+				if ( !this.readyState || this.readyState == "loaded" || this.readyState == "complete" ) {
+					return Promise().resolve( o.json );
+				}
 			} );
 
 			scripts.onload = scripts.onreadystatechange = function() {
-				if ( !this.readyState || this.readyState == "loaded" || this.readyState == "complete" ) {
-					promise.withContext( scripts ).resolve( o.json );
-				}
+				setTimeout( function() {
+					promise.reprocess( o.json );
+				}, 0 );
 			};
 
 			scripts.onerror = function() {
-				promise.withContext( scripts ).resolve();
+				promise.reject();
 			};
 
 			o.timeout && ( timeId = setTimeout( scripts.onerror, o.timeout ) );
@@ -357,25 +356,22 @@
 		 * @returns {module:base/Promise}
 		 */
 		jsonps: function( list ) {
-			var retPromise = new Promise(),
-				retList = [];
+			var retPromise;
 
 			$.each( list, function( item, index ) {
-				var promise = communicate.jsonp( item ).then( function( json ) {
-					if ( json ) {
-						retList[ index ] = json;
-					}
-					return retList;
-				} );
 
-				retPromise = retPromise.and( function() {
-					return promise;
-				} );
+				if ( retPromise ) {
+					var promise = communicate.jsonp( item );
+					retPromise.and( function() {
+						return promise;
+					} );
+				} else {
+					retPromise = communicate.jsonp( item );
+				}
 
-				promise.done();
 			} );
 
-			return retPromise.resolve( retList );
+			return retPromise;
 		},
 		/**
 		 * @example
