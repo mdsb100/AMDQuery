@@ -1918,9 +1918,10 @@
 							} finally {}
 						}
 					}
-
-					window.define ? window.define.apply( null, arg ) : fn();
 				}
+
+				window.define && window.define.apply( null, arg );
+
 				return this;
 			},
 			/**
