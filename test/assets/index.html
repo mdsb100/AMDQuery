@@ -73,6 +73,13 @@
                 setTimeout(function(){
                   $( "#iframe" ).src( {
                     src: htmlPath,
+                    complete: function(){
+                      var innerHtml = [
+                        htmlPath, "is testing..."
+                      ];
+
+                      $border.html( innerHtml.join( " " ) );
+                    },
                     error: function() {
                       var innerHtml = [
                         "Open", htmlPath, "error"
@@ -91,7 +98,7 @@
 
                       promise.resolve();
                     },
-                    timeout: 10000
+                    timeout: 15000
                   } );
                 }, 20);
 
