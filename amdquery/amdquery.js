@@ -2310,13 +2310,13 @@
 
 				if ( Promise.constructorOf( this.result ) && this.result !== this ) {
 					var promise = this.result._done || this.result;
-					switch ( promise ) {
+					switch ( promise.state ) {
 						case Promise.DONE:
-							this.result = Promise.result;
+							this.result = promise.result;
 							this._nextResolve( this.result );
 							return;
 						case Promise:
-							this.result = Promise.result;
+							this.result = promise.result;
 							this.reject( this.result );
 							return;
 					}
