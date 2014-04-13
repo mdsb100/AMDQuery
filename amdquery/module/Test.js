@@ -1,4 +1,4 @@
-aQuery.define( "module/Test", [ "base/typed", "base/Promise", "base/config", "main/event", "main/dom", "main/css", "html5/css3" ], function( $, typed, Promise, config, event, dom, css, css3 ) {
+aQuery.define( "module/Test", [ "base/typed", "base/ready", "base/Promise", "base/config", "main/event", "main/dom", "main/css", "html5/css3" ], function( $, typed, ready, Promise, config, event, dom, css, css3 ) {
 	"use strict";
 	this.describe( "Test Module" );
 	var TestEventType = "test.report";
@@ -14,7 +14,10 @@ aQuery.define( "module/Test", [ "base/typed", "base/Promise", "base/config", "ma
 		dialog.style.cssText = "display:block;position:absolute;width:600px;height:200px;overflow-y:scroll;overflow-x:hidden;z-index:1000000;background-color:black;";
 		dialog.style.right = "5px";
 		dialog.style.top = "5px";
-		document.body.appendChild( dialog );
+
+		ready( function() {
+			document.body.appendChild( dialog );
+		} );
 
 		var colorMap = {
 			log: {
