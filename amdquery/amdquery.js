@@ -2293,7 +2293,7 @@
 			 * @returns {this}
 			 */
 			resolve: function( obj ) {
-				if ( this.state !== Promise.TODO ) {
+				if ( this.isComplete() ) {
 					return this;
 				}
 
@@ -2314,11 +2314,10 @@
 						case Promise.DONE:
 							this.result = promise.result;
 							this._nextResolve( this.result );
-							return;
+							return this._resolveAnds( obj );
 						case Promise:
 							this.result = promise.result;
-							this.reject( this.result );
-							return;
+							return this.reject( this.result );;
 					}
 					var self = this,
 						hook,
@@ -2346,10 +2345,10 @@
 						}
 					}
 
-					promise.progress = function( result ) {
-						progress.call( promise.context, result );
-						return self.progress( result );
-					}
+					// promise.progress = function( result ) {
+					// 	progress.call( promise.context, result );
+					// 	return self.reprocess( result );
+					// }
 
 					promise.then( todo );
 
@@ -2382,7 +2381,7 @@
 			 * @returns {this}
 			 */
 			reject: function( result ) {
-				if ( this.state != Promise.TODO ) {
+				if ( this.isComplete() ) {
 					return this;
 				}
 

@@ -163,14 +163,8 @@
         test(preResult).should.equal("next progress");
         var sum = 0;
 
-        return new Promise(function(result){
+        var promise = new Promise(function(result){
           return result;
-        }).then(function(result){
-          var promise = Promise();
-          var interval = setInterval(function(){
-            promise.reprocess(interval);
-          }, 20);
-          return promise;
         }, function(){}, function(interval){
           if(sum === 10){
             clearInterval(interval);
@@ -183,7 +177,14 @@
           test(sum).should.equal(10);
           test(result).should.equal("goto done");
           return "next and";
-        }).resolve(0);
+        });
+
+
+        var interval = setInterval(function(){
+          promise.reprocess(interval);
+        });
+
+        return promise;
 
       }).describe("Test and", function(preResult, test, logger){
         test(preResult).should.equal("next and");
