@@ -121,6 +121,7 @@ aQuery.define( "module/Test", [ "base/typed", "base/ready", "base/Promise", "bas
 		this.count = 0;
 		this.fail = 0;
 		this.failInfoList = [];
+		this.timeConsuming = null;
 	}
 
 	/**
@@ -283,7 +284,10 @@ aQuery.define( "module/Test", [ "base/typed", "base/ready", "base/Promise", "bas
 		 * @returns {this}
 		 */
 		start: function( firstResult ) {
+			var beginTime = new Date;
 			this.promise.done( function() {
+				this.timeConsuming = ( new Date() - beginTime ) / 1000;
+				info( "time-consuming:", this.timeConsuming, "seconds" );
 				Test[ this.fail == 0 ? "logger" : "error" ]( this.name, "Test stop", "Test:" + this.count, "Success" + ( this.count - this.fail ), "Fail:" + this.fail );
 				this.complete();
 				this.report();
@@ -303,7 +307,8 @@ aQuery.define( "module/Test", [ "base/typed", "base/ready", "base/Promise", "bas
 					name: this.name,
 					count: this.count,
 					fail: this.fail,
-					failInfoList: this.failInfoList
+					failInfoList: this.failInfoList,
+          timeConsuming: this.timeConsuming
 				} );
 			}
 			return this;
