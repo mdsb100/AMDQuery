@@ -284,7 +284,7 @@
 	 * aQuery(null,"div", document.body);
 	 */
 	var aQuery = function( elem, tagName, parent ) {
-		if ( $.forinstance( this ) ) {
+		if ( $.constructorOf( this ) ) {
 			if ( !elem && !tagName ) return;
 			if ( ( typeof elem === "object" || elem === undefined || elem === null ) && typeof tagName == "string" ) {
 				count++;
@@ -494,7 +494,7 @@
 		 * @param {*}
 		 * @returns {Boolean}
 		 */
-		forinstance: function( obj ) {
+		constructorOf: function( obj ) {
 			return obj instanceof $ || ( obj && obj.toString() == "AMDQuery" );
 		},
 		/**
@@ -1919,9 +1919,10 @@
 							} finally {}
 						}
 					}
-
-					window.define ? window.define.apply( null, arg ) : fn();
 				}
+
+				window.define && window.define.apply( null, arg );
+
 				return this;
 			},
 			/**
@@ -1989,31 +1990,31 @@
 	aQuery.define( "base/Promise", function( $ ) {
 		"use strict";
 		this.describe( "Class Promise" );
-		var checkArg = function( todo, fail, progress, name ) {
-			var arg = util.argToArray( arguments ),
-				len = arg.length,
-				last = arg[ len - 1 ],
-				hasName = typeof last == "string",
-				result, i = len,
-				begin;
-
-			begin = hasName ? len - 1 : len;
-			for ( ; i < 4; i++ ) {
-				arg.splice( begin, 0, null );
-			}
-			return arg;
-		},
-			random = 0,
-			count = 0;
+		var count = 0,
+			todoFn = function( obj ) {
+				return obj;
+			},
+			andFn = function() {
+				var andsState = this._checkAndsState( this.result );
+				if ( andsState.size === andsState[ Promise.DONE ] + andsState[ Promise.FAIL ] ) {
+					if ( andsState[ Promise.FAIL ] ) {
+						this._nextReject( this.result );
+					} else {
+						this._nextResolve( this.result );
+					}
+				}
+			};
 
 		/**
-		 * @see http://wiki.commonjs.org/wiki/Promises/A
+		 * @see http://wiki.commonjs.org/wiki/Promises/A <br />
+		 * <a target="_parent" href="../../../../test/test/assets/base/Promise.html" >Demo and Test</a>
 		 * @public
 		 * @module base/Promise
 		 * @example
 		 * new Promise(function(){}, function(){})
 		 * new Promise(function(){})
 		 * new Promise()
+		 * Promise() equivalence new Promise()
 		 */
 
 		/**
@@ -2022,22 +2023,93 @@
 		 * @constructor
 		 */
 		var Promise = function( todo, fail, progress ) {
-			this.init( todo, fail, progress );
+			if ( Promise.constructorOf( this ) ) {
+				this.init( todo, fail, progress );
+			} else {
+				return new Promise( todo, fail, progress );
+			}
 		}
 
+		util.extend( Promise, {
+			TODO: "todo",
+			DONE: "done",
+			FAIL: "fail",
+			PROGRESS: "progress"
+		} );
 
 		Promise.prototype = {
 			constructor: Promise,
 			/**
-			 * Do next
+			 * Do next resolve.
 			 * @private
 			 */
-			_next: function( result ) {
-				for ( var i = 0, len = this.thens.length, promise; i < len; i++ ) {
-					// 依次调用该任务的后续任务
-					promise = this.thens[ i ];
-					promise.resolve( result );
+			_nextResolve: function( result, enforce ) {
+				var i = 0,
+					len,
+					allDone = this.state === Promise.DONE,
+					next = this.next,
+					andsState,
+					promise;
+
+				if ( allDone || enforce ) {
+					andsState = this._checkAndsState( result );
+					allDone = andsState.size === andsState[ Promise.DONE ] + andsState[ Promise.FAIL ];
 				}
+
+				if ( allDone ) {
+					result = andsState.result;
+					if ( next ) {
+						next.resolve( result );
+					} else {
+						this._finally( result, Promise.DONE );
+					}
+				}
+				return this;
+			},
+			/**
+			 * @private
+			 */
+			_checkAndsState: function( result ) {
+				var allDone = true,
+					i = 0,
+					len = this.ands.length,
+					andsState = {
+						size: len,
+						result: len ? [ result ] : result
+					},
+					promise;
+
+				andsState[ Promise.TODO ] = 0;
+				andsState[ Promise.PROGRESS ] = 0;
+				andsState[ Promise.FAIL ] = 0;
+				andsState[ Promise.DONE ] = 0;
+
+				for ( ; i < len; i++ ) {
+					promise = this.ands[ i ];
+					andsState[ promise.state ]++;
+					andsState.result.push( promise.result );
+				}
+
+				return andsState;
+			},
+			/**
+			 * Do next reject.
+			 * @private
+			 */
+			_nextReject: function( result, Finally ) {
+				var next = this.next,
+					andsState = this._checkAndsState( result ),
+					allDone = andsState.size === andsState[ Promise.DONE ] + andsState[ Promise.FAIL ];
+
+				if ( allDone ) {
+					result = andsState.result;
+					if ( next && !Finally ) {
+						this.next.reject( result );
+					} else {
+						this._finally( result, Promise.FAIL );
+					}
+				}
+
 				return this;
 			},
 			/**
@@ -2045,7 +2117,7 @@
 			 * @private
 			 */
 			_push: function( nextPromise ) {
-				this.thens.push( nextPromise );
+				this.ands.push( nextPromise );
 				return this;
 			},
 			/**
@@ -2056,12 +2128,12 @@
 			 */
 			call: function( name, result ) {
 				switch ( name ) {
-					case "fail":
-					case "progress":
+					case Promise.FAIL:
+					case Promise.PROGRESS:
+					case Promise.TODO:
 						break;
-					case "todo":
 					default:
-						name = "todo";
+						name = Promise.TODO;
 				}
 
 				return this[ name ].call( this.context, result );
@@ -2083,25 +2155,51 @@
 				return this;
 			},
 			/**
+			 * @private
+			 */
+			_createPromiseWithoutPrev: function( todo, fail, progress ) {
+				if ( Promise.constructorOf( todo ) ) {
+					if ( todo.prev ) {
+						fail = todo.fail;
+						progress = todo.progress;
+						todo = todo.todo;
+					} else {
+						return todo;
+					}
+				}
+				return new Promise( todo, fail, progress );
+			},
+			/**
 			 * Then do...
-			 * @param {Function} - Todo.
-			 * @param {Function} - Fail next.
-			 * @param {Function} - Progress.
-			 * @returns {Promise}
+			 * @param [nextToDo] {Function|module:base/Promise} - Todo.
+			 * @param [nextFail] {Function} - Fail next.
+			 * @param [nextProgress] {Function} - Progress.
+			 * @returns {module:base/Promise}
 			 */
 			then: function( nextToDo, nextFail, nextProgress ) {
-				var promise = new Promise( nextToDo, nextFail, nextProgress );
+				if ( this.next ) {
+					return this.next;
+				}
+
+				var promise = this._createPromiseWithoutPrev( nextToDo, nextFail, nextProgress );
+
 				if ( this.context !== this ) {
 					promise.withContext( this.context );
 				}
-				promise.parent = this;
-				if ( this.state != "todo" ) {
-					// 如果当前状态是已完成，则nextOK会被立即调用
-					promise.resolve( this.result );
-				} else {
-					// 否则将会被加入队列中
-					this._push( promise );
+				promise.prev = this;
+
+				this.next = promise;
+
+				switch ( this.state ) {
+					case Promise.FAIL:
+						break;
+					case Promise.DONE:
+						this._nextResolve( this.result );
+						break;
+					default:
+						break;
 				}
+
 				return promise;
 			},
 			/**
@@ -2111,36 +2209,61 @@
 			 * @param {Function=}
 			 */
 			init: function( todo, fail, progress ) {
-				var arg = checkArg.apply( this, arguments );
-
 				this.context = this;
 				this.__promiseFlag = true;
-				this.state = "todo";
+				this.state = Promise.TODO;
 				this.result = null;
-				this.thens = [];
-				this.todo = arg[ 0 ] || function( obj ) {
-					return obj;
-				};
-				this.fail = arg[ 1 ] || null;
-				this.progress = arg[ 2 ] || null;
-				this.parent = null;
-				this.friend = 0;
-				this.asyncCount = 0;
+				this.ands = [];
+				this.todo = todo || todoFn;
+				this.fail = fail || todoFn;
+				this.progress = progress || todoFn;
+				this.prev = null;
 				this.id = count++;
-
+				this.next = null;
+				this._done = null;
 				return this;
 			},
 			/**
-			 * Clear property.
+			 * Add a function which be call finally.<br/>
+			 * Add a promise instance will call resolve.<br/>
+			 * If add 'done' then destroy promise from root.
+			 * @parma {Function|Promise} - todo
+			 * @parma {Function} - fail
+			 * @returns {module:base/Promise} - Return root promise. So you can done().resolve(); .
+			 */
+			done: function( todo, fail ) {
+				var root = this.root();
+				root._done = Promise.constructorOf( todo ) ? todo : new Promise( todo, fail );
+				return root;
+			},
+			/**
+			 * Do it when finish all task or fail.
 			 * @private
 			 */
+			_finally: function( result, state ) {
+				var root = this.root();
+				if ( root._done && !root._done.isComplete() ) {
+					root._done.withContext( this.context );
+					if ( state === Promise.DONE ) {
+						root._done.resolve( result );
+					} else if ( state === Promise.FAIL ) {
+						root._done.reject( result );
+					}
+					// root.destroy();
+				}
+				return this;
+			},
+
 			_clearProperty: function() {
 				this.result = null;
-				this.thens = [];
-				this.todo = null;
-				this.fail = null;
-				this.progress = null;
-				this.parent = null;
+				this.ands = [];
+				this.todo = todoFn;
+				this.fail = todoFn;
+				this.progress = todoFn;
+				this.prev = null;
+				this.next = null;
+				this.state = Promise.TODO;
+				this._done = null;
 				return this;
 			},
 			/**
@@ -2148,19 +2271,23 @@
 			 * @returns {void}
 			 */
 			destroy: function() {
-				var ancester = this,
-					thens = ancester.thens,
-					i, len = thens.length,
-					result = 0,
-					then;
-				if ( thens.length ) {
-					for ( i = len - 1; i >= 0; i-- ) {
-						then = thens[ i ];
-						then.destroy();
-						then = thens.pop();
-						then._clearProperty();
-					}
+				var ands = this.ands,
+					i, len = ands.length,
+					promise;
+				for ( i = len - 1; i >= 0; i-- ) {
+					promise = ands[ i ];
+					promise.destroy();
+					promise = ands.pop();
 				}
+
+				if ( this.parent ) {
+					this.parent.next = null;
+				}
+
+				if ( this.next ) {
+					this.next.destroy();
+				}
+
 				this._clearProperty();
 			},
 			/**
@@ -2168,137 +2295,200 @@
 			 * @returns {this}
 			 */
 			resolve: function( obj ) {
-				if ( this.state != "todo" ) {
-					// util.error( {
-					//   fn: "Promise.resolve",
-					//   msg: "already resolved"
-					// } )
+				if ( this.isComplete() ) {
 					return this;
 				}
 
-				if ( Promise.forinstance( this.result ) ) {
-					this.result.resolve( obj );
-					return this;
-				} else if ( this.fail ) {
-					try {
-						this.state = "done";
-						this.result = this.call( "todo", obj );
+				try {
+					this.state = Promise.DONE;
+					this.result = this.call( Promise.TODO, obj );
 
-					} catch ( e ) {
-						this.state = "fail";
-						this.result = this.call( "fail", obj );
+				} catch ( e ) {
+					$.logger( e );
+					e.stack && $.logger( e.stack );
+					this.state = Promise.TODO;
+					return this.reject( obj );
+				}
 
+				if ( Promise.constructorOf( this.result ) && this.result !== this ) {
+					var promise = this.result._done || this.result;
+					switch ( promise.state ) {
+						case Promise.DONE:
+							this.result = promise.result;
+							this._nextResolve( this.result );
+							return this._resolveAnds( obj );
+						case Promise:
+							this.result = promise.result;
+							return this.reject( this.result );;
 					}
-				} else {
-					this.state = "done";
-					this.result = this.call( "todo", obj );
-
-				}
-
-				if ( Promise.forinstance( this.result ) && this.result !== this ) {
-					var
-					self = this,
-						state = this.state,
-						callback = function( result ) {
-							self.state = state;
+					var self = this,
+						hook,
+						todo = function( result ) {
+							self.state = Promise.DONE;
 							self.result = result;
-							self._next( result );
-							self = null;
-						};
+							self._nextResolve( result );
+							self = fail = todo = progress = null;
+							promise.next.destroy();
+						},
+						fail = this.result.fail,
+						progress = this.result.progress;
 
-					this.state = "todo";
-					this.result.then( callback );
-				} else {
-					this._next( this.result );
-				}
-				return this;
-			},
-			/**
-			 * The new promise is siblings.
-			 * @param {Function=}
-			 * @param {Function=}
-			 * @param {Function=}
-			 * @returns {Promise}
-			 * @example
-			 * new Promise().and(todo).and(todo);
-			 */
-			and: function( todo, fail, progress ) {
-				var self = this.parent || this,
-					promise = self.then( todo, fail, progress );
-				promise.friend = 1;
-				self.asyncCount += 1;
-				return promise;
-			},
-			/**
-			 * Relative method "and".
-			 * @param {Promise} [promise=this]
-			 * @param {*=} - result
-			 * @returns {Promise}
-			 * @example
-			 * function delay(ms) {
-			 *   return function (obj) {
-			 *       var promise = new Promise;
-			 *       var self = this;
-			 *       setTimeout(function () {
-			 *           promise.together(self, obj);
-			 *       }, ms);
-			 *       return promise;
-			 *   };
-			 * };
-			 * new Promise().and(delay(1000)).and(delay(2000));
-			 */
-			together: function( promise, obj ) {
-				var i = 0,
-					parent = promise.parent || this.parent,
-					thens = parent.thens,
-					len = thens.length,
-					then;
-				parent.asyncCount = Math.max( --parent.asyncCount, 0 );
-				for ( i = 0; i < len; i++ ) {
-					then = thens[ i ];
-					if ( then.friend ) {
-						if ( parent.asyncCount > 0 ) {
-							return this;
+					this.state = Promise.TODO;
+
+					if ( promise.state === Promise.FAIL ) {
+						self.reject( promise.result );
+						self = fail = todo = progress = null;
+					} else {
+						promise.fail = function( result ) {
+							fail.call( promise.context, result );
+							self.reject( result );
+							self = fail = todo = progress = null;
+							promise.next.destroy();
 						}
 					}
+
+					// promise.progress = function( result ) {
+					// 	progress.call( promise.context, result );
+					// 	return self.reprocess( result );
+					// }
+
+					promise.then( todo );
+
+				} else {
+					this._nextResolve( this.result );
 				}
-				for ( i = 0; i < len; i++ ) {
-					then = thens[ i ];
-					Promise.forinstance( then.result ) && then.result.resolve( obj );
+				return this._resolveAnds( obj );
+			},
+			/**
+			 * @private
+			 */
+			_resolveAnds: function( result ) {
+				for ( var i = 0, len = this.ands.length; i < len; i++ ) {
+					this.ands[ i ].resolve( result );
 				}
 				return this;
 			},
 			/**
-			 * @returns {Boolean}
+			 * @private
 			 */
-			finished: function() {
-				return this.state === "done";
+			_reprocessAnds: function( result ) {
+				for ( var i = 0, len = this.ands.length; i < len; i++ ) {
+					this.ands[ i ].reprocess( result );
+				}
+				return this;
 			},
 			/**
-			 * @returns {Boolean}
+			 * If fail return a promise then do next.
+			 * @param {*=} - result.
+			 * @returns {this}
 			 */
-			unfinished: function() {
-				return this.state === "todo";
+			reject: function( result ) {
+				if ( this.isComplete() ) {
+					return this;
+				}
+
+				this.state = Promise.FAIL;
+				this.result = this.call( Promise.FAIL, result );
+
+				if ( Promise.constructorOf( this.result ) && this.result !== this ) {
+					var promise = this.result;
+					switch ( promise.state ) {
+						case Promise.DONE:
+							this.result = promise.result;
+							this._nextResolve( this.result, true );
+							break;
+						case Promise.FAIL:
+							this.result = promise.result;
+							this._nextReject( this.result );
+							break;
+					}
+
+				} else {
+					this._nextReject( this.result, true );
+				}
+				return this._resolveAnds( result );
+			},
+			/**
+			 * If result is a Promise then resolve or reject.
+			 * @param {*=} obj
+			 * @returns {this}
+			 */
+			reprocess: function( obj ) {
+				if ( this.isComplete() ) {
+					return this;
+				}
+				this.state = Promise.PROGRESS;
+				var result = this.call( Promise.PROGRESS, obj );
+
+				if ( Promise.constructorOf( result ) && result !== this ) {
+					this.state = Promise.TODO;
+					switch ( result.state ) {
+						case Promise.TODO:
+							this.resolve( result.resolve( obj ).result );
+							break;
+						case Promise.DONE:
+							this.resolve( result.result );
+							break;
+						case Promise.FAIL:
+							this.reject( result.result );
+							break;
+					}
+				}
+				return this._reprocessAnds( obj );
+			},
+			/**
+			 * The new promise is siblings
+			 * @param [todo] {Function|module:base/Promise}
+			 * @param [fail] {Function}
+			 * @param [progress] {Function}
+			 * @returns {module:base/Promise}
+			 * @example new Promise().and(todo).and(todo);
+			 */
+			and: function( todo, fail, progress ) {
+				var promise = this._createPromiseWithoutPrev( todo, fail, progress ).withContext( this ).done( andFn, andFn );
+				this._push( promise );
+				if ( this.isComplete() ) {
+					promise.resolve( this.result );
+				}
+				return this;
 			},
 			/**
 			 * Get root promise.
-			 * @returns {Promise}
+			 * @returns {module:base/Promise}
 			 */
 			root: function() {
-				var parent = this;
-				while ( parent.parent ) {
-					parent = parent.parent;
+				var prev = this;
+				while ( prev.prev ) {
+					prev = prev.prev;
 				}
-				return parent;
+				return prev;
+			},
+			/**
+			 * Get end promise.
+			 * @returns {module:base/Promise}
+			 */
+			end: function() {
+				var end = this;
+				while ( end.next ) {
+					end = end.next;
+				}
+				return end;
+			},
+			/**
+			 * The promise is complete. fail or done return true.
+			 * @returns {Boolean}
+			 */
+			isComplete: function() {
+				return this.state === Promise.DONE || this.state === Promise.FAIL;
 			}
 		};
 
 		/**
 		 * Whether it is "Promise" instances.
-		 * @param {Promise}
+		 * @param {module:base/Promise}
 		 * @returns {Boolean}
 		 */
-		Promise.forinstance = function( promise ) {
+		Promise.constructorOf = function( promise ) {
 			return promise instanceof Promise || ( promise ? promise.__promiseFlag === true : false );
 		}
 
@@ -2450,7 +2640,7 @@ aQuery.define( "base/typed", function( $ ) {
 	 * Determine the type of object。
 	 * @public
 	 * @exports base/typed
-	 * @borrows aQuery.forinstance as is$
+	 * @borrows aQuery.constructorOf as is$
 	 */
 	var typed = {
 		/**
@@ -2458,12 +2648,12 @@ aQuery.define( "base/typed", function( $ ) {
 		 * @param {*}
 		 * @returns {Boolean}
 		 */
-		isEleConllection: function( a ) {
+		isElementCollection: function( a ) {
 			return typed.isType( a, "[object NodeList]" ) ||
 				typed.isType( a, "[object HTMLCollection]" ) ||
-				( typed.isNum( a.length ) && !typed.isArr( a.length ) &&
-				( a.length > 0 ? typed.isEle( a[ 0 ] ) : true ) &&
-				( typed.isObj( a.item ) || typed.isStr( a.item ) ) );
+				( typed.isNumber( a.length ) && !typed.isArray( a.length ) &&
+				( a.length > 0 ? typed.isElement( a[ 0 ] ) : true ) &&
+				( typed.isObject( a.item ) || typed.isString( a.item ) ) );
 		},
 		/**
 		 * Is an event of Dom?
@@ -2479,14 +2669,14 @@ aQuery.define( "base/typed", function( $ ) {
 		 * @returns {Boolean}
 		 */
 		isArguments: function( a ) {
-			return !!a && "callee" in a && this.isNum( a.length );
+			return !!a && "callee" in a && this.isNumber( a.length );
 		},
 		/**
 		 * Is it a array?
 		 * @param {*}
 		 * @returns {Boolean}
 		 */
-		isArr: function( a ) {
+		isArray: function( a ) {
 			return typed.isType( a, "[object Array]" );
 		},
 		/**
@@ -2494,7 +2684,7 @@ aQuery.define( "base/typed", function( $ ) {
 		 * @param {*}
 		 * @returns {Boolean}
 		 */
-		isArrlike: function( obj ) {
+		isArraylike: function( obj ) {
 			var length = obj.length,
 				type = typed.type( obj );
 
@@ -2515,7 +2705,7 @@ aQuery.define( "base/typed", function( $ ) {
 		 * @param {*}
 		 * @returns {Boolean}
 		 */
-		isBol: function( a ) {
+		isBoolean: function( a ) {
 			return typed.isType( a, "[object Boolean]" );
 		},
 		/**
@@ -2531,7 +2721,7 @@ aQuery.define( "base/typed", function( $ ) {
 		 * @param {*}
 		 * @returns {Boolean}
 		 */
-		isDoc: function( a ) {
+		isDocument: function( a ) {
 			return !!toString.call( a ).match( /document/i );
 		},
 		/**
@@ -2539,7 +2729,7 @@ aQuery.define( "base/typed", function( $ ) {
 		 * @param {*}
 		 * @returns {Boolean}
 		 */
-		isEle: function( a ) {
+		isElement: function( a ) {
 			if ( !a || a === document ) return false;
 			var str = ( a.constructor && a.constructor.toString() ) + Object.prototype.toString.call( a )
 			if ( ( str.indexOf( "HTML" ) > -1 && str.indexOf( "Collection" ) == -1 ) || a.nodeType === 1 ) {
@@ -2561,8 +2751,8 @@ aQuery.define( "base/typed", function( $ ) {
 		 */
 		isEmpty: function( a ) {
 			if ( a == null ) return true;
-			if ( typed.isArr( a ) || typed.isStr( a ) ) return a.length == 0;
-			return typed.isEmptyObj( a );
+			if ( typed.isArray( a ) || typed.isString( a ) ) return a.length == 0;
+			return typed.isEmptyObject( a );
 		},
 		/**
 		 * Is it empty object?
@@ -2570,10 +2760,10 @@ aQuery.define( "base/typed", function( $ ) {
 		 * @returns {Boolean}
 		 * @example
 		 * var a = [], b = {};
-		 * typed.isEmptyObj(a); // true
-		 * typed.isEmptyObj(b); // true
+		 * typed.isEmptyObject(a); // true
+		 * typed.isEmptyObject(b); // true
 		 */
-		isEmptyObj: function( obj ) {
+		isEmptyObject: function( obj ) {
 			for ( var name in obj ) {
 				return false;
 			}
@@ -2600,7 +2790,7 @@ aQuery.define( "base/typed", function( $ ) {
 		 * @param {*}
 		 * @returns {Boolean}
 		 */
-		isFun: function( a ) {
+		isFunction: function( a ) {
 			return typed.isType( a, "[object Function]" );
 		},
 		/**
@@ -2617,14 +2807,14 @@ aQuery.define( "base/typed", function( $ ) {
 		 * @returns {Boolean}
 		 */
 		isNaN: function( a ) {
-			return typed.isNum( a ) && a != +a;
+			return typed.isNumber( a ) && a != +a;
 		},
 		/**
 		 * Is it a Number?
 		 * @param {*}
 		 * @returns {Boolean}
 		 */
-		isNum: function( a ) {
+		isNumber: function( a ) {
 			return typed.isType( a, "[object Number]" );
 		},
 		/**
@@ -2632,8 +2822,8 @@ aQuery.define( "base/typed", function( $ ) {
 		 * @param {*}
 		 * @returns {Boolean}
 		 * @example
-		 * typed.isNum("5"); // false
-		 * typed.isNumeric("5"); // true
+		 * typed.isNumber("5"); // false
+		 * typed.isNumbereric("5"); // true
 		 */
 		isNumeric: function( a ) {
 			return !isNaN( parseFloat( a ) ) && isFinite( a );
@@ -2653,14 +2843,14 @@ aQuery.define( "base/typed", function( $ ) {
 		 * @returns {Boolean}
 		 */
 		isNode: function( ele, name ) {
-			return typed.isEle( ele ) ? ( ele.nodeName && ele.nodeName.toUpperCase() === name.toUpperCase() ) : false;
+			return typed.isElement( ele ) ? ( ele.nodeName && ele.nodeName.toUpperCase() === name.toUpperCase() ) : false;
 		},
 		/**
 		 * Is it Object? "undefined" is not Object.
 		 * @param {*}
 		 * @returns {Boolean}
 		 */
-		isObj: function( a ) {
+		isObject: function( a ) {
 			return a !== undefined ? typed.isType( a, "[object Object]" ) : false;
 		},
 		/**
@@ -2677,8 +2867,8 @@ aQuery.define( "base/typed", function( $ ) {
 		 * @param {*}
 		 * @returns {Boolean}
 		 */
-		isPlainObj: function( obj ) {
-			if ( !obj || !typed.isObj( obj ) || obj.nodeType || obj.setInterval ) {
+		isPlainObject: function( obj ) {
+			if ( !obj || !typed.isObject( obj ) || obj.nodeType || obj.setInterval ) {
 				return false;
 			}
 
@@ -2709,7 +2899,7 @@ aQuery.define( "base/typed", function( $ ) {
 		 * @param {*}
 		 * @returns {Boolean}
 		 */
-		isStr: function( a ) {
+		isString: function( a ) {
 			return typed.isType( a, "[object String]" );
 		},
 		/**
@@ -2811,7 +3001,7 @@ aQuery.define( "base/typed", function( $ ) {
 			}
 			return true;
 		},
-		is$: $.forinstance,
+		is$: $.constructorOf,
 		/**
 		 * Return object type.
 		 * @param {*}
@@ -2900,13 +3090,13 @@ aQuery.define( "base/extend", [ "base/typed" ], function( $, typed ) {
 				deep = false,
 				options, name, src, copy;
 
-			if ( typed.isBol( target ) ) {
+			if ( typed.isBoolean( target ) ) {
 				deep = target;
 				target = arguments[ 1 ] || {};
 				i = 2;
 			}
 
-			if ( !typed.isObj( target ) && !typed.isFun( target ) ) { //加了个array && !typed.isArr( target )
+			if ( !typed.isObject( target ) && !typed.isFunction( target ) ) { //加了个array && !typed.isArray( target )
 				target = {};
 			}
 
@@ -2926,8 +3116,8 @@ aQuery.define( "base/extend", [ "base/typed" ], function( $, typed ) {
 								continue;
 							}
 
-							if ( deep && copy && ( typed.isPlainObj( copy ) || typed.isArr( copy ) ) ) {
-								var clone = src && ( typed.isPlainObj( src ) || typed.isArr( src ) ) ? src : typed.isArr( copy ) ? [] : {};
+							if ( deep && copy && ( typed.isPlainObject( copy ) || typed.isArray( copy ) ) ) {
+								var clone = src && ( typed.isPlainObject( src ) || typed.isArray( src ) ) ? src : typed.isArray( copy ) ? [] : {};
 
 								target[ name ] = utilExtend.extend( deep, clone, copy );
 
@@ -3089,7 +3279,7 @@ aQuery.define( "base/array", [ "base/typed", "base/extend" ], function( $, typed
 			var result = results || [];
 
 			if ( array ) {
-				if ( typed.isNul( array.length ) || typed.isStr( array ) || typed.isFun( array ) || array.setInterval ) {
+				if ( typed.isNul( array.length ) || typed.isString( array ) || typed.isFunction( array ) || array.setInterval ) {
 					push.call( result, array );
 				} else {
 					result = array.toArray( array );
@@ -3109,7 +3299,7 @@ aQuery.define( "base/array", [ "base/typed", "base/extend" ], function( $, typed
 			var i = 0,
 				list = [],
 				len = obj.length;
-			if ( !( typed.isNum( len ) && typed.isFun( obj ) ) ) {
+			if ( !( typed.isNumber( len ) && typed.isFunction( obj ) ) ) {
 				for ( var value = obj[ 0 ]; i < len; value = obj[ ++i ] ) {
 					list.push( value );
 				}
@@ -3182,15 +3372,7 @@ aQuery.define( "base/array", [ "base/typed", "base/extend" ], function( $, typed
 				return ( ret && ret[ 1 ] ) || "";
 			}
 		},
-		_defaultPrototype = {
-			init: function() {
-				return this;
-			}
-		},
-		defaultValidate = function() {
-			return 1;
-		},
-		inerit = function( Sub, Super, name ) {
+		inherit = function( Sub, Super, name ) {
 			object.inheritProtypeWithParasitic( Sub, Super, name );
 			Sub.prototype.__superConstructor = Super;
 			Sub.prototype._super = _superInit;
@@ -3206,8 +3388,8 @@ aQuery.define( "base/array", [ "base/typed", "base/extend" ], function( $, typed
 
 	/**
 	 * @callback CollectionEachCallback
-   * @param item {*}
-   * @param index {Number}
+	 * @param item {*}
+	 * @param index {Number}
 	 */
 
 	/**
@@ -3225,7 +3407,7 @@ aQuery.define( "base/array", [ "base/typed", "base/extend" ], function( $, typed
 		 * @returns {this}
 		 */
 		inherit: function( Super ) {
-			inerit( this, Super );
+			inherit( this, Super );
 			return this;
 		},
 		/**
@@ -3237,7 +3419,7 @@ aQuery.define( "base/array", [ "base/typed", "base/extend" ], function( $, typed
 		 */
 		extend: function( name, prototype, statics ) {
 			var arg = $.util.argToArray( arguments );
-			if ( typed.isObj( name ) ) {
+			if ( typed.isObject( name ) ) {
 				arg.splice( 0, 0, _getFunctionName( this ) || name.name || "anonymous" );
 			}
 			arg.push( this );
@@ -3252,7 +3434,7 @@ aQuery.define( "base/array", [ "base/typed", "base/extend" ], function( $, typed
 		joinPrototype: function() {
 			for ( var i = 0, len = arguments.length, obj; i < len; i++ ) {
 				obj = arguments[ i ];
-				typed.isPlainObj( obj ) && utilExtend.extend( this.prototype, obj );
+				typed.isPlainObject( obj ) && utilExtend.extend( this.prototype, obj );
 			}
 			return this;
 		},
@@ -3261,7 +3443,7 @@ aQuery.define( "base/array", [ "base/typed", "base/extend" ], function( $, typed
 		 * @param {Object} - A new instance.
 		 * @returns {this}
 		 */
-		forinstance: function( target ) {
+		constructorOf: function( target ) {
 			var constructor = this,
 				ret = target instanceof this;
 
@@ -3282,8 +3464,8 @@ aQuery.define( "base/array", [ "base/typed", "base/extend" ], function( $, typed
 
 		 * @param {Object<String,Object>|String|Function}
 		 */
-		createGetterSetter: function( object ) {
-			object.createPropertyGetterSetter( this, object );
+		createGetterSetter: function( fn ) {
+			object.createPropertyGetterSetter( this, fn );
 		},
 		/** fn is pointer of this.prototype */
 		fn: null
@@ -3358,7 +3540,7 @@ aQuery.define( "base/array", [ "base/typed", "base/extend" ], function( $, typed
 		 * } );
 		 * sub.foo();sub.pad();
 		 *
-		 * Super.forinstance( sub ) // true
+		 * Super.constructorOf( sub ) // true
 		 *
 		 * Sub.createGetterSetter( {
 		 *   name: "-pa"
@@ -3400,13 +3582,16 @@ aQuery.define( "base/array", [ "base/typed", "base/extend" ], function( $, typed
 					anonymous = function anonymous() {
 						this.init.apply( this, arguments );
 					};
+          var temp = prototype;
+          prototype = name;
+          statics = temp;
 			}
 
 			if ( Super ) {
-				inerit( anonymous, Super );
+				inherit( anonymous, Super );
 			}
 
-			prototype = utilExtend.extend( {}, _defaultPrototype, prototype );
+			prototype = utilExtend.extend( {}, prototype );
 			prototype.constructor = anonymous;
 
 			utilExtend.easyExtend( anonymous.prototype, prototype );
@@ -3549,15 +3734,26 @@ aQuery.define( "base/array", [ "base/typed", "base/extend" ], function( $, typed
 			return object.extend( name, _prototype, _statics, Super );
 		},
 		/**
-		 * Get the object properties count.
+		 * Get the object members count without prototype.
 		 * @param {Object}
-		 * @param {Boolean} - If true , does not count prototype.
 		 * @returns {Number}
 		 */
-		getObjectPropertiesCount: function( obj, bool ) {
+		getObjectMembersCount: function( obj ) {
 			var count = 0;
 			for ( var i in obj ) {
-				bool == true ? typed.isPrototypeProperty( obj, i ) || count++ : count++;
+				typed.isPrototypeProperty( obj, i ) || count++;
+			}
+			return count;
+		},
+		/**
+		 * Get the object prototype members count.
+		 * @param {Object}
+		 * @returns {Number}
+		 */
+		getObjectPrototypeMembersCount: function( obj ) {
+			var count = 0;
+			for ( var i in obj ) {
+				typed.isPrototypeProperty( obj, i ) && count++;
 			}
 			return count;
 		},
@@ -3593,12 +3789,12 @@ aQuery.define( "base/array", [ "base/typed", "base/extend" ], function( $, typed
 			//var prototype = Object(Super.prototype);
 			//Sub.prototype = prototype;
 			utilExtend.easyExtend( Sub.prototype, originPrototype );
-			//Sub.prototype.constructor = Sub;
+			Sub.prototype.constructor = Sub;
 
 			return this;
 		},
 		/**
-		 * Use classic combination to inherit prototype. Contains the same memory address.
+		 * Use classic combination to inherit prototype.
 		 * @param {Sub}
 		 * @param {Super}
 		 * @returns {this}
@@ -3621,7 +3817,7 @@ aQuery.define( "base/array", [ "base/typed", "base/extend" ], function( $, typed
 		 *  mark: {
 		 *    purview: "-wa -ru",
 		 *    defaultValue: 0, // set prototype.mark = 0.
-		 *    validate: function( mark ){ return mark >= 0 && mark <= 100; } // validate param when setting.
+		 *    validate: function( mark ){ return mark >= 0 && mark <= 100; }, // validate param when setting.
 		 *    edit: function( value ){ return value + ""; } // edit value when getting.
 		 *  },
 		 *  height: function( h ){ return h >= 100 && h <= 220; } // validate param when setting.
@@ -3642,13 +3838,13 @@ aQuery.define( "base/array", [ "base/typed", "base/extend" ], function( $, typed
 		 * return {obj.prototype}
 		 */
 		createPropertyGetterSetter: function( obj, object ) {
-			if ( !typed.isPlainObj( object ) ) {
+			if ( !typed.isPlainObject( object ) ) {
 				return this;
 			}
 
 			return $.each( object, function( value, key ) {
 				var purview = defaultPurview,
-					validate = defaultValidate,
+					validate = null,
 					defaultValue,
 					edit;
 				switch ( typeof value ) {
@@ -3656,13 +3852,13 @@ aQuery.define( "base/array", [ "base/typed", "base/extend" ], function( $, typed
 						purview = value;
 						break;
 					case "object":
-						if ( typed.isStr( value.purview ) ) {
+						if ( typed.isString( value.purview ) ) {
 							purview = value.purview;
 						}
-						if ( typed.isFun( value.validate ) ) {
+						if ( typed.isFunction( value.validate ) ) {
 							validate = value.validate;
 						}
-						if ( typed.isFun( value.edit ) ) {
+						if ( typed.isFunction( value.edit ) ) {
 							edit = value.edit;
 						}
 						defaultValue = value.defaultValue; //undefinded always undefinded
@@ -3680,12 +3876,9 @@ aQuery.define( "base/array", [ "base/typed", "base/extend" ], function( $, typed
 				if ( purview.match( /\-w([u|a])?[\s]?/ ) ) {
 					getPrefix = RegExp.$1 == "a" ? "_" : "";
 					this[ ( getPrefix || prefix ) + $.util.camelCase( key, "set" ) ] = function( a ) {
-						if ( validate.call( this, a ) ) {
+						if ( typed.isFunction( validate ) ? validate.call( this, a ) : true ) {
 							this[ key ] = a;
-						} else if ( defaultValidate !== undefined ) {
-							this[ key ] = defaultValue;
 						}
-
 						return this;
 					};
 				}
@@ -4100,7 +4293,7 @@ aQuery.define( "base/array", [ "base/typed", "base/extend" ], function( $, typed
 		for ( name in obj ) {
 
 			// if the public data object is empty, the private is still empty
-			if ( name === "data" && typed.isEmptyObj( obj[ name ] ) ) {
+			if ( name === "data" && typed.isEmptyObject( obj[ name ] ) ) {
 				continue;
 			}
 			if ( name !== "toJSON" ) {
@@ -4147,7 +4340,7 @@ aQuery.define( "base/array", [ "base/typed", "base/extend" ], function( $, typed
 			if ( !id )
 				id = ++uuid;
 
-			if ( typed.isPlainObj( name ) ) {
+			if ( typed.isPlainObject( name ) ) {
 				ele[ expando ] = id;
 				thisCache = cache[ id ] = utilExtend.extend( true, {}, name );
 			} else if ( cache[ id ] ) {
@@ -4163,7 +4356,7 @@ aQuery.define( "base/array", [ "base/typed", "base/extend" ], function( $, typed
 				thisCache[ name ] = data;
 			}
 
-			return typed.isStr( name ) ? thisCache[ name ] : thisCache;
+			return typed.isString( name ) ? thisCache[ name ] : thisCache;
 		},
 
 		_getTarget: function( ele ) {
@@ -4216,7 +4409,7 @@ aQuery.define( "base/array", [ "base/typed", "base/extend" ], function( $, typed
 			if ( !id )
 				id = ++uuid;
 
-			if ( typed.isPlainObj( name ) ) {
+			if ( typed.isPlainObject( name ) ) {
 				ele[ expando ] = id;
 				thisCache = cache[ id ] = utilExtend.extend( true, {}, name );
 			} else if ( cache[ id ] ) {
@@ -4264,7 +4457,7 @@ aQuery.define( "base/array", [ "base/typed", "base/extend" ], function( $, typed
 				if ( thisCache ) {
 					delete thisCache[ name ];
 
-					if ( typed.isEmptyObj( thisCache ) )
+					if ( typed.isEmptyObject( thisCache ) )
 						exports.removeData( ele );
 
 				}
@@ -4301,7 +4494,7 @@ aQuery.define( "base/array", [ "base/typed", "base/extend" ], function( $, typed
 		data: function( key, value ) {
 			if ( key === undefined && this.length ) {
 				return exports.get( this[ 0 ] );
-			} else if ( typed.isObj( key ) ) {
+			} else if ( typed.isObject( key ) ) {
 				return this.each( function( ele ) {
 					exports.get( ele, key );
 				} );
@@ -6348,7 +6541,7 @@ if ( typeof define === "function" && define.amd ) {
 		// Set to 0 to skip string check
 		qualifier = qualifier || 0;
 
-		if ( typed.isFun( qualifier ) ) {
+		if ( typed.isFunction( qualifier ) ) {
 			return array.grep( elements, function( ele, i ) {
 				var retVal = !! qualifier.call( ele, i, ele );
 				return retVal === keep;
@@ -6359,7 +6552,7 @@ if ( typeof define === "function" && define.amd ) {
 				return ( ele === qualifier ) === keep;
 			} );
 
-		} else if ( typed.isStr( qualifier ) ) {
+		} else if ( typed.isString( qualifier ) ) {
 			var filtered = array.grep( elements, function( ele ) {
 				return ele.nodeType === 1;
 			} );
@@ -6433,7 +6626,7 @@ if ( typeof define === "function" && define.amd ) {
 		 */
 		elementCollectionToArray: function( eles, real ) {
 			var list = [];
-			if ( typed.isEleConllection( eles ) ) {
+			if ( typed.isElementCollection( eles ) ) {
 				var real = real === undefined ? true : real;
 				$.each( eles, function( ele ) {
 					if ( real === false )
@@ -6478,28 +6671,28 @@ if ( typeof define === "function" && define.amd ) {
 		getEle: function( ele, context ) {
 			var list = [],
 				tmp;
-			if ( typed.isStr( ele ) ) {
+			if ( typed.isString( ele ) ) {
 				ele = $.util.trim( ele );
 				tmp = context || document;
 				list = $.find( ele, tmp.documentElement || context );
-			} else if ( typed.isEle( ele ) || ( ele && ele.nodeType === 3 ) )
+			} else if ( typed.isElement( ele ) || ( ele && ele.nodeType === 3 ) )
 				list = [ ele ];
-			else if ( typed.isArr( ele ) ) {
+			else if ( typed.isArray( ele ) ) {
 				$.each( ele, function( result ) {
-					if ( typed.isEle( result ) || ( result && result.nodeType === 3 ) ) {
+					if ( typed.isElement( result ) || ( result && result.nodeType === 3 ) ) {
 						list.push( result );
 					}
 				}, this );
 				list = array.filterSame( list );
 			} else if ( ele instanceof $ )
 				list = ele.eles;
-			else if ( typed.isEleConllection( ele ) ) {
+			else if ( typed.isElementCollection( ele ) ) {
 				list = $.elementCollectionToArray( ele, true );
 			} else if ( ele === document )
 				list = [ ele.documentElement ];
 			else if ( ele === window )
 				list = [ window ]; //有风险的
-			else if ( typed.isDoc( ele ) ) {
+			else if ( typed.isDocument( ele ) ) {
 				list = [ ele.documentElement ];
 			}
 
@@ -6541,7 +6734,7 @@ if ( typeof define === "function" && define.amd ) {
 			var i = -1,
 				node = ele.parentNode.firstChild;
 			while ( node ) {
-				if ( typed.isEle( node ) && i++ != undefined && node === ele ) {
+				if ( typed.isElement( node ) && i++ != undefined && node === ele ) {
 					break;
 				}
 				node = node.nextSibling;
@@ -6569,7 +6762,7 @@ if ( typeof define === "function" && define.amd ) {
 			var value,
 				i = 0,
 				length = eles.length,
-				isArray = typed.isArrlike( eles ),
+				isArray = typed.isArraylike( eles ),
 				ret = [];
 
 			// Go through the array, translating each of the items to their
@@ -6626,7 +6819,7 @@ if ( typeof define === "function" && define.amd ) {
 		 */
 		posterity: function( selector ) {
 			var posterity = $.posterity( this.eles );
-			if ( typed.isStr( selector ) ) posterity = $.find( selector, posterity );
+			if ( typed.isString( selector ) ) posterity = $.find( selector, posterity );
 			return $( posterity );
 		},
 		/**
@@ -6691,7 +6884,7 @@ if ( typeof define === "function" && define.amd ) {
 			}
 
 			// index in selector
-			if ( typed.isStr( ele ) ) {
+			if ( typed.isString( ele ) ) {
 				return array.inArray( $( ele ), this[ 0 ] );
 			}
 
@@ -6711,7 +6904,7 @@ if ( typeof define === "function" && define.amd ) {
 		 */
 		is: function( selector ) {
 			return !!selector && (
-				typed.isStr( selector ) ?
+				typed.isString( selector ) ?
 				rneedsContext.test( selector ) ?
 				$.find( selector, this.context ).index( this[ 0 ] ) >= 0 :
 				$.filter( selector, this.eles ).length > 0 :
@@ -7433,7 +7626,7 @@ if ( typeof define === "function" && define.amd ) {
 		 * @returns {this}
 		 */
 		addHandler: function( ele, type, fn ) {
-			if ( typed.isEle( ele ) || typed.isWindow( ele ) ) {
+			if ( typed.isElement( ele ) || typed.isWindow( ele ) ) {
 				var customEvent, proxy, item, types = type.split( " " ),
 					i = types.length - 1;
 
@@ -7461,7 +7654,7 @@ if ( typeof define === "function" && define.amd ) {
 		 * @returns {this}
 		 */
 		once: function( ele, type, fn ) {
-			if ( ( typed.isEle( ele ) || typed.isWindow( ele ) ) ) {
+			if ( ( typed.isElement( ele ) || typed.isWindow( ele ) ) ) {
 				var customEvent = event._initHandler( ele ),
 					types = type.split( " " ),
 					i = types.length - 1,
@@ -7510,7 +7703,7 @@ if ( typeof define === "function" && define.amd ) {
 		 * @returns {this}
 		 */
 		removeHandler: function( ele, type, fn ) {
-			if ( typed.isEle( ele ) || typed.isWindow( ele ) ) {
+			if ( typed.isElement( ele ) || typed.isWindow( ele ) ) {
 				var customEvent = utilData.get( ele, _handlersKey ),
 					proxy = fn.__proxy || fn,
 					types = type.split( " " ),
@@ -7541,7 +7734,7 @@ if ( typeof define === "function" && define.amd ) {
 		 * @returns {this}
 		 */
 		clearHandlers: function( ele, type ) {
-			if ( typed.isEle( ele ) || typed.isWindow( ele ) ) {
+			if ( typed.isElement( ele ) || typed.isWindow( ele ) ) {
 				var customEvent = utilData.get( ele, _handlersKey );
 				if ( !customEvent ) {
 					return this;
@@ -7610,7 +7803,7 @@ if ( typeof define === "function" && define.amd ) {
 		 * @returns {Number} fn - "-1" means has not.
 		 */
 		hasHandler: function( ele, type, fn ) {
-			if ( typed.isEle( ele ) || typed.isWindow( ele ) ) {
+			if ( typed.isElement( ele ) || typed.isWindow( ele ) ) {
 				var customEvent = utilData.get( ele, _handlersKey );
 				if ( customEvent ) {
 					return customEvent.hasHandler( type, fn );
@@ -7625,7 +7818,7 @@ if ( typeof define === "function" && define.amd ) {
 		 * @returns {Array|Object|null}
 		 */
 		getHandlers: function( ele, type ) {
-			if ( typed.isEle( ele ) || typed.isWindow( ele ) ) {
+			if ( typed.isElement( ele ) || typed.isWindow( ele ) ) {
 				var customEvent = utilData.get( ele, _handlersKey );
 				if ( customEvent ) {
 					var handlers = customEvent.getHandlers( type );
@@ -8060,11 +8253,11 @@ if ( typeof define === "function" && define.amd ) {
 		 * @returns {this}
 		 */
 		trigger: function( ele, type, context, paras ) {
-			if ( typed.isEle( ele ) || typed.isWindow( ele ) ) {
+			if ( typed.isElement( ele ) || typed.isWindow( ele ) ) {
 				var data;
 				if ( data = domEventList[ type ] ) {
 					type = eventHooks.type( type );
-					typed.isFun( data ) ? data( ele, type, paras ) : $.logger( "trigger", "triggering" + type + " is not supported" );
+					typed.isFunction( data ) ? data( ele, type, paras ) : $.logger( "trigger", "triggering" + type + " is not supported" );
 				} else if ( data = utilData.get( ele, _handlersKey ) ) {
 					data.trigger.apply( data, [ type, context ].concat( $.util.argToArray( arguments, 3 ) ) );
 				}
@@ -8189,14 +8382,6 @@ if ( typeof define === "function" && define.amd ) {
 			return $.addHandler( "ajaxStop", fn );
 		},
 		/**
-		 * Add "ajaxTimeout" event Handler to bus.
-		 * @param {Function}
-		 * @returns {this}
-		 */
-		ajaxTimeout: function( fn ) {
-			return $.addHandler( "ajaxTimeout", fn );
-		},
-		/**
 		 * Add "getJSStart" event Handler to bus.
 		 * @param {Function}
 		 * @returns {this}
@@ -8211,15 +8396,7 @@ if ( typeof define === "function" && define.amd ) {
 		 */
 		jsonpStop: function( fn ) {
 			return $.addHandler( "jsonpStop", fn );
-		},
-		/**
-		 * Add "jsonpTimeout" event Handler to bus.
-		 * @param {Function}
-		 * @returns {this}
-		 */
-		jsonpTimeout: function( fn ) {
-			return $.addHandler( "jsonpTimeout", fn );
-		},
+		}
 	} );
 
 	$.extend( {
@@ -8258,7 +8435,7 @@ if ( typeof define === "function" && define.amd ) {
 		 * @returns {this}
 		 */
 		addHandler: function( type, fn ) {
-			if ( !typed.isStr( type ) || !( typed.isFun( fn ) || fn === null ) ) return this;
+			if ( !typed.isString( type ) || !( typed.isFunction( fn ) || fn === null ) ) return this;
 			return this.each( function( ele ) {
 				event.addHandler( ele, type, fn );
 			} );
@@ -8271,7 +8448,7 @@ if ( typeof define === "function" && define.amd ) {
 		 * @returns {this}
 		 */
 		once: function( type, fn ) {
-			if ( !typed.isStr( type ) || !( typed.isFun( fn ) || fn === null ) ) return this;
+			if ( !typed.isString( type ) || !( typed.isFunction( fn ) || fn === null ) ) return this;
 			return this.each( function( ele ) {
 				event.once( ele, type, fn );
 			} );
@@ -8324,7 +8501,7 @@ if ( typeof define === "function" && define.amd ) {
 		 * @returns {this}
 		 */
 		removeHandler: function( type, fn ) {
-			if ( !typed.isStr( type ) || !typed.isFun( fn ) ) return this;
+			if ( !typed.isString( type ) || !typed.isFunction( fn ) ) return this;
 			return this.each( function( ele ) {
 				event.removeHandler( ele, type, fn );
 			} );
@@ -8348,7 +8525,7 @@ if ( typeof define === "function" && define.amd ) {
 		 * @returns {this}
 		 */
 		toggle: function( funParas ) {
-			var arg = typed.isArr( funParas ) ? funParas : $.util.argToArray( arguments, 0 ),
+			var arg = typed.isArray( funParas ) ? funParas : $.util.argToArray( arguments, 0 ),
 				temp, i = 0,
 				ele;
 			for ( ; ele = this.eles[ i++ ]; ) {
@@ -8794,7 +8971,7 @@ if ( typeof define === "function" && define.amd ) {
 		setVal: function( ele, value ) {
 			var type = ele.type.toUpperCase();
 			if ( typed.isNode( ele, "select" ) ) {
-				if ( typed.isStr( value ) || typed.isNum( value ) )
+				if ( typed.isString( value ) || typed.isNumber( value ) )
 					value = [ value ];
 				$( ele ).find( "option" ).each( function( ele ) {
 					ele.selected = false;
@@ -8831,13 +9008,13 @@ if ( typeof define === "function" && define.amd ) {
 		 * @returns {this|String}
 		 */
 		attr: function( attr, value ) {
-			if ( typed.isObj( attr ) ) {
+			if ( typed.isObject( attr ) ) {
 				for ( var i in attr ) {
 					this.each( function( ele ) {
 						attrUtil.setAttr( ele, i, attr[ i ] );
 					} );
 				}
-			} else if ( typed.isStr( attr ) ) {
+			} else if ( typed.isString( attr ) ) {
 				if ( value == undefined ) {
 					return attrUtil.getAttr( this[ 0 ], attr );
 				} else {
@@ -8932,7 +9109,7 @@ if ( typeof define === "function" && define.amd ) {
 				/// <param name="options" type="Object">参数</param>
 				/// <returns type="self" />
 				var property = arguments[ 2 ] || "src";
-				if ( !typed.isEle( ele ) || ( !hasOwnProperty.call( ele, property ) && ele[ property ] === undefined ) ) {
+				if ( !typed.isElement( ele ) || ( !hasOwnProperty.call( ele, property ) && ele[ property ] === undefined ) ) {
 					return this;
 				}
 				ele.onload = null;
@@ -9021,7 +9198,7 @@ if ( typeof define === "function" && define.amd ) {
 			/// <summary>如果是基本数据类型就eval</summary>
 			/// <param name="s" type="String"></param>
 			/// <returns type="any" />
-			if ( typed.isStr( str ) && /(^(-?\d+)(\.\d+)?$)|true|false|undefined|null|NaN|Infinite/.test( str ) ) {
+			if ( typed.isString( str ) && /(^(-?\d+)(\.\d+)?$)|true|false|undefined|null|NaN|Infinite/.test( str ) ) {
 				return eval( str );
 			}
 			return str;
@@ -9155,7 +9332,7 @@ if ( typeof define === "function" && define.amd ) {
 			if ( b[ i ] === 0 || b[ i ] === false ) {
 				a[ i ] = 0;
 			} else {
-				if ( typed.isBol( a[ i ] ) || typed.isNum( a[ i ] ) ) {
+				if ( typed.isBoolean( a[ i ] ) || typed.isNumber( a[ i ] ) ) {
 
 				} else {
 					a[ i ] = b[ i ];
@@ -9209,7 +9386,7 @@ if ( typeof define === "function" && define.amd ) {
 			proto.setter = setter;
 		},
 		extendTemplate = function( tName, prototype, statics ) {
-			if ( typed.isObj( statics ) ) {
+			if ( typed.isObject( statics ) ) {
 				return Widget.extend( tName, prototype, statics, this.ctor );
 			} else {
 				return Widget.extend( tName, prototype, this.ctor );
@@ -9290,7 +9467,7 @@ if ( typeof define === "function" && define.amd ) {
 			attr = this.target.attr( this.widgetNameSpace + "-" + widgetName ) || this.target.attr( this.widgetName );
 
 			/*check options*/
-			if ( typed.isStr( attr ) ) {
+			if ( typed.isString( attr ) ) {
 				attr = attr.split( /;|,/ );
 				for ( i = 0, len = attr.length; i < len; i++ ) {
 					item = attr[ i ].split( ":" );
@@ -9375,7 +9552,7 @@ if ( typeof define === "function" && define.amd ) {
 			this.target = target;
 			this.addTag();
 			//obj高于元素本身属性
-			obj = typed.isPlainObj( obj ) ? obj : {};
+			obj = typed.isPlainObject( obj ) ? obj : {};
 			var ret = {};
 			utilExtend.extend( ret, this.checkAttr(), obj );
 			this.option( ret );
@@ -9383,28 +9560,28 @@ if ( typeof define === "function" && define.amd ) {
 		},
 		instanceofWidget: function( item ) {
 			var constructor = item;
-			if ( typed.isStr( item ) ) {
+			if ( typed.isString( item ) ) {
 				constructor = Widget.get( item );
 			}
-			if ( typed.isFun( constructor ) ) {
-				return constructor.forinstance ? constructor.forinstance( this ) : ( this instanceof constructor );
+			if ( typed.isFunction( constructor ) ) {
+				return constructor.constructorOf ? constructor.constructorOf( this ) : ( this instanceof constructor );
 			}
 			return false;
 		},
 		equals: function( item ) {
-			if ( this.forinstance( item ) ) {
+			if ( this.constructorOf( item ) ) {
 				return this.getElement() === item.getElement() && this[ this.widgetName ]( "getSelf" ) === item[ this.widgetName ]( "getSelf" );
 			}
 			return false;
 		},
 		option: function( key, value ) {
-			if ( typed.isObj( key ) ) {
+			if ( typed.isObject( key ) ) {
 				for ( var name in key ) {
 					this.setOption( name, key[ name ] );
 				}
 			} else if ( value === undefined ) {
 				return this.getOption( key );
-			} else if ( typed.isStr( key ) ) {
+			} else if ( typed.isString( key ) ) {
 				this.setOption( key, value );
 			}
 		},
@@ -9453,7 +9630,7 @@ if ( typeof define === "function" && define.amd ) {
 				this.doSpecialSetter( key, value );
 			} else if ( this._isEventName( key ) ) {
 				var eventName = this.getEventName( key );
-				if ( typed.isFun( value ) ) {
+				if ( typed.isFunction( value ) ) {
 					this.target.on( eventName, value );
 				} else if ( value === null ) {
 					this.target.clearHandlers( eventName );
@@ -9474,7 +9651,7 @@ if ( typeof define === "function" && define.amd ) {
 		},
 		doSpecialGetter: function( key ) {
 			var fn = this[ $.util.camelCase( key, "_get" ) ];
-			return typed.isFun( fn ) ? fn.call( this ) : this.options[ key ];
+			return typed.isFunction( fn ) ? fn.call( this ) : this.options[ key ];
 		},
 		doSpecialSetter: function( key, value ) {
 			var flag = "__" + key + "OptionInitFirstFlag";
@@ -9486,7 +9663,7 @@ if ( typeof define === "function" && define.amd ) {
 				}
 			}
 			var fn = this[ $.util.camelCase( key, "_set" ) ];
-			typed.isFun( fn ) ? fn.call( this, value ) : ( this.options[ key ] = value );
+			typed.isFunction( fn ) ? fn.call( this, value ) : ( this.options[ key ] = value );
 		},
 		beGetter: function( key ) {
 			return !!this.getter[ key ];
@@ -9533,7 +9710,7 @@ if ( typeof define === "function" && define.amd ) {
 			/// <param name="Super" type="Function/undefined">基类</param>
 			/// <returns type="Function" />
 			//consult from jQuery.ui
-			if ( !typed.isStr( name ) ) return null;
+			if ( !typed.isString( name ) ) return null;
 			name = name.split( "." );
 			var nameSpace = name[ 0 ];
 			name = name[ 1 ];
@@ -9542,13 +9719,13 @@ if ( typeof define === "function" && define.amd ) {
 			if ( !nameSpace || !name ) return;
 			if ( !Widget[ nameSpace ] ) Widget[ nameSpace ] = {};
 
-			if ( typed.isFun( arguments[ arguments.length - 1 ] ) ) {
+			if ( typed.isFunction( arguments[ arguments.length - 1 ] ) ) {
 				Super = arguments[ arguments.length - 1 ];
 			} else {
 				Super = Widget;
 			}
 
-			if ( !typed.isObj( statics ) ) {
+			if ( !typed.isObject( statics ) ) {
 				statics = {};
 			}
 
@@ -9593,10 +9770,10 @@ if ( typeof define === "function" && define.amd ) {
 						if ( a === "destroy" ) {
 							data[ a ].call( data );
 							utilData.removeData( ele, key );
-						} else if ( typed.isObj( a ) ) {
+						} else if ( typed.isObject( a ) ) {
 							data.option( a );
 							data.render();
-						} else if ( typed.isStr( a ) ) {
+						} else if ( typed.isString( a ) ) {
 							if ( a === "option" ) {
 								if ( c !== undefined ) {
 									/*若可set 则全部set*/
@@ -9682,7 +9859,7 @@ if ( typeof define === "function" && define.amd ) {
 		},
 		getAttrWidgets: function( ele ) {
 			var value = attr.getAttr( ele, prefix + "-widget" ),
-				attrNames = typed.isStr( value ) && value !== "" ? value.split( /;|,/ ) : [],
+				attrNames = typed.isString( value ) && value !== "" ? value.split( /;|,/ ) : [],
 				ret = [],
 				widgetName = "",
 				i;
@@ -9771,10 +9948,10 @@ if ( typeof define === "function" && define.amd ) {
 						Widget._renderWidget( eles[ i ] );
 					}
 					Widget.triggerDetectToParent( target );
-					if ( typed.isFun( callback ) ) callback();
+					if ( typed.isFunction( callback ) ) callback();
 				} );
 			} else {
-				if ( typed.isFun( callback ) ) callback();
+				if ( typed.isFunction( callback ) ) callback();
 			}
 			return this;
 		},
@@ -9788,10 +9965,10 @@ if ( typeof define === "function" && define.amd ) {
 						Widget._renderWidget( eles[ i ], "destroy" );
 					}
 					Widget.triggerDetectToParent( target );
-					if ( typed.isFun( callback ) ) callback();
+					if ( typed.isFunction( callback ) ) callback();
 				} );
 			} else {
-				if ( typed.isFun( callback ) ) callback();
+				if ( typed.isFunction( callback ) ) callback();
 			}
 			return this;
 		}
@@ -10172,7 +10349,7 @@ aQuery.define( "main/css", [ "base/typed", "base/extend", "base/array", "base/su
 				var val = hooks.get ? hooks.get( ele, name ) : curCSS( ele, name, style );
 				if ( extra === "" || extra ) {
 					var num = parseFloat( val );
-					return extra === true || typed.isNumeric( num ) ? num || 0 : val;
+					return extra === true || typed.isNumbereric( num ) ? num || 0 : val;
 				}
 				return val;
 
@@ -10399,13 +10576,13 @@ aQuery.define( "main/css", [ "base/typed", "base/extend", "base/array", "base/su
      * @returns {String}
      */
 		css: function( style, value ) {
-			if ( typed.isObj( style ) ) {
+			if ( typed.isObject( style ) ) {
 				for ( var key in style ) {
 					this.each( function( ele ) {
 						css.css( ele, key, style[ key ] );
 					} );
 				}
-			} else if ( typed.isStr( style ) ) {
+			} else if ( typed.isString( style ) ) {
 				if ( value === undefined ) {
 					return css.css( this[ 0 ], style );
 				} else {
@@ -10484,7 +10661,7 @@ aQuery.define( "main/css", [ "base/typed", "base/extend", "base/array", "base/su
      * @returns {Number}
      */
 		opacity: function( alpha ) {
-			return typed.isNum( alpha ) ? this.each( function( ele ) {
+			return typed.isNumber( alpha ) ? this.each( function( ele ) {
 				css.setOpacity( ele, alpha );
 			} ) : css.getOpacity( this[ 0 ] );
 		},
@@ -10658,7 +10835,15 @@ aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "
 				support.boxSizing && css.css( ele, "boxSizing", undefined, style, false ) === "border-box",
 				style ) : 0 );
 	}
-
+	/**
+	 * @pubilc
+	 * @exports main/position
+	 * @requires module:base/typed
+	 * @requires module:base/extend
+	 * @requires module:base/support
+	 * @requires module:base/client
+	 * @requires module:main/css
+	 */
 	var position = {
 		/**
 		 * Get size of page. { width: pageWidth, height: pageHeight }
@@ -10667,7 +10852,7 @@ aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "
 		getPageSize: function() {
 			var pageH = window.innerHeight,
 				pageW = window.innerWidth;
-			if ( !typed.isNum( pageW ) ) {
+			if ( !typed.isNumber( pageW ) ) {
 				if ( document.compatMode == "CSS1Compat" ) {
 					pageH = document.documentElement.clientHeight;
 					pageW = document.documentElement.clientWidth;
@@ -10920,7 +11105,7 @@ aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "
 		}
 	};
 
-	$.fn.extend( {
+	$.fn.extend( /** @lends aQuery.prototype */ {
 		/*
 		 * Set width to Element.
 		 * @variation 1
@@ -11059,7 +11244,7 @@ aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "
 		 * @returns {Number}
 		 */
 		outerHeight: function( height, bol ) {
-			if ( arguments.length == 1 && typed.isBol( height ) ) {
+			if ( arguments.length == 1 && typed.isBoolean( height ) ) {
 				bol = height;
 				height = null;
 			}
@@ -11083,7 +11268,7 @@ aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "
 		 * @returns {Number}
 		 */
 		outerWidth: function( width, bol ) {
-			if ( arguments.length == 1 && typed.isBol( width ) ) {
+			if ( arguments.length == 1 && typed.isBoolean( width ) ) {
 				bol = width;
 				width = null;
 			}
@@ -11259,43 +11444,39 @@ aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "
 /*=======================================================*/
 
 /*===================main/communicate===========================*/
-﻿aQuery.define( "main/communicate", [ "base/typed", "base/extend", "main/event", "main/parse" ], function( $, typed, utilExtend, parse, undefined ) {
+﻿aQuery.define( "main/communicate", [ "base/Promise", "base/typed", "base/extend", "main/event", "main/parse" ], function( $, Promise, typed, utilExtend, event, parse, undefined ) {
 	"use strict";
 	/**
-	 * @inner
-	 * @name AjaxOptions
-	 * @property options {Object}
-	 * @property [options.type="GET"] {String} - "GET" or "POST"
-	 * @property options.url {String}
-	 * @property [options.data=""] {String|Object<String,String>|Array<Object<String,String>>} - See {@link module:main/communicate.getURLParam}
-	 * @property [options.async=true] {Boolean}
-	 * @property [options.complete] {Function}
-	 * @property [options.header] {Object<String,String>}
-	 * @property [options.isRandom] {Boolean}
-	 * @property [options.timeout=10000] {Number}
-	 * @property [options.routing=""] {String}
-	 * @property [options.timeoutFun] {Function} - Timeout handler.
-	 * @property [options.dataType="text"] {String} - "json"|"xml"|"text"|"html"
-	 * @property [options.contentType="application/x-www-form-urlencoded"] {String}
-	 * @property [options.context=null] {Object} - Complete context.
+	 * @global
+	 * @typedef {Object} AjaxOptions
+	 * @property AjaxOptions {Object}
+	 * @property [AjaxOptions.type="GET"] {String} - "GET" or "POST"
+	 * @property AjaxOptions.url {String}
+	 * @property [AjaxOptions.data=""] {String|Object<String,String>|Array<Object<String,String>>} - See {@link module:main/communicate.getURLParam}
+	 * @property [AjaxOptions.async=true] {Boolean}
+	 * @property [AjaxOptions.complete] {Function}
+	 * @property [AjaxOptions.header] {Object<String,String>}
+	 * @property [AjaxOptions.isRandom] {Boolean}
+	 * @property [AjaxOptions.timeout=7000] {Number}
+	 * @property [AjaxOptions.fail] {Function} - Fail handler.
+	 * @property [AjaxOptions.dataType="text"] {String} - "json"|"xml"|"text"|"html"
+	 * @property [AjaxOptions.contentType="application/x-www-form-urlencoded"] {String}
+	 * @property [AjaxOptions.context=null] {Object} - Complete context.
 	 */
 
 	/**
-	 * @inner
-	 * @name JSONPOptions
-	 * @property options {Object}
-	 * @property options.url {String}
-	 * @property [options.charset="GBK"] {String}
-	 * @property [options.complete] {Function}
-	 * @property [options.error] {Function} - Error handler
-	 * @property [options.isDelete=true] {Boolean} - Does delete the script.
-	 * @property [options.context=null] {Object} - Complete context.
-	 * @property [options.isRandom=false] {Boolean}
-	 * @property [options.checkString=""] {String} - Then JSONP back string.
-	 * @property [options.timeout=10000] {Number}
-	 * @property [options.timeoutFun] {Function} - Timeout handler.
-	 * @property [options.routing=""] {String}
-	 * @property [options.JSONP] {String|Boolean} - True is aQuery. String is JSONP.
+	 * @global
+	 * @typedef {Object} JSONPOptions
+	 * @property JSONPOptions.url {String}
+	 * @property [JSONPOptions.charset="GBK"] {String}
+	 * @property [JSONPOptions.complete] {Function}
+	 * @property [JSONPOptions.isDelete=true] {Boolean} - Does delete the script.
+	 * @property [JSONPOptions.context=null] {Object} - Complete context.
+	 * @property [JSONPOptions.isRandom=false] {Boolean}
+	 * @property [JSONPOptions.checkString=""] {String} - Then JSONP back string.
+	 * @property [JSONPOptions.timeout=7000] {Number}
+	 * @property [JSONPOptions.fail] {Function} - Error handler.
+	 * @property [JSONPOptions.JSONP] {String|Boolean} - True is aQuery. String is JSONP.
 	 */
 
 	/**
@@ -11311,28 +11492,17 @@ aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "
 	 */
 
 	/**
-	 * Event reporting that an ajax timeout.
-	 * @event aQuery#"ajaxTimeout"
-	 * @param {AjaxOptions}
-	 */
-
-	/**
 	 * Event reporting that an JSONP start.
 	 * @event aQuery#"jsonpStart"
-	 * @param {AjaxOptions}
+	 * @param {JSONPOptions}
 	 */
 
 	/**
 	 * Event reporting that an JSONP stop.
 	 * @event aQuery#"jsonpStop"
-	 * @param {AjaxOptions}
+	 * @param {JSONPOptions}
 	 */
 
-	/**
-	 * Event reporting that an JSONP timeout.
-	 * @event aQuery#"jsonpTimeout"
-	 * @param {AjaxOptions}
-	 */
 
 	/**
 	 * Export network requests.
@@ -11346,115 +11516,139 @@ aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "
 	var communicate = {
 		/**
 		 * @param options {AjaxOptions}
-		 * @returns {this}
+		 * @returns {module:base/Promise}
 		 */
 		ajax: function( options ) {
-			var _ajax, _timeId, o;
+			var ajax, timeId, o, e, type, promise;
 			if ( options ) {
-				_ajax = communicate.getXhrObject();
+				ajax = communicate.getXhrObject();
 
-				if ( _ajax ) {
+				if ( ajax ) {
 
 					o = utilExtend.extend( {}, communicate.ajaxSetting, options );
 
+					type = o.type.toUpperCase();
+
+					if ( o.isRandom == true && type == "GET" ) {
+						o.data.random = $.now();
+					}
+
+					e = utilExtend.extend( {}, o );
+
 					o.data = communicate.getURLParam( o.data );
 
-					if ( o.isRandom == true && o.type == "get" ) {
-						o.data += "&random=" + $.now();
-					}
-					o.url += o.routing;
-					switch ( o.type ) {
-						case "get":
+					o.url = o.url.replace( /\?$/, "" );
+
+					switch ( type ) {
+						case "GET":
 							if ( o.data ) {
 								o.url += "?" + o.data;
 							}
 							break;
-						case "post":
+						case "POST":
 							break;
 					}
 
 					if ( o.username ) {
-						_ajax.open( o.type, o.url, o.async, o.username, o.password );
+						ajax.open( type, o.url, o.async, o.username, o.password );
 					} else {
-						_ajax.open( o.type, o.url, o.async );
+						ajax.open( type, o.url, o.async );
 					}
 
 					try {
 						for ( var item in o.header ) {
-							_ajax.setRequestHeader( item, o.header[ item ] );
+							ajax.setRequestHeader( item, o.header[ item ] );
 						}
-						_ajax.setRequestHeader( "Accept", o.dataType && o.accepts[ o.dataType ] ? o.accepts[ o.dataType ] + ", */*" : o.accepts._default );
+						ajax.setRequestHeader( "Accept", o.dataType && o.accepts[ o.dataType ] ? o.accepts[ o.dataType ] + ", */*" : o.accepts._default );
 
 					} catch ( e ) {}
 					if ( o.data || options ) {
-						_ajax.setRequestHeader( "Content-Type", o.contentType );
+						ajax.setRequestHeader( "Content-Type", o.contentType );
 					}
-					//_ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-					//type == "post" && _ajax.setRequestHeader("Content-type", "");
-					_ajax.onreadystatechange = function() {
-						if ( ( _ajax.readyState == 4 || _ajax.readyState == 0 ) && ( ( _ajax.status >= 200 && _ajax.status < 300 ) || _ajax.status == 304 ) ) {
-							var response;
-							clearTimeout( _timeId );
-							$.trigger( "ajaxStop", _ajax, o );
-							switch ( o.dataType ) {
-								case "json":
-									response = parse.JSON( "(" + _ajax.responseText + ")" );
-									break;
-								case "xml":
-									response = _ajax.responseXML;
-									if ( !response ) {
-										try {
-											response = parse.parseXML( _ajax.responseText );
-										} catch ( e ) {}
-									}
-									break;
-								default:
-								case "text":
-									response = _ajax.responseText;
-									break;
-							}
-							try {
-								o.complete && o.complete.call( o.context || _ajax, response );
-							} finally {
-								o = null;
-								_ajax = null;
+					//ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+					//type == "post" && ajax.setRequestHeader("Content-type", "");
+
+					promise = Promise( function( ajax ) {
+						var response;
+						clearTimeout( timeId );
+						e.type = "ajaxStop";
+						$.trigger( e.type, ajax, e );
+						switch ( o.dataType ) {
+							case "json":
+								response = parse.JSON( ajax.responseText );
+								break;
+							case "xml":
+								response = ajax.responseXML;
+								if ( !response ) {
+									try {
+										response = parse.XML( ajax.responseText );
+									} catch ( e ) {}
+								}
+								break;
+							default:
+							case "text":
+								response = ajax.responseText;
+								break;
+						}
+						o.complete && o.complete.call( o.context || ajax, response );
+
+						o = null;
+						return response;
+					}, function( ajax ) {
+						clearTimeout( timeId );
+						ajax && ajax.abort();
+						e.type = "ajaxStart";
+						$.trigger( e.type, ajax, e );
+						o.fail.call( o.context || ajax, ajax );
+						o = null;
+						return Promise().reject( ajax );
+					}, function( ajax ) {
+						if ( ajax.readyState == 4 ) {
+							if ( ( ajax.status >= 200 && ajax.status < 300 ) || ajax.status == 304 ) {
+								return Promise().resolve( ajax );
+							} else {
+								return Promise().reject( ajax );
 							}
 						}
+					} );
+
+					ajax.onreadystatechange = function() {
+						promise.reprocess( ajax );
 					};
 					if ( o.timeout ) {
-						_timeId = setTimeout( function() {
-							_ajax && _ajax.abort();
-							$.trigger( "ajaxTimeout", _ajax, o );
-							o.timeoutFun.call( _ajax, o );
-							o = null;
-							_ajax = null;
+						timeId = setTimeout( function() {
+							promise.reject( ajax );
 						}, o.timeout );
 					}
-					$.trigger( "ajaxStart", _ajax, o );
-					_ajax.send( o.type == "get" ? "NULL" : ( o.data || "NULL" ) );
+					e.type = "ajaxStart";
+					$.trigger( e.type, ajax, e );
+					ajax.send( type == "GET" ? "NULL" : ( o.data || "NULL" ) );
 				}
 			}
-			return this;
+
+			return promise;
 		},
 		/**
-		 * @deprecated
+		 * @param list {Array<AjaxOptions>}
+		 * @returns {module:base/Promise}
 		 */
-		ajaxByFinal: function( list, complete, context ) {
-			var sum = list.length,
-				count = 0;
-			return $.each( list, function( item ) {
-				item._complete = item.complete;
-				item.complete = function() {
-					count++;
-					item._complete && item._complete.apply( this, arguments );
-					if ( count == sum ) {
-						complete && complete.apply( window, context );
-						count = null;
-						sum = null;
-					}
-				};
-				communicate.ajax( item );
+		ajaxs: function( list ) {
+			var retPromise;
+
+			$.each( list, function( item, index ) {
+
+				if ( retPromise ) {
+					var promise = communicate.ajax( item );
+					retPromise.and( function() {
+						return promise;
+					} );
+				} else {
+					retPromise = communicate.ajax( item );
+				}
+
 			} );
+
+			return retPromise;
 		},
 
 		ajaxSetting:
@@ -11467,9 +11661,8 @@ aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "
 		 * @property {String}   ajaxSetting.type                - "GET".
 		 * @property {String}   ajaxSetting.contentType         - "application/x-www-form-urlencoded".
 		 * @property {Object}   ajaxSetting.context             - Complete context.
-		 * @property {Number}   ajaxSetting.timeout             - 10000 millisecond.
-		 * @property {Function} ajaxSetting.timeoutFun          - Timeout handler.
-		 * @property {String}   ajaxSetting.routing             - "".
+		 * @property {Number}   ajaxSetting.timeout             - 7000 millisecond.
+		 * @property {Function} ajaxSetting.fail                - Fail handler.
 		 * @property {null}     ajaxSetting.header
 		 * @property {Boolean}  ajaxSetting.isRandom            - False.
 		 * @property {Object}   ajaxSetting.accepts
@@ -11482,14 +11675,13 @@ aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "
 			url: location.href,
 			dataType: "text",
 			type: "GET",
-			contentType: "application/x-www-form-urlencoded",
+			contentType: "application/x-www-form-urlencoded; charset=UTF-8",
 			context: null,
 			async: true,
-			timeout: 10000,
-			timeoutFun: function( o ) {
-				$.logger( "aQuery.ajax", o.url + "of ajax is timeout:" + ( o.timeout / 1000 ) + "second" );
+			timeout: 7000,
+			fail: function() {
+				$.logger( "ajax fail" );
 			},
-			routing: "",
 			header: null,
 			isRandom: false,
 			accepts: {
@@ -11501,88 +11693,83 @@ aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "
 			}
 		},
 		/**
-		 * @param options {Object}
-		 * @param options.url {String}
-		 * @param [options.charset="GBK"] {String}
-		 * @param [options.complete] {Function}
-		 * @param [options.error] {Function} - Error handler
-		 * @param [options.isDelete=true] {Boolean} - Does delete the script.
-		 * @param [options.context=null] {Object} - Complete context.
-		 * @param [options.isRandom=false] {Boolean}
-		 * @param [options.checkString=""] {String} - Then JSONP back string.
-		 * @param [options.timeout=10000] {Number}
-		 * @param [options.timeoutFun] {Function} - Timeout handler.
-		 * @param [options.routing=""] {String}
-		 * @param [options.JSONP] {String|Boolean} - True is aQuery. String is JSONP.
-		 * @returns {this}
+		 * @param options {JSONPOptions}
+		 * @returns {module:base/Promise}
 		 */
 		jsonp: function( options ) {
-			var _scripts = document.createElement( "script" ),
-				_head = document.getElementsByTagName( "HEAD" ).item( 0 ),
-				o = utilExtend.extend( {}, communicate.jsonpSetting, options ),
-				_data = "",
-				_timeId, random = "";
-			//            , _checkString = o.checkString
-			//            , isDelete = options.isDelete || false;
-
-			_data = communicate.getURLParam( o.data );
-
+			var scripts = document.createElement( "script" ),
+				head = document.getElementsByTagName( "HEAD" ).item( 0 ),
+				o = utilExtend.extend( true, {}, communicate.jsonpSetting, options ),
+				e = utilExtend.extend( e, o ),
+				data = "",
+				timeId, random = "",
+				promise;
 
 			if ( o.JSONP ) {
 				random = ( "aQuery" + $.now() ) + parseInt( Math.random() * 10 );
-				window[ random ] = function() {
-					typed.isFun( o.complete ) && o.complete.apply( o.context || window, arguments );
+				window[ random ] = function( json ) {
+					o.json = json;
 				};
-				//o.JSONP = random;
-				_data += "&" + ( o.JSONP ) + "=" + random;
-				//_data += "&complete=" + random;
+				o.data[ o.JSONP ] = random
 			}
-			//            if (typed.isStr(o.JSONP)) {
-			//                _data += "&" + (o.JSONPKey) + "=" + o.JSONP;
-			//            }
 
-			o.isRandom == true && ( _data += "&random=" + $.now() );
-
-			o.url += o.routing + ( _data == "" ? _data : "?" + _data );
-
-			//IE和其他浏览器 不一样
-
-			_scripts.onload = _scripts.onreadystatechange = function() {
-				if ( !this.readyState || this.readyState == "loaded" || this.readyState == "complete" ) {
-					clearTimeout( _timeId );
-					$.trigger( "jsonpStop", _scripts, o );
-					var js = typeof window[ o.checkString ] != "undefined" ? window[ o.checkString ] : undefined;
-					!o.JSONP && typed.isFun( o.complete ) && o.complete.call( o.context || this, js );
-					//typed.isFun(o.complete) && o.complete.call(o.context || this, js);
-					this.nodeName.toLowerCase() == "script" && o.isDelete == true && _head.removeChild( this );
-					this.onerror = this.onload = o = _head = null;
-					if ( window[ random ] ) {
-						window[ random ] = undefined;
-						random = null;
-					}
-				}
+			if ( o.isRandom == true ) {
+				o.data.random = $.now();
 			};
 
-			_scripts.onerror = o.error;
+			data = communicate.getURLParam( o.data );
 
-			o.timeout && ( _timeId = setTimeout( function() {
-				$.trigger( "jsonpTimeout", _scripts, o );
-				o.timeoutFun.call( this, o );
-				_scripts = _scripts.onerror = _scripts.onload = o.error = _head = null;
+			o.url = o.url.replace( /\?$/, "" );
+
+			o.url += data == "" ? data : "?" + data;
+			console.log( o.url );
+
+			function clear() {
+				clearTimeout( timeId );
 				if ( window[ random ] ) {
-					window[ random ] = undefined;
+					delete window[ random ];
 					random = null;
 				}
-			}, o.timeout ) );
+				e.type = "jsonpStop";
+				$.trigger( e.type, scripts, e );
+				typed.isNode( scripts.nodeName, "script" ) && o.isDelete == true && head.removeChild( this );
+				head = scripts = scripts.onload = scripts.onreadystatechange = scripts.onerror = null;
+			}
 
-			_scripts.setAttribute( "src", o.url );
-			o.charset && _scripts.setAttribute( "charset", o.charset );
-			_scripts.setAttribute( "type", "text/javascript" );
-			_scripts.setAttribute( "language", "javascript" );
+			promise = Promise( function( json ) {
+				typed.isFunction( o.complete ) && o.complete.call( o.context || scripts, json );
+				clear();
+				return json;
+			}, function() {
+				typed.isFunction( o.fail ) && o.fail.call( o.context || scripts, o );
+				clear();
+				return Promise().reject( o );
+			}, function() {
+				if ( !this.readyState || this.readyState == "loaded" || this.readyState == "complete" ) {
+					return Promise().resolve( o.json );
+				}
+			} );
 
-			$.trigger( "jsonpStart", _scripts, o );
-			_head.insertBefore( _scripts, _head.firstChild );
-			return this;
+			scripts.onload = scripts.onreadystatechange = function() {
+				setTimeout( function() {
+					promise.reprocess( o.json );
+				}, 0 );
+			};
+
+			scripts.onerror = function() {
+				promise.reject();
+			};
+
+			o.timeout && ( timeId = setTimeout( scripts.onerror, o.timeout ) );
+
+			scripts.setAttribute( "src", o.url );
+			o.charset && scripts.setAttribute( "charset", o.charset );
+			scripts.setAttribute( "type", "text/javascript" );
+			scripts.setAttribute( "language", "javascript" );
+			e.type = "jsonpStart";
+			$.trigger( e.type, scripts, e );
+			head.insertBefore( scripts, head.firstChild );
+			return promise;
 		},
 		jsonpSetting:
 		/**
@@ -11591,57 +11778,46 @@ aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "
 		 * @property {Object}         jsonpSetting                    - JSONP default setting.
 		 * @property {String}         ajaxSetting.url                 - "".
 		 * @property {String}         ajaxSetting.charset             - "GBK".
-		 * @property {String}         ajaxSetting.checkString         - "".
-		 * @property {Function}       ajaxSetting.error
 		 * @property {Boolean}        ajaxSetting.isDelete            - true.
 		 * @property {Boolean}        ajaxSetting.isRandom            - false.
-		 * @property {String|Boolean} ajaxSetting.JSONP               - false.
-		 * @property {String}         ajaxSetting.routing             - "".
-		 * @property {Number}         ajaxSetting.timeout             - 10000 millisecond.
-		 * @property {Function}       ajaxSetting.timeoutFun          - Timeout handler.
+		 * @property {String}         ajaxSetting.JSONP               - "callback".
+		 * @property {Number}         ajaxSetting.timeout             - 7000 millisecond.
+		 * @property {Function}       ajaxSetting.fiail               - Error handler.
+		 * @property {Object}         ajaxSetting.data                - Query string.
 		 */
 		{
 			charset: "GBK",
-			checkString: "",
-			error: function() {
+			fail: function() {
 				$.logger( "aQuery.jsonp", ( this.src || "(empty)" ) + " of javascript getting error" );
 			},
 			isDelete: true,
 			isRandom: false,
-			JSONP: false,
-			routing: "",
-			timeout: 10000,
-			timeoutFun: function( o ) {
-				$.logger( aQuery.jsonp, ( o.url || "(empty)" ) + "of ajax is timeout:" + ( o.timeout / 1000 ) + "second" );
-			},
-			url: ""
+			JSONP: "callback",
+			timeout: 7000,
+			url: "",
+			data: {}
 		},
 		/**
-		 * @deprecated
+		 * @param list {Array<JSONPOptions>}
+		 * @returns {module:base/Promise}
 		 */
-		jsonpsByFinal: function( list, complete, context ) {
-			/// <summary>加载几段script，当他们都加载完毕触发个事件
-			/// </summary>
-			/// <param name="list" type="Array:[options]">包含获取js配置的数组，参考jsonp</param>
-			/// <param name="complete" type="Function">complete</param>
-			/// <param name="context" type="Object">作用域</param>
-			/// <returns type="self" />
-			var sum = list.length,
-				count = 0;
-			$.each( list, function( item ) {
-				item._complete = item.complete;
-				item.complete = function() {
-					count++;
-					item._complete && item._complete.apply( this, arguments );
-					if ( count == sum ) {
-						complete && complete.apply( window, context );
-						count = null;
-						sum = null;
-					}
-				};
-				communicate.jsonp( item );
+		jsonps: function( list ) {
+			var retPromise;
+
+			$.each( list, function( item, index ) {
+
+				if ( retPromise ) {
+					var promise = communicate.jsonp( item );
+					retPromise.and( function() {
+						return promise;
+					} );
+				} else {
+					retPromise = communicate.jsonp( item );
+				}
+
 			} );
-			return this;
+
+			return retPromise;
 		},
 		/**
 		 * @example
@@ -11665,18 +11841,18 @@ aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "
 		 */
 		getURLParam: function( content ) {
 			var list = [];
-			if ( typed.isObj( content ) ) {
+			if ( typed.isObject( content ) ) {
 				$.each( content, function( value, name ) {
-					value = typed.isFun( value ) ? value() : value;
+					value = typed.isFunction( value ) ? value() : value;
 					!typed.isNul( value ) && list.push( encodeURIComponent( name ) + "=" + encodeURIComponent( value ) );
 				} );
 				content = list.join( "&" );
-			} else if ( typed.isArr( content ) ) {
+			} else if ( typed.isArray( content ) ) {
 				$.each( content, function( item ) {
 					!typed.isNul( item.value ) && list.push( encodeURIComponent( item.name ) + "=" + encodeURIComponent( item.value ) );
 				} );
 				content = list.join( "&" );
-			} else if ( !typed.isStr( content ) ) {
+			} else if ( !typed.isString( content ) ) {
 				content = "";
 			}
 			return content;
@@ -12154,9 +12330,9 @@ aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "
 		 */
 		cleanData: function( ele ) {
 			var eles;
-			if ( typed.isEle( ele ) ) {
+			if ( typed.isElement( ele ) ) {
 				eles = getAll( ele );
-			} else if ( typed.isArr( ele ) ) {
+			} else if ( typed.isArray( ele ) ) {
 				eles = ele;
 			}
 			$.each( eles, function( ele ) {
@@ -12173,7 +12349,7 @@ aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "
 		 */
 		getLastChild: function( ele ) {
 			var x = ele.lastChild;
-			while ( x && !typed.isEle( x ) ) {
+			while ( x && !typed.isElement( x ) ) {
 				x = x.previousSibling;
 			}
 			return x;
@@ -12189,7 +12365,7 @@ aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "
 				child = null;
 			var ele = father.firstChild;
 			while ( ele ) {
-				if ( typed.isEle( ele ) && ++i == index ) {
+				if ( typed.isElement( ele ) && ++i == index ) {
 					child = ele;
 					break;
 				}
@@ -12370,7 +12546,7 @@ aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "
 			if ( value === undefined ) {
 				return ele.nodeType === 1 ?
 					ele.innerHTML.replace( rinlineaQuery, "" ) : undefined;;
-			} else if ( typed.isFun( value ) ) {
+			} else if ( typed.isFunction( value ) ) {
 				var ele;
 				for ( ; i < length; i++ ) {
 					ele = this[ i ]
@@ -12473,7 +12649,7 @@ aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "
 		 * @returns {this}
 		 */
 		insertText: function( str ) {
-			if ( typed.isStr( str ) && str.length > 0 ) {
+			if ( typed.isString( str ) && str.length > 0 ) {
 				var nodeText;
 				this.each( function( ele ) {
 					nodeText = document.createTextNode( str );
@@ -12550,7 +12726,7 @@ aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "
 				set = this,
 				iNoClone = l - 1,
 				value = args[ 0 ],
-				isFunction = typed.isFun( value );
+				isFunction = typed.isFunction( value );
 
 			// We can't cloneNode fragments that contain checked, in WebKit
 			if ( isFunction || !( l <= 1 || typeof value !== "string" || support.checkClone || !rchecked.test( value ) ) ) {
@@ -12661,7 +12837,7 @@ aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "
 		 * @returns {this}
 		 */
 		replaceWith: function( value ) {
-			var isFunc = typed.isFun( value );
+			var isFunc = typed.isFunction( value );
 
 			// Make sure that the elements are removed from the DOM before they are inserted
 			// this can help fix replacing a parent with child elements
@@ -12686,7 +12862,7 @@ aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "
 		 * @returns {this}
 		 */
 		wrapAll: function( html ) {
-			if ( typed.isFun( html ) ) {
+			if ( typed.isFunction( html ) ) {
 				return this.each( function( ele, i ) {
 					$( ele ).wrapAll( html.call( ele, i ) );
 				} );
@@ -12729,7 +12905,7 @@ aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "
 		 * @returns {this}
 		 */
 		wrapInner: function( html ) {
-			if ( typed.isFun( html ) ) {
+			if ( typed.isFunction( html ) ) {
 				return this.each( function( ele, i ) {
 					$( ele ).wrapInner( html.call( this, i ) );
 				} );
@@ -12763,7 +12939,7 @@ aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "
 		 * @returns {this}
 		 */
 		wrap: function( html ) {
-			var isFunction = typed.isFun( html );
+			var isFunction = typed.isFunction( html );
 
 			return this.each( function( ele, i ) {
 				$( ele ).wrapAll( isFunction ? html.call( ele, i ) : html );
@@ -12813,7 +12989,7 @@ aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "
 	$.interfaces.achieve( "constructorDom", function( type, dollar, arg1, arg2, parentNode ) {
 		if ( typeof arg1 === "string" && rsingleTag.test( arg1 ) ) {
 			return dom.parseHTML( arg1, arg2 || document, false );
-		} else if ( parentNode && ( typed.isEle( parentNode ) || typed.is$( parentNode ) ) ) {
+		} else if ( parentNode && ( typed.isElement( parentNode ) || typed.is$( parentNode ) ) ) {
 			dollar.appendTo( parentNode );
 		}
 	} );
@@ -12870,7 +13046,7 @@ aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "
 		},
 		step: function( goToEnd ) {
 			var pauseTime;
-			if ( !typed.isBol( goToEnd ) ) {
+			if ( !typed.isBoolean( goToEnd ) ) {
 				pauseTime = goToEnd || 0;
 			}
 			var t = $.now() - pauseTime,
@@ -12955,15 +13131,15 @@ aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "
 		},
 
 		getDelay: function( d ) {
-			if ( typed.isStr( d ) ) {
+			if ( typed.isString( d ) ) {
 				d = FX.speeds( d );
-			} else if ( typed.isNul( d ) || !typed.isNum( d ) ) {
+			} else if ( typed.isNul( d ) || !typed.isNumber( d ) ) {
 				d = 0;
 			}
 			return d;
 		},
 		getDuration: function( d ) {
-			if ( typed.isNul( d ) || !typed.isNum( d ) ) {
+			if ( typed.isNul( d ) || !typed.isNumber( d ) ) {
 				d = FX.speeds( d );
 			}
 			return d;
@@ -13366,9 +13542,9 @@ aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "
 		tween = {
 			getFun: function( name ) {
 				var fun;
-				if ( typed.isFun( name ) ) {
+				if ( typed.isFunction( name ) ) {
 					fun = name;
-				} else if ( typed.isStr( name ) ) {
+				} else if ( typed.isString( name ) ) {
 					name = name.split( "." );
 					fun = this;
 					$.each( name, function( str ) {
@@ -13523,7 +13699,7 @@ aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "
 			}
 		} ),
 		animate = function( ele, property, option ) {
-			var opt = {}, p, isElement = typed.isEle( ele ),
+			var opt = {}, p, isElement = typed.isElement( ele ),
 				hidden = isElement && $( ele ).isVisible(),
 				//self = ele,
 				count = 0,
@@ -13565,7 +13741,7 @@ aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "
 
 			$.each( property, function( value, key ) {
 				opt.easing = opt.specialEasing && opt.specialEasing[ key ] ? $.getAnimationEasing( opt.specialEasing[ key ] ) : defaultEasing;
-				if ( typed.isFun( FX.hooks[ key ] ) ) {
+				if ( typed.isFunction( FX.hooks[ key ] ) ) {
 					return FX.hooks[ key ]( ele, opt, value, key );
 				}
 				new FX( ele, opt, value, key );
@@ -13602,7 +13778,7 @@ aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "
 			/// <returns type="self" />
 			option = $._getAnimateOpt( option );
 
-			if ( typed.isEmptyObj( property ) ) {
+			if ( typed.isEmptyObject( property ) ) {
 				return option.complete( ele );
 			} else {
 				if ( option.queue === false ) {
@@ -13661,12 +13837,12 @@ aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "
 				delay = FX.getDelay( opt.delay ),
 				ret,
 				tCompelete;
-			if ( typed.isArr( opt.complete ) ) {
+			if ( typed.isArray( opt.complete ) ) {
 				tCompelete = opt.complete;
 				if ( tCompelete[ 0 ] !== originComplete ) {
 					tCompelete.splice( 0, 0, originComplete );
 				}
-			} else if ( typed.isFun( opt.complete ) ) {
+			} else if ( typed.isFunction( opt.complete ) ) {
 				tCompelete = [ opt.complete, originComplete ];
 			} else {
 				tCompelete = [ originComplete ];
@@ -13729,7 +13905,7 @@ aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "
 			/// <returns type="self" />
 			option = $._getAnimateOpt( option );
 
-			if ( typed.isEmptyObj( property ) ) {
+			if ( typed.isEmptyObject( property ) ) {
 				return this.each( option.complete );
 			} else {
 				return this[ option.queue === false ? "each" : "queue" ]( function( ele ) {
@@ -13757,7 +13933,7 @@ aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "
 
 		queue: function( type, data ) {
 			//quote from jQuery-1.4.1
-			if ( !typed.isStr( type ) ) {
+			if ( !typed.isString( type ) ) {
 				data = type;
 				type = "fx";
 			}
@@ -13783,7 +13959,7 @@ aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "
 /*===================html5/css3===========================*/
 ﻿aQuery.define( "html5/css3", [ "base/support", "base/extend", "base/typed", "base/client", "base/array", "main/css" ], function( $, support, utilExtend, typed, client, array, css2, undefined ) {
 	"use strict";
-  this.describe("HTML5 CSS3");
+	this.describe( "HTML5 CSS3" );
 	var css3Head = ( function() {
 		var head = "";
 		if ( client.engine.ie )
@@ -14021,7 +14197,7 @@ aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "
 			/// <param name="style" type="Array/Object">值得数组或值</param>
 			/// <returns type="self" />
 			var eleObj = $( ele );
-			if ( !typed.isArr( style ) ) {
+			if ( !typed.isArray( style ) ) {
 				style = [ style ];
 			}
 			$.each( style, function( item ) {
@@ -14052,7 +14228,11 @@ aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "
 			/// <param name="value" type="String/Number/undefined">值</param>
 			/// <returns type="self" />
 			if ( hasCss3 ) {
-				return css2.css( ele, $.util.camelCase( name, css3Head ), value );
+				name = $.util.camelCase( name );
+				if ( !name in domStyle ) {
+					name = $.util.camelCase( name, css3Head )
+				}
+				css2.css( ele, name, value );
 			}
 			return this;
 		},
@@ -14087,7 +14267,7 @@ aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "
 				var transform = css2.css( ele, transformCssName ),
 					temp, index = -1;
 				if ( isFullCss( transform ) ) {
-					if ( typed.isStr( name ) ) {
+					if ( typed.isString( name ) ) {
 						temp = getTransformValue( transform, name );
 						result.push( temp );
 					} else {
@@ -14227,7 +14407,7 @@ aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "
 				var transition = css2.css( ele, transitionCssName ),
 					temp, index = -1;
 				if ( isFullCss( transition ) ) {
-					if ( typed.isStr( name ) ) {
+					if ( typed.isString( name ) ) {
 						temp = getTransitionValue( transition, name );
 
 						result.push( temp );
@@ -14384,11 +14564,11 @@ aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "
 				match, n = arguments[ 2 ] || "";
 			if ( style == undefined ) {
 				transition = "";
-			} else if ( typed.isStr( style ) ) {
+			} else if ( typed.isString( style ) ) {
 				list = [ style ];
 			} else if ( array.inArray( style ) ) {
 				list = style;
-			} else if ( typed.isObj( style ) ) {
+			} else if ( typed.isObject( style ) ) {
 				list = style.name && [ style.name ];
 			}
 
@@ -14466,7 +14646,7 @@ aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "
 			/// <param name="ele" type="Element">元素</param>
 			/// <param name="style" type="Array">样式名数组或样式名</param>
 			/// <returns type="self" />
-			if ( hasTransform && typed.isArr( style ) ) {
+			if ( hasTransform && typed.isArray( style ) ) {
 				var result = [];
 
 				$.each( style, function( value, index ) {
@@ -14596,17 +14776,17 @@ aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "
 			if ( hasTransition ) {
 				var result = "",
 					origin = arguments[ 2 ] ? arguments[ 2 ] : ""; //原始origin一样的 替换掉 或许不应该改由浏览器自己控制
-				if ( typed.isStr( style ) ) {
+				if ( typed.isString( style ) ) {
 					result = style;
-				} else if ( typed.isObj( style ) ) {
+				} else if ( typed.isObject( style ) ) {
 					style.name && ( result = [ $.util.unCamelCase( value.name, value.head ), style.duration || "1s", style[ "function" ] || "linear", style.delay || ""
           ].join( " " ) );
-				} else if ( typed.isArr( style ) ) {
+				} else if ( typed.isArray( style ) ) {
 					var list = [];
 					$.each( style, function( value ) {
-						if ( typed.isStr( value ) ) {
+						if ( typed.isString( value ) ) {
 							list.push( value );
-						} else if ( typed.isObj( value ) ) {
+						} else if ( typed.isObject( value ) ) {
 							value.name && list.push( [ $.util.unCamelCase( value.name, value.head ), value.duration || "1s", value[ "function" ] || "linear", value.delay || ""
               ].join( " " ) );
 						}
@@ -14692,26 +14872,26 @@ aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "
 			}
 			var b = style,
 				result, tmp;
-			if ( typed.isObj( b ) ) {
+			if ( typed.isObject( b ) ) {
 				for ( var i in b ) {
 					result = editCss3Type.call( this, i );
 					this.each( function( ele ) {
-						if ( typed.isFun( result.name ) )
+						if ( typed.isFunction( result.name ) )
 							result.name.call( this, b[ i ] );
 						else
 							result.name && $.css3( ele, result.name, b[ i ] + result.unit );
 					} )
 				}
-			} else if ( typed.isStr( b ) ) {
+			} else if ( typed.isString( b ) ) {
 				result = editCss3Type.call( this, b );
 				if ( value === undefined ) {
-					if ( typed.isFun( result.name ) )
+					if ( typed.isFunction( result.name ) )
 						return result.name.call( this );
 					else
 						return $.css3( this[ 0 ], result.name );
 				} else {
 					this.each( function( ele ) {
-						if ( typed.isFun( result.name ) )
+						if ( typed.isFunction( result.name ) )
 							result.name.call( this, value );
 						else
 							result.name && $.css3( ele, result.name, value + result.unit );
@@ -14874,7 +15054,7 @@ aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "
 			/// </summary>
 			/// <param name="style" type="Array/String/undefined">样式名数组或样式名或不输入</param>
 			/// <returns type="self" />
-			return typed.isArr( style ) ? this.each( function( ele ) {
+			return typed.isArray( style ) ? this.each( function( ele ) {
 				$.setTransform( ele, style );
 			} ) : $.getTransform( this[ 0 ], style );
 		},
@@ -14943,9 +15123,9 @@ aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "
 			/// </summary>
 			/// <param name="style" type="String/Array/Object/undefined">为Array Object为设置;String看情况获得或设置;undefined为获得</param>
 			/// <returns type="self" />
-			if ( style == undefined || typed.isStr( style ) && style.indexOf( " " ) < 0 ) {
+			if ( style == undefined || typed.isString( style ) && style.indexOf( " " ) < 0 ) {
 				return $.getTransition( this[ 0 ], style );
-			} else if ( typed.isArr( style ) || typed.isObj( style ) || typed.isStr( style ) ) {
+			} else if ( typed.isArray( style ) || typed.isObject( style ) || typed.isString( style ) ) {
 				return this.bindTransition( style );
 			}
 		}
@@ -15287,7 +15467,7 @@ define( "hash/cubicBezier.tween", function() {
 					//para肯定要在这里用
 					easing = opt.specialEasing && opt.specialEasing[ key ] ? $.getTransitionEasing( opt.specialEasing[ key ] ) : defaultEasing;
 					opt.easing = opt.originEasing;
-					if ( typed.isFun( FX.hooks[ key ] ) ) {
+					if ( typed.isFunction( FX.hooks[ key ] ) ) {
 						ret = FX.hooks[ key ]( ele, opt, value, key );
 						temp = ret[ 0 ]._originCss;
 						//opt._transitionList.push(temp);
@@ -15344,7 +15524,7 @@ define( "hash/cubicBezier.tween", function() {
 			animateByTransition: function( ele, property, option ) {
 				option = $._getAnimateByTransitionOpt( option );
 
-				if ( typed.isEmptyObj( property ) ) {
+				if ( typed.isEmptyObject( property ) ) {
 					return option.complete( ele );
 				} else {
 					if ( option.queue === false ) {
@@ -15365,7 +15545,7 @@ define( "hash/cubicBezier.tween", function() {
 					type, fx, i, item;
 				for ( type in transitionList ) {
 					fx = transitionList[ type ];
-					if ( typed.isArr( fx ) ) {
+					if ( typed.isArray( fx ) ) {
 						for ( i = fx.length - 1; i >= 0; i-- ) {
 							item = fx[ i ];
 							item.isInDelay() ? item.update( null, fx.from ) : item.step();
@@ -15385,12 +15565,12 @@ define( "hash/cubicBezier.tween", function() {
 				var duration = FX.getDuration( opt.duration ),
 					delay = FX.getDelay( opt.delay ),
 					tCompelete;
-				if ( typed.isArr( opt.complete ) ) {
+				if ( typed.isArray( opt.complete ) ) {
 					tCompelete = opt.complete;
 					if ( tCompelete[ 0 ] !== originComplete ) {
 						tCompelete.splice( 0, 0, originComplete );
 					}
-				} else if ( typed.isFun( opt.complete ) ) {
+				} else if ( typed.isFunction( opt.complete ) ) {
 					tCompelete = [ opt.complete, originComplete ];
 				} else {
 					tCompelete = [ originComplete ];
@@ -15410,10 +15590,10 @@ define( "hash/cubicBezier.tween", function() {
 			},
 			getTransitionEasing: function( easing ) {
 				var name = easing;
-				// if (typed.isArr(easing)) {
+				// if (typed.isArray(easing)) {
 				//     name = easing.splice(0, 1)[0];
 				// }
-				if ( easing && typed.isStr( easing ) ) {
+				if ( easing && typed.isString( easing ) ) {
 					if ( name.indexOf( "cubic-bezier" ) > -1 ) {
 						return name;
 					}
@@ -15453,7 +15633,7 @@ define( "hash/cubicBezier.tween", function() {
 				/// <param name="option" type="Object">参数</param>
 				/// <returns type="self" />
 				option = $._getAnimateByTransitionOpt( option );
-				if ( typed.isEmptyObj( property ) ) {
+				if ( typed.isEmptyObject( property ) ) {
 					return this.each( option.complete );
 				} else {
 					return this[ option.queue === false ? "each" : "queue" ]( function( ele ) {
@@ -15563,7 +15743,7 @@ define( "hash/cubicBezier.tween", function() {
 			/// <param name="option" type="Object">动画选项</param>
 			/// <returns type="self" />
 			///  name="visible" type="Boolean/undefined">true:隐藏后任然占据文档流中
-			if ( typed.isStr( type ) && effect[ type ] ) {
+			if ( typed.isString( type ) && effect[ type ] ) {
 				effect[ type ]( ele, option );
 			} else {
 				css.hide( ele );
@@ -15579,7 +15759,7 @@ define( "hash/cubicBezier.tween", function() {
 			/// <param name="type" type="String/undefined">动画类型</param>
 			/// <param name="option" type="Object">动画选项</param>
 			/// <returns type="self" />
-			if ( typed.isStr( type ) && effect[ type ] ) {
+			if ( typed.isString( type ) && effect[ type ] ) {
 				effect[ type ]( ele, option );
 			} else {
 				css.show( ele );
@@ -16076,7 +16256,7 @@ define( "hash/cubicBezier.tween", function() {
 		getShell: function( shell ) {
 			var ret = null,
 				item, i, list = this.models;
-			if ( typed.isStr( shell ) ) {
+			if ( typed.isString( shell ) ) {
 				for ( i in list ) {
 					item = list[ i ];
 					if ( item.widgetId == shell ) {
@@ -16084,7 +16264,7 @@ define( "hash/cubicBezier.tween", function() {
 						break
 					}
 				}
-			} else if ( typed.isEle( shell ) ) {
+			} else if ( typed.isElement( shell ) ) {
 				for ( i in list ) {
 					item = list[ i ];
 					if ( item.originShell == shell ) {
@@ -17315,7 +17495,7 @@ aQuery.define( "ui/flex", [
 					}
 				},
 				_setFlex: function( flex ) {
-					if ( typed.isNum( flex ) && flex >= 0 ) {
+					if ( typed.isNumber( flex ) && flex >= 0 ) {
 						if ( this.options.flex !== flex ) {
 							this.options.flex = flex;
 						}
@@ -17757,7 +17937,7 @@ aQuery.define( "ui/flex", [
 		addKey: function( obj ) {
 			var keyCode = obj.keyCode,
 				ret;
-			if ( typed.isArr( keyCode ) ) {
+			if ( typed.isArray( keyCode ) ) {
 				for ( var i = 0, len = keyCode.length, nObj; i < len; i++ ) {
 					nObj = {};
 					utilExtend.easyExtend( nObj, obj );
@@ -17779,7 +17959,7 @@ aQuery.define( "ui/flex", [
 			}
 			var i = 0,
 				len;
-			if ( !typed.isArr( keyList ) ) {
+			if ( !typed.isArray( keyList ) ) {
 				keyList = [ keyList ];
 			}
 			for ( len = keyList.length; i < len; i++ ) {
@@ -17797,7 +17977,7 @@ aQuery.define( "ui/flex", [
 		},
 		removeKey: function( obj ) {
 			var item, ret, keyCode = obj.keyCode;
-			if ( typed.isArr( keyCode ) ) {
+			if ( typed.isArray( keyCode ) ) {
 				for ( var i = 0, len = keyCode.length, nObj; i < len; i++ ) {
 					utilExtend.easyExtend( {}, obj );
 					nObj = obj;
@@ -17860,25 +18040,25 @@ aQuery.define( "ui/flex", [
 			var keyCode = obj.keyCode;
 			//若有组合键 会把type强制转换
 			if ( obj.combinationKey && obj.combinationKey.length ) {
-				if ( typed.isStr( keyCode ) ) {
+				if ( typed.isString( keyCode ) ) {
 					keyCode = keyCode.length > 1 ? keyCode : keyCode.toUpperCase();
 				}
 				obj.type = array.inArray( obj.combinationKey, "cmd" ) > -1 ? "keydown" : "keyup";
 			}
-			if ( typed.isStr( keyCode ) ) {
+			if ( typed.isString( keyCode ) ) {
 				obj.keyCode = Keyboard.stringToCode( keyCode );
 			}
 
 			return obj;
 		},
 		codeToChar: function( code ) {
-			return typed.isNum( code ) ? String.fromCharCode( code ) : code;
+			return typed.isNumber( code ) ? String.fromCharCode( code ) : code;
 		},
 		codeToString: function( code ) {
 			return Keyboard.codeToStringReflect[ code ] || Keyboard.codeToChar( code );
 		},
 		charToCode: function( c ) {
-			return typed.isStr( c ) ? c.charCodeAt( 0 ) : c;
+			return typed.isString( c ) ? c.charCodeAt( 0 ) : c;
 		},
 		stringToCode: function( s ) {
 			return Keyboard.stringToCodeReflect[ s ] || Keyboard.charToCode( s );
@@ -18261,7 +18441,7 @@ aQuery.define( "ui/navitem", [
 				return ret;
 			},
 			getAttrToRoot: function( attrName ) {
-				if ( !typed.isStr( attrName ) ) {
+				if ( !typed.isString( attrName ) ) {
 					return [];
 				}
 				var opt = this.options,
@@ -18683,7 +18863,7 @@ aQuery.define( "ui/navmenu", [
 					ele,
 					checkFn;
 
-				if ( typed.isStr( item ) ) {
+				if ( typed.isString( item ) ) {
 					checkFn = function( ele, item ) {
 						return attr.getAttr( ele, "id" ) === item;
 					};
@@ -18695,7 +18875,7 @@ aQuery.define( "ui/navmenu", [
 					checkFn = function( ele, item ) {
 						return $( ele ).navitem( "equals", item );
 					};
-				} else if ( typed.isEle( item ) ) {
+				} else if ( typed.isElement( item ) ) {
 					checkFn = function( ele, item ) {
 						return ele === item;
 					};
@@ -19989,7 +20169,7 @@ aQuery.define( "ui/scrollableview", [
 				complete: function() {
 					self.toHBoundary( self.getLeft() ).toVBoundary( y1 );
 					self._triggerAnimate( "inner", self._direction, t, y1 );
-					if ( typed.isFun( animationCallback ) ) animationCallback.call( self.target, V );
+					if ( typed.isFunction( animationCallback ) ) animationCallback.call( self.target, V );
 				}
 			} );
 
@@ -20011,7 +20191,7 @@ aQuery.define( "ui/scrollableview", [
 				complete: function() {
 					self.toHBoundary( x1 ).toVBoundary( self.getTop() );
 					self._triggerAnimate( "inner", self._direction, t, x1 );
-					if ( typed.isFun( animationCallback ) ) animationCallback.call( self.target, H );
+					if ( typed.isFunction( animationCallback ) ) animationCallback.call( self.target, H );
 				}
 			} );
 
@@ -20463,7 +20643,7 @@ aQuery.define( "ui/swapview", [
 							self.target.trigger( animationEvent.type, self.target[ 0 ], animationEvent );
 						}
 					}
-					if ( typed.isFun( animationCallback ) ) animationCallback.call( self.target );
+					if ( typed.isFunction( animationCallback ) ) animationCallback.call( self.target );
 				}
 			} );
 		},
@@ -20755,7 +20935,7 @@ aQuery.define( "ui/tabbar", [
 				return this;
 			},
 			select: function( ele ) {
-				var $button = typed.isNum( ele ) ? this.$tabButtons.eq( ele ) : $( ele );
+				var $button = typed.isNumber( ele ) ? this.$tabButtons.eq( ele ) : $( ele );
 				this.options.index = $button.index();
 				this.$tabButtons.uiTabbutton( "option", "select", false );
 				$button.uiTabbutton( "option", "select", true );
@@ -21552,7 +21732,7 @@ aQuery.define( "ui/turnBook", [ "base/support", "base/typed", "main/css", "main/
 				pageWidth = this.pageWidth,
 				bookWidth = this.bookWidth;
 			this.container.children().remove();
-			index = typed.isNum( index ) ? parseInt( $.between( 0, len, index ) ) : opt.bookIndex;
+			index = typed.isNumber( index ) ? parseInt( $.between( 0, len, index ) ) : opt.bookIndex;
 			if ( opt.positionType == "half" ) {
 				for ( var i = index + 2; i >= index; i-- ) {
 					this.setContextCss( i ).setBoxCss( i, {
@@ -21649,7 +21829,7 @@ aQuery.define( "ui/turnBook", [ "base/support", "base/typed", "main/css", "main/
 		showMessage: function( msg, autoHide ) {
 			if ( this.options.isShowMessage !== true ) return this.hideMessage();
 			this.message.appendTo( this.container ).show();
-			if ( typed.isStr( msg ) ) {
+			if ( typed.isString( msg ) ) {
 				this.message.html( msg );
 			} else {
 				this.message.append( msg );

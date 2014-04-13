@@ -2006,7 +2006,7 @@
 
 		/**
 		 * @see http://wiki.commonjs.org/wiki/Promises/A <br />
-		 *  <a target="_parent" href="../../../../test/test/assets/base/Promise.html" >test</a>
+		 * <a target="_parent" href="../../../../test/test/assets/base/Promise.html" >Demo and Test</a>
 		 * @public
 		 * @module base/Promise
 		 * @example
@@ -2170,10 +2170,10 @@
 			},
 			/**
 			 * Then do...
-			 * @param [nextToDo] {Function|Promise} - Todo.
+			 * @param [nextToDo] {Function|module:base/Promise} - Todo.
 			 * @param [nextFail] {Function} - Fail next.
 			 * @param [nextProgress] {Function} - Progress.
-			 * @returns {Promise}
+			 * @returns {module:base/Promise}
 			 */
 			then: function( nextToDo, nextFail, nextProgress ) {
 				if ( this.next ) {
@@ -2228,7 +2228,7 @@
 			 * If add 'done' then destroy promise from root.
 			 * @parma {Function|Promise} - todo
 			 * @parma {Function} - fail
-			 * @returns {Promise} - Return root promise. So you can done().resolve(); .
+			 * @returns {module:base/Promise} - Return root promise. So you can done().resolve(); .
 			 */
 			done: function( todo, fail ) {
 				var root = this.root();
@@ -2409,7 +2409,7 @@
 			},
 			/**
 			 * If result is a Promise then resolve or reject.
-			 * @param {*=}.
+			 * @param {*=} obj
 			 * @returns {this}
 			 */
 			reprocess: function( obj ) {
@@ -2437,12 +2437,11 @@
 			},
 			/**
 			 * The new promise is siblings
-			 * @param [todo] {Function|Promise}
+			 * @param [todo] {Function|module:base/Promise}
 			 * @param [fail] {Function}
 			 * @param [progress] {Function}
-			 * @returns {Promise}
-			 * @example
-			 * new Promise().and(todo).and(todo);
+			 * @returns {module:base/Promise}
+			 * @example new Promise().and(todo).and(todo);
 			 */
 			and: function( todo, fail, progress ) {
 				var promise = this._createPromiseWithoutPrev( todo, fail, progress ).withContext( this ).done( andFn, andFn );
@@ -2454,7 +2453,7 @@
 			},
 			/**
 			 * Get root promise.
-			 * @returns {Promise}
+			 * @returns {module:base/Promise}
 			 */
 			root: function() {
 				var prev = this;
@@ -2465,7 +2464,7 @@
 			},
 			/**
 			 * Get end promise.
-			 * @returns {Promise}
+			 * @returns {module:base/Promise}
 			 */
 			end: function() {
 				var end = this;
@@ -2485,7 +2484,7 @@
 
 		/**
 		 * Whether it is "Promise" instances.
-		 * @param {Promise}
+		 * @param {module:base/Promise}
 		 * @returns {Boolean}
 		 */
 		Promise.constructorOf = function( promise ) {

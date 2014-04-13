@@ -115,7 +115,15 @@ aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "
 				support.boxSizing && css.css( ele, "boxSizing", undefined, style, false ) === "border-box",
 				style ) : 0 );
 	}
-
+	/**
+	 * @pubilc
+	 * @exports main/position
+	 * @requires module:base/typed
+	 * @requires module:base/extend
+	 * @requires module:base/support
+	 * @requires module:base/client
+	 * @requires module:main/css
+	 */
 	var position = {
 		/**
 		 * Get size of page. { width: pageWidth, height: pageHeight }
@@ -377,7 +385,7 @@ aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "
 		}
 	};
 
-	$.fn.extend( {
+	$.fn.extend( /** @lends aQuery.prototype */ {
 		/*
 		 * Set width to Element.
 		 * @variation 1

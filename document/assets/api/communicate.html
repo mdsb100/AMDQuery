@@ -68,7 +68,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="communicate.js.html">main/communicate.js</a>, <a href="communicate.js.html#line85">line 85</a>
+        <a href="communicate.js.html">main/communicate.js</a>, <a href="communicate.js.html#line70">line 70</a>
     </li></ul></dd>
     
 
@@ -323,14 +323,14 @@
             
             
             
-            <td class="description last">10000 millisecond.</td>
+            <td class="description last">7000 millisecond.</td>
         </tr>
 	
 	
 	
         <tr>
             
-                <td class="name"><code>timeoutFun</code></td>
+                <td class="name"><code>fail</code></td>
             
             
             <td class="type">
@@ -346,30 +346,7 @@
             
             
             
-            <td class="description last">Timeout handler.</td>
-        </tr>
-	
-	
-	
-        <tr>
-            
-                <td class="name"><code>routing</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">String</span>
-
-
-            
-            </td>
-            
-            
-            
-            
-            
-            <td class="description last">"".</td>
+            <td class="description last">Fail handler.</td>
         </tr>
 	
 	
@@ -588,7 +565,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="communicate.js.html">main/communicate.js</a>, <a href="communicate.js.html#line200">line 200</a>
+        <a href="communicate.js.html">main/communicate.js</a>, <a href="communicate.js.html#line209">line 209</a>
     </li></ul></dd>
     
 
@@ -714,52 +691,6 @@
 	
         <tr>
             
-                <td class="name"><code>ajaxSetting.checkString</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">String</span>
-
-
-            
-            </td>
-            
-            
-            
-            
-            
-            <td class="description last">"".</td>
-        </tr>
-	
-	
-	
-        <tr>
-            
-                <td class="name"><code>ajaxSetting.error</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">function</span>
-
-
-            
-            </td>
-            
-            
-            
-            
-            
-            <td class="description last"></td>
-        </tr>
-	
-	
-	
-        <tr>
-            
                 <td class="name"><code>ajaxSetting.isDelete</code></td>
             
             
@@ -813,9 +744,6 @@
             
                 
 <span class="param-type">String</span>
-|
-
-<span class="param-type">Boolean</span>
 
 
             
@@ -825,30 +753,7 @@
             
             
             
-            <td class="description last">false.</td>
-        </tr>
-	
-	
-	
-        <tr>
-            
-                <td class="name"><code>ajaxSetting.routing</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">String</span>
-
-
-            
-            </td>
-            
-            
-            
-            
-            
-            <td class="description last">"".</td>
+            <td class="description last">"callback".</td>
         </tr>
 	
 	
@@ -871,14 +776,14 @@
             
             
             
-            <td class="description last">10000 millisecond.</td>
+            <td class="description last">7000 millisecond.</td>
         </tr>
 	
 	
 	
         <tr>
             
-                <td class="name"><code>ajaxSetting.timeoutFun</code></td>
+                <td class="name"><code>ajaxSetting.fiail</code></td>
             
             
             <td class="type">
@@ -894,7 +799,30 @@
             
             
             
-            <td class="description last">Timeout handler.</td>
+            <td class="description last">Error handler.</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>ajaxSetting.data</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">Query string.</td>
         </tr>
 	
 	
@@ -922,7 +850,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="communicate.js.html">main/communicate.js</a>, <a href="communicate.js.html#line327">line 327</a>
+        <a href="communicate.js.html">main/communicate.js</a>, <a href="communicate.js.html#line329">line 329</a>
     </li></ul></dd>
     
 
@@ -946,7 +874,7 @@
         <dl>
             
 <dt>
-    <h4 class="name" id="ajax"><span class="type-signature">&lt;static> </span>ajax<span class="signature">(options)</span><span class="type-signature"> &rarr; {this}</span></h4>
+    <h4 class="name" id="ajax"><span class="type-signature">&lt;static> </span>ajax<span class="signature">(options)</span><span class="type-signature"> &rarr; {<a href="Promise.html">module:base/Promise</a>}</span></h4>
     
     
 </dt>
@@ -1031,7 +959,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="communicate.js.html">main/communicate.js</a>, <a href="communicate.js.html#line90">line 90</a>
+        <a href="communicate.js.html">main/communicate.js</a>, <a href="communicate.js.html#line75">line 75</a>
     </li></ul></dd>
     
 
@@ -1063,7 +991,7 @@
 	</dt>
 	<dd>
 		
-<span class="param-type">this</span>
+<span class="param-type"><a href="Promise.html">module:base/Promise</a></span>
 
 
 	</dd>
@@ -1077,7 +1005,7 @@
         
             
 <dt>
-    <h4 class="name" id="ajaxByFinal"><span class="type-signature">&lt;static> </span>ajaxByFinal<span class="signature">()</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="ajaxs"><span class="type-signature">&lt;static> </span>ajaxs<span class="signature">(list)</span><span class="type-signature"> &rarr; {<a href="Promise.html">module:base/Promise</a>}</span></h4>
     
     
 </dt>
@@ -1089,6 +1017,54 @@
     
     
     
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>list</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Array.&lt;<a href="global.html#AjaxOptions">AjaxOptions</a>></span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last"></td>
+        </tr>
+	
+	
+	</tbody>
+</table>
     
     
     
@@ -1102,8 +1078,6 @@
     
 
     
-        <dt class="important tag-deprecated">Deprecated:</dt><dd class="yes-def tag-deprecated"><ul class="dummy"><li>Yes</li></ul></dd>
-    
 
     
 
@@ -1116,7 +1090,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="communicate.js.html">main/communicate.js</a>, <a href="communicate.js.html#line181">line 181</a>
+        <a href="communicate.js.html">main/communicate.js</a>, <a href="communicate.js.html#line189">line 189</a>
     </li></ul></dd>
     
 
@@ -1137,6 +1111,24 @@
     
     
     
+    <h5>Returns:</h5>
+    
+            
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type"><a href="Promise.html">module:base/Promise</a></span>
+
+
+	</dd>
+</dl>
+
+        
     
     
 </dd>
@@ -1235,7 +1227,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="communicate.js.html">main/communicate.js</a>, <a href="communicate.js.html#line405">line 405</a>
+        <a href="communicate.js.html">main/communicate.js</a>, <a href="communicate.js.html#line396">line 396</a>
     </li></ul></dd>
     
 
@@ -1341,7 +1333,7 @@ communicate.getURLParam( [
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="communicate.js.html">main/communicate.js</a>, <a href="communicate.js.html#line427">line 427</a>
+        <a href="communicate.js.html">main/communicate.js</a>, <a href="communicate.js.html#line418">line 418</a>
     </li></ul></dd>
     
 
@@ -1387,7 +1379,7 @@ communicate.getURLParam( [
         
             
 <dt>
-    <h4 class="name" id="jsonp"><span class="type-signature">&lt;static> </span>jsonp<span class="signature">(options)</span><span class="type-signature"> &rarr; {this}</span></h4>
+    <h4 class="name" id="jsonp"><span class="type-signature">&lt;static> </span>jsonp<span class="signature">(options)</span><span class="type-signature"> &rarr; {<a href="Promise.html">module:base/Promise</a>}</span></h4>
     
     
 </dt>
@@ -1431,7 +1423,7 @@ communicate.getURLParam( [
             <td class="type">
             
                 
-<span class="param-type">Object</span>
+<span class="param-type"><a href="global.html#JSONPOptions">JSONPOptions</a></span>
 
 
             
@@ -1439,497 +1431,9 @@ communicate.getURLParam( [
             
             
             
-            
-            
-            <td class="description last">
-                <h6>Properties</h6>
-                
-
-<table class="params">
-    <thead>
-	<tr>
-		
-		<th>Name</th>
-		
-		
-		<th>Type</th>
-		
-		
-		<th>Argument</th>
-		
-		
-		
-		<th>Default</th>
-		
-		
-		<th class="last">Description</th>
-	</tr>
-	</thead>
-	
-	<tbody>
-	
-	
-        <tr>
-            
-                <td class="name"><code>url</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">String</span>
-
-
-            
-            </td>
-            
-            
-                <td class="attributes">
-                
-                    
-                
-                    
-                
-                </td>
-            
-            
-            
-                <td class="default">
-                
-                </td>
             
             
             <td class="description last"></td>
-        </tr>
-	
-	
-	
-        <tr>
-            
-                <td class="name"><code>charset</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">String</span>
-
-
-            
-            </td>
-            
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-                    
-                
-                    
-                
-                </td>
-            
-            
-            
-                <td class="default">
-                
-                    "GBK"
-                
-                </td>
-            
-            
-            <td class="description last"></td>
-        </tr>
-	
-	
-	
-        <tr>
-            
-                <td class="name"><code>complete</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">function</span>
-
-
-            
-            </td>
-            
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-                    
-                
-                    
-                
-                </td>
-            
-            
-            
-                <td class="default">
-                
-                </td>
-            
-            
-            <td class="description last"></td>
-        </tr>
-	
-	
-	
-        <tr>
-            
-                <td class="name"><code>error</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">function</span>
-
-
-            
-            </td>
-            
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-                    
-                
-                    
-                
-                </td>
-            
-            
-            
-                <td class="default">
-                
-                </td>
-            
-            
-            <td class="description last">Error handler</td>
-        </tr>
-	
-	
-	
-        <tr>
-            
-                <td class="name"><code>isDelete</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">Boolean</span>
-
-
-            
-            </td>
-            
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-                    
-                
-                    
-                
-                </td>
-            
-            
-            
-                <td class="default">
-                
-                    true
-                
-                </td>
-            
-            
-            <td class="description last">Does delete the script.</td>
-        </tr>
-	
-	
-	
-        <tr>
-            
-                <td class="name"><code>context</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">Object</span>
-
-
-            
-            </td>
-            
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-                    
-                
-                    
-                
-                </td>
-            
-            
-            
-                <td class="default">
-                
-                    null
-                
-                </td>
-            
-            
-            <td class="description last">Complete context.</td>
-        </tr>
-	
-	
-	
-        <tr>
-            
-                <td class="name"><code>isRandom</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">Boolean</span>
-
-
-            
-            </td>
-            
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-                    
-                
-                    
-                
-                </td>
-            
-            
-            
-                <td class="default">
-                
-                    false
-                
-                </td>
-            
-            
-            <td class="description last"></td>
-        </tr>
-	
-	
-	
-        <tr>
-            
-                <td class="name"><code>checkString</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">String</span>
-
-
-            
-            </td>
-            
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-                    
-                
-                    
-                
-                </td>
-            
-            
-            
-                <td class="default">
-                
-                    ""
-                
-                </td>
-            
-            
-            <td class="description last">Then JSONP back string.</td>
-        </tr>
-	
-	
-	
-        <tr>
-            
-                <td class="name"><code>timeout</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">Number</span>
-
-
-            
-            </td>
-            
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-                    
-                
-                    
-                
-                </td>
-            
-            
-            
-                <td class="default">
-                
-                    10000
-                
-                </td>
-            
-            
-            <td class="description last"></td>
-        </tr>
-	
-	
-	
-        <tr>
-            
-                <td class="name"><code>timeoutFun</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">function</span>
-
-
-            
-            </td>
-            
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-                    
-                
-                    
-                
-                </td>
-            
-            
-            
-                <td class="default">
-                
-                </td>
-            
-            
-            <td class="description last">Timeout handler.</td>
-        </tr>
-	
-	
-	
-        <tr>
-            
-                <td class="name"><code>routing</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">String</span>
-
-
-            
-            </td>
-            
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-                    
-                
-                    
-                
-                </td>
-            
-            
-            
-                <td class="default">
-                
-                    ""
-                
-                </td>
-            
-            
-            <td class="description last"></td>
-        </tr>
-	
-	
-	
-        <tr>
-            
-                <td class="name"><code>JSONP</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">String</span>
-|
-
-<span class="param-type">Boolean</span>
-
-
-            
-            </td>
-            
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-                    
-                
-                    
-                
-                </td>
-            
-            
-            
-                <td class="default">
-                
-                </td>
-            
-            
-            <td class="description last">True is aQuery. String is JSONP.</td>
-        </tr>
-	
-	
-	</tbody>
-</table>
-            </td>
         </tr>
 	
 	
@@ -1960,7 +1464,7 @@ communicate.getURLParam( [
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="communicate.js.html">main/communicate.js</a>, <a href="communicate.js.html#line258">line 258</a>
+        <a href="communicate.js.html">main/communicate.js</a>, <a href="communicate.js.html#line253">line 253</a>
     </li></ul></dd>
     
 
@@ -1992,7 +1496,7 @@ communicate.getURLParam( [
 	</dt>
 	<dd>
 		
-<span class="param-type">this</span>
+<span class="param-type"><a href="Promise.html">module:base/Promise</a></span>
 
 
 	</dd>
@@ -2006,7 +1510,7 @@ communicate.getURLParam( [
         
             
 <dt>
-    <h4 class="name" id="jsonpsByFinal"><span class="type-signature">&lt;static> </span>jsonpsByFinal<span class="signature">()</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="jsonps"><span class="type-signature">&lt;static> </span>jsonps<span class="signature">(list)</span><span class="type-signature"> &rarr; {<a href="Promise.html">module:base/Promise</a>}</span></h4>
     
     
 </dt>
@@ -2018,6 +1522,54 @@ communicate.getURLParam( [
     
     
     
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>list</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Array.&lt;<a href="global.html#JSONPOptions">JSONPOptions</a>></span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last"></td>
+        </tr>
+	
+	
+	</tbody>
+</table>
     
     
     
@@ -2031,8 +1583,6 @@ communicate.getURLParam( [
     
 
     
-        <dt class="important tag-deprecated">Deprecated:</dt><dd class="yes-def tag-deprecated"><ul class="dummy"><li>Yes</li></ul></dd>
-    
 
     
 
@@ -2045,7 +1595,7 @@ communicate.getURLParam( [
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="communicate.js.html">main/communicate.js</a>, <a href="communicate.js.html#line361">line 361</a>
+        <a href="communicate.js.html">main/communicate.js</a>, <a href="communicate.js.html#line358">line 358</a>
     </li></ul></dd>
     
 
@@ -2066,6 +1616,24 @@ communicate.getURLParam( [
     
     
     
+    <h5>Returns:</h5>
+    
+            
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type"><a href="Promise.html">module:base/Promise</a></span>
+
+
+	</dd>
+</dl>
+
+        
     
     
 </dd>

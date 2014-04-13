@@ -1,7 +1,7 @@
 ﻿aQuery.define( "main/communicate", [ "base/Promise", "base/typed", "base/extend", "main/event", "main/parse" ], function( $, Promise, typed, utilExtend, event, parse, undefined ) {
 	"use strict";
 	/**
-	 * @inner
+	 * @global
 	 * @typedef {Object} AjaxOptions
 	 * @property AjaxOptions {Object}
 	 * @property [AjaxOptions.type="GET"] {String} - "GET" or "POST"
@@ -19,7 +19,7 @@
 	 */
 
 	/**
-	 * @inner
+	 * @global
 	 * @typedef {Object} JSONPOptions
 	 * @property JSONPOptions.url {String}
 	 * @property [JSONPOptions.charset="GBK"] {String}
