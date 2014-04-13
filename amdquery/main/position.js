@@ -115,7 +115,15 @@ aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "
 				support.boxSizing && css.css( ele, "boxSizing", undefined, style, false ) === "border-box",
 				style ) : 0 );
 	}
-
+	/**
+	 * @pubilc
+	 * @exports main/position
+	 * @requires module:base/typed
+	 * @requires module:base/extend
+	 * @requires module:base/support
+	 * @requires module:base/client
+	 * @requires module:main/css
+	 */
 	var position = {
 		/**
 		 * Get size of page. { width: pageWidth, height: pageHeight }
@@ -124,7 +132,7 @@ aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "
 		getPageSize: function() {
 			var pageH = window.innerHeight,
 				pageW = window.innerWidth;
-			if ( !typed.isNum( pageW ) ) {
+			if ( !typed.isNumber( pageW ) ) {
 				if ( document.compatMode == "CSS1Compat" ) {
 					pageH = document.documentElement.clientHeight;
 					pageW = document.documentElement.clientWidth;
@@ -377,7 +385,7 @@ aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "
 		}
 	};
 
-	$.fn.extend( {
+	$.fn.extend( /** @lends aQuery.prototype */ {
 		/*
 		 * Set width to Element.
 		 * @variation 1
@@ -516,7 +524,7 @@ aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "
 		 * @returns {Number}
 		 */
 		outerHeight: function( height, bol ) {
-			if ( arguments.length == 1 && typed.isBol( height ) ) {
+			if ( arguments.length == 1 && typed.isBoolean( height ) ) {
 				bol = height;
 				height = null;
 			}
@@ -540,7 +548,7 @@ aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "
 		 * @returns {Number}
 		 */
 		outerWidth: function( width, bol ) {
-			if ( arguments.length == 1 && typed.isBol( width ) ) {
+			if ( arguments.length == 1 && typed.isBoolean( width ) ) {
 				bol = width;
 				width = null;
 			}

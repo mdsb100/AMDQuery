@@ -748,7 +748,7 @@ aQuery.define( "ui/scrollableview", [
 				complete: function() {
 					self.toHBoundary( self.getLeft() ).toVBoundary( y1 );
 					self._triggerAnimate( "inner", self._direction, t, y1 );
-					if ( typed.isFun( animationCallback ) ) animationCallback.call( self.target, V );
+					if ( typed.isFunction( animationCallback ) ) animationCallback.call( self.target, V );
 				}
 			} );
 
@@ -770,7 +770,7 @@ aQuery.define( "ui/scrollableview", [
 				complete: function() {
 					self.toHBoundary( x1 ).toVBoundary( self.getTop() );
 					self._triggerAnimate( "inner", self._direction, t, x1 );
-					if ( typed.isFun( animationCallback ) ) animationCallback.call( self.target, H );
+					if ( typed.isFunction( animationCallback ) ) animationCallback.call( self.target, H );
 				}
 			} );
 

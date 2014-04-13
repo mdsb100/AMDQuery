@@ -54,7 +54,7 @@
 				/// <param name="options" type="Object">参数</param>
 				/// <returns type="self" />
 				var property = arguments[ 2 ] || "src";
-				if ( !typed.isEle( ele ) || ( !hasOwnProperty.call( ele, property ) && ele[ property ] === undefined ) ) {
+				if ( !typed.isElement( ele ) || ( !hasOwnProperty.call( ele, property ) && ele[ property ] === undefined ) ) {
 					return this;
 				}
 				ele.onload = null;

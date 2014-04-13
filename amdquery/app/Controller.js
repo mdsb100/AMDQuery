@@ -50,7 +50,7 @@ aQuery.define( "app/Controller", [
 			return [];
 		},
 		addModels: function( models ) {
-			if ( !typed.isArr( models ) ) {
+			if ( !typed.isArray( models ) ) {
 				models = $.util.argToArray( arguments );
 			}
 			this.models = this.models.concat( models );

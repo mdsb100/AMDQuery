@@ -136,7 +136,7 @@ aQuery.define( "base/array", [ "base/typed", "base/extend" ], function( $, typed
 			var result = results || [];
 
 			if ( array ) {
-				if ( typed.isNul( array.length ) || typed.isStr( array ) || typed.isFun( array ) || array.setInterval ) {
+				if ( typed.isNul( array.length ) || typed.isString( array ) || typed.isFunction( array ) || array.setInterval ) {
 					push.call( result, array );
 				} else {
 					result = array.toArray( array );
@@ -156,7 +156,7 @@ aQuery.define( "base/array", [ "base/typed", "base/extend" ], function( $, typed
 			var i = 0,
 				list = [],
 				len = obj.length;
-			if ( !( typed.isNum( len ) && typed.isFun( obj ) ) ) {
+			if ( !( typed.isNumber( len ) && typed.isFunction( obj ) ) ) {
 				for ( var value = obj[ 0 ]; i < len; value = obj[ ++i ] ) {
 					list.push( value );
 				}

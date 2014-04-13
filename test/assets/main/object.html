@@ -1,0 +1,305 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+  <title></title>
+  <link href="../../../global/styles/reset.css" rel="stylesheet" type="text/css" />
+  <script src="../../../amdquery/amdquery.js" type="text/javascript" amdquery="define:$;package:main;" amd="detectCR:1;" module="compatibleEvent:1;testLogByHTML:1"></script>
+  <script type="text/javascript">
+    $.require([
+      "base/typed",
+      "main/object",
+      "module/Test"
+    ], function(typed, object, Test) {
+
+      var testCustomEvent = new Test("object", function(preResult){
+        // complete
+      }).describe("Test object createPropertyGetterSetter", function(preResult, test, logger){
+        function Person(){
+          this.id = null;
+          this.name = "";
+          this.age = 18;
+          this.Weight = 55;
+          this.height = 100;
+        }
+        object.createPropertyGetterSetter(Person, {
+          id: "-pu -r",
+          name: "-pu -w -r",
+          age: "-pa -w -r",
+          Weight: "-wa -ru",
+          mark: {
+            purview: "-wa -ru",
+            defaultValue: 0, // set prototype.mark = 0.
+            validate: function( mark ){ return mark >= 0 && mark <= 100; }, // validate param when setting.
+            edit: function( value ){ return value + ""; } // edit value when getting.
+          },
+          height: function( h ){ return h >= 100 && h <= 220; } // validate param when setting.
+         } );
+
+        var person = new Person();
+
+        test(person).should.have.property("getId").with.should.be.function();
+
+        test(person).should.not.have.property("setId");
+
+        test(person).should.have.property("getName").with.should.be.function();
+
+        test(person).should.have.property("setName").with.should.be.function();
+
+        test(person).should.have.property("_getAge").with.should.be.function();
+
+        test(person).should.have.property("_setAge").with.should.be.function();
+
+        test(person).should.have.property("_setWeight").with.should.be.function();
+
+        test(person).should.have.property("getWeight").with.should.be.function();
+
+        test(person).should.have.property("_setMark").with.should.be.function();
+
+        test(person).should.have.property("getMark").with.should.be.function();
+
+        test(person.getMark()).should.equal("0");
+
+        test(function(){
+          person._setMark(60);
+        }).should.not.Throw();
+
+        test(person.getMark()).should.equal("60");
+
+        test(person._setMark(120)).should.equal(person);
+
+        test(person.getMark(), "Test validate.").should.equal("60");
+
+        test(person).should.have.property("setHeight").with.should.be.function();
+
+        test(person).should.have.property("getHeight").with.should.be.function();
+
+        test(function(){
+          person.setHeight(60);
+        }).should.not.Throw();
+
+        test(person.getHeight()).should.equal(100);
+
+        test(person.setHeight(120)).should.equal(person);
+
+        test(person.getHeight(), "Test validate.").should.equal(120);
+
+      }).describe("Test object function", function(preResult, test, logger){
+        function Animal(name, age){
+          this.name = name;
+          this.age = age;
+        }
+
+        Animal.prototype.eat = function(){};
+        Animal.prototype.watch = function(){};
+        Animal.prototype.name = "Animal";
+
+        var animal = new Animal("animal", 20);
+
+        test(object.getObjectPrototypeMembersCount(animal)).should.equal(2);
+
+        test(object.getObjectMembersCount(animal, true)).should.equal(2);
+
+        function Horse(name, weight){
+          Animal.call(this, name, weight);
+          this.food = null;
+        }
+
+        Horse.prototype.eat = function(food){
+          this.food = food;
+        };
+
+        Horse.prototype.run = function(){};
+
+        object.inheritProtypeWithExtend(Horse, Animal);
+
+        var horse = new Horse("Janney", 8);
+
+        test(object.getObjectPrototypeMembersCount(horse)).should.equal(3);
+
+        test(object.getObjectMembersCount(horse, true)).should.equal(3);
+
+        test(horse).should.have.property("eat");
+
+        test(horse).should.have.property("watch");
+
+        horse.eat("grass");
+
+        test(horse).should.have.property("food").with.should.equal(null);
+
+        test(animal.run).should.not.exists();
+
+
+        function Cat(name, weight){
+          Animal.call(this, name, weight);
+          this.food = null;
+        }
+
+        Cat.prototype.eat = function(food){
+          this.food = food;
+        };
+
+        Cat.prototype.run = function(){};
+
+        object.inheritProtypeWithParasitic(Cat, Animal);
+
+        var cat = new Cat("kiki", 5);
+
+        test(object.getObjectPrototypeMembersCount(cat)).should.equal(4);
+
+        test(object.getObjectMembersCount(cat, true)).should.equal(3);
+
+        test(cat).should.have.property("constructor").with.should.equal(Cat);
+
+        test(cat).should.have.property("eat");
+
+        test(cat).should.have.property("watch");
+
+        cat.eat("fish");
+
+        test(cat).should.have.property("food").with.should.equal("fish");
+
+        test(animal.run).should.not.exists();
+
+
+        function Sheep(name, weight){
+          Animal.call(this, name, weight);
+          this.food = null;
+        }
+
+        object.inheritProtypeWithCombination(Sheep, Animal);
+
+        Sheep.prototype.eat = function(food){
+          this.food = food;
+        };
+
+        Sheep.prototype.run = function(){};
+
+        var sheep = new Sheep("Marry", 5);
+
+        test(object.getObjectPrototypeMembersCount(sheep)).should.equal(3);
+
+        test(object.getObjectMembersCount(sheep, true)).should.equal(3);
+
+        test(sheep).should.have.property("constructor").with.should.equal(Sheep);
+
+        test(sheep).should.have.property("eat");
+
+        test(sheep).should.have.property("watch");
+
+        sheep.eat("grass");
+
+        test(sheep).should.have.property("food").with.should.equal("grass");
+
+        // test(animal).should.have.property("run");
+
+        // delete Animal.prototype.run;
+
+        return Animal;
+      }).describe("Test object.extend", function(Animal, test, logger){
+        var Chicken = object.extend("Chicken", {
+          init: function(name, age){
+            this._super(name, age);
+          }
+        }, {});
+
+        test(Chicken).should.have.property("inherit").with.should.be.function();
+
+        Chicken.inherit(Animal);
+
+        var nini = new Chicken("nini", 2);
+
+        test(nini).should.have.property("eat").with.should.be.function();
+
+        test(nini).should.have.property("constructor").with.should.equal(Chicken);
+
+        var Dog = object.extend("Dog", {
+          init: function(name, age, color){
+            this._super(name, age);
+            this.color = color;
+          },
+          eat: function(){
+            this.food = food;
+          },
+          play: function(){
+
+          }
+        }, {
+          loyal: true
+        }, Animal);
+
+        test(Dog).should.have.property("extend").with.should.be.function();
+
+        test(Dog).should.have.property("joinPrototype").with.should.be.function();
+
+        test(Dog).should.have.property("constructorOf").with.should.be.function();
+
+        test(Dog).should.have.property("createGetterSetter").with.should.be.function();
+
+        test(Dog).should.have.property("fn").with.should.be.object();
+
+        test(function(){
+          Dog.joinPrototype({
+            bark: function(){}
+          });
+        }).should.not.Throw();
+
+        test(function(){
+          Dog.createGetterSetter({
+            name: "-pu -w -r"
+          });
+        }).should.not.Throw();
+
+        var ashley = new Dog("ashley", 3);
+
+        test(ashley).should.have.property("bark").with.should.be.function();
+
+        test(Dog.constructorOf(ashley)).should.equal(true);
+
+        test(ashley).should.have.property("setName").with.should.be.function();
+
+        test(ashley).should.have.property("getName").with.should.be.function();
+
+        var Labrador = Dog.extend(function Labrador(name, age, color){
+          this._super(name, age, color);
+          this.toy = null;
+        },{
+          play: function(toy){
+            this.toy = toy;
+          }
+        }, {
+          naughty: true
+        });
+
+        test(Labrador).should.have.property("naughty").with.should.equal(true);
+
+        var penny = new Labrador("penny", 4);
+
+        penny.play("tennis");
+
+        test(penny).should.have.property("age").with.should.equal(4);
+
+        test(penny).should.have.property("toy").with.should.equal("tennis");
+
+        test(penny).should.have.property("watch").with.should.be.function();
+
+        var BlackLabrador = Labrador.extend({
+          init: function(name, age){
+            this._super(name, age, "black");
+          }
+        });
+
+        var tony = new BlackLabrador("tony", 3);
+
+        test(tony).should.have.property("color").should.equal("black");
+
+      }).start();
+
+    });
+  </script>
+</head>
+
+<body style="overflow: auto">
+</body>
+
+</html>

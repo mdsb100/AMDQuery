@@ -7,7 +7,7 @@
   <script src="../../../amdquery/amdquery.js" type="text/javascript" amdquery="define:$;" amd="detectCR:1;" module="compatibleEvent:1;testLogByHTML:1"></script>
   <script type="text/javascript">
     $.require(["main/query", "main/class", "module/Test"], function(query, cls, Test) {
-      var testTest = new Test("TestClass", function(preResult){
+      var testTest = new Test("class", function(preResult){
 
       }).describe("Test class function", function(preResult, test, logger){
         var divTest = $("#test");
@@ -54,19 +54,6 @@
 
       }).start();
 
-      // var test = $("#test");
-      // test.addClass("a");
-      // $.logger(test.containsClass("a"));
-      // $.logger(test.addClass("b"));
-      // $.logger(test.classLength());
-      // $.logger("index 1:" + test.getClassByIndex(1));
-      // $.logger("index 2:" + test.getClassByIndex(2));
-      // test.toggleClass("c");
-      // $.logger("has c:" + test.containsClass("c"));
-      // test.toggleClass("c");
-      // $.logger("has c:" + test.containsClass("c"));
-      // test.removeClass("b");
-      // $.logger("has b:" + test.containsClass("b"));
     })
   </script>
 </head>

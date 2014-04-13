@@ -83,7 +83,7 @@
 			if ( b[ i ] === 0 || b[ i ] === false ) {
 				a[ i ] = 0;
 			} else {
-				if ( typed.isBol( a[ i ] ) || typed.isNum( a[ i ] ) ) {
+				if ( typed.isBoolean( a[ i ] ) || typed.isNumber( a[ i ] ) ) {
 
 				} else {
 					a[ i ] = b[ i ];
@@ -137,7 +137,7 @@
 			proto.setter = setter;
 		},
 		extendTemplate = function( tName, prototype, statics ) {
-			if ( typed.isObj( statics ) ) {
+			if ( typed.isObject( statics ) ) {
 				return Widget.extend( tName, prototype, statics, this.ctor );
 			} else {
 				return Widget.extend( tName, prototype, this.ctor );
@@ -218,7 +218,7 @@
 			attr = this.target.attr( this.widgetNameSpace + "-" + widgetName ) || this.target.attr( this.widgetName );
 
 			/*check options*/
-			if ( typed.isStr( attr ) ) {
+			if ( typed.isString( attr ) ) {
 				attr = attr.split( /;|,/ );
 				for ( i = 0, len = attr.length; i < len; i++ ) {
 					item = attr[ i ].split( ":" );
@@ -303,7 +303,7 @@
 			this.target = target;
 			this.addTag();
 			//obj高于元素本身属性
-			obj = typed.isPlainObj( obj ) ? obj : {};
+			obj = typed.isPlainObject( obj ) ? obj : {};
 			var ret = {};
 			utilExtend.extend( ret, this.checkAttr(), obj );
 			this.option( ret );
@@ -311,28 +311,28 @@
 		},
 		instanceofWidget: function( item ) {
 			var constructor = item;
-			if ( typed.isStr( item ) ) {
+			if ( typed.isString( item ) ) {
 				constructor = Widget.get( item );
 			}
-			if ( typed.isFun( constructor ) ) {
-				return constructor.forinstance ? constructor.forinstance( this ) : ( this instanceof constructor );
+			if ( typed.isFunction( constructor ) ) {
+				return constructor.constructorOf ? constructor.constructorOf( this ) : ( this instanceof constructor );
 			}
 			return false;
 		},
 		equals: function( item ) {
-			if ( this.forinstance( item ) ) {
+			if ( this.constructorOf( item ) ) {
 				return this.getElement() === item.getElement() && this[ this.widgetName ]( "getSelf" ) === item[ this.widgetName ]( "getSelf" );
 			}
 			return false;
 		},
 		option: function( key, value ) {
-			if ( typed.isObj( key ) ) {
+			if ( typed.isObject( key ) ) {
 				for ( var name in key ) {
 					this.setOption( name, key[ name ] );
 				}
 			} else if ( value === undefined ) {
 				return this.getOption( key );
-			} else if ( typed.isStr( key ) ) {
+			} else if ( typed.isString( key ) ) {
 				this.setOption( key, value );
 			}
 		},
@@ -381,7 +381,7 @@
 				this.doSpecialSetter( key, value );
 			} else if ( this._isEventName( key ) ) {
 				var eventName = this.getEventName( key );
-				if ( typed.isFun( value ) ) {
+				if ( typed.isFunction( value ) ) {
 					this.target.on( eventName, value );
 				} else if ( value === null ) {
 					this.target.clearHandlers( eventName );
@@ -402,7 +402,7 @@
 		},
 		doSpecialGetter: function( key ) {
 			var fn = this[ $.util.camelCase( key, "_get" ) ];
-			return typed.isFun( fn ) ? fn.call( this ) : this.options[ key ];
+			return typed.isFunction( fn ) ? fn.call( this ) : this.options[ key ];
 		},
 		doSpecialSetter: function( key, value ) {
 			var flag = "__" + key + "OptionInitFirstFlag";
@@ -414,7 +414,7 @@
 				}
 			}
 			var fn = this[ $.util.camelCase( key, "_set" ) ];
-			typed.isFun( fn ) ? fn.call( this, value ) : ( this.options[ key ] = value );
+			typed.isFunction( fn ) ? fn.call( this, value ) : ( this.options[ key ] = value );
 		},
 		beGetter: function( key ) {
 			return !!this.getter[ key ];
@@ -461,7 +461,7 @@
 			/// <param name="Super" type="Function/undefined">基类</param>
 			/// <returns type="Function" />
 			//consult from jQuery.ui
-			if ( !typed.isStr( name ) ) return null;
+			if ( !typed.isString( name ) ) return null;
 			name = name.split( "." );
 			var nameSpace = name[ 0 ];
 			name = name[ 1 ];
@@ -470,13 +470,13 @@
 			if ( !nameSpace || !name ) return;
 			if ( !Widget[ nameSpace ] ) Widget[ nameSpace ] = {};
 
-			if ( typed.isFun( arguments[ arguments.length - 1 ] ) ) {
+			if ( typed.isFunction( arguments[ arguments.length - 1 ] ) ) {
 				Super = arguments[ arguments.length - 1 ];
 			} else {
 				Super = Widget;
 			}
 
-			if ( !typed.isObj( statics ) ) {
+			if ( !typed.isObject( statics ) ) {
 				statics = {};
 			}
 
@@ -521,10 +521,10 @@
 						if ( a === "destroy" ) {
 							data[ a ].call( data );
 							utilData.removeData( ele, key );
-						} else if ( typed.isObj( a ) ) {
+						} else if ( typed.isObject( a ) ) {
 							data.option( a );
 							data.render();
-						} else if ( typed.isStr( a ) ) {
+						} else if ( typed.isString( a ) ) {
 							if ( a === "option" ) {
 								if ( c !== undefined ) {
 									/*若可set 则全部set*/
@@ -610,7 +610,7 @@
 		},
 		getAttrWidgets: function( ele ) {
 			var value = attr.getAttr( ele, prefix + "-widget" ),
-				attrNames = typed.isStr( value ) && value !== "" ? value.split( /;|,/ ) : [],
+				attrNames = typed.isString( value ) && value !== "" ? value.split( /;|,/ ) : [],
 				ret = [],
 				widgetName = "",
 				i;
@@ -699,10 +699,10 @@
 						Widget._renderWidget( eles[ i ] );
 					}
 					Widget.triggerDetectToParent( target );
-					if ( typed.isFun( callback ) ) callback();
+					if ( typed.isFunction( callback ) ) callback();
 				} );
 			} else {
-				if ( typed.isFun( callback ) ) callback();
+				if ( typed.isFunction( callback ) ) callback();
 			}
 			return this;
 		},
@@ -716,10 +716,10 @@
 						Widget._renderWidget( eles[ i ], "destroy" );
 					}
 					Widget.triggerDetectToParent( target );
-					if ( typed.isFun( callback ) ) callback();
+					if ( typed.isFunction( callback ) ) callback();
 				} );
 			} else {
-				if ( typed.isFun( callback ) ) callback();
+				if ( typed.isFunction( callback ) ) callback();
 			}
 			return this;
 		}

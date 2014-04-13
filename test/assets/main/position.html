@@ -11,7 +11,7 @@
 
       var rect = $( "#rect" );
 
-      var testPosition = new Test("TestPosition", function(preResult){
+      var testPosition = new Test("position", function(preResult){
         // complete
       }).describe("Test div rect width", function(preResult, test, logger){
         test(rect.width(), "rect width").should.equal( 50 );

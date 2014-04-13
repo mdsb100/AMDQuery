@@ -74,7 +74,7 @@
 			/// <param name="option" type="Object">动画选项</param>
 			/// <returns type="self" />
 			///  name="visible" type="Boolean/undefined">true:隐藏后任然占据文档流中
-			if ( typed.isStr( type ) && effect[ type ] ) {
+			if ( typed.isString( type ) && effect[ type ] ) {
 				effect[ type ]( ele, option );
 			} else {
 				css.hide( ele );
@@ -90,7 +90,7 @@
 			/// <param name="type" type="String/undefined">动画类型</param>
 			/// <param name="option" type="Object">动画选项</param>
 			/// <returns type="self" />
-			if ( typed.isStr( type ) && effect[ type ] ) {
+			if ( typed.isString( type ) && effect[ type ] ) {
 				effect[ type ]( ele, option );
 			} else {
 				css.show( ele );

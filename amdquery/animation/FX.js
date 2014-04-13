@@ -44,7 +44,7 @@
 		},
 		step: function( goToEnd ) {
 			var pauseTime;
-			if ( !typed.isBol( goToEnd ) ) {
+			if ( !typed.isBoolean( goToEnd ) ) {
 				pauseTime = goToEnd || 0;
 			}
 			var t = $.now() - pauseTime,
@@ -129,15 +129,15 @@
 		},
 
 		getDelay: function( d ) {
-			if ( typed.isStr( d ) ) {
+			if ( typed.isString( d ) ) {
 				d = FX.speeds( d );
-			} else if ( typed.isNul( d ) || !typed.isNum( d ) ) {
+			} else if ( typed.isNul( d ) || !typed.isNumber( d ) ) {
 				d = 0;
 			}
 			return d;
 		},
 		getDuration: function( d ) {
-			if ( typed.isNul( d ) || !typed.isNum( d ) ) {
+			if ( typed.isNul( d ) || !typed.isNumber( d ) ) {
 				d = FX.speeds( d );
 			}
 			return d;

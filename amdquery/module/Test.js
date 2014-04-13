@@ -1,4 +1,4 @@
-aQuery.define( "module/Test", [ "base/typed", "base/Promise", "base/config", "main/event" ], function( $, typed, Promise, config, event ) {
+aQuery.define( "module/Test", [ "base/typed", "base/ready", "base/Promise", "base/config", "main/event", "main/dom", "main/css", "html5/css3" ], function( $, typed, ready, Promise, config, event, dom, css, css3 ) {
 	"use strict";
 	this.describe( "Test Module" );
 	var TestEventType = "test.report";
@@ -11,20 +11,60 @@ aQuery.define( "module/Test", [ "base/typed", "base/Promise", "base/config", "ma
 	} else {
 		var dialog = $.createEle( "pre" );
 
-		dialog.style.cssText = "display:block;position:absolute;width:600px;height:200px;overflow:scroll;z-index:1000000;";
-		dialog.style.right = "0px";
-		dialog.style.top = "0px";
-		document.body.appendChild( dialog );
+		dialog.style.cssText = "display:block;position:absolute;width:600px;height:200px;overflow-y:scroll;overflow-x:hidden;z-index:1000000;background-color:black;";
+		dialog.style.right = "5px";
+		dialog.style.top = "5px";
+
+		ready( function() {
+			document.body.appendChild( dialog );
+		} );
 
 		var colorMap = {
-			log: "green",
-			error: "red",
-			info: "black",
-			debug: "orange"
+			log: {
+				backgroundColor1: "#62c462",
+				backgroundColor2: "#57a957"
+			},
+			error: {
+				backgroundColor1: "#ee5f5b",
+				backgroundColor2: "#c43c35"
+			},
+			info: {
+				backgroundColor1: "#5bc0de",
+				backgroundColor2: "#339bb9"
+			},
+			debug: {
+				backgroundColor1: "#5bc0de",
+				backgroundColor2: "#339bb9"
+			}
 		};
 
 		var input = function( type, arg ) {
-			dialog.innerHTML = ( dialog.innerHTML + '<p style="color:' + colorMap[ type ] + '" >' + "<strong>" + type + ":<strong>" + arg.join( " " ) + '</p>' + "\n" );
+			var $p = $( dom.parseHTML( '<p>' + "<strong>" + type + ":<strong>" + arg.join( " " ) + '</p>' ) );
+			var colors = colorMap[ type ];
+			$p.css( {
+				display: "block",
+				color: "white",
+				borderTop: "1px solid rgba(0, 0, 0, 0.098)",
+				borderBottom: "1px solid rgba(0, 0, 0, 0.24)",
+				width: "594px",
+				fontSize: "14px",
+				padding: "3px",
+				wordWrap: "break-word",
+				whiteSpace: "normal",
+			} ).css3( {
+				borderRadius: "3px"
+			} ).linearGradient( {
+				defaultColor: colors.backgroundColor2,
+				orientation: "left top",
+				colorStops: [ {
+					stop: 0,
+					color: colors.backgroundColor1
+        }, {
+					stop: 1,
+					color: colors.backgroundColor2
+        } ]
+			} );
+			dialog.appendChild( $p[ 0 ] );
 			dialog.scrollTop = dialog.scrollHeight;
 		};
 
@@ -74,13 +114,14 @@ aQuery.define( "module/Test", [ "base/typed", "base/Promise", "base/config", "ma
 		this.name = "[" + name + "]";
 		this.complete = complete || function() {};
 		this.promise = new Promise( function( preResult ) {
-			description && logger( description );
-			logger( this.name, "User Agent:", navigator.userAgent );
+			description && info( description );
+			info( this.name, "User Agent:", navigator.userAgent );
 			return preResult;
 		} ).withContext( this );
 		this.count = 0;
 		this.fail = 0;
 		this.failInfoList = [];
+		this.timeConsuming = null;
 	}
 
 	/**
@@ -184,9 +225,13 @@ aQuery.define( "module/Test", [ "base/typed", "base/Promise", "base/config", "ma
 		 *
 		 *  var myName = "Jarray";
 		 *  test(myName, "My name").should.be.a("string");
+		 *  var promise = new Promise;
+		 *
 		 *  setTimeout(function(){
 		 *    promise.resolve(preResult)
 		 *  }, 3000)
+		 *
+		 *  return promise;
 		 * })
 		 * .describe("Test a", function(preResult, test, logger){
 		 *  //should.be.an
@@ -202,17 +247,18 @@ aQuery.define( "module/Test", [ "base/typed", "base/Promise", "base/config", "ma
 		 *  //should.not.exists
 		 *  //should.Throw
 		 *  //should.not.Throw
+		 *  //should.not.have.property
 		 *  //should.have.length
 		 *  //should.have.property
 		 *  //should.have.property().with
 		 *  //should.have.index().with
 		 *  //typed extend function
 		 *  //should.should.be.node
-     *  //should.should.not.be.node
-		 * }, promise)
+		 *  //should.should.not.be.node
+		 * })
 		 * .start();
 		 */
-		describe: function( describe, fn, promise ) {
+		describe: function( describe, fn ) {
 			var self = this;
 
 			function testWrapper( target, describe ) {
@@ -220,24 +266,13 @@ aQuery.define( "module/Test", [ "base/typed", "base/Promise", "base/config", "ma
 			}
 
 			this.promise = this.promise.then( function( preResult ) {
-				logger( this.name, describe );
-				if ( Promise.forinstance( promise ) ) {
-					promise.then( function( result ) {
-						try {
-							return fn( result != null ? result : preResult, testWrapper, logger );
-						} catch ( e ) {
-							error( e );
-							return;
-						}
-					} ).withContext( this );
-					return promise;
-				} else {
-					try {
-						return fn( preResult, testWrapper, logger );
-					} catch ( e ) {
-						error( e );
-						return;
-					}
+				info( this.name, describe );
+				try {
+					return fn( preResult, testWrapper, info );
+				} catch ( e ) {
+					error( e );
+					throw e;
+					return;
 				}
 			} );
 
@@ -249,12 +284,14 @@ aQuery.define( "module/Test", [ "base/typed", "base/Promise", "base/config", "ma
 		 * @returns {this}
 		 */
 		start: function( firstResult ) {
-			this.promise.then( function() {
+			var beginTime = new Date;
+			this.promise.done( function() {
+				this.timeConsuming = ( new Date() - beginTime ) / 1000;
+				info( "time-consuming:", this.timeConsuming, "seconds" );
 				Test[ this.fail == 0 ? "logger" : "error" ]( this.name, "Test stop", "Test:" + this.count, "Success" + ( this.count - this.fail ), "Fail:" + this.fail );
 				this.complete();
 				this.report();
-			} );
-			this.promise.root().resolve( firstResult );
+			} ).resolve( firstResult );
 			return this;
 		},
 		/**
@@ -270,7 +307,8 @@ aQuery.define( "module/Test", [ "base/typed", "base/Promise", "base/config", "ma
 					name: this.name,
 					count: this.count,
 					fail: this.fail,
-					failInfoList: this.failInfoList
+					failInfoList: this.failInfoList,
+          timeConsuming: this.timeConsuming
 				} );
 			}
 			return this;
@@ -328,7 +366,7 @@ aQuery.define( "module/Test", [ "base/typed", "base/Promise", "base/config", "ma
 					return testWrapper;
 				},
 				property: function( name ) {
-					var bol = target != null || target[ name ] !== undefined;
+					var bol = target != null && name in target;
 					testObject._isEqual( testWrapper.combineString( describe, "'" + String( target ) + "'", "should", "have", String( name ), "property" ), bol, true );
 					if ( bol ) {
 						testWrapper = new TestWrapper( target[ name ], "With property " + name, testObject );
@@ -337,7 +375,7 @@ aQuery.define( "module/Test", [ "base/typed", "base/Promise", "base/config", "ma
 					return testWrapper;
 				},
 				index: function( index ) {
-					var bol = target != null || target[ index ] !== undefined;
+					var bol = target != null && target[ index ] !== undefined;
 					testObject._isEqual( testWrapper.combineString( describe, "'" + String( target ) + "'", "should", "have", "index", index ), bol, true );
 					if ( bol ) {
 						testWrapper = new TestWrapper( target[ index ], "With index " + index, testObject );
@@ -363,7 +401,14 @@ aQuery.define( "module/Test", [ "base/typed", "base/Promise", "base/config", "ma
 					testObject._beCall( testWrapper.combineString( describe, "'" + String( target ) + "'", "should", "not", "Throw" ), target );
 					return testWrapper;
 				},
-				be: {}
+				be: {},
+				have: {
+					property: function( name ) {
+						var bol = target == null || !( name in target );
+						testObject._isEqual( testWrapper.combineString( describe, "'" + String( target ) + "'", "should", "not", "have", String( name ), "property" ), bol, true );
+						return testWrapper;
+					},
+				}
 			},
 			Throw: function() {
 				testObject._beCall( testWrapper.combineString( describe, "'" + String( target ) + "'", "should", "Throw" ), target, true );
@@ -388,10 +433,12 @@ aQuery.define( "module/Test", [ "base/typed", "base/Promise", "base/config", "ma
 			"XML": 1,
 			"NaN": 1,
 			"RegExp": 1
-		}
+		}, ignore = {
+				"isEqual": 1
+			};
 
 		$.each( typed, function( fn, name ) {
-			if ( name.indexOf( "is" ) === 0 && name.length > 2 ) {
+			if ( name.indexOf( "is" ) === 0 && name.length > 2 && !ignore[ name ] ) {
 				var fnName = name.replace( "is", "" );
 
 				if ( !except[ fnName ] ) {

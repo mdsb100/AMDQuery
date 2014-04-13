@@ -265,7 +265,7 @@ aQuery.define( "ui/flex", [
 					}
 				},
 				_setFlex: function( flex ) {
-					if ( typed.isNum( flex ) && flex >= 0 ) {
+					if ( typed.isNumber( flex ) && flex >= 0 ) {
 						if ( this.options.flex !== flex ) {
 							this.options.flex = flex;
 						}

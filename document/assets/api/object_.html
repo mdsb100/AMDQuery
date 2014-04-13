@@ -65,7 +65,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="object.js.html">main/object.js</a>, <a href="object.js.html#line179">line 179</a>
+        <a href="object.js.html">main/object.js</a>, <a href="object.js.html#line171">line 171</a>
     </li></ul></dd>
     
 
@@ -307,7 +307,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="object.js.html">main/object.js</a>, <a href="object.js.html#line303">line 303</a>
+        <a href="object.js.html">main/object.js</a>, <a href="object.js.html#line298">line 298</a>
     </li></ul></dd>
     
 
@@ -453,7 +453,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="object.js.html">main/object.js</a>, <a href="object.js.html#line517">line 517</a>
+        <a href="object.js.html">main/object.js</a>, <a href="object.js.html#line523">line 523</a>
     </li></ul></dd>
     
 
@@ -488,7 +488,7 @@ object.createPropertyGetterSetter(Person, {
  mark: {
    purview: "-wa -ru",
    defaultValue: 0, // set prototype.mark = 0.
-   validate: function( mark ){ return mark >= 0 && mark <= 100; } // validate param when setting.
+   validate: function( mark ){ return mark >= 0 && mark <= 100; }, // validate param when setting.
    edit: function( value ){ return value + ""; } // edit value when getting.
  },
  height: function( h ){ return h >= 100 && h <= 220; } // validate param when setting.
@@ -709,7 +709,7 @@ person.getMark(); // "100"</pre>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="object.js.html">main/object.js</a>, <a href="object.js.html#line246">line 246</a>
+        <a href="object.js.html">main/object.js</a>, <a href="object.js.html#line238">line 238</a>
     </li></ul></dd>
     
 
@@ -801,7 +801,7 @@ Sub.joinPrototype( {
 } );
 sub.foo();sub.pad();
 
-Super.forinstance( sub ) // true
+Super.constructorOf( sub ) // true
 
 Sub.createGetterSetter( {
   name: "-pa"
@@ -813,7 +813,7 @@ Sub.createGetterSetter( {
         
             
 <dt>
-    <h4 class="name" id="getObjectPropertiesCount"><span class="type-signature">&lt;static> </span>getObjectPropertiesCount<span class="signature">(obj, bool)</span><span class="type-signature"> &rarr; {Number}</span></h4>
+    <h4 class="name" id="getObjectMembersCount"><span class="type-signature">&lt;static> </span>getObjectMembersCount<span class="signature">(obj)</span><span class="type-signature"> &rarr; {Number}</span></h4>
     
     
 </dt>
@@ -821,7 +821,7 @@ Sub.createGetterSetter( {
     
     
     <div class="description">
-        Get the object properties count.
+        Get the object members count without prototype.
     </div>
     
 
@@ -875,16 +875,128 @@ Sub.createGetterSetter( {
         </tr>
 	
 	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="object.js.html">main/object.js</a>, <a href="object.js.html#line424">line 424</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">Number</span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="getObjectPrototypeMembersCount"><span class="type-signature">&lt;static> </span>getObjectPrototypeMembersCount<span class="signature">(obj)</span><span class="type-signature"> &rarr; {Number}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Get the object prototype members count.
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
 	
         <tr>
             
-                <td class="name"><code>bool</code></td>
+                <td class="name"><code>obj</code></td>
             
             
             <td class="type">
             
                 
-<span class="param-type">Boolean</span>
+<span class="param-type">Object</span>
 
 
             
@@ -894,7 +1006,7 @@ Sub.createGetterSetter( {
             
             
             
-            <td class="description last">If true , does not count prototype.</td>
+            <td class="description last"></td>
         </tr>
 	
 	
@@ -925,7 +1037,7 @@ Sub.createGetterSetter( {
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="object.js.html">main/object.js</a>, <a href="object.js.html#line430">line 430</a>
+        <a href="object.js.html">main/object.js</a>, <a href="object.js.html#line436">line 436</a>
     </li></ul></dd>
     
 
@@ -979,7 +1091,7 @@ Sub.createGetterSetter( {
     
     
     <div class="description">
-        Use classic combination to inherit prototype. Contains the same memory address.
+        Use classic combination to inherit prototype.
     </div>
     
 
@@ -1083,7 +1195,7 @@ Sub.createGetterSetter( {
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="object.js.html">main/object.js</a>, <a href="object.js.html#line479">line 479</a>
+        <a href="object.js.html">main/object.js</a>, <a href="object.js.html#line485">line 485</a>
     </li></ul></dd>
     
 
@@ -1241,7 +1353,7 @@ Sub.createGetterSetter( {
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="object.js.html">main/object.js</a>, <a href="object.js.html#line443">line 443</a>
+        <a href="object.js.html">main/object.js</a>, <a href="object.js.html#line449">line 449</a>
     </li></ul></dd>
     
 
@@ -1422,7 +1534,7 @@ Sub.createGetterSetter( {
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="object.js.html">main/object.js</a>, <a href="object.js.html#line456">line 456</a>
+        <a href="object.js.html">main/object.js</a>, <a href="object.js.html#line462">line 462</a>
     </li></ul></dd>
     
 

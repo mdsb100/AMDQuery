@@ -1,0 +1,372 @@
+﻿
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" style="width: 100%;">
+
+<head>
+  <title></title>
+  <link href="../../../global/styles/reset.css" rel="stylesheet" type="text/css" />
+  <script src="../../../amdquery/amdquery.js" type="text/javascript" amdquery="define:$;" amd="detectCR:1;" module="compatibleEvent:1;testLogByHTML:1"></script>
+  <script type="text/javascript">
+    $.require(["base/Promise", "module/Test"], function(Promise, Test) {
+      function doPromiseTest(){
+        var promise = new Promise(function(){
+          var p = Promise();
+          for(var i=0;i<100;i++){
+            p = p.then(function(){})
+          }
+          return p.done().resolve();
+        });
+
+        for (var i=0;i<50;i++) {
+          promise = promise.then(function(){});
+        };
+
+        return promise;
+      }
+
+      var pr = doPromiseTest().root().resolve();
+      pr = null;
+
+      function delay(ms, test) {
+        return function(result) {
+          var promise = new Promise();
+          test(result, "in delay").should.equal(0);
+          setTimeout(function() {
+            promise.resolve(ms);
+          }, ms);
+          return promise;
+        };
+      };
+
+      function delayFail(ms, test) {
+        return function(result) {
+          var promise = new Promise();
+          test(result, "in delay").should.equal(0);
+          setTimeout(function() {
+            promise.reject(ms);
+          }, ms);
+          return promise;
+        };
+      };
+
+      var testPromise = new Test("Promise")
+      .describe("Test resolve", function(preResult, test, logger){
+        var resolvePromise = Promise();
+
+        var promise = new Promise(function(result){
+          test(result).should.equal(0);
+          return result + 1;
+        }).then(function(result){
+          test(result).should.equal(1);
+        }).then(function(){
+          var promise = new Promise();
+          setTimeout(function(){
+            promise.resolve("resolve");
+          }, 200);
+          return promise;
+        }).then(function(result){
+          test(result).should.equal("resolve");
+          var promise = new Promise(function(result){
+            return result;
+          });
+          promise.resolve("resolve by sync");
+          return promise;
+        }).then(function(result){
+          test(result).should.equal("resolve by sync");
+          return "done";
+        }).done(function(result){
+          test(result).should.equal("done");
+          setTimeout(function(){
+            resolvePromise.resolve({
+              info: "next describe",
+              promise: promise
+            });
+          }, 0)
+        }).resolve(0);
+
+        return resolvePromise;
+
+      }).describe("Test done, reject", function(preResult, test, logger){
+        test(preResult.info).should.equal("next describe");
+        test(preResult.promise).should.have.property("ands").with.should.have.length(0);
+      }).describe("Test reject", function(preResult, test, logger){
+        var resolvePromise = new Promise();
+
+        var promise = new Promise(function(result){
+          logger("go to fail function");
+          a;
+          a[0];
+        }, function(result){
+          test(result).should.equal(0);
+          logger("Reject return instance promise, it will do next.");
+          return Promise().resolve(result);
+        }).then(function(result){
+          test(result).should.equal(0);
+          var promise = Promise();
+          promise.reject("goto fail");
+          return promise;
+        }, function(result){
+          test(result).should.equal("goto fail");
+          var promise = Promise();
+          promise.reject("goto next reject");
+          return promise;
+        }).then(function(result){
+          logger("It does not be call");
+          test(result).should.not.equal(1);
+        }, function(result){
+          test(result).should.equal("goto next reject");
+          return "goto done";
+        }).done(function(result){
+          resolvePromise.resolve("next reject");
+        }, function(result){
+          test(result).should.equal("goto done");
+          resolvePromise.resolve("next reject");
+        }).resolve(0);
+
+        return resolvePromise;
+
+      }).describe("Test reject", function(preResult, test, logger){
+        test(preResult).should.equal("next reject");
+        var resolvePromise = new Promise();
+
+        var promise = new Promise(function(result){
+
+        }, function(result){
+          test(result).should.equal(0);
+          logger("Reject return instance promise, it will do next.");
+          return Promise().resolve(0);
+        }).then(function(result){
+          test(result).should.equal(0);
+          var promise = Promise();
+
+          setTimeout(function(){
+            promise.reject("goto done");
+          }, 100);
+
+          return promise;
+        }).then(function(result){
+          logger("It does not be call");
+          test(result).should.not.equal(1);
+        }, function(result){
+          logger("It does not be call");
+          test(result).should.not.equal(1);
+        }).done(function(result){
+          resolvePromise.resolve("next progress");
+        }, function(result){
+          test(result).should.equal("goto done");
+          resolvePromise.resolve("next progress");
+        }).reject(0);
+
+        return resolvePromise;
+
+      }).describe("Test progress", function(preResult, test, logger){
+        test(preResult).should.equal("next progress");
+        var sum = 0;
+
+        var promise = new Promise(function(result){
+          return result;
+        }, function(){}, function(interval){
+          if(sum === 10){
+            clearInterval(interval);
+            return new Promise(function(){
+              return "goto done"
+            });
+          }
+          sum++;
+        }).done(function(result){
+          test(sum).should.equal(10);
+          test(result).should.equal("goto done");
+          return "next and";
+        });
+
+
+        var interval = setInterval(function(){
+          promise.reprocess(interval);
+        }, 20);
+
+        return promise;
+
+      }).describe("Test and", function(preResult, test, logger){
+        test(preResult).should.equal("next and");
+
+        var resolvePromise = new Promise(function(result){
+          test(result).should.be.array();
+          test(result).should.have.length(7);
+          test(result[0]).should.equal(0);
+          test(result[1]).should.equal("and sync with promise");
+          test(result[2]).should.equal(100);
+          test(result[3]).should.equal(200);
+          test(result[4]).should.equal("middle");
+          test(result[5]).should.equal(300);
+          test(result[6]).should.equal("and sync");
+          return "next and fail";
+        });
+
+        Promise(function(result){
+          test(result).should.equal(0);
+          return result;
+        })
+        .and(function(result){
+          return Promise().resolve("and sync with promise");
+        })
+        .and(delay(100, test))
+        .and(delay(200, test))
+        .and(function(result){
+          return "middle";
+        })
+        .and(delay(300, test))
+        .and(function(result){
+          test(result).should.equal(0);
+          return "and sync";
+        })
+        .then(function(result){
+          test(result).should.be.array();
+          test(result).should.have.length(7);
+          return result;
+        })
+        .done(resolvePromise).resolve(0);
+
+        return resolvePromise;
+
+      }).describe("Test and fail", function(preResult, test, logger){
+        test(preResult).should.equal("next and fail");
+
+        var resolvePromise = new Promise();
+
+        Promise(function(result){
+          test(result).should.equal(0);
+          a[0];
+          return result;
+        }, function(result){
+          test(result).should.equal(0);
+          return result;
+        })
+        .and(function(result){
+          test(result).should.equal(0);
+          return Promise().reject("and sync fail");
+        })
+        .and(delay(100, test))
+        .and(delay(200, test))
+        .and(delayFail(300, test), function(){
+          return "delayFail";
+        }).then(function(){
+          logger("Fail, so this should not be call");
+          test(result).should.not.exists();
+        }, function(result){
+          test(result).should.be.array();
+          test(result).should.have.length(5);
+          test(result[0]).should.equal(0);
+          test(result[1]).should.equal("and sync fail");
+          test(result[2]).should.equal(100);
+          test(result[3]).should.equal(200);
+          test(result[4]).should.equal("delayFail");
+          return "fail and go to done";
+        })
+        .done(function(result){
+          logger("Fail, so this should not be call");
+          test(result).should.not.exists();
+          resolvePromise.resolve();
+        }, function(result){
+          test(result).should.equal("fail and go to done");
+          logger("Because promise maybe fail, so we should make sure we want to keep behavior.")
+          resolvePromise.resolve();
+        }).resolve(0);
+
+        return resolvePromise;
+
+      }).describe("Test and fail", function(preResult, test, logger){
+        var resolvePromise = new Promise();
+
+        Promise(function(result){
+          test(result).should.equal(0);
+          a[0];
+          return result;
+        }, function(result){
+          test(result).should.equal(0);
+          return Promise().resolve("fail but resolve");
+        })
+        .and(function(result){
+          test(result).should.equal(0);
+          return Promise().reject("and sync fail");
+        })
+        .and(delay(100, test))
+        .and(delay(200, test))
+        .and(delayFail(300, test), function(){
+          return "delayFail";
+        }).then(function(result){
+          logger("Fail, so this should not be call");
+          test(result).should.not.exists();
+        }, function(result){
+          test(result).should.be.array();
+          test(result).should.have.length(5);
+          test(result[0]).should.equal("fail but resolve");
+          test(result[1]).should.equal("and sync fail");
+          test(result[2]).should.equal(100);
+          test(result[3]).should.equal(200);
+          test(result[4]).should.equal("delayFail");
+          return "fail, go to done";
+        })
+        .done(function(result){
+          resolvePromise.resolve();
+        }, function(result){
+          test(result).should.equal("fail, go to done");
+          resolvePromise.resolve();
+        }).resolve(0);
+
+        return resolvePromise;
+
+      }).describe("Test and fail", function(preResult, test, logger){
+        var resolvePromise = new Promise();
+
+        Promise(function(result){
+          test(result).should.equal(0);
+          return result;
+        })
+        .and(function(result){
+          test(result).should.equal(0);
+          return Promise().reject("and sync fail, go fail");
+        }, function(result){
+          test(result).should.equal("and sync fail, go fail");
+          return "sync fail, in fail";
+        })
+        .and(delay(100, test))
+        .and(delay(200, test))
+        .and(delayFail(300, test), function(result){
+          test(result).should.equal(300);
+          return "delayFail";
+        })
+        .then(function(result){
+          logger("Fail, so this should not be call");
+          test(result).should.not.exists();
+        }, function(result){
+          return Promise().resolve(result);
+        })
+        .done(function(result){
+          test(result).should.be.array();
+          test(result).should.have.length(5);
+          test(result[0]).should.equal(0);
+          test(result[1]).should.equal("sync fail, in fail");
+          test(result[2]).should.equal(100);
+          test(result[3]).should.equal(200);
+          test(result[4]).should.equal("delayFail");
+          resolvePromise.resolve();
+        }, function(result){
+          logger("Done, so this should not be call");
+          test(result).should.not.exists();
+          resolvePromise.resolve();
+        }).resolve(0);
+
+        return resolvePromise;
+
+      }).start();
+
+    });
+  </script>
+</head>
+
+<body style="overflow: auto; width: 100%;">
+  <div style="float: left; width: 29%;">
+  </div>
+</body>
+
+</html>

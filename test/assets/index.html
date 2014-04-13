@@ -30,7 +30,9 @@
       url: "../xml/navmenu.xml",
       dataType: "xml",
       complete: function( xml ) {
-        $( xml ).find( "li[test='true']" ).each( function( li ) {
+        $( xml ).find( "li[test='true']" ).sort(function(a, b){
+          return attr.getAttr(a, "sort") - attr.getAttr(b, "sort");
+        }).each( function( li ) {
           var $parent = $( li ).parents( "li" );
           if ( $parent.length ) {
             var pathList = [];
@@ -53,7 +55,8 @@
                       "Source:", htmlPath, "<br />",
                       "Test:", e.name, "<br />",
                       "count:", e.count, "<br />",
-                      "fail:", e.fail, "<br />"
+                      "fail:", e.fail, "<br />",
+                      "time-consuming:", e.timeConsuming, "seconds", "<br />",
                     ], i = 0, len = e.failInfoList.length;
 
                     for (;i<len;i++) {
@@ -71,6 +74,13 @@
                 setTimeout(function(){
                   $( "#iframe" ).src( {
                     src: htmlPath,
+                    complete: function(){
+                      var innerHtml = [
+                        htmlPath, "is testing..."
+                      ];
+
+                      $border.html( innerHtml.join( " " ) );
+                    },
                     error: function() {
                       var innerHtml = [
                         "Open", htmlPath, "error"
@@ -89,7 +99,7 @@
 
                       promise.resolve();
                     },
-                    timeout: 10000
+                    timeout: 15000
                   } );
                 }, 20);
 
@@ -99,7 +109,7 @@
           }
         } );
 
-        htmlPromise.root().resolve();
+        htmlPromise.done().resolve();
       }
     } );
   } );

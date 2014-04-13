@@ -65,13 +65,13 @@ aQuery.define( "base/extend", [ "base/typed" ], function( $, typed ) {
 				deep = false,
 				options, name, src, copy;
 
-			if ( typed.isBol( target ) ) {
+			if ( typed.isBoolean( target ) ) {
 				deep = target;
 				target = arguments[ 1 ] || {};
 				i = 2;
 			}
 
-			if ( !typed.isObj( target ) && !typed.isFun( target ) ) { //加了个array && !typed.isArr( target )
+			if ( !typed.isObject( target ) && !typed.isFunction( target ) ) { //加了个array && !typed.isArray( target )
 				target = {};
 			}
 
@@ -91,8 +91,8 @@ aQuery.define( "base/extend", [ "base/typed" ], function( $, typed ) {
 								continue;
 							}
 
-							if ( deep && copy && ( typed.isPlainObj( copy ) || typed.isArr( copy ) ) ) {
-								var clone = src && ( typed.isPlainObj( src ) || typed.isArr( src ) ) ? src : typed.isArr( copy ) ? [] : {};
+							if ( deep && copy && ( typed.isPlainObject( copy ) || typed.isArray( copy ) ) ) {
+								var clone = src && ( typed.isPlainObject( src ) || typed.isArray( src ) ) ? src : typed.isArray( copy ) ? [] : {};
 
 								target[ name ] = utilExtend.extend( deep, clone, copy );
 

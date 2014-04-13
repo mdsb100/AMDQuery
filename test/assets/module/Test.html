@@ -11,9 +11,7 @@
       "module/Test"
     ], function(Promise, Test) {
 
-      var promise1 = new Promise;
-
-      var testTest = new Test("TestTest", function(preResult){
+      var testTest = new Test("Test", function(preResult){
         // complete
       }).describe("Test Test function", function(preResult, test, logger){
         var testTarget = {
@@ -75,12 +73,14 @@
         };
         test(anObject, "An anObject").should.have.property("anArray").with.should.have.length(5);
 
+        test(anObject, "An anObject").should.not.have.property("any");
+
         return "Jarry";
 
       }).describe("Test should be", function(preResult, test, logger){
         var elementCollection = document.getElementsByTagName("body");
 
-        test(elementCollection).should.be.eleConllection();
+        test(elementCollection).should.be.elementCollection();
 
         test(arguments).should.be.arguments(arguments);
 
@@ -96,13 +96,17 @@
 
         logger("Set timeout 1 seconds to call next describe");
 
+        var promise1 = new Promise;
+
         setTimeout( function() {
           promise1.resolve(1000);
         }, 1000 );
 
+
+        return promise1;
       }).describe("Test promise", function(preResult, test, logger){
         test(preResult, "Previous result").should.equal(1000);
-      }, promise1).start();
+      }).start();
 
     });
   </script>

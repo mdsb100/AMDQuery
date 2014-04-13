@@ -55,7 +55,7 @@
 		// Set to 0 to skip string check
 		qualifier = qualifier || 0;
 
-		if ( typed.isFun( qualifier ) ) {
+		if ( typed.isFunction( qualifier ) ) {
 			return array.grep( elements, function( ele, i ) {
 				var retVal = !! qualifier.call( ele, i, ele );
 				return retVal === keep;
@@ -66,7 +66,7 @@
 				return ( ele === qualifier ) === keep;
 			} );
 
-		} else if ( typed.isStr( qualifier ) ) {
+		} else if ( typed.isString( qualifier ) ) {
 			var filtered = array.grep( elements, function( ele ) {
 				return ele.nodeType === 1;
 			} );
@@ -140,7 +140,7 @@
 		 */
 		elementCollectionToArray: function( eles, real ) {
 			var list = [];
-			if ( typed.isEleConllection( eles ) ) {
+			if ( typed.isElementCollection( eles ) ) {
 				var real = real === undefined ? true : real;
 				$.each( eles, function( ele ) {
 					if ( real === false )
@@ -185,28 +185,28 @@
 		getEle: function( ele, context ) {
 			var list = [],
 				tmp;
-			if ( typed.isStr( ele ) ) {
+			if ( typed.isString( ele ) ) {
 				ele = $.util.trim( ele );
 				tmp = context || document;
 				list = $.find( ele, tmp.documentElement || context );
-			} else if ( typed.isEle( ele ) || ( ele && ele.nodeType === 3 ) )
+			} else if ( typed.isElement( ele ) || ( ele && ele.nodeType === 3 ) )
 				list = [ ele ];
-			else if ( typed.isArr( ele ) ) {
+			else if ( typed.isArray( ele ) ) {
 				$.each( ele, function( result ) {
-					if ( typed.isEle( result ) || ( result && result.nodeType === 3 ) ) {
+					if ( typed.isElement( result ) || ( result && result.nodeType === 3 ) ) {
 						list.push( result );
 					}
 				}, this );
 				list = array.filterSame( list );
 			} else if ( ele instanceof $ )
 				list = ele.eles;
-			else if ( typed.isEleConllection( ele ) ) {
+			else if ( typed.isElementCollection( ele ) ) {
 				list = $.elementCollectionToArray( ele, true );
 			} else if ( ele === document )
 				list = [ ele.documentElement ];
 			else if ( ele === window )
 				list = [ window ]; //有风险的
-			else if ( typed.isDoc( ele ) ) {
+			else if ( typed.isDocument( ele ) ) {
 				list = [ ele.documentElement ];
 			}
 
@@ -248,7 +248,7 @@
 			var i = -1,
 				node = ele.parentNode.firstChild;
 			while ( node ) {
-				if ( typed.isEle( node ) && i++ != undefined && node === ele ) {
+				if ( typed.isElement( node ) && i++ != undefined && node === ele ) {
 					break;
 				}
 				node = node.nextSibling;
@@ -276,7 +276,7 @@
 			var value,
 				i = 0,
 				length = eles.length,
-				isArray = typed.isArrlike( eles ),
+				isArray = typed.isArraylike( eles ),
 				ret = [];
 
 			// Go through the array, translating each of the items to their
@@ -333,7 +333,7 @@
 		 */
 		posterity: function( selector ) {
 			var posterity = $.posterity( this.eles );
-			if ( typed.isStr( selector ) ) posterity = $.find( selector, posterity );
+			if ( typed.isString( selector ) ) posterity = $.find( selector, posterity );
 			return $( posterity );
 		},
 		/**
@@ -398,7 +398,7 @@
 			}
 
 			// index in selector
-			if ( typed.isStr( ele ) ) {
+			if ( typed.isString( ele ) ) {
 				return array.inArray( $( ele ), this[ 0 ] );
 			}
 
@@ -418,7 +418,7 @@
 		 */
 		is: function( selector ) {
 			return !!selector && (
-				typed.isStr( selector ) ?
+				typed.isString( selector ) ?
 				rneedsContext.test( selector ) ?
 				$.find( selector, this.context ).index( this[ 0 ] ) >= 0 :
 				$.filter( selector, this.eles ).length > 0 :

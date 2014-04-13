@@ -1,0 +1,351 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+  <title></title>
+  <link href="../../../global/styles/reset.css" rel="stylesheet" type="text/css" />
+  <!-- <script src="http://192.168.1.102:8080/package/../../../amdquery/amdquery.js" type="text/javascript" amdquery="define:$;amd:false"></script>-->
+  <script src="../../../amdquery/amdquery.js" type="text/javascript" amdquery="define:$;" amd="detectCR:1;" module="compatibleEvent:1;testLogByHTML:1"></script>
+  <script type="text/javascript">
+    $.require([
+      "base/Promise",
+      "main/event",
+      "main/communicate",
+      "module/Test"
+    ], function(Promise, event, communicate, Test) {
+      var jsonpPromise = new Promise;
+      var TestCommunicate = new Test("Communicate")
+      .describe("Test AJAX, data type is JSON", function(preResult, test, logger){
+        $.once("ajaxStart", function(e){
+          test(e.type).should.equal("ajaxStart");
+        });
+
+        $.once("ajaxStop", function(e){
+          test(e.type).should.equal("ajaxStop");
+        });
+
+        var resolvePromise = Promise();
+
+        Promise().then(function(){
+          return communicate.ajax({
+            url: "../ajax/test.json",
+            dataType: "json",
+            complete: function(resp){
+              test(resp).should.have.property("firstName").with.should.equal("John");
+
+              test(resp).should.have.property("age").with.should.equal(25);
+
+              test(resp).should.have.property("isAlive").with.should.equal(true);
+
+              test(resp).should.have.property("height_cm").with.should.equal(167.64);
+
+              test(resp).should.have.property("address").with.should.be.plainObject();
+            },
+            fail: function(ajax){
+              test(ajax).should.have.property("status");
+            }
+          }).then(function(resp){
+              var address = resp.address;
+
+              test(address).should.have.property("city").with.should.equal("New York");
+
+              var phoneNumbers = resp.phoneNumbers;
+
+              test(phoneNumbers).should.be.array();
+
+              test(phoneNumbers).should.have.length(2);
+
+              test(phoneNumbers).should.have.index(0).with.should.have.property("type").with.should.equal("home");
+
+              test(phoneNumbers).should.have.index(1).with.should.have.property("number").with.should.equal("646 555-4567");
+          }, function(ajax){
+            test(ajax).should.have.property("status");
+          });
+
+        }).done(function(){
+          resolvePromise.resolve();
+        }, function(){
+          resolvePromise.resolve();
+        }).resolve();
+
+        return resolvePromise;
+
+      }).describe("Test AJAX, data type is XML and async is false", function(preResult, test, logger){
+        var resolvePromise = Promise();
+
+        Promise().then(function(){
+          return communicate.ajax({
+            url: "../ajax/test.xml",
+            dataType: "xml",
+            async: false,
+            complete: function(resp){
+              test(resp).should.be.XML();
+              var tagImport = resp.getElementsByTagName("import");
+
+              test(tagImport[0].getAttribute("file")).should.equal("build.xml");
+            },
+            fail: function(ajax){
+              test(ajax).should.have.property("status");
+            }
+          }).then(function(resp){
+              test(resp).should.be.XML();
+              var tagProperty = resp.getElementsByTagName("property");
+
+              test(tagProperty).should.have.length(3);
+          }, function(ajax){
+            test(ajax).should.have.property("status");
+          });
+
+        }).done(function(){
+          resolvePromise.resolve();
+        }, function(){
+          resolvePromise.resolve();
+        }).resolve();
+
+        return resolvePromise;
+
+      }).describe("Test AJAX fail", function(preResult, test, logger){
+        var resolvePromise = Promise();
+
+        Promise().then(function(){
+          return communicate.ajax({
+            url: "../ajax/testa.xml",
+            dataType: "xml",
+            complete: function(resp){
+
+            },
+            fail: function(ajax){
+              test(ajax).should.have.property("status");
+            }
+          }).then(function(resp){
+
+          }, function(ajax){
+            test(ajax).should.have.property("status");
+          });
+
+        }).done(function(){
+          resolvePromise.resolve();
+        }, function(){
+          resolvePromise.resolve();
+        }).resolve();
+
+        return resolvePromise;
+
+      }).describe("Test AJAXS", function(preResult, test, logger){
+        var resolvePromise = Promise();
+
+        var promise = communicate.ajaxs([{
+          url: "../ajax/test.json",
+          dataType: "json",
+          async: false,
+          complete: function(){
+            var a = 1;
+          },
+          fail: function(){
+            var a = 1;
+          }
+        }, {
+          url: "../ajax/test.xml",
+          dataType: "xml",
+
+          complete: function(resp){
+            test(resp).should.be.XML();
+            var tagImport = resp.getElementsByTagName("import");
+
+            test(tagImport[0].getAttribute("file")).should.equal("build.xml");
+          },
+          fail: function(ajax){
+            test(ajax).should.have.property("status");
+          }
+        }])
+        promise.then(function(resps){
+          test(resps).should.have.length(2);
+          test(resps).should.have.index(0);
+          json = resps[0];
+          test(json).should.have.property("firstName").with.should.equal("John");
+
+          test(json).should.have.property("age").with.should.equal(25);
+
+          test(json).should.have.property("isAlive").with.should.equal(true);
+
+          test(json).should.have.property("height_cm").with.should.equal(167.64);
+
+          test(json).should.have.property("address").with.should.be.plainObject();
+          return resps;
+        }).done(function(resps){
+          test(resps).should.have.length(2);
+          test(resps).should.have.index(1);
+          xml = resps[1];
+          test(xml).should.be.XML();
+          var tagProperty = xml.getElementsByTagName("property");
+
+          test(tagProperty).should.have.length(3);
+          resolvePromise.resolve();
+        }, function(resps){
+          logger("ajaxs fail");
+          test(resps).should.have.length(2);
+          resolvePromise.resolve();
+        });
+
+        return resolvePromise;
+      }).describe("Test JSONP", function(preResult, test, logger){
+        $.once("jsonpStart", function(e){
+          test(e.type).should.equal("jsonpStart");
+        });
+
+        $.once("jsonpStop", function(e){
+          test(e.type).should.equal("jsonpStop");
+        });
+
+        var resolvePromise = Promise();
+
+        var promise = communicate.jsonp({
+          url: "http://jsfiddle.net/echo/jsonp",
+          data: {
+            name: "Jarry",
+            age: "28"
+          },
+          timeout: 5000,
+          complete: function(json){
+            test(json).should.have.property("name").with.should.equal("Jarry");
+            test(json).should.have.property("age").with.should.equal("28");
+          },
+          fail: function(options){
+            test(options).should.have.property("timeout").with.should.equal(5000);
+          }
+        }).then(function(json){
+          test(json).should.have.property("name").with.should.equal("Jarry");
+          test(json).should.have.property("age").with.should.equal("28");
+          return json;
+        }, function(result){
+          test(result).should.have.property("timeout").with.should.equal(5000);
+        }).done(function(result){
+          test(result).should.have.property("name").with.should.equal("Jarry");
+          test(result).should.have.property("age").with.should.equal("28");
+          resolvePromise.resolve();
+        }, function(result){
+          logger("jsonp fail");
+          test(result).should.not.exists();
+          resolvePromise.resolve();
+        });
+
+        return resolvePromise;
+      }).describe("Test JSONPS", function(preResult, test, logger){
+        var resolvePromise = Promise();
+
+        var promise = communicate.jsonps([{
+          url: "http://jsfiddle.net/echo/jsonp",
+          data: {
+            name: "Jarry",
+            age: "28"
+          },
+          complete: function(json){
+            test(json).should.have.property("name").with.should.equal("Jarry");
+            test(json).should.have.property("age").with.should.equal("28");
+          },
+          fail: function(options){
+            test(options).should.have.property("timeout").with.should.equal(7000);
+          }
+        }, {
+          url: "http://jsfiddle.net/echo/jsonp",
+          data: {
+            name: "Amanda",
+            age: "17"
+          },
+          complete: function(json){
+            test(json).should.have.property("name").with.should.equal("Amanda");
+            test(json).should.have.property("age").with.should.equal("17");
+          },
+          fail: function(options){
+            test(options).should.have.property("timeout").with.should.equal(7000);
+          }
+        }, {
+          url: "http://jsfiddle.net/echo/jsonp",
+          data: {
+            name: "Jake",
+            age: "22"
+          },
+          complete: function(json){
+            test(json).should.have.property("name").with.should.equal("Jake");
+            test(json).should.have.property("age").with.should.equal("22");
+          },
+          fail: function(options){
+            test(options).should.have.property("timeout").with.should.equal(7000);
+          }
+        }]).then(function(jsons){
+          test(jsons).should.have.property("length");
+          test(jsons).should.have.index(0);
+          json = jsons[0];
+          test(json).should.have.property("name").with.should.equal("Jarry");
+          test(json).should.have.property("age").with.should.equal("28");
+          return jsons;
+        }, function(result){
+
+        }).done(function(result){
+          test(result).should.have.property("length");
+          test(result).should.have.index(1);
+          json = result[1];
+          test(json).should.have.property("name").with.should.equal("Amanda");
+          test(json).should.have.property("age").with.should.equal("17");
+          resolvePromise.resolve();
+        }, function(result){
+          logger("jsonps fail");
+          test(result).should.not.exists();
+          resolvePromise.resolve();
+        });
+
+        return resolvePromise;
+      }).describe("Test JSONPS fail", function(preResult, test, logger){
+        var resolvePromise = new Promise();
+
+        var promise = communicate.jsonps([{
+          url: "http://jsfiddle.net/echo/jsonpaa",
+          data: {
+            name: "Jarry",
+            age: "28"
+          },
+          complete: function(json){
+            test(json).should.have.property("name").with.should.equal("Jarry");
+            test(json).should.have.property("age").with.should.equal("28");
+          },
+          fail: function(options){
+            test(options).should.have.property("timeout").with.should.equal(7000);
+          }
+        }, {
+          url: "http://jsfiddle.net/echo/jsonp",
+          data: {
+            name: "Jake",
+            age: "22"
+          },
+          timeout: 3000,
+          fail: function(options){
+            test(options).should.have.property("timeout").with.should.equal(3000);
+          }
+        }]).then(function(jsons){
+          test(jsons).should.have.property("length");
+          test(jsons).should.have.index(0);
+          json = jsons[0];
+          test(json).should.have.property("name").with.should.equal("Jarry");
+          test(json).should.have.property("age").with.should.equal("28");
+          return jsons;
+        }, function(jsons){
+
+        }).done(function(result){
+          test(result).should.have.property("length");
+          resolvePromise.resolve();
+        }, function(result){
+          logger("jsonps fail");
+          test(result).should.not.exists();
+          resolvePromise.resolve();
+        });
+
+        return resolvePromise;
+      }).start();
+    });
+  </script>
+</head>
+
+<body style="overflow: auto">
+</body>
+
+</html>

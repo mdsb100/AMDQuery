@@ -37,7 +37,7 @@ aQuery.define( "ui/tabbar", [
 				return this;
 			},
 			select: function( ele ) {
-				var $button = typed.isNum( ele ) ? this.$tabButtons.eq( ele ) : $( ele );
+				var $button = typed.isNumber( ele ) ? this.$tabButtons.eq( ele ) : $( ele );
 				this.options.index = $button.index();
 				this.$tabButtons.uiTabbutton( "option", "select", false );
 				$button.uiTabbutton( "option", "select", true );

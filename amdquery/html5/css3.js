@@ -1,6 +1,6 @@
 ﻿aQuery.define( "html5/css3", [ "base/support", "base/extend", "base/typed", "base/client", "base/array", "main/css" ], function( $, support, utilExtend, typed, client, array, css2, undefined ) {
 	"use strict";
-  this.describe("HTML5 CSS3");
+	this.describe( "HTML5 CSS3" );
 	var css3Head = ( function() {
 		var head = "";
 		if ( client.engine.ie )
@@ -238,7 +238,7 @@
 			/// <param name="style" type="Array/Object">值得数组或值</param>
 			/// <returns type="self" />
 			var eleObj = $( ele );
-			if ( !typed.isArr( style ) ) {
+			if ( !typed.isArray( style ) ) {
 				style = [ style ];
 			}
 			$.each( style, function( item ) {
@@ -269,7 +269,11 @@
 			/// <param name="value" type="String/Number/undefined">值</param>
 			/// <returns type="self" />
 			if ( hasCss3 ) {
-				return css2.css( ele, $.util.camelCase( name, css3Head ), value );
+				name = $.util.camelCase( name );
+				if ( !name in domStyle ) {
+					name = $.util.camelCase( name, css3Head )
+				}
+				css2.css( ele, name, value );
 			}
 			return this;
 		},
@@ -304,7 +308,7 @@
 				var transform = css2.css( ele, transformCssName ),
 					temp, index = -1;
 				if ( isFullCss( transform ) ) {
-					if ( typed.isStr( name ) ) {
+					if ( typed.isString( name ) ) {
 						temp = getTransformValue( transform, name );
 						result.push( temp );
 					} else {
@@ -444,7 +448,7 @@
 				var transition = css2.css( ele, transitionCssName ),
 					temp, index = -1;
 				if ( isFullCss( transition ) ) {
-					if ( typed.isStr( name ) ) {
+					if ( typed.isString( name ) ) {
 						temp = getTransitionValue( transition, name );
 
 						result.push( temp );
@@ -601,11 +605,11 @@
 				match, n = arguments[ 2 ] || "";
 			if ( style == undefined ) {
 				transition = "";
-			} else if ( typed.isStr( style ) ) {
+			} else if ( typed.isString( style ) ) {
 				list = [ style ];
 			} else if ( array.inArray( style ) ) {
 				list = style;
-			} else if ( typed.isObj( style ) ) {
+			} else if ( typed.isObject( style ) ) {
 				list = style.name && [ style.name ];
 			}
 
@@ -683,7 +687,7 @@
 			/// <param name="ele" type="Element">元素</param>
 			/// <param name="style" type="Array">样式名数组或样式名</param>
 			/// <returns type="self" />
-			if ( hasTransform && typed.isArr( style ) ) {
+			if ( hasTransform && typed.isArray( style ) ) {
 				var result = [];
 
 				$.each( style, function( value, index ) {
@@ -813,17 +817,17 @@
 			if ( hasTransition ) {
 				var result = "",
 					origin = arguments[ 2 ] ? arguments[ 2 ] : ""; //原始origin一样的 替换掉 或许不应该改由浏览器自己控制
-				if ( typed.isStr( style ) ) {
+				if ( typed.isString( style ) ) {
 					result = style;
-				} else if ( typed.isObj( style ) ) {
+				} else if ( typed.isObject( style ) ) {
 					style.name && ( result = [ $.util.unCamelCase( value.name, value.head ), style.duration || "1s", style[ "function" ] || "linear", style.delay || ""
           ].join( " " ) );
-				} else if ( typed.isArr( style ) ) {
+				} else if ( typed.isArray( style ) ) {
 					var list = [];
 					$.each( style, function( value ) {
-						if ( typed.isStr( value ) ) {
+						if ( typed.isString( value ) ) {
 							list.push( value );
-						} else if ( typed.isObj( value ) ) {
+						} else if ( typed.isObject( value ) ) {
 							value.name && list.push( [ $.util.unCamelCase( value.name, value.head ), value.duration || "1s", value[ "function" ] || "linear", value.delay || ""
               ].join( " " ) );
 						}
@@ -909,26 +913,26 @@
 			}
 			var b = style,
 				result, tmp;
-			if ( typed.isObj( b ) ) {
+			if ( typed.isObject( b ) ) {
 				for ( var i in b ) {
 					result = editCss3Type.call( this, i );
 					this.each( function( ele ) {
-						if ( typed.isFun( result.name ) )
+						if ( typed.isFunction( result.name ) )
 							result.name.call( this, b[ i ] );
 						else
 							result.name && $.css3( ele, result.name, b[ i ] + result.unit );
 					} )
 				}
-			} else if ( typed.isStr( b ) ) {
+			} else if ( typed.isString( b ) ) {
 				result = editCss3Type.call( this, b );
 				if ( value === undefined ) {
-					if ( typed.isFun( result.name ) )
+					if ( typed.isFunction( result.name ) )
 						return result.name.call( this );
 					else
 						return $.css3( this[ 0 ], result.name );
 				} else {
 					this.each( function( ele ) {
-						if ( typed.isFun( result.name ) )
+						if ( typed.isFunction( result.name ) )
 							result.name.call( this, value );
 						else
 							result.name && $.css3( ele, result.name, value + result.unit );
@@ -1091,7 +1095,7 @@
 			/// </summary>
 			/// <param name="style" type="Array/String/undefined">样式名数组或样式名或不输入</param>
 			/// <returns type="self" />
-			return typed.isArr( style ) ? this.each( function( ele ) {
+			return typed.isArray( style ) ? this.each( function( ele ) {
 				$.setTransform( ele, style );
 			} ) : $.getTransform( this[ 0 ], style );
 		},
@@ -1160,9 +1164,9 @@
 			/// </summary>
 			/// <param name="style" type="String/Array/Object/undefined">为Array Object为设置;String看情况获得或设置;undefined为获得</param>
 			/// <returns type="self" />
-			if ( style == undefined || typed.isStr( style ) && style.indexOf( " " ) < 0 ) {
+			if ( style == undefined || typed.isString( style ) && style.indexOf( " " ) < 0 ) {
 				return $.getTransition( this[ 0 ], style );
-			} else if ( typed.isArr( style ) || typed.isObj( style ) || typed.isStr( style ) ) {
+			} else if ( typed.isArray( style ) || typed.isObject( style ) || typed.isString( style ) ) {
 				return this.bindTransition( style );
 			}
 		}

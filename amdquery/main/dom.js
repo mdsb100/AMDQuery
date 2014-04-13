@@ -437,9 +437,9 @@
 		 */
 		cleanData: function( ele ) {
 			var eles;
-			if ( typed.isEle( ele ) ) {
+			if ( typed.isElement( ele ) ) {
 				eles = getAll( ele );
-			} else if ( typed.isArr( ele ) ) {
+			} else if ( typed.isArray( ele ) ) {
 				eles = ele;
 			}
 			$.each( eles, function( ele ) {
@@ -456,7 +456,7 @@
 		 */
 		getLastChild: function( ele ) {
 			var x = ele.lastChild;
-			while ( x && !typed.isEle( x ) ) {
+			while ( x && !typed.isElement( x ) ) {
 				x = x.previousSibling;
 			}
 			return x;
@@ -472,7 +472,7 @@
 				child = null;
 			var ele = father.firstChild;
 			while ( ele ) {
-				if ( typed.isEle( ele ) && ++i == index ) {
+				if ( typed.isElement( ele ) && ++i == index ) {
 					child = ele;
 					break;
 				}
@@ -653,7 +653,7 @@
 			if ( value === undefined ) {
 				return ele.nodeType === 1 ?
 					ele.innerHTML.replace( rinlineaQuery, "" ) : undefined;;
-			} else if ( typed.isFun( value ) ) {
+			} else if ( typed.isFunction( value ) ) {
 				var ele;
 				for ( ; i < length; i++ ) {
 					ele = this[ i ]
@@ -756,7 +756,7 @@
 		 * @returns {this}
 		 */
 		insertText: function( str ) {
-			if ( typed.isStr( str ) && str.length > 0 ) {
+			if ( typed.isString( str ) && str.length > 0 ) {
 				var nodeText;
 				this.each( function( ele ) {
 					nodeText = document.createTextNode( str );
@@ -833,7 +833,7 @@
 				set = this,
 				iNoClone = l - 1,
 				value = args[ 0 ],
-				isFunction = typed.isFun( value );
+				isFunction = typed.isFunction( value );
 
 			// We can't cloneNode fragments that contain checked, in WebKit
 			if ( isFunction || !( l <= 1 || typeof value !== "string" || support.checkClone || !rchecked.test( value ) ) ) {
@@ -944,7 +944,7 @@
 		 * @returns {this}
 		 */
 		replaceWith: function( value ) {
-			var isFunc = typed.isFun( value );
+			var isFunc = typed.isFunction( value );
 
 			// Make sure that the elements are removed from the DOM before they are inserted
 			// this can help fix replacing a parent with child elements
@@ -969,7 +969,7 @@
 		 * @returns {this}
 		 */
 		wrapAll: function( html ) {
-			if ( typed.isFun( html ) ) {
+			if ( typed.isFunction( html ) ) {
 				return this.each( function( ele, i ) {
 					$( ele ).wrapAll( html.call( ele, i ) );
 				} );
@@ -1012,7 +1012,7 @@
 		 * @returns {this}
 		 */
 		wrapInner: function( html ) {
-			if ( typed.isFun( html ) ) {
+			if ( typed.isFunction( html ) ) {
 				return this.each( function( ele, i ) {
 					$( ele ).wrapInner( html.call( this, i ) );
 				} );
@@ -1046,7 +1046,7 @@
 		 * @returns {this}
 		 */
 		wrap: function( html ) {
-			var isFunction = typed.isFun( html );
+			var isFunction = typed.isFunction( html );
 
 			return this.each( function( ele, i ) {
 				$( ele ).wrapAll( isFunction ? html.call( ele, i ) : html );
@@ -1096,7 +1096,7 @@
 	$.interfaces.achieve( "constructorDom", function( type, dollar, arg1, arg2, parentNode ) {
 		if ( typeof arg1 === "string" && rsingleTag.test( arg1 ) ) {
 			return dom.parseHTML( arg1, arg2 || document, false );
-		} else if ( parentNode && ( typed.isEle( parentNode ) || typed.is$( parentNode ) ) ) {
+		} else if ( parentNode && ( typed.isElement( parentNode ) || typed.is$( parentNode ) ) ) {
 			dollar.appendTo( parentNode );
 		}
 	} );

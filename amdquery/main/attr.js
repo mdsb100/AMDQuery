@@ -130,7 +130,7 @@
 		setVal: function( ele, value ) {
 			var type = ele.type.toUpperCase();
 			if ( typed.isNode( ele, "select" ) ) {
-				if ( typed.isStr( value ) || typed.isNum( value ) )
+				if ( typed.isString( value ) || typed.isNumber( value ) )
 					value = [ value ];
 				$( ele ).find( "option" ).each( function( ele ) {
 					ele.selected = false;
@@ -167,13 +167,13 @@
 		 * @returns {this|String}
 		 */
 		attr: function( attr, value ) {
-			if ( typed.isObj( attr ) ) {
+			if ( typed.isObject( attr ) ) {
 				for ( var i in attr ) {
 					this.each( function( ele ) {
 						attrUtil.setAttr( ele, i, attr[ i ] );
 					} );
 				}
-			} else if ( typed.isStr( attr ) ) {
+			} else if ( typed.isString( attr ) ) {
 				if ( value == undefined ) {
 					return attrUtil.getAttr( this[ 0 ], attr );
 				} else {

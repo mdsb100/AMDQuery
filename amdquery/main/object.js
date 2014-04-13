@@ -55,15 +55,7 @@
 				return ( ret && ret[ 1 ] ) || "";
 			}
 		},
-		_defaultPrototype = {
-			init: function() {
-				return this;
-			}
-		},
-		defaultValidate = function() {
-			return 1;
-		},
-		inerit = function( Sub, Super, name ) {
+		inherit = function( Sub, Super, name ) {
 			object.inheritProtypeWithParasitic( Sub, Super, name );
 			Sub.prototype.__superConstructor = Super;
 			Sub.prototype._super = _superInit;
@@ -79,8 +71,8 @@
 
 	/**
 	 * @callback CollectionEachCallback
-   * @param item {*}
-   * @param index {Number}
+	 * @param item {*}
+	 * @param index {Number}
 	 */
 
 	/**
@@ -98,7 +90,7 @@
 		 * @returns {this}
 		 */
 		inherit: function( Super ) {
-			inerit( this, Super );
+			inherit( this, Super );
 			return this;
 		},
 		/**
@@ -110,7 +102,7 @@
 		 */
 		extend: function( name, prototype, statics ) {
 			var arg = $.util.argToArray( arguments );
-			if ( typed.isObj( name ) ) {
+			if ( typed.isObject( name ) ) {
 				arg.splice( 0, 0, _getFunctionName( this ) || name.name || "anonymous" );
 			}
 			arg.push( this );
@@ -125,7 +117,7 @@
 		joinPrototype: function() {
 			for ( var i = 0, len = arguments.length, obj; i < len; i++ ) {
 				obj = arguments[ i ];
-				typed.isPlainObj( obj ) && utilExtend.extend( this.prototype, obj );
+				typed.isPlainObject( obj ) && utilExtend.extend( this.prototype, obj );
 			}
 			return this;
 		},
@@ -134,7 +126,7 @@
 		 * @param {Object} - A new instance.
 		 * @returns {this}
 		 */
-		forinstance: function( target ) {
+		constructorOf: function( target ) {
 			var constructor = this,
 				ret = target instanceof this;
 
@@ -155,8 +147,8 @@
 
 		 * @param {Object<String,Object>|String|Function}
 		 */
-		createGetterSetter: function( object ) {
-			object.createPropertyGetterSetter( this, object );
+		createGetterSetter: function( fn ) {
+			object.createPropertyGetterSetter( this, fn );
 		},
 		/** fn is pointer of this.prototype */
 		fn: null
@@ -231,7 +223,7 @@
 		 * } );
 		 * sub.foo();sub.pad();
 		 *
-		 * Super.forinstance( sub ) // true
+		 * Super.constructorOf( sub ) // true
 		 *
 		 * Sub.createGetterSetter( {
 		 *   name: "-pa"
@@ -273,13 +265,16 @@
 					anonymous = function anonymous() {
 						this.init.apply( this, arguments );
 					};
+          var temp = prototype;
+          prototype = name;
+          statics = temp;
 			}
 
 			if ( Super ) {
-				inerit( anonymous, Super );
+				inherit( anonymous, Super );
 			}
 
-			prototype = utilExtend.extend( {}, _defaultPrototype, prototype );
+			prototype = utilExtend.extend( {}, prototype );
 			prototype.constructor = anonymous;
 
 			utilExtend.easyExtend( anonymous.prototype, prototype );
@@ -422,15 +417,26 @@
 			return object.extend( name, _prototype, _statics, Super );
 		},
 		/**
-		 * Get the object properties count.
+		 * Get the object members count without prototype.
 		 * @param {Object}
-		 * @param {Boolean} - If true , does not count prototype.
 		 * @returns {Number}
 		 */
-		getObjectPropertiesCount: function( obj, bool ) {
+		getObjectMembersCount: function( obj ) {
 			var count = 0;
 			for ( var i in obj ) {
-				bool == true ? typed.isPrototypeProperty( obj, i ) || count++ : count++;
+				typed.isPrototypeProperty( obj, i ) || count++;
+			}
+			return count;
+		},
+		/**
+		 * Get the object prototype members count.
+		 * @param {Object}
+		 * @returns {Number}
+		 */
+		getObjectPrototypeMembersCount: function( obj ) {
+			var count = 0;
+			for ( var i in obj ) {
+				typed.isPrototypeProperty( obj, i ) && count++;
 			}
 			return count;
 		},
@@ -466,12 +472,12 @@
 			//var prototype = Object(Super.prototype);
 			//Sub.prototype = prototype;
 			utilExtend.easyExtend( Sub.prototype, originPrototype );
-			//Sub.prototype.constructor = Sub;
+			Sub.prototype.constructor = Sub;
 
 			return this;
 		},
 		/**
-		 * Use classic combination to inherit prototype. Contains the same memory address.
+		 * Use classic combination to inherit prototype.
 		 * @param {Sub}
 		 * @param {Super}
 		 * @returns {this}
@@ -494,7 +500,7 @@
 		 *  mark: {
 		 *    purview: "-wa -ru",
 		 *    defaultValue: 0, // set prototype.mark = 0.
-		 *    validate: function( mark ){ return mark >= 0 && mark <= 100; } // validate param when setting.
+		 *    validate: function( mark ){ return mark >= 0 && mark <= 100; }, // validate param when setting.
 		 *    edit: function( value ){ return value + ""; } // edit value when getting.
 		 *  },
 		 *  height: function( h ){ return h >= 100 && h <= 220; } // validate param when setting.
@@ -515,13 +521,13 @@
 		 * return {obj.prototype}
 		 */
 		createPropertyGetterSetter: function( obj, object ) {
-			if ( !typed.isPlainObj( object ) ) {
+			if ( !typed.isPlainObject( object ) ) {
 				return this;
 			}
 
 			return $.each( object, function( value, key ) {
 				var purview = defaultPurview,
-					validate = defaultValidate,
+					validate = null,
 					defaultValue,
 					edit;
 				switch ( typeof value ) {
@@ -529,13 +535,13 @@
 						purview = value;
 						break;
 					case "object":
-						if ( typed.isStr( value.purview ) ) {
+						if ( typed.isString( value.purview ) ) {
 							purview = value.purview;
 						}
-						if ( typed.isFun( value.validate ) ) {
+						if ( typed.isFunction( value.validate ) ) {
 							validate = value.validate;
 						}
-						if ( typed.isFun( value.edit ) ) {
+						if ( typed.isFunction( value.edit ) ) {
 							edit = value.edit;
 						}
 						defaultValue = value.defaultValue; //undefinded always undefinded
@@ -553,12 +559,9 @@
 				if ( purview.match( /\-w([u|a])?[\s]?/ ) ) {
 					getPrefix = RegExp.$1 == "a" ? "_" : "";
 					this[ ( getPrefix || prefix ) + $.util.camelCase( key, "set" ) ] = function( a ) {
-						if ( validate.call( this, a ) ) {
+						if ( typed.isFunction( validate ) ? validate.call( this, a ) : true ) {
 							this[ key ] = a;
-						} else if ( defaultValidate !== undefined ) {
-							this[ key ] = defaultValue;
 						}
-
 						return this;
 					};
 				}

@@ -222,7 +222,7 @@ aQuery.define( "ui/swapview", [
 							self.target.trigger( animationEvent.type, self.target[ 0 ], animationEvent );
 						}
 					}
-					if ( typed.isFun( animationCallback ) ) animationCallback.call( self.target );
+					if ( typed.isFunction( animationCallback ) ) animationCallback.call( self.target );
 				}
 			} );
 		},

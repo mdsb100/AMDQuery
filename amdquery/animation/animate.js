@@ -32,7 +32,7 @@
 			}
 		} ),
 		animate = function( ele, property, option ) {
-			var opt = {}, p, isElement = typed.isEle( ele ),
+			var opt = {}, p, isElement = typed.isElement( ele ),
 				hidden = isElement && $( ele ).isVisible(),
 				//self = ele,
 				count = 0,
@@ -74,7 +74,7 @@
 
 			$.each( property, function( value, key ) {
 				opt.easing = opt.specialEasing && opt.specialEasing[ key ] ? $.getAnimationEasing( opt.specialEasing[ key ] ) : defaultEasing;
-				if ( typed.isFun( FX.hooks[ key ] ) ) {
+				if ( typed.isFunction( FX.hooks[ key ] ) ) {
 					return FX.hooks[ key ]( ele, opt, value, key );
 				}
 				new FX( ele, opt, value, key );
@@ -111,7 +111,7 @@
 			/// <returns type="self" />
 			option = $._getAnimateOpt( option );
 
-			if ( typed.isEmptyObj( property ) ) {
+			if ( typed.isEmptyObject( property ) ) {
 				return option.complete( ele );
 			} else {
 				if ( option.queue === false ) {
@@ -170,12 +170,12 @@
 				delay = FX.getDelay( opt.delay ),
 				ret,
 				tCompelete;
-			if ( typed.isArr( opt.complete ) ) {
+			if ( typed.isArray( opt.complete ) ) {
 				tCompelete = opt.complete;
 				if ( tCompelete[ 0 ] !== originComplete ) {
 					tCompelete.splice( 0, 0, originComplete );
 				}
-			} else if ( typed.isFun( opt.complete ) ) {
+			} else if ( typed.isFunction( opt.complete ) ) {
 				tCompelete = [ opt.complete, originComplete ];
 			} else {
 				tCompelete = [ originComplete ];
@@ -238,7 +238,7 @@
 			/// <returns type="self" />
 			option = $._getAnimateOpt( option );
 
-			if ( typed.isEmptyObj( property ) ) {
+			if ( typed.isEmptyObject( property ) ) {
 				return this.each( option.complete );
 			} else {
 				return this[ option.queue === false ? "each" : "queue" ]( function( ele ) {
@@ -266,7 +266,7 @@
 
 		queue: function( type, data ) {
 			//quote from jQuery-1.4.1
-			if ( !typed.isStr( type ) ) {
+			if ( !typed.isString( type ) ) {
 				data = type;
 				type = "fx";
 			}

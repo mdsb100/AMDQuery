@@ -147,7 +147,7 @@ aQuery.define( "main/css", [ "base/typed", "base/extend", "base/array", "base/su
 				var val = hooks.get ? hooks.get( ele, name ) : curCSS( ele, name, style );
 				if ( extra === "" || extra ) {
 					var num = parseFloat( val );
-					return extra === true || typed.isNumeric( num ) ? num || 0 : val;
+					return extra === true || typed.isNumbereric( num ) ? num || 0 : val;
 				}
 				return val;
 
@@ -374,13 +374,13 @@ aQuery.define( "main/css", [ "base/typed", "base/extend", "base/array", "base/su
      * @returns {String}
      */
 		css: function( style, value ) {
-			if ( typed.isObj( style ) ) {
+			if ( typed.isObject( style ) ) {
 				for ( var key in style ) {
 					this.each( function( ele ) {
 						css.css( ele, key, style[ key ] );
 					} );
 				}
-			} else if ( typed.isStr( style ) ) {
+			} else if ( typed.isString( style ) ) {
 				if ( value === undefined ) {
 					return css.css( this[ 0 ], style );
 				} else {
@@ -459,7 +459,7 @@ aQuery.define( "main/css", [ "base/typed", "base/extend", "base/array", "base/su
      * @returns {Number}
      */
 		opacity: function( alpha ) {
-			return typed.isNum( alpha ) ? this.each( function( ele ) {
+			return typed.isNumber( alpha ) ? this.each( function( ele ) {
 				css.setOpacity( ele, alpha );
 			} ) : css.getOpacity( this[ 0 ] );
 		},

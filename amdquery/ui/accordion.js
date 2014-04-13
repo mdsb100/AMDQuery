@@ -379,7 +379,7 @@
 		getShell: function( shell ) {
 			var ret = null,
 				item, i, list = this.models;
-			if ( typed.isStr( shell ) ) {
+			if ( typed.isString( shell ) ) {
 				for ( i in list ) {
 					item = list[ i ];
 					if ( item.widgetId == shell ) {
@@ -387,7 +387,7 @@
 						break
 					}
 				}
-			} else if ( typed.isEle( shell ) ) {
+			} else if ( typed.isElement( shell ) ) {
 				for ( i in list ) {
 					item = list[ i ];
 					if ( item.originShell == shell ) {

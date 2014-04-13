@@ -569,7 +569,7 @@ aQuery.define( "ui/turnBook", [ "base/support", "base/typed", "main/css", "main/
 				pageWidth = this.pageWidth,
 				bookWidth = this.bookWidth;
 			this.container.children().remove();
-			index = typed.isNum( index ) ? parseInt( $.between( 0, len, index ) ) : opt.bookIndex;
+			index = typed.isNumber( index ) ? parseInt( $.between( 0, len, index ) ) : opt.bookIndex;
 			if ( opt.positionType == "half" ) {
 				for ( var i = index + 2; i >= index; i-- ) {
 					this.setContextCss( i ).setBoxCss( i, {
@@ -666,7 +666,7 @@ aQuery.define( "ui/turnBook", [ "base/support", "base/typed", "main/css", "main/
 		showMessage: function( msg, autoHide ) {
 			if ( this.options.isShowMessage !== true ) return this.hideMessage();
 			this.message.appendTo( this.container ).show();
-			if ( typed.isStr( msg ) ) {
+			if ( typed.isString( msg ) ) {
 				this.message.html( msg );
 			} else {
 				this.message.append( msg );

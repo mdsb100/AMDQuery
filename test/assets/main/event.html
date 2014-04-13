@@ -13,7 +13,7 @@
       "main/data",
       "module/Test"
     ], function(typed, query, event, data, Test) {
-      var testEvent = new Test("TestEvent");
+      var testEvent = new Test("event");
       var diva = query.getEleById("a");
       var divb = query.getEleById("b");
       var testContext = null;
@@ -82,9 +82,9 @@
           event.off(diva, "bar click", fn);
         }).should.not.Throw();
 
-        test(event.hasHandler(diva, "bar", fn)).should.be.equal(-1);
+        test(event.hasHandler(diva, "bar", fn)).should.equal(-1);
 
-        test(event.hasHandler(diva, "click", fn)).should.be.equal(-1);
+        test(event.hasHandler(diva, "click", fn)).should.equal(-1);
 
         test(fn.__proxy).should.not.exists();
 
@@ -111,7 +111,7 @@
           event.clear(diva);
         }).should.not.Throw();
 
-        test(typed.isEmptyObj(event.getHandlers(diva))).should.equal(true);
+        test(typed.isEmptyObject(event.getHandlers(diva))).should.equal(true);
 
         test(function(){
           event.once(diva, "click once", fn2);
