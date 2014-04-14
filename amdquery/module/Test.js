@@ -308,7 +308,7 @@ aQuery.define( "module/Test", [ "base/typed", "base/ready", "base/Promise", "bas
 					count: this.count,
 					fail: this.fail,
 					failInfoList: this.failInfoList,
-          timeConsuming: this.timeConsuming
+					timeConsuming: this.timeConsuming
 				} );
 			}
 			return this;
