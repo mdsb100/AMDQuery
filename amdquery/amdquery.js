@@ -1982,7 +1982,6 @@
 		 * @constructor
 		 */
 		var exports = Queue;
-		$.Queue = Queue;
 		return exports;
 	} );
 

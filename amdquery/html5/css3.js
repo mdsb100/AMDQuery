@@ -1,38 +1,57 @@
 ﻿aQuery.define( "html5/css3", [ "base/support", "base/extend", "base/typed", "base/client", "base/array", "main/css" ], function( $, support, utilExtend, typed, client, array, css2, undefined ) {
 	"use strict";
 	this.describe( "HTML5 CSS3" );
-	var css3Head = ( function() {
-		var head = "";
-		if ( client.engine.ie )
-			head = "ms";
-		else if ( client.engine.webkit || client.system.mobile )
-			head = "webkit";
-		else if ( client.engine.gecko )
-			head = "Moz";
-		else if ( client.engine.opera )
-			head = "O";
-		return head;
-	} )(),
-		transformCssName = "",
+
+	var
+	transformCssName = "",
 		transitionCssName = "",
 		hasCss3 = false,
 		hasTransform = false,
 		hasTransform3d = false,
 		hasTransition = false,
 		domStyle = document.documentElement.style,
+		css3Head = ( function() {
+			var head = "";
+			if ( client.engine.ie )
+				head = "ms";
+			else if ( client.engine.webkit || client.system.mobile )
+				head = "webkit";
+			else if ( client.engine.gecko )
+				head = "Moz";
+			else if ( client.engine.opera )
+				head = "O";
+			return head;
+		} )(),
+		vendorPropName = function( style, name ) {
+
+			// shortcut for names that are not vendor prefixed
+			var origName = name;
+			name = $.util.camelCase( origName );
+			if ( name in style ) {
+				return name;
+			}
+
+			// check for vendor prefixed names
+			name = $.util.camelCase( origName, css3Head );
+			if ( name in style ) {
+				return name;
+			}
+
+		},
 		getCss3Support = function( type ) {
 			return ( $.util.camelCase( type ) in domStyle || $.util.camelCase( type, css3Head ) in domStyle );
+		},
+		css3Hooks = {
+			linearGradient: {
+				styleKey: null
+			}
 		},
 		css3Support = ( function() {
 			var result = {};
 
 			result.css3 = hasCss3 = getCss3Support( "boxShadow" );
 
-			if ( "transform" in domStyle ) {
-				transformCssName = "transform";
-			} else if ( ( css3Head + "Transform" ) in domStyle ) {
-				transformCssName = css3Head + "Transform";
-			}
+			transformCssName = vendorPropName( domStyle, "transform" );
 			result.transform = hasTransform = !! transformCssName;
 
 			if ( hasTransform ) {
@@ -43,20 +62,35 @@
 
 			result.animation = getCss3Support( "animationName" );
 
-			if ( "transition" in domStyle ) {
-				transitionCssName = "transition";
-			} else if ( ( css3Head + "Transition" ) in domStyle ) {
-				transitionCssName = css3Head + "Transition";
-			}
+			transitionCssName = vendorPropName( domStyle, "transition" );
 			result.transition = hasTransition = !! transitionCssName;
 
-			try {
-				domStyle.background = "-" + css3Head + "-linear-gradient" + "(left, white, black)";
-				result.gradientGrammar = domStyle.background.indexOf( "gradient" ) > -1;
-				domStyle.background = "";
-			} catch ( e ) {
+			function detectLinearGradient( head, styleKey, background ) {
+				if ( !result.gradientGrammar ) {
+					try {
+						domStyle.background = head + styleKey + background;
+						result.gradientGrammar = domStyle.background.indexOf( "gradient" ) > -1;
+						css3Hooks.linearGradient.styleKey = head + styleKey;
+						css3Hooks.linearGradient.styleKey = head + styleKey;
+					} catch ( e ) {
 
+					} finally {
+						domStyle.background = "";
+					}
+				}
 			}
+
+			var linearGradientKey = "linear-gradient(to ",
+				linearGradientValue = "left, white, black)",
+				linearGradientHead = $.util.unCamelCase( css3Head ) + "-";
+
+			detectLinearGradient( "", linearGradientKey, linearGradientValue );
+			detectLinearGradient( linearGradientHead, linearGradientKey, linearGradientValue );
+
+			linearGradientKey = "linear-gradient("
+
+			detectLinearGradient( "", linearGradientKey, linearGradientValue );
+			detectLinearGradient( linearGradientHead, linearGradientKey, linearGradientValue );
 
 			return result;
 		} )(),
@@ -121,28 +155,6 @@
 					result.push( value.replace( ")", "" ).split( regTransform ) );
 				} );
 				return result;
-			},
-			editCss3Type = function( name ) {
-				var temp, unit = "";
-				switch ( name ) {
-					case "transform":
-						name = this.transform;
-						break;
-					case "transform3d":
-						name = this.transform3d;
-						break;
-					case "transformOrigin":
-						name = this.transformOrigin;
-						break;
-				}
-				if ( ( temp = $.interfaces.trigger.call( this, "editCss3Type", name ) ) ) {
-					name = temp.name;
-					unit = temp.unit;
-				}
-				return {
-					name: name,
-					unit: unit
-				};
 			};
 	}
 	if ( hasTransition ) {
@@ -175,27 +187,8 @@
 			};
 	}
 
-	$.interfaces.handlers.editCss3Type = null;
-
-	css2.vendorPropName = function( style, name ) {
-
-		// shortcut for names that are not vendor prefixed
-		if ( name in style ) {
-			return name;
-		}
-
-		// check for vendor prefixed names
-		var capName = name.charAt( 0 ).toUpperCase() + name.slice( 1 ),
-			origName = name;
-		name = css3Head + capName;
-		if ( name in style ) {
-			return name;
-		}
-
-		return origName;
-	};
-
 	var css3 = {
+		hooks: css3Hooks,
 		transformCssName: transformCssName,
 		transitionCssName: transitionCssName,
 		getTransformStyleNameUnCamelCase: function() {
@@ -270,10 +263,21 @@
 			/// <returns type="self" />
 			if ( hasCss3 ) {
 				name = $.util.camelCase( name );
-				if ( !name in domStyle ) {
-					name = $.util.camelCase( name, css3Head )
+				var hook = css3Hooks[ name ];
+				if ( hook ) {
+					if ( hook.set && value !== undefined ) {
+						hook.set( ele, value );
+					} else if ( hook.get && value === undefined ) {
+						return hook.get( ele );
+					}
+				} else {
+					name = this.vendorPropName( ele, name );
+					if ( value === undefined ) {
+						return css2.css( ele, name );
+					} else {
+						css2.css( ele, name, value );
+					}
 				}
-				css2.css( ele, name, value );
 			}
 			return this;
 		},
@@ -469,14 +473,14 @@
 			/// <returns type="self" />
 			if ( hasTransform3d ) {
 				var style = ele.style;
-				style[ css3Head + "TransformStyle" ] = "preserve-3d";
-				style[ css3Head + "Perspective" ] = perspective || 300;
-				style[ css3Head + "PerspectiveOrigin" ] = perspectiveOrigin || "50% 50%";
+				style[ vendorPropName( style, "TransformStyle" ) ] = "preserve-3d";
+				style[ vendorPropName( style, "Perspective" ) ] = perspective || 300;
+				style[ vendorPropName( style, "PerspectiveOrigin" ) ] = perspectiveOrigin || "50% 50%";
 			}
 			return this;
 		},
 
-		linearGradient: function( ele, option ) {
+		linearGradient: ( function() {
 			/// <summary>设置线性渐变
 			/// <para>str option.orientation</para>
 			/// <para>arr option.colorStops</para>
@@ -486,55 +490,55 @@
 			/// <param name="ele" type="Element">元素</param>
 			/// <param name="obj" type="Object">参数</param>
 			/// <returns type="self" />
-			var str = [],
-				type = "backgroundImage";
-			if ( option.defaultColor ) {
-				ele.style.background = option.defaultColor;
+			function setDefaultColor( ele, option ) {
+				if ( option.defaultColor ) {
+					ele.style.background = option.defaultColor;
+				}
 			}
+
 			if ( css3Support.gradientGrammar ) {
-				str.push( "-", css3Head, "-linear-gradient", "(" );
-				str.push( option.orientation.normal || option.orientation );
-				$.each( option.colorStops, function( value, index ) {
-					str.push( ",", value.color );
-				} );
+				return css3Hooks.linearGradient.set = function( ele, option ) {
+					setDefaultColor( ele, option );
+					var str = [];
+					str.push( css3Hooks.linearGradient.styleKey );
+					str.push( option.orientation );
+					$.each( option.colorStops, function( value, index ) {
+						str.push( ",", value.color );
+						if ( value.stop != null ) {
+							str.push( " " + value.stop * 100, "%" );
+						}
+					} );
+					str.push( ")" );
+					ele.style[ "backgroundImage" ] = str.join( "" );
+					return this;
+				}
 			} else if ( client.browser.chrome > 10 || client.browser.safari >= 5.1 || client.system.mobile ) {
-				str.push( "-webkit-gradient", "(linear," );
-				str.push( option.orientation.webkit );
-				$.each( option.colorStops, function( value, index ) {
-					str.push( ",", "color-stop", "(", value.stop, ",", value.color, ")" );
-				} );
-			}
-			//            else if (client.browser.firefox >= 3.63) {
-			//                str.push("-moz-linear-gradient", "(");
-			//                str.push(option.orientation.moz);
-			//                $.each(option.colorStops, function (value, index) {
-			//                    str.push(",", value.color);
-			//                });
-			//            }
-			else if ( client.browser.ie == 10 ) {
-				str.push( "-ms-linear-gradient", "(" );
-				str.push( option.orientation.ms, "," );
-				$.each( option.colorStops, function( value, index ) {
-					str.push( ",", value.color, " ", value.stop * 100, "%" );
-				} );
-				str.push( ",turquoise" );
+				return css3Hooks.linearGradient.set = function( ele, option ) {
+					setDefaultColor( ele, option );
+					var str = [];
+					str.push( "-webkit-gradient", "(linear," );
+					str.push( option.orientation.split( " " ).join( "," ) );
+					$.each( option.colorStops, function( value, index ) {
+						str.push( ",", "color-stop", "(", value.stop, ",", value.color, ")" );
+					} );
+					str.push( ")" );
+					ele.style[ "backgroundImage" ] = str.join( "" );
+					return this;
+				}
 			} else if ( client.browser.ie == 9 ) {
-				str.push( "progid:DXImageTransform.Microsoft.gradient", "(" );
-				str.push( "startColorstr=", "'", option.colorStops[ 0 ].color, "'" );
-				str.push( ",", "endColorstr=", "'", option.colorStops[ option.colorStops.length - 1 ].color, "'" );
-				type = "filter";
+				return css3Hooks.linearGradient.set = function( ele, option ) {
+					setDefaultColor( ele, option );
+					var str = [];
+					str.push( "progid:DXImageTransform.Microsoft.gradient", "(" );
+					str.push( "startColorstr=", "'", option.colorStops[ 0 ].color, "'" );
+					str.push( ",", "endColorstr=", "'", option.colorStops[ option.colorStops.length - 1 ].color, "'" );
+					str.push( ")" );
+					ele.style[ "filter" ] = str.join( "" );
+					return this;
+				}
 			}
-			//            else if (client.browser.opera >= 11.1) {
-			//                str.push("-o-linear-gradient", "(");
-			//                str.push(option.orientation.o);
-			//                $.each(option.colorStops, function (value, index) {
-			//                    str.push(",", value.color);
-			//                });
-			//            }
-			str.push( ")" );
-			ele.style[ type ] = str.join( "" );
-			return this;
-		},
+
+		} )(),
 
 		radialGradient: function( ele, option ) {
 			/// <summary>设置径向渐变
@@ -863,6 +867,9 @@
 
 			css2.css( ele, transformCssName, editTranslate3d( obj ).join( "" ) );
 			return this;
+		},
+		vendorPropName: function( ele, name ) {
+			return vendorPropName( ele.style, name ) || name;
 		}
 	};
 	utilExtend.easyExtend( support, css3Support );
@@ -912,30 +919,19 @@
 				return this;
 			}
 			var b = style,
-				result, tmp;
+				tmp;
 			if ( typed.isObject( b ) ) {
 				for ( var i in b ) {
-					result = editCss3Type.call( this, i );
 					this.each( function( ele ) {
-						if ( typed.isFunction( result.name ) )
-							result.name.call( this, b[ i ] );
-						else
-							result.name && $.css3( ele, result.name, b[ i ] + result.unit );
-					} )
+						$.css3( ele, i, b[ i ] );
+					} );
 				}
 			} else if ( typed.isString( b ) ) {
-				result = editCss3Type.call( this, b );
 				if ( value === undefined ) {
-					if ( typed.isFunction( result.name ) )
-						return result.name.call( this );
-					else
-						return $.css3( this[ 0 ], result.name );
+					return $.css3( this[ 0 ], b );
 				} else {
 					this.each( function( ele ) {
-						if ( typed.isFunction( result.name ) )
-							result.name.call( this, value );
-						else
-							result.name && $.css3( ele, result.name, value + result.unit );
+						$.css3( ele, b, value );
 					} );
 				}
 			}
@@ -1171,6 +1167,21 @@
 			}
 		}
 	} );
+
+	css3Hooks.transform = {
+		set: css3.setTransform,
+		get: css3.getTransform
+	}
+
+	css3Hooks.transform3d = {
+		set: css3.setTransform3d,
+		get: css3.getTransform3d
+	}
+
+	css3Hooks.transformOrigin = {
+		set: css3.setTransformOrigin,
+		get: css3.getTransformOrigin
+	};
 
 	return css3;
 } );

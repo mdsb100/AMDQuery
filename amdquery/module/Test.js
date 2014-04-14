@@ -52,17 +52,20 @@ aQuery.define( "module/Test", [ "base/typed", "base/ready", "base/Promise", "bas
 				wordWrap: "break-word",
 				whiteSpace: "normal",
 			} ).css3( {
-				borderRadius: "3px"
-			} ).linearGradient( {
-				defaultColor: colors.backgroundColor2,
-				orientation: "left top",
-				colorStops: [ {
-					stop: 0,
-					color: colors.backgroundColor1
-        }, {
-					stop: 1,
-					color: colors.backgroundColor2
-        } ]
+				borderRadius: "3px",
+				linearGradient: {
+					defaultColor: colors.backgroundColor2,
+					orientation: "left top",
+					colorStops: [
+						{
+							stop: 0,
+							color: colors.backgroundColor1
+						},
+						{
+							stop: 1,
+							color: colors.backgroundColor2
+						} ]
+				}
 			} );
 			dialog.appendChild( $p[ 0 ] );
 			dialog.scrollTop = dialog.scrollHeight;
