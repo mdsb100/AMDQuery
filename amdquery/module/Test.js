@@ -55,7 +55,7 @@ aQuery.define( "module/Test", [ "base/typed", "base/ready", "base/Promise", "bas
 				borderRadius: "3px",
 				linearGradient: {
 					defaultColor: colors.backgroundColor2,
-					orientation: "left top",
+					orientation: "bottom",
 					colorStops: [
 						{
 							stop: 0,
