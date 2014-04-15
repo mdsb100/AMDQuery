@@ -318,6 +318,10 @@
             age: "22"
           },
           timeout: 3000,
+          complete: function(json){
+            test(json).should.have.property("name").with.should.equal("Jake");
+            test(json).should.have.property("age").with.should.equal("22");
+          },
           fail: function(options){
             test(options).should.have.property("timeout").with.should.equal(3000);
           }

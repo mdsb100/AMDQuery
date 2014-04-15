@@ -1992,13 +1992,13 @@
 			todoFn = function( obj ) {
 				return obj;
 			},
-			andFn = function() {
-				var andsState = this._checkAndsState( this.result );
-				if ( andsState.size === andsState[ Promise.DONE ] + andsState[ Promise.FAIL ] ) {
-					if ( andsState[ Promise.FAIL ] ) {
+			andFn = function( result ) {
+				var andsState = this._checkAndsState( result );
+				if ( this.isComplete() && andsState.size === andsState[ Promise.DONE ] + andsState[ Promise.FAIL ] ) {
+					if ( andsState[ Promise.FAIL ] || this.state === Promise.FAIL ) {
 						this._nextReject( this.result );
 					} else {
-						this._nextResolve( this.result );
+						this._nextResolve( this.result, true );
 					}
 				}
 			};
