@@ -1,4 +1,4 @@
-aQuery.define( "module/Test", [ "base/typed", "base/ready", "base/Promise", "base/config", "base/extend", "main/event", "main/dom", "main/css", "html5/css3" ], function( $, typed, ready, Promise, config, utilExtend, event, dom, css, css3 ) {
+aQuery.define( "module/Test", [ "base/typed", "base/ready", "base/Promise", "base/config", "base/extend", "main/event", "main/dom", "main/css", "html5/css3", "animation/animate", "html5/css3.transition.animate" ], function( $, typed, ready, Promise, config, utilExtend, event, dom, css, css3 ) {
 	"use strict";
 	this.describe( "Test Module" );
 	var TestEventType = "test.report";
@@ -9,15 +9,41 @@ aQuery.define( "module/Test", [ "base/typed", "base/ready", "base/Promise", "bas
 		info = $.info;
 		debug = $.debug;
 	} else {
+		var margin = 5;
+		var wrapper = $.createEle( "div" );
+		wrapper.style.cssText = "position:absolute;width:610px;height:200px;overflow-y:hidden;overflow-x:hidden;z-index:1000000;";
+		wrapper.style.right = margin + "px";
+		wrapper.style.bottom = margin + "px";
+		css3.css3( wrapper, "border-radius", "10px" );
+		var hide = $.createEle( "div" );
+		hide.style.cssText = "width:10px;height:615px;float:left;cursor:pointer;background-color:#bdbdbd";
+
+		$( hide ).toggle( function() {
+			$( wrapper ).stopAnimation().animate( {
+				right: ( -600 ) + "px"
+			}, {
+				duration: 300,
+				easing: "easeOut"
+			} );
+		}, function() {
+			$( wrapper ).stopAnimation().animate( {
+				right: ( margin ) + "px"
+			}, {
+				duration: 300,
+				easing: "easeOut"
+			} );
+		} );
+
 		var dialog = $.createEle( "pre" );
 
-		dialog.style.cssText = "display:block;position:absolute;width:600px;height:200px;overflow-y:scroll;overflow-x:hidden;z-index:1000000;background-color:black;";
-		dialog.style.right = "5px";
-		dialog.style.top = "5px";
+		dialog.style.cssText = "display:block;width:600px;height:200px;overflow-y:scroll;overflow-x:hidden;background-color:black;float:left;";
+
+		wrapper.appendChild( hide );
+		wrapper.appendChild( dialog );
 
 		ready( function() {
-			document.body.appendChild( dialog );
-      dialog.scrollTop = dialog.scrollHeight;
+			document.body.appendChild( wrapper );
+			dialog.scrollTop = dialog.scrollHeight;
 		} );
 
 		var colorMap = {
