@@ -67,7 +67,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Test.js.html">module/Test.js</a>, <a href="Test.js.html#line90">line 90</a>
+        <a href="Test.js.html">module/Test.js</a>, <a href="Test.js.html#line120">line 120</a>
     </li></ul></dd>
     
 
@@ -143,7 +143,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Test.js.html">module/Test.js</a>, <a href="Test.js.html#line159">line 159</a>
+        <a href="Test.js.html">module/Test.js</a>, <a href="Test.js.html#line189">line 189</a>
     </li></ul></dd>
     
 
@@ -264,7 +264,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Test.js.html">module/Test.js</a>, <a href="Test.js.html#line148">line 148</a>
+        <a href="Test.js.html">module/Test.js</a>, <a href="Test.js.html#line178">line 178</a>
     </li></ul></dd>
     
 
@@ -389,7 +389,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Test.js.html">module/Test.js</a>, <a href="Test.js.html#line134">line 134</a>
+        <a href="Test.js.html">module/Test.js</a>, <a href="Test.js.html#line164">line 164</a>
     </li></ul></dd>
     
 
@@ -514,7 +514,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Test.js.html">module/Test.js</a>, <a href="Test.js.html#line141">line 141</a>
+        <a href="Test.js.html">module/Test.js</a>, <a href="Test.js.html#line171">line 171</a>
     </li></ul></dd>
     
 
@@ -639,7 +639,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Test.js.html">module/Test.js</a>, <a href="Test.js.html#line127">line 127</a>
+        <a href="Test.js.html">module/Test.js</a>, <a href="Test.js.html#line157">line 157</a>
     </li></ul></dd>
     
 
@@ -830,7 +830,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Test.js.html">module/Test.js</a>, <a href="Test.js.html#line261">line 261</a>
+        <a href="Test.js.html">module/Test.js</a>, <a href="Test.js.html#line291">line 291</a>
     </li></ul></dd>
     
 
@@ -876,14 +876,14 @@
     <pre class="prettyprint">var testTest = new Test("TestTest", function(preResult){
   // complete
 })
-.describe("Test a", function(preResult, test, logger){
+.describe("Test a", function(preResult, expect, logger){
  var testTarget = {
 
  };
- test(testTarget, "testTarget").should.be.an("object");
+ expect(testTarget, "testTarget").be.an("object");
 
  var myName = "Jarray";
- test(myName, "My name").should.be.a("string");
+ expect(myName, "My name").be.a("string");
  var promise = new Promise;
 
  setTimeout(function(){
@@ -892,28 +892,28 @@
 
  return promise;
 })
-.describe("Test a", function(preResult, test, logger){
- //should.be.an
- //should.be.a
- //should.be.greater.than
- //should.be.less.than
- //should.be.greater.than.or.equal
- //should.be.less.than.or.equal
- //should.be.instance.of
- //should.equal
- //should.not.equal
- //should.exists
- //should.not.exists
- //should.Throw
- //should.not.Throw
- //should.not.have.property
- //should.have.length
- //should.have.property
- //should.have.property().with
- //should.have.index().with
+.describe("Test a", function(preResult, expect, logger){
+ //expect().be.an
+ //expect().be.a
+ //expect().be.greater.than
+ //expect().be.less.than
+ //expect().be.greater.than.or.equal
+ //expect().be.less.than.or.equal
+ //expect().be.instance.of
+ //expect().equal
+ //expect().not.equal
+ //expect().exists
+ //expect().not.exists
+ //expect().Throw
+ //expect().not.Throw
+ //expect().not.have.property
+ //expect().have.length
+ //expect().have.property
+ //expect().have.property().with
+ //expect().have.index().with
  //typed extend function
- //should.should.be.node
- //should.should.not.be.node
+ //expect().be.node
+ //expect().not.be.node
 })
 .start();</pre>
 
@@ -964,7 +964,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Test.js.html">module/Test.js</a>, <a href="Test.js.html#line303">line 303</a>
+        <a href="Test.js.html">module/Test.js</a>, <a href="Test.js.html#line333">line 333</a>
     </li></ul></dd>
     
 
@@ -1104,7 +1104,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Test.js.html">module/Test.js</a>, <a href="Test.js.html#line286">line 286</a>
+        <a href="Test.js.html">module/Test.js</a>, <a href="Test.js.html#line316">line 316</a>
     </li></ul></dd>
     
 
