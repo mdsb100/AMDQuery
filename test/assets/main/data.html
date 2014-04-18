@@ -10,36 +10,36 @@
     $.require(["main/query", "main/data", "module/Test"], function( query, utilData, Test ) {
       var testCustomEvent = new Test("data", function(preResult){
         // complete
-      }).describe("Test utilData function", function(preResult, test, logger){
+      }).describe("Test utilData function", function(preResult, expect, logger){
         var divTest = $( "#test" )[0];
 
-        test(utilData.hasData( divTest ), "Div test has data").should.equal(false);
+        expect(utilData.hasData( divTest ), "Div test has data").equal(false);
 
-        test(function(){
+        expect(function(){
           utilData.set( divTest, "name", "Amanda" );
-        }, "Set div test name with 'Amanda'").should.not.Throw();
+        }, "Set div test name with 'Amanda'").not.Throw();
 
-        test(utilData.hasData( divTest ), "Div test has data").should.equal(true);
+        expect(utilData.hasData( divTest ), "Div test has data").equal(true);
 
-        test(utilData.get( divTest, "name" ), "Data get name").should.equal("Amanda");
+        expect(utilData.get( divTest, "name" ), "Data get name").equal("Amanda");
 
-        test(function(){
+        expect(function(){
           utilData.set( divTest, "age", 19 );
-        }, "Set div test age with 19").should.not.Throw();
+        }, "Set div test age with 19").not.Throw();
 
-        test(utilData.get( divTest ), "Get data").should.equal({ name: "Amanda", age: 19 });
+        expect(utilData.get( divTest ), "Get data").equal({ name: "Amanda", age: 19 });
 
-        test(function(){
+        expect(function(){
           utilData.removeData( divTest, "age" );
-        }).should.not.Throw();
+        }).not.Throw();
 
-        test(utilData.get( divTest, "age" ), "Get age").should.not.exists();
+        expect(utilData.get( divTest, "age" ), "Get age").not.exists();
 
-        test(function(){
+        expect(function(){
           utilData.removeData( divTest );
-        }).should.not.Throw();
+        }).not.Throw();
 
-        test(utilData.hasData( divTest ), "Div test has data").should.equal(false);
+        expect(utilData.hasData( divTest ), "Div test has data").equal(false);
 
       }).start();
 

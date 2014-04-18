@@ -14,7 +14,7 @@
 
       var testCustomEvent = new Test("object", function(preResult){
         // complete
-      }).describe("Test object createPropertyGetterSetter", function(preResult, test, logger){
+      }).describe("Test object createPropertyGetterSetter", function(preResult, expect, logger){
         function Person(){
           this.id = null;
           this.name = "";
@@ -38,53 +38,53 @@
 
         var person = new Person();
 
-        test(person).should.have.property("getId").with.should.be.function();
+        expect(person).have.property("getId").with.be.function();
 
-        test(person).should.not.have.property("setId");
+        expect(person).not.have.property("setId");
 
-        test(person).should.have.property("getName").with.should.be.function();
+        expect(person).have.property("getName").with.be.function();
 
-        test(person).should.have.property("setName").with.should.be.function();
+        expect(person).have.property("setName").with.be.function();
 
-        test(person).should.have.property("_getAge").with.should.be.function();
+        expect(person).have.property("_getAge").with.be.function();
 
-        test(person).should.have.property("_setAge").with.should.be.function();
+        expect(person).have.property("_setAge").with.be.function();
 
-        test(person).should.have.property("_setWeight").with.should.be.function();
+        expect(person).have.property("_setWeight").with.be.function();
 
-        test(person).should.have.property("getWeight").with.should.be.function();
+        expect(person).have.property("getWeight").with.be.function();
 
-        test(person).should.have.property("_setMark").with.should.be.function();
+        expect(person).have.property("_setMark").with.be.function();
 
-        test(person).should.have.property("getMark").with.should.be.function();
+        expect(person).have.property("getMark").with.be.function();
 
-        test(person.getMark()).should.equal("0");
+        expect(person.getMark()).equal("0");
 
-        test(function(){
+        expect(function(){
           person._setMark(60);
-        }).should.not.Throw();
+        }).not.Throw();
 
-        test(person.getMark()).should.equal("60");
+        expect(person.getMark()).equal("60");
 
-        test(person._setMark(120)).should.equal(person);
+        expect(person._setMark(120)).equal(person);
 
-        test(person.getMark(), "Test validate.").should.equal("60");
+        expect(person.getMark(), "Test validate.").equal("60");
 
-        test(person).should.have.property("setHeight").with.should.be.function();
+        expect(person).have.property("setHeight").with.be.function();
 
-        test(person).should.have.property("getHeight").with.should.be.function();
+        expect(person).have.property("getHeight").with.be.function();
 
-        test(function(){
+        expect(function(){
           person.setHeight(60);
-        }).should.not.Throw();
+        }).not.Throw();
 
-        test(person.getHeight()).should.equal(100);
+        expect(person.getHeight()).equal(100);
 
-        test(person.setHeight(120)).should.equal(person);
+        expect(person.setHeight(120)).equal(person);
 
-        test(person.getHeight(), "Test validate.").should.equal(120);
+        expect(person.getHeight(), "Test validate.").equal(120);
 
-      }).describe("Test object function", function(preResult, test, logger){
+      }).describe("Test object function", function(preResult, expect, logger){
         function Animal(name, age){
           this.name = name;
           this.age = age;
@@ -96,9 +96,9 @@
 
         var animal = new Animal("animal", 20);
 
-        test(object.getObjectPrototypeMembersCount(animal)).should.equal(2);
+        expect(object.getObjectPrototypeMembersCount(animal)).equal(2);
 
-        test(object.getObjectMembersCount(animal, true)).should.equal(2);
+        expect(object.getObjectMembersCount(animal, true)).equal(2);
 
         function Horse(name, weight){
           Animal.call(this, name, weight);
@@ -115,19 +115,19 @@
 
         var horse = new Horse("Janney", 8);
 
-        test(object.getObjectPrototypeMembersCount(horse)).should.equal(3);
+        expect(object.getObjectPrototypeMembersCount(horse)).equal(3);
 
-        test(object.getObjectMembersCount(horse, true)).should.equal(3);
+        expect(object.getObjectMembersCount(horse, true)).equal(3);
 
-        test(horse).should.have.property("eat");
+        expect(horse).have.property("eat");
 
-        test(horse).should.have.property("watch");
+        expect(horse).have.property("watch");
 
         horse.eat("grass");
 
-        test(horse).should.have.property("food").with.should.equal(null);
+        expect(horse).have.property("food").with.equal(null);
 
-        test(animal.run).should.not.exists();
+        expect(animal.run).not.exists();
 
 
         function Cat(name, weight){
@@ -145,21 +145,21 @@
 
         var cat = new Cat("kiki", 5);
 
-        test(object.getObjectPrototypeMembersCount(cat)).should.equal(4);
+        expect(object.getObjectPrototypeMembersCount(cat)).equal(4);
 
-        test(object.getObjectMembersCount(cat, true)).should.equal(3);
+        expect(object.getObjectMembersCount(cat, true)).equal(3);
 
-        test(cat).should.have.property("constructor").with.should.equal(Cat);
+        expect(cat).have.property("constructor").with.equal(Cat);
 
-        test(cat).should.have.property("eat");
+        expect(cat).have.property("eat");
 
-        test(cat).should.have.property("watch");
+        expect(cat).have.property("watch");
 
         cat.eat("fish");
 
-        test(cat).should.have.property("food").with.should.equal("fish");
+        expect(cat).have.property("food").with.equal("fish");
 
-        test(animal.run).should.not.exists();
+        expect(animal.run).not.exists();
 
 
         function Sheep(name, weight){
@@ -177,41 +177,41 @@
 
         var sheep = new Sheep("Marry", 5);
 
-        test(object.getObjectPrototypeMembersCount(sheep)).should.equal(3);
+        expect(object.getObjectPrototypeMembersCount(sheep)).equal(3);
 
-        test(object.getObjectMembersCount(sheep, true)).should.equal(3);
+        expect(object.getObjectMembersCount(sheep, true)).equal(3);
 
-        test(sheep).should.have.property("constructor").with.should.equal(Sheep);
+        expect(sheep).have.property("constructor").with.equal(Sheep);
 
-        test(sheep).should.have.property("eat");
+        expect(sheep).have.property("eat");
 
-        test(sheep).should.have.property("watch");
+        expect(sheep).have.property("watch");
 
         sheep.eat("grass");
 
-        test(sheep).should.have.property("food").with.should.equal("grass");
+        expect(sheep).have.property("food").with.equal("grass");
 
-        // test(animal).should.have.property("run");
+        // expect(animal).have.property("run");
 
         // delete Animal.prototype.run;
 
         return Animal;
-      }).describe("Test object.extend", function(Animal, test, logger){
+      }).describe("Test object.extend", function(Animal, expect, logger){
         var Chicken = object.extend("Chicken", {
           init: function(name, age){
             this._super(name, age);
           }
         }, {});
 
-        test(Chicken).should.have.property("inherit").with.should.be.function();
+        expect(Chicken).have.property("inherit").with.be.function();
 
         Chicken.inherit(Animal);
 
         var nini = new Chicken("nini", 2);
 
-        test(nini).should.have.property("eat").with.should.be.function();
+        expect(nini).have.property("eat").with.be.function();
 
-        test(nini).should.have.property("constructor").with.should.equal(Chicken);
+        expect(nini).have.property("constructor").with.equal(Chicken);
 
         var Dog = object.extend("Dog", {
           init: function(name, age, color){
@@ -228,37 +228,37 @@
           loyal: true
         }, Animal);
 
-        test(Dog).should.have.property("extend").with.should.be.function();
+        expect(Dog).have.property("extend").with.be.function();
 
-        test(Dog).should.have.property("joinPrototype").with.should.be.function();
+        expect(Dog).have.property("joinPrototype").with.be.function();
 
-        test(Dog).should.have.property("constructorOf").with.should.be.function();
+        expect(Dog).have.property("constructorOf").with.be.function();
 
-        test(Dog).should.have.property("createGetterSetter").with.should.be.function();
+        expect(Dog).have.property("createGetterSetter").with.be.function();
 
-        test(Dog).should.have.property("fn").with.should.be.object();
+        expect(Dog).have.property("fn").with.be.object();
 
-        test(function(){
+        expect(function(){
           Dog.joinPrototype({
             bark: function(){}
           });
-        }).should.not.Throw();
+        }).not.Throw();
 
-        test(function(){
+        expect(function(){
           Dog.createGetterSetter({
             name: "-pu -w -r"
           });
-        }).should.not.Throw();
+        }).not.Throw();
 
         var ashley = new Dog("ashley", 3);
 
-        test(ashley).should.have.property("bark").with.should.be.function();
+        expect(ashley).have.property("bark").with.be.function();
 
-        test(Dog.constructorOf(ashley)).should.equal(true);
+        expect(Dog.constructorOf(ashley)).equal(true);
 
-        test(ashley).should.have.property("setName").with.should.be.function();
+        expect(ashley).have.property("setName").with.be.function();
 
-        test(ashley).should.have.property("getName").with.should.be.function();
+        expect(ashley).have.property("getName").with.be.function();
 
         var Labrador = Dog.extend(function Labrador(name, age, color){
           this._super(name, age, color);
@@ -271,17 +271,17 @@
           naughty: true
         });
 
-        test(Labrador).should.have.property("naughty").with.should.equal(true);
+        expect(Labrador).have.property("naughty").with.equal(true);
 
         var penny = new Labrador("penny", 4);
 
         penny.play("tennis");
 
-        test(penny).should.have.property("age").with.should.equal(4);
+        expect(penny).have.property("age").with.equal(4);
 
-        test(penny).should.have.property("toy").with.should.equal("tennis");
+        expect(penny).have.property("toy").with.equal("tennis");
 
-        test(penny).should.have.property("watch").with.should.be.function();
+        expect(penny).have.property("watch").with.be.function();
 
         var BlackLabrador = Labrador.extend({
           init: function(name, age){
@@ -291,7 +291,7 @@
 
         var tony = new BlackLabrador("tony", 3);
 
-        test(tony).should.have.property("color").should.equal("black");
+        expect(tony).have.property("color").equal("black");
 
       }).start();
 

@@ -15,13 +15,13 @@
     ], function(Promise, event, communicate, Test) {
       var jsonpPromise = new Promise;
       var TestCommunicate = new Test("Communicate")
-      .describe("Test AJAX, data type is JSON", function(preResult, test, logger){
+      .describe("Test AJAX, data type is JSON", function(preResult, expect, logger){
         $.once("ajaxStart", function(e){
-          test(e.type).should.equal("ajaxStart");
+          expect(e.type).equal("ajaxStart");
         });
 
         $.once("ajaxStop", function(e){
-          test(e.type).should.equal("ajaxStop");
+          expect(e.type).equal("ajaxStop");
         });
 
         var resolvePromise = Promise();
@@ -31,35 +31,35 @@
             url: "../ajax/test.json",
             dataType: "json",
             complete: function(resp){
-              test(resp).should.have.property("firstName").with.should.equal("John");
+              expect(resp).have.property("firstName").with.equal("John");
 
-              test(resp).should.have.property("age").with.should.equal(25);
+              expect(resp).have.property("age").with.equal(25);
 
-              test(resp).should.have.property("isAlive").with.should.equal(true);
+              expect(resp).have.property("isAlive").with.equal(true);
 
-              test(resp).should.have.property("height_cm").with.should.equal(167.64);
+              expect(resp).have.property("height_cm").with.equal(167.64);
 
-              test(resp).should.have.property("address").with.should.be.plainObject();
+              expect(resp).have.property("address").with.be.plainObject();
             },
             fail: function(ajax){
-              test(ajax).should.have.property("status");
+              expect(ajax).have.property("status");
             }
           }).then(function(resp){
               var address = resp.address;
 
-              test(address).should.have.property("city").with.should.equal("New York");
+              expect(address).have.property("city").with.equal("New York");
 
               var phoneNumbers = resp.phoneNumbers;
 
-              test(phoneNumbers).should.be.array();
+              expect(phoneNumbers).be.array();
 
-              test(phoneNumbers).should.have.length(2);
+              expect(phoneNumbers).have.length(2);
 
-              test(phoneNumbers).should.have.index(0).with.should.have.property("type").with.should.equal("home");
+              expect(phoneNumbers).have.index(0).with.have.property("type").with.equal("home");
 
-              test(phoneNumbers).should.have.index(1).with.should.have.property("number").with.should.equal("646 555-4567");
+              expect(phoneNumbers).have.index(1).with.have.property("number").with.equal("646 555-4567");
           }, function(ajax){
-            test(ajax).should.have.property("status");
+            expect(ajax).have.property("status");
           });
 
         }).done(function(){
@@ -79,21 +79,21 @@
             dataType: "xml",
             async: false,
             complete: function(resp){
-              test(resp).should.be.XML();
+              expect(resp).be.XML();
               var tagImport = resp.getElementsByTagName("import");
 
-              test(tagImport[0].getAttribute("file")).should.equal("build.xml");
+              expect(tagImport[0].getAttribute("file")).equal("build.xml");
             },
             fail: function(ajax){
-              test(ajax).should.have.property("status");
+              expect(ajax).have.property("status");
             }
           }).then(function(resp){
-              test(resp).should.be.XML();
+              expect(resp).be.XML();
               var tagProperty = resp.getElementsByTagName("property");
 
-              test(tagProperty).should.have.length(3);
+              expect(tagProperty).have.length(3);
           }, function(ajax){
-            test(ajax).should.have.property("status");
+            expect(ajax).have.property("status");
           });
 
         }).done(function(){
@@ -104,7 +104,7 @@
 
         return resolvePromise;
 
-      }).describe("Test AJAX fail", function(preResult, test, logger){
+      }).describe("Test AJAX fail", function(preResult, expect, logger){
         var resolvePromise = Promise();
 
         Promise().then(function(){
@@ -115,12 +115,12 @@
 
             },
             fail: function(ajax){
-              test(ajax).should.have.property("status");
+              expect(ajax).have.property("status");
             }
           }).then(function(resp){
 
           }, function(ajax){
-            test(ajax).should.have.property("status");
+            expect(ajax).have.property("status");
           });
 
         }).done(function(){
@@ -131,7 +131,7 @@
 
         return resolvePromise;
 
-      }).describe("Test AJAXS", function(preResult, test, logger){
+      }).describe("Test AJAXS", function(preResult, expect, logger){
         var resolvePromise = Promise();
 
         var promise = communicate.ajaxs([{
@@ -149,52 +149,52 @@
           dataType: "xml",
 
           complete: function(resp){
-            test(resp).should.be.XML();
+            expect(resp).be.XML();
             var tagImport = resp.getElementsByTagName("import");
 
-            test(tagImport[0].getAttribute("file")).should.equal("build.xml");
+            expect(tagImport[0].getAttribute("file")).equal("build.xml");
           },
           fail: function(ajax){
-            test(ajax).should.have.property("status");
+            expect(ajax).have.property("status");
           }
         }])
         promise.then(function(resps){
-          test(resps).should.have.length(2);
-          test(resps).should.have.index(0);
+          expect(resps).have.length(2);
+          expect(resps).have.index(0);
           json = resps[0];
-          test(json).should.have.property("firstName").with.should.equal("John");
+          expect(json).have.property("firstName").with.equal("John");
 
-          test(json).should.have.property("age").with.should.equal(25);
+          expect(json).have.property("age").with.equal(25);
 
-          test(json).should.have.property("isAlive").with.should.equal(true);
+          expect(json).have.property("isAlive").with.equal(true);
 
-          test(json).should.have.property("height_cm").with.should.equal(167.64);
+          expect(json).have.property("height_cm").with.equal(167.64);
 
-          test(json).should.have.property("address").with.should.be.plainObject();
+          expect(json).have.property("address").with.be.plainObject();
           return resps;
         }).done(function(resps){
-          test(resps).should.have.length(2);
-          test(resps).should.have.index(1);
+          expect(resps).have.length(2);
+          expect(resps).have.index(1);
           xml = resps[1];
-          test(xml).should.be.XML();
+          expect(xml).be.XML();
           var tagProperty = xml.getElementsByTagName("property");
 
-          test(tagProperty).should.have.length(3);
+          expect(tagProperty).have.length(3);
           resolvePromise.resolve();
         }, function(resps){
           logger("ajaxs fail");
-          test(resps).should.have.length(2);
+          expect(resps).have.length(2);
           resolvePromise.resolve();
         });
 
         return resolvePromise;
-      }).describe("Test JSONP", function(preResult, test, logger){
+      }).describe("Test JSONP", function(preResult, expect, logger){
         $.once("jsonpStart", function(e){
-          test(e.type).should.equal("jsonpStart");
+          expect(e.type).equal("jsonpStart");
         });
 
         $.once("jsonpStop", function(e){
-          test(e.type).should.equal("jsonpStop");
+          expect(e.type).equal("jsonpStop");
         });
 
         var resolvePromise = Promise();
@@ -207,30 +207,30 @@
           },
           timeout: 5000,
           complete: function(json){
-            test(json).should.have.property("name").with.should.equal("Jarry");
-            test(json).should.have.property("age").with.should.equal("28");
+            expect(json).have.property("name").with.equal("Jarry");
+            expect(json).have.property("age").with.equal("28");
           },
           fail: function(options){
-            test(options).should.have.property("timeout").with.should.equal(5000);
+            expect(options).have.property("timeout").with.equal(5000);
           }
         }).then(function(json){
-          test(json).should.have.property("name").with.should.equal("Jarry");
-          test(json).should.have.property("age").with.should.equal("28");
+          expect(json).have.property("name").with.equal("Jarry");
+          expect(json).have.property("age").with.equal("28");
           return json;
         }, function(result){
-          test(result).should.have.property("timeout").with.should.equal(5000);
+          expect(result).have.property("timeout").with.equal(5000);
         }).done(function(result){
-          test(result).should.have.property("name").with.should.equal("Jarry");
-          test(result).should.have.property("age").with.should.equal("28");
+          expect(result).have.property("name").with.equal("Jarry");
+          expect(result).have.property("age").with.equal("28");
           resolvePromise.resolve();
         }, function(result){
           logger("jsonp fail");
-          test(result).should.not.exists();
+          expect(result).not.exists();
           resolvePromise.resolve();
         });
 
         return resolvePromise;
-      }).describe("Test JSONPS", function(preResult, test, logger){
+      }).describe("Test JSONPS", function(preResult, expect, logger){
         var resolvePromise = Promise();
 
         var promise = communicate.jsonps([{
@@ -240,11 +240,11 @@
             age: "28"
           },
           complete: function(json){
-            test(json).should.have.property("name").with.should.equal("Jarry");
-            test(json).should.have.property("age").with.should.equal("28");
+            expect(json).have.property("name").with.equal("Jarry");
+            expect(json).have.property("age").with.equal("28");
           },
           fail: function(options){
-            test(options).should.have.property("timeout").with.should.equal(7000);
+            expect(options).have.property("timeout").with.equal(7000);
           }
         }, {
           url: "http://jsfiddle.net/echo/jsonp",
@@ -253,11 +253,11 @@
             age: "17"
           },
           complete: function(json){
-            test(json).should.have.property("name").with.should.equal("Amanda");
-            test(json).should.have.property("age").with.should.equal("17");
+            expect(json).have.property("name").with.equal("Amanda");
+            expect(json).have.property("age").with.equal("17");
           },
           fail: function(options){
-            test(options).should.have.property("timeout").with.should.equal(7000);
+            expect(options).have.property("timeout").with.equal(7000);
           }
         }, {
           url: "http://jsfiddle.net/echo/jsonp",
@@ -266,36 +266,36 @@
             age: "22"
           },
           complete: function(json){
-            test(json).should.have.property("name").with.should.equal("Jake");
-            test(json).should.have.property("age").with.should.equal("22");
+            expect(json).have.property("name").with.equal("Jake");
+            expect(json).have.property("age").with.equal("22");
           },
           fail: function(options){
-            test(options).should.have.property("timeout").with.should.equal(7000);
+            expect(options).have.property("timeout").with.equal(7000);
           }
         }]).then(function(jsons){
-          test(jsons).should.have.property("length");
-          test(jsons).should.have.index(0);
+          expect(jsons).have.property("length");
+          expect(jsons).have.index(0);
           json = jsons[0];
-          test(json).should.have.property("name").with.should.equal("Jarry");
-          test(json).should.have.property("age").with.should.equal("28");
+          expect(json).have.property("name").with.equal("Jarry");
+          expect(json).have.property("age").with.equal("28");
           return jsons;
         }, function(result){
 
         }).done(function(result){
-          test(result).should.have.property("length");
-          test(result).should.have.index(1);
+          expect(result).have.property("length");
+          expect(result).have.index(1);
           json = result[1];
-          test(json).should.have.property("name").with.should.equal("Amanda");
-          test(json).should.have.property("age").with.should.equal("17");
+          expect(json).have.property("name").with.equal("Amanda");
+          expect(json).have.property("age").with.equal("17");
           resolvePromise.resolve();
         }, function(result){
           logger("jsonps fail");
-          test(result).should.not.exists();
+          expect(result).not.exists();
           resolvePromise.resolve();
         });
 
         return resolvePromise;
-      }).describe("Test JSONPS fail", function(preResult, test, logger){
+      }).describe("Test JSONPS fail", function(preResult, expect, logger){
         var resolvePromise = new Promise();
 
         var promise = communicate.jsonps([{
@@ -305,11 +305,11 @@
             age: "28"
           },
           complete: function(json){
-            test(json).should.have.property("name").with.should.equal("Jarry");
-            test(json).should.have.property("age").with.should.equal("28");
+            expect(json).have.property("name").with.equal("Jarry");
+            expect(json).have.property("age").with.equal("28");
           },
           fail: function(options){
-            test(options).should.have.property("timeout").with.should.equal(7000);
+            expect(options).have.property("timeout").with.equal(7000);
           }
         }, {
           url: "http://jsfiddle.net/echo/jsonp",
@@ -319,27 +319,27 @@
           },
           timeout: 3000,
           complete: function(json){
-            test(json).should.have.property("name").with.should.equal("Jake");
-            test(json).should.have.property("age").with.should.equal("22");
+            expect(json).have.property("name").with.equal("Jake");
+            expect(json).have.property("age").with.equal("22");
           },
           fail: function(options){
-            test(options).should.have.property("timeout").with.should.equal(3000);
+            expect(options).have.property("timeout").with.equal(3000);
           }
         }]).then(function(jsons){
-          test(jsons).should.have.property("length");
-          test(jsons).should.have.index(0);
+          expect(jsons).have.property("length");
+          expect(jsons).have.index(0);
           json = jsons[0];
-          test(json).should.have.property("name").with.should.equal("Jarry");
-          test(json).should.have.property("age").with.should.equal("28");
+          expect(json).have.property("name").with.equal("Jarry");
+          expect(json).have.property("age").with.equal("28");
           return jsons;
         }, function(jsons){
 
         }).done(function(result){
-          test(result).should.have.property("length");
+          expect(result).have.property("length");
           resolvePromise.resolve();
         }, function(result){
           logger("jsonps fail");
-          test(result).should.not.exists();
+          expect(result).not.exists();
           resolvePromise.resolve();
         });
 

@@ -13,121 +13,121 @@
 
       var testPosition = new Test("position", function(preResult){
         // complete
-      }).describe("Test div rect width", function(preResult, test, logger){
-        test(rect.width(), "rect width").should.equal( 50 );
+      }).describe("Test div rect width", function(preResult, expect, logger){
+        expect(rect.width(), "rect width").equal( 50 );
 
-        test(function(){
+        expect(function(){
           rect.width(30);
-        }, "Set width 30").should.not.Throw();
-        test(rect.width(), "rect width").should.equal( 30 );
+        }, "Set width 30").not.Throw();
+        expect(rect.width(), "rect width").equal( 30 );
 
-        test(function(){
+        expect(function(){
           rect.width(60);
-        }, "Set width 60").should.not.Throw();
-        test(rect.width(), "rect width").should.equal( 60 );
+        }, "Set width 60").not.Throw();
+        expect(rect.width(), "rect width").equal( 60 );
 
-        test(function(){
+        expect(function(){
           rect.css({
             "padding-left": "5px",
             "padding-right": "5px"
           });
-        }, "Set padding-left '5px' and padding-right '5px'").should.not.Throw();
-        test(rect.width(), "rect width").should.equal( 60 );
-        test(rect.innerWidth(), "rect inner width").should.equal( 70 );
+        }, "Set padding-left '5px' and padding-right '5px'").not.Throw();
+        expect(rect.width(), "rect width").equal( 60 );
+        expect(rect.innerWidth(), "rect inner width").equal( 70 );
 
-        test(function(){
+        expect(function(){
           rect.innerWidth(40);
-        }, "Set inner width 40").should.not.Throw();
-        test(rect.width(), "rect width").should.equal( 30 );
-        test(rect.innerWidth(), "rect inner width").should.equal( 40 );
+        }, "Set inner width 40").not.Throw();
+        expect(rect.width(), "rect width").equal( 30 );
+        expect(rect.innerWidth(), "rect inner width").equal( 40 );
 
-        test(function(){
+        expect(function(){
           rect.outerWidth(80);
-        }, "Set outer width 80").should.not.Throw();
-        test(rect.width(), "rect width").should.equal( 70 );
-        test(rect.innerWidth(), "rect inner width").should.equal( 80 );
+        }, "Set outer width 80").not.Throw();
+        expect(rect.width(), "rect width").equal( 70 );
+        expect(rect.innerWidth(), "rect inner width").equal( 80 );
 
-        test(function(){
+        expect(function(){
           rect.css({
             "margin-left": "5px",
             "margin-right": "5px"
           });
-        }, "Set margin-left '5px' and margin-right '5px'").should.not.Throw();
+        }, "Set margin-left '5px' and margin-right '5px'").not.Throw();
 
-        test(rect.width(), "rect width").should.equal( 70 );
-        test(rect.innerWidth(), "rect inner width").should.equal( 80 );
-        test(rect.outerWidth(), "rect outer width").should.equal( 80 );
+        expect(rect.width(), "rect width").equal( 70 );
+        expect(rect.innerWidth(), "rect inner width").equal( 80 );
+        expect(rect.outerWidth(), "rect outer width").equal( 80 );
 
-        test(function(){
+        expect(function(){
           rect.css({
             "border-left": "5px solid black",
             "border-right": "5px solid black"
           });
-        }, "Set margin-left '5px' and margin-right '5px'").should.not.Throw();
-        test(rect.width(), "rect width").should.equal( 70 );
-        test(rect.innerWidth(), "rect inner width").should.equal( 80 );
-        test(rect.outerWidth(), "rect outer width").should.equal( 90 );
-        test(rect.outerWidth(true), "rect outer width and border is 100").should.equal( 100 );
+        }, "Set margin-left '5px' and margin-right '5px'").not.Throw();
+        expect(rect.width(), "rect width").equal( 70 );
+        expect(rect.innerWidth(), "rect inner width").equal( 80 );
+        expect(rect.outerWidth(), "rect outer width").equal( 90 );
+        expect(rect.outerWidth(true), "rect outer width and border is 100").equal( 100 );
 
-      }).describe("Test div rect height", function(preResult, test, logger){
-        test(rect.height(), "rect height").should.equal( 0 );
+      }).describe("Test div rect height", function(preResult, expect, logger){
+        expect(rect.height(), "rect height").equal( 0 );
 
-        test(function(){
+        expect(function(){
           rect.height(30);
-        }, "Set height 30").should.not.Throw();
-        test(rect.height(), "rect height").should.equal( 30 );
+        }, "Set height 30").not.Throw();
+        expect(rect.height(), "rect height").equal( 30 );
 
-        test(function(){
+        expect(function(){
           rect.height(60);
-        }, "Set height 60").should.not.Throw();
-        test(rect.height(), "rect height").should.equal( 60 );
+        }, "Set height 60").not.Throw();
+        expect(rect.height(), "rect height").equal( 60 );
 
-        test(function(){
+        expect(function(){
           rect.css({
             "padding-top": "5px",
             "padding-bottom": "5px"
           });
-        }, "Set padding-top '5px' and padding-bottom '5px'").should.not.Throw();
-        test(rect.height(), "rect height").should.equal( 60 );
-        test(rect.innerHeight(), "rect inner height").should.equal( 70 );
+        }, "Set padding-top '5px' and padding-bottom '5px'").not.Throw();
+        expect(rect.height(), "rect height").equal( 60 );
+        expect(rect.innerHeight(), "rect inner height").equal( 70 );
 
-        test(function(){
+        expect(function(){
           rect.innerHeight(40);
-        }, "Set inner height 40").should.not.Throw();
-        test(rect.height(), "rect height").should.equal( 30 );
-        test(rect.innerHeight(), "rect inner height").should.equal( 40 );
+        }, "Set inner height 40").not.Throw();
+        expect(rect.height(), "rect height").equal( 30 );
+        expect(rect.innerHeight(), "rect inner height").equal( 40 );
 
-        test(function(){
+        expect(function(){
           rect.outerHeight(80);
-        }, "Set outer height 80").should.not.Throw();
-        test(rect.height(), "rect height").should.equal( 70 );
-        test(rect.innerHeight(), "rect inner height").should.equal( 80 );
+        }, "Set outer height 80").not.Throw();
+        expect(rect.height(), "rect height").equal( 70 );
+        expect(rect.innerHeight(), "rect inner height").equal( 80 );
 
-        test(function(){
+        expect(function(){
           rect.css({
             "margin-top": "5px",
             "margin-bottom": "5px"
           });
-        }, "Set margin-top '5px' and margin-bottom '5px'").should.not.Throw();
+        }, "Set margin-top '5px' and margin-bottom '5px'").not.Throw();
 
-        test(rect.height(), "rect height").should.equal( 70 );
-        test(rect.innerHeight(), "rect inner height").should.equal( 80 );
-        test(rect.outerHeight(), "rect outer height").should.equal( 80 );
+        expect(rect.height(), "rect height").equal( 70 );
+        expect(rect.innerHeight(), "rect inner height").equal( 80 );
+        expect(rect.outerHeight(), "rect outer height").equal( 80 );
 
-        test(function(){
+        expect(function(){
           rect.css({
             "border-top": "5px solid black",
             "border-bottom": "5px solid black"
           });
-        }, "Set margin-top '5px' and margin-bottom '5px'").should.not.Throw();
-        test(rect.height(), "rect height").should.equal( 70 );
-        test(rect.innerHeight(), "rect inner height").should.equal( 80 );
-        test(rect.outerHeight(), "rect outer height").should.equal( 90 );
-        test(rect.outerHeight(true), "rect outer height and border is 100").should.equal( 100 );
+        }, "Set margin-top '5px' and margin-bottom '5px'").not.Throw();
+        expect(rect.height(), "rect height").equal( 70 );
+        expect(rect.innerHeight(), "rect inner height").equal( 80 );
+        expect(rect.outerHeight(), "rect outer height").equal( 90 );
+        expect(rect.outerHeight(true), "rect outer height and border is 100").equal( 100 );
 
-      }).describe("Test scroll size.", function(preResult, test, logger){
-        test(rect.parent().scrollWidth(), "Div rect parent`s scroll width").should.be.greater.than(50);
-        test(rect.parent().scrollHeight(), "Div rect parent`s scroll height").should.be.greater.than(50);
+      }).describe("Test scroll size.", function(preResult, expect, logger){
+        expect(rect.parent().scrollWidth(), "Div rect parent`s scroll width").be.greater.than(50);
+        expect(rect.parent().scrollHeight(), "Div rect parent`s scroll height").be.greater.than(50);
       }).start();
     });
   </script>

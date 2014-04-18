@@ -14,33 +14,33 @@
 
       }
 
-      testDOM.describe("Test parseHTML", function(preResult, test, logger){
+      testDOM.describe("Test parseHTML", function(preResult, expect, logger){
         var div = null;
-        test(function(){
+        expect(function(){
           div = dom.parseHTML("<div style='background-color:red' id='parseHTML'><span id='span'>hello,world</span></div>");
-        }).should.not.Throw();
+        }).not.Throw();
 
-        test(div).should.have.index(0).with.should.have.property("tagName").with.should.equal("DIV");
+        expect(div).have.index(0).with.have.property("tagName").with.equal("DIV");
 
         div = div[0];
 
-        test(div.style.backgroundColor, "element div.style.backgroundColor").should.equal("red");
+        expect(div.style.backgroundColor, "element div.style.backgroundColor").equal("red");
 
-        test(div.childNodes, "element div child nodes").should.have.index(0).with.should.have.property("id").with.should.equal("span");
+        expect(div.childNodes, "element div child nodes").have.index(0).with.have.property("id").with.equal("span");
 
-        test(div.childNodes[0].innerHTML, "element div child`s inner html").should.equal("hello,world");
+        expect(div.childNodes[0].innerHTML, "element div child`s inner html").equal("hello,world");
 
-      }).describe("Test clone", function(preResult, test, logger){
+      }).describe("Test clone", function(preResult, expect, logger){
         var divTest = $("#test");
         var cloneTest = null;
 
-        test(function(){
+        expect(function(){
           cloneTest = divTest.clone()[0];
-        }).should.not.Throw();
+        }).not.Throw();
 
-        test(cloneTest, "Div 'test'").should.have.property("tagName").with.should.equal("DIV");
+        expect(cloneTest, "Div 'test'").have.property("tagName").with.equal("DIV");
 
-        test(cloneTest.style.width, "Div 'test' style.width").should.equal("100px");
+        expect(cloneTest.style.width, "Div 'test' style.width").equal("100px");
 
         var target = $("#target");
 
@@ -48,7 +48,7 @@
 
         logger("Div inner add data and bind click");
 
-        test(target.hasData(), "aQuery target has data").should.equal(false);
+        expect(target.hasData(), "aQuery target has data").equal(false);
 
         target.click(testClick);
 
@@ -56,48 +56,48 @@
 
         var clonetarget = null;
 
-        test(function(){
+        expect(function(){
           clonetarget = target.clone(true);
-        }, "Clone div target with data and event").should.not.Throw();
+        }, "Clone div target with data and event").not.Throw();
 
-        test(clonetarget.hasHandler("click", testClick), "aQuery clonetarget has handler").should.be.greater.than(-1);
+        expect(clonetarget.hasHandler("click", testClick), "aQuery clonetarget has handler").be.greater.than(-1);
 
-        test(function(){
+        expect(function(){
           clonetarget = target.clone(true, true);
-        }, "Clone div target with data and event, Clone all child`s data and event").should.not.Throw();
+        }, "Clone div target with data and event, Clone all child`s data and event").not.Throw();
 
-        test(clonetarget.find("div").hasHandler("click", testClick), "aQuery clonetarget`s child has handler").should.be.greater.than(-1);
+        expect(clonetarget.find("div").hasHandler("click", testClick), "aQuery clonetarget`s child has handler").be.greater.than(-1);
 
         return clonetarget;
-      }).describe("Test dom.cleanData", function(preResult, test, logger){
+      }).describe("Test dom.cleanData", function(preResult, expect, logger){
         clonetarget = preResult;
 
-        test(function(){
+        expect(function(){
           dom.cleanData(clonetarget[0]);
-        }).should.not.Throw();
+        }).not.Throw();
 
-        test(clonetarget.hasHandler("click", testClick), "aQuery clonetarget has handler").should.equal(-1);
+        expect(clonetarget.hasHandler("click", testClick), "aQuery clonetarget has handler").equal(-1);
 
-        test(clonetarget.find("div").hasData(), "aQuery clonetarget child has data").should.equal(false);
+        expect(clonetarget.find("div").hasData(), "aQuery clonetarget child has data").equal(false);
 
-      }).describe("Test dom function", function(preResult, test, logger){
-        test(dom.getLastChild( query.getEleById("dom") ), "Div dom`s last child").should.equal(query.getEleById("last"));
-        test(dom.getRealChild( query.getEleById("dom"), 1 ), "Div dom`s second read child").should.equal(query.getEleById("span"));
-      }).describe("Test dom.removeChildren()", function(preResult, test, logger){
+      }).describe("Test dom function", function(preResult, expect, logger){
+        expect(dom.getLastChild( query.getEleById("dom") ), "Div dom`s last child").equal(query.getEleById("last"));
+        expect(dom.getRealChild( query.getEleById("dom"), 1 ), "Div dom`s second read child").equal(query.getEleById("span"));
+      }).describe("Test dom.removeChildren()", function(preResult, expect, logger){
         var target = query.getEleById("target");
         var inner = query.getEleById("inner");
 
-        test(utilData.hasData(inner), "Div inner has data").should.equal(true);
+        expect(utilData.hasData(inner), "Div inner has data").equal(true);
 
-        test(function(){
+        expect(function(){
           dom.removeChildren(target, false)
-        }, "Remove children and does not keep data").should.not.Throw();
+        }, "Remove children and does not keep data").not.Throw();
 
-        test(target.childNodes, "Div target child nodes").should.have.length(0);
+        expect(target.childNodes, "Div target child nodes").have.length(0);
 
-        test(utilData.hasData(inner), "Div inner has data").should.equal(false);
+        expect(utilData.hasData(inner), "Div inner has data").equal(false);
 
-      }).describe("Test dom operation", function(preResult, test, logger){
+      }).describe("Test dom operation", function(preResult, expect, logger){
         var divTest = $("#test");
         var div1 = $.createEle("div");
         var div2 = $.createEle("div");
@@ -105,62 +105,62 @@
         var ol1 = "<ol id='ol1'><ol>";
         var ul2 = $.createEle("ul");
 
-        test(function(){
+        expect(function(){
           divTest.append(div1);
-        }).should.not.Throw();
+        }).not.Throw();
 
-        test(dom.getRealChild(divTest[0], 0), "Div test`s first child").should.equal(div1);
+        expect(dom.getRealChild(divTest[0], 0), "Div test`s first child").equal(div1);
 
-        test(function(){
+        expect(function(){
           divTest.prepend(ul1);
-        }).should.not.Throw();
+        }).not.Throw();
 
-        test(dom.getRealChild(divTest[0], 0), "Div test`s first child").should.equal(ul1);
+        expect(dom.getRealChild(divTest[0], 0), "Div test`s first child").equal(ul1);
 
-        test(function(){
+        expect(function(){
           $(ul1).after($(div2));
-        }).should.not.Throw();
+        }).not.Throw();
 
-        test(dom.getRealChild(divTest[0], 1), "Div test`s second child").should.equal(div2);
+        expect(dom.getRealChild(divTest[0], 1), "Div test`s second child").equal(div2);
 
-        test(function(){
+        expect(function(){
           $(div2).before(ol1);
-        }).should.not.Throw();
+        }).not.Throw();
 
-        test(dom.getRealChild(divTest[0], 1).id, "Div test`s second child`s id").should.equal("ol1");
+        expect(dom.getRealChild(divTest[0], 1).id, "Div test`s second child`s id").equal("ol1");
 
-        test(function(){
+        expect(function(){
           $(ul1).replaceWith(ul2);
-        }).should.not.Throw();
+        }).not.Throw();
 
-        test(dom.getRealChild(divTest[0], 0), "Div test`s first child`s id").should.equal(ul2);
+        expect(dom.getRealChild(divTest[0], 0), "Div test`s first child`s id").equal(ul2);
 
-      }).describe("Test dom wrap, wrapInner, wrapAll, upwrap", function(preResult, test, logger){
+      }).describe("Test dom wrap, wrapInner, wrapAll, upwrap", function(preResult, expect, logger){
         var wrapDiv = $("#wrap");
 
-        test(function(){
+        expect(function(){
           wrapDiv.find("p").wrap("<div></div>");
-        }).should.not.Throw();
+        }).not.Throw();
 
-        test(dom.getRealChild(wrapDiv[0], 0), "Div 'wrap' first child").should.be.node("div");
-        test(dom.getRealChild(wrapDiv[0], 1), "Div 'wrap' second child").should.be.node("div");
-        test(dom.getRealChild(wrapDiv[0], 2), "Div 'wrap' last child").should.be.node("div");
+        expect(dom.getRealChild(wrapDiv[0], 0), "Div 'wrap' first child").be.node("div");
+        expect(dom.getRealChild(wrapDiv[0], 1), "Div 'wrap' second child").be.node("div");
+        expect(dom.getRealChild(wrapDiv[0], 2), "Div 'wrap' last child").be.node("div");
 
-        test(function(){
+        expect(function(){
           wrapDiv.find("p").unwrap();
-        }).should.not.Throw();
+        }).not.Throw();
 
-        test(dom.getRealChild(wrapDiv[0], 2), "Div 'wrap' last child").should.be.node("p");
+        expect(dom.getRealChild(wrapDiv[0], 2), "Div 'wrap' last child").be.node("p");
 
-        test(function(){
+        expect(function(){
           wrapDiv.find("p").wrapInner("<div></div>");
-        }).should.not.Throw();
+        }).not.Throw();
 
-        test(dom.getRealChild(wrapDiv[0], 2), "Div 'wrap' last child").should.be.node("p");
+        expect(dom.getRealChild(wrapDiv[0], 2), "Div 'wrap' last child").be.node("p");
 
-        test(dom.getRealChild(wrapDiv[0], 2).childNodes[0], "p`s child").should.be.node("div");
+        expect(dom.getRealChild(wrapDiv[0], 2).childNodes[0], "p`s child").be.node("div");
 
-        test(dom.getRealChild(wrapDiv[0], 2).childNodes[0].innerHTML, "the div inner html").should.equal("c");
+        expect(dom.getRealChild(wrapDiv[0], 2).childNodes[0].innerHTML, "the div inner html").equal("c");
 
       }).start();
     });
