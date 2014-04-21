@@ -29,7 +29,7 @@
     <section>
         <a float="false" id="Back" class="Back">Back</a>
         <article>
-            <pre class="prettyprint source">aQuery.define( "module/Test", [ "base/typed", "base/ready", "base/Promise", "base/config", "main/event", "main/dom", "main/css", "html5/css3" ], function( $, typed, ready, Promise, config, event, dom, css, css3 ) {
+            <pre class="prettyprint source">aQuery.define( "module/Test", [ "base/typed", "base/ready", "base/Promise", "base/config", "base/extend", "main/event", "main/dom", "main/css", "html5/css3", "animation/animate", "html5/css3.transition.animate" ], function( $, typed, ready, Promise, config, utilExtend, event, dom, css, css3 ) {
 	"use strict";
 	this.describe( "Test Module" );
 	var TestEventType = "test.report";
@@ -40,14 +40,41 @@
 		info = $.info;
 		debug = $.debug;
 	} else {
+		var margin = 5;
+		var wrapper = $.createEle( "div" );
+		wrapper.style.cssText = "position:absolute;width:610px;height:200px;overflow-y:hidden;overflow-x:hidden;z-index:1000000;";
+		wrapper.style.right = margin + "px";
+		wrapper.style.bottom = margin + "px";
+		css3.css3( wrapper, "border-radius", "10px" );
+		var hide = $.createEle( "div" );
+		hide.style.cssText = "width:10px;height:615px;float:left;cursor:pointer;background-color:#bdbdbd";
+
+		$( hide ).toggle( function() {
+			$( wrapper ).stopAnimation().animate( {
+				right: ( -600 ) + "px"
+			}, {
+				duration: 300,
+				easing: "easeOut"
+			} );
+		}, function() {
+			$( wrapper ).stopAnimation().animate( {
+				right: ( margin ) + "px"
+			}, {
+				duration: 300,
+				easing: "easeOut"
+			} );
+		} );
+
 		var dialog = $.createEle( "pre" );
 
-		dialog.style.cssText = "display:block;position:absolute;width:600px;height:200px;overflow-y:scroll;overflow-x:hidden;z-index:1000000;background-color:black;";
-		dialog.style.right = "5px";
-		dialog.style.top = "5px";
+		dialog.style.cssText = "display:block;width:600px;height:200px;overflow-y:scroll;overflow-x:hidden;background-color:black;float:left;";
+
+		wrapper.appendChild( hide );
+		wrapper.appendChild( dialog );
 
 		ready( function() {
-			document.body.appendChild( dialog );
+			document.body.appendChild( wrapper );
+			dialog.scrollTop = dialog.scrollHeight;
 		} );
 
 		var colorMap = {
@@ -83,17 +110,20 @@
 				wordWrap: "break-word",
 				whiteSpace: "normal",
 			} ).css3( {
-				borderRadius: "3px"
-			} ).linearGradient( {
-				defaultColor: colors.backgroundColor2,
-				orientation: "left top",
-				colorStops: [ {
-					stop: 0,
-					color: colors.backgroundColor1
-        }, {
-					stop: 1,
-					color: colors.backgroundColor2
-        } ]
+				borderRadius: "3px",
+				linearGradient: {
+					defaultColor: colors.backgroundColor2,
+					orientation: "bottom",
+					colorStops: [
+						{
+							stop: 0,
+							color: colors.backgroundColor1
+						},
+						{
+							stop: 1,
+							color: colors.backgroundColor2
+						} ]
+				}
 			} );
 			dialog.appendChild( $p[ 0 ] );
 			dialog.scrollTop = dialog.scrollHeight;
@@ -152,6 +182,7 @@
 		this.count = 0;
 		this.fail = 0;
 		this.failInfoList = [];
+		this.timeConsuming = null;
 	}
 
 	/**
@@ -247,14 +278,14 @@
 		 * var testTest = new Test("TestTest", function(preResult){
 		 *   // complete
 		 * })
-		 * .describe("Test a", function(preResult, test, logger){
+		 * .describe("Test a", function(preResult, expect, logger){
 		 *  var testTarget = {
 		 *
 		 *  };
-		 *  test(testTarget, "testTarget").should.be.an("object");
+		 *  expect(testTarget, "testTarget").be.an("object");
 		 *
 		 *  var myName = "Jarray";
-		 *  test(myName, "My name").should.be.a("string");
+		 *  expect(myName, "My name").be.a("string");
 		 *  var promise = new Promise;
 		 *
 		 *  setTimeout(function(){
@@ -263,42 +294,42 @@
 		 *
 		 *  return promise;
 		 * })
-		 * .describe("Test a", function(preResult, test, logger){
-		 *  //should.be.an
-		 *  //should.be.a
-		 *  //should.be.greater.than
-		 *  //should.be.less.than
-		 *  //should.be.greater.than.or.equal
-		 *  //should.be.less.than.or.equal
-		 *  //should.be.instance.of
-		 *  //should.equal
-		 *  //should.not.equal
-		 *  //should.exists
-		 *  //should.not.exists
-		 *  //should.Throw
-		 *  //should.not.Throw
-		 *  //should.not.have.property
-		 *  //should.have.length
-		 *  //should.have.property
-		 *  //should.have.property().with
-		 *  //should.have.index().with
+		 * .describe("Test a", function(preResult, expect, logger){
+		 *  //expect().be.an
+		 *  //expect().be.a
+		 *  //expect().be.greater.than
+		 *  //expect().be.less.than
+		 *  //expect().be.greater.than.or.equal
+		 *  //expect().be.less.than.or.equal
+		 *  //expect().be.instance.of
+		 *  //expect().equal
+		 *  //expect().not.equal
+		 *  //expect().exists
+		 *  //expect().not.exists
+		 *  //expect().Throw
+		 *  //expect().not.Throw
+		 *  //expect().not.have.property
+		 *  //expect().have.length
+		 *  //expect().have.property
+		 *  //expect().have.property().with
+		 *  //expect().have.index().with
 		 *  //typed extend function
-		 *  //should.should.be.node
-		 *  //should.should.not.be.node
+		 *  //expect().be.node
+		 *  //expect().not.be.node
 		 * })
 		 * .start();
 		 */
 		describe: function( describe, fn ) {
 			var self = this;
 
-			function testWrapper( target, describe ) {
-				return new TestWrapper( target, describe || "", self );
+			function expectWrapper( target, describe ) {
+				return new Expect( target, describe || "", self );
 			}
 
 			this.promise = this.promise.then( function( preResult ) {
 				info( this.name, describe );
 				try {
-					return fn( preResult, testWrapper, info );
+					return fn( preResult, expectWrapper, info );
 				} catch ( e ) {
 					error( e );
 					throw e;
@@ -314,7 +345,10 @@
 		 * @returns {this}
 		 */
 		start: function( firstResult ) {
+			var beginTime = new Date;
 			this.promise.done( function() {
+				this.timeConsuming = ( new Date() - beginTime ) / 1000;
+				info( "time-consuming:", this.timeConsuming, "seconds" );
 				Test[ this.fail == 0 ? "logger" : "error" ]( this.name, "Test stop", "Test:" + this.count, "Success" + ( this.count - this.fail ), "Fail:" + this.fail );
 				this.complete();
 				this.report();
@@ -334,124 +368,125 @@
 					name: this.name,
 					count: this.count,
 					fail: this.fail,
-					failInfoList: this.failInfoList
+					failInfoList: this.failInfoList,
+					timeConsuming: this.timeConsuming
 				} );
 			}
 			return this;
 		}
 	};
 
-	function TestWrapper( target, describe, testObject ) {
-		var testWrapper = this;
-		this.should = {
+	function Expect( target, describe, testObject ) {
+		var expectWrapper = this;
+		utilExtend.easyExtend( this, {
 			be: {
 				a: function( value ) {
-					testObject._isEqual( testWrapper.combineString( describe, "'" + String( target ) + "'", "should", "be", "a", "'" + String( value ) + "'" ), typeof target, value );
-					return testWrapper;
+					testObject._isEqual( expectWrapper.combineString( describe, "expect", "'" + String( target ) + "'", "be", "a", "'" + String( value ) + "'" ), typeof target, value );
+					return expectWrapper;
 				},
 				an: function( value ) {
-					testObject._isEqual( testWrapper.combineString( describe, "'" + String( target ) + "'", "should", "be", "an", "'" + String( value ) + "'" ), typeof target, value );
-					return testWrapper;
+					testObject._isEqual( expectWrapper.combineString( describe, "expect", "'" + String( target ) + "'", "be", "an", "'" + String( value ) + "'" ), typeof target, value );
+					return expectWrapper;
 				},
 				greater: {
 					than: function( value ) {
-						testObject._isEqual( testWrapper.combineString( describe, "'" + String( target ) + "'", "should", "be", "greater", "than", "'" + String( value ) + "'" ), target > value, true );
-						return testWrapper;
+						testObject._isEqual( expectWrapper.combineString( describe, "expect", "'" + String( target ) + "'", "be", "greater", "than", "'" + String( value ) + "'" ), target > value, true );
+						return expectWrapper;
 					}
 				},
 				less: {
 					than: function( value ) {
-						testObject._isEqual( testWrapper.combineString( describe, "'" + String( target ) + "'", "should", "be", "less", "than", "'" + String( value ) + "'" ), target &lt; value, true );
-						return testWrapper;
+						testObject._isEqual( expectWrapper.combineString( describe, "expect", "'" + String( target ) + "'", "be", "less", "than", "'" + String( value ) + "'" ), target &lt; value, true );
+						return expectWrapper;
 					}
 				},
 				instance: {
 					of: function( value ) {
-						testObject._beCall( testWrapper.combineString( describe, "'" + String( target ) + "'", "should", "instance", "of", value.name || "'" + String( value ) + "'" ), target instanceof value, true );
-						return testWrapper;
+						testObject._beCall( expectWrapper.combineString( describe, "expect", "'" + String( target ) + "'", "instance", "of", value.name || "'" + String( value ) + "'" ), target instanceof value, true );
+						return expectWrapper;
 					}
 				}
 			},
 			equal: function( value ) {
-				testObject._isEqual( testWrapper.combineString( describe, "'" + String( target ) + "'", "should", "equal", "'" + String( value ) + "'" ), target, value );
-				return testWrapper;
+				testObject._isEqual( expectWrapper.combineString( describe, "expect", "'" + String( target ) + "'", "equal", "'" + String( value ) + "'" ), target, value );
+				return expectWrapper;
 			},
 			have: {
 				length: function( value ) {
 					if ( typeof target.length !== "number" ) {
 						testObject.count++
 						testObject._fail( describe, "target", "have", "not", "length", sfail );
-						return testWrapper;
+						return expectWrapper;
 					}
 					if ( typeof value !== "number" ) {
 						testObject.count++
 						testObject._fail( describe, "parameter", "value is not a number", sfail );
-						return testWrapper;
+						return expectWrapper;
 					}
-					testObject._isEqual( testWrapper.combineString( describe, "'" + String( target ) + "'", "should", "have", "length", "'" + String( value ) + "'" ), target.length, value );
-					return testWrapper;
+					testObject._isEqual( expectWrapper.combineString( describe, "expect", "'" + String( target ) + "'", "have", "length", "'" + String( value ) + "'" ), target.length, value );
+					return expectWrapper;
 				},
 				property: function( name ) {
 					var bol = target != null && name in target;
-					testObject._isEqual( testWrapper.combineString( describe, "'" + String( target ) + "'", "should", "have", String( name ), "property" ), bol, true );
+					testObject._isEqual( expectWrapper.combineString( describe, "expect", "'" + String( target ) + "'", "have", String( name ), "property" ), bol, true );
 					if ( bol ) {
-						testWrapper = new TestWrapper( target[ name ], "With property " + name, testObject );
-						testWrapper.with = testWrapper;
+						expectWrapper = new Expect( target[ name ], "With property " + name, testObject );
+						expectWrapper.with = expectWrapper;
 					}
-					return testWrapper;
+					return expectWrapper;
 				},
 				index: function( index ) {
 					var bol = target != null && target[ index ] !== undefined;
-					testObject._isEqual( testWrapper.combineString( describe, "'" + String( target ) + "'", "should", "have", "index", index ), bol, true );
+					testObject._isEqual( expectWrapper.combineString( describe, "expect", "'" + String( target ) + "'", "have", "index", index ), bol, true );
 					if ( bol ) {
-						testWrapper = new TestWrapper( target[ index ], "With index " + index, testObject );
-						testWrapper.with = testWrapper;
+						expectWrapper = new Expect( target[ index ], "With index " + index, testObject );
+						expectWrapper.with = expectWrapper;
 					}
-					return testWrapper;
+					return expectWrapper;
 				}
 			},
 			exists: function() {
-				testObject._isEqual( testWrapper.combineString( describe, "'" + String( target ) + "'", "should", "exists" ), target !== undefined && target !== null, true );
-				return testWrapper;
+				testObject._isEqual( expectWrapper.combineString( describe, "expect", "'" + String( target ) + "'", "exists" ), target !== undefined && target !== null, true );
+				return expectWrapper;
 			},
 			not: {
 				equal: function( value ) {
-					testObject._isEqual( testWrapper.combineString( describe, "'" + String( target ) + "'", "should", "not", "equal", "'" + String( value ) + "'" ), target, value, true );
-					return testWrapper;
+					testObject._isEqual( expectWrapper.combineString( describe, "expect", "'" + String( target ) + "'", "not", "equal", "'" + String( value ) + "'" ), target, value, true );
+					return expectWrapper;
 				},
 				exists: function() {
-					testObject._isEqual( testWrapper.combineString( describe, "'" + String( target ) + "'", "should", "not", "exists" ), target == null, true );
-					return testWrapper;
+					testObject._isEqual( expectWrapper.combineString( describe, "expect", "'" + String( target ) + "'", "not", "exists" ), target == null, true );
+					return expectWrapper;
 				},
 				Throw: function() {
-					testObject._beCall( testWrapper.combineString( describe, "'" + String( target ) + "'", "should", "not", "Throw" ), target );
-					return testWrapper;
+					testObject._beCall( expectWrapper.combineString( describe, "expect", "'" + String( target ) + "'", "not", "Throw" ), target );
+					return expectWrapper;
 				},
 				be: {},
 				have: {
 					property: function( name ) {
 						var bol = target == null || !( name in target );
-						testObject._isEqual( testWrapper.combineString( describe, "'" + String( target ) + "'", "should", "not", "have", String( name ), "property" ), bol, true );
-						return testWrapper;
+						testObject._isEqual( expectWrapper.combineString( describe, "expect", "'" + String( target ) + "'", "not", "have", String( name ), "property" ), bol, true );
+						return expectWrapper;
 					},
 				}
 			},
 			Throw: function() {
-				testObject._beCall( testWrapper.combineString( describe, "'" + String( target ) + "'", "should", "Throw" ), target, true );
-				return testWrapper;
+				testObject._beCall( expectWrapper.combineString( describe, "expect", "'" + String( target ) + "'", "Throw" ), target, true );
+				return expectWrapper;
 			}
-		};
+		} );
 
-		this.should.be.greater.than.or = {
+		this.be.greater.than.or = {
 			equal: function( value ) {
-				testObject._isEqual( testWrapper.combineString( describe, "'" + String( target ) + "'", "should", "be", "greater", "than", "or", "equal", "'" + String( value ) + "'" ), target >= value, true );
-				return testWrapper;
+				testObject._isEqual( expectWrapper.combineString( describe, "expect", "'" + String( target ) + "'", "be", "greater", "than", "or", "equal", "'" + String( value ) + "'" ), target >= value, true );
+				return expectWrapper;
 			}
 		}
-		this.should.be.less.than.or = {
+		this.be.less.than.or = {
 			equal: function( value ) {
-				testObject._isEqual( testWrapper.combineString( describe, "'" + String( target ) + "'", "should", "be", "less", "than", "or", "equal", "'" + String( value ) + "'" ), target &lt;= value, true );
-				return testWrapper;
+				testObject._isEqual( expectWrapper.combineString( describe, "expect", "'" + String( target ) + "'", "be", "less", "than", "or", "equal", "'" + String( value ) + "'" ), target &lt;= value, true );
+				return expectWrapper;
 			}
 		}
 
@@ -471,21 +506,21 @@
 					fnName = fnName[ 0 ].toLowerCase() + fnName.slice( 1 );
 				}
 
-				testWrapper.should.be[ fnName ] = function( value ) {
-					testObject._isEqual( testWrapper.combineString( describe, "'" + String( target ) + "'", "should", "be", fnName ), typed[ name ]( target, value ), true );
-					return testWrapper;
+				expectWrapper.be[ fnName ] = function( value ) {
+					testObject._isEqual( expectWrapper.combineString( describe, "expect", "'" + String( target ) + "'", "be", fnName ), typed[ name ]( target, value ), true );
+					return expectWrapper;
 				}
 
-				testWrapper.should.not.be[ fnName ] = function( value ) {
-					testObject._isEqual( testWrapper.combineString( describe, "'" + String( target ) + "'", "should", "not", "be", fnName ), typed[ name ]( target, value ), false );
-					return testWrapper;
+				expectWrapper.not.be[ fnName ] = function( value ) {
+					testObject._isEqual( expectWrapper.combineString( describe, "expect", "'" + String( target ) + "'", "not", "be", fnName ), typed[ name ]( target, value ), false );
+					return expectWrapper;
 				}
 			}
 		} );
 
 	}
 
-	TestWrapper.prototype.combineString = function() {
+	Expect.prototype.combineString = function() {
 		return $.util.argToArray( arguments ).join( " " );
 	}
 

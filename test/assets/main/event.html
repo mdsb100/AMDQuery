@@ -28,133 +28,133 @@
         var a = 1;
       };
 
-      testEvent.describe("Test Event function", function(preResult, test, logger){
-        test(function(){
+      testEvent.describe("Test Event function", function(preResult, expect, logger){
+        expect(function(){
           event.on(diva, "foo bar back click", fn);
-        }).should.not.Throw();
+        }).not.Throw();
 
-        test(event.hasHandler(diva, "foo", fn), "diva has handler 'foo'").should.be.greater.than(-1);
-        test(event.hasHandler(diva, "bar", fn), "diva has handler 'bar'").should.be.greater.than(-1);
-        test(event.hasHandler(diva, "back", fn), "diva has handler 'back'").should.be.greater.than(-1);
-        test(event.hasHandler(diva, "click", fn), "diva has handler 'click'").should.be.greater.than(-1);
+        expect(event.hasHandler(diva, "foo", fn), "diva has handler 'foo'").be.greater.than(-1);
+        expect(event.hasHandler(diva, "bar", fn), "diva has handler 'bar'").be.greater.than(-1);
+        expect(event.hasHandler(diva, "back", fn), "diva has handler 'back'").be.greater.than(-1);
+        expect(event.hasHandler(diva, "click", fn), "diva has handler 'click'").be.greater.than(-1);
 
-        test(function(){
+        expect(function(){
           event.cloneHandlers(divb, diva);
-        }).should.not.Throw();
+        }).not.Throw();
 
-        test(event.getHandlers(diva), "diva handlers").should.equal(event.getHandlers(divb));
+        expect(event.getHandlers(diva), "diva handlers").equal(event.getHandlers(divb));
 
-        test(function(){
+        expect(function(){
           event.trigger(diva, "foo", diva, "result");
-        }).should.not.Throw();
+        }).not.Throw();
 
-        test(testResult).should.equal("result");
-        test(testContext).should.equal(diva);
+        expect(testResult).equal("result");
+        expect(testContext).equal(diva);
 
-        test(function(){
+        expect(function(){
           event.trigger(diva, "click", diva, {screenX:5});
-        }).should.not.Throw();
+        }).not.Throw();
 
-        test(testResult).should.exists();
-        test(testResult).should.have.property("type").with.should.equal("click");
-        test(testResult).should.have.property("screenX").with.should.equal(5);
+        expect(testResult).exists();
+        expect(testResult).have.property("type").with.equal("click");
+        expect(testResult).have.property("screenX").with.equal(5);
 
-        test(function(){
+        expect(function(){
           event.trigger(divb, "bar", divb, "result");
-        }).should.not.Throw();
+        }).not.Throw();
 
-        test(testResult).should.equal("result");
-        test(testContext).should.equal(divb);
+        expect(testResult).equal("result");
+        expect(testContext).equal(divb);
 
-        test(function(){
+        expect(function(){
           event.trigger(divb, "click", divb, {screenX:10});
-        }).should.not.Throw();
+        }).not.Throw();
 
-        test(testResult).should.exists();
-        test(testResult).should.have.property("type").with.should.equal("click");
-        test(testResult).should.have.property("screenX").with.should.equal(10);
+        expect(testResult).exists();
+        expect(testResult).have.property("type").with.equal("click");
+        expect(testResult).have.property("screenX").with.equal(10);
 
-        test(function(){
+        expect(function(){
           event.clearHandlers(divb);
-        }).should.not.Throw();
+        }).not.Throw();
 
-        test(function(){
+        expect(function(){
           event.off(diva, "bar click", fn);
-        }).should.not.Throw();
+        }).not.Throw();
 
-        test(event.hasHandler(diva, "bar", fn)).should.equal(-1);
+        expect(event.hasHandler(diva, "bar", fn)).equal(-1);
 
-        test(event.hasHandler(diva, "click", fn)).should.equal(-1);
+        expect(event.hasHandler(diva, "click", fn)).equal(-1);
 
-        test(fn.__proxy).should.not.exists();
+        expect(fn.__proxy).not.exists();
 
-        test(function(){
+        expect(function(){
           testResult = null;
           event.trigger(diva, "click", diva, {screenX:10});
-        }).should.not.Throw();
+        }).not.Throw();
 
-        test(testResult).should.equal(null);
+        expect(testResult).equal(null);
 
-        test(function(){
+        expect(function(){
           event.on(diva, "back", fn1);
-        }).should.not.Throw();
+        }).not.Throw();
 
-        test(event.getHandlers(diva, "back")).should.have.length(2);
+        expect(event.getHandlers(diva, "back")).have.length(2);
 
-        test(function(){
+        expect(function(){
           event.clear(diva, "back");
-        }).should.not.Throw();
+        }).not.Throw();
 
-        test(event.getHandlers(diva, "back")).should.not.exists();
+        expect(event.getHandlers(diva, "back")).not.exists();
 
-        test(function(){
+        expect(function(){
           event.clear(diva);
-        }).should.not.Throw();
+        }).not.Throw();
 
-        test(typed.isEmptyObject(event.getHandlers(diva))).should.equal(true);
+        expect(typed.isEmptyObject(event.getHandlers(diva))).equal(true);
 
-        test(function(){
+        expect(function(){
           event.once(diva, "click once", fn2);
-        }).should.not.Throw();
+        }).not.Throw();
 
-        test(event.hasHandler(diva, "click", fn2)).should.be.greater.than(-1);
-        test(event.hasHandler(diva, "once", fn2)).should.be.greater.than(-1);
+        expect(event.hasHandler(diva, "click", fn2)).be.greater.than(-1);
+        expect(event.hasHandler(diva, "once", fn2)).be.greater.than(-1);
 
-        test(function(){
+        expect(function(){
           event.trigger(diva, "once", diva);
-        }).should.not.Throw();
+        }).not.Throw();
 
-        test(function(){
+        expect(function(){
           event.trigger(diva, "click", diva, {screenX:10});
-        }).should.not.Throw();
+        }).not.Throw();
 
-        test(event.hasHandler(diva, "once", fn2)).should.equal(-1);
-        test(event.hasHandler(diva, "click", fn2)).should.equal(-1);
+        expect(event.hasHandler(diva, "once", fn2)).equal(-1);
+        expect(event.hasHandler(diva, "click", fn2)).equal(-1);
 
-        test(data.hasData(diva)).should.equal(false);
+        expect(data.hasData(diva)).equal(false);
 
-        test(function(){
+        expect(function(){
           event.toggle(diva, function(){
             diva.style.backgroundColor = "yellow"
           }, function(){
             diva.style.backgroundColor = "red"
           });
-        }).should.not.Throw();
+        }).not.Throw();
 
         event.trigger(diva, "click");
-        test(diva.style.backgroundColor).should.equal("yellow");
+        expect(diva.style.backgroundColor).equal("yellow");
 
         event.trigger(diva, "click");
-        test(diva.style.backgroundColor).should.equal("red");
+        expect(diva.style.backgroundColor).equal("red");
 
         event.trigger(diva, "click");
-        test(diva.style.backgroundColor).should.equal("yellow");
+        expect(diva.style.backgroundColor).equal("yellow");
 
-        test(function(){
+        expect(function(){
           event.toggle(diva);
-        }).should.not.Throw();
+        }).not.Throw();
 
-        test(data.hasData(diva)).should.equal(false);
+        expect(data.hasData(diva)).equal(false);
       })
       .start();
 

@@ -13,58 +13,58 @@
       "module/Test"
     ], function(typed, parse, communicate, Test) {
       var JSONStr ='{"firstName": "John","lastName": "Smith","isAlive": true,"age": 25,"height_cm": 167.64,"address": {"streetAddress": "21 2nd Street","city": "New York","state": "NY","postalCode": "10021-3100"},"phoneNumbers": [{ "type": "home", "number": "212 555-1234" },{ "type": "fax",  "number": "646 555-4567" }]}';
-      var testParse = new Test("parse")
-      .describe("Test parse JSON", function(preResult, test, logger){
+      var expectParse = new Test("parse")
+      .describe("Test parse JSON", function(preResult, expect, logger){
         var person;
-        test(function(){
+        expect(function(){
           person = parse.JSON(JSONStr);
-        }).should.not.Throw();
+        }).not.Throw();
 
-        test(function(){
+        expect(function(){
           parse.JSON(JSONStr+"abc");
-        }).should.Throw();
+        }).Throw();
 
-        test(person).should.have.property("firstName").with.should.equal("John");
+        expect(person).have.property("firstName").with.equal("John");
 
-        test(person).should.have.property("age").with.should.equal(25);
+        expect(person).have.property("age").with.equal(25);
 
-        test(person).should.have.property("isAlive").with.should.equal(true);
+        expect(person).have.property("isAlive").with.equal(true);
 
-        test(person).should.have.property("height_cm").with.should.equal(167.64);
+        expect(person).have.property("height_cm").with.equal(167.64);
 
-        test(person).should.have.property("address").with.should.be.plainObject();
+        expect(person).have.property("address").with.be.plainObject();
 
         var address = person.address;
 
-        test(address).should.have.property("city").with.should.equal("New York");
+        expect(address).have.property("city").with.equal("New York");
 
         var phoneNumbers = person.phoneNumbers;
 
-        test(phoneNumbers).should.be.array();
+        expect(phoneNumbers).be.array();
 
-        test(phoneNumbers).should.have.length(2);
+        expect(phoneNumbers).have.length(2);
 
-        test(phoneNumbers).should.have.index(0).with.should.have.property("type").with.should.equal("home");
+        expect(phoneNumbers).have.index(0).with.have.property("type").with.equal("home");
 
-        test(phoneNumbers).should.have.index(1).with.should.have.property("number").with.should.equal("646 555-4567");
+        expect(phoneNumbers).have.index(1).with.have.property("number").with.equal("646 555-4567");
 
-      }).describe("Test parse QueryString", function(preResult, test, logger){
+      }).describe("Test parse QueryString", function(preResult, expect, logger){
         var queryString = null;
-        test(function(){
+        expect(function(){
           queryString = parse.QueryString("name=Jarry&age=15");
-        }).should.not.Throw();
+        }).not.Throw();
 
-        test(queryString).should.have.property("name").with.should.equal("Jarry");
-        test(queryString).should.have.property("age").with.should.equal("15");
+        expect(queryString).have.property("name").with.equal("Jarry");
+        expect(queryString).have.property("age").with.equal("15");
 
-        test(function(){
+        expect(function(){
           queryString = parse.QueryString("name:Jarry!age:15", "!", ":");
-        }).should.not.Throw();
+        }).not.Throw();
 
-        test(queryString).should.have.property("name").with.should.equal("Jarry");
-        test(queryString).should.have.property("age").with.should.equal("15");
+        expect(queryString).have.property("name").with.equal("Jarry");
+        expect(queryString).have.property("age").with.equal("15");
 
-      }).describe("Test parse XML", function(preResult, test, logger){
+      }).describe("Test parse XML", function(preResult, expect, logger){
         var doc = null;
 
         communicate.ajax({
@@ -76,9 +76,9 @@
           }
         });
 
-        test(doc).should.have.property("getElementById").with.should.be.function();
+        expect(doc).have.property("getElementById").with.be.function();
 
-        test(doc.getElementById("index-navitem")).should.be.node("li");
+        expect(doc.getElementById("index-navitem")).be.node("li");
 
       }).start();
 

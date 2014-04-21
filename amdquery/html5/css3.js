@@ -1,38 +1,68 @@
-﻿aQuery.define( "html5/css3", [ "base/support", "base/extend", "base/typed", "base/client", "base/array", "main/css" ], function( $, support, utilExtend, typed, client, array, css2, undefined ) {
+aQuery.define( "html5/css3", [ "base/support", "base/extend", "base/typed", "base/client", "base/array", "main/css" ], function( $, support, utilExtend, typed, client, array, css2, undefined ) {
 	"use strict";
 	this.describe( "HTML5 CSS3" );
-	var css3Head = ( function() {
-		var head = "";
-		if ( client.engine.ie )
-			head = "ms";
-		else if ( client.engine.webkit || client.system.mobile )
-			head = "webkit";
-		else if ( client.engine.gecko )
-			head = "Moz";
-		else if ( client.engine.opera )
-			head = "O";
-		return head;
-	} )(),
-		transformCssName = "",
+
+	var
+	transformCssName = "",
 		transitionCssName = "",
 		hasCss3 = false,
 		hasTransform = false,
 		hasTransform3d = false,
 		hasTransition = false,
 		domStyle = document.documentElement.style,
+		css3Head = ( function() {
+			var head = "";
+			if ( client.engine.ie )
+				head = "ms";
+			else if ( client.engine.webkit || client.system.mobile )
+				head = "webkit";
+			else if ( client.engine.gecko )
+				head = "Moz";
+			else if ( client.engine.opera )
+				head = "O";
+			return head;
+		} )(),
+		vendorPropName = function( style, name ) {
+
+			// shortcut for names that are not vendor prefixed
+			var origName = name;
+			name = $.util.camelCase( origName );
+			if ( name in style ) {
+				return name;
+			}
+
+			// check for vendor prefixed names
+			name = $.util.camelCase( origName, css3Head );
+			if ( name in style ) {
+				return name;
+			}
+
+		},
 		getCss3Support = function( type ) {
 			return ( $.util.camelCase( type ) in domStyle || $.util.camelCase( type, css3Head ) in domStyle );
+		},
+		css3Hooks = {
+			linearGradient: {
+				styleKey: null
+			},
+			repeatingLinearGradient: {
+				styleKey: null
+			},
+			radialGradient: {
+				grammar: null,
+				styleKey: null
+			},
+			repeatingRadialGradient: {
+				grammar: null,
+				styleKey: null
+			}
 		},
 		css3Support = ( function() {
 			var result = {};
 
 			result.css3 = hasCss3 = getCss3Support( "boxShadow" );
 
-			if ( "transform" in domStyle ) {
-				transformCssName = "transform";
-			} else if ( ( css3Head + "Transform" ) in domStyle ) {
-				transformCssName = css3Head + "Transform";
-			}
+			transformCssName = vendorPropName( domStyle, "transform" );
 			result.transform = hasTransform = !! transformCssName;
 
 			if ( hasTransform ) {
@@ -43,25 +73,94 @@
 
 			result.animation = getCss3Support( "animationName" );
 
-			if ( "transition" in domStyle ) {
-				transitionCssName = "transition";
-			} else if ( ( css3Head + "Transition" ) in domStyle ) {
-				transitionCssName = css3Head + "Transition";
-			}
+			transitionCssName = vendorPropName( domStyle, "transition" );
 			result.transition = hasTransition = !! transitionCssName;
 
-			try {
-				domStyle.background = "-" + css3Head + "-linear-gradient" + "(left, white, black)";
-				result.gradientGrammar = domStyle.background.indexOf( "gradient" ) > -1;
-				domStyle.background = "";
-			} catch ( e ) {
+			function detectLinearGradient( name, head, styleKey, background ) {
+				if ( !result[ name ] ) {
+					try {
+						domStyle.background = head + styleKey + background;
+						result[ name ] = domStyle.background.indexOf( "gradient" ) > -1;
+						css3Hooks[ name ].styleKey = head + styleKey;
+					} catch ( e ) {
 
+					} finally {
+						domStyle.background = "";
+					}
+				}
 			}
+
+			var linearGradientKey = "linear-gradient(to ",
+				linearGradientValue = "left, white, black)",
+				linearGradientHead = "-" + css3Head.toLowerCase() + "-";
+
+			detectLinearGradient( "linearGradient", "", linearGradientKey, linearGradientValue );
+			detectLinearGradient( "linearGradient", linearGradientHead, linearGradientKey, linearGradientValue );
+
+			detectLinearGradient( "repeatingLinearGradient", "", "repeating-" + linearGradientKey, linearGradientValue );
+			detectLinearGradient( "repeatingLinearGradient", linearGradientHead, "repeating-" + linearGradientKey, linearGradientValue );
+
+			linearGradientKey = "linear-gradient("
+
+			detectLinearGradient( "linearGradient", "", linearGradientKey, linearGradientValue );
+			detectLinearGradient( "linearGradient", linearGradientHead, linearGradientKey, linearGradientValue );
+
+			detectLinearGradient( "repeatingLinearGradient", "", "repeating-" + linearGradientKey, linearGradientValue );
+			detectLinearGradient( "repeatingLinearGradient", linearGradientHead, "repeating-" + linearGradientKey, linearGradientValue );
+
+
+			function detectRadialGradient( name, head, styleKey, grammar, position, sizeAndShape, background ) {
+				if ( !result[ name ] ) {
+					try {
+						var str = [ head + styleKey ];
+						if ( grammar === "at" ) {
+							str.push( sizeAndShape, grammar, position + ",", background );
+						} else {
+							str.push( position + ",", sizeAndShape + ",", background );
+						}
+						domStyle.background = str.join( " " );
+						result[ name ] = domStyle.background.indexOf( "gradient" ) > -1;
+						css3Hooks[ name ].grammar = grammar;
+						css3Hooks[ name ].styleKey = head + styleKey;
+					} catch ( e ) {
+
+					} finally {
+						domStyle.background = "";
+					}
+				}
+			}
+
+			var radialGradientKey = "radial-gradient(",
+				radialGradientValue = "white, black )",
+				radialGradientGrammar = "at",
+				radialGradientPosition = "50% 50%",
+				radialSizeAndShape = "farthest-side circle",
+				radialGradientHead = "-" + css3Head.toLowerCase() + "-";
+
+			detectRadialGradient( "radialGradient", "", radialGradientKey, radialGradientGrammar, radialGradientPosition, radialSizeAndShape, radialGradientValue );
+			detectRadialGradient( "radialGradient", radialGradientHead, radialGradientKey, radialGradientGrammar, radialGradientPosition, radialSizeAndShape, radialGradientValue );
+
+			detectRadialGradient( "repeatingRadialGradient", "", "repeating-" + radialGradientKey, radialGradientGrammar, radialGradientPosition, radialSizeAndShape, radialGradientValue );
+			detectRadialGradient( "repeatingRadialGradient", radialGradientHead, "repeating-" + radialGradientKey, radialGradientGrammar, radialGradientPosition, radialSizeAndShape, radialGradientValue );
+
+			detectRadialGradient( "radialGradient", "", radialGradientKey, "", radialGradientPosition, radialSizeAndShape, radialGradientValue );
+			detectRadialGradient( "radialGradient", radialGradientHead, radialGradientKey, "", radialGradientPosition, radialSizeAndShape, radialGradientValue );
+
+			detectRadialGradient( "repeatingRadialGradient", "", "repeating-" + radialGradientKey, "", radialGradientPosition, radialSizeAndShape, radialGradientValue );
+			detectRadialGradient( "repeatingRadialGradient", radialGradientHead, "repeating-" + radialGradientKey, "", radialGradientPosition, radialSizeAndShape, radialGradientValue );
 
 			return result;
 		} )(),
 		isFullCss = function( value ) {
 			return value != "" && value !== "none" && value != null;
+		}, orientationMap = {
+			"top": "50% 100%, 50% 0%",
+			"bottom": "50% 0%, 50% 100%",
+			"left": "100% 50%, 0% 50%",
+			"top left": "100% 100%, 0% 0%",
+			"top right": "0% 0%, 100% 100%",
+			"bottom right": "0% 0%, 100% 100%",
+			"bottom left": "100% 0%, 0% 100%"
 		};
 
 	if ( hasTransform ) {
@@ -121,28 +220,6 @@
 					result.push( value.replace( ")", "" ).split( regTransform ) );
 				} );
 				return result;
-			},
-			editCss3Type = function( name ) {
-				var temp, unit = "";
-				switch ( name ) {
-					case "transform":
-						name = this.transform;
-						break;
-					case "transform3d":
-						name = this.transform3d;
-						break;
-					case "transformOrigin":
-						name = this.transformOrigin;
-						break;
-				}
-				if ( ( temp = $.interfaces.trigger.call( this, "editCss3Type", name ) ) ) {
-					name = temp.name;
-					unit = temp.unit;
-				}
-				return {
-					name: name,
-					unit: unit
-				};
 			};
 	}
 	if ( hasTransition ) {
@@ -175,27 +252,201 @@
 			};
 	}
 
-	$.interfaces.handlers.editCss3Type = null;
-
-	css2.vendorPropName = function( style, name ) {
-
-		// shortcut for names that are not vendor prefixed
-		if ( name in style ) {
-			return name;
+	var createLinearGradient = function( key ) {
+		function setDefaultColor( ele, option ) {
+			if ( option.defaultColor ) {
+				ele.style.background = option.defaultColor;
+			}
 		}
 
-		// check for vendor prefixed names
-		var capName = name.charAt( 0 ).toUpperCase() + name.slice( 1 ),
-			origName = name;
-		name = css3Head + capName;
-		if ( name in style ) {
-			return name;
+		if ( css3Support[ key ] ) {
+			return function( ele, option ) {
+				setDefaultColor( ele, option );
+				var str = [];
+				str.push( css3Hooks[ key ].styleKey );
+				if ( option.orientation ) {
+					str.push( option.orientation, "," );
+				}
+				$.each( option.colorStops, function( value, index ) {
+					str.push( value.color );
+					if ( typed.isNumber( value.stop ) ) {
+						str.push( " " + value.stop * 100, "%" );
+					} else if ( typed.isString( value.stop ) ) {
+						str.push( " " + value.stop );
+					}
+					if ( option.colorStops.length - 1 !== index ) {
+						str.push( "," );
+					}
+				} );
+				str.push( ")" );
+				ele.style.backgroundImage = str.join( "" );
+				return this;
+			}
+		} else if ( client.browser.chrome > 10 || client.browser.safari >= 5.1 || client.system.mobile ) {
+			return function( ele, option ) {
+				setDefaultColor( ele, option );
+				var str = [],
+					orientation = option.orientation,
+					length = option.colorStops.length;
+
+				str.push( "-webkit-gradient", "(linear, " );
+
+				if ( orientation != undefined ) {
+					str.push( orientation, ", " );
+				}
+
+				str.push( "from(", option.colorStops[ 0 ].color, ")" );
+				$.each( option.colorStops, function( value, index ) {
+					str.push( ",", "color-stop", "(" );
+
+					if ( typed.isNumber( value.stop ) ) {
+						str.push( value.stop, ", " );
+					} else if ( typed.isString( value.stop ) && /%$/.test( value.stop ) ) {
+						str.push( value.stop, ", " );
+					} else {
+						str.push( ( 1 / ( length + 1 ) * ( index + 1 ) ).toFixed( 2 ), ", " );
+					}
+					str.push( value.color );
+
+					str.push( ")" );
+				} );
+				str.push( ", to(", option.colorStops[ length - 1 ].color, ")" );
+				str.push( ")" );
+				ele.style, backgroundImage = str.join( "" );
+				return this;
+			}
+		} else if ( client.browser.ie == 9 ) {
+			return function( ele, option ) {
+				setDefaultColor( ele, option );
+				var str = [];
+				str.push( "progid:DXImageTransform.Microsoft.gradient", "(" );
+				str.push( "startColorstr=", "'", option.colorStops[ 0 ].color, "'" );
+				str.push( ",", "endColorstr=", "'", option.colorStops[ option.colorStops.length - 1 ].color, "'" );
+				str.push( ")" );
+				ele.style.filter = str.join( "" );
+				return this;
+			}
 		}
 
-		return origName;
+		return function( ele, option ) {
+			setDefaultColor( ele, option );
+			return this;
+		}
+	};
+
+	var createRadialGradient = function( key ) {
+		function setDefaultColor( ele, option ) {
+			if ( option.defaultColor ) {
+				ele.style.background = option.defaultColor;
+			}
+		}
+
+		if ( css3Support[ key ] ) {
+			return function( ele, option ) {
+				setDefaultColor( ele, option );
+				var str = [];
+				str.push( css3Hooks[ key ].styleKey );
+				var comma = false;
+				if ( css3Hooks[ key ].grammar ) {
+
+					if ( option.size != undefined ) {
+						str.push( option.size, " " );
+						comma = true;
+					}
+					if ( option.shape != undefined ) {
+						str.push( option.shape, " " );
+						comma = true;
+					}
+					if ( ( option.size || option.shape ) && option.position != undefined ) {
+						str.push( css3Hooks[ key ].grammar, " " );
+					}
+					if ( option.position != undefined ) {
+						str.push( option.position );
+						comma = true;
+					}
+					if ( comma ) {
+						str.push( ", " );
+					}
+				} else {
+					if ( option.position != undefined ) {
+						str.push( option.position, ", " );
+					}
+					if ( option.size != undefined ) {
+						str.push( option.size, " " );
+						comma = true;
+					}
+					if ( option.shape != undefined ) {
+						str.push( option.shape );
+						comma = true;
+					}
+					if ( comma ) {
+						str.push( ", " );
+					}
+				}
+
+				$.each( option.colorStops, function( value, index ) {
+					str.push( value.color );
+					if ( typed.isNumber( value.stop ) ) {
+						str.push( " " + value.stop * 100, "%" );
+					} else if ( typed.isString( value.stop ) ) {
+						str.push( " " + value.stop );
+					}
+					if ( option.colorStops.length - 1 !== index ) {
+						str.push( "," );
+					}
+				} );
+				str.push( ")" );
+				ele.style.backgroundImage = str.join( "" );
+				return this;
+			}
+		} else if ( client.browser.chrome > 10 || client.browser.safari >= 5.1 || client.system.mobile ) {
+			return function( ele, option ) {
+				setDefaultColor( ele, option );
+				var str = [];
+				str.push( "-webkit-gradient", "(radial," );
+				str.push( option.position, ", ", "0, " );
+				str.push( option.position, ", ", Math.max( ele.offsetWidth, ele.offsetHeight ), ", " );
+				str.push( "from(", option.colorStops[ 0 ].color, ")" );
+				$.each( option.colorStops, function( value, index ) {
+					str.push( ",", "color-stop", "(" );
+
+					if ( typed.isNumber( value.stop ) ) {
+						str.push( value.stop * 100, "%", ", " );
+					} else if ( typed.isString( value.stop ) && /%$/.test( value.stop ) ) {
+						str.push( value.stop, ", " );
+					} else {
+						str.push( ( 1 / ( option.colorStops.length + 1 ) * ( index + 1 ) * 100 ).toFixed( 2 ), "%, " );
+					}
+					str.push( value.color );
+
+					str.push( ")" );
+				} );
+				str.push( ", to(", option.colorStops[ option.colorStops.length - 1 ].color, ")" );
+				str.push( ")" );
+				ele.style.backgroundImage = str.join( "" );
+				return this;
+			}
+		} else if ( client.browser.ie == 9 ) {
+			return function( ele, option ) {
+				setDefaultColor( ele, option );
+				var str = [];
+				str.push( "progid:DXImageTransform.Microsoft.gradient", "(" );
+				str.push( "startColorstr=", "'", option.colorStops[ 0 ].color, "'" );
+				str.push( ",", "endColorstr=", "'", option.colorStops[ option.colorStops.length - 1 ].color, "'" );
+				str.push( ")" );
+				ele.style.filter = str.join( "" );
+				return this;
+			}
+		}
+
+		return function( ele, option ) {
+			setDefaultColor( ele, option );
+			return this;
+		}
 	};
 
 	var css3 = {
+		hooks: css3Hooks,
 		transformCssName: transformCssName,
 		transitionCssName: transitionCssName,
 		getTransformStyleNameUnCamelCase: function() {
@@ -211,32 +462,9 @@
 				transitionCssName;
 		},
 		addTransition: function( ele, style ) {
-			/// <summary>添加transition属性
-			/// <para>可以如下方式设置</para>
-			/// <para>$.addTransition(ele, "background-color 1s linear")</para>
-			/// <para>$.addTransition(ele, {name:"width"}) 为obj时可缺省duration,function</para>
-			/// <para>$.addTransition(ele, [{name:"width",duration:"1s",function:"linear"}, {name:"height"])</para>
-			/// <para>$.addTransition(ele, ["background-color 1s linear", "width 1s linear"])</para>
-			/// </summary>
-			/// <param name="ele" type="Element">元素</param>
-			/// <param name="style" type="Array/Object/String">值得数组或值</param>
-			/// <returns type="self" />
 			return $.setTransition( ele, style, css2.css( ele, transitionCssName ) );
 		},
 		bindTransition: function( ele, style ) {
-			/// <summary>添加transition属性并绑定事件
-			/// <para>可以如下方式设置</para>
-			/// <para>[{ name: "background-color", duration: "1s", "function": "linear"</para>
-			/// <para>       , events: {</para>
-			/// <para>           mouseover: "#ff0"</para>
-			/// <para>           , mouseout: "#00f"</para>
-			/// <para>       }</para>
-			/// <para>       , toggle: ["#ff0", "#00f"]</para>
-			/// <para>}]）</para>
-			/// </summary>
-			/// <param name="ele" type="Element">元素</param>
-			/// <param name="style" type="Array/Object">值得数组或值</param>
-			/// <returns type="self" />
 			var eleObj = $( ele );
 			if ( !typed.isArray( style ) ) {
 				style = [ style ];
@@ -261,48 +489,35 @@
 		},
 
 		css3: function( ele, name, value ) {
-			/// <summary>css3的操作，不需要加浏览器特殊头。如果可以，还是使用css和自己加头的方式，性能更高。
-			/// <para>头可以如此获得$.css3Head</para>
-			/// </summary>
-			/// <param name="ele" type="Element">元素</param>
-			/// <param name="name" type="String">样式名</param>
-			/// <param name="value" type="String/Number/undefined">值</param>
-			/// <returns type="self" />
 			if ( hasCss3 ) {
 				name = $.util.camelCase( name );
-				if ( !name in domStyle ) {
-					name = $.util.camelCase( name, css3Head )
+				var hook = css3Hooks[ name ];
+				if ( hook ) {
+					if ( hook.set && value !== undefined ) {
+						hook.set( ele, value );
+					} else if ( hook.get && value === undefined ) {
+						return hook.get( ele );
+					}
+				} else {
+					name = this.vendorPropName( ele, name );
+					if ( value === undefined ) {
+						return css2.css( ele, name );
+					} else {
+						css2.css( ele, name, value );
+					}
 				}
-				css2.css( ele, name, value );
 			}
 			return this;
 		},
 		css3Head: css3Head,
 		css3Style: function( ele, name ) {
-			/// <summary>返回样式表css3的属性，其实是默认加了个head</summary>
-			/// <param name="ele" type="Element">元素</param>
-			/// <param name="name" type="String">样式名</param>
-			/// <returns type="self" />
 			return css2.style( ele, name, css3Head );
 		},
 
 		getCss3Support: function( type ) {
-			/// <summary>是否支持css3的某个特性</summary>
-			/// <param name="type" type="String">元素</param>
-			/// <returns type="Boolean" />
 			return getCss3Support( type );
 		},
 		getTransform: function( ele, name ) {
-			/// <summary>transform有顺序之别 获得transform样式
-			/// <para>头可以如此获得$.css3Head</para>
-			/// <para>[["translate", "50px", "50px"], ["rotate", "30deg"], ["skew", "30deg", "30deg"]]</para>
-			/// <para>如果name存在[["translate", "50px", "50px"]]</para>
-			/// <para>如果name不为空则Object只有name那个选项</para>
-			/// <para>如果name不是transform的属性名 则返回{"notIn":null}</para>
-			/// </summary>
-			/// <param name="ele" type="Element">元素</param>
-			/// <param name="name" type="String">样式名 缺省则返回所有的</param>
-			/// <returns type="Array" />
 			var result = [];
 			if ( hasTransform ) {
 				var transform = css2.css( ele, transformCssName ),
@@ -319,20 +534,6 @@
 			return result;
 		},
 		getTransform3d: function( ele, toNumber ) {
-			/// <summary>获得css3d
-			/// <para>返回的 Object属性</para>
-			/// <para>num obj.rotateX:x轴旋转</para>
-			/// <para>num obj.rotateY:y轴旋转</para>
-			/// <para>num obj.rotateZ:z轴旋转</para>
-			/// <para>num obj.translateX:x轴位移</para>
-			/// <para>num obj.translateY:y轴位移</para>
-			/// <para>num obj.translateZ:z轴位移</para>
-			/// <para>num obj.scaleX:缩放（范围0到1）</para>
-			/// <para>num obj.scaleY:缩放（范围0到1）</para>
-			/// </summary>
-			/// <param name="ele" type="Element">元素</param>
-			/// <param name="toNumber" type="Boolean">是否直接把返回的结果转为数字</param>
-			/// <returns type="Object" />
 			var obj = {};
 			if ( hasTransform3d ) {
 				obj = {
@@ -374,12 +575,6 @@
 			return obj;
 		},
 		getTransform3dByName: function( ele, name, toNumber ) {
-			/// <summary>获得css3d
-			/// </summary>
-			/// <param name="ele" type="Element">元素</param>
-			/// <param name="name" type="String">属性名</param>
-			/// <param name="toNumber" type="Boolean">是否直接把返回的结果转为数字</param>
-			/// <returns type="Object" />
 			var result = null,
 				index;
 			if ( hasTransform3d ) {
@@ -411,16 +606,6 @@
 			return result && result.length ? ( toNumber === true ? parseFloat( result[ index ] ) : result[ index ] ) : null;
 		},
 		getTransformOrigin: function( ele ) {
-			/// <summary>返回元素的运动的基点(参照点)。返回值是百分比。
-			/// <para>transform–origin(x,y)</para>
-			/// <para>return {x:x,y:y}</para>
-			/// <para>x也可指定字符值参数: left,center,right.</para>
-			/// <para>y也可指定字符值参数: top,center,right.</para>
-			/// <para>left == 0%,center == 50%,right == 100%</para>
-			/// <para>top == 0%,center == 50%,right == 100%</para>
-			/// </summary>
-			/// <param name="ele" type="Element">元素</param>
-			/// <returns type="Object" />
 			var result = {};
 			if ( hasTransform ) {
 				var origin = ele.style[ transformCssName + "Origin" ];
@@ -433,16 +618,6 @@
 			return result;
 		},
 		getTransition: function( ele, name ) {
-			/// <summary>获得transition样式
-			/// <para>[{name:"width",duration:"1s",function:"leaner"},{name:"height",duration:"1s",function:"linear"}]</para>
-			/// <para>如果name是transition包含的</para>
-			/// <para>返回数组只有name那个选项[{name:"width",duration:"1s",function:"leaner"}]</para>
-			/// <para>如果name不是transition包含的 则返回[{}]</para>
-			/// <para>返回的result是数组，但是也可以使用result[name]得到确切的某个name</para>
-			/// </summary>
-			/// <param name="ele" type="Element">元素</param>
-			/// <param name="name" type="String">transition包含的样式名 缺省则返回所有的</param>
-			/// <returns type="Array" />
 			var result = [];
 			if ( hasTransform ) {
 				var transition = css2.css( ele, transitionCssName ),
@@ -462,145 +637,21 @@
 		},
 
 		initTransform3d: function( ele, perspective, perspectiveOrigin ) {
-			/// <summary>初始化css3d这样它的子元素才能被set3d</summary>
-			/// <param name="ele" type="Element">元素</param>
-			/// <param name="perspective" type="Number">井深</param>
-			/// <param name="perspectiveOrigin" type="String">视角；如:"50% 50%"</param>
-			/// <returns type="self" />
 			if ( hasTransform3d ) {
 				var style = ele.style;
-				style[ css3Head + "TransformStyle" ] = "preserve-3d";
-				style[ css3Head + "Perspective" ] = perspective || 300;
-				style[ css3Head + "PerspectiveOrigin" ] = perspectiveOrigin || "50% 50%";
+				style[ vendorPropName( style, "TransformStyle" ) ] = "preserve-3d";
+				style[ vendorPropName( style, "Perspective" ) ] = perspective || 300;
+				style[ vendorPropName( style, "PerspectiveOrigin" ) ] = perspectiveOrigin || "50% 50%";
 			}
 			return this;
 		},
 
-		linearGradient: function( ele, option ) {
-			/// <summary>设置线性渐变
-			/// <para>str option.orientation</para>
-			/// <para>arr option.colorStops</para>
-			/// <para>num option.colorStops[0].stop</para>
-			/// <para>str option.colorStops[0].color</para>
-			/// </summary>
-			/// <param name="ele" type="Element">元素</param>
-			/// <param name="obj" type="Object">参数</param>
-			/// <returns type="self" />
-			var str = [],
-				type = "backgroundImage";
-			if ( option.defaultColor ) {
-				ele.style.background = option.defaultColor;
-			}
-			if ( css3Support.gradientGrammar ) {
-				str.push( "-", css3Head, "-linear-gradient", "(" );
-				str.push( option.orientation.normal || option.orientation );
-				$.each( option.colorStops, function( value, index ) {
-					str.push( ",", value.color );
-				} );
-			} else if ( client.browser.chrome > 10 || client.browser.safari >= 5.1 || client.system.mobile ) {
-				str.push( "-webkit-gradient", "(linear," );
-				str.push( option.orientation.webkit );
-				$.each( option.colorStops, function( value, index ) {
-					str.push( ",", "color-stop", "(", value.stop, ",", value.color, ")" );
-				} );
-			}
-			//            else if (client.browser.firefox >= 3.63) {
-			//                str.push("-moz-linear-gradient", "(");
-			//                str.push(option.orientation.moz);
-			//                $.each(option.colorStops, function (value, index) {
-			//                    str.push(",", value.color);
-			//                });
-			//            }
-			else if ( client.browser.ie == 10 ) {
-				str.push( "-ms-linear-gradient", "(" );
-				str.push( option.orientation.ms, "," );
-				$.each( option.colorStops, function( value, index ) {
-					str.push( ",", value.color, " ", value.stop * 100, "%" );
-				} );
-				str.push( ",turquoise" );
-			} else if ( client.browser.ie == 9 ) {
-				str.push( "progid:DXImageTransform.Microsoft.gradient", "(" );
-				str.push( "startColorstr=", "'", option.colorStops[ 0 ].color, "'" );
-				str.push( ",", "endColorstr=", "'", option.colorStops[ option.colorStops.length - 1 ].color, "'" );
-				type = "filter";
-			}
-			//            else if (client.browser.opera >= 11.1) {
-			//                str.push("-o-linear-gradient", "(");
-			//                str.push(option.orientation.o);
-			//                $.each(option.colorStops, function (value, index) {
-			//                    str.push(",", value.color);
-			//                });
-			//            }
-			str.push( ")" );
-			ele.style[ type ] = str.join( "" );
-			return this;
-		},
+		linearGradient: createLinearGradient( "linearGradient" ),
 
-		radialGradient: function( ele, option ) {
-			/// <summary>设置径向渐变
-			/// <para>str option.radial</para>
-			/// <para>arr option.colorStops</para>
-			/// <para>num option.colorStops[0].stop</para>
-			/// <para>str option.colorStops[0].color</para>
-			/// </summary>
-			/// <param name="ele" type="Element">元素</param>
-			/// <param name="obj" type="Object">参数</param>
-			/// <returns type="self" />
-			var str = [];
-			if ( option.defaultColor ) {
-				ele.style.background = option.defaultColor;
-			}
-			if ( css3Support.gradientGrammar ) {
-				str.push( "-", css3Head, "-radial-gradient", "(" );
-				str.push( option.radial.normal.x || option.radial.x, " ", option.radial.normal.y || option.radial.y );
-				$.each( option.colorStops, function( value, index ) {
-					str.push( ",", value.color, " ", value.stop * 100, "%" );
-				} );
-			} else if ( client.browser.chrome > 10 || client.browser.safari >= 5.1 || client.system.mobile ) {
-				str.push( "-webkit-gradient", "(radial" );
-				$.each( option.radial.webkit, function( value, index ) {
-					str.push( ",", value.x, " ", value.y, ",", value.r );
-				} );
-				$.each( option.colorStops, function( value, index ) {
-					str.push( ",", "color-stop", "(", value.stop, ",", value.color, ")" );
-				} );
-			} else if ( client.browser.ie == 10 ) {
-				str.push( "-ms-linear-gradient", "(" );
-				str.push( option.radial.ms.x, ",", "circle cover" );
-				$.each( option.colorStops, function( value, index ) {
-					str.push( ",", value.color, " ", value.stop * 100, "%" );
-				} );
-				str.push( ",turquoise" );
-			} else if ( client.browser.opera >= 11.6 ) {
-				str.push( "-o-radial-gradient", "(" );
-				$.each( option.radial.o, function( value, index ) {
-					str.push( value.x, " ", value.y, "," );
-				} );
-				var stop = option.colorStops,
-					temp;
-				temp = stop.splice( 0, 1 )[ 0 ];
-				str.push( temp.color, " " );
-				temp = stop.splice( stop.length - 1, 1 )[ 0 ];
-				$.each( stop, function( value, index ) {
-					str.push( ",", value.color, " ", value.stop * 100, "%" );
-				} );
-				str.push( ",", temp.color );
-			}
-			str.push( ")" );
-			ele.style.backgroundImage = str.join( "" );
-			return this;
-		},
+		repeatingLinearGradient: createLinearGradient( "repeatingLinearGradient" ),
+		//https://developer.mozilla.org/en-US/docs/Web/CSS/radial-gradient
+		radialGradient: createRadialGradient( "radialGradient" ),
 		removeTransition: function( ele, style ) {
-			/// <summary>移除transition属性
-			/// <para>可以如下方式设置</para>
-			/// <para>$.removeTransition(ele, "background-color")</para>
-			/// <para>$.removeTransition(ele, ["background-color", "width"])</para>
-			/// <para>$.removeTransition(ele, {name:"background-color"})</para>
-			/// <para>$.removeTransition(ele, [{name:"width"},"height"])</para>
-			/// </summary>
-			/// <param name="ele" type="Element">元素</param>
-			/// <param name="style" type="String/Array/undefined">值得数组或值</param>
-			/// <returns type="self" />
 			var list, transition = css2.css( ele, transitionCssName ),
 				match, n = arguments[ 2 ] || "";
 			if ( style == undefined ) {
@@ -625,29 +676,10 @@
 			return css2.css( ele, transitionCssName, transition );
 		},
 		replaceTransition: function( ele, name, value ) {
-			/// <summary>覆盖transition属性
-			/// <para>可以如下方式设置</para>
-			/// <para>$.replaceTransition(ele, "background-color","background-color 2s linear")</para>
-			/// </summary>
-			/// <param name="ele" type="Element">元素</param>
-			/// <param name="style" type="String">值得数组或值</param>
-			/// <param name="style" type="String">值得数组或值</param>
-			/// <returns type="self" />
 			return $.removeTransition( ele, name, value );
 		},
 
 		setRotate3d: function( ele, obj ) {
-			/// <summary>设置所有元素的css3d旋转
-			/// <para>num rx:x轴旋转 不带单位</para>
-			/// <para>num ry:y轴旋转</para>
-			/// <para>num rz:z轴旋转</para>
-			/// <para>num rotateX:x轴旋转 带单位</para>
-			/// <para>num rotateY:y轴旋转</para>
-			/// <para>num rotateZ:z轴旋转</para>
-			/// </summary>
-			/// <param name="ele" type="Element">元素</param>
-			/// <param name="obj" type="Object">参数</param>
-			/// <returns type="self" />
 			if ( !obj || !hasTransform3d ) return this;
 
 			var origin = $.getTransform3d( ele ),
@@ -661,12 +693,6 @@
 			ele.style[ transformCssName ] = editRotate3d( obj ).join( "" );
 		},
 		setScale: function( ele, obj ) {
-			/// <summary>设置css3d scale缩放 3d和普通都一样
-			/// <para>num scale:缩放（范围0到1）</para>
-			/// </summary>
-			/// <param name="ele" type="Element">元素</param>
-			/// <param name="obj" type="Object">参数</param>
-			/// <returns type="self" />
 			if ( !obj || !hasTransform3d ) return this;
 
 			var origin = $.getTransform3d( ele ),
@@ -680,13 +706,6 @@
 			return this;
 		},
 		setTransform: function( ele, style ) {
-			/// <summary>设置transform属性 transform有顺序之别
-			/// <para>头可以如此获得$.css3Head</para>
-			/// <para>数组形式为[["translate","30px","30px"],["skew","30px","30px"]]</para>
-			/// </summary>
-			/// <param name="ele" type="Element">元素</param>
-			/// <param name="style" type="Array">样式名数组或样式名</param>
-			/// <returns type="self" />
 			if ( hasTransform && typed.isArray( style ) ) {
 				var result = [];
 
@@ -701,42 +720,12 @@
 			return this;
 		},
 		setTransform3d: function( ele, obj ) {
-			/// <summary>设置css3d 默认是先translate ==> rotate ==> scale
-			/// <para>如果要改变顺序 请使用setTransform</para>
-			/// <para>设置的Object属性:</para>
-			/// <para>num obj.rx:x轴旋转 不带单位</para>
-			/// <para>num obj.ry:y轴旋转</para>
-			/// <para>num obj.rz:z轴旋转</para>
-			/// <para>num obj.tx:x轴位移</para>
-			/// <para>num obj.ty:y轴位移</para>
-			/// <para>num obj.tz:z轴位移</para>
-			/// <para>num obj.sx:缩放（范围0到1）</para>
-			/// <para>num obj.sy:缩放（范围0到1）</para>
-			/// <para>num obj.rotateX:x轴旋转 带单位</para>
-			/// <para>num obj.rotateY:y轴旋转</para>
-			/// <para>num obj.rotateZ:z轴旋转</para>
-			/// <para>num obj.translateX:x轴位移</para>
-			/// <para>num obj.translateY:y轴位移</para>
-			/// <para>num obj.translateZ:z轴位移</para>
-			/// <para>num obj.scaleX:缩放（范围0到1）</para>
-			/// <para>num obj.scaleY:缩放（范围0到1）</para>
-			/// </summary>
-			/// <param name="ele" type="Element">元素</param>
-			/// <param name="obj" type="Object">参数</param>
-			/// <returns type="self" />
 			if ( !obj || !hasTransform3d ) return this;
 			obj = utilExtend.extend( $.getTransform3d( ele ), obj );
 			css2.css( ele, transformCssName, editTranslate3d( obj ).concat( editRotate3d( obj ) ).concat( editScale( obj ) ).join( "" ) );
 			return this;
 		},
 		setTransformByCurrent: function( ele, style ) {
-			/// <summary>设置transform属性 transform有顺序之别
-			/// <para>如果已有transform样式，将会按照原先顺序赋值 没有的将按顺序push进去</para>
-			/// <para>数组形式为[["translate","30px","30px"],["skew","30px","30px"]]</para>
-			/// <para>若其中一个为空，则结果是原值[["translate","","30px"]]</para>
-			/// </summary>
-			/// <param name="style" type="Array">样式名数组</param>
-			/// <returns type="self" />
 			if ( hasTransform && style ) {
 				var transform = $.getTransform( ele ),
 					pushList = [],
@@ -769,7 +758,7 @@
 						if ( z == 0 ) {
 							pushList.push( item1 );
 						}
-						z = 0; //初始化是否找到
+						z = 0;
 					} else {
 						style.splice( i, 1 );
 					}
@@ -787,36 +776,15 @@
 			return this;
 		},
 		setTransformOrigin: function( ele, style ) {
-			/// <summary>用来设置元素的运动的基点(参照点).默认为元素中心点.
-			/// <para>transform–origin(x,y)</para>
-			/// <para>style.x style.y</para>
-			/// <para>x也可指定字符值参数: left,center,right.</para>
-			/// <para>y也可指定字符值参数: top,center,right.</para>
-			/// <para>left == 0%,center == 50%,right == 100%</para>
-			/// <para>top == 0%,center == 50%,right == 100%</para>
-			/// </summary>
-			/// <param name="ele" type="Element">元素</param>
-			/// <param name="style" type="Object">参数</param>
-			/// <returns type="self" />
 			if ( hasTransform && style ) {
 				css2.css( ele, transformCssName + "Origin", [ style.x || "left", " ", style.y || "top" ].join( "" ) );
 			}
 			return this;
 		},
 		setTransition: function( ele, style ) {
-			/// <summary>设置transition属性
-			/// <para>可以如下方式设置</para>
-			/// <para>$.setTransition(ele, "background-color 1s linear")</para>
-			/// <para>$.setTransition(ele, {name:"width"}) 为obj时可缺省duration,function</para>
-			/// <para>$.setTransition(ele, [{name:"width",duration:"1s",function:"linear"}, {name:"height"])</para>
-			/// <para>$.setTransition(ele, ["background-color 1s linear", "width 1s linear"])</para>
-			/// </summary>
-			/// <param name="ele" type="Element">元素</param>
-			/// <param name="style" type="Array/Object/String">值得数组或值</param>
-			/// <returns type="self" />
 			if ( hasTransition ) {
 				var result = "",
-					origin = arguments[ 2 ] ? arguments[ 2 ] : ""; //原始origin一样的 替换掉 或许不应该改由浏览器自己控制
+					origin = arguments[ 2 ] ? arguments[ 2 ] : "";
 				if ( typed.isString( style ) ) {
 					result = style;
 				} else if ( typed.isObject( style ) ) {
@@ -841,17 +809,6 @@
 			return this;
 		},
 		setTranslate3d: function( ele, obj ) {
-			/// <summary>设置css3d的translate3d
-			/// <para>num tx:x轴位移 不带单位</para>
-			/// <para>num ty:y轴位移</para>
-			/// <para>num tz:z轴位移</para>
-			/// <para>num translateX:x轴位移 带单位</para>
-			/// <para>num translateY:y轴位移</para>
-			/// <para>num translateZ:z轴位移</para>
-			/// </summary>
-			/// <param name="ele" type="Element">元素</param>
-			/// <param name="obj" type="Object">参数</param>
-			/// <returns type="self" />
 			if ( !obj || !hasTransform3d ) return this;
 			var origin = $.getTransform3d( ele ),
 				temp = {
@@ -863,268 +820,110 @@
 
 			css2.css( ele, transformCssName, editTranslate3d( obj ).join( "" ) );
 			return this;
+		},
+		vendorPropName: function( ele, name ) {
+			return vendorPropName( ele.style, name ) || name;
 		}
 	};
 	utilExtend.easyExtend( support, css3Support );
 	$.extend( css3 );
 	$.fn.extend( {
 		addTransition: function( style ) {
-			/// <summary>添加transition属性
-			/// <para>可以如下方式设置</para>
-			/// <para>$.addTransition(ele, "background-color 1s linear")</para>
-			/// <para>$.addTransition(ele, {name:"width"}) 为obj时可缺省duration,function</para>
-			/// <para>$.addTransition(ele, [{name:"width",duration:"1s",function:"linear"}, {name:"height"])</para>
-			/// <para>$.addTransition(ele, ["background-color 1s linear", "width 1s linear"])</para>
-			/// </summary>
-			/// <param name="ele" type="Element">元素</param>
-			/// <param name="style" type="Array/Object/String">值得数组或值</param>
-			/// <returns type="self" />
 			return this.each( function( ele ) {
 				$.addTransition( ele, style );
 			} );
 		},
 		bindTransition: function( style ) {
-			/// <summary>添加transition属性并绑定事件
-			/// <para>可以如下方式设置</para>
-			/// <para>[{ name: "background-color", duration: "1s", "function": "linear"</para>
-			/// <para>       , events: {</para>
-			/// <para>           mouseover: "#ff0"</para>
-			/// <para>           , mouseout: "#00f"</para>
-			/// <para>       }</para>
-			/// <para>       , toggle: ["#ff0", "#00f"]</para>
-			/// <para>}]）</para>
-			/// </summary>
-			/// <param name="style" type="Array/Object">值得数组或值</param>
-			/// <returns type="self" />
 			return this.each( function( ele ) {
 				$.bindTransition( ele, style );
 			} );
 		},
 		css3: function( style, value ) {
-			/// <summary>css3的操作，不需要加浏览器特殊头。如果可以，还是使用css和自己加头的方式，性能更高。
-			/// <para>头可以如此获得$.css3Head</para>
-			/// <para>如果要获得样式 返回为String 返回为第一元素</para>
-			/// </summary>
-			/// <param name="style" type="Object/String">obj为赋样式 str为获得一个样式</param>
-			/// <param name="value" type="String/Number/undefined">当为style为string时 存在则赋值 不存在则返回值</param>
-			/// <returns type="self" />
 			if ( !hasCss3 ) {
 				return this;
 			}
 			var b = style,
-				result, tmp;
+				tmp;
 			if ( typed.isObject( b ) ) {
 				for ( var i in b ) {
-					result = editCss3Type.call( this, i );
 					this.each( function( ele ) {
-						if ( typed.isFunction( result.name ) )
-							result.name.call( this, b[ i ] );
-						else
-							result.name && $.css3( ele, result.name, b[ i ] + result.unit );
-					} )
+						$.css3( ele, i, b[ i ] );
+					} );
 				}
 			} else if ( typed.isString( b ) ) {
-				result = editCss3Type.call( this, b );
 				if ( value === undefined ) {
-					if ( typed.isFunction( result.name ) )
-						return result.name.call( this );
-					else
-						return $.css3( this[ 0 ], result.name );
+					return $.css3( this[ 0 ], b );
 				} else {
 					this.each( function( ele ) {
-						if ( typed.isFunction( result.name ) )
-							result.name.call( this, value );
-						else
-							result.name && $.css3( ele, result.name, value + result.unit );
+						$.css3( ele, b, value );
 					} );
 				}
 			}
 			return this;
 		},
 		css3Style: function( name ) {
-			/// <summary>返回样式表的css3的属性，其实是默认加了个head</summary>
-			/// <param name="name" type="String">样式名</param>
-			/// <returns type="self" />
 			return css2.style( this[ 0 ], name, css3Head );
 		},
 
 		initTransform3d: function( perspective, perspectiveOrigin ) {
-			/// <summary>所有元素初始化css3d这样它的子元素才能被set3d</summary>
-			/// <param name="ele" type="Element">元素</param>
-			/// <param name="perspective" type="Number">井深</param>
-			/// <param name="perspectiveOrigin" type="String">视角；如:"50% 50%"</param>
-			/// <returns type="self" />
 			return this.each( function( ele ) {
 				$.initTransform3d( ele, perspective, perspectiveOrigin );
 			} );
 		},
 
 		linearGradient: function( option ) {
-			/// <summary>设置线性渐变
-			/// <para>str option.orientation</para>
-			/// <para>arr option.colorStops</para>
-			/// <para>num option.colorStops[0].stop</para>
-			/// <para>str option.colorStops[0].color</para>
-			/// </summary>
-			/// <param name="obj" type="Object">参数</param>
-			/// <returns type="self" />
 			return this.each( function( ele ) {
 				$.linearGradient( ele, option );
 			} );
 		},
 
 		radialGradient: function( option ) {
-			/// <summary>设置径向渐变
-			/// <para>str option.radial</para>
-			/// <para>arr option.colorStops</para>
-			/// <para>num option.colorStops[0].stop</para>
-			/// <para>str option.colorStops[0].color</para>
-			/// </summary>
-			/// <param name="obj" type="Object">参数</param>
-			/// <returns type="self" />
 			return this.each( function( ele ) {
 				$.radialGradient( ele, option );
 			} );
 		},
 		removeTransition: function( style ) {
-			/// <summary>移除transition属性
-			/// <para>可以如下方式设置</para>
-			/// <para>$.removeTransition(ele, "background-color")</para>
-			/// <para>$.removeTransition(ele, ["background-color", "width"])</para>
-			/// <para>$.removeTransition(ele, {name:"background-color"})</para>
-			/// <para>$.removeTransition(ele, [{name:"width"},"height"])</para>
-			/// </summary>
-			/// <param name="ele" type="Element">元素</param>
-			/// <param name="style" type="String/Array/undefined">值得数组或值</param>
-			/// <returns type="self" />
-
 			return this.each( function( ele ) {
 				$.removeTransition( ele, style );
 			} );
 		},
 		replaceTransition: function( name, value ) {
-			/// <summary>覆盖transition属性
-			/// <para>可以如下方式设置</para>
-			/// <para>$.replaceTransition(ele, "background-color","background-color 2s linear")</para>
-			/// </summary>
-			/// <param name="ele" type="Element">元素</param>
-			/// <param name="style" type="String">值得数组或值</param>
-			/// <param name="style" type="String">值得数组或值</param>
-			/// <returns type="self" />
 			return this.each( function( ele ) {
 				$.replaceTransition( ele, name, value );
 			} );
 		},
-
 		setRotate3d: function( obj ) {
-			/// <summary>设置所有元素的css3d旋转
-			/// <para>num rx:x轴旋转 不带单位</para>
-			/// <para>num ry:y轴旋转</para>
-			/// <para>num rz:z轴旋转</para>
-			/// <para>num rotateX:x轴旋转 带单位</para>
-			/// <para>num rotateY:y轴旋转</para>
-			/// <para>num rotateZ:z轴旋转</para>
-			/// </summary>
-			/// <param name="ele" type="Element">元素</param>
-			/// <param name="obj" type="Object">参数</param>
-			/// <returns type="self" />
 			this.each( function( ele ) {
 				$.setRotate3d( ele, obj )
 			} );
 		},
 		setScale: function( obj ) {
-			/// <summary>设置css3d scale缩放 3d和普通都一样
-			/// <para>num scale:缩放（范围0到1）</para>
-			/// </summary>
-			/// <param name="ele" type="Element">元素</param>
-			/// <param name="obj" type="Object">参数</param>
-			/// <returns type="self" />
 			return this.each( function( ele ) {
 				$.setScale( ele, obj );
 			} );
 		},
 		setTransformByCurrent: function( style ) {
-			/// <summary>设置transform属性 transform有顺序之别
-			/// <para>如果已有transform样式，将会按照原先顺序赋值 没有的将按顺序push进去</para>
-			/// <para>数组形式为[["translate","30px","30px"],["skew","30px","30px"]]</para>
-			/// </summary>
-			/// <param name="style" type="Array">样式名数组</param>
-			/// <returns type="self" />
 			return this.each( function( ele ) {
 				$.setTransformByCurrent( ele, style );
 			} );
 		},
 		setTransition: function( style ) {
-			/// <summary>设置transition属性
-			/// <para>可以如下方式设置</para>
-			/// <para>$.setTransition("background-color 1s linear")</para>
-			/// <para>$.setTransition({name:"width"}) 为obj时可缺省duration,function</para>
-			/// <para>$.setTransition([{name:"width",duration:"1s",function:"linear"}, {name:"height"])</para>
-			/// <para>$.setTransition(["background-color 1s linear", "width 1s linear"])</para>
-			/// </summary>
-			/// <param name="style" type="Array/Object/String">值得数组或值</param>
-			/// <returns type="self" />
 			return this.each( function( ele ) {
 				$.setTransition( ele, style );
 			} );
 		},
 		setTranslate3d: function( obj ) {
-			/// <summary>设置css3d的translate3d
-			/// <para>num tx:x轴位移 不带单位</para>
-			/// <para>num ty:y轴位移</para>
-			/// <para>num tz:z轴位移</para>
-			/// <para>num translateX:x轴位移 带单位</para>
-			/// <para>num translateY:y轴位移</para>
-			/// <para>num translateZ:z轴位移</para>
-			/// </summary>
-			/// <param name="ele" type="Element">元素</param>
-			/// <param name="obj" type="Object">参数</param>
-			/// <returns type="self" />
 			return this.each( function( ele ) {
 				$.setTranslate3d( ele, obj );
 			} );
 		},
 
 		transform: function( style ) {
-			/// <summary>设置所元素transform属性或返回transform属性 transform有顺序之别
-			/// <para>如果style为string 将会返回第一个元素某个值 如"translate"</para>
-			/// <para>头可以如此获得$.css3Head</para>
-			/// <para>name缺省则返回所有存在的[["translate", "50px", "50px"], ["rotate", "30deg"], ["skew", "30deg", "30deg"]]</para>
-			/// <para>name存在并且是属性返回[["translate", "50px", "50px"]]</para>
-			/// <para>如果name不是transform的属性名 则返回[[]]</para>
-			/// </summary>
-			/// <param name="style" type="Array/String/undefined">样式名数组或样式名或不输入</param>
-			/// <returns type="self" />
 			return typed.isArray( style ) ? this.each( function( ele ) {
 				$.setTransform( ele, style );
 			} ) : $.getTransform( this[ 0 ], style );
 		},
 		transform3d: function( obj, toNumber ) {
-			/// <summary>设置或返回css3d 默认是先translate ==> rotate ==> scale
-			/// <para>如果要改变顺序 请使用setTransform</para>
-			/// <para>设置的Object属性:</para>
-			/// <para>num obj.rx:x轴旋转 不带单位</para>
-			/// <para>num obj.ry:y轴旋转</para>
-			/// <para>num obj.rz:z轴旋转</para>
-			/// <para>num obj.tx:x轴位移</para>
-			/// <para>num obj.ty:y轴位移</para>
-			/// <para>num obj.tz:z轴位移</para>
-			/// <para>num obj.sx:缩放（范围0到1）</para>
-			/// <para>num obj.sy:缩放（范围0到1）</para>
-			/// <para>设置的Object属性和返回的:</para>
-			/// <para>num obj.rotateX:x轴旋转 带单位</para>
-			/// <para>num obj.rotateY:y轴旋转</para>
-			/// <para>num obj.rotateZ:z轴旋转</para>
-			/// <para>num obj.translateX:x轴位移</para>
-			/// <para>num obj.translateY:y轴位移</para>
-			/// <para>num obj.translateZ:z轴位移</para>
-			/// <para>num obj.scaleX:缩放（范围0到1）</para>
-			/// <para>num obj.scaleY:缩放（范围0到1）</para>
-			/// <para>如果是具名的name则返回具体的值</para>
-			/// </summary>
-			/// <param name="obj" type="Object/undefined/String">参数</param>
-			/// <param name="toNumber" type="Boolean">是否直接把返回的结果转为数字</param>
-			/// <returns type="self" />
 			if ( hasTransform3d ) {
 				switch ( typeof obj ) {
 					case "boolean":
@@ -1144,26 +943,11 @@
 			}
 		},
 		transformOrigin: function( style ) {
-			/// <summary>用来设置元素的运动的基点(参照点)或返回第一个元素的基点.默认为元素中心点.
-			/// <para>transform–origin(x,y)</para>
-			/// <para>style.x style.y</para>
-			/// <para>x也可指定字符值参数: left,center,right.</para>
-			/// <para>y也可指定字符值参数: top,center,right.</para>
-			/// <para>left == 0%,center == 50%,right == 100%</para>
-			/// <para>top == 0%,center == 50%,right == 100%</para>
-			/// </summary>
-			/// <param name="style" type="Object">参数</param>
-			/// <returns type="self" />
 			return style ? this.each( function( ele ) {
 				$.setTransformOrigin( ele, style );
 			} ) : $.getTransformOrigin( this[ 0 ] );
 		},
 		transition: function( style ) {
-			/// <summary>获得transition样式 或 设置transition属性
-			/// <para>详见 $.setTransition 或 $.getTransiton</para>
-			/// </summary>
-			/// <param name="style" type="String/Array/Object/undefined">为Array Object为设置;String看情况获得或设置;undefined为获得</param>
-			/// <returns type="self" />
 			if ( style == undefined || typed.isString( style ) && style.indexOf( " " ) < 0 ) {
 				return $.getTransition( this[ 0 ], style );
 			} else if ( typed.isArray( style ) || typed.isObject( style ) || typed.isString( style ) ) {
@@ -1171,6 +955,29 @@
 			}
 		}
 	} );
+
+	css3Hooks.linearGradient.set = css3.linearGradient;
+
+	css3Hooks.repeatingLinearGradient.set = css3.repeatingLinearGradient;
+
+	css3Hooks.radialGradient.set = css3.radialGradient;
+
+	css3Hooks.repeatingRadialGradient.set = css3.repeatingRadialGradient;
+
+	css3Hooks.transform = {
+		set: css3.setTransform,
+		get: css3.getTransform
+	}
+
+	css3Hooks.transform3d = {
+		set: css3.setTransform3d,
+		get: css3.getTransform3d
+	}
+
+	css3Hooks.transformOrigin = {
+		set: css3.setTransformOrigin,
+		get: css3.getTransformOrigin
+	};
 
 	return css3;
 } );

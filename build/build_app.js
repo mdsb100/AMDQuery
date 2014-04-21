@@ -550,6 +550,8 @@ function modifyHTML( appConfig, htmlInfo, finish ) {
 			head.removeChild( scripts[ i ] );
 		}
 
+		beforeLibJS.appendChild( doc.createTextNode( "" ) );
+
 		removeIndex--;
 		head.insertBefore( beforeLibJS, aQueryScript );
 		logger( "[DEBUG]".white, "add js".white, htmlInfo.beforeLibRelativeJSPath.white );
@@ -593,6 +595,8 @@ function modifyHTML( appConfig, htmlInfo, finish ) {
 		for ( i = amdqueryJSIndex - removeIndex, len = scripts.length; len > i; len-- ) {
 			head.removeChild( scripts[ len ] );
 		}
+
+		afterLibJS.appendChild( doc.createTextNode( "" ) );
 
 		head.appendChild( afterLibJS, aQueryScript );
 		logger( "[DEBUG]".white, "add js".white, htmlInfo.afterLibRelativeJSPath.white );

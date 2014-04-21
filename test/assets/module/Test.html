@@ -13,34 +13,34 @@
 
       var testTest = new Test("Test", function(preResult){
         // complete
-      }).describe("Test Test function", function(preResult, test, logger){
+      }).describe("Test Test function", function(preResult, expect, logger){
         var testTarget = {
 
         };
-        test(testTarget, "testTarget").should.be.an("object");
+        expect(testTarget, "testTarget").be.an("object");
 
         var myName = "Jarray";
-        test(myName, "My name").should.be.a("string");
+        expect(myName, "My name").be.a("string");
 
         var notThrowFunction = function(){
           var age = 28;
         };
-        test(notThrowFunction, "'notThrowFunction'").should.not.Throw(notThrowFunction);
+        expect(notThrowFunction, "'notThrowFunction'").not.Throw(notThrowFunction);
 
         var throwFunction = function(){
           age();
         };
-        test(throwFunction, "'throwFunction'").should.Throw(notThrowFunction);
+        expect(throwFunction, "'throwFunction'").Throw(notThrowFunction);
 
         var object = {
           name: "Jarry",
           age: 28
         };
-        test(object, "object").should.equal({
+        expect(object, "object").equal({
           name: "Jarry",
           age: 28
         });
-        test(object, "object").should.not.equal({
+        expect(object, "object").not.equal({
           name: "Jarry",
           age: 28,
           face: {
@@ -48,51 +48,51 @@
           }
         });
 
-        test(object.age, "object age").should.be.greater.than(27);
+        expect(object.age, "object age").be.greater.than(27);
 
-        test(object.age, "object age").should.be.less.than(29);
+        expect(object.age, "object age").be.less.than(29);
 
-        test(object.age, "object age").should.be.greater.than.or.equal(28);
+        expect(object.age, "object age").be.greater.than.or.equal(28);
 
-        test(object.age, "object age").should.be.less.than.or.equal(28);
+        expect(object.age, "object age").be.less.than.or.equal(28);
 
-        test(object, "object age").should.be.instance.of(Object);
+        expect(object, "object age").be.instance.of(Object);
 
-        test(object, "object").should.exists();
+        expect(object, "object").exists();
         var global;
-        test(global, "Value global").should.not.exists();
+        expect(global, "Value global").not.exists();
 
         var anArray = [1,2,3,4,5];
-        test(anArray, "An array").should.have.length(5);
+        expect(anArray, "An array").have.length(5);
 
-        test(anArray, "An array").should.have.index(4).with.should.equal(5);
+        expect(anArray, "An array").have.index(4).with.equal(5);
 
         var anObject = {
           name: "Jarry",
           anArray: anArray
         };
-        test(anObject, "An anObject").should.have.property("anArray").with.should.have.length(5);
+        expect(anObject, "An anObject").have.property("anArray").with.have.length(5);
 
-        test(anObject, "An anObject").should.not.have.property("any");
+        expect(anObject, "An anObject").not.have.property("any");
 
         return "Jarry";
 
-      }).describe("Test should be", function(preResult, test, logger){
+      }).describe("Test should be", function(preResult, expect, logger){
         var elementCollection = document.getElementsByTagName("body");
 
-        test(elementCollection).should.be.elementCollection();
+        expect(elementCollection).be.elementCollection();
 
-        test(arguments).should.be.arguments(arguments);
+        expect(arguments).be.arguments(arguments);
 
-        test(NaN).should.be.NaN();
+        expect(NaN).be.NaN();
 
-        test(elementCollection[0]).should.be.node("body");
+        expect(elementCollection[0]).be.node("body");
 
-        test(1 / 0).should.not.be.finite();
+        expect(1 / 0).not.be.finite();
 
         return preResult;
-      }).describe("Test previous result", function(preResult, test, logger){
-        test(preResult, "Previous result").should.equal("Jarry");
+      }).describe("Test previous result", function(preResult, expect, logger){
+        expect(preResult, "Previous result").equal("Jarry");
 
         logger("Set timeout 1 seconds to call next describe");
 
@@ -104,8 +104,8 @@
 
 
         return promise1;
-      }).describe("Test promise", function(preResult, test, logger){
-        test(preResult, "Previous result").should.equal(1000);
+      }).describe("Test promise", function(preResult, expect, logger){
+        expect(preResult, "Previous result").equal(1000);
       }).start();
 
     });

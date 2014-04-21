@@ -10,34 +10,34 @@
     $.require( [ "module/location", "module/Test" ], function( location, Test ) {
       var testLocation = new Test( "location", function() {
 
-      } ).describe( "Test location function", function( preResult, test, logger ) {
-        test( function() {
+      } ).describe( "Test location function", function( preResult, expect, logger ) {
+        expect( function() {
           location.clearHash();
-        } ).should.not.Throw();
+        } ).not.Throw();
 
-        test( function() {
+        expect( function() {
           location.setHash( "name", "Jarry" );
-        } ).should.not.Throw();
+        } ).not.Throw();
 
-        test( function() {
+        expect( function() {
           location.setHash( "age", "18" );
-        } ).should.not.Throw();
+        } ).not.Throw();
 
-        test( location.getHash( "age" ), "age" ).should.equal( "18" );
+        expect( location.getHash( "age" ), "age" ).equal( "18" );
 
-        test( location.getHash( "name" ), "name" ).should.equal( "Jarry" );
+        expect( location.getHash( "name" ), "name" ).equal( "Jarry" );
 
-        test( function() {
+        expect( function() {
           location.removeHash( "name" );
-        } ).should.not.Throw();
+        } ).not.Throw();
 
-        test( location.getHash( "name" ), "name" ).should.not.exists();
+        expect( location.getHash( "name" ), "name" ).not.exists();
 
-        test( function() {
+        expect( function() {
           location.clearHash();
-        } ).should.not.Throw();
+        } ).not.Throw();
 
-        test( location.getHash( "age" ), "age" ).should.not.exists();
+        expect( location.getHash( "age" ), "age" ).not.exists();
       } ).start();
 
     } );
