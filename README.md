@@ -30,14 +30,15 @@
 cd build, sudo npm install or npm install.
 
 Input "jake", you can see:
-jake buildapp[*.js(config file)]             build application
-jake buildapp                                default is build_app_config.js
-jake buildjs[*.js(config file)]              build javascript
-jake buildjs                                 default is build_js_config.js
-jake jsdoc[default|amdquery(template name)]  build javascript api document
-jake jsdoc                                   default is amdquery
-jake ui_css                                  build css of widget-ui
-jake beautify[...file]                       example 'jake beautify[a.html,b.css,c.xml,d.js]'
+
+* jake buildapp[*.js(config file)]             build application
+* jake buildapp                                default is build_app_config.js
+* jake buildjs[*.js(config file)]              build javascript
+* jake buildjs                                 default is build_js_config.js
+* jake jsdoc[default|amdquery(template name)]  build javascript api document
+* jake jsdoc                                   default is amdquery
+* jake ui_css                                  build css of widget-ui
+* jake beautify[...file]                       example 'jake beautify[a.html,b.css,c.xml,d.js]'
 
 
 ### Using in mobile
