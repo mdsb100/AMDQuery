@@ -264,27 +264,80 @@ aQuery.define( "module/Test", [ "base/typed", "base/ready", "base/Promise", "bas
 		 *  return promise;
 		 * })
 		 * .describe("Test a", function(preResult, expect, logger){
-		 *  //expect().be.an
 		 *  //expect().be.a
+		 *  //expect().be.an
 		 *  //expect().be.greater.than
 		 *  //expect().be.less.than
-		 *  //expect().be.greater.than.or.equal
-		 *  //expect().be.less.than.or.equal
 		 *  //expect().be.instance.of
+		 *  //expect().be.greater.than.or
+		 *  //expect().be.less.than.or
 		 *  //expect().equal
-		 *  //expect().not.equal
-		 *  //expect().exists
-		 *  //expect().not.exists
-		 *  //expect().Throw
-		 *  //expect().not.Throw
-		 *  //expect().not.have.property
 		 *  //expect().have.length
 		 *  //expect().have.property
-		 *  //expect().have.property().with
-		 *  //expect().have.index().with
-		 *  //typed extend function
+		 *  //expect().have.index
+		 *  //expect().exists
+		 *  //expect().not.equal
+		 *  //expect().not.exists
+		 *  //expect().not.Throw
+		 *  //expect().Throw
+		 *  //expect().be.elementCollection
+		 *  //expect().not.be.elementCollection
+		 *  //expect().be.event
+		 *  //expect().not.be.event
+		 *  //expect().be.arguments
+		 *  //expect().not.be.arguments
+		 *  //expect().be.array
+		 *  //expect().not.be.array
+		 *  //expect().be.arraylike
+		 *  //expect().not.be.arraylike
+		 *  //expect().be.boolean
+		 *  //expect().not.be.boolean
+		 *  //expect().be.date
+		 *  //expect().not.be.date
+		 *  //expect().be.document
+		 *  //expect().not.be.document
+		 *  //expect().be.element
+		 *  //expect().not.be.element
+		 *  //expect().be.empty
+		 *  //expect().not.be.empty
+		 *  //expect().be.emptyObject
+		 *  //expect().not.be.emptyObject
+		 *  //expect().be.emptyObject
+		 *  //expect().not.be.emptyObject
+		 *  //expect().be.error
+		 *  //expect().not.be.error
+		 *  //expect().be.finite
+		 *  //expect().not.be.finite
+		 *  //expect().be.function
+		 *  //expect().not.be.function
+		 *  //expect().be.nativeJSON
+		 *  //expect().not.be.nativeJSON
+		 *  //expect().be.NaN
+		 *  //expect().not.be.NaN
+		 *  //expect().be.number
+		 *  //expect().not.be.number
+		 *  //expect().be.numeric
+		 *  //expect().not.be.numeric
+		 *  //expect().be.nul
+		 *  //expect().not.be.nul
 		 *  //expect().be.node
 		 *  //expect().not.be.node
+		 *  //expect().be.object
+		 *  //expect().not.be.object
+		 *  //expect().be.plainObject
+		 *  //expect().not.be.plainObject
+		 *  //expect().be.RegExp
+		 *  //expect().not.be.RegExp
+		 *  //expect().be.string
+		 *  //expect().not.be.string
+		 *  //expect().be.string
+		 *  //expect().not.be.string
+		 *  //expect().be.XML
+		 *  //expect().not.be.XML
+		 *  //expect().be.window
+		 *  //expect().not.be.window
+		 *  //expect().be.$
+		 *  //expect().not.be.$
 		 * })
 		 * .start();
 		 */
@@ -464,7 +517,9 @@ aQuery.define( "module/Test", [ "base/typed", "base/ready", "base/Promise", "bas
 			"NaN": 1,
 			"RegExp": 1
 		}, ignore = {
-				"isEqual": 1
+				"isEqual": 1,
+				"isPrototypeProperty": 1,
+				"isType": 1
 			};
 
 		$.each( typed, function( fn, name ) {
