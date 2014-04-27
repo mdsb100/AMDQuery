@@ -26,14 +26,18 @@ aQuery.define( "@app/controllers/docnav", [ "main/attr", "module/location", "app
 				} );
 			} );
 
-			$.on( "document_iframe.swapIndexChange", function( e ) {
+			this.swapIndexChange = function( e ) {
 				location.removeHash( SCROLLTO );
 				location.setHash( SWAPINDEX, e.index );
-			} );
+			}
 
-			$.on( "document_iframe.scrollToChange", function( e ) {
+			$.on( "document_iframe.swapIndexChange", this.swapIndexChange );
+
+			this.scrollToChange = function( e ) {
 				location.setHash( SCROLLTO, e.name );
-			} );
+			}
+
+			$.on( "document_iframe.scrollToChange", this.scrollToChange );
 
 		},
 		activate: function() {
@@ -107,6 +111,8 @@ aQuery.define( "@app/controllers/docnav", [ "main/attr", "module/location", "app
 		destroy: function() {
 			this.$nav.clearHandlers();
 			this.$nav = null;
+			$.off( "document_iframe.swapIndexChange", this.swapIndexChange );
+			$.off( "document_iframe.scrollToChange", this.scrollToChange );
 			SuperController.invoke( "destroy" );
 		}
 	}, {
