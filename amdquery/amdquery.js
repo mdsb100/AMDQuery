@@ -310,17 +310,17 @@
 	},
 		$ = aQuery;
 
-	var emptyFn = function() {}, error, logger, info, debug;
+	var emptyFn = function() {}, error, logger, info, warn;
 	if ( window.console && console.log.bind ) {
 		logger = console.log.bind( console );
 		error = console.error.bind( console );
 		info = console.info.bind( console );
-		debug = console.debug.bind( console );
+		warn = console.warn.bind( console );
 	} else {
 		logger = emptyFn;
 		error = emptyFn;
 		info = emptyFn;
-		debug = emptyFn;
+		warn = emptyFn;
 	}
 
 	/**
@@ -448,11 +448,11 @@
 		 * @param {...String}
 		 */
 		logger: logger,
-		/** wrap console.debug if exists.
-		 * @method debug
+		/** wrap console.warn if exists.
+		 * @method warn
 		 * @param {...String}
 		 */
-		debug: debug,
+		warn: warn,
 		/** wrap console.info if exists.
 		 * @method info
 		 * @param {...String}
