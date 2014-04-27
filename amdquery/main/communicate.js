@@ -115,7 +115,7 @@
 						}
 						ajax.setRequestHeader( "Accept", o.dataType && o.accepts[ o.dataType ] ? o.accepts[ o.dataType ] + ", */*" : o.accepts._default );
 
-					} catch ( e ) {}
+					} catch ( error ) {}
 					if ( o.data || options ) {
 						ajax.setRequestHeader( "Content-Type", o.contentType );
 					}
@@ -136,7 +136,7 @@
 								if ( !response ) {
 									try {
 										response = parse.XML( ajax.responseText );
-									} catch ( e ) {}
+									} catch ( error ) {}
 								}
 								break;
 							default:
