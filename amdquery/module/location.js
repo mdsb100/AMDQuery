@@ -19,13 +19,9 @@ aQuery.define( "module/location", [ "base/extend", "main/parse" ], function( $, 
 		return strList.join( split1 );
 	}
 
-	function relaceHash( str ) {
-		window.location.replace( ( '' + window.location ).split( SHARP )[ 0 ] + SHARP + str );
-	}
-
 	/**
 	 * @exports module/location
-	 * @describe window.location to hash. Change loaction hash without adding to history.
+	 * @describe window.location to hash
 	 * @example
 	 * // http://mdsb100.github.io/homepage/amdquery/document/document/app.html#navmenu=guide_Build!swapIndex=1
 	 * {
@@ -53,7 +49,7 @@ aQuery.define( "module/location", [ "base/extend", "main/parse" ], function( $, 
 		setHash: function( key, value ) {
 			this.hash[ key ] = value + "";
 			var str = key === SHARP ? value : hashToString( this.hash, SPLIT_MARK, EQUALS_MARK );
-			relaceHash( str );
+			_location.hash = str;
 			this.hash[ SHARP ] = str;
 			return this;
 		},
@@ -66,7 +62,7 @@ aQuery.define( "module/location", [ "base/extend", "main/parse" ], function( $, 
 			if ( this.hash[ key ] !== undefined ) {
 				delete this.hash[ key ];
 				var str = hashToString( this.hash, SPLIT_MARK, EQUALS_MARK );
-				relaceHash( str );
+				_location.hash = str;
 				this.hash[ SHARP ] = str;
 			}
 			return this;
@@ -87,7 +83,7 @@ aQuery.define( "module/location", [ "base/extend", "main/parse" ], function( $, 
 		 * @returns {this}
 		 */
 		toHash: function() {
-			var hash = _location.hash.toString().replace( SHARP, "" );
+			var hash = _location.hash.replace( SHARP, "" );
 			this.hash = parse.QueryString( hash, SPLIT_MARK, EQUALS_MARK );
 			this.hash[ SHARP ] = hash;
 			return this;
