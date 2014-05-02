@@ -155,6 +155,35 @@
         }).not.Throw();
 
         expect(data.hasData(diva)).equal(false);
+
+        expect(function(){
+          event.once(diva, "click", fn);
+          event.on(diva, "click", fn1);
+        }).not.Throw();
+
+        expect(function(){
+          event.trigger(diva, "click");
+        }).not.Throw();
+
+        expect(event.hasHandler(diva, "click", fn1)).be.greater.than(-1);
+        expect(event.hasHandler(diva, "click", fn)).equal(-1);
+
+        event.clearHandlers(diva);
+
+        expect(event.hasHandler(diva, "click", fn1)).equal(-1);
+        expect(event.hasHandler(diva, "click", fn)).equal(-1);
+
+        expect(function(){
+          $(diva).once("click", fn).on("click", fn1);
+        }).not.Throw();
+
+        expect(function(){
+          $(diva).trigger("click");
+        }).not.Throw();
+
+        expect($(diva).hasHandler("click", fn1)).be.greater.than(-1);
+        expect($(diva).hasHandler("click", fn)).equal(-1);
+
       })
       .start();
 
