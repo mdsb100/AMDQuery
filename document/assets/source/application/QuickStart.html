@@ -21,11 +21,49 @@
       <ol>
         <li id="first">
           <div id="scrollableview" style="width: 100%; height: 100%;" amdquery-widget="ui.scrollableview" ui-scrollableview="orientation:V;enableKeyboard:true;focus:true">
-            <h1 name="AMDQuery">MVC Quick start</h1>
+            <h1 name="AMDQuery">Application Quick Start</h1>
             <ul class="guide">
-              <li><a href="#Overview">Overview</a>
+              <li><a href="#First">Create your first application</a>
+              </li>
+              <li><a href="#Run">Run your first application</a>
               </li>
             </ul>
+            <h2 name="First" id="First">Create your first application</h2>
+            <p>This guide provides basic instructions on useing application quickly. AMDQuery application use MVC.</p>
+            <p>CD build and input <strong>jake createapp["../myproject/first"]</strong> in terminal.</p>
+            <div class="admonition-note">
+              <strong style="color:red">Make sure the new appliaction folder and amdquery folder are under root server. </strong>
+            </div>
+            <p>You will see:</p>
+            <pre class="prettyprint">
+root-server
+  | - myproject //first app
+  |   \ - first
+  |       | - assets // assets of application
+  |       | - controllers
+  |       | - lib // js library in here
+  |       | - models
+  |       | - styles // css in here
+  |       | - views // xml in here
+  |       | - app.html // entry
+  |       \ - app.js // your application
+  \ - amdquery
+      | - server.js // a 'connect' file.
+      \ - amdquery
+          \ - amdquery.js //base js
+            </pre>
+            <h2 name="Run" id="Run">Run your first application</h2>
+            <div class="admonition-note">
+              'npm install -g connect' or 'sudo npm install -g connect'
+            </div>
+            <p>
+              <strong>Copy server.js to root-server. </strong>
+            </p>
+            <p>
+              CD root-server and input <strong>node server.js</strong>
+            </p>
+            <p>Open your web broswer and input 'http://localhost:8000/myproject/first/app.html'</p>
+            <p>The global folder will be copy when build, so you can add some </p>
           </div>
         </li>
       </ol>
