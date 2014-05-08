@@ -8,9 +8,9 @@
           <li id="guide_Test" amdquery-widget="ui.navitem" ui-navitem="html:Test;img:file"></li>
         </ul>
       </li>
-      <li amdquery-widget="ui.navitem" ui-navitem="html:MVC;img:file">
+      <li amdquery-widget="ui.navitem" ui-navitem="html:application;img:file">
         <ul>
-          <li id="MVC_QuickStart" amdquery-widget="ui.navitem" ui-navitem="html:QuickStart;img:file"></li>
+          <li id="application_QuickStart" amdquery-widget="ui.navitem" ui-navitem="html:QuickStart;img:file"></li>
         </ul>
       </li>
     </ul>
