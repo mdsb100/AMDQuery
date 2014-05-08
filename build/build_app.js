@@ -209,12 +209,11 @@ htmlInfo.appDirectoryName + "/styles"
 	var globalPath = PATH.join( htmlInfo.appProjectPath, "..", globalName ),
 		globalDistPath = PATH.join( distPath, globalName );
 
-	logger( "[DEBUG]".white, "copy directory:".white, globalPath, "to", globalDistPath );
-
-	util.mkdirSync( globalDistPath );
-	FSE.copySync( globalPath, globalDistPath );
-
-	logger( "[DEBUG]".white, "app project path:".white, htmlInfo.appProjectPath.white );
+	if ( PATH.existsSync( globalPath ) ) {
+		util.mkdirSync( globalDistPath );
+		FSE.copySync( globalPath, globalDistPath );
+		logger( "[DEBUG]".white, "app project path:".white, htmlInfo.appProjectPath.white );
+	}
 
 	var copyDirMap = {
 		"amdquery/ui/css": PATH.join( AMDQueryJSRootPath, "ui", "css" ),

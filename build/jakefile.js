@@ -139,7 +139,7 @@ task( "createapp", {
 	process.chdir( 'application' );
 	jake.exec(
     [
-    "node create_application.js " + path + " " + template
+    "node create_application.js " + path + ( template || "" )
     ], {
 			printStdout: true,
 			printStderr: true

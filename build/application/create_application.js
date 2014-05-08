@@ -1,3 +1,5 @@
+var util = require( './../lib/util.js' );
+
 var _ = require( "underscore" );
 
 var PATH = require( 'path' );
@@ -12,9 +14,7 @@ var appRelativePath = process.argv[ 2 ];
 
 var templateName = process.argv[ 3 ];
 
-if ( !templateName ) {
-	templateName = "default"
-}
+templateName = templateName || "default";
 
 var templatePath = PATH.join( buildFileRootPath, "templates", templateName );
 
@@ -30,31 +30,24 @@ var amdqueryJSPath = PATH.join( amdqueryProjectPath, "amdquery", "amdquery.js" )
 var appPath = PATH.join( amdqueryProjectPath, appRelativePath );
 
 if ( !FSE.existsSync( appPath ) ) {
-	console.error( "Application folder must exists.", appPath );
-	process.exit( 1 );
+	util.mkdirSync( appPath );
 }
 
-appProjectPath = PATH.join( appPath, "app" );
+// var globalPath = PATH.join( appPath, "global" );
 
-if ( !FSE.existsSync( appProjectPath ) ) {
-	FSE.mkdirSync( appProjectPath );
-}
-
-var globalPath = PATH.join( appPath, "global" );
-
-if ( !FSE.existsSync( globalPath ) ) {
-	FSE.copySync( PATH.join( amdqueryProjectPath, "global" ), globalPath );
-}
+// if ( !FSE.existsSync( globalPath ) ) {
+// 	FSE.copySync( PATH.join( amdqueryProjectPath, "global" ), globalPath );
+// }
 
 var children = FSE.readdirSync( templatePath );
 for ( var i = children.length - 1, child; i >= 0; i-- ) {
 	child = children[ i ];
-	FSE.copySync( PATH.join( templatePath, child ), PATH.join( appProjectPath, child ) );
+	FSE.copySync( PATH.join( templatePath, child ), PATH.join( appPath, child ) );
 }
 
 var DOMParser = require( 'xmldom' ).DOMParser;
 
-appHTMLPath = PATH.join( appProjectPath, "app.html" );
+appHTMLPath = PATH.join( appPath, "app.html" );
 
 var htmlString = FSE.readFileSync( appHTMLPath );
 
@@ -74,9 +67,9 @@ for ( i = 0, len = scripts.length; i < len; i++ ) {
 
 var appAttrConfig = splitAttrToObject( script.getAttribute( "app" ) );
 
-appAttrConfig.src = PATH.join( PATH.relative( amdqueryJSPath, appProjectPath ), "app" );
+appAttrConfig.src = PATH.join( PATH.relative( amdqueryJSPath, appPath ), "app" );
 
-script.setAttribute( "src", PATH.relative( appProjectPath, amdqueryJSPath ) );
+script.setAttribute( "src", PATH.relative( appPath, amdqueryJSPath ) );
 
 script.setAttribute( "app", formatToAttr( appAttrConfig ) );
 
