@@ -204,9 +204,10 @@ htmlInfo.appDirectoryName + "/styles"
 		util.mkdirSync( dirName );
 	}
 
-	var globalPath = PATH.join( htmlInfo.AMDQueryProjectPath, "global" ),
-		globalDirectoryName = globalPath.replace( projectRootPath, "" ),
-		globalDistPath = PATH.join( distPath, globalDirectoryName );
+	var globalName = "global";
+
+	var globalPath = PATH.join( htmlInfo.appProjectPath, "..", globalName ),
+		globalDistPath = PATH.join( distPath, globalName );
 
 	logger( "[DEBUG]".white, "copy directory:".white, globalPath, "to", globalDistPath );
 
