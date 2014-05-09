@@ -104,12 +104,12 @@
       </li>
       <li amdquery-widget="ui.navitem" ui-navitem="html:globals;img:module" link="global.html">
         <ul>
-          <li amdquery-widget="ui.navitem" ui-navitem="html:debug;img:file" link="global.html#debug"></li>
           <li amdquery-widget="ui.navitem" ui-navitem="html:define;img:file" link="global.html#define"></li>
           <li amdquery-widget="ui.navitem" ui-navitem="html:error;img:file" link="global.html#error"></li>
           <li amdquery-widget="ui.navitem" ui-navitem="html:info;img:file" link="global.html#info"></li>
           <li amdquery-widget="ui.navitem" ui-navitem="html:logger;img:file" link="global.html#logger"></li>
           <li amdquery-widget="ui.navitem" ui-navitem="html:require;img:file" link="global.html#require"></li>
+          <li amdquery-widget="ui.navitem" ui-navitem="html:warn;img:file" link="global.html#warn"></li>
         </ul>
       </li>
     </ul>

@@ -3,10 +3,11 @@
 	this.describe( "Support transform to animation" );
 	var getScale = function( r ) {
 		return r ? Math.max( r, 0 ) : 1;
-	}, transformCss = css3.getTransformStyleNameUnCamelCase();
+	}, transformCss;
 
 	//"-" + css3.css3Head + "-transform";
 	if ( support.transform3d ) {
+		transformCss = css3.getTransformStyleNameUnCamelCase();
 		var Transfrom3dForFX = FX.extend( function Transfrom3dForFX( ele, options, value, name, type ) {
 			if ( this instanceof Transfrom3dForFX ) {
 				/*Fix*/
@@ -58,6 +59,7 @@
 		} );
 	}
 	if ( support.transform ) {
+		transformCss = css3.getTransformStyleNameUnCamelCase();
 		var TransfromForFX = FX.extend( function TransfromForFX( ele, options, value, name, type, index ) {
 			if ( this instanceof TransfromForFX ) {
 				/*Fix*/

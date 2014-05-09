@@ -107,7 +107,7 @@ aQuery.define( "ui/scrollableview", [
 		enable: function() {
 			var event = this.scrollableviewEvent,
 				opt = this.options;
-			this.container.on( "DomNodeInserted DomNodeRemoved drag.pause drag.move drag.start", event );
+			this.container.on( "DomNodeInserted DomNodeRemoved drag.pause drag.move drag.start drag.stop", event );
 			this.container.uiDraggable( "enable" );
 			this.target.on( "swap.move swap.stop swap.pause widget.detect", event ).touchwheel( event );
 			this.target.uiSwappable( "enable" );
@@ -133,7 +133,7 @@ aQuery.define( "ui/scrollableview", [
 		disable: function() {
 			var event = this.scrollableviewEvent,
 				opt = this.options;
-			this.container.off( "DomNodeInserted DomNodeRemoved drag.pause drag.move drag.start", event );
+			this.container.off( "DomNodeInserted DomNodeRemoved drag.pause drag.move drag.start drap.stop", event );
 			this.container.uiDraggable( "disable" );
 			this.target.off( "swap.move swap.stop swap.pause widget.detect", event ).off( "touchwheel", event );
 			this.target.uiSwappable( "disable" );
@@ -161,6 +161,7 @@ aQuery.define( "ui/scrollableview", [
 				target = self.target,
 				opt = self.options,
 				check = function() {
+					self._fireMoved();
 					self.toHBoundary( self.getLeft() ).toVBoundary( self.getTop() ).hideStatusBar();
 				},
 				keyToMove = function( x, y ) {
@@ -235,6 +236,9 @@ aQuery.define( "ui/scrollableview", [
 						if ( opt.enableKeyboard ) target[ 0 ].focus();
 						self.stopAnimation();
 						self.detect();
+						break;
+					case "drag.stop":
+						self._fireMoved();
 						break;
 					case "DomNodeInserted":
 					case "DomNodeRemoved":
@@ -321,6 +325,15 @@ aQuery.define( "ui/scrollableview", [
 			};
 			return this;
 		},
+		_fireMoved: function() {
+			var type = "scrollableview.moved",
+				pos = this.getContainerPosition();
+			this.target.trigger( type, this.container[ 0 ], {
+				type: type,
+				x: pos.x,
+				y: pos.y
+			} );
+		},
 		getAnimationToElementByName: function( name ) {
 			return this.target.find( "[name=" + ( name || "__undefined" ) + "]" );
 		},
@@ -404,7 +417,7 @@ aQuery.define( "ui/scrollableview", [
 
 			return this;
 		},
-		customEventName: [ "pulldown", "pullup", "pullleft", "pullright", "animationEnd", "animateToElement" ],
+		customEventName: [ "pulldown", "pullup", "pullleft", "pullright", "animationEnd", "animateToElement", "moved" ],
 		options: {
 			"overflow": "HV",
 			"animateDuration": 600,
@@ -704,6 +717,7 @@ aQuery.define( "ui/scrollableview", [
 					complete: function() {
 						self.hideStatusBar();
 						self._triggerAnimate( "boundary", self._direction, self.options.boundaryDruation, outer );
+						self._fireMoved();
 					}
 				} );
 			} else {
@@ -723,6 +737,7 @@ aQuery.define( "ui/scrollableview", [
 					complete: function() {
 						self.hideStatusBar();
 						self._triggerAnimate( "boundary", self._direction, self.options.boundaryDruation, outer );
+						self._fireMoved();
 					}
 				} );
 			} else {
@@ -746,6 +761,7 @@ aQuery.define( "ui/scrollableview", [
 				duration: t,
 				easing: "easeOut",
 				complete: function() {
+					self._fireMoved();
 					self.toHBoundary( self.getLeft() ).toVBoundary( y1 );
 					self._triggerAnimate( "inner", self._direction, t, y1 );
 					if ( typed.isFunction( animationCallback ) ) animationCallback.call( self.target, V );
@@ -768,6 +784,7 @@ aQuery.define( "ui/scrollableview", [
 				duration: t,
 				easing: "easeOut",
 				complete: function() {
+					self._fireMoved();
 					self.toHBoundary( x1 ).toVBoundary( self.getTop() );
 					self._triggerAnimate( "inner", self._direction, t, x1 );
 					if ( typed.isFunction( animationCallback ) ) animationCallback.call( self.target, H );

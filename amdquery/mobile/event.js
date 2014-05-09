@@ -106,14 +106,14 @@
 			event.domEventList[ other[ i ] ] = 1;
 		}
 
-		$.fn.extend( /** @lends aQuery.prototype */{
+		$.fn.extend( /** @lends aQuery.prototype */ {
 			/**
 			 * Bind or trigger touchstart.
 			 * @param {Function|Object} [fn]
 			 * @returns {this}
 			 */
 			touchstart: function( fn ) {
-				return this.blur( fn, "touchstart" );
+				return this.addHandler( "touchstart", fn );
 			},
 			/**
 			 * Bind or trigger touchmove.
@@ -121,7 +121,7 @@
 			 * @returns {this}
 			 */
 			touchmove: function( fn ) {
-				return this.blur( fn, "touchmove" );
+				return this.addHandler( "touchmove", fn );
 			},
 			/**
 			 * Bind or trigger touchend.
@@ -129,7 +129,7 @@
 			 * @returns {this}
 			 */
 			touchend: function( fn ) {
-				return this.blur( fn, "touchend" );
+				return this.addHandler( "touchend", fn );
 			},
 			/**
 			 * Bind or trigger touchcancel.
@@ -137,7 +137,7 @@
 			 * @returns {this}
 			 */
 			touchcancel: function( fn ) {
-				return this.blur( fn, "touchcancel" );
+				return this.addHandler( "touchcancel", fn );
 			},
 			/**
 			 * Bind or trigger gesturestart.
@@ -145,7 +145,7 @@
 			 * @returns {this}
 			 */
 			gesturestart: function( fn ) {
-				return this.blur( fn, "gesturestart" );
+				return this.addHandler( "gesturestart", fn );
 			},
 			/**
 			 * Bind or trigger gesturechange.
@@ -153,7 +153,7 @@
 			 * @returns {this}
 			 */
 			gesturechange: function( fn ) {
-				return this.blur( fn, "gesturechange" );
+				return this.addHandler( "gesturechange", fn );
 			},
 			/**
 			 * Bind or trigger gestureend.
@@ -161,7 +161,7 @@
 			 * @returns {this}
 			 */
 			gestureend: function( fn ) {
-				return this.blur( fn, "gestureend" );
+				return this.addHandler( "gestureend", fn );
 			},
 			/**
 			 * Bind or trigger orientationchange.
@@ -169,7 +169,7 @@
 			 * @returns {this}
 			 */
 			orientationchange: function( fn ) {
-				return this.blur( fn, "orientationchange" );
+				return this.addHandler( "orientationchange", fn );
 			}
 
 

@@ -9,7 +9,7 @@
   <link type="text/css" rel="stylesheet" href="../../../../amdquery/ui/css/widget-ui.css" />
   <link type="text/css" rel="stylesheet" href="../css/document.css"/>
   <script src="../../../../global/js/prettify.js" type="text/javascript"></script>
-  <script src="../../../../global/js/lang-css.js"></script>
+  <script src="../../../../global/js/lang-css.js" type="text/javascript"></script>
   <script src="../js/amdquery.js" type="text/javascript" amdquery="debug:false;" amd="detectCR=1" module="transitionToAnimation:1" ui="initWidget:1;isTransform3d:0;autoFetchCss:0"></script>
   <script src="../js/main.js" type="text/javascript"></script>
 </head>
@@ -35,7 +35,7 @@
             <br/>In fact, Test depends on Promise to test in turn. Test can be synchronized or asynchronous. Using asynchronous to test UI behavior or some like http-request because must be wait for human operating or triggering a event.
             </p>
             <p>See also <a target="_blank" href="http://mdsb100.github.io/AMDQuery/test/assets/module/Test.html">demo1</a> and <a target="_blank" href="http://mdsb100.github.io/AMDQuery/test/assets/main/CustomEvent.html">demo2</a>
-            <br /><a target="_blank" href="http://mdsb100.github.io/AMDQuery/test/app.html">AMDQuery Test</a>
+            <br /><a target="_blank" href="http://mdsb100.github.io/homepage/amdquery/test/test/app.html#navmenu=index">AMDQuery Test</a>
             </p>
             <h3 name="Usage" id="Usage">Usage</h3>
             <p>If the config "module.testLogByHTML" is true or window.console does not exist then log by HTML, else log by window.console.</p>
@@ -45,74 +45,92 @@
             <p>If you want to test "base/CustomEvent"</p>
             <pre class="prettyprint">
 $.require([
-  "base/Promise",
-  "main/CustomEvent",
-  "module/Test",
-], function(Promise, CustomEvent, Test) {
-  var customEvent = new CustomEvent();
-  var testCustomEvent = new Test("TestCustomeEvent", function(preResult){
-    // when finish test do this callback.
-    // "preResult" is last of "promise".
-  });
-});
-            </pre>
-            <p>Add an "equal". If the return result equals parameter then pass test. Throw error if javascript run error or result does not equal parameter.<p/>
-            <pre class="prettyprint">
-var testCustomEvent = new Test("TestCustomeEvent", function(preResult){
-  // preResult is true.
-}, "Test module CustomEvent description.")
-.equal("customEvent is empty.", true, function(preResult){
-  // preResult is "Hello Word"
-  return customEvent.isEmpty(); // return true;
-})
-.start("Hello Word");
-//log
-//log:[TestCustomeEvent] customEvent is empty. √
-            </pre>
-            <p>Add an "execute". Throw error if javascript run error.<p/>
-            <pre class="prettyprint">
-var testCustomEvent = new Test("TestCustomeEvent", function(preResult){
-  // preResult is true
-})
-.equal("customEvent is empty.", true, function(preResult){
-  // preResult is "Hello Word"
-  return customEvent.isEmpty(); // return true;
-})
-.execute("customEvent on fn name is 'a.b a.c a b'.", function(preResult){
-  // preResult is true
-  customEvent.on("a.b a.c a b", fn);
-})
-.equal("customEvent has event a.b.", true, function(preResult){
-  // preResult is true
-  return customEvent.hasHandler("a.b", fn) > -1;
-})
-.start("Hello Word");
-//log
-//log:[TestCustomeEvent] customEvent is empty. √
-//log:[TestCustomeEvent] customEvent on fn name is 'a.b a.c a b'. √
-//log:[TestCustomeEvent] customEvent has event a.b. √
-            </pre>
-            <p>Add asynchronous<p/>
-            <pre class="prettyprint">
-var promise1 = new Promise;
-var promise2 = new Promise;
-document.body.onclick = function(e){
-  promise2.resolve(e)
-}
-...
-.execute("Test execute async. After 1 seconds, 'promise1.resolve'. ", function(){
-  setTimeout(function(){
-    promise1.resolve( "value" );
-  }, 1000);
-})
-.execute("Test execute async. After 1 seconds, the next test is executed. ", function( preResult ){
-  //preResult is "value"
-}, promise1)
-.execute("When body clicking, exexute this.", function( preResult ){
-  //preResult is event of click
+    "base/typed",
+    "main/CustomEvent",
+    "module/Test"
+  ], function(typed, CustomEvent, Test) {
 
-}, promise2)
-.start()
+    var testCustomEvent = new Test("CustomeEvent", function(preResult){
+      // complete
+    }).describe("Test customEvent", function(preResult, expect, logger){
+      var customEvent = new CustomEvent();
+      var testTriggerResult = "";
+      var testTriggerContext = null;
+      var fn = function( ret ){
+        testTriggerResult = ret;
+        testTriggerContext = this;
+      };
+      var fn1 = function(){};
+
+      expect(customEvent.isEmpty(), "customEvent is empty").equal(true);
+
+      expect(function(){
+        customEvent.on("a.b a.c a b", fn);
+      }, "customEvent on").not.Throw();
+
+      expect(customEvent.hasHandler("a.b", fn), "customEvent hasHandler 'a.b',").be.greater.than(-1);
+
+      expect(customEvent.hasHandler("a.c", fn), "customEvent hasHandler 'a.c',").be.greater.than(-1);
+
+      expect(customEvent.hasHandler("a", fn), "customEvent hasHandler 'a',").be.greater.than(-1);
+
+      expect(customEvent.hasHandler("b", fn), "customEvent hasHandler 'b',").be.greater.than(-1);
+
+      expect(function(){
+        customEvent.on("b", fn1);
+      }, "customEvent on").not.Throw();
+
+      expect(customEvent.getHandlers("b"), "customEvent getHandlers 'b',").be.instance.of(Array);
+
+      expect(customEvent.getHandlers(), "customEvent getHandlers 'b',").equal(customEvent.clone().getHandlers());
+
+      expect(customEvent.getHandlers("b"), "customEvent getHandlers 'b',").have.index(1).with.equal(fn1);
+
+      expect(customEvent.isEmpty(), "customEvent is empty").equal(false);
+
+      expect(function(){
+        customEvent.off("a.b a", fn);
+      }, "customEvent off 'a.b a'").not.Throw();
+
+      expect(customEvent.hasHandler("a.b", fn), "customEvent hasHandler 'a.b',").equal(-1);
+
+      expect(customEvent.hasHandler("a", fn), "customEvent hasHandler 'a',").equal(-1);
+
+      expect(function(){
+        customEvent.trigger("a.c", customEvent, "myresult");
+      }, "customEvent trigger 'a.c' by parameter 'myresult'.").not.Throw();
+
+      expect(testTriggerResult, "testTriggerResult").equal("myresult");
+
+      expect(function(){
+        customEvent.trigger("b", customEvent, "abc");
+      }, "customEvent trigger 'b' by parameter 'abc'.").not.Throw();
+
+      expect(testTriggerContext, "testTriggerContext").equal(customEvent);
+
+      expect(function(){
+        customEvent.clearHandlers();
+      }, "customEvent clearHandlers ").not.Throw();
+
+      expect(customEvent.isEmpty(), "customEvent is empty").equal(true);
+
+      expect(function(){
+        customEvent.once("once", fn)
+      }, "customEvent once").not.Throw();
+
+      expect(customEvent.hasHandler("once", fn), "customEvent hasHandler 'once',").be.greater.than(-1);
+
+      expect(function(){
+        customEvent.trigger("once", customEvent, "onceResult");
+      }, "customEvent once").not.Throw();
+
+      expect(testTriggerResult, "testTriggerResult").equal("onceResult");
+
+      expect(customEvent.isEmpty(), "customEvent is empty").equal(true);
+
+    }).start();
+
+});
             </pre>
             <h3 name="Report" id="Report">Report test results</h3>
             <p>When test is fail or complete, Test would report results to parent-iframe if parent-iframe exists. Why Test should report results? Because we can test all case by one page.

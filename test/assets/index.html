@@ -81,18 +81,9 @@
 
                       $border.html( innerHtml.join( " " ) );
                     },
-                    error: function() {
+                    fail: function() {
                       var innerHtml = [
                         "Open", htmlPath, "error"
-                      ];
-
-                      $border.html( innerHtml.join( " " ) );
-
-                      promise.resolve();
-                    },
-                    timeoutFun: function() {
-                      var innerHtml = [
-                        "Open", htmlPath, "timeout"
                       ];
 
                       $border.html( innerHtml.join( " " ) );

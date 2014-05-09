@@ -16,7 +16,7 @@ define( "", [ "base/ClassModule", "main/communicate", "module/utilEval" ], funct
 				utilEval.functionEval( js );
 			},
 			timeout: _config.amd.timeout,
-			timeoutFun: error
+			fail: error
 		} );
 
 		return this;

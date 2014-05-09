@@ -1,4 +1,4 @@
-﻿aQuery.define( "base/support", [ "base/extend" ], function( $, utilExtend ) {
+﻿aQuery.define( "base/support", [ "base/extend", "base/ready" ], function( $, utilExtend, ready ) {
 	"use strict";
 	this.describe( "Consult from jquery-1.9.1" );
 	var support, all, a,
@@ -239,7 +239,7 @@
 	 */
 	support.clearCloneStyle = div.style.backgroundClip === "content-box";
 
-	$.ready( function() {
+	ready( function() {
 		var divReset = "padding:0;margin:0;border:0;display:block;box-sizing:content-box;-moz-box-sizing:content-box;-webkit-box-sizing:content-box;",
 			body = document.getElementsByTagName( "body" )[ 0 ],
 			container,

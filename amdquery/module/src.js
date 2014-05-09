@@ -1,4 +1,4 @@
-﻿aQuery.define( "module/src", [ "base/typed", "base/extend", "base/client" ], function( $, typed, utilExtend, client, undefined ) {
+﻿aQuery.define( "module/src", [ "base/typed", "base/extend", "base/client", "main/event" ], function( $, typed, utilExtend, client, utilEvent, undefined ) {
 	"use strict";
 	var
 	hasOwnProperty = Object.prototype.hasOwnProperty,
@@ -9,8 +9,7 @@
 				/// <para>fun optiosn.complete:回调函数</para>
 				/// <para>obj options.context:complete的作用域</para>
 				/// <para>num options.timeout:超时时间。缺省为10000</para>
-				/// <para>fun options.timeoutFun:超时后的事件</para>
-				/// <para>fun options.error:错误函数</para>
+				/// <para>fun options.fail:错误函数</para>
 				/// <param name="ele" type="Element">元素</param>
 				/// <param name="options" type="Object">参数</param>
 				/// <returns type="self" />
@@ -48,8 +47,7 @@
 				/// <para>fun optiosn.complete:回调函数</para>
 				/// <para>obj options.context:complete的作用域</para>
 				/// <para>num options.timeout:超时时间。缺省为10000</para>
-				/// <para>fun options.timeoutFun:超时后的事件</para>
-				/// <para>fun options.error:错误函数</para>
+				/// <para>fun options.fail:错误函数</para>
 				/// <param name="ele" type="Element">元素</param>
 				/// <param name="options" type="Object">参数</param>
 				/// <returns type="self" />
@@ -57,45 +55,54 @@
 				if ( !typed.isElement( ele ) || ( !hasOwnProperty.call( ele, property ) && ele[ property ] === undefined ) ) {
 					return this;
 				}
-				ele.onload = null;
+				var onload = ele.onload,
+					onerror = ele.onerror;
 				ele.setAttribute( property, "" );
 				var o = utilExtend.extend( {}, $.srcSetting, options ),
 					timeId;
 
-				ele.onload = function() {
+				ele.onload = function( e ) {
 					clearTimeout( timeId );
 					o.complete && o.complete.call( o.context || this, this );
-					ele.onload = ele.onerror = null;
+					ele.onload = onload;
+					ele.onerror = onerror;
 					ele = timeId = o = null;
+					onload && onload.call( this, e );
 				};
 				ele.onerror = function( e ) {
 					clearTimeout( timeId );
-					o.error && o.timeoutFun.call( ele, e );
-					ele.onload = ele.onerror = null;
+					o.fail && o.fail.call( o.context || this, this );
+					ele.onload = onload;
+					ele.onerror = onerror;
 					ele = o = timeId = null;
+					onerror && onerror.call( this, e );
 				};
 
 				if ( o.timeout ) {
 					timeId = setTimeout( function() {
-						o.timeoutFun && o.timeoutFun.call( ele, o );
-						ele.onload = ele.onerror = null;
+						o.fail && o.fail.call( o.context || this, this );
+						ele.onload = onload;
+						ele.onerror = onerror;
 						ele = o = timeId = null;
 					}, o.timeout );
 				}
-				ele.setAttribute( property, o[ property ] );
+
+				if ( typed.isNode( ele, "iframe" ) && !o.history && ele.contentWindow ) {
+					ele.contentWindow.location.replace( o[ property ] );
+				} else {
+					ele.setAttribute( property, o[ property ] );
+				}
 
 				return this;
 
 			},
 			srcSetting: {
-				error: function( e ) {
+				fail: function( e ) {
 					$.logger( "aQuery.src", ( this.src || "(empty)" ) + "of " + this.tagName + " getting error:" + e.toString() );
 				},
 				timeout: false,
-				timeoutFun: function( o ) {
-					$.logger( "aQuery.src", ( o.url || "(empty)" ) + "of " + this.tagName + "is timeout:" + ( o.timeout / 1000 ) + "second" );
-				},
-				src: ""
+				src: "",
+				history: true
 			}
 		};
 
@@ -106,8 +113,7 @@
 			/// <para>fun optiosn.complete:回调函数</para>
 			/// <para>obj options.context:complete的作用域</para>
 			/// <para>num options.timeout:超时时间。缺省为10000</para>
-			/// <para>fun options.timeoutFun:超时后的事件</para>
-			/// <para>fun options.error:错误函数</para>
+			/// <para>fun options.fail:错误函数</para>
 			/// <returns type="self" />
 			return this.each( function( ele ) {
 				$.href( ele, options );
@@ -120,8 +126,7 @@
 			/// <para>fun optiosn.complete:回调函数</para>
 			/// <para>obj options.context:complete的作用域</para>
 			/// <para>num options.timeout:超时时间。缺省为10000</para>
-			/// <para>fun options.timeoutFun:超时后的事件</para>
-			/// <para>fun options.error:错误函数</para>
+			/// <para>fun options.fail:错误函数</para>
 			/// <returns type="self" />
 			return this.each( function( ele ) {
 				$.src( ele, options );

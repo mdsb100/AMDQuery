@@ -204,16 +204,16 @@ htmlInfo.appDirectoryName + "/styles"
 		util.mkdirSync( dirName );
 	}
 
-	var globalPath = PATH.join( htmlInfo.AMDQueryProjectPath, "global" ),
-		globalDirectoryName = globalPath.replace( projectRootPath, "" ),
-		globalDistPath = PATH.join( distPath, globalDirectoryName );
+	var globalName = "global";
 
-	logger( "[DEBUG]".white, "copy directory:".white, globalPath, "to", globalDistPath );
+	var globalPath = PATH.join( htmlInfo.appProjectPath, "..", globalName ),
+		globalDistPath = PATH.join( distPath, globalName );
 
-	util.mkdirSync( globalDistPath );
-	FSE.copySync( globalPath, globalDistPath );
-
-	logger( "[DEBUG]".white, "app project path:".white, htmlInfo.appProjectPath.white );
+	if ( PATH.existsSync( globalPath ) ) {
+		util.mkdirSync( globalDistPath );
+		FSE.copySync( globalPath, globalDistPath );
+		logger( "[DEBUG]".white, "app project path:".white, htmlInfo.appProjectPath.white );
+	}
 
 	var copyDirMap = {
 		"amdquery/ui/css": PATH.join( AMDQueryJSRootPath, "ui", "css" ),

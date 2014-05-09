@@ -84,11 +84,11 @@ aQuery.define( "app/Controller", [
 		},
 		// controller must be <controller></conroller>
 		loadController: function( node ) {
-			var contollersElement = typed.isNode( node, "controller" ) ? $( node ) : ( node === document.body ? query.find( ">controller", node ) : query.find( "controller", node ) ),
+			var contollersElement = typed.isNode( node, "controller" ) ? $( node ) : ( typed.isNode( node, "body" ) ? [ query.find( "controller", node )[ 0 ] ] : query.find( "controller", node ) ),
 				controller = [],
 				ret = [];
 
-			if ( contollersElement.length ) {
+			if ( contollersElement.length && contollersElement[ 0 ] ) {
 				var
 				element,
 					src,

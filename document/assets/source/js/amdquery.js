@@ -311,17 +311,17 @@
 	},
 		$ = aQuery;
 
-	var emptyFn = function() {}, error, logger, info, debug;
+	var emptyFn = function() {}, error, logger, info, warn;
 	if ( window.console && console.log.bind ) {
 		logger = console.log.bind( console );
 		error = console.error.bind( console );
 		info = console.info.bind( console );
-		debug = console.debug.bind( console );
+		warn = console.warn.bind( console );
 	} else {
 		logger = emptyFn;
 		error = emptyFn;
 		info = emptyFn;
-		debug = emptyFn;
+		warn = emptyFn;
 	}
 
 	/**
@@ -449,11 +449,11 @@
 		 * @param {...String}
 		 */
 		logger: logger,
-		/** wrap console.debug if exists.
-		 * @method debug
+		/** wrap console.warn if exists.
+		 * @method warn
 		 * @param {...String}
 		 */
-		debug: debug,
+		warn: warn,
 		/** wrap console.info if exists.
 		 * @method info
 		 * @param {...String}
@@ -3897,7 +3897,7 @@ aQuery.define( "base/array", [ "base/typed", "base/extend" ], function( $, typed
 /*=======================================================*/
 
 /*===================base/support===========================*/
-﻿aQuery.define( "base/support", [ "base/extend" ], function( $, utilExtend ) {
+﻿aQuery.define( "base/support", [ "base/extend", "base/ready" ], function( $, utilExtend, ready ) {
 	"use strict";
 	this.describe( "Consult from jquery-1.9.1" );
 	var support, all, a,
@@ -4138,7 +4138,7 @@ aQuery.define( "base/array", [ "base/typed", "base/extend" ], function( $, typed
 	 */
 	support.clearCloneStyle = div.style.backgroundClip === "content-box";
 
-	$.ready( function() {
+	ready( function() {
 		var divReset = "padding:0;margin:0;border:0;display:block;box-sizing:content-box;-moz-box-sizing:content-box;-webkit-box-sizing:content-box;",
 			body = document.getElementsByTagName( "body" )[ 0 ],
 			container,
@@ -9052,7 +9052,7 @@ if ( typeof define === "function" && define.amd ) {
 /*=======================================================*/
 
 /*===================module/src===========================*/
-﻿aQuery.define( "module/src", [ "base/typed", "base/extend", "base/client" ], function( $, typed, utilExtend, client, undefined ) {
+﻿aQuery.define( "module/src", [ "base/typed", "base/extend", "base/client", "main/event" ], function( $, typed, utilExtend, client, utilEvent, undefined ) {
 	"use strict";
 	var
 	hasOwnProperty = Object.prototype.hasOwnProperty,
@@ -9063,8 +9063,7 @@ if ( typeof define === "function" && define.amd ) {
 				/// <para>fun optiosn.complete:回调函数</para>
 				/// <para>obj options.context:complete的作用域</para>
 				/// <para>num options.timeout:超时时间。缺省为10000</para>
-				/// <para>fun options.timeoutFun:超时后的事件</para>
-				/// <para>fun options.error:错误函数</para>
+				/// <para>fun options.fail:错误函数</para>
 				/// <param name="ele" type="Element">元素</param>
 				/// <param name="options" type="Object">参数</param>
 				/// <returns type="self" />
@@ -9102,8 +9101,7 @@ if ( typeof define === "function" && define.amd ) {
 				/// <para>fun optiosn.complete:回调函数</para>
 				/// <para>obj options.context:complete的作用域</para>
 				/// <para>num options.timeout:超时时间。缺省为10000</para>
-				/// <para>fun options.timeoutFun:超时后的事件</para>
-				/// <para>fun options.error:错误函数</para>
+				/// <para>fun options.fail:错误函数</para>
 				/// <param name="ele" type="Element">元素</param>
 				/// <param name="options" type="Object">参数</param>
 				/// <returns type="self" />
@@ -9111,45 +9109,54 @@ if ( typeof define === "function" && define.amd ) {
 				if ( !typed.isElement( ele ) || ( !hasOwnProperty.call( ele, property ) && ele[ property ] === undefined ) ) {
 					return this;
 				}
-				ele.onload = null;
+				var onload = ele.onload,
+					onerror = ele.onerror;
 				ele.setAttribute( property, "" );
 				var o = utilExtend.extend( {}, $.srcSetting, options ),
 					timeId;
 
-				ele.onload = function() {
+				ele.onload = function( e ) {
 					clearTimeout( timeId );
 					o.complete && o.complete.call( o.context || this, this );
-					ele.onload = ele.onerror = null;
+					ele.onload = onload;
+					ele.onerror = onerror;
 					ele = timeId = o = null;
+					onload && onload.call( this, e );
 				};
 				ele.onerror = function( e ) {
 					clearTimeout( timeId );
-					o.error && o.timeoutFun.call( ele, e );
-					ele.onload = ele.onerror = null;
+					o.fail && o.fail.call( o.context || this, this );
+					ele.onload = onload;
+					ele.onerror = onerror;
 					ele = o = timeId = null;
+					onerror && onerror.call( this, e );
 				};
 
 				if ( o.timeout ) {
 					timeId = setTimeout( function() {
-						o.timeoutFun && o.timeoutFun.call( ele, o );
-						ele.onload = ele.onerror = null;
+						o.fail && o.fail.call( o.context || this, this );
+						ele.onload = onload;
+						ele.onerror = onerror;
 						ele = o = timeId = null;
 					}, o.timeout );
 				}
-				ele.setAttribute( property, o[ property ] );
+
+				if ( typed.isNode( ele, "iframe" ) && !o.history && ele.contentWindow ) {
+					ele.contentWindow.location.replace( o[ property ] );
+				} else {
+					ele.setAttribute( property, o[ property ] );
+				}
 
 				return this;
 
 			},
 			srcSetting: {
-				error: function( e ) {
+				fail: function( e ) {
 					$.logger( "aQuery.src", ( this.src || "(empty)" ) + "of " + this.tagName + " getting error:" + e.toString() );
 				},
 				timeout: false,
-				timeoutFun: function( o ) {
-					$.logger( "aQuery.src", ( o.url || "(empty)" ) + "of " + this.tagName + "is timeout:" + ( o.timeout / 1000 ) + "second" );
-				},
-				src: ""
+				src: "",
+				history: true
 			}
 		};
 
@@ -9160,8 +9167,7 @@ if ( typeof define === "function" && define.amd ) {
 			/// <para>fun optiosn.complete:回调函数</para>
 			/// <para>obj options.context:complete的作用域</para>
 			/// <para>num options.timeout:超时时间。缺省为10000</para>
-			/// <para>fun options.timeoutFun:超时后的事件</para>
-			/// <para>fun options.error:错误函数</para>
+			/// <para>fun options.fail:错误函数</para>
 			/// <returns type="self" />
 			return this.each( function( ele ) {
 				$.href( ele, options );
@@ -9174,8 +9180,7 @@ if ( typeof define === "function" && define.amd ) {
 			/// <para>fun optiosn.complete:回调函数</para>
 			/// <para>obj options.context:complete的作用域</para>
 			/// <para>num options.timeout:超时时间。缺省为10000</para>
-			/// <para>fun options.timeoutFun:超时后的事件</para>
-			/// <para>fun options.error:错误函数</para>
+			/// <para>fun options.fail:错误函数</para>
 			/// <returns type="self" />
 			return this.each( function( ele ) {
 				$.src( ele, options );
@@ -11560,7 +11565,7 @@ aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "
 						}
 						ajax.setRequestHeader( "Accept", o.dataType && o.accepts[ o.dataType ] ? o.accepts[ o.dataType ] + ", */*" : o.accepts._default );
 
-					} catch ( e ) {}
+					} catch ( error ) {}
 					if ( o.data || options ) {
 						ajax.setRequestHeader( "Content-Type", o.contentType );
 					}
@@ -11581,7 +11586,7 @@ aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "
 								if ( !response ) {
 									try {
 										response = parse.XML( ajax.responseText );
-									} catch ( e ) {}
+									} catch ( error ) {}
 								}
 								break;
 							default:
@@ -14952,10 +14957,11 @@ aQuery.define( "html5/css3", [ "base/support", "base/extend", "base/typed", "bas
 	this.describe( "Support transform to animation" );
 	var getScale = function( r ) {
 		return r ? Math.max( r, 0 ) : 1;
-	}, transformCss = css3.getTransformStyleNameUnCamelCase();
+	}, transformCss;
 
 	//"-" + css3.css3Head + "-transform";
 	if ( support.transform3d ) {
+		transformCss = css3.getTransformStyleNameUnCamelCase();
 		var Transfrom3dForFX = FX.extend( function Transfrom3dForFX( ele, options, value, name, type ) {
 			if ( this instanceof Transfrom3dForFX ) {
 				/*Fix*/
@@ -15007,6 +15013,7 @@ aQuery.define( "html5/css3", [ "base/support", "base/extend", "base/typed", "bas
 		} );
 	}
 	if ( support.transform ) {
+		transformCss = css3.getTransformStyleNameUnCamelCase();
 		var TransfromForFX = FX.extend( function TransfromForFX( ele, options, value, name, type, index ) {
 			if ( this instanceof TransfromForFX ) {
 				/*Fix*/
@@ -19338,7 +19345,7 @@ aQuery.define( "ui/scrollableview", [
 		enable: function() {
 			var event = this.scrollableviewEvent,
 				opt = this.options;
-			this.container.on( "DomNodeInserted DomNodeRemoved drag.pause drag.move drag.start", event );
+			this.container.on( "DomNodeInserted DomNodeRemoved drag.pause drag.move drag.start drag.stop", event );
 			this.container.uiDraggable( "enable" );
 			this.target.on( "swap.move swap.stop swap.pause widget.detect", event ).touchwheel( event );
 			this.target.uiSwappable( "enable" );
@@ -19364,7 +19371,7 @@ aQuery.define( "ui/scrollableview", [
 		disable: function() {
 			var event = this.scrollableviewEvent,
 				opt = this.options;
-			this.container.off( "DomNodeInserted DomNodeRemoved drag.pause drag.move drag.start", event );
+			this.container.off( "DomNodeInserted DomNodeRemoved drag.pause drag.move drag.start drap.stop", event );
 			this.container.uiDraggable( "disable" );
 			this.target.off( "swap.move swap.stop swap.pause widget.detect", event ).off( "touchwheel", event );
 			this.target.uiSwappable( "disable" );
@@ -19392,6 +19399,7 @@ aQuery.define( "ui/scrollableview", [
 				target = self.target,
 				opt = self.options,
 				check = function() {
+					self._fireMoved();
 					self.toHBoundary( self.getLeft() ).toVBoundary( self.getTop() ).hideStatusBar();
 				},
 				keyToMove = function( x, y ) {
@@ -19466,6 +19474,9 @@ aQuery.define( "ui/scrollableview", [
 						if ( opt.enableKeyboard ) target[ 0 ].focus();
 						self.stopAnimation();
 						self.detect();
+						break;
+					case "drag.stop":
+						self._fireMoved();
 						break;
 					case "DomNodeInserted":
 					case "DomNodeRemoved":
@@ -19552,6 +19563,15 @@ aQuery.define( "ui/scrollableview", [
 			};
 			return this;
 		},
+		_fireMoved: function() {
+			var type = "scrollableview.moved",
+				pos = this.getContainerPosition();
+			this.target.trigger( type, this.container[ 0 ], {
+				type: type,
+				x: pos.x,
+				y: pos.y
+			} );
+		},
 		getAnimationToElementByName: function( name ) {
 			return this.target.find( "[name=" + ( name || "__undefined" ) + "]" );
 		},
@@ -19635,7 +19655,7 @@ aQuery.define( "ui/scrollableview", [
 
 			return this;
 		},
-		customEventName: [ "pulldown", "pullup", "pullleft", "pullright", "animationEnd", "animateToElement" ],
+		customEventName: [ "pulldown", "pullup", "pullleft", "pullright", "animationEnd", "animateToElement", "moved" ],
 		options: {
 			"overflow": "HV",
 			"animateDuration": 600,
@@ -19935,6 +19955,7 @@ aQuery.define( "ui/scrollableview", [
 					complete: function() {
 						self.hideStatusBar();
 						self._triggerAnimate( "boundary", self._direction, self.options.boundaryDruation, outer );
+						self._fireMoved();
 					}
 				} );
 			} else {
@@ -19954,6 +19975,7 @@ aQuery.define( "ui/scrollableview", [
 					complete: function() {
 						self.hideStatusBar();
 						self._triggerAnimate( "boundary", self._direction, self.options.boundaryDruation, outer );
+						self._fireMoved();
 					}
 				} );
 			} else {
@@ -19977,6 +19999,7 @@ aQuery.define( "ui/scrollableview", [
 				duration: t,
 				easing: "easeOut",
 				complete: function() {
+					self._fireMoved();
 					self.toHBoundary( self.getLeft() ).toVBoundary( y1 );
 					self._triggerAnimate( "inner", self._direction, t, y1 );
 					if ( typed.isFunction( animationCallback ) ) animationCallback.call( self.target, V );
@@ -19999,6 +20022,7 @@ aQuery.define( "ui/scrollableview", [
 				duration: t,
 				easing: "easeOut",
 				complete: function() {
+					self._fireMoved();
 					self.toHBoundary( x1 ).toVBoundary( self.getTop() );
 					self._triggerAnimate( "inner", self._direction, t, x1 );
 					if ( typed.isFunction( animationCallback ) ) animationCallback.call( self.target, H );

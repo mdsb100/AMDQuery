@@ -11,6 +11,7 @@ task( "default", function() {
 	jake.logger.log( "jake jsdoc                                   default is amdquery" );
 	jake.logger.log( "jake ui_css                                  build css of widget-ui" );
 	jake.logger.log( "jake beautify[...file]                       example 'jake beautify[a.html,b.css,c.xml,d.js]'" );
+	jake.logger.log( "jake createapp['relativePath']               example 'jake createapp['../testapp']'" );
 } );
 
 task( "buildapp", {
@@ -129,5 +130,18 @@ task( "pages", {
 			printStdout: true,
 			printStderr: true
 		}, complete );
-	complete()
+} );
+
+desc( "Create application template" );
+task( "createapp", {
+	async: true
+}, function( path, template ) {
+	process.chdir( 'application' );
+	jake.exec(
+    [
+    "node create_application.js " + path + ( template || "" )
+    ], {
+			printStdout: true,
+			printStderr: true
+		}, complete );
 } );

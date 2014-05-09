@@ -181,7 +181,7 @@ aQuery.define( "app/View", [
 						define( htmlSrc, dom.parseHTML( xml ) );
 					},
 					timeout: View.timeout,
-					timeoutFun: View.error
+					fail: View.error
 				} );
 			}
 			return require( htmlSrc ).first;
