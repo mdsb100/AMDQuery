@@ -402,7 +402,7 @@
 			this.promise.done( function() {
 				this.timeConsuming = ( new Date() - beginTime ) / 1000;
 				info( "time-consuming:", this.timeConsuming, "seconds" );
-				Test[ this.fail == 0 ? "logger" : "error" ]( this.name, "Test stop", "Test:" + this.count, "Success" + ( this.count - this.fail ), "Fail:" + this.fail );
+				Test[ this.fail == 0 ? "logger" : "error" ]( this.name, "Test stop", "Test:" + this.count, "Success:" + ( this.count - this.fail ), "Fail:" + this.fail );
 				this.complete();
 				this.report();
 			} ).resolve( firstResult );
