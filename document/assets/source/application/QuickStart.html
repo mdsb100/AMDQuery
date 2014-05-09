@@ -27,6 +27,8 @@
               </li>
               <li><a href="#Run">Run your first application</a>
               </li>
+              <li><a href="#Global">global folder</a>
+              </li>
             </ul>
             <h2 name="First" id="First">Create your first application</h2>
             <p>This guide provides basic instructions on useing application quickly. AMDQuery application use MVC.</p>
@@ -37,8 +39,8 @@
             <p>You will see:</p>
             <pre class="prettyprint">
 root-server
-  | - myproject //first app
-  |   \ - first
+  | - myproject
+  |   \ - first //first app
   |       | - assets // assets of application
   |       | - controllers
   |       | - lib // js library in here
@@ -63,8 +65,22 @@ root-server
               CD root-server and input <strong>node server.js</strong>
             </p>
             <p>Open your web broswer and input 'http://localhost:8000/myproject/first/app.html'</p>
-            <p>The global folder will be copy when build, so you can add some </p>
-            #todo 可以在同一个路径下创建不同app,用global文件夹来分享资源
+            <h2 name="Global" id="Global">global folder</h2>
+            <p>
+              What is global folder? If you create some applications in same base path,
+              you can create a folder which name is 'global'. Build will copy 'global' to distribution directory.
+            </p>
+            <pre class="prettyprint">
+root-server
+  | - myproject
+  |   | - global
+  |   | - first
+  |   \ - second
+  \ - amdquery
+      | - server.js // a 'connect' file.
+      \ - amdquery
+          \ - amdquery.js //base js
+            </pre>
           </div>
         </li>
       </ol>
