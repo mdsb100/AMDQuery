@@ -1,6 +1,8 @@
 aQuery.define( "@app/views/index", [ "app/View", "ui/flex" ], function( $, SuperView ) {
-	"use strict"; //启用严格模式
-	var xmlpath = "@app/xml/index";
+	"use strict";
+	// You could depend anthoer path. If you does not define path, you must create a index.xml under path "@app/xml/".
+	// var xmlpath = "@app/xml/index";
+	var xmlpath;
 	SuperView.getStyle( "@app/styles/index" );
 
 	var View = SuperView.extend( {
