@@ -10,16 +10,22 @@
     font-weight: bold;
     line-height: 20px;
     letter-spacing: -1px;
-    color: #666;
+    color: rgb(102,102,102);
 }
 .document h3 {
     font-weight: bold;
-    color: #666;
+    color: rgb(102,102,102);
     margin-top: .5em;
     padding-top: 16px;
     font-size: 16px;
     line-height: 16px;
     margin-bottom: 4px;
+}
+body {
+  font-style: normal;
+  font-variant: normal;
+  font-weight: normal;
+  font-family: 'Helvetica Neue', helvetica, arial, sans-serif
 }
 p {
     margin: 0 0 1em;
@@ -64,6 +70,10 @@ a {
     background-color: #FFFFDD;
     border-color: #F7DF92;
     margin: auto;
+}
+.list {
+  list-style: decimal inside;
+  margin: 15px 0 0 20px;
 }
 pre {
     margin-bottom: 1em;

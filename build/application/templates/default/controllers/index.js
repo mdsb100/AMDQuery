@@ -6,7 +6,7 @@ aQuery.define( "@app/controllers/index", [
 	typed,
 	SuperController,
 	IndexView ) {
-	"use strict"; //启用严格模式
+	"use strict";
 	var Controller = SuperController.extend( {
 		init: function( contollerElement, models ) {
 			this._super( new IndexView( contollerElement ), models );

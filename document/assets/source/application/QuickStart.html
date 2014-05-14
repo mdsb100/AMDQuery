@@ -29,6 +29,8 @@
               </li>
               <li><a href="#Global">global folder</a>
               </li>
+              <li><a href="#Dependency">Module Dependency</a>
+              </li>
             </ul>
             <h2 name="First" id="First">Create your first application</h2>
             <p>This guide provides basic instructions on useing application quickly. AMDQuery application use MVC.</p>
@@ -81,6 +83,77 @@ root-server
       \ - amdquery
           \ - amdquery.js //base js
             </pre>
+            <h2 name="Dependency" id="Dependency">Module Dependency</h2>
+            <p>
+              Standard of requiring MVC module.
+            </p>
+            <ol class="list">
+              <li>
+                In your app, you should add "@app" in path. In demo first app, "index.js" path is "@app/controller/index".
+              </li>
+              <li>
+                Controller should require View and Model. For example:
+                <pre class="prettyprint">
+aQuery.define( "@app/controllers/index", [
+  "base/typed",
+  "app/Controller",
+  "@app/views/index",
+  "@app/models/test"
+  ], function( $,
+  SuperController,
+  IndexView ) {
+
+  var Controller = SuperController.extend( {
+    init: function( contollerElement, models ) {
+      this._super( new IndexView( contollerElement ), models );
+    },
+    destroy: function() {
+      SuperController.invoke( "destroy" );
+    }
+  }, {
+  } );
+  return Controller;
+} );
+               </pre>
+              </li>
+              <li>
+                One controller, one View.
+              </li>
+              <li>
+                View should require the widget module which if you define in XML. For example:<br/>
+                <pre>
+&ltdiv id="index" <span style="color:red">amdquery-widget="ui.flex"</span> ui-flex="flexDirection:column"&gt
+  &ltcenter&gtCreated by default template.&lt/center&gt
+&lt/div&gt
+                </pre>
+                <pre class="prettyprint">
+aQuery.define( "@app/views/index", [ "app/View", "ui/flex" ], function( $, SuperView ) {
+  "use strict";
+  // You could depend anthoer path. If you does not define path, you must create a index.xml under path "@app/xml/".
+  // var xmlpath = "@app/xml/index";
+  var xmlpath;
+  SuperView.getStyle( "@app/styles/index" );
+
+  var View = SuperView.extend( {
+    init: function( contollerElement ) {
+      this._super( contollerElement, xmlpath );
+
+    }
+  }, {
+
+  } );
+
+  return View;
+} );
+                </pre>
+                <div class="admonition-note" >
+                  <strong>
+                    You could depend anthoer xml-path in View. If you does not define xml-path in view "@app/view/index", you must create a index.xml under path "@app/xml/".<br />
+                    Recommended to create a xml which path is relative.
+                  </strong>
+                </div>
+              </li>
+            </ol>
           </div>
         </li>
       </ol>

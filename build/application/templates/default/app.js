@@ -1,5 +1,5 @@
 aQuery.define( "@app/app", [ "base/Promise", "main/event", "app/Application", "@app/controllers/index" ], function( $, Promise, event, Application ) {
-	"use strict"; //启用严格模式
+	"use strict";
 	var app = Application.extend( "Application", {
 		init: function( amdqueryPromise ) {
 			this._super();
