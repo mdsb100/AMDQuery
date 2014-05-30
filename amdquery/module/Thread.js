@@ -6,8 +6,9 @@
 	/// <para>num obj.sleep:睡眠多少豪秒</para>
 	/// <para>num obj.interval 如果interval存在 则fps无效 isAnimFram也无效
 	/// <para>num obj.fps:每秒多少帧</para>
-	/// <para>fun obj.fun:要执行的方法</para>
+	/// <para>fun obj.run:要执行的方法</para>
 	/// <para>bol obj.isAnimFram:是否使用新动画函数，使用后将无法初始化fps</para>
+	/// <para>bol obj.context:作用域</para>
 	/// <para>可以调用addHandler方法添加事件</para>
 	/// <para>事件类型:start、stop、delay、sleepStar,sleepStop</para>
 	/// </summary>
@@ -22,13 +23,13 @@
 		window.msRequestAnimationFrame ||
 		function( complete ) {
 			return setTimeout( complete, 13 ); //其实是1000/60
-	},
+		},
 		cancelRequestAnimFrame = window.cancelAnimationFrame ||
-			window.webkitCancelRequestAnimationFrame ||
-			window.mozCancelRequestAnimationFrame ||
-			window.oCancelRequestAnimationFrame ||
-			window.msCancelRequestAnimationFrame ||
-			clearTimeout;
+		window.webkitCancelRequestAnimationFrame ||
+		window.mozCancelRequestAnimationFrame ||
+		window.oCancelRequestAnimationFrame ||
+		window.msCancelRequestAnimationFrame ||
+		clearTimeout;
 
 	var Thread = CustomEvent.extend( "Thread", {
 		init: function( obj, paras ) {
@@ -39,6 +40,7 @@
 			//this.stop();
 			this._super();
 			utilExtend.extend( this, Thread._defaultSetting, obj );
+			this.context = obj.context || this;
 			this.id = this.id || $.now();
 			this.args = $.util.argToArray( arguments, 1 );
 
@@ -150,7 +152,7 @@
 
 		_executor: function( a, b ) {
 			/// <summary>内部</summary>
-			this.fun.apply( this, [ a, b ].concat( this.args ) ) === false && this.stop();
+			this.run.apply( this.context, [ a, b ].concat( this.args ) ) === false && this.stop();
 		},
 
 		isRun: function() {
@@ -316,7 +318,7 @@
 			sleepId: null,
 			begin: null,
 			timerId: null,
-			fun: function() {},
+			run: function() {},
 			interval: null,
 			isAnimFrame: true,
 			duration: NaN,

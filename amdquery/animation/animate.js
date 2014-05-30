@@ -21,7 +21,7 @@
 
 			duration: 0, //will be go forever
 
-			fun: function() {
+			run: function() {
 				for ( var i = 0, c; c = timers[ i++ ]; ) {
 					c.step( thread.pauseTime );
 				}
