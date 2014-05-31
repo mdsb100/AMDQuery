@@ -1,4 +1,5 @@
 aQuery.define( "ui/tabview", [
+    "base/typed",
     "main/query",
     "main/class",
     "main/event",
@@ -10,7 +11,7 @@ aQuery.define( "ui/tabview", [
     "ui/tabbar",
     "ui/tabbutton"
   ],
-	function( $, query, cls, event, css, position, dom, attr, Widget, tabbar, tabbutton ) {
+	function( $, typed, query, cls, event, css, position, dom, attr, Widget, tabbar, tabbutton ) {
 		"use strict";
 
 		// Widget.fetchCSS( "ui/css/tabview" );
@@ -51,7 +52,7 @@ aQuery.define( "ui/tabview", [
 			render: function( index ) {
 				var opt = this.options;
 
-				this.selectView( index || opt.index );
+				this.selectView( typed.isNumber( index ) ? index : opt.index );
 
 			},
 			selectTabbutton: function( index ) {
