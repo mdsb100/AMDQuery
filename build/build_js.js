@@ -96,7 +96,7 @@ function buildDefines() {
 		jsBuilder.launch( name, distPath, requireList, function( name, moduleList, minPath, minContent, deubugPath, content ) {
 			var defineConfig = buildConfig.defines[ name ];
 			if ( defineConfig && typeof defineConfig.complete === "function" ) {
-				defineConfig.complete.call( defineConfig, moduleList, minPath, minContent, deubugPath, content );
+				defineConfig.complete.call( defineConfig, minPath, minContent, deubugPath, content );
 				toBuild();
 			}
 		} );

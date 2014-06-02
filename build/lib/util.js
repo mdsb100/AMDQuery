@@ -221,8 +221,8 @@ JSBuilder.prototype = {
 				console.error( "[Error]".red, "JSBuilder:".red, err.red );
 				return;
 			}
-			oye.setPath( jsBuilder.originOyeOpt );
 			callback && callback( name, moduleList, minPath, minContent, deubugPath, content );
+      // oye.setPath( jsBuilder.originOyeOpt );
 		} );
 
 	}
