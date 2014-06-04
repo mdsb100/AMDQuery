@@ -43,7 +43,7 @@ aQuery.define( "ui/scrollableview", [
 	keyboard, undefined ) {
 	"use strict";
 	Widget.fetchCSS( "ui/css/scrollableview" );
-	var isTransform3d = !! config.ui.isTransform3d && support.transform3d;
+	var isTransform3d = !!config.ui.isTransform3d && support.transform3d;
 
 	var V = "V",
 		H = "H";
@@ -178,11 +178,11 @@ aQuery.define( "ui/scrollableview", [
 				};
 
 			var
-			combinationKeyItem = {
-				type: "keyup",
-				keyCode: "Up",
-				combinationKey: opt.combinationKey.split( /;|,/ )
-			},
+				combinationKeyItem = {
+					type: "keyup",
+					keyCode: "Up",
+					combinationKey: opt.combinationKey.split( /;|,/ )
+				},
 				KeyItem = {
 					type: "keydown",
 					keyCode: "Up"
@@ -282,7 +282,18 @@ aQuery.define( "ui/scrollableview", [
 							href = ( $a.attr( "href" ) || "" ).replace( window.location.href, "" ).replace( "#", "" ),
 							elementId = self.getAnimationToElementById( href );
 
-						self.animateToElement( elementId.length ? elementId : self.getAnimationToElementByName( href ) );
+						elementId = elementId.length ? elementId : self.getAnimationToElementByName( href );
+						var type = self.getEventName( "aclick" );
+
+						self.target.trigger( type, self, {
+							type: type,
+							toElement: elementId[ 0 ]
+						} );
+
+						if ( opt.autoToElement ) {
+							self.animateToElement( elementId );
+						}
+
 						break;
 
 					case keyType.CombinationLeft:
@@ -363,6 +374,18 @@ aQuery.define( "ui/scrollableview", [
 				}
 			}
 		},
+		toTop: function( callback ) {
+			this.animateY( 0, FX.normal, callback );
+		},
+		toBottom: function() {
+			this.animateY( -this.scrollHeight + this.viewportHeight, FX.normal, callback );
+		},
+		toLeft: function() {
+			this.animateX( 0, FX.normal, callback );
+		},
+		toRight: function() {
+			this.animateX( -this.scrollWidth + this.viewportWidth, FX.normal, callback );
+		},
 		destroy: function() {
 			this.target.destroyUiSwappable();
 			this.container.destroyUiDraggable();
@@ -417,7 +440,7 @@ aQuery.define( "ui/scrollableview", [
 
 			return this;
 		},
-		customEventName: [ "pulldown", "pullup", "pullleft", "pullright", "animationEnd", "animateToElement", "moved" ],
+		customEventName: [ "pulldown", "pullup", "pullleft", "pullright", "animationEnd", "animateToElement", "moved", "aclick" ],
 		options: {
 			"overflow": "HV",
 			"animateDuration": 600,
@@ -428,6 +451,7 @@ aQuery.define( "ui/scrollableview", [
 			"enableKeyboard": false,
 			"combinationKey": client.system.mac ? "cmd" : "ctrl",
 			"firstToElement": "",
+			"autoToElement": true,
 			"keyVerticalDistance": 40,
 			"keyHorizontalDistance": 40,
 			"focus": false
@@ -446,9 +470,15 @@ aQuery.define( "ui/scrollableview", [
 			"animateToElement": Widget.AllowPublic,
 			"toH": Widget.AllowPublic,
 			"toV": Widget.AllowPublic,
+      "toTop": Widget.AllowPublic,
+      "toBottom": Widget.AllowPublic,
+      "toLeft": Widget.AllowPublic,
+      "toRight": Widget.AllowPublic,
 			"append": Widget.AllowPublic,
 			"remove": Widget.AllowPublic,
-			"replace": Widget.AllowPublic
+			"replace": Widget.AllowPublic,
+			"animateX": Widget.AllowPublic,
+			"animateY": Widget.AllowPublic
 		},
 		render: function( x, y, addtion, boundary ) {
 			if ( !arguments.length ) {
