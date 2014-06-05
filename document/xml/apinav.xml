@@ -10,6 +10,7 @@
               <li amdquery-widget="ui.navitem" ui-navitem="html:ClassModule;img:file" link="ClassModule.html"></li>
               <li amdquery-widget="ui.navitem" ui-navitem="html:client;img:file" link="client.html"></li>
               <li amdquery-widget="ui.navitem" ui-navitem="html:config;img:file" link="config.html"></li>
+              <li amdquery-widget="ui.navitem" ui-navitem="html:constant;img:file" link="constant.html"></li>
               <li amdquery-widget="ui.navitem" ui-navitem="html:extend;img:file" link="extend.html"></li>
               <li amdquery-widget="ui.navitem" ui-navitem="html:Promise;img:file" link="Promise.html"></li>
               <li amdquery-widget="ui.navitem" ui-navitem="html:queue;img:file" link="queue.html"></li>
@@ -69,6 +70,7 @@
           </li>
           <li amdquery-widget="ui.navitem" ui-navitem="html:module;img:module">
             <ul>
+              <li amdquery-widget="ui.navitem" ui-navitem="html:history;img:file" link="history.html"></li>
               <li amdquery-widget="ui.navitem" ui-navitem="html:location;img:file" link="location.html"></li>
               <li amdquery-widget="ui.navitem" ui-navitem="html:Test;img:file" link="Test.html"></li>
             </ul>

@@ -34,7 +34,7 @@
 	this.describe( "A custom event" );
 	/**
 	 * Be defined by object.extend.
-   * Each function can not repeat to add into CustomEvent.
+	 * Each function can not repeat to add into CustomEvent.
 	 * @constructor
 	 * @exports main/CustomEvent
 	 * @requires module:main/object
@@ -255,6 +255,20 @@
 			return this;
 		},
 	} );
+
+	/**
+	 * Mix prototype to target.
+	 * @param {Object}
+	 */
+	CustomEvent.mixin = function( target ) {
+		var proto = {
+			__handlers: {}
+		};
+		utilExtend.extend( proto, CustomEvent.prototype );
+		delete proto.constructor;
+		delete proto.init;
+		utilExtend.extend( target, proto );
+	}
 
 	return CustomEvent;
 } );</pre>

@@ -107,6 +107,29 @@
 			return args;
 		},
 		/**
+		 * @example
+		 * parse.ObjetToString({
+		 *   name: "Jarry",
+		 *   name: "27"
+		 * }, '&', '='
+		 * )
+		 * // "name=Jarry&age=27"
+		 * @param {Object}
+		 * @param {String} [split1="&"]
+		 * @param {String} [split2="="]
+		 * @returns {Object}
+		 */
+		ObjetToString: function( object, split1, split2 ) {
+      split1 = split1 || "&";
+      split2 = split2 || "=";
+			var key, value, strList = [];
+			for ( key in object ) {
+				value = object[ key ];
+				strList.push( key + split2 + value );
+			}
+			return strList.join( split1 );
+		},
+		/**
 		 * @param {String}
 		 * @returns {Document}
 		 */
