@@ -1,4 +1,4 @@
-aQuery.define( "@app/controllers/apinav", [ "main/attr", "module/location", "app/Controller", "@app/views/apinav" ], function( $, attr, location, SuperController, NavmenuView ) {
+aQuery.define( "@app/controllers/apinav", [ "main/attr", "module/history", "app/Controller", "@app/views/apinav" ], function( $, attr, history, SuperController, NavmenuView ) {
 	"use strict"; //启用严格模式
 	var APINAVMENUKEY = "apiNavmenuKey";
 
@@ -6,6 +6,7 @@ aQuery.define( "@app/controllers/apinav", [ "main/attr", "module/location", "app
 		init: function( contollerElement, models ) {
 			this._super( new NavmenuView( contollerElement ), models );
 			this.hash = {};
+			this.APINAVMENUKEY = APINAVMENUKEY;
 			var controller = this;
 			this.$nav = $( this.view.topElement ).find( "#apinav" );
 
@@ -13,7 +14,7 @@ aQuery.define( "@app/controllers/apinav", [ "main/attr", "module/location", "app
 				var link = attr.getAttr( e.navitem, "link" );
 				if ( link ) {
 					controller.linkTo( link );
-					controller._modifyLocation( link );
+					history.addByKeyValue( APINAVMENUKEY, link );
 				}
 			} ).on( "dblclick", function( e ) {
 				controller.trigger( "navmenu.dblclick", controller, {
@@ -28,15 +29,15 @@ aQuery.define( "@app/controllers/apinav", [ "main/attr", "module/location", "app
 
 			$.on( "api_iframe.hrefChange", this.handleIframeChange );
 
+			history.on( APINAVMENUKEY + ".change", function( e ) {
+				controller.selectDefaultNavmenu( e.token );
+			} );
+
 		},
 		activate: function() {
 
 		},
 		deactivate: function() {
-
-		},
-		_modifyLocation: function( link ) {
-			location.setHash( APINAVMENUKEY, link );
 
 		},
 		linkTo: function( link ) {
@@ -55,12 +56,11 @@ aQuery.define( "@app/controllers/apinav", [ "main/attr", "module/location", "app
 			return navitem.length ? navitem[ 0 ] : null;
 		},
 		selectDefaultNavmenu: function( target ) {
-			var src = target || location.getHash( APINAVMENUKEY ) || "index.html";
+			var src = target || "index.html";
 			var navitem = this.findLink( src );
 			if ( navitem ) {
 				this.linkTo( src );
 				this.$nav.uiNavmenu( "selectNavItem", navitem, false );
-				this._modifyLocation( src );
 			}
 		},
 		destroy: function() {

@@ -10,7 +10,8 @@ aQuery.define( "@app/controllers/content", [ "base/client", "module/src", "app/C
 		loadPath: function( path ) {
 			if ( this.getSrc() !== path ) {
 				this.$content.src( {
-					src: path
+					src: path,
+					history: false
 				} );
 			}
 		},
