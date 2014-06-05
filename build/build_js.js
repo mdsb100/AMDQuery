@@ -144,7 +144,7 @@ function checkJSDirectory( directoryList, suffix ) {
 function filterDependencies( url ) {
 	var result = [],
 		content = FSE.readFileSync( PATH.join( buildFileRootPath, buildConfig.amdqueryPath, url + ".js" ) )
-			.toString(),
+		.toString(),
 		moduleList = oye.matchDefine( content ),
 		moduleInfo,
 		i = 0,

@@ -1,37 +1,53 @@
-$.require( [ "main/query", "main/attr", "module/location", "ui/swapview", "ui/scrollableview" ], function( query, attr, location ) {
+$.require( [ "main/query", "main/attr", "module/history", "ui/swapview", "ui/scrollableview" ], function( query, attr, history ) {
 	//http://127.0.0.1:8080/document/app/app.html#navmenu=#Build!swapIndex=1!scrollTo=Detail
 	var swapview = $( "#swapview" );
 
 	if ( swapview.length ) {
 		swapview.uiSwapview();
-		var index = parseInt( location.getHash( "swapIndex" ) || 0 );
-		swapview.uiSwapview( "render", index, function() {
-			var $scrollableview = $( this ).findWidgets( "ui.scrollableview" ).eq( index );
-			var $toElement = $scrollableview.uiScrollableview( "getAnimationToElementByName", location.getHash( "scrollTo" ) );
-			$scrollableview.uiScrollableview( "animateToElement", $toElement );
-		} );
 
-		if ( window.parent && window.parent.aQuery ) {
-			swapview.on( "swapview.change", function( e ) {
-				var type = "document_iframe.swapIndexChange";
-				window.parent.aQuery.trigger( type, null, {
-					type: type,
-					index: e.index
-				} );
-			} );
-
-			swapview.findWidgets( "ui.scrollableview" ).on( "scrollableview.animateToElement", function( e ) {
-				if ( e.overflow == "V" && e.toElement ) {
-					var type = "document_iframe.scrollToChange";
-					window.parent.aQuery.trigger( type, null, {
-						type: type,
-						name: attr.getAttr( e.toElement, "name" )
-					} );
+		function renderIndex( index, scrollTo ) {
+			swapview.uiSwapview( "render", index, function() {
+				if ( scrollTo ) {
+					renderScrollTo( index, scrollTo );
 				}
 			} );
 		}
 
+		function renderScrollTo( index, scrollTo ) {
+			var $scrollableview = swapview.findWidgets( "ui.scrollableview" ).eq( index );
+			var $toElement = $scrollableview.uiScrollableview( "getAnimationToElementByName", scrollTo );
+			if ( $toElement[ 0 ] ) {
+				$scrollableview.uiScrollableview( "animateToElement", $toElement );
+			} else {
+				$scrollableview.uiScrollableview( "toTop" );
+			}
+
+		}
+
+		history.on( 'ready', function( e ) {
+			var index = parseInt( history.getTokenByKey( "swapIndex" ) || 0 );
+			var scrollTo = history.getTokenByKey( "scrollTo" );
+			renderIndex( index, scrollTo );
+		} ).on( 'swapIndex.change', function( e ) {
+			renderIndex( e.token );
+		} ).on( 'scrollTo.change', function( e ) {
+			var index = parseInt( history.getTokenByKey( "swapIndex" ) || 0 );
+			renderScrollTo( index, e.token );
+		} );
+
+		swapview.on( "swapview.change", function( e ) {
+			history.addByKeyValue( "swapIndex", e.index );
+		} );
+
+		swapview.findWidgets( "ui.scrollableview" ).on( "scrollableview.aclick", function( e ) {
+			if ( e.toElement ) {
+				history.addByKeyValue( "scrollTo", attr.getAttr( e.toElement, "name" ) );
+			}
+		} );
+
 	}
+
+	history.init();
 
 	$( ".prettyprinted" ).each( function( ele ) {
 		var numbered = ele.innerHTML.split( "\n" );

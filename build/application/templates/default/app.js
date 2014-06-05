@@ -19,7 +19,7 @@ aQuery.define( "@app/app", [ "base/Promise", "main/event", "app/Application", "@
 		global: {
 
 		}
-	}, Application );
+	} );
 
 	return app;
 } );

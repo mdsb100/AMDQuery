@@ -1,12 +1,14 @@
 aQuery.define( "@app/controllers/index", [
-  "module/location",
+  "main/parse",
+  "module/history",
   "app/Controller",
   "@app/views/index",
   "@app/controllers/docnav",
   "@app/controllers/apinav",
   "@app/controllers/content"
   ], function( $,
-	location,
+	parse,
+	history,
 	SuperController,
 	IndexView ) {
 	"use strict"; //启用严格模式
@@ -22,8 +24,6 @@ aQuery.define( "@app/controllers/index", [
 				self.document.openWindow();
 			} );
 
-			this.docnav.selectDefaultNavmenu();
-
 			this.apinav.on( "navmenu.select", function( e ) {
 				self.api.loadPath( e.path );
 			} );
@@ -35,14 +35,16 @@ aQuery.define( "@app/controllers/index", [
 			var loadAPIFlag = false,
 				navMap = [ this.docnav, this.apinav ];
 			var $swapview = $( this.view.topElement ).find( "#contentview" ).on( "swapview.change", function( e ) {
-				location.setHash( "tab", e.index );
+
 				if ( e.index === 1 && loadAPIFlag === false ) {
 					loadAPIFlag = true;
-					self.apinav.selectDefaultNavmenu();
+          self.apinav.selectDefaultNavmenu( history.getTokenByKey( self.apinav.APINAVMENUKEY ) );
 				}
 
 				navMap[ e.index ].activate();
 				navMap[ e.originIndex ].deactivate();
+
+				history.addByKeyValue( "tab", e.index );
 
 			} );
 
@@ -51,9 +53,19 @@ aQuery.define( "@app/controllers/index", [
 				$swapview.uiSwapview( "render", e.index );
 			} );
 
-			if ( location.getHash( "tab" ) != null ) {
-				$tabview.uiTabview( "render", parseInt( location.getHash( "tab" ) ) || 0 );
-			}
+			history.on( 'ready', function( e ) {
+				var tabIndex = this.getTokenByKey( "tab" );
+				if ( parseInt( tabIndex ) === 1 ) {
+					self.apinav.selectDefaultNavmenu( this.getTokenByKey( self.apinav.APINAVMENUKEY ) );
+				}
+				self.docnav.selectDefaultNavmenu( this.getTokenByKey( self.docnav.DOCNAVMENUKEY ) );
+
+				$tabview.uiTabview( 'render', parseInt( tabIndex ) || 0 );
+			} ).on( 'tab.change', function( e ) {
+				$tabview.uiTabview( 'render', parseInt( e.token ) || 0 );
+			} );
+
+			history.init();
 		},
 		destroy: function() {
 			$( this.view.topElement ).find( "#contentview" ).clearHandlers();

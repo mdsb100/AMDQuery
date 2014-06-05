@@ -2,7 +2,7 @@ aQuery.define( "module/location", [ "base/extend", "main/parse" ], function( $, 
 	this.describe( "Location to Hash" );
 
 	var
-	SPLIT_MARK = "&",
+		SPLIT_MARK = "&",
 		EQUALS_MARK = "=",
 		SHARP = "#",
 		_location = window.location;
@@ -92,7 +92,14 @@ aQuery.define( "module/location", [ "base/extend", "main/parse" ], function( $, 
 		 * An object of window.location.hash.
 		 * @type {Object}
 		 */
-		hash: {}
+		hash: {},
+		/**
+		 * Change location if you want to use window.top
+		 * @param {Location}
+		 */
+		changeLocation: function( location ) {
+			_location = location;
+		}
 	};
 
 	location.toHash();

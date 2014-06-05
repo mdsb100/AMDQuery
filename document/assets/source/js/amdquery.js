@@ -7282,7 +7282,7 @@ if ( typeof define === "function" && define.amd ) {
 	this.describe( "A custom event" );
 	/**
 	 * Be defined by object.extend.
-   * Each function can not repeat to add into CustomEvent.
+	 * Each function can not repeat to add into CustomEvent.
 	 * @constructor
 	 * @exports main/CustomEvent
 	 * @requires module:main/object
@@ -7503,6 +7503,20 @@ if ( typeof define === "function" && define.amd ) {
 			return this;
 		},
 	} );
+
+	/**
+	 * Mix prototype to target.
+	 * @param {Object}
+	 */
+	CustomEvent.mixin = function( target ) {
+		var proto = {
+			__handlers: {}
+		};
+		utilExtend.extend( proto, CustomEvent.prototype );
+		delete proto.constructor;
+		delete proto.init;
+		utilExtend.extend( target, proto );
+	}
 
 	return CustomEvent;
 } );
@@ -11403,6 +11417,29 @@ aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "
 			return args;
 		},
 		/**
+		 * @example
+		 * parse.ObjetToString({
+		 *   name: "Jarry",
+		 *   name: "27"
+		 * }, '&', '='
+		 * )
+		 * // "name=Jarry&age=27"
+		 * @param {Object}
+		 * @param {String} [split1="&"]
+		 * @param {String} [split2="="]
+		 * @returns {Object}
+		 */
+		ObjetToString: function( object, split1, split2 ) {
+      split1 = split1 || "&";
+      split2 = split2 || "=";
+			var key, value, strList = [];
+			for ( key in object ) {
+				value = object[ key ];
+				strList.push( key + split2 + value );
+			}
+			return strList.join( split1 );
+		},
+		/**
 		 * @param {String}
 		 * @returns {Document}
 		 */
@@ -13205,8 +13242,9 @@ aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "
 	/// <para>num obj.sleep:睡眠多少豪秒</para>
 	/// <para>num obj.interval 如果interval存在 则fps无效 isAnimFram也无效
 	/// <para>num obj.fps:每秒多少帧</para>
-	/// <para>fun obj.fun:要执行的方法</para>
+	/// <para>fun obj.run:要执行的方法</para>
 	/// <para>bol obj.isAnimFram:是否使用新动画函数，使用后将无法初始化fps</para>
+	/// <para>bol obj.context:作用域</para>
 	/// <para>可以调用addHandler方法添加事件</para>
 	/// <para>事件类型:start、stop、delay、sleepStar,sleepStop</para>
 	/// </summary>
@@ -13221,13 +13259,13 @@ aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "
 		window.msRequestAnimationFrame ||
 		function( complete ) {
 			return setTimeout( complete, 13 ); //其实是1000/60
-	},
+		},
 		cancelRequestAnimFrame = window.cancelAnimationFrame ||
-			window.webkitCancelRequestAnimationFrame ||
-			window.mozCancelRequestAnimationFrame ||
-			window.oCancelRequestAnimationFrame ||
-			window.msCancelRequestAnimationFrame ||
-			clearTimeout;
+		window.webkitCancelRequestAnimationFrame ||
+		window.mozCancelRequestAnimationFrame ||
+		window.oCancelRequestAnimationFrame ||
+		window.msCancelRequestAnimationFrame ||
+		clearTimeout;
 
 	var Thread = CustomEvent.extend( "Thread", {
 		init: function( obj, paras ) {
@@ -13238,6 +13276,7 @@ aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "
 			//this.stop();
 			this._super();
 			utilExtend.extend( this, Thread._defaultSetting, obj );
+			this.context = obj.context || this;
 			this.id = this.id || $.now();
 			this.args = $.util.argToArray( arguments, 1 );
 
@@ -13349,7 +13388,7 @@ aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "
 
 		_executor: function( a, b ) {
 			/// <summary>内部</summary>
-			this.fun.apply( this, [ a, b ].concat( this.args ) ) === false && this.stop();
+			this.run.apply( this.context, [ a, b ].concat( this.args ) ) === false && this.stop();
 		},
 
 		isRun: function() {
@@ -13515,7 +13554,7 @@ aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "
 			sleepId: null,
 			begin: null,
 			timerId: null,
-			fun: function() {},
+			run: function() {},
 			interval: null,
 			isAnimFrame: true,
 			duration: NaN,
@@ -13696,7 +13735,7 @@ aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "
 
 			duration: 0, //will be go forever
 
-			fun: function() {
+			run: function() {
 				for ( var i = 0, c; c = timers[ i++ ]; ) {
 					c.step( thread.pauseTime );
 				}
@@ -19281,7 +19320,7 @@ aQuery.define( "ui/scrollableview", [
 	keyboard, undefined ) {
 	"use strict";
 	Widget.fetchCSS( "ui/css/scrollableview" );
-	var isTransform3d = !! config.ui.isTransform3d && support.transform3d;
+	var isTransform3d = !!config.ui.isTransform3d && support.transform3d;
 
 	var V = "V",
 		H = "H";
@@ -19416,11 +19455,11 @@ aQuery.define( "ui/scrollableview", [
 				};
 
 			var
-			combinationKeyItem = {
-				type: "keyup",
-				keyCode: "Up",
-				combinationKey: opt.combinationKey.split( /;|,/ )
-			},
+				combinationKeyItem = {
+					type: "keyup",
+					keyCode: "Up",
+					combinationKey: opt.combinationKey.split( /;|,/ )
+				},
 				KeyItem = {
 					type: "keydown",
 					keyCode: "Up"
@@ -19520,7 +19559,18 @@ aQuery.define( "ui/scrollableview", [
 							href = ( $a.attr( "href" ) || "" ).replace( window.location.href, "" ).replace( "#", "" ),
 							elementId = self.getAnimationToElementById( href );
 
-						self.animateToElement( elementId.length ? elementId : self.getAnimationToElementByName( href ) );
+						elementId = elementId.length ? elementId : self.getAnimationToElementByName( href );
+						var type = self.getEventName( "aclick" );
+
+						self.target.trigger( type, self, {
+							type: type,
+							toElement: elementId[ 0 ]
+						} );
+
+						if ( opt.autoToElement ) {
+							self.animateToElement( elementId );
+						}
+
 						break;
 
 					case keyType.CombinationLeft:
@@ -19601,6 +19651,18 @@ aQuery.define( "ui/scrollableview", [
 				}
 			}
 		},
+		toTop: function( callback ) {
+			this.animateY( 0, FX.normal, callback );
+		},
+		toBottom: function() {
+			this.animateY( -this.scrollHeight + this.viewportHeight, FX.normal, callback );
+		},
+		toLeft: function() {
+			this.animateX( 0, FX.normal, callback );
+		},
+		toRight: function() {
+			this.animateX( -this.scrollWidth + this.viewportWidth, FX.normal, callback );
+		},
 		destroy: function() {
 			this.target.destroyUiSwappable();
 			this.container.destroyUiDraggable();
@@ -19655,7 +19717,7 @@ aQuery.define( "ui/scrollableview", [
 
 			return this;
 		},
-		customEventName: [ "pulldown", "pullup", "pullleft", "pullright", "animationEnd", "animateToElement", "moved" ],
+		customEventName: [ "pulldown", "pullup", "pullleft", "pullright", "animationEnd", "animateToElement", "moved", "aclick" ],
 		options: {
 			"overflow": "HV",
 			"animateDuration": 600,
@@ -19666,6 +19728,7 @@ aQuery.define( "ui/scrollableview", [
 			"enableKeyboard": false,
 			"combinationKey": client.system.mac ? "cmd" : "ctrl",
 			"firstToElement": "",
+			"autoToElement": true,
 			"keyVerticalDistance": 40,
 			"keyHorizontalDistance": 40,
 			"focus": false
@@ -19684,9 +19747,15 @@ aQuery.define( "ui/scrollableview", [
 			"animateToElement": Widget.AllowPublic,
 			"toH": Widget.AllowPublic,
 			"toV": Widget.AllowPublic,
+			"toTop": Widget.AllowPublic,
+			"toBottom": Widget.AllowPublic,
+			"toLeft": Widget.AllowPublic,
+			"toRight": Widget.AllowPublic,
 			"append": Widget.AllowPublic,
 			"remove": Widget.AllowPublic,
-			"replace": Widget.AllowPublic
+			"replace": Widget.AllowPublic,
+			"animateX": Widget.AllowPublic,
+			"animateY": Widget.AllowPublic
 		},
 		render: function( x, y, addtion, boundary ) {
 			if ( !arguments.length ) {
@@ -20856,6 +20925,7 @@ aQuery.define( "ui/tabbar", [
 
 /*===================ui/tabview===========================*/
 aQuery.define( "ui/tabview", [
+    "base/typed",
     "main/query",
     "main/class",
     "main/event",
@@ -20867,7 +20937,7 @@ aQuery.define( "ui/tabview", [
     "ui/tabbar",
     "ui/tabbutton"
   ],
-	function( $, query, cls, event, css, position, dom, attr, Widget, tabbar, tabbutton ) {
+	function( $, typed, query, cls, event, css, position, dom, attr, Widget, tabbar, tabbutton ) {
 		"use strict";
 
 		// Widget.fetchCSS( "ui/css/tabview" );
@@ -20908,7 +20978,7 @@ aQuery.define( "ui/tabview", [
 			render: function( index ) {
 				var opt = this.options;
 
-				this.selectView( index || opt.index );
+				this.selectView( typed.isNumber( index ) ? index : opt.index );
 
 			},
 			selectTabbutton: function( index ) {
@@ -21728,107 +21798,328 @@ aQuery.define( "ui/turnBook", [ "base/support", "base/typed", "main/css", "main/
 
 /*=======================================================*/
 
-/*===================module/location===========================*/
-aQuery.define( "module/location", [ "base/extend", "main/parse" ], function( $, utilExtend, parse ) {
-	this.describe( "Location to Hash" );
-
-	var
-	SPLIT_MARK = "&",
-		EQUALS_MARK = "=",
-		SHARP = "#",
-		_location = window.location;
-
-	function hashToString( hash, split1, split2 ) {
-		var key, value, strList = [];
-		for ( key in hash ) {
-			if ( key === SHARP ) {
-				continue;
-			}
-			value = hash[ key ];
-			strList.push( key + split2 + value );
-		}
-		return strList.join( split1 );
-	}
-
+/*===================base/constant===========================*/
+aQuery.define( "base/constant", function( $ ) {
+	"use strict";
 	/**
-	 * @exports module/location
-	 * @describe window.location to hash
-	 * @example
-	 * // http://mdsb100.github.io/homepage/amdquery/document/document/app.html#navmenu=guide_Build!swapIndex=1
-	 * {
-	 *   "#": navmenu=guide_Build!swapIndex=1 // The "#" alway equals whole hash string.
-	 *   "swapIndex": "1",
-	 *   "scrollTo":  "#Config"
-	 * }
+	 * @pubilc
+	 * @description
+	 * Some constants
+	 * @exports base/constant
 	 */
-	var location = {
+	var constant = {
 		/**
-		 * Get value form hash.
-		 * @param {String}
-		 * @returns {String}
+		 * SSL secure url
+     @ constant
+		 * @type {String}
 		 */
-		getHash: function( key ) {
-			this.toHash();
-			return this.hash[ key ];
-		},
+		SSL_SECURE_URL: "about:blank",
 		/**
-		 * Set value to hash by key.
-		 * @param {String}
-		 * @param {*}
-		 * @returns {this}
+		 * Blan iamge url
+     @ constant
+		 * @type {String}
 		 */
-		setHash: function( key, value ) {
-			this.hash[ key ] = value + "";
-			var str = key === SHARP ? value : hashToString( this.hash, SPLIT_MARK, EQUALS_MARK );
-			_location.hash = str;
-			this.hash[ SHARP ] = str;
-			return this;
-		},
-		/**
-		 * Remove key from hash.
-		 * @param {String}
-		 * @returns {this}
-		 */
-		removeHash: function( key ) {
-			if ( this.hash[ key ] !== undefined ) {
-				delete this.hash[ key ];
-				var str = hashToString( this.hash, SPLIT_MARK, EQUALS_MARK );
-				_location.hash = str;
-				this.hash[ SHARP ] = str;
-			}
-			return this;
-		},
-		/**
-		 * Clear window.location.hash
-		 * @returns {this}
-		 */
-		clearHash: function() {
-			window.location.hash = "";
-			this.hash = {
-				"#": ""
-			};
-			return this;
-		},
-		/**
-		 * Parse window.location.hash to object for this.hash.
-		 * @returns {this}
-		 */
-		toHash: function() {
-			var hash = _location.hash.replace( SHARP, "" );
-			this.hash = parse.QueryString( hash, SPLIT_MARK, EQUALS_MARK );
-			this.hash[ SHARP ] = hash;
-			return this;
-		},
-		/**
-		 * An object of window.location.hash.
-		 * @type {Object}
-		 */
-		hash: {}
+		BLANK_IMAGE_URL: "data:image/gif;base64,R0lGODlhAQABAID/AMDAwAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw=="
 	};
 
-	location.toHash();
+	return constant;
+} );
 
-	return location;
+/*=======================================================*/
+
+/*===================module/history===========================*/
+define( "module/history", [ "base/constant", "base/client", "base/support", "base/typed", "base/extend", "main/query", "main/dom", "main/CustomEvent", "main/parse", "module/Thread" ], function( constant, client, support, typed, utilExtend, query, dom, CustomEvent, parse, Thread ) {
+	"use strict";
+	var
+		ie = client.browser.ie,
+		oldIEMode = ie === 7 || !support.boxModel && ie === 8;
+
+	/**
+	 * @exports module/history
+	 * @requires module:main/constant
+	 * @requires module:base/client
+	 * @requires module:base/support
+	 * @requires module:base/typed
+	 * @requires module:main/query
+	 * @requires module:main/dom
+	 * @requires module:main/parse
+	 * @requires module:main/CustomEvent
+	 * @requires module:module/Thread
+	 * @mixes module:main/CustomEvent.prototype
+	 */
+	var history = {
+		init: function() {
+			this.ready = false;
+			this.currentToken = null;
+			this.useTopWindow = true;
+			this.hiddenField = dom.parseHTML(
+				'<form id="history-form" style="display:none!important;" >' +
+				'<input type="hidden" id="x-history-field" />' +
+				'<iframe id="x-history-frame"></iframe>' +
+				'</form>'
+			)[ 0 ];
+
+			document.body.appendChild( this.hiddenField );
+
+			if ( oldIEMode ) {
+				this.iframe = dom.parseHTML(
+					'<iframe role="presentation" src="' + constant.SSL_SECURE_URL + '"  >' + '</iframe>'
+				)[ 0 ];
+				document.body.appendChild( this.iframe );
+			}
+			this.startUp();
+		},
+		/**
+		 * @private
+		 */
+		startUp: function() {
+			var hash;
+
+			this.currentToken = this.hiddenField.value || this.getHash();
+
+			if ( oldIEMode ) {
+				this.checkIFrame();
+			} else {
+				hash = this.getHash();
+				new Thread( {
+					interval: 50,
+					run: function() {
+						var newHash = this.getHash();
+						if ( newHash !== hash ) {
+							var oldHash = hash;
+							hash = newHash;
+							this.handleStateChange( newHash, oldHash );
+							this.doSave();
+						}
+					},
+					context: this
+				} ).start();
+				this.handleReady( this.getHash() );
+			}
+			return this;
+		},
+		/**
+		 * @private
+		 */
+		checkIFrame: function() {
+			var
+				contentWindow = this.iframe.contentWindow,
+				doc, elem, oldToken, oldHash;
+
+			if ( !contentWindow || !contentWindow.document ) {
+				var self = this;
+				setTimeout( function() {
+					self.checkIFrame();
+				}, 10 );
+				return;
+			}
+
+			doc = contentWindow.document;
+			elem = doc.getElementById( "state" );
+			oldToken = elem ? elem.token : null;
+			oldHash = this.getHash();
+
+			new Thread( {
+				run: function() {
+					var doc = contentWindow.document,
+						elem = doc.getElementById( "state" ),
+						newToken = elem ? elem.token : null,
+						newHash = this.getHash();
+
+					if ( newToken !== oldToken ) {
+						var token = oldToken;
+						oldToken = newToken;
+						this.handleStateChange( newToken, token );
+						this.setHash( newToken );
+						oldHash = newToken;
+						this.doSave();
+					} else if ( newHash !== oldHash ) {
+						oldHash = newHash;
+						this.updateIFrame( newHash );
+					}
+				},
+				interval: 50,
+				context: this
+			} ).start();
+
+			this.handleReady( this.getHash() );
+		},
+		/**
+		 * @private
+		 */
+		updateIFrame: function( token ) {
+			var html = '<html><body><div id="state" role="presentation">' +
+				token + '</div></body></html>',
+				doc;
+
+			try {
+				doc = this.iframe.contentWindow.document;
+				doc.open();
+				doc.write( html );
+				var elem = doc.getElementById( "state" );
+				elem.token = token;
+				doc.close();
+				return true;
+			} catch ( e ) {
+				return false;
+			}
+		},
+		/**
+		 * @private
+		 */
+		doSave: function() {
+			this.hiddenField.value = this.currentToken;
+		},
+		/**
+		 * @private
+		 */
+		handleStateChange: function( newToken, oldToken ) {
+			this.currentToken = newToken;
+
+			var newObject = parse.QueryString( newToken ),
+				oldObject = parse.QueryString( oldToken );
+
+			this.doTrigger( 'change', newToken, oldToken );
+		},
+		/**
+		 * @private
+		 */
+		handleReady: function( token ) {
+			this.ready = true;
+			this.trigger( 'ready', this, {
+				type: 'ready',
+				token: token
+			} );
+		},
+		/**
+		 * @private
+		 */
+		doTrigger: function( type, newToken, oldToken ) {
+			var newObject = parse.QueryString( newToken ),
+				oldObject = parse.QueryString( oldToken ),
+				key, evenName;
+
+			for ( key in newObject ) {
+				if ( oldObject[ key ] === undefined || oldObject[ key ] !== newObject[ key ] ) {
+					evenName = key + '.' + type;
+					this.trigger( evenName, this, {
+						type: evenName,
+						token: newObject[ key ]
+					} );
+				}
+			}
+			for ( key in oldObject ) {
+				if ( newObject[ key ] === undefined ) {
+					evenName = key + '.' + type;
+					this.trigger( evenName, this, {
+						type: evenName,
+						token: ''
+					} );
+				}
+			}
+
+			this.trigger( type, this, {
+				type: type,
+				token: newToken
+			} );
+		},
+		/**
+		 * @private
+		 */
+		getHash: function() {
+			var win = this.useTopWindow ? window.top : window,
+				href = win.location.href,
+				i = href.indexOf( "#" );
+
+			return i >= 0 ? href.substr( i + 1 ) : null;
+		},
+		/**
+		 * @private
+		 */
+		setHash: function( hash ) {
+			var win = this.useTopWindow ? window.top : window;
+			try {
+				win.location.hash = hash;
+			} catch ( e ) {
+				// IE can give Access Denied (esp. in popup windows)
+			}
+		},
+		/**
+		 * Add a new token to the history stack. This can be any arbitrary value, although it would
+		 * commonly be the concatenation of a component id and another id marking the specific history
+		 * @param {String} token The value that defines a particular application-specific history state
+		 * @param {Boolean} [preventDuplicates=true] When true, if the passed token matches the current token
+		 * it will not save a new history step. Set to false if the same state can be saved more than once
+		 * at the same history stack location.
+		 */
+		add: function( token, preventDup ) {
+			if ( preventDup !== false ) {
+				if ( this.getToken() === token ) {
+					return true;
+				}
+			}
+
+			if ( oldIEMode ) {
+				return this.updateIFrame( token );
+			} else {
+				this.setHash( token );
+				return true;
+			}
+		},
+		/**
+		 * Add key-value to the history stack. This can be any arbitrary value, although it would
+		 * commonly be the concatenation of a component id and another id marking the specific history
+		 * @param {String} token The value that defines a key
+		 * @param {String} token The value that defines a value
+		 * @param {Boolean} [preventDuplicates=true] When true, if the passed token matches the current token
+		 * it will not save a new history step. Set to false if the same state can be saved more than once
+		 * at the same history stack location.
+		 */
+		addByKeyValue: function( key, value, preventDup ) {
+			var object = parse.QueryString( this.getToken() );
+			if ( typed.isObject( key ) ) {
+				utilExtend.easyExtend( object, key );
+			} else {
+				object[ key ] = value;
+			}
+
+			return this.add( parse.ObjetToString( object ), preventDup );
+		},
+
+		/**
+		 * Programmatically steps back one step in browser history (equivalent to the user pressing the Back button).
+		 */
+		back: function() {
+			window.history.go( -1 );
+		},
+
+		/**
+		 * Programmatically steps forward one step in browser history (equivalent to the user pressing the Forward button).
+		 */
+		forward: function() {
+			window.history.go( 1 );
+		},
+
+		/**
+		 * Retrieves the currently-active history token.
+		 * @return {String} The token
+		 */
+		getToken: function() {
+			return this.ready ? this.currentToken : this.getHash();
+		},
+		/**
+		 * Retrieves the currently-active history by key.
+		 * @return {String} The value
+		 */
+		getTokenByKey: function( key ) {
+			return parse.QueryString( this.ready ? this.currentToken : this.getHash() )[ key ] || "";
+		}
+	};
+
+	CustomEvent.mixin( history );
+
+	return history;
+
 } );
 
 /*=======================================================*/

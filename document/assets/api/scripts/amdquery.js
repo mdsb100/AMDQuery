@@ -7282,7 +7282,7 @@ if ( typeof define === "function" && define.amd ) {
 	this.describe( "A custom event" );
 	/**
 	 * Be defined by object.extend.
-   * Each function can not repeat to add into CustomEvent.
+	 * Each function can not repeat to add into CustomEvent.
 	 * @constructor
 	 * @exports main/CustomEvent
 	 * @requires module:main/object
@@ -7503,6 +7503,20 @@ if ( typeof define === "function" && define.amd ) {
 			return this;
 		},
 	} );
+
+	/**
+	 * Mix prototype to target.
+	 * @param {Object}
+	 */
+	CustomEvent.mixin = function( target ) {
+		var proto = {
+			__handlers: {}
+		};
+		utilExtend.extend( proto, CustomEvent.prototype );
+		delete proto.constructor;
+		delete proto.init;
+		utilExtend.extend( target, proto );
+	}
 
 	return CustomEvent;
 } );
@@ -11403,6 +11417,29 @@ aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "
 			return args;
 		},
 		/**
+		 * @example
+		 * parse.ObjetToString({
+		 *   name: "Jarry",
+		 *   name: "27"
+		 * }, '&', '='
+		 * )
+		 * // "name=Jarry&age=27"
+		 * @param {Object}
+		 * @param {String} [split1="&"]
+		 * @param {String} [split2="="]
+		 * @returns {Object}
+		 */
+		ObjetToString: function( object, split1, split2 ) {
+      split1 = split1 || "&";
+      split2 = split2 || "=";
+			var key, value, strList = [];
+			for ( key in object ) {
+				value = object[ key ];
+				strList.push( key + split2 + value );
+			}
+			return strList.join( split1 );
+		},
+		/**
 		 * @param {String}
 		 * @returns {Document}
 		 */
@@ -13205,8 +13242,9 @@ aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "
 	/// <para>num obj.sleep:睡眠多少豪秒</para>
 	/// <para>num obj.interval 如果interval存在 则fps无效 isAnimFram也无效
 	/// <para>num obj.fps:每秒多少帧</para>
-	/// <para>fun obj.fun:要执行的方法</para>
+	/// <para>fun obj.run:要执行的方法</para>
 	/// <para>bol obj.isAnimFram:是否使用新动画函数，使用后将无法初始化fps</para>
+	/// <para>bol obj.context:作用域</para>
 	/// <para>可以调用addHandler方法添加事件</para>
 	/// <para>事件类型:start、stop、delay、sleepStar,sleepStop</para>
 	/// </summary>
@@ -13221,13 +13259,13 @@ aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "
 		window.msRequestAnimationFrame ||
 		function( complete ) {
 			return setTimeout( complete, 13 ); //其实是1000/60
-	},
+		},
 		cancelRequestAnimFrame = window.cancelAnimationFrame ||
-			window.webkitCancelRequestAnimationFrame ||
-			window.mozCancelRequestAnimationFrame ||
-			window.oCancelRequestAnimationFrame ||
-			window.msCancelRequestAnimationFrame ||
-			clearTimeout;
+		window.webkitCancelRequestAnimationFrame ||
+		window.mozCancelRequestAnimationFrame ||
+		window.oCancelRequestAnimationFrame ||
+		window.msCancelRequestAnimationFrame ||
+		clearTimeout;
 
 	var Thread = CustomEvent.extend( "Thread", {
 		init: function( obj, paras ) {
@@ -13238,6 +13276,7 @@ aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "
 			//this.stop();
 			this._super();
 			utilExtend.extend( this, Thread._defaultSetting, obj );
+			this.context = obj.context || this;
 			this.id = this.id || $.now();
 			this.args = $.util.argToArray( arguments, 1 );
 
@@ -13349,7 +13388,7 @@ aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "
 
 		_executor: function( a, b ) {
 			/// <summary>内部</summary>
-			this.fun.apply( this, [ a, b ].concat( this.args ) ) === false && this.stop();
+			this.run.apply( this.context, [ a, b ].concat( this.args ) ) === false && this.stop();
 		},
 
 		isRun: function() {
@@ -13515,7 +13554,7 @@ aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "
 			sleepId: null,
 			begin: null,
 			timerId: null,
-			fun: function() {},
+			run: function() {},
 			interval: null,
 			isAnimFrame: true,
 			duration: NaN,
@@ -13696,7 +13735,7 @@ aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "
 
 			duration: 0, //will be go forever
 
-			fun: function() {
+			run: function() {
 				for ( var i = 0, c; c = timers[ i++ ]; ) {
 					c.step( thread.pauseTime );
 				}
@@ -19281,7 +19320,7 @@ aQuery.define( "ui/scrollableview", [
 	keyboard, undefined ) {
 	"use strict";
 	Widget.fetchCSS( "ui/css/scrollableview" );
-	var isTransform3d = !! config.ui.isTransform3d && support.transform3d;
+	var isTransform3d = !!config.ui.isTransform3d && support.transform3d;
 
 	var V = "V",
 		H = "H";
@@ -19416,11 +19455,11 @@ aQuery.define( "ui/scrollableview", [
 				};
 
 			var
-			combinationKeyItem = {
-				type: "keyup",
-				keyCode: "Up",
-				combinationKey: opt.combinationKey.split( /;|,/ )
-			},
+				combinationKeyItem = {
+					type: "keyup",
+					keyCode: "Up",
+					combinationKey: opt.combinationKey.split( /;|,/ )
+				},
 				KeyItem = {
 					type: "keydown",
 					keyCode: "Up"
@@ -19520,7 +19559,18 @@ aQuery.define( "ui/scrollableview", [
 							href = ( $a.attr( "href" ) || "" ).replace( window.location.href, "" ).replace( "#", "" ),
 							elementId = self.getAnimationToElementById( href );
 
-						self.animateToElement( elementId.length ? elementId : self.getAnimationToElementByName( href ) );
+						elementId = elementId.length ? elementId : self.getAnimationToElementByName( href );
+						var type = self.getEventName( "aclick" );
+
+						self.target.trigger( type, self, {
+							type: type,
+							toElement: elementId[ 0 ]
+						} );
+
+						if ( opt.autoToElement ) {
+							self.animateToElement( elementId );
+						}
+
 						break;
 
 					case keyType.CombinationLeft:
@@ -19601,6 +19651,18 @@ aQuery.define( "ui/scrollableview", [
 				}
 			}
 		},
+		toTop: function( callback ) {
+			this.animateY( 0, FX.normal, callback );
+		},
+		toBottom: function() {
+			this.animateY( -this.scrollHeight + this.viewportHeight, FX.normal, callback );
+		},
+		toLeft: function() {
+			this.animateX( 0, FX.normal, callback );
+		},
+		toRight: function() {
+			this.animateX( -this.scrollWidth + this.viewportWidth, FX.normal, callback );
+		},
 		destroy: function() {
 			this.target.destroyUiSwappable();
 			this.container.destroyUiDraggable();
@@ -19655,7 +19717,7 @@ aQuery.define( "ui/scrollableview", [
 
 			return this;
 		},
-		customEventName: [ "pulldown", "pullup", "pullleft", "pullright", "animationEnd", "animateToElement", "moved" ],
+		customEventName: [ "pulldown", "pullup", "pullleft", "pullright", "animationEnd", "animateToElement", "moved", "aclick" ],
 		options: {
 			"overflow": "HV",
 			"animateDuration": 600,
@@ -19666,6 +19728,7 @@ aQuery.define( "ui/scrollableview", [
 			"enableKeyboard": false,
 			"combinationKey": client.system.mac ? "cmd" : "ctrl",
 			"firstToElement": "",
+			"autoToElement": true,
 			"keyVerticalDistance": 40,
 			"keyHorizontalDistance": 40,
 			"focus": false
@@ -19684,9 +19747,15 @@ aQuery.define( "ui/scrollableview", [
 			"animateToElement": Widget.AllowPublic,
 			"toH": Widget.AllowPublic,
 			"toV": Widget.AllowPublic,
+			"toTop": Widget.AllowPublic,
+			"toBottom": Widget.AllowPublic,
+			"toLeft": Widget.AllowPublic,
+			"toRight": Widget.AllowPublic,
 			"append": Widget.AllowPublic,
 			"remove": Widget.AllowPublic,
-			"replace": Widget.AllowPublic
+			"replace": Widget.AllowPublic,
+			"animateX": Widget.AllowPublic,
+			"animateY": Widget.AllowPublic
 		},
 		render: function( x, y, addtion, boundary ) {
 			if ( !arguments.length ) {
@@ -20856,6 +20925,7 @@ aQuery.define( "ui/tabbar", [
 
 /*===================ui/tabview===========================*/
 aQuery.define( "ui/tabview", [
+    "base/typed",
     "main/query",
     "main/class",
     "main/event",
@@ -20867,7 +20937,7 @@ aQuery.define( "ui/tabview", [
     "ui/tabbar",
     "ui/tabbutton"
   ],
-	function( $, query, cls, event, css, position, dom, attr, Widget, tabbar, tabbutton ) {
+	function( $, typed, query, cls, event, css, position, dom, attr, Widget, tabbar, tabbutton ) {
 		"use strict";
 
 		// Widget.fetchCSS( "ui/css/tabview" );
@@ -20908,7 +20978,7 @@ aQuery.define( "ui/tabview", [
 			render: function( index ) {
 				var opt = this.options;
 
-				this.selectView( index || opt.index );
+				this.selectView( typed.isNumber( index ) ? index : opt.index );
 
 			},
 			selectTabbutton: function( index ) {
@@ -21733,7 +21803,7 @@ aQuery.define( "module/location", [ "base/extend", "main/parse" ], function( $, 
 	this.describe( "Location to Hash" );
 
 	var
-	SPLIT_MARK = "&",
+		SPLIT_MARK = "&",
 		EQUALS_MARK = "=",
 		SHARP = "#",
 		_location = window.location;
@@ -21823,7 +21893,14 @@ aQuery.define( "module/location", [ "base/extend", "main/parse" ], function( $, 
 		 * An object of window.location.hash.
 		 * @type {Object}
 		 */
-		hash: {}
+		hash: {},
+		/**
+		 * Change location if you want to use window.top
+		 * @param {Location}
+		 */
+		changeLocation: function( location ) {
+			_location = location;
+		}
 	};
 
 	location.toHash();
