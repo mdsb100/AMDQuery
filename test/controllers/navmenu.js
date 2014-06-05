@@ -1,4 +1,4 @@
-aQuery.define( "@app/controllers/navmenu", [ "main/query", "module/location", "app/Controller", "@app/views/navmenu" ], function( $, query, location, SuperController, NavmenuView ) {
+aQuery.define( "@app/controllers/navmenu", [ "main/query", "module/history", "app/Controller", "@app/views/navmenu" ], function( $, query, history, SuperController, NavmenuView ) {
 	"use strict"; //启用严格模式
 	var Controller = SuperController.extend( {
 		init: function( contollerElement, models ) {
@@ -6,6 +6,10 @@ aQuery.define( "@app/controllers/navmenu", [ "main/query", "module/location", "a
 
 			var controller = this;
 			this.$nav = $( this.view.topElement ).find( "#nav" );
+
+			history.on( 'change', function( e ) {
+				controller.selectDefaultNavmenu( e.token );
+			} );
 
 			var li = $( $.createEle( "li" ) ).uiNavitem( {
 				html: "destroyWidget",
@@ -20,7 +24,7 @@ aQuery.define( "@app/controllers/navmenu", [ "main/query", "module/location", "a
 					path;
 
 				if ( target.children( "ul" ).length === 0 ) {
-					location.setHash( "navmenu", ret.concat().reverse().join( "_" ) );
+					history.add( ret.concat().reverse().join( "_" ) );
 					ret.push( "assets" );
 					path = ret.reverse().join( "/" ) + ".html";
 					controller.trigger( "navmenu.select", controller, {
@@ -41,7 +45,7 @@ aQuery.define( "@app/controllers/navmenu", [ "main/query", "module/location", "a
 		selectDefaultNavmenu: function( target ) {
 			var ret = $( "#index-navitem" );
 			if ( target ) {
-				var navItem = this.$nav.uiNavmenu( "getNavItemsByHtmlPath", target.split( /\W/ ) )[ 0 ];
+				var navItem = this.$nav.uiNavmenu( "getNavItemsByHtmlPath", target.split( "_" ) )[ 0 ];
 				ret = navItem || ret;
 			}
 			this.$nav.uiNavmenu( "selectNavItem", ret );

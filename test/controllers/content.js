@@ -9,7 +9,8 @@ aQuery.define( "@app/controllers/content", [ "base/client", "app/Controller", "@
 		},
 		loadPath: function( path ) {
 			this.$content.src( {
-				src: path
+				src: path,
+				history: false
 			} )
 		},
 		openWindow: function() {
