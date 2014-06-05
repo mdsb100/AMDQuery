@@ -96,7 +96,7 @@ function buildDefines() {
 		jsBuilder.launch( name, distPath, requireList, function( name, moduleList, minPath, minContent, deubugPath, content ) {
 			var defineConfig = buildConfig.defines[ name ];
 			if ( defineConfig && typeof defineConfig.complete === "function" ) {
-				defineConfig.complete.call( defineConfig, minPath, minContent, deubugPath, content );
+				defineConfig.complete.call( defineConfig, moduleList, minPath, minContent, deubugPath, content );
 				toBuild();
 			}
 		} );
@@ -144,7 +144,7 @@ function checkJSDirectory( directoryList, suffix ) {
 function filterDependencies( url ) {
 	var result = [],
 		content = FSE.readFileSync( PATH.join( buildFileRootPath, buildConfig.amdqueryPath, url + ".js" ) )
-			.toString(),
+		.toString(),
 		moduleList = oye.matchDefine( content ),
 		moduleInfo,
 		i = 0,
