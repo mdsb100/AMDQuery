@@ -2026,7 +2026,7 @@
 			} else {
 				return new Promise( todo, fail, progress );
 			}
-		}
+		};
 
 		util.extend( Promise, {
 			TODO: "todo",
@@ -2317,7 +2317,7 @@
 							return this._resolveAnds( obj );
 						case Promise:
 							this.result = promise.result;
-							return this.reject( this.result );;
+							return this.reject( this.result );
 					}
 					var self = this,
 						hook,
