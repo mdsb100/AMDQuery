@@ -29,558 +29,558 @@
     <section>
         <a float="false" id="Back" class="Back">Back</a>
         <article>
-            <pre class="prettyprint source">﻿aQuery.define( "main/query", [ "lib/sizzle", "base/extend", "base/typed", "base/array" ], function( $, Sizzle, utilExtend, typed, array, undefined ) {
-	"use strict";
-	this.describe( "Depend Sizzle1.10.3" );
-	$.module[ "lib/js/sizzle" ] = "Sizzle1.10.3";
+            <pre class="prettyprint source">aQuery.define( "main/query", [ "lib/sizzle", "base/extend", "base/typed", "base/array" ], function( $, Sizzle, utilExtend, typed, array, undefined ) {
+  "use strict";
+  this.describe( "Depend Sizzle1.10.3" );
+  $.module[ "lib/js/sizzle" ] = "Sizzle1.10.3";
 
-	var core_deletedIds = [],
-		core_concat = core_deletedIds.concat;
+  var core_deletedIds = [],
+    core_concat = core_deletedIds.concat;
 
-	var runtil = /Until$/,
-		rparentsprev = /^(?:parents|prev(?:Until|All))/,
-		isSimple = /^.[^:#\[\.,]*$/,
-		rneedsContext = Sizzle.selectors.match.needsContext,
-		// methods guaranteed to produce a unique set when starting from a unique set
-		guaranteedUnique = {
-			children: true,
-			contents: true,
-			next: true,
-			prev: true
-		};
+  var runtil = /Until$/,
+    rparentsprev = /^(?:parents|prev(?:Until|All))/,
+    isSimple = /^.[^:#\[\.,]*$/,
+    rneedsContext = Sizzle.selectors.match.needsContext,
+    // methods guaranteed to produce a unique set when starting from a unique set
+    guaranteedUnique = {
+      children: true,
+      contents: true,
+      next: true,
+      prev: true
+    };
 
-	function winnow( elements, qualifier, keep ) {
+  function winnow( elements, qualifier, keep ) {
 
-		// Can't pass null or undefined to indexOf in Firefox 4
-		// Set to 0 to skip string check
-		qualifier = qualifier || 0;
+    // Can't pass null or undefined to indexOf in Firefox 4
+    // Set to 0 to skip string check
+    qualifier = qualifier || 0;
 
-		if ( typed.isFunction( qualifier ) ) {
-			return array.grep( elements, function( ele, i ) {
-				var retVal = !! qualifier.call( ele, i, ele );
-				return retVal === keep;
-			} );
+    if ( typed.isFunction( qualifier ) ) {
+      return array.grep( elements, function( ele, i ) {
+        var retVal = !!qualifier.call( ele, i, ele );
+        return retVal === keep;
+      } );
 
-		} else if ( qualifier.nodeType ) {
-			return array.grep( elements, function( ele ) {
-				return ( ele === qualifier ) === keep;
-			} );
+    } else if ( qualifier.nodeType ) {
+      return array.grep( elements, function( ele ) {
+        return ( ele === qualifier ) === keep;
+      } );
 
-		} else if ( typed.isString( qualifier ) ) {
-			var filtered = array.grep( elements, function( ele ) {
-				return ele.nodeType === 1;
-			} );
+    } else if ( typed.isString( qualifier ) ) {
+      var filtered = array.grep( elements, function( ele ) {
+        return ele.nodeType === 1;
+      } );
 
-			if ( isSimple.test( qualifier ) ) {
-				return $.filter( qualifier, filtered, !keep );
-			} else {
-				qualifier = $.filter( qualifier, filtered );
-			}
-		}
+      if ( isSimple.test( qualifier ) ) {
+        return $.filter( qualifier, filtered, !keep );
+      } else {
+        qualifier = $.filter( qualifier, filtered );
+      }
+    }
 
-		return array.grep( elements, function( ele ) {
-			return ( array.inArray( ele, qualifier ) >= 0 ) === keep;
-		} );
-	}
-	/**
-	 * @callback queryMapCallback
-	 * @param {DOMElement}
-	 * @param {Number} - Index in array.
-	 * @param {*} - Any object which is the third parameter of function "map".
-	 */
+    return array.grep( elements, function( ele ) {
+      return ( array.inArray( ele, qualifier ) >= 0 ) === keep;
+    } );
+  }
+  /**
+   * @callback queryMapCallback
+   * @param {DOMElement}
+   * @param {Number} - Index in array.
+   * @param {*} - Any object which is the third parameter of function "map".
+   */
 
-	/**
-	 * @exports main/query
-	 * @requires module:lib/sizzle
-	 * @requires module:base/extend
-	 * @requires module:base/typed
-	 * @requires module:base/array
-	 */
-	var query = {
-		expr: Sizzle.selectors,
-		unique: Sizzle.uniqueSort,
-		text: Sizzle.getText,
+  /**
+   * @exports main/query
+   * @requires module:lib/sizzle
+   * @requires module:base/extend
+   * @requires module:base/typed
+   * @requires module:base/array
+   */
+  var query = {
+    expr: Sizzle.selectors,
+    unique: Sizzle.uniqueSort,
+    text: Sizzle.getText,
 
-		/**
-		 * Element contains another.
-		 * @name contains
-		 * @memberOf module:main/query
-		 * @method
-		 * @param a {Element}
-		 * @param b {Element}
-		 * @returns {Boolean}
-		 */
-		contains: Sizzle.contains,
+    /**
+     * Element contains another.
+     * @name contains
+     * @memberOf module:main/query
+     * @method
+     * @param a {Element}
+     * @param b {Element}
+     * @returns {Boolean}
+     */
+    contains: Sizzle.contains,
 
-		dir: function( ele, dir, until ) {
-			var matched = [],
-				cur = ele[ dir ];
+    dir: function( ele, dir, until ) {
+      var matched = [],
+        cur = ele[ dir ];
 
-			while ( cur && cur.nodeType !== 9 && ( until === undefined || cur.nodeType !== 1 || !$( cur ).is( until ) ) ) {
-				if ( cur.nodeType === 1 ) {
-					matched.push( cur );
-				}
-				cur = cur[ dir ];
-			}
-			return matched;
-		},
-		/**
-		 * Get the all posterity elements.
-		 * @param {Element}
-		 * @returns {Array&lt;Element>}
-		 */
-		posterity: function( eles ) {
-			return $.getElesByTag( "*", eles );
-		},
-		/**
-		 * Element collection transform to element array.
-		 * @param {DOMElementCollection}
-		 * @param {Boolean} [real=true] - If ture means the element node type must be 3 or 8.
-		 * @returns {Array&lt;Element>}
-		 */
-		elementCollectionToArray: function( eles, real ) {
-			var list = [];
-			if ( typed.isElementCollection( eles ) ) {
-				var real = real === undefined ? true : real;
-				$.each( eles, function( ele ) {
-					if ( real === false )
-						list.push( ele );
-					else if ( ele.nodeType != 3 && ele.nodeType != 8 )
-						list.push( ele );
-				}, this );
-			}
-			return list;
-		},
-		/**
-		 * Find element of array.
-		 * @name find
-		 * @memberOf module:main/query
-		 * @method
-		 * @param selector {String} - see {@link https://github.com/jquery/sizzle}
-		 * @returns {Array&lt;Element>}
-		 */
-		find: Sizzle,
-		/**
-		 * Find element of array.
-		 * @param selector {String}
-		 * @param {Element|Array&lt;Element>} [eles] - context
-		 * @param {Boolean} [not=false] - If true selector be ":not(" + selector + ")" so returns another result.
-		 * @returns {Array&lt;Element>}
-		 */
-		filter: function( selector, eles, not ) {
-			if ( not ) {
-				selector = ":not(" + selector + ")";
-			}
+      while ( cur && cur.nodeType !== 9 && ( until === undefined || cur.nodeType !== 1 || !$( cur ).is( until ) ) ) {
+        if ( cur.nodeType === 1 ) {
+          matched.push( cur );
+        }
+        cur = cur[ dir ];
+      }
+      return matched;
+    },
+    /**
+     * Get the all posterity elements.
+     * @param {Element}
+     * @returns {Array&lt;Element>}
+     */
+    posterity: function( eles ) {
+      return $.getElesByTag( "*", eles );
+    },
+    /**
+     * Element collection transform to element array.
+     * @param {DOMElementCollection}
+     * @param {Boolean} [real=true] - If ture means the element node type must be 3 or 8.
+     * @returns {Array&lt;Element>}
+     */
+    elementCollectionToArray: function( eles, real ) {
+      var list = [];
+      if ( typed.isElementCollection( eles ) ) {
+        var real = real === undefined ? true : real;
+        $.each( eles, function( ele ) {
+          if ( real === false )
+            list.push( ele );
+          else if ( ele.nodeType != 3 && ele.nodeType != 8 )
+            list.push( ele );
+        }, this );
+      }
+      return list;
+    },
+    /**
+     * Find element of array.
+     * @name find
+     * @memberOf module:main/query
+     * @method
+     * @param selector {String} - see {@link https://github.com/jquery/sizzle}
+     * @returns {Array&lt;Element>}
+     */
+    find: Sizzle,
+    /**
+     * Find element of array.
+     * @param selector {String}
+     * @param {Element|Array&lt;Element>} [eles] - context
+     * @param {Boolean} [not=false] - If true selector be ":not(" + selector + ")" so returns another result.
+     * @returns {Array&lt;Element>}
+     */
+    filter: function( selector, eles, not ) {
+      if ( not ) {
+        selector = ":not(" + selector + ")";
+      }
 
-			return eles.length === 1 ?
-				$.find.matchesSelector( eles[ 0 ], selector ) ? [ eles[ 0 ] ] : [] :
-				$.find.matches( selector, eles );
-		},
-		/**
-		 * Get element of array.
-		 * @param selector {String|Element|aQuery}
-		 * @param {Element} [context]
-		 * @returns {Array&lt;Element>}
-		 */
-		getEle: function( ele, context ) {
-			var list = [],
-				tmp;
-			if ( typed.isString( ele ) ) {
-				ele = $.util.trim( ele );
-				tmp = context || document;
-				list = $.find( ele, tmp.documentElement || context );
-			} else if ( typed.isElement( ele ) || ( ele && ele.nodeType === 3 ) )
-				list = [ ele ];
-			else if ( typed.isArray( ele ) ) {
-				$.each( ele, function( result ) {
-					if ( typed.isElement( result ) || ( result && result.nodeType === 3 ) ) {
-						list.push( result );
-					}
-				}, this );
-				list = array.filterSame( list );
-			} else if ( ele instanceof $ )
-				list = ele.eles;
-			else if ( typed.isElementCollection( ele ) ) {
-				list = $.elementCollectionToArray( ele, true );
-			} else if ( ele === document )
-				list = [ ele.documentElement ];
-			else if ( ele === window )
-				list = [ window ]; //有风险的
-			else if ( typed.isDocument( ele ) ) {
-				list = [ ele.documentElement ];
-			}
+      return eles.length === 1 ?
+        $.find.matchesSelector( eles[ 0 ], selector ) ? [ eles[ 0 ] ] : [] :
+        $.find.matches( selector, eles );
+    },
+    /**
+     * Get element of array.
+     * @param selector {String|Element|aQuery}
+     * @param {Element} [context]
+     * @returns {Array&lt;Element>}
+     */
+    getEle: function( ele, context ) {
+      var list = [],
+        tmp;
+      if ( typed.isString( ele ) ) {
+        ele = $.util.trim( ele );
+        tmp = context || document;
+        list = $.find( ele, tmp.documentElement || context );
+      } else if ( typed.isElement( ele ) || ( ele && ele.nodeType === 3 ) )
+        list = [ ele ];
+      else if ( typed.isArray( ele ) ) {
+        $.each( ele, function( result ) {
+          if ( typed.isElement( result ) || ( result && result.nodeType === 3 ) ) {
+            list.push( result );
+          }
+        }, this );
+        list = array.filterSame( list );
+      } else if ( ele instanceof $ )
+        list = ele.eles;
+      else if ( typed.isElementCollection( ele ) ) {
+        list = $.elementCollectionToArray( ele, true );
+      } else if ( ele === document )
+        list = [ ele.documentElement ];
+      else if ( ele === window )
+        list = [ window ]; //有风险的
+      else if ( typed.isDocument( ele ) ) {
+        list = [ ele.documentElement ];
+      }
 
-			return list;
-		},
-		/**
-		 * Get elements of array by class name.
-		 * @param {String}
-		 * @param {Element} [context=DOMElement]
-		 * @returns {Array&lt;Element>}
-		 */
-		getElesByClass: function( className, context ) {
-			return $.expr.find[ "CLASS" ]( className, context || document );
-		},
-		/**
-		 * Get element by ID.
-		 * @param {String}
-		 * @param {Element} [context=DOMElement]
-		 * @returns {Element}
-		 */
-		getEleById: function( ID, context ) {
-			return $.expr.find[ "ID" ]( ID, context || document )[ 0 ];
-		},
-		/**
-		 * Get elements of array by tag name.
-		 * @param {String}
-		 * @param {Element} [context=DOMElement]
-		 * @returns {Array&lt;Element>}
-		 */
-		getElesByTag: function( tag, context ) {
-			return $.expr.find[ "TAG" ]( tag, context || document );
-		},
-		/**
-		 * Get elements index in siblings.
-		 * @param {Element}
-		 * @returns {Number}
-		 */
-		getSelfIndex: function( ele ) {
-			var i = -1,
-				node = ele.parentNode.firstChild;
-			while ( node ) {
-				if ( typed.isElement( node ) && i++ != undefined && node === ele ) {
-					break;
-				}
-				node = node.nextSibling;
-			}
-			return i;
-		},
-		/**
-		 * Iteration all of posterity elements.
-		 * @param {Element}
-		 * @returns {Array} - Returns the parameter "ele".
-		 */
-		iterationPosterity: function( ele, fun ) {
-			return array.grep( $.posterity( ele ), function( child ) {
-				return fun( child );
-			} );
-		},
-		/**
-		 * Iteration elements by function.
-		 * @param {DOMElementCollection|Arrasy&lt;DOMElement>}
-		 * @param {queryMapCallback}
-		 * @param {*} - It is function`s arguments.
-		 * @returns {Array} - Returns the parameter "ele".
-		 */
-		map: function( eles, fn, arg ) {
-			var value,
-				i = 0,
-				length = eles.length,
-				isArray = typed.isArraylike( eles ),
-				ret = [];
+      return list;
+    },
+    /**
+     * Get elements of array by class name.
+     * @param {String}
+     * @param {Element} [context=DOMElement]
+     * @returns {Array&lt;Element>}
+     */
+    getElesByClass: function( className, context ) {
+      return $.expr.find[ "CLASS" ]( className, context || document );
+    },
+    /**
+     * Get element by ID.
+     * @param {String}
+     * @param {Element} [context=DOMElement]
+     * @returns {Element}
+     */
+    getEleById: function( ID, context ) {
+      return $.expr.find[ "ID" ]( ID, context || document )[ 0 ];
+    },
+    /**
+     * Get elements of array by tag name.
+     * @param {String}
+     * @param {Element} [context=DOMElement]
+     * @returns {Array&lt;Element>}
+     */
+    getElesByTag: function( tag, context ) {
+      return $.expr.find[ "TAG" ]( tag, context || document );
+    },
+    /**
+     * Get elements index in siblings.
+     * @param {Element}
+     * @returns {Number}
+     */
+    getSelfIndex: function( ele ) {
+      var i = -1,
+        node = ele.parentNode.firstChild;
+      while ( node ) {
+        if ( typed.isElement( node ) && i++ != undefined && node === ele ) {
+          break;
+        }
+        node = node.nextSibling;
+      }
+      return i;
+    },
+    /**
+     * Iteration all of posterity elements.
+     * @param {Element}
+     * @returns {Array} - Returns the parameter "ele".
+     */
+    iterationPosterity: function( ele, fun ) {
+      return array.grep( $.posterity( ele ), function( child ) {
+        return fun( child );
+      } );
+    },
+    /**
+     * Iteration elements by function.
+     * @param {DOMElementCollection|Arrasy&lt;DOMElement>}
+     * @param {queryMapCallback}
+     * @param {*} - It is function`s arguments.
+     * @returns {Array} - Returns the parameter "ele".
+     */
+    map: function( eles, fn, arg ) {
+      var value,
+        i = 0,
+        length = eles.length,
+        isArray = typed.isArraylike( eles ),
+        ret = [];
 
-			// Go through the array, translating each of the items to their
-			if ( isArray ) {
-				for ( ; i &lt; length; i++ ) {
-					value = fn( eles[ i ], i, arg );
+      // Go through the array, translating each of the items to their
+      if ( isArray ) {
+        for ( ; i &lt; length; i++ ) {
+          value = fn( eles[ i ], i, arg );
 
-					if ( value != null ) {
-						ret[ ret.length ] = value;
-					}
-				}
+          if ( value != null ) {
+            ret[ ret.length ] = value;
+          }
+        }
 
-				// Go through every key on the object,
-			} else {
-				for ( i in eles ) {
-					value = fn( eles[ i ], i, arg );
+        // Go through every key on the object,
+      } else {
+        for ( i in eles ) {
+          value = fn( eles[ i ], i, arg );
 
-					if ( value != null ) {
-						ret[ ret.length ] = value;
-					}
-				}
-			}
+          if ( value != null ) {
+            ret[ ret.length ] = value;
+          }
+        }
+      }
 
-			// Flatten any nested arrays
-			return core_concat.apply( [], ret );
-		},
-		/**
-		 * Get sibling element from "n" util "ele".
-		 * @param {DOMElement} - From next sibling of this.
-		 * @param {DOMElement} - Until this.
-		 * @returns {Array&lt;DOMElement>}
-		 */
-		sibling: function( n, ele ) {
-			var r = [];
+      // Flatten any nested arrays
+      return core_concat.apply( [], ret );
+    },
+    /**
+     * Get sibling element from "n" util "ele".
+     * @param {DOMElement} - From next sibling of this.
+     * @param {DOMElement} - Until this.
+     * @returns {Array&lt;DOMElement>}
+     */
+    sibling: function( n, ele ) {
+      var r = [];
 
-			for ( ; n; n = n.nextSibling ) {
-				if ( n.nodeType === 1 && n !== ele ) {
-					r.push( n );
-				}
-			}
+      for ( ; n; n = n.nextSibling ) {
+        if ( n.nodeType === 1 && n !== ele ) {
+          r.push( n );
+        }
+      }
 
-			return r;
-		}
-	};
+      return r;
+    }
+  };
 
-	$.extend( query );
-	$.expr[ ":" ] = $.expr.pseudos;
+  $.extend( query );
+  $.expr[ ":" ] = $.expr.pseudos;
 
-	$.fn.extend( /** @lends aQuery.prototype */ {
-		/**
-		 * Get a new aQuery object by all posterity elements which was found by selector.
-		 * @param {String}
-		 * @returns {aQuery}
-		 */
-		posterity: function( selector ) {
-			var posterity = $.posterity( this.eles );
-			if ( typed.isString( selector ) ) posterity = $.find( selector, posterity );
-			return $( posterity );
-		},
-		/**
-		 * Get a new aQuery object by index.
-		 * @param {String}
-		 * @returns {aQuery}
-		 */
-		eq: function( i ) {
-			var len = this.length,
-				j = +i + ( i &lt; 0 ? len : 0 );
-			return j >= 0 && j &lt; len ? $( this[ j ] ) : $( [] );
-		},
-		/**
-		 * Filter elements by selector.
-		 * @param {String}
-		 * @returns {aQuery}
-		 */
-		filter: function( selector ) {
-			return $( winnow( this, selector, false ) );
-		},
-		/**
-		 * Find elements by selector.
-		 * @param {String}
-		 * @returns {aQuery}
-		 */
-		find: function( selector ) {
-			var i, ret, self,
-				len = this.length;
+  $.fn.extend( /** @lends aQuery.prototype */ {
+    /**
+     * Get a new aQuery object by all posterity elements which was found by selector.
+     * @param {String}
+     * @returns {aQuery}
+     */
+    posterity: function( selector ) {
+      var posterity = $.posterity( this.eles );
+      if ( typed.isString( selector ) ) posterity = $.find( selector, posterity );
+      return $( posterity );
+    },
+    /**
+     * Get a new aQuery object by index.
+     * @param {String}
+     * @returns {aQuery}
+     */
+    eq: function( i ) {
+      var len = this.length,
+        j = +i + ( i &lt; 0 ? len : 0 );
+      return j >= 0 && j &lt; len ? $( this[ j ] ) : $( [] );
+    },
+    /**
+     * Filter elements by selector.
+     * @param {String}
+     * @returns {aQuery}
+     */
+    filter: function( selector ) {
+      return $( winnow( this, selector, false ) );
+    },
+    /**
+     * Find elements by selector.
+     * @param {String}
+     * @returns {aQuery}
+     */
+    find: function( selector ) {
+      var i, ret, self,
+        len = this.length;
 
-			if ( typeof selector !== "string" ) {
-				self = this;
-				return $( $( selector ).filter( function() {
-					for ( i = 0; i &lt; len; i++ ) {
-						if ( Sizzle.contains( self[ i ], this ) ) {
-							return true;
-						}
-					}
-				} ) );
-			}
+      if ( typeof selector !== "string" ) {
+        self = this;
+        return $( $( selector ).filter( function() {
+          for ( i = 0; i &lt; len; i++ ) {
+            if ( Sizzle.contains( self[ i ], this ) ) {
+              return true;
+            }
+          }
+        } ) );
+      }
 
-			ret = [];
-			for ( i = 0; i &lt; len; i++ ) {
-				$.find( selector, this[ i ], ret );
-			}
+      ret = [];
+      for ( i = 0; i &lt; len; i++ ) {
+        $.find( selector, this[ i ], ret );
+      }
 
-			// Needed because $( selector, context ) becomes $( context ).find( selector )
-			ret = $( len > 1 ? $.unique( ret ) : ret );
-			ret.selector = ( this.selector ? this.selector + " " : "" ) + selector;
-			return ret;
-		},
-		/**
-		 * Search for a given element from among the matched elements.
-		 * &lt;br/> If no argument is passed to the .index() method, the return value is an integer indicating the position of the first element within the jQuery object relative to its sibling elements.
-		 * &lt;br/> If .index() is called on a collection of elements and a DOM element or aQuery object is passed in, .index() returns an integer indicating the position of the passed element relative to the original collection.
-		 * &lt;br/> If a selector string is passed as an argument, .index() returns an integer indicating the position of the first element within the jQuery object relative to the elements matched by the selector. If the element is not found, .index() will return -1.
-		 * @param {String|aQuery|DOMElement|Array&lt;DOMElement>} [ele]
-		 * @returns {Number}
-		 */
-		index: function( ele ) {
-			if ( !ele ) {
-				return ( this[ 0 ] && this[ 0 ].parentNode ) ? this.first().prevAll().length : -1;
-			}
+      // Needed because $( selector, context ) becomes $( context ).find( selector )
+      ret = $( len > 1 ? $.unique( ret ) : ret );
+      ret.selector = ( this.selector ? this.selector + " " : "" ) + selector;
+      return ret;
+    },
+    /**
+     * Search for a given element from among the matched elements.
+     * &lt;br/> If no argument is passed to the .index() method, the return value is an integer indicating the position of the first element within the jQuery object relative to its sibling elements.
+     * &lt;br/> If .index() is called on a collection of elements and a DOM element or aQuery object is passed in, .index() returns an integer indicating the position of the passed element relative to the original collection.
+     * &lt;br/> If a selector string is passed as an argument, .index() returns an integer indicating the position of the first element within the jQuery object relative to the elements matched by the selector. If the element is not found, .index() will return -1.
+     * @param {String|aQuery|DOMElement|Array&lt;DOMElement>} [ele]
+     * @returns {Number}
+     */
+    index: function( ele ) {
+      if ( !ele ) {
+        return ( this[ 0 ] && this[ 0 ].parentNode ) ? this.first().prevAll().length : -1;
+      }
 
-			// index in selector
-			if ( typed.isString( ele ) ) {
-				return array.inArray( $( ele ), this[ 0 ] );
-			}
+      // index in selector
+      if ( typed.isString( ele ) ) {
+        return array.inArray( $( ele ), this[ 0 ] );
+      }
 
-			// Locate the position of the desired element
-			return array.inArray(
-				// If it receives a jQuery object, the first element is used
-				this, typed.is$( ele ) ? ele[ 0 ] : ele );
-		},
-		/**
-		 * Check the current matched set of elements against a selector, element, or jQuery object and return true if at least one of these elements matches the given arguments.
-		 * &lt;br /> A string containing a selector expression to match elements against.
-		 * &lt;br /> A function used as a test for the set of elements. It accepts one argument, index, which is the element's index in the aQuery collection.Within the function, this refers to the current DOM element.
-		 * &lt;br /> An existing aQuery object to match the current set of elements against.
-		 * &lt;br /> One or more elements to match the current set of elements against.
-		 * @param {String|aQuery|Function|DOMElement}
-		 * @returns {Boolean}
-		 */
-		is: function( selector ) {
-			return !!selector && (
-				typed.isString( selector ) ?
-				rneedsContext.test( selector ) ?
-				$.find( selector, this.context ).index( this[ 0 ] ) >= 0 :
-				$.filter( selector, this.eles ).length > 0 :
-				this.filter( selector ).length > 0 );
-		},
-		/**
-		 * Iteration elements by function.
-		 * @param {queryMapCallback}
-		 * @returns {aQuery}
-		 */
-		map: function( callback ) {
-			return $( $.map( this, function( ele, i ) {
-				return callback.call( ele, i, ele );
-			} ) );
-		},
-		/**
-		 * Reject the result to an aQuery object.
-		 * @param {String}
-		 * @returns {aQuery}
-		 */
-		not: function( selector ) {
-			return $( winnow( this, selector, false ) );
-		}
-	} );
+      // Locate the position of the desired element
+      return array.inArray(
+        // If it receives a jQuery object, the first element is used
+        this, typed.is$( ele ) ? ele[ 0 ] : ele );
+    },
+    /**
+     * Check the current matched set of elements against a selector, element, or jQuery object and return true if at least one of these elements matches the given arguments.
+     * &lt;br /> A string containing a selector expression to match elements against.
+     * &lt;br /> A function used as a test for the set of elements. It accepts one argument, index, which is the element's index in the aQuery collection.Within the function, this refers to the current DOM element.
+     * &lt;br /> An existing aQuery object to match the current set of elements against.
+     * &lt;br /> One or more elements to match the current set of elements against.
+     * @param {String|aQuery|Function|DOMElement}
+     * @returns {Boolean}
+     */
+    is: function( selector ) {
+      return !!selector && (
+        typed.isString( selector ) ?
+        rneedsContext.test( selector ) ?
+        $.find( selector, this.context ).index( this[ 0 ] ) >= 0 :
+        $.filter( selector, this.eles ).length > 0 :
+        this.filter( selector ).length > 0 );
+    },
+    /**
+     * Iteration elements by function.
+     * @param {queryMapCallback}
+     * @returns {aQuery}
+     */
+    map: function( callback ) {
+      return $( $.map( this, function( ele, i ) {
+        return callback.call( ele, i, ele );
+      } ) );
+    },
+    /**
+     * Reject the result to an aQuery object.
+     * @param {String}
+     * @returns {aQuery}
+     */
+    not: function( selector ) {
+      return $( winnow( this, selector, false ) );
+    }
+  } );
 
-	function sibling( cur, dir ) {
-		do {
-			cur = cur[ dir ];
-		} while ( cur && cur.nodeType !== 1 );
+  function sibling( cur, dir ) {
+    do {
+      cur = cur[ dir ];
+    } while ( cur && cur.nodeType !== 1 );
 
-		return cur;
-	}
+    return cur;
+  }
 
-	$.each( /** @lends aQuery.prototype */ {
-		/**
-		 * Get the parent of each element in the current set of matched elements, optionally filtered by a selector.
-		 * @param [selector] {String}
-		 * @returns {aQuery}
-		 */
-		parent: function( ele ) {
-			var parent = ele.parentNode;
-			return parent && parent.nodeType !== 11 ? parent : null;
-		},
-		/**
-		 * Get the ancestors of each element in the current set of matched elements, optionally filtered by a selector.
-		 * @param [selector] {String}
-		 * @returns {aQuery}
-		 */
-		parents: function( ele ) {
-			return $.dir( ele, "parentNode" );
-		},
-		/**
-		 * Get the ancestors of each element in the current set of matched elements, optionally filtered by a selector.
-		 * @param selector {String|Element}
-		 * @param [filter] {String}
-		 * @returns {aQuery}
-		 */
-		parentsUntil: function( ele, i, until ) {
-			return $.dir( ele, "parentNode", until );
-		},
-		/**
-		 * Get the immediately following sibling of each element in the set of matched elements. If a selector is provided, it retrieves the next sibling only if it matches that selector.
-		 * @param [selector] {String}
-		 * @returns {aQuery}
-		 */
-		next: function( ele ) {
-			return sibling( ele, "nextSibling" );
-		},
-		/**
-		 * Get the immediately preceding sibling of each element in the set of matched elements, optionally filtered by a selector.
-		 * @param [selector] {String}
-		 * @returns {aQuery}
-		 */
-		prev: function( ele ) {
-			return sibling( ele, "previousSibling" );
-		},
-		/**
-		 * Get all following siblings of each element in the set of matched elements, optionally filtered by a selector.
-		 * @param [selector] {String}
-		 * @returns {aQuery}
-		 */
-		nextAll: function( ele ) {
-			return $.dir( ele, "nextSibling" );
-		},
-		/**
-		 * Get all preceding siblings of each element in the set of matched elements, optionally filtered by a selector.
-		 * @param [selector] {String}
-		 * @returns {aQuery}
-		 */
-		prevAll: function( ele ) {
-			return $.dir( ele, "previousSibling" );
-		},
-		/**
-		 * Get all following siblings of each element up to but not including the element matched by the selector, DOM node, or jQuery object passed.
-		 * @param selector {String|Element}
-		 * @param [filter] {String}
-		 * @returns {aQuery}
-		 */
-		nextUntil: function( ele, i, until ) {
-			return $.dir( ele, "nextSibling", until );
-		},
-		/**
-		 * Get all preceding siblings of each element up to but not including the element matched by the selector, DOM node, or jQuery object.
-		 * @param selector {String|Element}
-		 * @param [filter] {String}
-		 * @returns {aQuery}
-		 */
-		prevUntil: function( ele, i, until ) {
-			return $.dir( ele, "previousSibling", until );
-		},
-		/**
-		 * Get the siblings of each element in the set of matched elements, optionally filtered by a selector.
-		 * @param [selector] {String}
-		 * @returns {aQuery}
-		 */
-		siblings: function( ele ) {
-			return $.sibling( ( ele.parentNode || {} ).firstChild, ele );
-		},
-		/**
-		 * Get the children of each element in the set of matched elements, optionally filtered by a selector.
-		 * @param [selector] {String}
-		 * @returns {aQuery}
-		 */
-		children: function( ele ) {
-			return $.sibling( ele.firstChild );
-		},
-		/**
-		 * Get the children of each element in the set of matched elements, including text and comment nodes.
-		 * @returns {aQuery}
-		 */
-		contents: function( ele ) {
-			return typed.isNode( ele, "iframe" ) ?
-				ele.contentDocument || ele.contentWindow.document :
-				$.merge( [], ele.childNodes );
-		}
-	}, function( fn, name ) {
-		$.fn[ name ] = function( until, selector ) {
-			var ret = $.map( this, fn, until );
+  $.each( /** @lends aQuery.prototype */ {
+    /**
+     * Get the parent of each element in the current set of matched elements, optionally filtered by a selector.
+     * @param [selector] {String}
+     * @returns {aQuery}
+     */
+    parent: function( ele ) {
+      var parent = ele.parentNode;
+      return parent && parent.nodeType !== 11 ? parent : null;
+    },
+    /**
+     * Get the ancestors of each element in the current set of matched elements, optionally filtered by a selector.
+     * @param [selector] {String}
+     * @returns {aQuery}
+     */
+    parents: function( ele ) {
+      return $.dir( ele, "parentNode" );
+    },
+    /**
+     * Get the ancestors of each element in the current set of matched elements, optionally filtered by a selector.
+     * @param selector {String|Element}
+     * @param [filter] {String}
+     * @returns {aQuery}
+     */
+    parentsUntil: function( ele, i, until ) {
+      return $.dir( ele, "parentNode", until );
+    },
+    /**
+     * Get the immediately following sibling of each element in the set of matched elements. If a selector is provided, it retrieves the next sibling only if it matches that selector.
+     * @param [selector] {String}
+     * @returns {aQuery}
+     */
+    next: function( ele ) {
+      return sibling( ele, "nextSibling" );
+    },
+    /**
+     * Get the immediately preceding sibling of each element in the set of matched elements, optionally filtered by a selector.
+     * @param [selector] {String}
+     * @returns {aQuery}
+     */
+    prev: function( ele ) {
+      return sibling( ele, "previousSibling" );
+    },
+    /**
+     * Get all following siblings of each element in the set of matched elements, optionally filtered by a selector.
+     * @param [selector] {String}
+     * @returns {aQuery}
+     */
+    nextAll: function( ele ) {
+      return $.dir( ele, "nextSibling" );
+    },
+    /**
+     * Get all preceding siblings of each element in the set of matched elements, optionally filtered by a selector.
+     * @param [selector] {String}
+     * @returns {aQuery}
+     */
+    prevAll: function( ele ) {
+      return $.dir( ele, "previousSibling" );
+    },
+    /**
+     * Get all following siblings of each element up to but not including the element matched by the selector, DOM node, or jQuery object passed.
+     * @param selector {String|Element}
+     * @param [filter] {String}
+     * @returns {aQuery}
+     */
+    nextUntil: function( ele, i, until ) {
+      return $.dir( ele, "nextSibling", until );
+    },
+    /**
+     * Get all preceding siblings of each element up to but not including the element matched by the selector, DOM node, or jQuery object.
+     * @param selector {String|Element}
+     * @param [filter] {String}
+     * @returns {aQuery}
+     */
+    prevUntil: function( ele, i, until ) {
+      return $.dir( ele, "previousSibling", until );
+    },
+    /**
+     * Get the siblings of each element in the set of matched elements, optionally filtered by a selector.
+     * @param [selector] {String}
+     * @returns {aQuery}
+     */
+    siblings: function( ele ) {
+      return $.sibling( ( ele.parentNode || {} ).firstChild, ele );
+    },
+    /**
+     * Get the children of each element in the set of matched elements, optionally filtered by a selector.
+     * @param [selector] {String}
+     * @returns {aQuery}
+     */
+    children: function( ele ) {
+      return $.sibling( ele.firstChild );
+    },
+    /**
+     * Get the children of each element in the set of matched elements, including text and comment nodes.
+     * @returns {aQuery}
+     */
+    contents: function( ele ) {
+      return typed.isNode( ele, "iframe" ) ?
+        ele.contentDocument || ele.contentWindow.document :
+        $.merge( [], ele.childNodes );
+    }
+  }, function( fn, name ) {
+    $.fn[ name ] = function( until, selector ) {
+      var ret = $.map( this, fn, until );
 
-			if ( !runtil.test( name ) ) {
-				selector = until;
-			}
+      if ( !runtil.test( name ) ) {
+        selector = until;
+      }
 
-			if ( selector && typeof selector === "string" ) {
-				ret = $.filter( selector, ret );
-			}
+      if ( selector && typeof selector === "string" ) {
+        ret = $.filter( selector, ret );
+      }
 
-			ret = this.length > 1 && !guaranteedUnique[ name ] ? $.unique( ret ) : ret;
+      ret = this.length > 1 && !guaranteedUnique[ name ] ? $.unique( ret ) : ret;
 
-			if ( this.length > 1 && rparentsprev.test( name ) ) {
-				ret = ret.reverse();
-			}
+      if ( this.length > 1 && rparentsprev.test( name ) ) {
+        ret = ret.reverse();
+      }
 
-			return $( ret );
-		};
-	} );
+      return $( ret );
+    };
+  } );
 
-	$.interfaces.achieve( "constructorQuery", function( type, a, b ) {
-		return query.getEle( a, b );
-	} );
+  $.interfaces.achieve( "constructorQuery", function( type, a, b ) {
+    return query.getEle( a, b );
+  } );
 
-	return query;
+  return query;
 } );</pre>
         </article>
         <script type="text/javascript">
