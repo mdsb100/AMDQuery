@@ -156,10 +156,9 @@ define( "module/history", [ "base/constant", "base/client", "base/support", "bas
      */
     handleReady: function( token ) {
       this.ready = true;
-      this.trigger( 'ready', this, {
-        type: 'ready',
+      this.trigger( CustomEvent.createEvent( 'ready', this, {
         token: token
-      } );
+      } ) );
     },
     /**
      * @private
@@ -172,26 +171,22 @@ define( "module/history", [ "base/constant", "base/client", "base/support", "bas
       for ( key in newObject ) {
         if ( oldObject[ key ] === undefined || oldObject[ key ] !== newObject[ key ] ) {
           evenName = key + '.' + type;
-          this.trigger( evenName, this, {
-            type: evenName,
+          this.trigger( CustomEvent.createEvent( evenName, this, {
             token: newObject[ key ]
-          } );
+          } ) );
         }
       }
       for ( key in oldObject ) {
         if ( newObject[ key ] === undefined ) {
           evenName = key + '.' + type;
-          this.trigger( evenName, this, {
-            type: evenName,
+          this.trigger( CustomEvent.createEvent( evenName, this, {
             token: ''
-          } );
+          } ) );
         }
       }
-
-      this.trigger( type, this, {
-        type: type,
+      this.trigger( CustomEvent.createEvent( type, this, {
         token: newToken
-      } );
+      } ) );
     },
     /**
      * @private

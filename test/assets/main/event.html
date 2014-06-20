@@ -9,10 +9,11 @@
     $.require([
       "base/typed",
       "main/query",
+      "main/CustomEvent",
       "main/event",
       "main/data",
       "module/Test"
-    ], function(typed, query, event, data, Test) {
+    ], function(typed, query, CustomEvent, event, data, Test) {
       var testEvent = new Test("event");
       var diva = query.getEleById("a");
       var divb = query.getEleById("b");
@@ -52,7 +53,7 @@
         expect(testContext).equal(diva);
 
         expect(function(){
-          event.trigger(diva, "click", diva, {screenX:5});
+          event.trigger(diva, CustomEvent.createEvent("click", diva, {screenX:5}) );
         }).not.Throw();
 
         expect(testResult).exists();

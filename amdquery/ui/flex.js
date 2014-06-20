@@ -5,6 +5,7 @@ aQuery.define( "ui/flex", [
     "module/Widget",
     "main/query",
     "main/class",
+    "main/CustomEvent",
     "main/event",
     "main/css",
     "main/position",
@@ -12,7 +13,7 @@ aQuery.define( "ui/flex", [
     "main/attr",
     "html5/css3"
   ],
-  function( $, client, typed, support, Widget, query, cls, event, css, position, dom, attr, css3 ) {
+  function( $, client, typed, support, Widget, query, cls, CustomEvent, event, css, position, dom, attr, css3 ) {
     "use strict";
 
     function debounce( fun, wait, immediate ) {
@@ -100,12 +101,10 @@ aQuery.define( "ui/flex", [
 
           var eventName = this.getEventName( "resize" );
 
-          this.target.trigger( eventName, this.target[ 0 ], {
-            type: eventName,
-            target: this.target[ 0 ],
+          this.target.trigger( CustomEvent.createEvent( eventName, this.target[ 0 ], {
             width: this.target.width(),
             height: this.target.height()
-          } );
+          } ) );
 
           return this;
         },
@@ -227,12 +226,10 @@ aQuery.define( "ui/flex", [
           this.toDirection( this.options.flexDirection );
 
           var eventName = this.getEventName( "resize" );
-          this.target.trigger( eventName, this.target[ 0 ], {
-            type: eventName,
-            target: this.target[ 0 ],
+          this.target.trigger( CustomEvent.createEvent(eventName, this.target[ 0 ], {
             width: this.width,
             height: this.height
-          } );
+          } ) );
 
           //来自父元素的
           if ( this._lock === false ) {

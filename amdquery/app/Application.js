@@ -30,9 +30,7 @@ aQuery.define( "app/Application", [
       this.promise = new Promise( function() {
         var promise = new Promise;
         this.beforeLoad( promise );
-        this.trigger( "beforeLoad", this, {
-          type: "beforeLoad"
-        } );
+        this.trigger( CustomEvent.createEvent( "beforeLoad", this ) );
         return promise;
       } ).withContext( this ).then( function() {
         var controllerElement = this.parseRouter();
@@ -46,9 +44,7 @@ aQuery.define( "app/Application", [
 
         config.app.debug && $.logger( "app", this.constructor._AMD.id + " load" );
 
-        this.trigger( "ready", this, {
-          type: "ready"
-        } );
+        this.trigger( CustomEvent.createEvent( "ready", this ) );
 
         promiseCallback && promiseCallback.resolve();
 

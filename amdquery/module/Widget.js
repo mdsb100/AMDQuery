@@ -5,6 +5,7 @@
   "base/array",
   "main/data",
   "main/query",
+  "main/CustomEvent",
   "main/event",
   "main/attr",
   "main/object",
@@ -18,6 +19,7 @@
   array,
   utilData,
   query,
+  CustomEvent,
   event,
   attr,
   object,
@@ -677,9 +679,7 @@
         $( target ).parents().each( function( ele ) {
           if ( Widget.hasWidget( ele ) ) {
             config.ui.debug && $.logger( "triggerDetectToParent", ele );
-            $( ele ).trigger( eventName, ele, {
-              type: eventName
-            } );
+            $( ele ).trigger( CustomEvent.createEvent( eventName, ele ) );
           }
         } );
       }

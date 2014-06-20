@@ -2,6 +2,7 @@ aQuery.define( "ui/tabview", [
     "base/typed",
     "main/query",
     "main/class",
+    "main/CustomEvent",
     "main/event",
     "main/css",
     "main/position",
@@ -11,7 +12,7 @@ aQuery.define( "ui/tabview", [
     "ui/tabbar",
     "ui/tabbutton"
   ],
-  function( $, typed, query, cls, event, css, position, dom, attr, Widget, tabbar, tabbutton ) {
+  function( $, typed, query, cls, CustomEvent, event, css, position, dom, attr, Widget, tabbar, tabbutton ) {
     "use strict";
 
     // Widget.fetchCSS( "ui/css/tabview" );
@@ -69,20 +70,13 @@ aQuery.define( "ui/tabview", [
           var activateView = this.$view.eq( index ),
             deactivateView = this.$view.eq( originIndex );
 
-          deactivateView.trigger( "deactivated", deactivateView[ 0 ], {
-            type: "deactivated"
-          } );
+          deactivateView.trigger( CustomEvent.createEvent( "deactivated", deactivateView[ 0 ] ) );
 
-          activateView.trigger( "activated", activateView[ 0 ], {
-            type: "activated"
-          } );
+          activateView.trigger( CustomEvent.createEvent( "activated", activateView[ 0 ] ) );
 
-          var eventName = this.getEventName( "select" );
-
-          this.target.trigger( eventName, this.target[ 0 ], {
-            type: eventName,
+          this.target.trigger( CustomEvent.createEvent( this.getEventName( "select" ), this.target[ 0 ], {
             index: index
-          } );
+          } ) );
         }
       },
       init: function( opt, target ) {

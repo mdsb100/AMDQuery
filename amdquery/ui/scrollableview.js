@@ -5,6 +5,7 @@ aQuery.define( "ui/scrollableview", [
   "base/typed",
   "main/query",
   "main/css",
+  "main/CustomEvent",
   "main/event",
   "main/position",
   "main/dom",
@@ -26,6 +27,7 @@ aQuery.define( "ui/scrollableview", [
   typed,
   query,
   css,
+  CustomEvent,
   event,
   position,
   dom,
@@ -218,17 +220,17 @@ aQuery.define( "ui/scrollableview", [
 
             if ( left > distance ) {
               e.type = self.getEventName( "pullleft" );
-              target.trigger( e.type, this, e );
+              target.trigger( e.type, self.target[0], e );
             } else if ( left < -self.overflowWidth - distance ) {
               e.type = self.getEventName( "pullright" );
-              target.trigger( e.type, this, e );
+              target.trigger( e.type, self.target[0], e );
             }
             if ( top > distance ) {
               e.type = self.getEventName( "pulldown" );
-              target.trigger( e.type, this, e );
+              target.trigger( e.type, self.target[0], e );
             } else if ( top < -self.overflowHeight - distance ) {
               e.type = self.getEventName( "pullup" );
-              target.trigger( e.type, this, e );
+              target.trigger( e.type, self.target[0], e );
             }
 
             break;
@@ -285,7 +287,7 @@ aQuery.define( "ui/scrollableview", [
             elementId = elementId.length ? elementId : self.getAnimationToElementByName( href );
             var type = self.getEventName( "aclick" );
 
-            self.target.trigger( type, self, {
+            self.target.trigger( type, self.target[0], {
               type: type,
               toElement: elementId[ 0 ]
             } );
@@ -339,7 +341,7 @@ aQuery.define( "ui/scrollableview", [
     _fireMoved: function() {
       var type = "scrollableview.moved",
         pos = this.getContainerPosition();
-      this.target.trigger( type, this.container[ 0 ], {
+      this.target.trigger( type, this.target[0], {
         type: type,
         x: pos.x,
         y: pos.y
@@ -359,12 +361,10 @@ aQuery.define( "ui/scrollableview", [
           self = this,
           callback = function( overflow ) {
             animationCallback && animationCallback.apply( this, arguments );
-            var type = self.getEventName( "animateToElement" );
-            self.target.trigger( type, self.target[ 0 ], {
-              type: type,
+            self.target.trigger( CustomEvent.createEvent( self.getEventName( "animateToElement" ), self.target[ 0 ], {
               toElement: typed.is$( ele ) ? ele[ 0 ] : ele,
               overflow: overflow
-            } );
+            } ) );
           };
         if ( this._isAllowedDirection( V ) ) {
           this.animateY( Math.max( -top + this.viewportHeight > 0 ? 0 : -top, -this.scrollHeight + this.viewportHeight ), FX.normal, callback );
@@ -724,9 +724,7 @@ aQuery.define( "ui/scrollableview", [
     },
 
     _triggerAnimate: function( scene, direction, duration, distance ) {
-      var type = this.getEventName( "animationEnd" );
-      this.target.trigger( type, this.container[ 0 ], {
-        type: type,
+      this.target.trigger( this.getEventName( "animationEnd" ), this.target[0], {
         scene: scene,
         direction: direction,
         duration: duration,

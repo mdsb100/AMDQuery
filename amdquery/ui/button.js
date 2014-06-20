@@ -3,6 +3,7 @@ aQuery.define( "ui/button", [
     "module/Widget",
     "main/query",
     "main/class",
+    "main/CustomEvent",
     "main/event",
     "main/css",
     "main/position",
@@ -11,7 +12,7 @@ aQuery.define( "ui/button", [
     "html5/css3"
   ],
 
-  function( $, client, Widget, query, cls, event, css, position, dom, attr, css3 ) {
+  function( $, client, Widget, query, cls, CustomEvent, event, css, position, dom, attr, css3 ) {
     "use strict";
 
     Widget.fetchCSS( "ui/css/button" );
@@ -23,14 +24,10 @@ aQuery.define( "ui/button", [
         this.buttonEvent = function( e ) {
           switch ( e.type ) {
             case "click":
-              var para = {
-                type: self.getEventName( "click" ),
+              self.target.trigger( CustomEvent.createEvent( self.getEventName( "click" ), self.target[ 0 ], {
                 container: self.container,
-                target: self.target[ 0 ],
                 event: e
-              };
-
-              self.target.trigger( para.type, self.target[ 0 ], para );
+              } ) );
               break;
           }
         };

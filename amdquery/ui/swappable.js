@@ -100,7 +100,7 @@
             offsetY: y,
             event: e,
             speed: 0,
-            target: this,
+            target: target[ 0 ],
             startX: self.startX,
             startY: self.startY,
             path: self.path,
@@ -117,7 +117,7 @@
             offsetX: x,
             offsetY: y,
             event: e,
-            target: this,
+            target: target[ 0 ],
             startX: self.startX,
             startY: self.startY
           };

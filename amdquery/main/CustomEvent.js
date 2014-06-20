@@ -246,6 +246,7 @@ aQuery.define( "main/CustomEvent", [ "base/extend", "main/object" ], function( $
      */
     createEvent: function( type, target, object ) {
       var event = {};
+      object = object || {};
       utilExtend.extend( event, object );
       event.type = type;
       event.target = target;

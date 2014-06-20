@@ -741,12 +741,18 @@ aQuery.define( "main/event", [ "base/config", "base/typed", "base/extend", "base
      */
     trigger: function( ele, type, context, paras ) {
       if ( typed.isElement( ele ) || typed.isWindow( ele ) ) {
-        var data;
+        var data, event;
+        if ( typed.isObject( type ) ) {
+          var event = type;
+          type = event.type;
+          context = event.target;
+          paras = event;
+        }
         if ( data = domEventList[ type ] ) {
           type = eventHooks.type( type );
           typed.isFunction( data ) ? data( ele, type, paras ) : $.logger( "trigger", "triggering" + type + " is not supported" );
         } else if ( data = utilData.get( ele, _handlersKey ) ) {
-          data.trigger.apply( data, [ type, context ].concat( $.util.argToArray( arguments, 3 ) ) );
+          data.trigger.apply( data, event ? [ event ] : [ type, context ].concat( $.util.argToArray( arguments, 3 ) ) );
         }
       }
       return this;

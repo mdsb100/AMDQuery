@@ -5,6 +5,7 @@ aQuery.define( "ui/navmenu", [
     "module/Widget",
     "main/query",
     "main/class",
+    "main/CustomEvent",
     "main/event",
     "main/css",
     "main/position",
@@ -12,7 +13,7 @@ aQuery.define( "ui/navmenu", [
     "main/attr",
     "ecma5/array"
   ],
-  function( $, typed, utilExtend, NavItem, Widget, query, cls, event, css, position, dom, attr, uitlArray ) {
+  function( $, typed, utilExtend, NavItem, Widget, query, cls, CustomEvent, event, css, position, dom, attr, uitlArray ) {
     "use strict";
 
     Widget.fetchCSS( "ui/css/navmenu" );
@@ -32,11 +33,11 @@ aQuery.define( "ui/navmenu", [
           switch ( e.type ) {
             case "navitem.open":
               type = para.type = self.getEventName( "open" );
-              self.target.trigger( type, target[ 0 ], para );
+              self.target.trigger( type, target, para );
               break;
             case "navitem.close":
               type = para.type = self.getEventName( "close" );
-              self.target.trigger( type, target[ 0 ], para );
+              self.target.trigger( type, target, para );
               break;
             case "navitem.select":
               self.selectNavItem( e.target );
@@ -144,13 +145,9 @@ aQuery.define( "ui/navmenu", [
               isTrigger = true;
             }
             if ( isTrigger ) {
-              var para = {
-                  navitem: target
-                },
-                type;
-
-              type = para.type = this.getEventName( "select" );
-              this.target.trigger( type, this.target[ 0 ], para );
+              this.target.trigger( CustomEvent.createEvent( this.getEventName( "select" ), this.target[ 0 ], {
+                navitem: target
+              } ) );
             }
           }
         }

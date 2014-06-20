@@ -65,17 +65,11 @@ aQuery.define( "app/Controller", [
       this.view.destroy();
     },
     activate: function() {
-      var event = {
-        type: "activated"
-      }
-      this.trigger( event.type, this, event );
+      this.trigger( CustomEvent.createEvent( "activated", this ) );
       return this
     },
     deactivate: function() {
-      var event = {
-        type: "deactivate"
-      }
-      this.trigger( event.type, this, event );
+      this.trigger( CustomEvent.createEvent( "deactivate", this ) );
       return this;
     }
   }, {

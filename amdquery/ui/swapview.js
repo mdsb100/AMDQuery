@@ -7,6 +7,8 @@ aQuery.define( "ui/swapview", [
   "main/position",
   "main/dom",
   "main/class",
+  "main/CustomEvent",
+  "main/event",
   "html5/css3",
   "html5/css3.position",
   "html5/animate.transform",
@@ -26,7 +28,9 @@ aQuery.define( "ui/swapview", [
   css,
   position,
   dom,
-  css2,
+  cls,
+  CustomEvent,
+  event,
   css3,
   css3Position,
   animateTransform,
@@ -138,7 +142,6 @@ aQuery.define( "ui/swapview", [
         this.boardWidth = width * this.$views.length;
         this.boardHeight = height;
 
-
       } else {
         this.boardWidth = width;
         this.boardHeight = height * this.$views.length;
@@ -185,22 +188,16 @@ aQuery.define( "ui/swapview", [
       }
 
       var animationEvent = {
-        type: this.getEventName( "beforeAnimation" ),
-        target: this.container[ 0 ],
         view: this.$views[ index ],
         index: index,
         originIndex: index
       };
-      this.target.trigger( animationEvent.type, this.target[ 0 ], animationEvent );
 
+      this.target.trigger( CustomEvent.createEvent( this.getEventName( "beforeAnimation" ), this.target[ 0 ], animationEvent ) );
 
       if ( originIndex !== index ) {
-        deactivateView.trigger( "beforeDeactivate", deactivateView[ index ], {
-          type: "beforeDeactivate"
-        } );
-        activateView.trigger( "beforeActivate", activateView[ index ], {
-          type: "beforeActivate"
-        } );
+        deactivateView.trigger( CustomEvent.createEvent( this.getEventName( "beforeDeactivate" ), deactivateView[ index ] ) );
+        activateView.trigger( CustomEvent.createEvent( this.getEventName( "beforeActivate" ), activateView[ index ] ) );
       }
 
       this.container.stopAnimation().animate( animationOpt, {
@@ -209,18 +206,12 @@ aQuery.define( "ui/swapview", [
         queue: false,
         complete: function() {
           if ( self.$indicator ) self.$indicator.uiSwapindicator( "option", "index", index );
-          animationEvent.type = "afterAnimation";
-          self.target.trigger( animationEvent.type, animationEvent.target, animationEvent );
+          self.target.trigger( CustomEvent.createEvent( self.getEventName( "afterAnimation" ), self.target[ 0 ], animationEvent ) );
           if ( originIndex !== index ) {
-            deactivateView.trigger( "deactivated", deactivateView[ 0 ], {
-              type: "deactivated"
-            } );
-            activateView.trigger( "activated", activateView[ 0 ], {
-              type: "activated"
-            } );
+            deactivateView.trigger( CustomEvent.createEvent( self.getEventName( "deactivated" ), deactivateView[ 0 ] ) );
+            activateView.trigger( CustomEvent.createEvent( self.getEventName( "activated" ), activateView[ 0 ] ) );
             if ( originIndex !== index ) {
-              animationEvent.type = self.getEventName( "change" );
-              self.target.trigger( animationEvent.type, self.target[ 0 ], animationEvent );
+              self.target.trigger( CustomEvent.createEvent( self.getEventName( "change" ), self.target[ 0 ], animationEvent ) );
             }
           }
           if ( typed.isFunction( animationCallback ) ) animationCallback.call( self.target );

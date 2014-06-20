@@ -63,15 +63,11 @@ aQuery.define( "module/Thread", [ "main/CustomEvent", "base/extend", "main/objec
         var self = this;
         if ( this.delay > 0 ) {
           self.status = "delay";
-          self.trigger( "delay", self, {
-            type: "delay"
-          } );
+          self.trigger( CustomEvent.createEvent( "delay", self ) );
         }
         setTimeout( function() {
           self.status = "start";
-          self.trigger( "start", self, {
-            type: "start"
-          } );
+          self.trigger( CustomEvent.createEvent( "start", self ) );
           //self.pauseTime += self.delay;
 
           self.begin = $.now();
@@ -122,9 +118,7 @@ aQuery.define( "module/Thread", [ "main/CustomEvent", "base/extend", "main/objec
         this.sleepStopTime = n;
         this.status = "run";
         this.sleepFlag = false;
-        this.trigger( "sleepStop", this, {
-          type: "sleepStop"
-        } );
+        this.trigger( CustomEvent.createEvent( "resume", self ) );
         this._interval();
       }
       return this;
@@ -143,9 +137,7 @@ aQuery.define( "module/Thread", [ "main/CustomEvent", "base/extend", "main/objec
         this.runFlag = false;
         var clear = this.clear;
         clear( this.timerId );
-        this.trigger( "stop", this, {
-          type: "stop"
-        } );
+        this.trigger( CustomEvent.createEvent( "stop", self ) );
       }
       return this;
     },
@@ -284,9 +276,7 @@ aQuery.define( "module/Thread", [ "main/CustomEvent", "base/extend", "main/objec
         return this;
       }
       this.status = "sleep";
-      this.trigger( "sleepBegin", self, {
-        type: "sleepBegin"
-      } );
+      this.trigger( CustomEvent.createEvent( "sleepBegin", self ) );
       var self = this;
       clearTimeout( this.sleepId );
       this.sleepBeginTime = $.now();

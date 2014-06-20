@@ -201,7 +201,7 @@
               originX: null,
               originY: null,
               event: e,
-              target: this
+              target: target[ 0 ]
             };
           }
           switch ( e.type ) {

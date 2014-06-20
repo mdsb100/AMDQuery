@@ -1,6 +1,7 @@
 aQuery.define( "ui/swapindicator", [
   "base/support",
   "main/query",
+  "main/CustomEvent",
   "main/event",
   "main/css",
   "main/position",
@@ -8,7 +9,7 @@ aQuery.define( "ui/swapindicator", [
   "main/class",
   "html5/css3",
   "module/Widget"
-   ], function( $, support, query, event, css2, position, dom, cls, css3, Widget ) {
+   ], function( $, support, query, CustomEvent, event, css2, position, dom, cls, css3, Widget ) {
   "use strict";
   Widget.fetchCSS( "ui/css/swapindicator" );
   var HORIZONTAL = "H",
@@ -153,13 +154,11 @@ aQuery.define( "ui/swapindicator", [
             eventFuns.stopPropagation( e );
             break;
           case "click":
-            var type = self.getEventName( "change" ),
-              index = $( this ).index();
+            var index = $( this ).index();
             self.render( index );
-            target.trigger( type, self, {
-              type: type,
+            target.trigger( CustomEvent.createEvent( self.getEventName( "change" ), self.target[0], {
               index: index
-            } );
+            } ) );
             break;
         }
       };

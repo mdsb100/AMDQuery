@@ -3,6 +3,7 @@ aQuery.define( "ui/navitem", [
     "base/client",
     "module/Widget",
     "main/class",
+    "main/CustomEvent",
     "main/event",
     "main/css",
     "main/position",
@@ -13,7 +14,7 @@ aQuery.define( "ui/navitem", [
     "animation/tween.extend",
     "animation/effect"
   ],
-  function( $, typed, client, Widget, cls, event, css, position, dom, attr, src, animate ) {
+  function( $, typed, client, Widget, cls, CustomEvent, event, css, position, dom, attr, src, animate ) {
     "use strict";
 
     var complete = function() {
@@ -112,14 +113,10 @@ aQuery.define( "ui/navitem", [
             complete: complete
           } );
 
-          var para = {
-            type: this.getEventName( "open" ),
+          this.target.trigger( CustomEvent.createEvent( this.getEventName( "open" ), this.target[ 0 ], {
             container: this.container,
-            target: this.target[ 0 ],
             html: opt.html
-          };
-
-          this.target.trigger( para.type, this.target[ 0 ], para );
+          } ) );
         }
 
         this.render();
@@ -136,14 +133,11 @@ aQuery.define( "ui/navitem", [
             easing: "cubic.easeInOut"
           } );
 
-          var para = {
-            type: this.getEventName( "close" ),
+          this.target.trigger( CustomEvent.createEvent( this.getEventName( "close" ), this.target[ 0 ], {
             container: this.container,
-            target: this.target[ 0 ],
             html: opt.html
-          };
+          } ) );
 
-          this.target.trigger( para.type, this.target[ 0 ], para );
         }
 
         this.render();
@@ -155,28 +149,20 @@ aQuery.define( "ui/navitem", [
         opt.selected = true;
         this.open();
 
-        var para = {
-          type: this.getEventName( "select" ),
+        return this.target.trigger( CustomEvent.createEvent( this.getEventName( "select" ), this.target[ 0 ], {
           container: this.container,
-          target: this.target[ 0 ],
           html: opt.html
-        };
-
-        return this.target.trigger( para.type, this.target[ 0 ], para );
+        } ) );;
       },
       cancel: function() {
         var opt = this.options;
         opt.selected = false;
         this.render();
 
-        var para = {
-          type: this.getEventName( "cancel" ),
+        return this.target.trigger( CustomEvent.createEvent( this.getEventName( "cancel" ), this.target[ 0 ], {
           container: this.container,
-          target: this.target[ 0 ],
           html: opt.html
-        };
-
-        return this.target.trigger( para.type, this.target[ 0 ], para );
+        } ) );
       },
       hasChild: function() {
         return !!this.target.find( "li[amdquery-widget*='ui.navitem']" ).length;

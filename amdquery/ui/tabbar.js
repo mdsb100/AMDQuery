@@ -4,13 +4,14 @@ aQuery.define( "ui/tabbar", [
     "ui/tabbutton",
     "main/query",
     "main/class",
+    "main/CustomEvent",
     "main/event",
     "main/css",
     "main/position",
     "main/dom",
     "main/attr"
   ],
-  function( $, typed, Widget, tabbutton, query, cls, event, css, position, dom, attr ) {
+  function( $, typed, Widget, tabbutton, query, cls, CustomEvent, event, css, position, dom, attr ) {
     "use strict";
 
     Widget.fetchCSS( "ui/css/tabbar" );
@@ -23,16 +24,13 @@ aQuery.define( "ui/tabbar", [
         this.tabbarEvent = function( e ) {
           var $button = $( this );
           self.select( $button );
-          var para = {
-            type: self.getEventName( "click" ),
+
+          self.target.trigger( CustomEvent.createEvent( self.getEventName( "click" ), self.target[ 0 ], {
             container: self.container,
-            target: self.target[ 0 ],
             tabButton: this,
             index: $button.index(),
             event: e
-          };
-
-          self.target.trigger( para.type, self.target[ 0 ], para );
+          } ) );
         };
         return this;
       },

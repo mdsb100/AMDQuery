@@ -123,11 +123,10 @@ aQuery.define( "module/Keyboard", [ "base/config", "base/typed", "base/extend", 
         //item.todo.call(this, e);i
         var type = Keyboard.getHandlerName( item );
         config.amdquery.debug && $.logger( "keyboard.routing", "handlerName", type );
-        this.trigger( type, target, {
-          type: type,
+        this.trigger( CustomEvent.createEvent( type, target, {
           event: e,
           keyItem: item
-        } );
+        } ) );
         event.document.preventDefault( e );
         event.document.stopPropagation( e );
       }
