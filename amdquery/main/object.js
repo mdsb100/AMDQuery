@@ -2,20 +2,20 @@
 	"use strict";
 	this.describe( "Define Class" );
 	var
-	pushSuperStack = function( self ) {
-		var stack;
-		if ( !self.__superStack ) {
-			self.__superStack = [];
-		}
+		pushSuperStack = function( self ) {
+			var stack;
+			if ( !self.__superStack ) {
+				self.__superStack = [];
+			}
 
-		stack = self.__superStack;
+			stack = self.__superStack;
 
-		if ( stack.length ) {
-			stack.push( stack[ stack.length - 1 ].prototype.__superConstructor );
-		} else {
-			stack.push( self.constructor.prototype.__superConstructor );
-		}
-	},
+			if ( stack.length ) {
+				stack.push( stack[ stack.length - 1 ].prototype.__superConstructor );
+			} else {
+				stack.push( self.constructor.prototype.__superConstructor );
+			}
+		},
 		popSuperStack = function( self ) {
 			var stack = self.__superStack;
 			if ( stack.length ) {
@@ -132,7 +132,7 @@
 
 			if ( ret == false ) {
 				constructor = target.constructor;
-				while ( !! constructor ) {
+				while ( !!constructor ) {
 					constructor = constructor.prototype.__superConstructor;
 					if ( constructor === target ) {
 						ret = true;
@@ -144,12 +144,26 @@
 		},
 		/**
 		 * Create Getter or Setter for this constructor.prototype.
-
 		 * @param {Object<String,Object>|String|Function}
 		 */
 		createGetterSetter: function( fn ) {
 			object.createPropertyGetterSetter( this, fn );
 		},
+		/**
+		 * Mixin this.prototype to a target object.
+		 * @param {Object}
+		 */
+		mixin: function( target ) {
+			var proto = {
+				__handlers: {}
+			};
+			utilExtend.extend( proto, this.prototype );
+			delete proto.constructor;
+			delete proto.init;
+			utilExtend.extend( target, proto );
+			return this;
+		},
+
 		/** fn is pointer of this.prototype */
 		fn: null
 	};
@@ -265,9 +279,9 @@
 					anonymous = function anonymous() {
 						this.init.apply( this, arguments );
 					};
-          var temp = prototype;
-          prototype = name;
-          statics = temp;
+					var temp = prototype;
+					prototype = name;
+					statics = temp;
 			}
 
 			if ( Super ) {
@@ -464,7 +478,7 @@
 				return this;
 			}
 			var
-			originPrototype = Sub.prototype,
+				originPrototype = Sub.prototype,
 				name = Super.name || name,
 				Parasitic = typeof name == "string" ? ( eval( "(function " + name + "() { });" ) || eval( "(" + name + ")" ) ) : function() {};
 			Parasitic.prototype = Super.prototype;

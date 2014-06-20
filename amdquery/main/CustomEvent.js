@@ -225,19 +225,5 @@
 		},
 	} );
 
-	/**
-	 * Mix prototype to target.
-	 * @param {Object}
-	 */
-	CustomEvent.mixin = function( target ) {
-		var proto = {
-			__handlers: {}
-		};
-		utilExtend.extend( proto, CustomEvent.prototype );
-		delete proto.constructor;
-		delete proto.init;
-		utilExtend.extend( target, proto );
-	}
-
 	return CustomEvent;
 } );
