@@ -142,6 +142,16 @@
 			}
 			return true;
 		},
+
+		/**
+		 * Trigger an event.
+		 * @variation 1
+		 * @method trigger
+		 * @memberOf module:main/CustomEvent.prototype
+		 * @param {Object} - The special object create by CustomEvent.createEvent.
+		 * @returns {this}
+		 */
+
 		/**
 		 * Trigger an event.
 		 * @param {String} - "mousedown" or "mousedown mouseup"
@@ -150,6 +160,9 @@
 		 * @returns {this}
 		 */
 		trigger: function( type, target, args ) {
+			if ( typeof type === 'object' && type.__customEventFlag === true ) {
+				return this.trigger( type.type, type.target, type );
+			}
 			var types = type.split( " " ),
 				i = 0,
 				len = types.length;
@@ -223,6 +236,22 @@
 			}
 			return this;
 		},
+	}, /** @lends module:main/CustomEvent */ {
+		/**
+		 * Create a standard event.
+		 * @param {String} - Type of event.
+		 * @param {Object} - Target of event.
+		 * @param {Object} - Data.
+		 * @returns {Object}
+		 */
+		createEvent: function( type, target, object ) {
+			var event = {};
+			utilExtend.extend( event, object );
+			event.type = type;
+			event.target = target;
+			event.__customEventFlag = true;
+			return event;
+		}
 	} );
 
 	return CustomEvent;
