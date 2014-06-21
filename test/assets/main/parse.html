@@ -18,51 +18,51 @@
         var person;
         expect(function(){
           person = parse.JSON(JSONStr);
-        }).not.Throw();
+        }).not.to.Throw();
 
         expect(function(){
           parse.JSON(JSONStr+"abc");
-        }).Throw();
+        }).to.Throw();
 
-        expect(person).have.property("firstName").with.equal("John");
+        expect(person).to.have.property("firstName").with.to.equal("John");
 
-        expect(person).have.property("age").with.equal(25);
+        expect(person).to.have.property("age").with.to.equal(25);
 
-        expect(person).have.property("isAlive").with.equal(true);
+        expect(person).to.have.property("isAlive").with.to.equal(true);
 
-        expect(person).have.property("height_cm").with.equal(167.64);
+        expect(person).to.have.property("height_cm").with.to.equal(167.64);
 
-        expect(person).have.property("address").with.be.plainObject();
+        expect(person).to.have.property("address").with.to.be.plainObject();
 
         var address = person.address;
 
-        expect(address).have.property("city").with.equal("New York");
+        expect(address).to.have.property("city").with.to.equal("New York");
 
         var phoneNumbers = person.phoneNumbers;
 
-        expect(phoneNumbers).be.array();
+        expect(phoneNumbers).to.be.array();
 
-        expect(phoneNumbers).have.length(2);
+        expect(phoneNumbers).to.have.length(2);
 
-        expect(phoneNumbers).have.index(0).with.have.property("type").with.equal("home");
+        expect(phoneNumbers).to.have.index(0).with.to.have.property("type").with.to.equal("home");
 
-        expect(phoneNumbers).have.index(1).with.have.property("number").with.equal("646 555-4567");
+        expect(phoneNumbers).to.have.index(1).with.to.have.property("number").with.to.equal("646 555-4567");
 
       }).describe("Test parse QueryString", function(preResult, expect, logger){
         var queryString = null;
         expect(function(){
           queryString = parse.QueryString("name=Jarry&age=15");
-        }).not.Throw();
+        }).not.to.Throw();
 
-        expect(queryString).have.property("name").with.equal("Jarry");
-        expect(queryString).have.property("age").with.equal("15");
+        expect(queryString).to.have.property("name").with.to.equal("Jarry");
+        expect(queryString).to.have.property("age").with.to.equal("15");
 
         expect(function(){
           queryString = parse.QueryString("name:Jarry!age:15", "!", ":");
-        }).not.Throw();
+        }).not.to.Throw();
 
-        expect(queryString).have.property("name").with.equal("Jarry");
-        expect(queryString).have.property("age").with.equal("15");
+        expect(queryString).to.have.property("name").with.to.equal("Jarry");
+        expect(queryString).to.have.property("age").with.to.equal("15");
 
       }).describe("Test parse XML", function(preResult, expect, logger){
         var doc = null;
@@ -76,9 +76,9 @@
           }
         });
 
-        expect(doc).have.property("getElementById").with.be.function();
+        expect(doc).to.have.property("getElementById").with.to.be.function();
 
-        expect(doc.getElementById("index-navitem")).be.node("li");
+        expect(doc.getElementById("index-navitem")).to.be.node("li");
 
       }).start();
 

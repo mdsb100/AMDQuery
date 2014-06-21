@@ -13,33 +13,33 @@
       }).describe("Test utilData function", function(preResult, expect, logger){
         var divTest = $( "#test" )[0];
 
-        expect(utilData.hasData( divTest ), "Div test has data").equal(false);
+        expect(utilData.hasData( divTest ), "Div test has data").to.equal(false);
 
         expect(function(){
           utilData.set( divTest, "name", "Amanda" );
-        }, "Set div test name with 'Amanda'").not.Throw();
+        }, "Set div test name with 'Amanda'").not.to.Throw();
 
-        expect(utilData.hasData( divTest ), "Div test has data").equal(true);
+        expect(utilData.hasData( divTest ), "Div test has data").to.equal(true);
 
-        expect(utilData.get( divTest, "name" ), "Data get name").equal("Amanda");
+        expect(utilData.get( divTest, "name" ), "Data get name").to.equal("Amanda");
 
         expect(function(){
           utilData.set( divTest, "age", 19 );
-        }, "Set div test age with 19").not.Throw();
+        }, "Set div test age with 19").not.to.Throw();
 
-        expect(utilData.get( divTest ), "Get data").equal({ name: "Amanda", age: 19 });
+        expect(utilData.get( divTest ), "Get data").to.equal({ name: "Amanda", age: 19 });
 
         expect(function(){
           utilData.removeData( divTest, "age" );
-        }).not.Throw();
+        }).not.to.Throw();
 
-        expect(utilData.get( divTest, "age" ), "Get age").not.exists();
+        expect(utilData.get( divTest, "age" ), "Get age").not.to.exists();
 
         expect(function(){
           utilData.removeData( divTest );
-        }).not.Throw();
+        }).not.to.Throw();
 
-        expect(utilData.hasData( divTest ), "Div test has data").equal(false);
+        expect(utilData.hasData( divTest ), "Div test has data").to.equal(false);
 
       }).start();
 

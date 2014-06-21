@@ -12,45 +12,45 @@
       }).describe("Test class function", function(preResult, expect, logger){
         var divTest = $("#test");
 
-        expect(divTest.classLength(), "Div test`s class length").equal(0);
+        expect(divTest.classLength(), "Div test`s class length").to.equal(0);
 
         expect(function(){
           divTest.addClass("a");
-        }).not.Throw();
+        }).not.to.Throw();
 
-        expect(divTest.classLength(), "Div test`s class length").equal(1);
+        expect(divTest.classLength(), "Div test`s class length").to.equal(1);
 
-        expect(divTest.containsClass("a"), "Div test contains class 'a'").equal(true);
+        expect(divTest.containsClass("a"), "Div test contains class 'a'").to.equal(true);
 
         expect(function(){
           divTest.addClass("b");
-        }).not.Throw();
+        }).not.to.Throw();
 
-        expect(divTest.getClassByIndex(0), "Div test get class by index.").equal("a");
+        expect(divTest.getClassByIndex(0), "Div test get class by index.").to.equal("a");
 
-        expect(divTest.getClassByIndex(1), "Div test get class by index.").equal("b");
-
-        expect(function(){
-          divTest.toggleClass("c");
-        }).not.Throw();
-
-        expect(divTest.containsClass("c"), "Div test contains class 'c'").equal(true);
+        expect(divTest.getClassByIndex(1), "Div test get class by index.").to.equal("b");
 
         expect(function(){
           divTest.toggleClass("c");
-        }).not.Throw();
+        }).not.to.Throw();
 
-        expect(divTest.containsClass("c"), "Div test contains class 'c'").equal(false);
+        expect(divTest.containsClass("c"), "Div test contains class 'c'").to.equal(true);
+
+        expect(function(){
+          divTest.toggleClass("c");
+        }).not.to.Throw();
+
+        expect(divTest.containsClass("c"), "Div test contains class 'c'").to.equal(false);
 
         expect(function(){
           divTest.removeClass("a");
           divTest.removeClass("b");
-        }).not.Throw();
+        }).not.to.Throw();
 
-        expect(divTest.containsClass("a"), "Div test contains class 'a'").equal(false);
-        expect(divTest.containsClass("b"), "Div test contains class 'b'").equal(false);
+        expect(divTest.containsClass("a"), "Div test contains class 'a'").to.equal(false);
+        expect(divTest.containsClass("b"), "Div test contains class 'b'").to.equal(false);
 
-        expect(divTest.classLength(), "Div test`s class length").equal(0);
+        expect(divTest.classLength(), "Div test`s class length").to.equal(0);
 
       }).start();
 

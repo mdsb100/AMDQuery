@@ -13,31 +13,31 @@
       } ).describe( "Test location function", function( preResult, expect, logger ) {
         expect( function() {
           location.clearHash();
-        } ).not.Throw();
+        } ).not.to.Throw();
 
         expect( function() {
           location.setHash( "name", "Jarry" );
-        } ).not.Throw();
+        } ).not.to.Throw();
 
         expect( function() {
           location.setHash( "age", "18" );
-        } ).not.Throw();
+        } ).not.to.Throw();
 
-        expect( location.getHash( "age" ), "age" ).equal( "18" );
+        expect( location.getHash( "age" ), "age" ).to.equal( "18" );
 
-        expect( location.getHash( "name" ), "name" ).equal( "Jarry" );
+        expect( location.getHash( "name" ), "name" ).to.equal( "Jarry" );
 
         expect( function() {
           location.removeHash( "name" );
-        } ).not.Throw();
+        } ).not.to.Throw();
 
-        expect( location.getHash( "name" ), "name" ).not.exists();
+        expect( location.getHash( "name" ), "name" ).not.to.exists();
 
         expect( function() {
           location.clearHash();
-        } ).not.Throw();
+        } ).not.to.Throw();
 
-        expect( location.getHash( "age" ), "age" ).not.exists();
+        expect( location.getHash( "age" ), "age" ).not.to.exists();
       } ).start();
 
     } );

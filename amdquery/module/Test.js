@@ -264,80 +264,80 @@ aQuery.define( "module/Test", [ "base/typed", "base/ready", "base/Promise", "bas
      *  return promise;
      * })
      * .describe("Test a", function(preResult, expect, logger){
-     *  //expect().be.a
-     *  //expect().be.an
-     *  //expect().be.greater.than
-     *  //expect().be.less.than
-     *  //expect().be.instance.of
-     *  //expect().be.greater.than.or
-     *  //expect().be.less.than.or
-     *  //expect().equal
-     *  //expect().have.length
-     *  //expect().have.property
-     *  //expect().have.index
-     *  //expect().exists
-     *  //expect().not.equal
-     *  //expect().not.exists
-     *  //expect().not.Throw
+     *  //expect().to.be.a
+     *  //expect().to.be.an
+     *  //expect().to.be.greater.than
+     *  //expect().to.be.less.than
+     *  //expect().to.be.instance.of
+     *  //expect().to.be.greater.than.or
+     *  //expect().to.be.less.than.or
+     *  //expect().to.equal
+     *  //expect().to.have.length
+     *  //expect().to.have.property
+     *  //expect().to.have.index
+     *  //expect().to.exists
+     *  //expect().not.to.equal
+     *  //expect().not.to.exists
+     *  //expect().not.to.Throw
      *  //expect().Throw
-     *  //expect().be.elementCollection
-     *  //expect().not.be.elementCollection
-     *  //expect().be.event
-     *  //expect().not.be.event
-     *  //expect().be.arguments
-     *  //expect().not.be.arguments
-     *  //expect().be.array
-     *  //expect().not.be.array
-     *  //expect().be.arraylike
-     *  //expect().not.be.arraylike
-     *  //expect().be.boolean
-     *  //expect().not.be.boolean
-     *  //expect().be.date
-     *  //expect().not.be.date
-     *  //expect().be.document
-     *  //expect().not.be.document
-     *  //expect().be.element
-     *  //expect().not.be.element
-     *  //expect().be.empty
-     *  //expect().not.be.empty
-     *  //expect().be.emptyObject
-     *  //expect().not.be.emptyObject
-     *  //expect().be.emptyObject
-     *  //expect().not.be.emptyObject
-     *  //expect().be.error
-     *  //expect().not.be.error
-     *  //expect().be.finite
-     *  //expect().not.be.finite
-     *  //expect().be.function
-     *  //expect().not.be.function
-     *  //expect().be.nativeJSON
-     *  //expect().not.be.nativeJSON
-     *  //expect().be.NaN
-     *  //expect().not.be.NaN
-     *  //expect().be.number
-     *  //expect().not.be.number
-     *  //expect().be.numeric
-     *  //expect().not.be.numeric
-     *  //expect().be.nul
-     *  //expect().not.be.nul
-     *  //expect().be.node
-     *  //expect().not.be.node
-     *  //expect().be.object
-     *  //expect().not.be.object
-     *  //expect().be.plainObject
-     *  //expect().not.be.plainObject
-     *  //expect().be.RegExp
-     *  //expect().not.be.RegExp
-     *  //expect().be.string
-     *  //expect().not.be.string
-     *  //expect().be.string
-     *  //expect().not.be.string
-     *  //expect().be.XML
-     *  //expect().not.be.XML
-     *  //expect().be.window
-     *  //expect().not.be.window
-     *  //expect().be.$
-     *  //expect().not.be.$
+     *  //expect().to.be.elementCollection
+     *  //expect().not.to.be.elementCollection
+     *  //expect().to.be.event
+     *  //expect().not.to.be.event
+     *  //expect().to.be.arguments
+     *  //expect().not.to.be.arguments
+     *  //expect().to.be.array
+     *  //expect().not.to.be.array
+     *  //expect().to.be.arraylike
+     *  //expect().not.to.be.arraylike
+     *  //expect().to.be.boolean
+     *  //expect().not.to.be.boolean
+     *  //expect().to.be.date
+     *  //expect().not.to.be.date
+     *  //expect().to.be.document
+     *  //expect().not.to.be.document
+     *  //expect().to.be.element
+     *  //expect().not.to.be.element
+     *  //expect().to.be.empty
+     *  //expect().not.to.be.empty
+     *  //expect().to.be.emptyObject
+     *  //expect().not.to.be.emptyObject
+     *  //expect().to.be.emptyObject
+     *  //expect().not.to.be.emptyObject
+     *  //expect().to.be.error
+     *  //expect().not.to.be.error
+     *  //expect().to.be.finite
+     *  //expect().not.to.be.finite
+     *  //expect().to.be.function
+     *  //expect().not.to.be.function
+     *  //expect().to.be.nativeJSON
+     *  //expect().not.to.be.nativeJSON
+     *  //expect().to.be.NaN
+     *  //expect().not.to.be.NaN
+     *  //expect().to.be.number
+     *  //expect().not.to.be.number
+     *  //expect().to.be.numeric
+     *  //expect().not.to.be.numeric
+     *  //expect().to.be.nul
+     *  //expect().not.to.be.nul
+     *  //expect().to.be.node
+     *  //expect().not.to.be.node
+     *  //expect().to.be.object
+     *  //expect().not.to.be.object
+     *  //expect().to.be.plainObject
+     *  //expect().not.to.be.plainObject
+     *  //expect().to.be.RegExp
+     *  //expect().not.to.be.RegExp
+     *  //expect().to.be.string
+     *  //expect().not.to.be.string
+     *  //expect().to.be.string
+     *  //expect().not.to.be.string
+     *  //expect().to.be.XML
+     *  //expect().not.to.be.XML
+     *  //expect().to.be.window
+     *  //expect().not.to.be.window
+     *  //expect().to.be.$
+     *  //expect().not.to.be.$
      * })
      * .start();
      */
@@ -400,7 +400,11 @@ aQuery.define( "module/Test", [ "base/typed", "base/ready", "base/Promise", "bas
 
   function Expect( target, describe, testObject ) {
     var expectWrapper = this;
-    utilExtend.easyExtend( this, {
+    this.to = {};
+    this.not = {
+      to: {}
+    };
+    utilExtend.easyExtend( this.to, {
       be: {
         a: function( value ) {
           testObject._isEqual( expectWrapper.combineString( describe, "expect", "'" + String( target ) + "'", "be", "a", "'" + String( value ) + "'" ), typeof target, value );
@@ -471,41 +475,42 @@ aQuery.define( "module/Test", [ "base/typed", "base/ready", "base/Promise", "bas
         testObject._isEqual( expectWrapper.combineString( describe, "expect", "'" + String( target ) + "'", "exists" ), target !== undefined && target !== null, true );
         return expectWrapper;
       },
-      not: {
-        equal: function( value ) {
-          testObject._isEqual( expectWrapper.combineString( describe, "expect", "'" + String( target ) + "'", "not", "equal", "'" + String( value ) + "'" ), target, value, true );
-          return expectWrapper;
-        },
-        exists: function() {
-          testObject._isEqual( expectWrapper.combineString( describe, "expect", "'" + String( target ) + "'", "not", "exists" ), target == null, true );
-          return expectWrapper;
-        },
-        Throw: function() {
-          testObject._beCall( expectWrapper.combineString( describe, "expect", "'" + String( target ) + "'", "not", "Throw" ), target );
-          return expectWrapper;
-        },
-        be: {},
-        have: {
-          property: function( name ) {
-            var bol = target == null || !( name in target );
-            testObject._isEqual( expectWrapper.combineString( describe, "expect", "'" + String( target ) + "'", "not", "have", String( name ), "property" ), bol, true );
-            return expectWrapper;
-          },
-        }
-      },
       Throw: function() {
         testObject._beCall( expectWrapper.combineString( describe, "expect", "'" + String( target ) + "'", "Throw" ), target, true );
         return expectWrapper;
       }
     } );
 
-    this.be.greater.than.or = {
+    utilExtend.easyExtend( this.not.to, {
+      equal: function( value ) {
+        testObject._isEqual( expectWrapper.combineString( describe, "expect", "'" + String( target ) + "'", "not", "equal", "'" + String( value ) + "'" ), target, value, true );
+        return expectWrapper;
+      },
+      exists: function() {
+        testObject._isEqual( expectWrapper.combineString( describe, "expect", "'" + String( target ) + "'", "not", "exists" ), target == null, true );
+        return expectWrapper;
+      },
+      Throw: function() {
+        testObject._beCall( expectWrapper.combineString( describe, "expect", "'" + String( target ) + "'", "not", "Throw" ), target );
+        return expectWrapper;
+      },
+      be: {},
+      have: {
+        property: function( name ) {
+          var bol = target == null || !( name in target );
+          testObject._isEqual( expectWrapper.combineString( describe, "expect", "'" + String( target ) + "'", "not", "have", String( name ), "property" ), bol, true );
+          return expectWrapper;
+        },
+      }
+    } );
+
+    this.to.be.greater.than.or = {
       equal: function( value ) {
         testObject._isEqual( expectWrapper.combineString( describe, "expect", "'" + String( target ) + "'", "be", "greater", "than", "or", "equal", "'" + String( value ) + "'" ), target >= value, true );
         return expectWrapper;
       }
     }
-    this.be.less.than.or = {
+    this.to.be.less.than.or = {
       equal: function( value ) {
         testObject._isEqual( expectWrapper.combineString( describe, "expect", "'" + String( target ) + "'", "be", "less", "than", "or", "equal", "'" + String( value ) + "'" ), target <= value, true );
         return expectWrapper;
@@ -531,12 +536,12 @@ aQuery.define( "module/Test", [ "base/typed", "base/ready", "base/Promise", "bas
           fnName = fnName[ 0 ].toLowerCase() + fnName.slice( 1 );
         }
 
-        expectWrapper.be[ fnName ] = function( value ) {
+        expectWrapper.to.be[ fnName ] = function( value ) {
           testObject._isEqual( expectWrapper.combineString( describe, "expect", "'" + String( target ) + "'", "be", fnName ), typed[ name ]( target, value ), true );
           return expectWrapper;
         }
 
-        expectWrapper.not.be[ fnName ] = function( value ) {
+        expectWrapper.not.to.be[ fnName ] = function( value ) {
           testObject._isEqual( expectWrapper.combineString( describe, "expect", "'" + String( target ) + "'", "not", "be", fnName ), typed[ name ]( target, value ), false );
           return expectWrapper;
         }
