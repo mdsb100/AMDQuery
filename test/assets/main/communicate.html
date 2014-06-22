@@ -152,7 +152,7 @@
             expect(resp).to.be.XML();
             var tagImport = resp.getElementsByTagName("import");
 
-            expect(tagImport[0].getAttribute("file")).equal("build.xml");
+            expect(tagImport[0].getAttribute("file")).to.equal("build.xml");
           },
           fail: function(ajax){
             expect(ajax).to.have.property("status");

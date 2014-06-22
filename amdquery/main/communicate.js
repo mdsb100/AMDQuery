@@ -176,6 +176,7 @@ aQuery.define( "main/communicate", [ "base/Promise", "base/typed", "base/extend"
           e.type = "ajaxStart";
           $.trigger( e.type, ajax, e );
           ajax.send( type == "GET" ? "NULL" : ( o.data || "NULL" ) );
+          promise.reprocess( {} )
         }
       }
 
@@ -186,22 +187,13 @@ aQuery.define( "main/communicate", [ "base/Promise", "base/typed", "base/extend"
      * @returns {module:base/Promise}
      */
     ajaxs: function( list ) {
-      var retPromise;
+      var promises = [];
 
       $.each( list, function( item, index ) {
-
-        if ( retPromise ) {
-          var promise = communicate.ajax( item );
-          retPromise.and( function() {
-            return promise;
-          } );
-        } else {
-          retPromise = communicate.ajax( item );
-        }
-
+        promises.push( communicate.ajax( item ) );
       } );
 
-      return retPromise;
+      return Promise.group( promises );
     },
 
     ajaxSetting:
@@ -261,7 +253,7 @@ aQuery.define( "main/communicate", [ "base/Promise", "base/typed", "base/extend"
       if ( o.JSONP ) {
         random = ( "aQuery" + $.now() ) + parseInt( Math.random() * 10 );
         window[ random ] = function( json ) {
-          o.json = json;
+          promise.reprocess( json );
         };
         o.data[ o.JSONP ] = random
       }
@@ -297,21 +289,11 @@ aQuery.define( "main/communicate", [ "base/Promise", "base/typed", "base/extend"
         typed.isFunction( o.fail ) && o.fail.call( o.context || scripts, o );
         clear();
         return Promise().reject( o );
-      }, function() {
-        if ( !scripts.readyState || scripts.readyState == "loaded" || scripts.readyState == "complete" ) {
-          if ( o.json ) {
-            return Promise().resolve( o.json );
-          } else {
-            setTimeout( function() {
-              promise.resolve( o.json );
-            }, 0 );
-          }
+      }, function( json ) {
+        if ( json ) {
+          Promise().resolve( json );
         }
       } );
-
-      scripts.onload = scripts.onreadystatechange = function() {
-        promise.reprocess( o.json );
-      };
 
       scripts.onerror = function() {
         promise.reject();
@@ -326,7 +308,7 @@ aQuery.define( "main/communicate", [ "base/Promise", "base/typed", "base/extend"
       e.type = "jsonpStart";
       $.trigger( e.type, scripts, e );
       head.insertBefore( scripts, head.firstChild );
-      return promise;
+      return promise.reprocess();
     },
     jsonpSetting:
     /**
@@ -359,22 +341,13 @@ aQuery.define( "main/communicate", [ "base/Promise", "base/typed", "base/extend"
      * @returns {module:base/Promise}
      */
     jsonps: function( list ) {
-      var retPromise;
+      var promises = [];
 
       $.each( list, function( item, index ) {
-
-        if ( retPromise ) {
-          var promise = communicate.jsonp( item );
-          retPromise.and( function() {
-            return promise;
-          } );
-        } else {
-          retPromise = communicate.jsonp( item );
-        }
-
+        promises.push( communicate.jsonp( item ) );
       } );
 
-      return retPromise;
+      return Promise.group( promises );
     },
     /**
      * @example
