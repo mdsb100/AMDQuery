@@ -197,7 +197,7 @@
           expect(result[4]).to.equal("middle");
           expect(result[5]).to.equal(300);
           expect(result[6]).to.equal("and sync");
-          return "next and fail";
+          return "next gogogo";
         });
 
         Promise(function(result){
@@ -223,6 +223,206 @@
           return result;
         })
         .done(resolvePromise).resolve(0);
+
+        return resolvePromise;
+
+      }).describe("Test and, and a Promise, result is sucess", function(preResult, expect, logger){
+        expect(preResult).to.equal("next gogogo");
+
+        var resolvePromise = new Promise(function(result){
+          expect(result).to.be.array();
+          expect(result).to.have.length(4);
+          expect(result[0]).to.equal(0);
+          expect(result[1]).to.equal("and sync with promise");
+          expect(result[2]).to.equal(100);
+          expect(result[3]).to.equal('sucess');
+          return "next ands";
+        });
+
+        var promiseSucess1 = Promise().then(function(result){
+          var promise = new Promise();
+          setTimeout(function(){
+            promise.resolve(result);
+          }, 200);
+          return promise;
+        }).done().resolve('sucess');
+
+        var promiseSucess2 = Promise(function(result){
+          var promise = new Promise();
+          setTimeout(function(){
+            promise.resolve(result);
+          }, 200);
+          return promise;
+        }).resolve('sucess');
+
+
+        Promise(function(result){
+          expect(result).to.equal(0);
+          return result;
+        })
+        .and(promiseSucess2)
+        .then(function(result){
+          expect(result).to.be.array();
+          expect(result).to.have.length(2);
+          expect(result[0]).to.equal(0);
+          expect(result[1]).to.equal('sucess');
+          return result[0]
+        })
+        .then(function(result){
+          expect(result).to.equal(0);
+          return result;
+        })
+        .and(function(result){
+          return Promise().resolve("and sync with promise");
+        })
+        .and(delay(100, expect))
+        .and(promiseSucess1.end())
+        .then(function(result){
+          expect(result).to.be.array();
+          expect(result).to.have.length(4);
+          return result;
+        })
+        .done(resolvePromise).resolve(0);
+
+        return resolvePromise;
+
+      }).describe("Test multiAnd", function(preResult, expect, logger){
+        expect(preResult).to.equal("next ands");
+
+        var promiseSucess = Promise().then(function(result){
+          var promise = new Promise();
+          setTimeout(function(){
+            promise.resolve(result);
+          }, 200);
+          return promise;
+        }).done().resolve('sucess');
+
+        var resolvePromise = new Promise(function(result){
+          expect(result).to.be.array();
+          expect(result).to.have.length(8);
+          expect(result[0]).to.equal(0);
+          expect(result[1]).to.equal("and sync with promise");
+          expect(result[2]).to.equal(100);
+          expect(result[3]).to.equal(200);
+          expect(result[4]).to.equal("middle");
+          expect(result[5]).to.equal(300);
+          expect(result[6]).to.equal("and sync");
+          expect(result[7]).to.equal("sucess");
+          return "next gogogo";
+        });
+
+        Promise(function(result){
+          expect(result).to.equal(0);
+          return result;
+        }).multiAnd(
+          function(result){
+            return Promise().resolve("and sync with promise");
+          },
+          delay(100, expect),
+          delay(200, expect),
+          function(result){
+            return "middle";
+          },
+          delay(300, expect),
+          function(result){
+            expect(result).to.equal(0);
+            return "and sync";
+          },
+          promiseSucess.end()
+        )
+        .then(function(result){
+          expect(result).to.be.array();
+          expect(result).to.have.length(8);
+          return result;
+        })
+        .done(resolvePromise).resolve(0);
+
+        return resolvePromise;
+
+      }).describe("Test group", function(preResult, expect, logger){
+        expect(preResult).to.equal("next gogogo");
+
+        var resolvePromise = new Promise(function(result){
+          expect(result).to.be.array();
+          expect(result).to.have.length(3);
+          expect(result[0]).to.equal('promise1');
+          expect(result[1]).to.equal("promise2");
+          expect(result[2]).to.equal("promise3");
+          return "next gogogo";
+        });
+
+        var promise1 = Promise(function(){
+          var promise = Promise();
+          setTimeout(function(){
+            promise.resolve('promise1');
+          }, 20);
+          return promise;
+        }).resolve(), promise2 = Promise(function(){
+          return 'promise2'
+        }).resolve(), promise3 = Promise(function(){
+          var promise = Promise();
+          setTimeout(function(){
+            promise.resolve('promise3');
+          }, 30);
+          return promise;
+        });
+
+        Promise.group(promise1, promise2, promise3)
+        .then(function(result){
+          expect(result).to.be.array();
+          expect(result).to.have.length(3);
+          return result;
+        })
+        .done(resolvePromise).resolve();
+
+        return resolvePromise;
+
+      }).describe("Test and, and a Promise, result is fail", function(preResult, expect, logger){
+        expect(preResult).to.equal("next gogogo");
+
+        var resolvePromise = new Promise(function(result){
+          expect(result).to.be.array();
+          expect(result).to.have.length(4);
+          expect(result[0]).to.equal(0);
+          expect(result[1]).to.equal("and sync with promise");
+          expect(result[2]).to.equal(100);
+          expect(result[3]).to.equal('fail');
+          return Promise().resolve("next and fail");
+        });
+
+        var promiseFail = Promise().then(function(result){
+          var promise = new Promise();
+          setTimeout(function(){
+            promise.resolve(result);
+          }, 100);
+          return promise;
+        }).then(function(result){
+          var promise = new Promise();
+          setTimeout(function(){
+            promise.reject(result);
+          }, 100);
+          return promise;
+        }).done(function(){}, function(result){
+          return result;
+        }).resolve('fail');
+
+        Promise(function(result){
+          expect(result).to.equal(0);
+          return result;
+        })
+        .and(function(result){
+          return Promise().resolve("and sync with promise");
+        })
+        .and(delay(100, expect))
+        .and(promiseFail.end())
+        .then(function(){}, function(result){
+          expect(result).to.be.array();
+          expect(result).to.have.length(4);
+          return result;
+        })
+        .done(function(){}, function(result){
+          resolvePromise.resolve(result);
+        }).resolve(0);
 
         return resolvePromise;
 
