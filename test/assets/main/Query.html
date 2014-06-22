@@ -4,32 +4,22 @@
 <head>
   <title></title>
   <link href="../../../global/styles/reset.css" rel="stylesheet" type="text/css" />
-  <script src="../../../amdquery/amdquery.js" type="text/javascript" amdquery="define:$;" amd="detectCR:1;"></script>
-
+  <script src="../../../amdquery/amdquery.js" type="text/javascript" amdquery="define:$;" amd="detectCR:1;" module="compatibleEvent:1;testLogByHTML:1"></script>
   <script type="text/javascript">
-    $.require(["main/query"], function(query) {
-      //var a = sizzle("#a");
-      var div = $("div[attrText]");
-      var find = div.find("div[attrText]");
-      var c = $("div").eq(-1);
-      var a = $("div").eq(0);
-      var b = a.next();
-      var index0 = c.index();
-      var index1 = c.index("div");
-      var index2 = c.index($("#c"));
-      var parents = c.parents();
+    $.require(["base/typed", "main/query", "module/Test"], function(typed, query, Test) {
+      var testTest = new Test("query", function(preResult){
 
-      var testUntil = a.nextUntil("#c");
+      }).describe("Test base query function", function(preResult, expect, logger){
+        var d = query.getEleById('d');
+        expect(d).to.be.element();
+        expect(d).to.have.property('id').with.to.equal('d');
+        var ols = query.getElesByTag('ol');
+        expect(ols).to.have.length(2);
+        expect(ols).to.have.index(0).with.to.have.property('id').with.to.equal('ol1');
+      }).start();
 
-      var testGetId = $.getEleById("a");
-      var testGetTag = $.getElesByTag("div");
-      var testGetClass = $.getElesByClass("cls");
     });
-     // $(function(){
-     //     var c = $("div").eq(-1);
-     //     var index = c.index("div")
 
-     // });
   </script>
 </head>
 
@@ -41,6 +31,8 @@
   </div>
   <div id="c" style="width: 100px; height: 100px; background-color: Green;">
   </div>
+  <ol id='ol1'></ol>
+  <ol id='ol2'></ol>
 </body>
 
 </html>
