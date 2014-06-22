@@ -707,7 +707,7 @@
      * @returns {Element}
      */
     getElement: function( index ) {
-      if ( typeof index == "number" && index != 0 ) return this[ index ];
+      if ( typeof index == "number" && index !== 0 ) return this[ index ];
       else return this[ 0 ];
     },
     /**
@@ -873,7 +873,6 @@
   };
 
   ( function( /*require*/) {
-    "use strict";
     $.module.require = "AMD";
 
     var _define, _require, _tempDefine = "__require";
@@ -1413,7 +1412,7 @@
 
         if ( exports && exports.constructor != Array ) {
           exports = [ exports ];
-        };
+        }
         this.module = exports;
         this.first = exports[ 0 ];
         _config.amd.console && $.logger( "module " + id + " ready" );
@@ -1611,7 +1610,7 @@
         }
         return this;
       }
-    }
+    };
 
     /**
      * AMD define.
@@ -1715,7 +1714,7 @@
         ret = new ClassModule( id, dependencies, factory, 3, container );
       }
 
-      var status = !ClassModule.namedModules[ id ] && deep == 2;
+      status = !ClassModule.namedModules[ id ] && deep == 2;
 
       if ( status ) {
         ClassModule.anonymousID = null;
@@ -1833,7 +1832,7 @@
             ClassModule.namedModules[ b ] = 1;
           }
         } else if ( typeof n == "object" ) {
-          for ( var b in n ) {
+          for ( b in n ) {
             ClassModule.namedModules[ b ] = 1;
           }
         } else if ( typeof n == "string" ) {
@@ -1877,7 +1876,7 @@
        * require.variable( "app", "my/path/to/app" )
        */
       variable: function( name, path ) {
-        if ( name.indexOf( ClassModule.variablePrefix ) != 0 ) {
+        if ( name.indexOf( ClassModule.variablePrefix ) !== 0 ) {
           name = ClassModule.variablePrefix + name;
         }
         if ( path ) {
@@ -1915,7 +1914,7 @@
                 return fn.apply( this, arg );
               } finally {}
             }
-          }
+          };
         }
 
         window.define && window.define.apply( null, arg );
@@ -1932,7 +1931,7 @@
        */
       require: function( dependencies, success, fail ) {
         window.require && $.ready( function() {
-          window.require( dependencies, success, fail )
+          window.require( dependencies, success, fail );
         } );
         return this;
       }
@@ -1967,7 +1966,7 @@
     return _config;
   } );
 
-  aQuery.define( 'base/queue', function( $ ) {
+  aQuery.define( "base/queue", function( $ ) {
     /**
      * A module representing a queue.
      * @public
@@ -1984,7 +1983,6 @@
   } );
 
   aQuery.define( "base/Promise", function( $ ) {
-    "use strict";
     this.describe( "Class Promise" );
     var count = 0,
       todoFn = function( obj ) {
@@ -2028,12 +2026,10 @@
        * @private
        */
       _nextResolve: function( result, enforce ) {
-        var i = 0,
-          len,
+        var
           allDone = this.state === DONE,
           next = this.next,
-          andsState,
-          promise;
+          andsState;
 
         if ( allDone || enforce ) {
           andsState = this._checkAndsState( result );
@@ -2054,7 +2050,7 @@
        * @private
        */
       _checkAndsState: function( result ) {
-        var allDone = true,
+        var
           i = 0,
           len = this.ands.length,
           andsState = {
@@ -2312,7 +2308,6 @@
           }
           this.state = PROGRESS;
           var self = this,
-            hook,
             todo = function( result ) {
               self.state = DONE;
               self.result = result;
@@ -2334,7 +2329,7 @@
               self.reject( result );
               self = fail = todo = progress = null;
               promise.next.destroy();
-            }
+            };
           }
 
           promise.then( todo );
@@ -2433,7 +2428,7 @@
       and: function( todo, fail, progress ) {
         var promise = Promise.constructorOf( todo ) ? todo : Promise( todo, fail, progress ),
           self = this,
-          todo = function( result ) {
+          fn = function( result ) {
             self._doNext( result );
             return result;
           };
@@ -2443,10 +2438,10 @@
           case FAIL:
             return this._doNext( promise.result );
           case PROGRESS:
-            promise.done( todo, todo );
+            promise.done( fn, fn );
             return this;
           case TODO:
-            promise.done( todo, todo );
+            promise.done( fn, fn );
             if ( this.isComplete() && !promise.prev ) {
               promise.resolve( this.result );
             }
@@ -2460,7 +2455,6 @@
        * @example new Promise().multAnd(todo, promise);
        */
       multiAnd: function() {
-        var promise;
         for ( var i = 0, len = arguments.length; i < len; i++ ) {
           this.and( arguments[ i ] );
         }
