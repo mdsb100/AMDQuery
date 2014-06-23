@@ -5,8 +5,6 @@
  * @version 0.0.1
  */
 
-
-
 ( function( window, undefined ) {
   "use strict";
   var
@@ -710,7 +708,7 @@
      * @returns {Element}
      */
     getElement: function( index ) {
-      if ( typeof index == "number" && index != 0 ) return this[ index ];
+      if ( typeof index == "number" && index !== 0 ) return this[ index ];
       else return this[ 0 ];
     },
     /**
@@ -876,7 +874,6 @@
   };
 
   ( function( /*require*/) {
-    "use strict";
     $.module.require = "AMD";
 
     var _define, _require, _tempDefine = "__require";
@@ -1416,7 +1413,7 @@
 
         if ( exports && exports.constructor != Array ) {
           exports = [ exports ];
-        };
+        }
         this.module = exports;
         this.first = exports[ 0 ];
         _config.amd.console && $.logger( "module " + id + " ready" );
@@ -1614,7 +1611,7 @@
         }
         return this;
       }
-    }
+    };
 
     /**
      * AMD define.
@@ -1718,7 +1715,7 @@
         ret = new ClassModule( id, dependencies, factory, 3, container );
       }
 
-      var status = !ClassModule.namedModules[ id ] && deep == 2;
+      status = !ClassModule.namedModules[ id ] && deep == 2;
 
       if ( status ) {
         ClassModule.anonymousID = null;
@@ -1737,7 +1734,6 @@
     };
 
     define.amd = ClassModule.maps;
-
 
     function getTempDefine( module, fail ) {
       //如果请求一组模块则转换为对一个临时模块的定义与请求处理
@@ -1837,7 +1833,7 @@
             ClassModule.namedModules[ b ] = 1;
           }
         } else if ( typeof n == "object" ) {
-          for ( var b in n ) {
+          for ( b in n ) {
             ClassModule.namedModules[ b ] = 1;
           }
         } else if ( typeof n == "string" ) {
@@ -1881,7 +1877,7 @@
        * require.variable( "app", "my/path/to/app" )
        */
       variable: function( name, path ) {
-        if ( name.indexOf( ClassModule.variablePrefix ) != 0 ) {
+        if ( name.indexOf( ClassModule.variablePrefix ) !== 0 ) {
           name = ClassModule.variablePrefix + name;
         }
         if ( path ) {
@@ -1919,7 +1915,7 @@
                 return fn.apply( this, arg );
               } finally {}
             }
-          }
+          };
         }
 
         window.define && window.define.apply( null, arg );
@@ -1936,7 +1932,7 @@
        */
       require: function( dependencies, success, fail ) {
         window.require && $.ready( function() {
-          window.require( dependencies, success, fail )
+          window.require( dependencies, success, fail );
         } );
         return this;
       }
@@ -1971,7 +1967,7 @@
     return _config;
   } );
 
-  aQuery.define( 'base/queue', function( $ ) {
+  aQuery.define( "base/queue", function( $ ) {
     /**
      * A module representing a queue.
      * @public
@@ -1988,21 +1984,10 @@
   } );
 
   aQuery.define( "base/Promise", function( $ ) {
-    "use strict";
     this.describe( "Class Promise" );
     var count = 0,
       todoFn = function( obj ) {
         return obj;
-      },
-      andFn = function( result ) {
-        var andsState = this._checkAndsState( result );
-        if ( this.isComplete() && andsState.size === andsState[ Promise.DONE ] + andsState[ Promise.FAIL ] ) {
-          if ( andsState[ Promise.FAIL ] || this.state === Promise.FAIL ) {
-            this._nextReject( this.result );
-          } else {
-            this._nextResolve( this.result, true );
-          }
-        }
       };
 
     /**
@@ -2030,12 +2015,10 @@
       }
     };
 
-    util.extend( Promise, {
-      TODO: "todo",
-      DONE: "done",
-      FAIL: "fail",
-      PROGRESS: "progress"
-    } );
+    var TODO = "todo",
+      DONE = "done",
+      FAIL = "fail",
+      PROGRESS = "progress";
 
     Promise.prototype = {
       constructor: Promise,
@@ -2044,16 +2027,14 @@
        * @private
        */
       _nextResolve: function( result, enforce ) {
-        var i = 0,
-          len,
-          allDone = this.state === Promise.DONE,
+        var
+          allDone = this.state === DONE,
           next = this.next,
-          andsState,
-          promise;
+          andsState;
 
         if ( allDone || enforce ) {
           andsState = this._checkAndsState( result );
-          allDone = andsState.size === andsState[ Promise.DONE ] + andsState[ Promise.FAIL ];
+          allDone = andsState.size === andsState[ DONE ] + andsState[ FAIL ];
         }
 
         if ( allDone ) {
@@ -2061,7 +2042,7 @@
           if ( next ) {
             next.resolve( result );
           } else {
-            this._finally( result, Promise.DONE );
+            this._finally( result, DONE );
           }
         }
         return this;
@@ -2070,7 +2051,7 @@
        * @private
        */
       _checkAndsState: function( result ) {
-        var allDone = true,
+        var
           i = 0,
           len = this.ands.length,
           andsState = {
@@ -2079,10 +2060,10 @@
           },
           promise;
 
-        andsState[ Promise.TODO ] = 0;
-        andsState[ Promise.PROGRESS ] = 0;
-        andsState[ Promise.FAIL ] = 0;
-        andsState[ Promise.DONE ] = 0;
+        andsState[ TODO ] = 0;
+        andsState[ PROGRESS ] = 0;
+        andsState[ FAIL ] = 0;
+        andsState[ DONE ] = 0;
 
         for ( ; i < len; i++ ) {
           promise = this.ands[ i ];
@@ -2099,14 +2080,14 @@
       _nextReject: function( result, Finally ) {
         var next = this.next,
           andsState = this._checkAndsState( result ),
-          allDone = andsState.size === andsState[ Promise.DONE ] + andsState[ Promise.FAIL ];
+          allDone = andsState.size === andsState[ DONE ] + andsState[ FAIL ];
 
         if ( allDone ) {
           result = andsState.result;
           if ( next && !Finally ) {
             this.next.reject( result );
           } else {
-            this._finally( result, Promise.FAIL );
+            this._finally( result, FAIL );
           }
         }
 
@@ -2128,12 +2109,12 @@
        */
       call: function( name, result ) {
         switch ( name ) {
-          case Promise.FAIL:
-          case Promise.PROGRESS:
-          case Promise.TODO:
+          case FAIL:
+          case PROGRESS:
+          case TODO:
             break;
           default:
-            name = Promise.TODO;
+            name = TODO;
         }
 
         return this[ name ].call( this.context, result );
@@ -2157,7 +2138,7 @@
       /**
        * @private
        */
-      _createPromiseWithoutPrev: function( todo, fail, progress ) {
+      _withoutPrev: function( todo, fail, progress ) {
         if ( Promise.constructorOf( todo ) ) {
           if ( todo.prev ) {
             fail = todo.fail;
@@ -2167,7 +2148,7 @@
             return todo;
           }
         }
-        return new Promise( todo, fail, progress );
+        return Promise( todo, fail, progress );
       },
       /**
        * Then do...
@@ -2181,7 +2162,7 @@
           return this.next;
         }
 
-        var promise = this._createPromiseWithoutPrev( nextToDo, nextFail, nextProgress );
+        var promise = this._withoutPrev( nextToDo, nextFail, nextProgress );
 
         if ( this.context !== this ) {
           promise.withContext( this.context );
@@ -2191,9 +2172,9 @@
         this.next = promise;
 
         switch ( this.state ) {
-          case Promise.FAIL:
+          case FAIL:
             break;
-          case Promise.DONE:
+          case DONE:
             this._nextResolve( this.result );
             break;
           default:
@@ -2211,7 +2192,7 @@
       init: function( todo, fail, progress ) {
         this.context = this;
         this.__promiseFlag = true;
-        this.state = Promise.TODO;
+        this.state = TODO;
         this.result = null;
         this.ands = [];
         this.todo = todo || todoFn;
@@ -2232,29 +2213,34 @@
        * @returns {module:base/Promise} - Return root promise. So you can done().resolve(); .
        */
       done: function( todo, fail ) {
-        var root = this.root();
-        root._done = Promise.constructorOf( todo ) ? todo : new Promise( todo, fail );
-        return root;
+        var end = this.end();
+        if ( !end._done ) {
+          end._done = Promise.constructorOf( todo ) ? todo : Promise( todo, fail );
+        } else {
+          end._done.done( todo, fail );
+        }
+
+        return this.root();
       },
       /**
        * Do it when finish all task or fail.
        * @private
        */
       _finally: function( result, state ) {
-        var root = this.root();
-        if ( root._done && !root._done.isComplete() ) {
-          root._done.withContext( this.context );
-          if ( state === Promise.DONE ) {
-            root._done.resolve( result );
-          } else if ( state === Promise.FAIL ) {
-            root._done.reject( result );
+        var end = this.end();
+        if ( end._done && !end._done.isComplete() ) {
+          end._done.withContext( this.context );
+          if ( state === DONE ) {
+            end._done.resolve( result );
+          } else if ( state === FAIL ) {
+            end._done.reject( result );
           }
           // root.destroy();
         }
         return this;
       },
 
-      _clearProperty: function() {
+      _clearProp: function() {
         this.result = null;
         this.ands = [];
         this.todo = todoFn;
@@ -2262,7 +2248,7 @@
         this.progress = todoFn;
         this.prev = null;
         this.next = null;
-        this.state = Promise.TODO;
+        this.state = TODO;
         this._done = null;
         return this;
       },
@@ -2288,7 +2274,7 @@
           this.next.destroy();
         }
 
-        this._clearProperty();
+        this._clearProp();
       },
       /**
        * @param {*=} - result.
@@ -2300,20 +2286,20 @@
         }
 
         try {
-          this.state = Promise.DONE;
-          this.result = this.call( Promise.TODO, obj );
+          this.state = DONE;
+          this.result = this.call( TODO, obj );
 
         } catch ( e ) {
           $.logger( e );
           e.stack && $.logger( e.stack );
-          this.state = Promise.TODO;
+          this.state = TODO;
           return this.reject( obj );
         }
 
         if ( Promise.constructorOf( this.result ) && this.result !== this ) {
           var promise = this.result._done || this.result;
           switch ( promise.state ) {
-            case Promise.DONE:
+            case DONE:
               this.result = promise.result;
               this._nextResolve( this.result );
               return this._resolveAnds( obj );
@@ -2321,10 +2307,10 @@
               this.result = promise.result;
               return this.reject( this.result );
           }
+          this.state = PROGRESS;
           var self = this,
-            hook,
             todo = function( result ) {
-              self.state = Promise.DONE;
+              self.state = DONE;
               self.result = result;
               self._nextResolve( result );
               self = fail = todo = progress = null;
@@ -2333,9 +2319,9 @@
             fail = this.result.fail,
             progress = this.result.progress;
 
-          this.state = Promise.TODO;
+          this.state = TODO;
 
-          if ( promise.state === Promise.FAIL ) {
+          if ( promise.state === FAIL ) {
             self.reject( promise.result );
             self = fail = todo = progress = null;
           } else {
@@ -2344,13 +2330,8 @@
               self.reject( result );
               self = fail = todo = progress = null;
               promise.next.destroy();
-            }
+            };
           }
-
-          // promise.progress = function( result ) {
-          //   progress.call( promise.context, result );
-          //   return self.reprocess( result );
-          // }
 
           promise.then( todo );
 
@@ -2363,8 +2344,9 @@
        * @private
        */
       _resolveAnds: function( result ) {
-        for ( var i = 0, len = this.ands.length; i < len; i++ ) {
-          this.ands[ i ].resolve( result );
+        for ( var i = 0, len = this.ands.length, and; i < len; i++ ) {
+          and = this.ands[ i ];
+          and.prev || and.state !== PROGRESS && and.resolve( result );
         }
         return this;
       },
@@ -2387,17 +2369,17 @@
           return this;
         }
 
-        this.state = Promise.FAIL;
-        this.result = this.call( Promise.FAIL, result );
+        this.state = FAIL;
+        this.result = this.call( FAIL, result );
 
         if ( Promise.constructorOf( this.result ) && this.result !== this ) {
           var promise = this.result;
           switch ( promise.state ) {
-            case Promise.DONE:
+            case DONE:
               this.result = promise.result;
               this._nextResolve( this.result, true );
               break;
-            case Promise.FAIL:
+            case FAIL:
               this.result = promise.result;
               this._nextReject( this.result );
               break;
@@ -2417,19 +2399,19 @@
         if ( this.isComplete() ) {
           return this;
         }
-        this.state = Promise.PROGRESS;
-        var result = this.call( Promise.PROGRESS, obj );
+        this.state = PROGRESS;
+        var result = this.call( PROGRESS, obj );
 
         if ( Promise.constructorOf( result ) && result !== this ) {
-          this.state = Promise.TODO;
+          this.state = TODO;
           switch ( result.state ) {
-            case Promise.TODO:
+            case TODO:
               this.resolve( result.resolve( obj ).result );
               break;
-            case Promise.DONE:
+            case DONE:
               this.resolve( result.result );
               break;
-            case Promise.FAIL:
+            case FAIL:
               this.reject( result.result );
               break;
           }
@@ -2445,10 +2427,51 @@
        * @example new Promise().and(todo).and(todo);
        */
       and: function( todo, fail, progress ) {
-        var promise = this._createPromiseWithoutPrev( todo, fail, progress ).withContext( this ).done( andFn, andFn );
+        var promise = Promise.constructorOf( todo ) ? todo : Promise( todo, fail, progress ),
+          self = this,
+          fn = function( result ) {
+            self._doNext( result );
+            return result;
+          };
         this._push( promise );
-        if ( this.isComplete() ) {
-          promise.resolve( this.result );
+        switch ( promise.state ) {
+          case DONE:
+          case FAIL:
+            return this._doNext( promise.result );
+          case PROGRESS:
+            promise.done( fn, fn );
+            return this;
+          case TODO:
+            promise.done( fn, fn );
+            if ( this.isComplete() && !promise.prev ) {
+              promise.resolve( this.result );
+            }
+            return this;
+        }
+      },
+      /**
+       * Add multi task.
+       * @param {...Function|module:base/Promise}
+       * @returns {module:base/Promise}
+       * @example new Promise().multAnd(todo, promise);
+       */
+      multiAnd: function() {
+        for ( var i = 0, len = arguments.length; i < len; i++ ) {
+          this.and( arguments[ i ] );
+        }
+        return this;
+      },
+      /**
+       * @private
+       */
+      _doNext: function( result ) {
+        var andsState = this._checkAndsState( result );
+        if ( this.isComplete() && andsState.size === andsState[ DONE ] + andsState[ FAIL ] ) {
+          if ( andsState[ FAIL ] || this.state === FAIL ) {
+            this._nextReject( this.result );
+          } else {
+            this._nextResolve( this.result, true );
+          }
         }
         return this;
       },
@@ -2479,7 +2502,7 @@
        * @returns {Boolean}
        */
       isComplete: function() {
-        return this.state === Promise.DONE || this.state === Promise.FAIL;
+        return this.state === DONE || this.state === FAIL;
       }
     };
 
@@ -2490,6 +2513,22 @@
      */
     Promise.constructorOf = function( promise ) {
       return promise instanceof Promise || ( promise ? promise.__promiseFlag === true : false );
+    }
+
+    /**
+     * Group a list of Promise.
+     * @param {...module:base/Promise|Array<module:base/Promise>}
+     * @returns {Boolean}
+     */
+    Promise.group = function( args ) {
+      var array = args instanceof Array ? args : arguments,
+        promise = array[ 0 ],
+        i = 1,
+        len = array.length;
+      for ( ; i < len; i++ ) {
+        promise.and( array[ i ] );
+      }
+      return promise;
     }
 
     return Promise;
@@ -2532,7 +2571,6 @@
     cover.style.cssText = "width:100%;height:100%;position:absolute;top:0;left:0;z-index:10001;background-color:white";
 
     cover.appendChild( image );
-
 
     readyPromise = new Promise( function() {
       // 预处理设置
@@ -3141,6 +3179,212 @@ aQuery.define( "base/extend", [ "base/typed" ], function( $, typed ) {
 
 /*=======================================================*/
 
+/*===================base/client===========================*/
+aQuery.define( "base/client", [ "base/extend" ], function( $, extend ) {
+  this.describe( "Cline of Browser" );
+  /**
+   * @public
+   * @requires module:base/extend
+   * @module base/client
+   * @property {object} browser
+   * @property {Boolean} [browser.opera=false]
+   * @property {Boolean} [browser.chrome=false]
+   * @property {Boolean} [browser.safari=false]
+   * @property {Boolean} [browser.kong=false]
+   * @property {Boolean} [browser.firefox=false]
+   * @property {Boolean} [browser.ie=false]
+   * @property {Boolean} [browser.ie678=false]
+   *
+   * @property {object} engine
+   * @property {Boolean} [engine.opera=false]
+   * @property {Boolean} [engine.webkit=false]
+   * @property {Boolean} [engine.khtml=false]
+   * @property {Boolean} [engine.gecko=false]
+   * @property {Boolean} [engine.ie=false]
+   * @property {Boolean} [engine.ie678=false]
+   *
+   * @property {object} system
+   * @property {Boolean} [system.win=null]
+   * @property {Boolean} [system.mac=null]
+   * @property {Boolean} [system.linux=null]
+   * @property {Boolean} [system.iphone=null]
+   * @property {Boolean} [system.ipod=null]
+   * @property {Boolean} [system.ipad=null]
+   * @property {Boolean} [system.pad=null]
+   * @property {Boolean} [system.nokian=null]
+   * @property {Boolean} [system.winMobile=null]
+   * @property {Boolean} [system.androidMobile=null]
+   * @property {Boolean} [system.ios=null]
+   * @property {Boolean} [system.wii=null]
+   * @property {Boolean} [system.ps=null]
+   * @example
+   * if (client.system.win){}
+   */
+  var client = {
+    browser: {
+      opera: false,
+      chrome: false,
+      safari: false,
+      kong: false,
+      firefox: false,
+      ie: false,
+      ie678: "v" == "/v"
+    },
+    engine: {
+      opera: false,
+      webkit: false,
+      khtml: false,
+      gecko: false,
+      ie: false,
+      ie678: "v" == "/v"
+    },
+    system: {
+      win: null,
+      mac: null,
+      linux: null,
+      iphone: null,
+      ipod: null,
+      ipad: null,
+      pad: null,
+      nokian: null,
+      winMobile: null,
+      androidMobile: null,
+      ios: null,
+      wii: null,
+      ps: null
+    },
+    language: ""
+  };
+
+  var reg = RegExp,
+    ua = navigator.userAgent,
+    p = navigator.platform || "",
+    _browser = client.browser,
+    _engine = client.engine,
+    _system = client.system;
+
+  client.language = ( navigator.browserLanguage || navigator.language ).toLowerCase();
+
+  _system.win = p.indexOf( "Win" ) == 0;
+  if ( _system.win ) {
+    if ( /Win(?:dows)? ([^do]{2})\s?(\d+\.\d+)?/.test( ua ) ) {
+      if ( reg.$1 == "NT" ) {
+        switch ( reg.$2 ) {
+          case "5.0":
+            _system.win = "2000";
+            break;
+          case "5.1":
+            _system.win = "XP";
+            break;
+          case "6.0":
+            _system.win = "Vista";
+            break;
+          default:
+            _system.win = "NT";
+            break;
+        }
+      } else if ( reg.$1 ) {
+        _system.win = "ME";
+      } else {
+        _system.win = reg.$1;
+      }
+    }
+  }
+
+  _system.mac = p.indexOf( "Mac" ) == 0;
+  _system.linux = p.indexOf( "Linux" ) == 0;
+  _system.iphone = ua.indexOf( "iPhone" ) > -1;
+  _system.ipod = ua.indexOf( "iPod" ) > -1;
+  _system.ipad = ua.indexOf( "iPad" ) > -1;
+  _system.pad = ua.indexOf( "pad" ) > -1;
+  _system.nokian = ua.indexOf( "NokiaN" ) > -1;
+  _system.winMobile = _system.win == "CE";
+  _system.androidMobile = /Android/.test( ua );
+  _system.ios = false;
+  _system.wii = ua.indexOf( "Wii" ) > -1;
+  _system.ps = /playstation/i.test( ua );
+
+  _system.x11 = p == "X11" || ( p.indexOf( "Linux" ) == 0 );
+  _system.appleMobile = _system.iphone || _system.ipad || _system.ipod;
+  _system.mobile = _system.appleMobile || _system.androidMobile || /AppleWebKit.*Mobile./.test( ua ) || _system.winMobile;
+  //alert(ua)
+  if ( /OS [X ]*(\d*).(\d*)/.test( ua ) ) {
+    _system.ios = parseFloat( reg.$1 + "." + reg.$2 );
+  }
+  if ( window.opera ) {
+    _engine.opera = _browser.opera = parseFloat( window.opera.version() );
+  } else if ( /AppleWebKit\/(\S+)/.test( ua ) ) {
+    _engine.webkit = parseFloat( reg.$1 );
+    if ( /Chrome\/(\S+)/.test( ua ) ) {
+      _browser.chrome = parseFloat( reg.$1 );
+    } else if ( /Version\/(\S+)/.test( ua ) ) {
+      _browser.safari = parseFloat( reg.$1 );
+    } else {
+      var _safariVer = 1,
+        wit = _engine.webkit;
+      if ( _system.mac ) {
+        if ( wit < 100 ) {
+          _safariVer = 1;
+        } else if ( wit == 100 ) {
+          _safariVer = 1.1;
+        } else if ( wit <= 125 ) {
+          _safariVer = 1.2;
+        } else if ( wit < 313 ) {
+          _safariVer = 1.3;
+        } else if ( wit < 420 ) {
+          _safariVer = 2;
+        } else if ( wit < 529 ) {
+          _safariVer = 3;
+        } else if ( wit < 533.18 ) {
+          _safariVer = 4;
+        } else if ( wit < 536.25 ) {
+          _safariVer = 5;
+        } else {
+          _safariVer = 6;
+        }
+      } else if ( _system.win ) {
+        if ( wit == 5 ) {
+          _safariVer = 5;
+        } else if ( wit < 529 ) {
+          _safariVer = 3;
+        } else if ( wit < 531.3 ) {
+          _safariVer = 4;
+        } else {
+          _safariVer = 5;
+        }
+      } else if ( _system.appleMobile ) {
+        if ( wit < 526 ) {
+          _safariVer = 3;
+        } else if ( wit < 531.3 ) {
+          _safariVer = 4;
+        } else if ( wit < 536.25 ) {
+          _safariVer = 5;
+        } else {
+          _safariVer = 6;
+        }
+      }
+      _browser.safari = _safariVer;
+    }
+  } else if ( /KHTML\/(\S+)/.test( ua ) || /Konquersor\/([^;]+)/.test( ua ) ) {
+    _engine.khtml = _browser.kong = parseFloat( reg.$1 );
+  } else if ( /rv:([^\)]+)\) Gecko\/\d{8}/.test( ua ) ) {
+    _engine.gecko = parseFloat( reg.$1 );
+    //确定是不是Firefox
+    if ( /Firefox\/(\S+)/.test( ua ) ) {
+      _browser.firefox = parseFloat( reg.$1 );
+    }
+  } else if ( /MSIE([^;]+)/.test( ua ) ) {
+    _engine.ie = _browser.ie = parseFloat( reg.$1 );
+  }
+  if ( "\v" == "v" ) {
+    _engine.ie678 = _browser.ie678 = _browser.ie;
+  }
+
+  return client;
+} );
+
+/*=======================================================*/
+
 /*===================base/array===========================*/
 aQuery.define( "base/array", [ "base/typed", "base/extend" ], function( $, typed, extend ) {
   "use strict";
@@ -3313,603 +3557,6 @@ aQuery.define( "base/array", [ "base/typed", "base/extend" ], function( $, typed
   };
 
   return array;
-} );
-
-/*=======================================================*/
-
-/*===================main/object===========================*/
-aQuery.define( "main/object", [ "base/typed", "base/array", "base/extend" ], function( $, typed, array, utilExtend ) {
-  "use strict";
-  this.describe( "Define Class" );
-  var
-    pushSuperStack = function( self ) {
-      var stack;
-      if ( !self.__superStack ) {
-        self.__superStack = [];
-      }
-
-      stack = self.__superStack;
-
-      if ( stack.length ) {
-        stack.push( stack[ stack.length - 1 ].prototype.__superConstructor );
-      } else {
-        stack.push( self.constructor.prototype.__superConstructor );
-      }
-    },
-    popSuperStack = function( self ) {
-      var stack = self.__superStack;
-      if ( stack.length ) {
-        stack.pop();
-      }
-    },
-    _getSuperConstructor = function( self ) {
-      var stack = self.__superStack,
-        tempConstructor;
-
-      if ( stack && stack.length ) {
-        tempConstructor = stack[ stack.length - 1 ];
-      } else {
-        tempConstructor = self.constructor.prototype.__superConstructor;
-      }
-      return tempConstructor;
-    },
-    _superInit = function() {
-      var tempConstructor;
-
-      pushSuperStack( this );
-      tempConstructor = _getSuperConstructor( this );
-
-      tempConstructor.prototype.init ? tempConstructor.prototype.init.apply( this, arguments ) : tempConstructor.apply( this, arguments );
-      popSuperStack( this );
-      return this;
-    },
-    _invoke = function( name, context, args ) {
-      var fn = this.prototype[ name ];
-      return fn ? fn.apply( context, typed.isArguments( args ) ? args : $.util.argToArray( arguments, 2 ) ) : undefined;
-    },
-    _getFunctionName = function( fn ) {
-      if ( fn.name !== undefined ) {
-        return fn.name;
-      } else {
-        var ret = fn.toString().match( /^function\s*([^\s(]+)/ );
-        return ( ret && ret[ 1 ] ) || "";
-      }
-    },
-    inherit = function( Sub, Super, name ) {
-      object.inheritProtypeWithParasitic( Sub, Super, name );
-      Sub.prototype.__superConstructor = Super;
-      Sub.prototype._super = _superInit;
-      if ( !Super.invoke ) {
-        Super.invoke = _invoke;
-      }
-    },
-    extend = function( Sub, Super ) {
-      object.inheritProtypeWithExtend( Sub, Super );
-    },
-
-    defaultPurview = "-pu -w -r";
-
-  /**
-   * @callback CollectionEachCallback
-   * @param item {*}
-   * @param index {Number}
-   */
-
-  /**
-   * This provides methods used for method "object.extend" handling. It will be mixed in constructor.
-   * This methods is static.
-   * @public
-   * @mixin ObjectClassStaticMethods
-   */
-  var ObjectClassStaticMethods = /** @lends ObjectClassStaticMethods */ {
-    /**
-     * This constructor inherit Super constructor if you define a class which has not inherit Super.
-     * @public
-     * @method
-     * @param {Function} Super - Super constructor.
-     * @returns {this}
-     */
-    inherit: function( Super ) {
-      inherit( this, Super );
-      return this;
-    },
-    /**
-     * Define a Sub Class. This constructor is Super Class.
-     * @param {Function|String} name - Sub constructor or Sub name.
-     * @param {Object} prototype - Instance methods.
-     * @param {Object} statics - Static methods.
-     * @returns {Function}
-     */
-    extend: function( name, prototype, statics ) {
-      var arg = $.util.argToArray( arguments );
-      if ( typed.isObject( name ) ) {
-        arg.splice( 0, 0, _getFunctionName( this ) || name.name || "anonymous" );
-      }
-      arg.push( this );
-      /*arg = [name, prototype, statics, constructor]*/
-      return object.extend.apply( object, arg );
-    },
-    /**
-     * Join Object into prototype.
-     * @param {...Object}
-     * @returns {this}
-     */
-    joinPrototype: function() {
-      for ( var i = 0, len = arguments.length, obj; i < len; i++ ) {
-        obj = arguments[ i ];
-        typed.isPlainObject( obj ) && utilExtend.extend( this.prototype, obj );
-      }
-      return this;
-    },
-    /**
-     * Determine whether the target is a instance of this constructor or this ancestor constructor.
-     * @param {Object} - A new instance.
-     * @returns {this}
-     */
-    constructorOf: function( target ) {
-      var constructor = this,
-        ret = target instanceof this;
-
-      if ( ret == false ) {
-        constructor = target.constructor;
-        while ( !!constructor ) {
-          constructor = constructor.prototype.__superConstructor;
-          if ( constructor === target ) {
-            ret = true;
-            break;
-          }
-        }
-      }
-      return ret;
-    },
-    /**
-     * Create Getter or Setter for this constructor.prototype.
-     * @param {Object<String,Object>|String|Function}
-     */
-    createGetterSetter: function( fn ) {
-      object.createPropertyGetterSetter( this, fn );
-    },
-    /**
-     * Mixin this.prototype to a target object.
-     * @param {Object}
-     */
-    mixin: function( target ) {
-      var proto = {
-        __handlers: {}
-      };
-      utilExtend.extend( proto, this.prototype );
-      delete proto.constructor;
-      delete proto.init;
-      utilExtend.extend( target, proto );
-      return this;
-    },
-
-    /** fn is pointer of this.prototype */
-    fn: null
-  };
-
-  /**
-   * This provides methods used for method "object.collection" handling. It will be mixed in constructor.prototype
-   * This methods is prototype.
-   * @public
-   * @mixin CollectionClassPrototypeMethods
-   */
-
-  /**
-   * @pubilc
-   * @exports main/object
-   * @requires module:base/typed
-   * @requires module:base/array
-   * @requires module:base/extend
-   */
-  var object = {
-    /**
-     * Define a Class.
-     * <br /> Mixin {@link ObjectClassStaticMethods} into new Class.
-     * <br /> see {@link module:main/object.createPropertyGetterSetter}
-     * @example
-     * var Super = object.extend( "Super", {
-     *   init: function( name ){
-     *     console.log( "Super", name );
-     *     this.name = name;
-     *   },
-     *   checkName: function( name ){
-     *     console.log( "Super", this.name == name );
-     *     return this.name == name;
-     *   }
-     * }, {
-     *   doSomething: function( ){ };
-     * } );
-     *
-     * function Sub( name ){
-     *   this._super( name );
-     *   this.name = name;
-     *   console.log( "Sub", name );
-     * };
-     *
-     * Super.extend( Sub, { // extend is created by mixin
-     *   checkName: function( name ){
-     *     // The invoke is created by object.extend
-     *     Super.invoke( "checkName", name );
-     *     console.log( "Sub", this.name == name );
-     *     return this.name == name;
-     *   }
-     * }, {
-     *   doSomething: function( ){ };
-     * } );
-     *
-     * var super = new Super( "Lisa" );
-     * // Super Lisa
-     * var sub = new Sub( "Iris" );
-     * // Super Iris
-     * // Sub Iris
-     * sub.checkName( "Iris" );
-     * // Super true
-     * // Sub true
-     * Sub.doSomething();
-     * Super.doSomething();
-     *
-     * //mixin
-     * Sub.joinPrototype( {
-     *   foo: function() {}
-     * }, {
-     *   pad: function() {}
-     * } );
-     * sub.foo();sub.pad();
-     *
-     * Super.constructorOf( sub ) // true
-     *
-     * Sub.createGetterSetter( {
-     *   name: "-pa"
-     * } );
-     *
-     * @param {String|Function} - Name or Function.
-     * @param {Object} - Instance methods.
-     * @param {Object} - Static methods.
-     * @param {Function} [Super] - Super Class.
-     * @returns {Function}
-     */
-    extend: function( name, prototype, statics, Super ) {
-      var anonymous;
-      switch ( arguments.length ) {
-        case 0:
-        case 1:
-          return null;
-        case 3:
-          if ( typeof statics == "function" ) {
-            Super = statics;
-            statics = null;
-          }
-          break;
-      }
-
-      switch ( typeof name ) {
-        case "function":
-          anonymous = name;
-          break;
-        case "string":
-          anonymous = ( eval(
-            [
-              "(function ", name, "() {\n",
-              "    this.init.apply(this, arguments);\n",
-              "});\n"
-            ].join( "" ) ) || eval( "(" + name + ")" ) ) //fix ie678
-          break;
-        default:
-          anonymous = function anonymous() {
-            this.init.apply( this, arguments );
-          };
-          var temp = prototype;
-          prototype = name;
-          statics = temp;
-      }
-
-      if ( Super ) {
-        inherit( anonymous, Super );
-      }
-
-      prototype = utilExtend.extend( {}, prototype );
-      prototype.constructor = anonymous;
-
-      utilExtend.easyExtend( anonymous.prototype, prototype );
-
-      utilExtend.easyExtend( anonymous, ObjectClassStaticMethods );
-
-      utilExtend.easyExtend( anonymous, statics );
-
-      anonymous.fn = anonymous.prototype;
-
-      return anonymous;
-    },
-    /**
-     * If model is a function, you should call "this.init()".
-     * <br /> Mixin {@link CollectionClassPrototypeMethods} into new Collection.
-     * @param {String|Function} - If model is a function, then will use model.name. Then class name is name + "Collection".
-     * @param {Object} - Instance methods.
-     * @param {Object} - Static methods.
-     * @param {Function} [Super]
-     */
-    Collection: function( model, prototype, statics, Super ) {
-      switch ( arguments.length ) {
-        case 0:
-        case 1:
-          return null;
-        case 3:
-          if ( typeof statics == "function" ) {
-            Super = statics;
-            statics = null;
-          }
-          break;
-      }
-
-      var CollectionClassPrototypeMethods = /** @lends CollectionClassPrototypeMethods */ {
-        /** A constructor of class */
-        init: function() {
-          this.models = [];
-          this.__modelMap = {};
-          prototype.init ? prototype.init.apply( this, arguments ) : this.add.apply( this, arguments );
-          return this;
-        },
-        /**
-         * Add model into collection
-         * @param {...model}
-         * @returns {this}
-         */
-        add: function( model ) {
-          var arg = $.util.argToArray( arguments ),
-            len = arg.length,
-            i = 0;
-
-          for ( ; i < len; i++ ) {
-            model = arg[ i ];
-            if ( !this.__modelMap[ model.id ] ) {
-              this.models.push( model );
-              this.__modelMap[ model.id || ( model.constructor.name + _expendo++ ) ] = model;
-            }
-          }
-          return this;
-        },
-        /**
-         * Pop model from collection
-         * @returns {model}
-         */
-        pop: function() {
-          return this.remove( this.models[ this.models.length - 1 ] );
-        },
-        /**
-         * Remove model from collection
-         * @param {model|Number|String} - String means id. Number means index. model is a model.
-         * @returns {model}
-         */
-        remove: function( id ) {
-          var model = null,
-            i;
-          switch ( typeof id ) {
-            case "number":
-              model = this.models[ id ];
-              break;
-            case "string":
-              model = this.__modelMap[ id ];
-              break;
-            case "object":
-              model = id;
-              break;
-          }
-          if ( model ) {
-            this.models.splice( array.inArray( this.models, model ), 1 );
-            for ( i in this.__modelMap ) {
-              if ( this.__modelMap[ i ] == model ) {
-                delete this.__modelMap[ i ];
-              }
-            }
-          }
-          return model;
-        },
-        /**
-         * Get model from collection
-         * @param {String|Number} - String means id. Number means index.
-         * @returns {model}
-         */
-        get: function( id ) {
-          switch ( typeof id ) {
-            case "number":
-              model = this.models[ id ];
-              break;
-            case "string":
-              model = this.__modelMap[ id ];
-              break;
-          }
-          return model;
-        },
-        /**
-         * Clear all model
-         * @returns {this}
-         */
-        clear: function() {
-          this.models = [];
-          this.__modelMap = {};
-          return this;
-        },
-        /**
-         * Iteration the list of model.
-         * @param {CollectionEachCallback}
-         * @param {Object} [context] - Context.
-         * @returns {this}
-         */
-        each: function( fn, context ) {
-          for ( var i = 0, model = this.models, item; item = model[ i++ ]; )
-            fn.call( context || item, item, i );
-          return this;
-        }
-      };
-
-      var _expendo = 0,
-        _prototype = utilExtend.extend( {}, prototype, CollectionClassPrototypeMethods ),
-        _statics = utilExtend.extend( {}, statics ),
-        name = typeof model == "string" ? model : model.name + "Collection";
-
-      return object.extend( name, _prototype, _statics, Super );
-    },
-    /**
-     * Get the object members count without prototype.
-     * @param {Object}
-     * @returns {Number}
-     */
-    getObjectMembersCount: function( obj ) {
-      var count = 0;
-      for ( var i in obj ) {
-        typed.isPrototypeProperty( obj, i ) || count++;
-      }
-      return count;
-    },
-    /**
-     * Get the object prototype members count.
-     * @param {Object}
-     * @returns {Number}
-     */
-    getObjectPrototypeMembersCount: function( obj ) {
-      var count = 0;
-      for ( var i in obj ) {
-        typed.isPrototypeProperty( obj, i ) && count++;
-      }
-      return count;
-    },
-    /**
-     * Does not contain the same memory address, the constructor will not be called multiple times.
-     * @param {Sub}
-     * @param {Super}
-     * @returns {this}
-     */
-    inheritProtypeWithExtend: function( Sub, Super ) {
-      var con = Sub.prototype.constructor;
-      utilExtend.easyExtend( Sub.prototype, Super.prototype );
-      Sub.prototype.constructor = con || Super.prototype.constructor;
-      return this;
-    },
-    /**
-     * Use parasitic to inherit prototype. Does not contain the same memory address.
-     * @param {Sub}
-     * @param {Super}
-     * @param {String} - You can see the name of the parent class in the prototype chain instead "Parasitic".
-     * @returns {this}
-     */
-    inheritProtypeWithParasitic: function( Sub, Super, name ) {
-      if ( !Super ) {
-        return this;
-      }
-      var
-        originPrototype = Sub.prototype,
-        name = Super.name || name,
-        Parasitic = typeof name == "string" ? ( eval( "(function " + name + "() { });" ) || eval( "(" + name + ")" ) ) : function() {};
-      Parasitic.prototype = Super.prototype;
-      Sub.prototype = new Parasitic();
-      //var prototype = Object(Super.prototype);
-      //Sub.prototype = prototype;
-      utilExtend.easyExtend( Sub.prototype, originPrototype );
-      Sub.prototype.constructor = Sub;
-
-      return this;
-    },
-    /**
-     * Use classic combination to inherit prototype.
-     * @param {Sub}
-     * @param {Super}
-     * @returns {this}
-     */
-    inheritProtypeWithCombination: function( Sub, Super ) {
-      Sub.prototype = new Super();
-      return this;
-    },
-    /**
-     * Create Getter or Setter for this constructor.prototype.
-     * @link module:main/object.createPropertyGetterSetter
-     * @example
-     * function Person(){};
-     * // "u" means public, "a" means private.
-     * object.createPropertyGetterSetter(Person, {
-     *  id: "-pu -r",
-     *  name: "-pu -w -r",
-     *  age: "-pa -w -r",
-     *  Weight: "-wa -ru",
-     *  mark: {
-     *    purview: "-wa -ru",
-     *    defaultValue: 0, // set prototype.mark = 0.
-     *    validate: function( mark ){ return mark >= 0 && mark <= 100; }, // validate param when setting.
-     *    edit: function( value ){ return value + ""; } // edit value when getting.
-     *  },
-     *  height: function( h ){ return h >= 100 && h <= 220; } // validate param when setting.
-     * } );
-     * var person = new Person();
-     * person.getId();
-     * person.getName(); person.setName();
-     * person._getAge(); person._setAge();
-     * person._getWeight(); person.setWeight();
-     * person.getMark(); // "0"
-     * person._setMark( 110 );
-     * person.getMark(); // "0"
-     * person._setMark( 100 );
-     * person.getMark(); // "100"
-     *
-     * @param {Function} obj - A constructor.
-     * @param {Object<String,Object>|String|Function}
-     * return {obj.prototype}
-     */
-    createPropertyGetterSetter: function( obj, object ) {
-      if ( !typed.isPlainObject( object ) ) {
-        return this;
-      }
-
-      return $.each( object, function( value, key ) {
-        var purview = defaultPurview,
-          validate = null,
-          defaultValue,
-          edit;
-        switch ( typeof value ) {
-          case "string":
-            purview = value;
-            break;
-          case "object":
-            if ( typed.isString( value.purview ) ) {
-              purview = value.purview;
-            }
-            if ( typed.isFunction( value.validate ) ) {
-              validate = value.validate;
-            }
-            if ( typed.isFunction( value.edit ) ) {
-              edit = value.edit;
-            }
-            defaultValue = value.defaultValue; //undefinded always undefinded
-            break;
-          case "function":
-            validate = value;
-            break;
-
-        }
-        this[ key ] = defaultValue;
-
-        var prefix = /\-pa[\s]?/.test( purview ) ? "_" : "",
-          setPrefix, getPrefix;
-
-        if ( purview.match( /\-w([u|a])?[\s]?/ ) ) {
-          getPrefix = RegExp.$1 == "a" ? "_" : "";
-          this[ ( getPrefix || prefix ) + $.util.camelCase( key, "set" ) ] = function( a ) {
-            if ( typed.isFunction( validate ) ? validate.call( this, a ) : true ) {
-              this[ key ] = a;
-            }
-            return this;
-          };
-        }
-        if ( purview.match( /\-r([u|a])?[\s]?/ ) ) {
-          setPrefix = RegExp.$1 == "a" ? "_" : "";
-          this[ ( setPrefix || prefix ) + $.util.camelCase( key, "get" ) ] = function() {
-            return edit ? edit.call( this, this[ key ] ) : this[ key ];
-          };
-        }
-      }, obj.prototype );
-    }
-  };
-
-  return object;
 } );
 
 /*=======================================================*/
@@ -7110,208 +6757,599 @@ aQuery.define( "main/query", [ "lib/sizzle", "base/extend", "base/typed", "base/
 
 /*=======================================================*/
 
-/*===================base/client===========================*/
-aQuery.define( "base/client", [ "base/extend" ], function( $, extend ) {
-  this.describe( "Cline of Browser" );
+/*===================main/object===========================*/
+aQuery.define( "main/object", [ "base/typed", "base/array", "base/extend" ], function( $, typed, array, utilExtend ) {
+  "use strict";
+  this.describe( "Define Class" );
+  var
+    pushSuperStack = function( self ) {
+      var stack;
+      if ( !self.__superStack ) {
+        self.__superStack = [];
+      }
+
+      stack = self.__superStack;
+
+      if ( stack.length ) {
+        stack.push( stack[ stack.length - 1 ].prototype.__superConstructor );
+      } else {
+        stack.push( self.constructor.prototype.__superConstructor );
+      }
+    },
+    popSuperStack = function( self ) {
+      var stack = self.__superStack;
+      if ( stack.length ) {
+        stack.pop();
+      }
+    },
+    _getSuperConstructor = function( self ) {
+      var stack = self.__superStack,
+        tempConstructor;
+
+      if ( stack && stack.length ) {
+        tempConstructor = stack[ stack.length - 1 ];
+      } else {
+        tempConstructor = self.constructor.prototype.__superConstructor;
+      }
+      return tempConstructor;
+    },
+    _superInit = function() {
+      var tempConstructor;
+
+      pushSuperStack( this );
+      tempConstructor = _getSuperConstructor( this );
+
+      tempConstructor.prototype.init ? tempConstructor.prototype.init.apply( this, arguments ) : tempConstructor.apply( this, arguments );
+      popSuperStack( this );
+      return this;
+    },
+    _invoke = function( name, context, args ) {
+      var fn = this.prototype[ name ];
+      return fn ? fn.apply( context, typed.isArguments( args ) ? args : $.util.argToArray( arguments, 2 ) ) : undefined;
+    },
+    _getFunctionName = function( fn ) {
+      if ( fn.name !== undefined ) {
+        return fn.name;
+      } else {
+        var ret = fn.toString().match( /^function\s*([^\s(]+)/ );
+        return ( ret && ret[ 1 ] ) || "";
+      }
+    },
+    inherit = function( Sub, Super, name ) {
+      object.inheritProtypeWithParasitic( Sub, Super, name );
+      Sub.prototype.__superConstructor = Super;
+      Sub.prototype._super = _superInit;
+      if ( !Super.invoke ) {
+        Super.invoke = _invoke;
+      }
+    },
+    extend = function( Sub, Super ) {
+      object.inheritProtypeWithExtend( Sub, Super );
+    },
+
+    defaultPurview = "-pu -w -r";
+
   /**
-   * @public
-   * @requires module:base/extend
-   * @module base/client
-   * @property {object} browser
-   * @property {Boolean} [browser.opera=false]
-   * @property {Boolean} [browser.chrome=false]
-   * @property {Boolean} [browser.safari=false]
-   * @property {Boolean} [browser.kong=false]
-   * @property {Boolean} [browser.firefox=false]
-   * @property {Boolean} [browser.ie=false]
-   * @property {Boolean} [browser.ie678=false]
-   *
-   * @property {object} engine
-   * @property {Boolean} [engine.opera=false]
-   * @property {Boolean} [engine.webkit=false]
-   * @property {Boolean} [engine.khtml=false]
-   * @property {Boolean} [engine.gecko=false]
-   * @property {Boolean} [engine.ie=false]
-   * @property {Boolean} [engine.ie678=false]
-   *
-   * @property {object} system
-   * @property {Boolean} [system.win=null]
-   * @property {Boolean} [system.mac=null]
-   * @property {Boolean} [system.linux=null]
-   * @property {Boolean} [system.iphone=null]
-   * @property {Boolean} [system.ipod=null]
-   * @property {Boolean} [system.ipad=null]
-   * @property {Boolean} [system.pad=null]
-   * @property {Boolean} [system.nokian=null]
-   * @property {Boolean} [system.winMobile=null]
-   * @property {Boolean} [system.androidMobile=null]
-   * @property {Boolean} [system.ios=null]
-   * @property {Boolean} [system.wii=null]
-   * @property {Boolean} [system.ps=null]
-   * @example
-   * if (client.system.win){}
+   * @callback CollectionEachCallback
+   * @param item {*}
+   * @param index {Number}
    */
-  var client = {
-    browser: {
-      opera: false,
-      chrome: false,
-      safari: false,
-      kong: false,
-      firefox: false,
-      ie: false,
-      ie678: "v" == "/v"
+
+  /**
+   * This provides methods used for method "object.extend" handling. It will be mixed in constructor.
+   * This methods is static.
+   * @public
+   * @mixin ObjectClassStaticMethods
+   */
+  var ObjectClassStaticMethods = /** @lends ObjectClassStaticMethods */ {
+    /**
+     * This constructor inherit Super constructor if you define a class which has not inherit Super.
+     * @public
+     * @method
+     * @param {Function} Super - Super constructor.
+     * @returns {this}
+     */
+    inherit: function( Super ) {
+      inherit( this, Super );
+      return this;
     },
-    engine: {
-      opera: false,
-      webkit: false,
-      khtml: false,
-      gecko: false,
-      ie: false,
-      ie678: "v" == "/v"
+    /**
+     * Define a Sub Class. This constructor is Super Class.
+     * @param {Function|String} name - Sub constructor or Sub name.
+     * @param {Object} prototype - Instance methods.
+     * @param {Object} statics - Static methods.
+     * @returns {Function}
+     */
+    extend: function( name, prototype, statics ) {
+      var arg = $.util.argToArray( arguments );
+      if ( typed.isObject( name ) ) {
+        arg.splice( 0, 0, _getFunctionName( this ) || name.name || "anonymous" );
+      }
+      arg.push( this );
+      /*arg = [name, prototype, statics, constructor]*/
+      return object.extend.apply( object, arg );
     },
-    system: {
-      win: null,
-      mac: null,
-      linux: null,
-      iphone: null,
-      ipod: null,
-      ipad: null,
-      pad: null,
-      nokian: null,
-      winMobile: null,
-      androidMobile: null,
-      ios: null,
-      wii: null,
-      ps: null
+    /**
+     * Join Object into prototype.
+     * @param {...Object}
+     * @returns {this}
+     */
+    joinPrototype: function() {
+      for ( var i = 0, len = arguments.length, obj; i < len; i++ ) {
+        obj = arguments[ i ];
+        typed.isPlainObject( obj ) && utilExtend.extend( this.prototype, obj );
+      }
+      return this;
     },
-    language: ""
+    /**
+     * Determine whether the target is a instance of this constructor or this ancestor constructor.
+     * @param {Object} - A new instance.
+     * @returns {this}
+     */
+    constructorOf: function( target ) {
+      var constructor = this,
+        ret = target instanceof this;
+
+      if ( ret == false ) {
+        constructor = target.constructor;
+        while ( !!constructor ) {
+          constructor = constructor.prototype.__superConstructor;
+          if ( constructor === target ) {
+            ret = true;
+            break;
+          }
+        }
+      }
+      return ret;
+    },
+    /**
+     * Create Getter or Setter for this constructor.prototype.
+     * @param {Object<String,Object>|String|Function}
+     */
+    createGetterSetter: function( fn ) {
+      object.createPropertyGetterSetter( this, fn );
+    },
+    /**
+     * Mixin this.prototype to a target object.
+     * @param {Object}
+     */
+    mixin: function( target ) {
+      var proto = {
+        __handlers: {}
+      };
+      utilExtend.extend( proto, this.prototype );
+      delete proto.constructor;
+      delete proto.init;
+      utilExtend.extend( target, proto );
+      return this;
+    },
+
+    /** fn is pointer of this.prototype */
+    fn: null
   };
 
-  var reg = RegExp,
-    ua = navigator.userAgent,
-    p = navigator.platform || "",
-    _browser = client.browser,
-    _engine = client.engine,
-    _system = client.system;
+  /**
+   * This provides methods used for method "object.collection" handling. It will be mixed in constructor.prototype
+   * This methods is prototype.
+   * @public
+   * @mixin CollectionClassPrototypeMethods
+   */
 
-  client.language = ( navigator.browserLanguage || navigator.language ).toLowerCase();
-
-  _system.win = p.indexOf( "Win" ) == 0;
-  if ( _system.win ) {
-    if ( /Win(?:dows)? ([^do]{2})\s?(\d+\.\d+)?/.test( ua ) ) {
-      if ( reg.$1 == "NT" ) {
-        switch ( reg.$2 ) {
-          case "5.0":
-            _system.win = "2000";
-            break;
-          case "5.1":
-            _system.win = "XP";
-            break;
-          case "6.0":
-            _system.win = "Vista";
-            break;
-          default:
-            _system.win = "NT";
-            break;
-        }
-      } else if ( reg.$1 ) {
-        _system.win = "ME";
-      } else {
-        _system.win = reg.$1;
+  /**
+   * @pubilc
+   * @exports main/object
+   * @requires module:base/typed
+   * @requires module:base/array
+   * @requires module:base/extend
+   */
+  var object = {
+    /**
+     * Define a Class.
+     * <br /> Mixin {@link ObjectClassStaticMethods} into new Class.
+     * <br /> see {@link module:main/object.createPropertyGetterSetter}
+     * @example
+     * var Super = object.extend( "Super", {
+     *   init: function( name ){
+     *     console.log( "Super", name );
+     *     this.name = name;
+     *   },
+     *   checkName: function( name ){
+     *     console.log( "Super", this.name == name );
+     *     return this.name == name;
+     *   }
+     * }, {
+     *   doSomething: function( ){ };
+     * } );
+     *
+     * function Sub( name ){
+     *   this._super( name );
+     *   this.name = name;
+     *   console.log( "Sub", name );
+     * };
+     *
+     * Super.extend( Sub, { // extend is created by mixin
+     *   checkName: function( name ){
+     *     // The invoke is created by object.extend
+     *     Super.invoke( "checkName", name );
+     *     console.log( "Sub", this.name == name );
+     *     return this.name == name;
+     *   }
+     * }, {
+     *   doSomething: function( ){ };
+     * } );
+     *
+     * var super = new Super( "Lisa" );
+     * // Super Lisa
+     * var sub = new Sub( "Iris" );
+     * // Super Iris
+     * // Sub Iris
+     * sub.checkName( "Iris" );
+     * // Super true
+     * // Sub true
+     * Sub.doSomething();
+     * Super.doSomething();
+     *
+     * //mixin
+     * Sub.joinPrototype( {
+     *   foo: function() {}
+     * }, {
+     *   pad: function() {}
+     * } );
+     * sub.foo();sub.pad();
+     *
+     * Super.constructorOf( sub ) // true
+     *
+     * Sub.createGetterSetter( {
+     *   name: "-pa"
+     * } );
+     *
+     * @param {String|Function} - Name or Function.
+     * @param {Object} - Instance methods.
+     * @param {Object} - Static methods.
+     * @param {Function} [Super] - Super Class.
+     * @returns {Function}
+     */
+    extend: function( name, prototype, statics, Super ) {
+      var anonymous;
+      switch ( arguments.length ) {
+        case 0:
+        case 1:
+          return null;
+        case 3:
+          if ( typeof statics == "function" ) {
+            Super = statics;
+            statics = null;
+          }
+          break;
       }
-    }
-  }
 
-  _system.mac = p.indexOf( "Mac" ) == 0;
-  _system.linux = p.indexOf( "Linux" ) == 0;
-  _system.iphone = ua.indexOf( "iPhone" ) > -1;
-  _system.ipod = ua.indexOf( "iPod" ) > -1;
-  _system.ipad = ua.indexOf( "iPad" ) > -1;
-  _system.pad = ua.indexOf( "pad" ) > -1;
-  _system.nokian = ua.indexOf( "NokiaN" ) > -1;
-  _system.winMobile = _system.win == "CE";
-  _system.androidMobile = /Android/.test( ua );
-  _system.ios = false;
-  _system.wii = ua.indexOf( "Wii" ) > -1;
-  _system.ps = /playstation/i.test( ua );
-
-  _system.x11 = p == "X11" || ( p.indexOf( "Linux" ) == 0 );
-  _system.appleMobile = _system.iphone || _system.ipad || _system.ipod;
-  _system.mobile = _system.appleMobile || _system.androidMobile || /AppleWebKit.*Mobile./.test( ua ) || _system.winMobile;
-  //alert(ua)
-  if ( /OS [X ]*(\d*).(\d*)/.test( ua ) ) {
-    _system.ios = parseFloat( reg.$1 + "." + reg.$2 );
-  }
-  if ( window.opera ) {
-    _engine.opera = _browser.opera = parseFloat( window.opera.version() );
-  } else if ( /AppleWebKit\/(\S+)/.test( ua ) ) {
-    _engine.webkit = parseFloat( reg.$1 );
-    if ( /Chrome\/(\S+)/.test( ua ) ) {
-      _browser.chrome = parseFloat( reg.$1 );
-    } else if ( /Version\/(\S+)/.test( ua ) ) {
-      _browser.safari = parseFloat( reg.$1 );
-    } else {
-      var _safariVer = 1,
-        wit = _engine.webkit;
-      if ( _system.mac ) {
-        if ( wit < 100 ) {
-          _safariVer = 1;
-        } else if ( wit == 100 ) {
-          _safariVer = 1.1;
-        } else if ( wit <= 125 ) {
-          _safariVer = 1.2;
-        } else if ( wit < 313 ) {
-          _safariVer = 1.3;
-        } else if ( wit < 420 ) {
-          _safariVer = 2;
-        } else if ( wit < 529 ) {
-          _safariVer = 3;
-        } else if ( wit < 533.18 ) {
-          _safariVer = 4;
-        } else if ( wit < 536.25 ) {
-          _safariVer = 5;
-        } else {
-          _safariVer = 6;
-        }
-      } else if ( _system.win ) {
-        if ( wit == 5 ) {
-          _safariVer = 5;
-        } else if ( wit < 529 ) {
-          _safariVer = 3;
-        } else if ( wit < 531.3 ) {
-          _safariVer = 4;
-        } else {
-          _safariVer = 5;
-        }
-      } else if ( _system.appleMobile ) {
-        if ( wit < 526 ) {
-          _safariVer = 3;
-        } else if ( wit < 531.3 ) {
-          _safariVer = 4;
-        } else if ( wit < 536.25 ) {
-          _safariVer = 5;
-        } else {
-          _safariVer = 6;
-        }
+      switch ( typeof name ) {
+        case "function":
+          anonymous = name;
+          break;
+        case "string":
+          anonymous = ( eval(
+            [
+              "(function ", name, "() {\n",
+              "    this.init.apply(this, arguments);\n",
+              "});\n"
+            ].join( "" ) ) || eval( "(" + name + ")" ) ) //fix ie678
+          break;
+        default:
+          anonymous = function anonymous() {
+            this.init.apply( this, arguments );
+          };
+          var temp = prototype;
+          prototype = name;
+          statics = temp;
       }
-      _browser.safari = _safariVer;
-    }
-  } else if ( /KHTML\/(\S+)/.test( ua ) || /Konquersor\/([^;]+)/.test( ua ) ) {
-    _engine.khtml = _browser.kong = parseFloat( reg.$1 );
-  } else if ( /rv:([^\)]+)\) Gecko\/\d{8}/.test( ua ) ) {
-    _engine.gecko = parseFloat( reg.$1 );
-    //确定是不是Firefox
-    if ( /Firefox\/(\S+)/.test( ua ) ) {
-      _browser.firefox = parseFloat( reg.$1 );
-    }
-  } else if ( /MSIE([^;]+)/.test( ua ) ) {
-    _engine.ie = _browser.ie = parseFloat( reg.$1 );
-  }
-  if ( "\v" == "v" ) {
-    _engine.ie678 = _browser.ie678 = _browser.ie;
-  }
 
-  return client;
+      if ( Super ) {
+        inherit( anonymous, Super );
+      }
+
+      prototype = utilExtend.extend( {}, prototype );
+      prototype.constructor = anonymous;
+
+      utilExtend.easyExtend( anonymous.prototype, prototype );
+
+      utilExtend.easyExtend( anonymous, ObjectClassStaticMethods );
+
+      utilExtend.easyExtend( anonymous, statics );
+
+      anonymous.fn = anonymous.prototype;
+
+      return anonymous;
+    },
+    /**
+     * If model is a function, you should call "this.init()".
+     * <br /> Mixin {@link CollectionClassPrototypeMethods} into new Collection.
+     * @param {String|Function} - If model is a function, then will use model.name. Then class name is name + "Collection".
+     * @param {Object} - Instance methods.
+     * @param {Object} - Static methods.
+     * @param {Function} [Super]
+     */
+    Collection: function( model, prototype, statics, Super ) {
+      switch ( arguments.length ) {
+        case 0:
+        case 1:
+          return null;
+        case 3:
+          if ( typeof statics == "function" ) {
+            Super = statics;
+            statics = null;
+          }
+          break;
+      }
+
+      var CollectionClassPrototypeMethods = /** @lends CollectionClassPrototypeMethods */ {
+        /** A constructor of class */
+        init: function() {
+          this.models = [];
+          this.__modelMap = {};
+          prototype.init ? prototype.init.apply( this, arguments ) : this.add.apply( this, arguments );
+          return this;
+        },
+        /**
+         * Add model into collection
+         * @param {...model}
+         * @returns {this}
+         */
+        add: function( model ) {
+          var arg = $.util.argToArray( arguments ),
+            len = arg.length,
+            i = 0;
+
+          for ( ; i < len; i++ ) {
+            model = arg[ i ];
+            if ( !this.__modelMap[ model.id ] ) {
+              this.models.push( model );
+              this.__modelMap[ model.id || ( model.constructor.name + _expendo++ ) ] = model;
+            }
+          }
+          return this;
+        },
+        /**
+         * Pop model from collection
+         * @returns {model}
+         */
+        pop: function() {
+          return this.remove( this.models[ this.models.length - 1 ] );
+        },
+        /**
+         * Remove model from collection
+         * @param {model|Number|String} - String means id. Number means index. model is a model.
+         * @returns {model}
+         */
+        remove: function( id ) {
+          var model = null,
+            i;
+          switch ( typeof id ) {
+            case "number":
+              model = this.models[ id ];
+              break;
+            case "string":
+              model = this.__modelMap[ id ];
+              break;
+            case "object":
+              model = id;
+              break;
+          }
+          if ( model ) {
+            this.models.splice( array.inArray( this.models, model ), 1 );
+            for ( i in this.__modelMap ) {
+              if ( this.__modelMap[ i ] == model ) {
+                delete this.__modelMap[ i ];
+              }
+            }
+          }
+          return model;
+        },
+        /**
+         * Get model from collection
+         * @param {String|Number} - String means id. Number means index.
+         * @returns {model}
+         */
+        get: function( id ) {
+          switch ( typeof id ) {
+            case "number":
+              model = this.models[ id ];
+              break;
+            case "string":
+              model = this.__modelMap[ id ];
+              break;
+          }
+          return model;
+        },
+        /**
+         * Clear all model
+         * @returns {this}
+         */
+        clear: function() {
+          this.models = [];
+          this.__modelMap = {};
+          return this;
+        },
+        /**
+         * Iteration the list of model.
+         * @param {CollectionEachCallback}
+         * @param {Object} [context] - Context.
+         * @returns {this}
+         */
+        each: function( fn, context ) {
+          for ( var i = 0, model = this.models, item; item = model[ i++ ]; )
+            fn.call( context || item, item, i );
+          return this;
+        }
+      };
+
+      var _expendo = 0,
+        _prototype = utilExtend.extend( {}, prototype, CollectionClassPrototypeMethods ),
+        _statics = utilExtend.extend( {}, statics ),
+        name = typeof model == "string" ? model : model.name + "Collection";
+
+      return object.extend( name, _prototype, _statics, Super );
+    },
+    /**
+     * Get the object members count without prototype.
+     * @param {Object}
+     * @returns {Number}
+     */
+    getObjectMembersCount: function( obj ) {
+      var count = 0;
+      for ( var i in obj ) {
+        typed.isPrototypeProperty( obj, i ) || count++;
+      }
+      return count;
+    },
+    /**
+     * Get the object prototype members count.
+     * @param {Object}
+     * @returns {Number}
+     */
+    getObjectPrototypeMembersCount: function( obj ) {
+      var count = 0;
+      for ( var i in obj ) {
+        typed.isPrototypeProperty( obj, i ) && count++;
+      }
+      return count;
+    },
+    /**
+     * Does not contain the same memory address, the constructor will not be called multiple times.
+     * @param {Sub}
+     * @param {Super}
+     * @returns {this}
+     */
+    inheritProtypeWithExtend: function( Sub, Super ) {
+      var con = Sub.prototype.constructor;
+      utilExtend.easyExtend( Sub.prototype, Super.prototype );
+      Sub.prototype.constructor = con || Super.prototype.constructor;
+      return this;
+    },
+    /**
+     * Use parasitic to inherit prototype. Does not contain the same memory address.
+     * @param {Sub}
+     * @param {Super}
+     * @param {String} - You can see the name of the parent class in the prototype chain instead "Parasitic".
+     * @returns {this}
+     */
+    inheritProtypeWithParasitic: function( Sub, Super, name ) {
+      if ( !Super ) {
+        return this;
+      }
+      var
+        originPrototype = Sub.prototype,
+        name = Super.name || name,
+        Parasitic = typeof name == "string" ? ( eval( "(function " + name + "() { });" ) || eval( "(" + name + ")" ) ) : function() {};
+      Parasitic.prototype = Super.prototype;
+      Sub.prototype = new Parasitic();
+      //var prototype = Object(Super.prototype);
+      //Sub.prototype = prototype;
+      utilExtend.easyExtend( Sub.prototype, originPrototype );
+      Sub.prototype.constructor = Sub;
+
+      return this;
+    },
+    /**
+     * Use classic combination to inherit prototype.
+     * @param {Sub}
+     * @param {Super}
+     * @returns {this}
+     */
+    inheritProtypeWithCombination: function( Sub, Super ) {
+      Sub.prototype = new Super();
+      return this;
+    },
+    /**
+     * Create Getter or Setter for this constructor.prototype.
+     * @link module:main/object.createPropertyGetterSetter
+     * @example
+     * function Person(){};
+     * // "u" means public, "a" means private.
+     * object.createPropertyGetterSetter(Person, {
+     *  id: "-pu -r",
+     *  name: "-pu -w -r",
+     *  age: "-pa -w -r",
+     *  Weight: "-wa -ru",
+     *  mark: {
+     *    purview: "-wa -ru",
+     *    defaultValue: 0, // set prototype.mark = 0.
+     *    validate: function( mark ){ return mark >= 0 && mark <= 100; }, // validate param when setting.
+     *    edit: function( value ){ return value + ""; } // edit value when getting.
+     *  },
+     *  height: function( h ){ return h >= 100 && h <= 220; } // validate param when setting.
+     * } );
+     * var person = new Person();
+     * person.getId();
+     * person.getName(); person.setName();
+     * person._getAge(); person._setAge();
+     * person._getWeight(); person.setWeight();
+     * person.getMark(); // "0"
+     * person._setMark( 110 );
+     * person.getMark(); // "0"
+     * person._setMark( 100 );
+     * person.getMark(); // "100"
+     *
+     * @param {Function} obj - A constructor.
+     * @param {Object<String,Object>|String|Function}
+     * return {obj.prototype}
+     */
+    createPropertyGetterSetter: function( obj, object ) {
+      if ( !typed.isPlainObject( object ) ) {
+        return this;
+      }
+
+      return $.each( object, function( value, key ) {
+        var purview = defaultPurview,
+          validate = null,
+          defaultValue,
+          edit;
+        switch ( typeof value ) {
+          case "string":
+            purview = value;
+            break;
+          case "object":
+            if ( typed.isString( value.purview ) ) {
+              purview = value.purview;
+            }
+            if ( typed.isFunction( value.validate ) ) {
+              validate = value.validate;
+            }
+            if ( typed.isFunction( value.edit ) ) {
+              edit = value.edit;
+            }
+            defaultValue = value.defaultValue; //undefinded always undefinded
+            break;
+          case "function":
+            validate = value;
+            break;
+
+        }
+        this[ key ] = defaultValue;
+
+        var prefix = /\-pa[\s]?/.test( purview ) ? "_" : "",
+          setPrefix, getPrefix;
+
+        if ( purview.match( /\-w([u|a])?[\s]?/ ) ) {
+          getPrefix = RegExp.$1 == "a" ? "_" : "";
+          this[ ( getPrefix || prefix ) + $.util.camelCase( key, "set" ) ] = function( a ) {
+            if ( typed.isFunction( validate ) ? validate.call( this, a ) : true ) {
+              this[ key ] = a;
+            }
+            return this;
+          };
+        }
+        if ( purview.match( /\-r([u|a])?[\s]?/ ) ) {
+          setPrefix = RegExp.$1 == "a" ? "_" : "";
+          this[ ( setPrefix || prefix ) + $.util.camelCase( key, "get" ) ] = function() {
+            return edit ? edit.call( this, this[ key ] ) : this[ key ];
+          };
+        }
+      }, obj.prototype );
+    }
+  };
+
+  return object;
 } );
 
 /*=======================================================*/
@@ -7565,6 +7603,7 @@ aQuery.define( "main/CustomEvent", [ "base/extend", "main/object" ], function( $
      */
     createEvent: function( type, target, object ) {
       var event = {};
+      object = object || {};
       utilExtend.extend( event, object );
       event.type = type;
       event.target = target;
@@ -8322,12 +8361,18 @@ aQuery.define( "main/event", [ "base/config", "base/typed", "base/extend", "base
      */
     trigger: function( ele, type, context, paras ) {
       if ( typed.isElement( ele ) || typed.isWindow( ele ) ) {
-        var data;
+        var data, event;
+        if ( typed.isObject( type ) ) {
+          var event = type;
+          type = event.type;
+          context = event.target;
+          paras = event;
+        }
         if ( data = domEventList[ type ] ) {
           type = eventHooks.type( type );
           typed.isFunction( data ) ? data( ele, type, paras ) : $.logger( "trigger", "triggering" + type + " is not supported" );
         } else if ( data = utilData.get( ele, _handlersKey ) ) {
-          data.trigger.apply( data, [ type, context ].concat( $.util.argToArray( arguments, 3 ) ) );
+          data.trigger.apply( data, event ? [ event ] : [ type, context ].concat( $.util.argToArray( arguments, 3 ) ) );
         }
       }
       return this;
@@ -9327,6 +9372,7 @@ aQuery.define( "module/src", [ "base/typed", "base/extend", "base/client", "main
   "base/array",
   "main/data",
   "main/query",
+  "main/CustomEvent",
   "main/event",
   "main/attr",
   "main/object",
@@ -9340,6 +9386,7 @@ aQuery.define( "module/src", [ "base/typed", "base/extend", "base/client", "main
   array,
   utilData,
   query,
+  CustomEvent,
   event,
   attr,
   object,
@@ -9999,9 +10046,7 @@ aQuery.define( "module/src", [ "base/typed", "base/extend", "base/client", "main
         $( target ).parents().each( function( ele ) {
           if ( Widget.hasWidget( ele ) ) {
             config.ui.debug && $.logger( "triggerDetectToParent", ele );
-            $( ele ).trigger( eventName, ele, {
-              type: eventName
-            } );
+            $( ele ).trigger( CustomEvent.createEvent( eventName, ele ) );
           }
         } );
       }
@@ -11712,6 +11757,7 @@ aQuery.define( "main/communicate", [ "base/Promise", "base/typed", "base/extend"
           e.type = "ajaxStart";
           $.trigger( e.type, ajax, e );
           ajax.send( type == "GET" ? "NULL" : ( o.data || "NULL" ) );
+          promise.reprocess( {} )
         }
       }
 
@@ -11722,22 +11768,13 @@ aQuery.define( "main/communicate", [ "base/Promise", "base/typed", "base/extend"
      * @returns {module:base/Promise}
      */
     ajaxs: function( list ) {
-      var retPromise;
+      var promises = [];
 
       $.each( list, function( item, index ) {
-
-        if ( retPromise ) {
-          var promise = communicate.ajax( item );
-          retPromise.and( function() {
-            return promise;
-          } );
-        } else {
-          retPromise = communicate.ajax( item );
-        }
-
+        promises.push( communicate.ajax( item ) );
       } );
 
-      return retPromise;
+      return Promise.group( promises );
     },
 
     ajaxSetting:
@@ -11797,7 +11834,7 @@ aQuery.define( "main/communicate", [ "base/Promise", "base/typed", "base/extend"
       if ( o.JSONP ) {
         random = ( "aQuery" + $.now() ) + parseInt( Math.random() * 10 );
         window[ random ] = function( json ) {
-          o.json = json;
+          promise.reprocess( json );
         };
         o.data[ o.JSONP ] = random
       }
@@ -11833,21 +11870,11 @@ aQuery.define( "main/communicate", [ "base/Promise", "base/typed", "base/extend"
         typed.isFunction( o.fail ) && o.fail.call( o.context || scripts, o );
         clear();
         return Promise().reject( o );
-      }, function() {
-        if ( !scripts.readyState || scripts.readyState == "loaded" || scripts.readyState == "complete" ) {
-          if ( o.json ) {
-            return Promise().resolve( o.json );
-          } else {
-            setTimeout( function() {
-              promise.resolve( o.json );
-            }, 0 );
-          }
+      }, function( json ) {
+        if ( json ) {
+          Promise().resolve( json );
         }
       } );
-
-      scripts.onload = scripts.onreadystatechange = function() {
-        promise.reprocess( o.json );
-      };
 
       scripts.onerror = function() {
         promise.reject();
@@ -11862,7 +11889,7 @@ aQuery.define( "main/communicate", [ "base/Promise", "base/typed", "base/extend"
       e.type = "jsonpStart";
       $.trigger( e.type, scripts, e );
       head.insertBefore( scripts, head.firstChild );
-      return promise;
+      return promise.reprocess();
     },
     jsonpSetting:
     /**
@@ -11895,22 +11922,13 @@ aQuery.define( "main/communicate", [ "base/Promise", "base/typed", "base/extend"
      * @returns {module:base/Promise}
      */
     jsonps: function( list ) {
-      var retPromise;
+      var promises = [];
 
       $.each( list, function( item, index ) {
-
-        if ( retPromise ) {
-          var promise = communicate.jsonp( item );
-          retPromise.and( function() {
-            return promise;
-          } );
-        } else {
-          retPromise = communicate.jsonp( item );
-        }
-
+        promises.push( communicate.jsonp( item ) );
       } );
 
-      return retPromise;
+      return Promise.group( promises );
     },
     /**
      * @example
@@ -13091,966 +13109,6 @@ aQuery.define( "main/dom", [ "base/typed", "base/extend", "base/array", "base/su
 
 /*=======================================================*/
 
-/*===================animation/FX===========================*/
-aQuery.define( "animation/FX", [ "base/typed", "base/array", "main/css", "main/object" ], function( $, typed, array, css, object, undefined ) {
-  "use strict";
-  var rfxnum = /^([+-]=)?([\d+-.]+)(.*)$/;
-
-  var FX = object.extend( "FX", {
-    start: function() {
-
-      FX.timers.push( this );
-      this.startTime = $.now();
-
-      FX.tick();
-    },
-    init: function( ele, options, value, name ) {
-      this.ele = ele;
-      this.options = options;
-      this.easing = options.easing;
-      this.delay = options.delay || 0;
-      this.duration = options.duration;
-      this.name = name;
-      //this.isComplete = isComplete == undefined ? 1 : isComplete;
-      var ret = this.getStartEnd( value );
-      this.from = ret.start;
-      this.end = ret.end;
-      this.unit = ret.unit;
-      this.percent = 0;
-      options.isStart && this.start();
-
-      return this;
-    },
-    cur: function() {
-      return FX.cur( this.ele, this.name );
-    },
-    constructor: FX,
-
-    getPercent: function() {
-      return parseInt( ( this.percent || 0 ) * 100 ) / 100;
-    },
-    getStartEnd: function( val ) {
-      return FX.getStartEnd.call( this, val, this.ele, this.name );
-    },
-
-    specialUnit: function( start, end, unit ) {
-      return FX.specialUnit( start, end, unit, this.ele, this.name );
-    },
-    step: function( goToEnd ) {
-      var pauseTime;
-      if ( !typed.isBoolean( goToEnd ) ) {
-        pauseTime = goToEnd || 0;
-      }
-      var t = $.now() - pauseTime,
-        opt = this.options;
-
-      if ( goToEnd === true || t > this.startTime + this.delay + this.duration || this.end === this.from ) {
-        //this.tick = opt.duration;
-        this.nowPos = this.end;
-        //opt.curCount -= 1;
-        this.update();
-        if ( --opt.curCount <= 0 ) {
-          if ( this.options.display != null ) {
-            // Reset the overflow
-            this.ele.style.overflow = opt.overflow;
-
-            this.ele.style.display = opt.display;
-
-            if ( this.ele.display === "none" ) {
-              this.ele.style.display = "block";
-            }
-          }
-          FX.invokeCompelete( opt.complete, this.ele, opt );
-        }
-        this.stop();
-      } else {
-        var n = t - this.startTime,
-          pos;
-        if ( n > this.delay ) {
-          pos = this.easing( n - this.delay, 0, 1, this.duration );
-          this.percent = pos;
-          this.nowPos = this.from + ( ( this.end - this.from ) * pos );
-          this.update();
-        }
-      }
-    },
-    stop: function() {
-      var index = array.inArray( FX.timers, this );
-      index > -1 && FX.timers.splice( index, 1 );
-    },
-
-    update: function( nowPos ) {
-      nowPos = nowPos == undefined ? this.nowPos.toFixed( 2 ) : nowPos;
-      css.css( this.ele, this.name, nowPos + this.unit );
-    },
-
-    isInDelay: function() {
-      return new Date() - this.startTime < this.delay;
-    }
-  }, {
-    invokeCompelete: function( completes, context, opt ) {
-      for ( var i = completes.length - 1; i >= 0; i-- ) {
-        completes[ i ].call( context, opt );
-      }
-    },
-    fast: 200,
-    slow: 600,
-    normal: 400,
-    speeds: function( type ) {
-      switch ( type ) {
-        case "slow":
-          return FX.slow;
-        case "fast":
-          return FX.fast;
-        default:
-        case "normal":
-          return FX.normal;
-      }
-    },
-
-    hooks: {},
-
-    cur: function( ele, name ) {
-      //var ele = this.ele;
-
-      if ( ele[ name ] != null && ( !ele.style || ele.style[ name ] == null ) ) {
-        return ele[ name ];
-      }
-      var r;
-      r = parseFloat( css.css( ele, name ) );
-      r = r !== undefined && r > -10000 ? r : parseFloat( css.curCss( ele, name ) ) || 0;
-      return r !== "auto" ? r : 0;
-    },
-
-    getDelay: function( d ) {
-      if ( typed.isString( d ) ) {
-        d = FX.speeds( d );
-      } else if ( typed.isNul( d ) || !typed.isNumber( d ) ) {
-        d = 0;
-      }
-      return d;
-    },
-    getDuration: function( d ) {
-      if ( typed.isNul( d ) || !typed.isNumber( d ) ) {
-        d = FX.speeds( d );
-      }
-      return d;
-    },
-    getStartEnd: function( val, ele, name ) {
-      var parts = rfxnum.exec( val ),
-        start = this.cur( ele, name ),
-        end = val,
-        unit = "";
-
-      if ( parts ) {
-        var end = parseFloat( parts[ 2 ] );
-        unit = parts[ 3 ]; //|| "px"
-        //this.unit = unit;
-
-        if ( unit !== "" && unit !== "px" && unit !== "deg" ) {
-          start = this.specialUnit( start, end, unit, ele, name );
-        }
-
-        if ( parts[ 1 ] ) {
-          end = ( ( parts[ 1 ] === "-=" ? -1 : 1 ) * end ) + start;
-        }
-      }
-      return {
-        start: start,
-        end: end,
-        unit: unit
-      };
-    },
-
-    specialUnit: function( start, end, unit, ele, name ) {
-      ele.style[ name ] = ( end || 1 ) + unit; //?
-      start = ( ( end || 1 ) / FX.cur( ele, name ) ) * start;
-      ele.style[ name ] = start + unit;
-      return start;
-    },
-    stop: function() {},
-
-    timers: [],
-
-    tick: function() {}
-  } );
-
-  return FX;
-} );
-
-/*=======================================================*/
-
-/*===================module/Thread===========================*/
-aQuery.define( "module/Thread", [ "main/CustomEvent", "base/extend", "main/object" ], function( $, CustomEvent, utilExtend, object ) {
-  "use strict";
-  /// <summary>创造一个新进程
-  /// <para>num obj.delay:延迟多少毫秒</para>
-  /// <para>num obj.duration:持续多少毫米</para>
-  /// <para>num obj.sleep:睡眠多少豪秒</para>
-  /// <para>num obj.interval 如果interval存在 则fps无效 isAnimFram也无效
-  /// <para>num obj.fps:每秒多少帧</para>
-  /// <para>fun obj.run:要执行的方法</para>
-  /// <para>bol obj.isAnimFram:是否使用新动画函数，使用后将无法初始化fps</para>
-  /// <para>bol obj.context:作用域</para>
-  /// <para>可以调用addHandler方法添加事件</para>
-  /// <para>事件类型:start、stop、delay、sleepStar,sleepStop</para>
-  /// </summary>
-  /// <param name="obj" type="Object">属性</param>
-  /// <param name="paras" type="paras[]">作用域所用参数</param>
-  /// <returns type="Thread" />
-
-  var requestAnimFrame = window.requestAnimationFrame ||
-    window.webkitRequestAnimationFrame ||
-    window.mozRequestAnimationFrame ||
-    window.oRequestAnimationFrame ||
-    window.msRequestAnimationFrame ||
-    function( complete ) {
-      return setTimeout( complete, 13 ); //其实是1000/60
-    },
-    cancelRequestAnimFrame = window.cancelAnimationFrame ||
-    window.webkitCancelRequestAnimationFrame ||
-    window.mozCancelRequestAnimationFrame ||
-    window.oCancelRequestAnimationFrame ||
-    window.msCancelRequestAnimationFrame ||
-    clearTimeout;
-
-  var Thread = CustomEvent.extend( "Thread", {
-    init: function( obj, paras ) {
-      /// <summary>初始化参数 初始化参数会停止进程</summary>
-      /// <param name="obj" type="Object">进程参数</param>
-      /// <param name="paras" type="paras:[any]">计算参数</param>
-      /// <returns type="self" />
-      //this.stop();
-      this._super();
-      utilExtend.extend( this, Thread._defaultSetting, obj );
-      this.context = obj.context || this;
-      this.id = this.id || $.now();
-      this.args = $.util.argToArray( arguments, 1 );
-
-      return this.setFps()
-        .setDuration( this.duration );
-    },
-    create: function() {
-      return this;
-    },
-    render: function() {
-      return this;
-    },
-
-    start: function() {
-      /// <summary>启动</summary>
-      /// <returns type="self" />
-      if ( this.runFlag == false ) {
-        Thread.count += 1;
-        this.runFlag = true;
-        var self = this;
-        if ( this.delay > 0 ) {
-          self.status = "delay";
-          self.trigger( "delay", self, {
-            type: "delay"
-          } );
-        }
-        setTimeout( function() {
-          self.status = "start";
-          self.trigger( "start", self, {
-            type: "start"
-          } );
-          //self.pauseTime += self.delay;
-
-          self.begin = $.now();
-          self._interval.call( self );
-        }, this.delay );
-      }
-      return this;
-    },
-
-    _interval: function() {
-      /// <summary>私有</summary>
-      var self = this,
-        every = function() {
-          if ( self.runFlag === false || ( self.tick >= self.duration && !self.forever ) ) {
-            every = null;
-            return self.stop();
-          }
-          if ( self.sleepFlag ) {
-            self.sleep();
-            return;
-          }
-          self.status = "run";
-
-          self.tick = $.now() - self.begin - self.pauseTime;
-
-          self.forever ? self._run.call( self, self.tick, self.fps ) : self._run.call( self, self.tick, self.duration );
-          var power = self.power;
-          self.timerId = power( every, self.fps );
-        };
-
-      every();
-    },
-
-    _run: function( step, duration ) {
-      /// <summary>私有</summary>
-      //if (this.sleepTime > 0) return;
-      //this.status = "run";
-      this._executor( step, duration );
-    },
-
-    resume: function() {
-      /// <summary>唤醒进程</summary>
-      /// <param name="time" type="Number">毫秒</param>
-      /// <returns type="Thread" />
-      if ( this.isSleep() ) {
-        var n = $.now();
-        this.pauseTime += n - ( this.sleepBeginTime || 0 );
-        this.sleepStopTime = n;
-        this.status = "run";
-        this.sleepFlag = false;
-        this.trigger( "sleepStop", this, {
-          type: "sleepStop"
-        } );
-        this._interval();
-      }
-      return this;
-    },
-
-    stop: function() {
-      /// <summary>停止进程</summary>
-      /// <returns type="self" />
-      if ( this.runFlag == true ) {
-        this.tick = this.sleepTime = this.pauseTime = 0;
-        this.sleepBeginTime = null;
-        this.sleepId = null;
-        this.begin = null;
-        this.status = "stop";
-        Thread.count -= 1;
-        this.runFlag = false;
-        var clear = this.clear;
-        clear( this.timerId );
-        this.trigger( "stop", this, {
-          type: "stop"
-        } );
-      }
-      return this;
-    },
-
-    _executor: function( a, b ) {
-      /// <summary>内部</summary>
-      this.run.apply( this.context, [ a, b ].concat( this.args ) ) === false && this.stop();
-    },
-
-    isRun: function() {
-      /// <summary>是否在运行</summary>
-      /// <returns type="Boolean" />
-      return this.runFlag;
-    },
-    isSleep: function() {
-      /// <summary>是否在睡眠</summary>
-      /// <returns type="Boolean" />
-      return this.status == "sleep"; //(this.sleepFlag && this.sleepTime > 0);
-    },
-
-    getDely: function() {
-      /// <summary>获得延迟启动时间</summary>
-      /// <returns type="Number" />
-      return this.dely;
-    },
-    setDely: function( delay ) {
-      /// <summary>设置延迟启动时间</summary>
-      /// <param name="time" type="Number">毫秒</param>
-      /// <returns type="self" />
-      this.delay = delay || this.delay || 0;
-      return this;
-    },
-
-    setDuration: function( duration ) {
-      /// <summary>设置持续时间</summary>
-      /// <param name="time" type="Number">毫秒</param>
-      /// <returns type="self" />
-      var status = this.getStatus();
-      this.stop();
-      if ( duration == undefined || duration == NaN || ( typeof duration == "number" && duration > 0 ) ) {
-        //this.duration = o.duration;
-        this.forever = false;
-      } else {
-        this.duration = NaN;
-        this.forever = true;
-      }
-      status == "run" && this.start();
-      return this;
-    },
-    getDuration: function() {
-      /// <summary>获得持续时间</summary>
-      /// <para>NaN表示无限</para>
-      /// <returns type="Number" />
-      return this.duration;
-    },
-    setFps: function() {
-      /// <summary>设置帧值</summary>
-      /// <returns type="Number" />
-      var status = this.getStatus();
-      this.stop();
-
-      if ( this.interval == null && this.isAnimFrame == true ) {
-        this.power = requestAnimFrame;
-        this.clear = cancelRequestAnimFrame;
-        this.fps = Thread.fps;
-      } else {
-        this.power = setTimeout;
-        this.clear = clearTimeout;
-        this.fps = this.interval || ( 1000 / this.fps ) || Thread.fps;
-      }
-
-      this.fps = Math.round( this.fps );
-
-      status == "run" && this.start();
-      return this;
-    },
-    getFps: function() {
-      /// <summary>获得帧值</summary>
-      /// <returns type="Number" />
-      return this.fps;
-    },
-    getPercent: function() {
-      /// <summary>获得百分比进度</summary>
-      /// <para>返回值是NaN时说明duration是0并且是永远运行的</para>
-      /// <returns type="Number" />
-      var percent = parseInt( this.tick / this.duration * 100 ) / 100;
-      return percent != NaN ? Math.min( 1, percent ) : percent;
-    },
-
-    getStatus: function() {
-      /// <summary>获得运行状态</summary>
-      /// <para>"delay"</para>
-      /// <para>"start"</para>
-      /// <para>"sleep"</para>
-      /// <para>"stop"</para>
-      /// <para>"run"</para>
-      /// <returns type="String" />
-      return this.status;
-    },
-    getTick: function() {
-      /// <summary>获得时值</summary>
-      /// <returns type="Number" />
-      return this.tick;
-    },
-
-    getPauseTime: function() {
-      /// <summary>获得暂停的时间值</summary>
-      /// <returns type="Number" />
-      return this.pauseTime;
-    },
-    setSleepTime: function( sleepTime ) {
-      /// <summary>设置睡眠时间</summary>
-      /// <param name="sleepTime" type="Number">毫秒</param>
-      /// <returns type="self" />
-      if ( sleepTime ) {
-        this.sleepTime = sleepTime;
-        this.sleepFlag = true;
-      }
-      return this;
-    },
-    getSleepTime: function( isCount ) {
-      /// <summary>获得当前睡眠时间值</summary>
-      /// <returns type="Number" />
-      return this.sleepTime;
-    },
-    sleep: function( sleeTime ) {
-      /// <summary>设置睡眠时间 只有在非睡眠时间有用</summary>
-      /// <param name="sleepTime" type="Number">毫秒</param>
-      /// <param name="time" type="Number">毫秒</param>
-      /// <returns type="self" />
-      var status = this.getStatus();
-      if ( sleeTime ) {
-        return this.setSleepTime( sleeTime );
-      }
-      if ( this.sleepTime == 0 ) {
-        return this;
-      }
-      this.status = "sleep";
-      this.trigger( "sleepBegin", self, {
-        type: "sleepBegin"
-      } );
-      var self = this;
-      clearTimeout( this.sleepId );
-      this.sleepBeginTime = $.now();
-      self.sleepId = setTimeout( function() {
-        self.sleepId && self.resume();
-      }, self.sleepTime );
-
-      return this;
-    }
-  }, {
-    cancelRequestAnimFrame: cancelRequestAnimFrame,
-    count: 0,
-
-    fps: 13,
-
-    requestAnimFrame: requestAnimFrame,
-
-    _defaultSetting: {
-      runFlag: false,
-      forever: false,
-      sleepFlag: false,
-      power: setTimeout,
-      clear: clearTimeout,
-      status: "stop",
-      args: [],
-      tick: 0,
-      sleepTime: 0,
-      pauseTime: 0,
-      sleepId: null,
-      begin: null,
-      timerId: null,
-      run: function() {},
-      interval: null,
-      isAnimFrame: true,
-      duration: NaN,
-      id: ""
-    }
-  } );
-
-  object.createPropertyGetterSetter( Thread, {
-    args: "-pu -r -w",
-    timeId: "-pa -r",
-    sleepId: "-pa -r",
-    interval: "-pu -r",
-    isAnimFrame: "-pu -r",
-    id: "-pu -r"
-  } );
-
-  return Thread;
-} );
-
-/*=======================================================*/
-
-/*===================animation/tween===========================*/
-aQuery.define( "animation/tween", [ "base/typed" ], function( $, typed, undefined ) {
-  "use strict";
-  var math = Math,
-    // pi = math.PI,
-    pow = math.pow,
-    // sin = math.sin,
-    sqrt = math.sqrt,
-    abs = math.abs,
-    cos = math.cos,
-    tween = {
-      getFun: function( name ) {
-        var fun;
-        if ( typed.isFunction( name ) ) {
-          fun = name;
-        } else if ( typed.isString( name ) ) {
-          name = name.split( "." );
-          fun = this;
-          $.each( name, function( str ) {
-            if ( fun ) {
-              fun = fun[ str ];
-            } else {
-              fun = null;
-              return false;
-            }
-          }, this );
-        }
-        return fun || this.linear;
-      },
-      linear: function( t, b, c, d ) {
-        return t / d;
-      },
-      swing: function( t, b, c, d ) {
-        return 0.5 - cos( t / d * math.PI ) / 2;
-      },
-      ease: function( t, b, c, d ) {
-        t /= d;
-        var q = 0.07813 - t / 2,
-          Q = sqrt( 0.0066 + q * q ),
-          x = Q - q,
-          X = pow( abs( x ), 1 / 3 ) * ( x < 0 ? -1 : 1 ),
-          y = -Q - q,
-          Y = pow( abs( y ), 1 / 3 ) * ( y < 0 ? -1 : 1 );
-        t = X + Y + 0.25;
-        return pow( 1 - t, 2 ) * 3 * t * 0.1 + ( 1 - t ) * 3 * t * t + t * t * t;
-      },
-      easeIn: function( t, b, c, d ) {
-        return pow( t / d, 1.7 );
-      },
-      easeOut: function( t, b, c, d ) {
-        return pow( t / d, 0.48 );
-      },
-      easeInOut: function( t, b, c, d ) {
-        t /= d;
-        var q = 0.48 - t / 1.04,
-          Q = sqrt( 0.1734 + q * q ),
-          x = Q - q,
-          X = pow( abs( x ), 1 / 3 ) * ( x < 0 ? -1 : 1 ),
-          y = -Q - q,
-          Y = pow( abs( y ), 1 / 3 ) * ( y < 0 ? -1 : 1 );
-        t = X + Y + 0.5;
-        return ( 1 - t ) * 3 * t * t + t * t * t;
-      },
-      cubicBezier: function( t, b, c, d, x1, y1, x2, y2 ) { /*include Ext.js*/
-        x1 = $.between( 0, 1, x1 || 0 );
-        y1 = $.between( 0, 1, y1 || 0 );
-        x2 = $.between( 0, 1, x2 || 1 );
-        y2 = $.between( 0, 1, y2 || 10 );
-        var time = t / d;
-        var cx = 3 * x1,
-          bx = 3 * ( x2 - x1 ) - cx,
-          ax = 1 - cx - bx,
-          cy = 3 * y1,
-          by = 3 * ( y2 - y1 ) - cy,
-          ay = 1 - cy - by;
-
-        function sampleCurveX( t ) {
-          return ( ( ax * t + bx ) * t + cx ) * t;
-        }
-
-        function solve( x, epsilon ) {
-          var t = solveCurveX( x, epsilon );
-          return ( ( ay * t + by ) * t + cy ) * t;
-        }
-
-        function solveCurveX( x, epsilon ) {
-          var t0, t1, t2, x2, d2, i;
-          for ( t2 = x, i = 0; i < 8; i++ ) {
-            x2 = sampleCurveX( t2 ) - x;
-            if ( Math.abs( x2 ) < epsilon ) {
-              return t2;
-            }
-            d2 = ( 3 * ax * t2 + 2 * bx ) * t2 + cx;
-            if ( Math.abs( d2 ) < 1e-6 ) {
-              break;
-            }
-            t2 = t2 - x2 / d2;
-          }
-          t0 = 0;
-          t1 = 1;
-          t2 = x;
-          if ( t2 < t0 ) {
-            return t0;
-          }
-          if ( t2 > t1 ) {
-            return t1;
-          }
-          while ( t0 < t1 ) {
-            x2 = sampleCurveX( t2 );
-            if ( Math.abs( x2 - x ) < epsilon ) {
-              return t2;
-            }
-            if ( x > x2 ) {
-              t0 = t2;
-            } else {
-              t1 = t2;
-            }
-            t2 = ( t1 - t0 ) / 2 + t0;
-          }
-          return t2;
-        }
-
-        return solve( time, 1 / ( 200 * d ) );
-
-      }
-    };
-
-  $.tween = tween;
-
-  return tween;
-
-} );
-
-/*=======================================================*/
-
-/*===================animation/animate===========================*/
-aQuery.define( "animation/animate", [ "base/typed", "base/extend", "base/queue", "main/data", "animation/FX", "module/Thread", "animation/tween" ], function( $, typed, utilExtend, Queue, utilData, FX, Thread, tween, undefined ) {
-  "use strict";
-  FX.tick = function() {
-    if ( thread.getStatus() === "run" ) return;
-    thread.start();
-  };
-
-  FX.stop = function() {
-    //        clearInterval(timerId);
-    //        timerId = null
-    thread.stop();
-  };
-
-  var originComplete = function() {
-    $( this ).dequeue(); // this is ele
-  };
-
-  var timers = FX.timers,
-    thread = new Thread( {
-      isAnimFrame: true, //will be use AnimFrame
-
-      duration: 0, //will be go forever
-
-      run: function() {
-        for ( var i = 0, c; c = timers[ i++ ]; ) {
-          c.step( thread.pauseTime );
-        }
-
-        if ( !timers.length ) {
-          FX.stop();
-        }
-      }
-    } ),
-    animate = function( ele, property, option ) {
-      var opt = {},
-        p, isElement = typed.isElement( ele ),
-        hidden = isElement && $( ele ).isVisible(),
-        //self = ele,
-        count = 0,
-        defaultEasing = option.easing;
-
-      utilExtend.easyExtend( opt, option );
-
-      for ( p in property ) {
-        var name = $.util.camelCase( p );
-        if ( p !== name ) {
-          property[ name ] = property[ p ];
-          //把值复制给$.util.camelCase转化后的属性
-          delete property[ p ];
-          //删除已经无用的属性
-          p = name;
-        }
-        if ( property[ p ] === "hide" && hidden || property[ p ] === "show" && !hidden ) {
-          return opt.complete.call( ele );
-        }
-
-        if ( ( p === "height" || p === "width" ) && ele.style ) {
-          opt.display = ele.style.display;
-
-          opt.overflow = ele.style.overflow;
-
-          ele.style.display = "block"; //？
-        }
-
-        count++;
-      }
-
-      if ( opt.overflow != null ) {
-        ele.style.overflow = "hidden";
-      }
-
-      opt.curAnim = utilExtend.extend( {}, property );
-      opt.curCount = count;
-      opt.isStart = 1;
-
-      $.each( property, function( value, key ) {
-        opt.easing = opt.specialEasing && opt.specialEasing[ key ] ? $.getAnimationEasing( opt.specialEasing[ key ] ) : defaultEasing;
-        if ( typed.isFunction( FX.hooks[ key ] ) ) {
-          return FX.hooks[ key ]( ele, opt, value, key );
-        }
-        new FX( ele, opt, value, key );
-      } );
-
-      return true;
-    };
-  thread.stop = function() {
-    $.each( timers, function( item ) {
-      if ( item ) {
-        item.stop();
-        $( item.ele ).dequeue();
-      }
-    } );
-
-    Thread.prototype.stop.call( this );
-  };
-
-  $.extend( {
-    animate: function( ele, property, option ) {
-      /// <summary>给所有元素添加一个动画
-      /// <para>obj property:{ width: "50em", top: "+=500px" }</para>
-      /// <para>需要插件{transform3d: { translateX: "+=100px", translateY: "+=100px"}}</para>
-      /// <para>obj option</para>
-      /// <para>num/str option.duration:持续时间 也可输入"slow","fast","normal"</para>
-      /// <para>fun option.complete:结束时要执行的方法</para>
-      /// <para>str/fun option.easing:tween函数的路径:"quad.easeIn"或者直接的方法</para>
-      /// <para>默认只有linear。需要其他的函数，需要添加插件。或者添加方法到$.tween</para>
-      /// <para>bol option.queue:是否进入队列，默认是true。不进入队列将立即执行</para>
-      /// </summary>
-      /// <param name="ele" type="Element">dom元素</param>
-      /// <param name="property" type="Object">样式属性</param>
-      /// <param name="option" type="Object">参数</param>
-      /// <returns type="self" />
-      option = $._getAnimateOpt( option );
-
-      if ( typed.isEmptyObject( property ) ) {
-        return option.complete( ele );
-      } else {
-        if ( option.queue === false ) {
-          animate( ele, property, option );
-        } else {
-          $.queue( ele, "fx", function() {
-            animate( ele, property, option );
-            $.dequeue( ele, [ ele ] );
-            property = option = null;
-          } );
-          //                    var queue = $.queue(ele, "fx", function (ele, dequeue) {
-          //                        animate(ele, property, option);
-          //                        dequeue();
-          //                        property = option = null;
-          //                    });
-
-          //                    if (queue[0] !== "inprogress") {
-          //                        $.dequeue(ele, "fx");
-          //                    }
-        }
-      }
-      return this;
-    },
-    stopAnimation: function( ele, isDequeue ) {
-      /// <summary>停止当前元素当前动画</summary>
-      /// <returns type="self" />
-      for ( var timers = FX.timers, i = timers.length - 1; i >= 0; i-- ) {
-        if ( timers[ i ].ele === ele ) {
-          timers.splice( i, 1 );
-        }
-      }
-      isDequeue && $.dequeue( ele );
-      return this;
-    },
-
-    animationPower: thread,
-
-    clearQueue: function( ele, type ) {
-      return $.queue( ele, type || "fx", [] );
-    },
-
-    dequeue: function( ele, type ) {
-      //quote from jQuery-1.4.1
-      type = type || "fx";
-      var q = $.queue( ele, type );
-
-      return q.dequeue( ele, [ ele ] );
-
-    },
-
-    _originComplete: originComplete,
-
-    _getAnimateOpt: function( opt ) {
-      opt = opt || {};
-      var duration = FX.getDuration( opt.duration ),
-        delay = FX.getDelay( opt.delay ),
-        ret,
-        tCompelete;
-      if ( typed.isArray( opt.complete ) ) {
-        tCompelete = opt.complete;
-        if ( tCompelete[ 0 ] !== originComplete ) {
-          tCompelete.splice( 0, 0, originComplete );
-        }
-      } else if ( typed.isFunction( opt.complete ) ) {
-        tCompelete = [ opt.complete, originComplete ];
-      } else {
-        tCompelete = [ originComplete ];
-      }
-      ret = {
-        delay: delay,
-        duration: duration,
-        easing: $.getAnimationEasing( opt.easing, opt.para ),
-        specialEasing: opt.specialEasing,
-        complete: tCompelete,
-        queue: opt.queue === false ? false : true
-      };
-      return ret;
-    },
-    getAnimationEasing: function( easing, para ) {
-      var ret = tween.getFun( easing );
-      if ( para && para.length ) {
-        return function( t, b, c, d ) {
-          ret.apply( tween, [ t, b, c, d ].concat( para ) );
-        };
-      }
-      return ret;
-
-    },
-
-    queue: function( ele, type, fn ) {
-      //quote from jQuery-1.4.1
-      if ( !ele ) {
-        return;
-      }
-
-      type = ( type || "fx" ) + "queue";
-      var q = utilData.get( ele, type );
-
-      if ( !q ) {
-        q = new Queue()
-        utilData.set( ele, type, q );
-      }
-
-      return q.queue( fn, ele, [ ele ] );
-      //return q;
-    }
-
-    //, timers: timers
-  } );
-  $.fn.extend( {
-    animate: function( property, option ) {
-      /// <summary>给所有元素添加一个动画
-      /// <para>obj property:{ width: "50em", top: "+=500px" }</para>
-      /// <para>需要插件{transform3d: { translateX: "+=100px", translateY: "+=100px"}}</para>
-      /// <para>obj option</para>
-      /// <para>num/str option.duration:持续时间 也可输入"slow","fast","normal"</para>
-      /// <para>fun option.complete:结束时要执行的方法</para>
-      /// <para>str/fun option.easing:tween函数的路径:"quad.easeIn"或者直接的方法</para>
-      /// <para>默认只有linear。需要其他的函数，需要添加插件。或者添加方法到$.tween</para>
-      /// <para>bol option.queue:是否进入队列，默认是true。不进入队列将立即执行</para>
-      /// </summary>
-      /// <param name="property" type="Object">样式属性</param>
-      /// <param name="option" type="Object">参数</param>
-      /// <returns type="self" />
-      option = $._getAnimateOpt( option );
-
-      if ( typed.isEmptyObject( property ) ) {
-        return this.each( option.complete );
-      } else {
-        return this[ option.queue === false ? "each" : "queue" ]( function( ele ) {
-          animate( ele, property, option );
-        } );
-      }
-      //return this; //提供注释
-    },
-    stopAnimation: function( isDequeue ) {
-      /// <summary>停止当前元素当前动画</summary>
-      /// <param name="isDequeue" type="Boolean">是否继续之后的动画</param>
-      /// <returns type="self" />
-
-      return this.each( function( ele ) {
-        $.stopAnimation( ele, isDequeue );
-      } );
-    },
-
-    dequeue: function( type ) {
-      //quote from jQuery-1.4.1
-      return this.each( function( ele ) {
-        $.dequeue( ele, type );
-      } );
-    },
-
-    queue: function( type, data ) {
-      //quote from jQuery-1.4.1
-      if ( !typed.isString( type ) ) {
-        data = type;
-        type = "fx";
-      }
-
-      if ( data === undefined ) {
-        return $.queue( this[ 0 ], type );
-      }
-      return this.each( function( ele ) {
-        $.queue( ele, type, data );
-        // var queue = $.queue( ele, type, data );
-
-        //                if (type === "fx" && queue[0] !== "inprogress") {
-        //                    $.dequeue(ele, type);
-        //                }
-      } );
-    }
-  } );
-
-} );
-
-/*=======================================================*/
-
 /*===================html5/css3===========================*/
 aQuery.define( "html5/css3", [ "base/support", "base/extend", "base/typed", "base/client", "base/array", "main/css" ], function( $, support, utilExtend, typed, client, array, css2, undefined ) {
   "use strict";
@@ -15038,6 +14096,1267 @@ aQuery.define( "html5/css3", [ "base/support", "base/extend", "base/typed", "bas
 
 /*=======================================================*/
 
+/*===================ui/button===========================*/
+aQuery.define( "ui/button", [
+    "base/client",
+    "module/Widget",
+    "main/query",
+    "main/class",
+    "main/CustomEvent",
+    "main/event",
+    "main/css",
+    "main/position",
+    "main/dom",
+    "main/attr",
+    "html5/css3"
+  ],
+
+  function( $, client, Widget, query, cls, CustomEvent, event, css, position, dom, attr, css3 ) {
+    "use strict";
+
+    Widget.fetchCSS( "ui/css/button" );
+
+    var button = Widget.extend( "ui.button", {
+      container: null,
+      _initHandler: function() {
+        var self = this;
+        this.buttonEvent = function( e ) {
+          switch ( e.type ) {
+            case "click":
+              self.target.trigger( CustomEvent.createEvent( self.getEventName( "click" ), self.target[ 0 ], {
+                container: self.container,
+                event: e
+              } ) );
+              break;
+          }
+        };
+        return this;
+      },
+      enable: function() {
+        this.disable();
+        this.target.on( "click", this.buttonEvent );
+        this.options.disabled = false;
+        return this;
+      },
+      disable: function() {
+        this.target.off( "click", this.buttonEvent );
+        this.options.disabled = true;
+        return this;
+      },
+      render: function() {
+        var opt = this.options,
+          ie = client.browser.ie < 9;
+        if ( ie ) {
+          this.$text.remove();
+        }
+        this.$text.html( opt.text );
+        if ( ie ) {
+          this.$text.appendTo( this.container );
+        }
+        this.container.attr( "title", opt.title );
+        return this;
+      },
+      init: function( opt, target ) {
+        this._super( opt, target );
+
+        target.addClass( this.options.defualtCssName );
+
+        this.container = $( $.createEle( "a" ) ).css( {
+          "display": "inline-block",
+          "text-decoration": "none",
+          "width": "100%",
+          "height": "100%",
+          "position": "relative"
+        } ).addClass( "back" );
+
+        this.$img = $( $.createEle( "div" ) ).css( {
+          "display": "block",
+          "text-decoration": "none",
+          "position": "absolute",
+          "width": "100%",
+          "height": "100%"
+        } ).addClass( "img" ).addClass( this.options.icon );
+
+        this.$text = $( $.createEle( "a" ) ).css( {
+          "display": "block",
+          "text-decoration": "none",
+          "position": "absolute",
+          "float": "left",
+          "width": "100%",
+          "height": "100%"
+        } ).addClass( "text" );
+
+        this.container.append( this.$img ).append( this.$text );
+
+        target.append( this.container );
+
+        target.css( {
+          "float": "left",
+          "cursor": "pointer"
+        } );
+
+        this.$text.css3( "user-select", "none" );
+
+        this._initHandler().enable().render();
+
+        return this;
+      },
+      customEventName: [ "click" ],
+      options: {
+        defualtCssName: "aquery-button",
+        text: "clickme",
+        title: "",
+        icon: "icon"
+      },
+      getter: {
+        defualtCssName: 1,
+        text: 1,
+        title: 1,
+        icon: 0
+      },
+      setter: {
+        defualtCssName: 0,
+        text: 1,
+        title: 1,
+        icon: 0
+      },
+      publics: {
+
+      },
+      target: null,
+      toString: function() {
+        return "ui.button";
+      },
+      widgetEventPrefix: "button"
+    } );
+
+    return button;
+  } );
+
+/*=======================================================*/
+
+/*===================animation/FX===========================*/
+aQuery.define( "animation/FX", [ "base/typed", "base/array", "main/css", "main/object" ], function( $, typed, array, css, object, undefined ) {
+  "use strict";
+  var rfxnum = /^([+-]=)?([\d+-.]+)(.*)$/;
+
+  var FX = object.extend( "FX", {
+    start: function() {
+
+      FX.timers.push( this );
+      this.startTime = $.now();
+
+      FX.tick();
+    },
+    init: function( ele, options, value, name ) {
+      this.ele = ele;
+      this.options = options;
+      this.easing = options.easing;
+      this.delay = options.delay || 0;
+      this.duration = options.duration;
+      this.name = name;
+      //this.isComplete = isComplete == undefined ? 1 : isComplete;
+      var ret = this.getStartEnd( value );
+      this.from = ret.start;
+      this.end = ret.end;
+      this.unit = ret.unit;
+      this.percent = 0;
+      options.isStart && this.start();
+
+      return this;
+    },
+    cur: function() {
+      return FX.cur( this.ele, this.name );
+    },
+    constructor: FX,
+
+    getPercent: function() {
+      return parseInt( ( this.percent || 0 ) * 100 ) / 100;
+    },
+    getStartEnd: function( val ) {
+      return FX.getStartEnd.call( this, val, this.ele, this.name );
+    },
+
+    specialUnit: function( start, end, unit ) {
+      return FX.specialUnit( start, end, unit, this.ele, this.name );
+    },
+    step: function( goToEnd ) {
+      var pauseTime;
+      if ( !typed.isBoolean( goToEnd ) ) {
+        pauseTime = goToEnd || 0;
+      }
+      var t = $.now() - pauseTime,
+        opt = this.options;
+
+      if ( goToEnd === true || t > this.startTime + this.delay + this.duration || this.end === this.from ) {
+        //this.tick = opt.duration;
+        this.nowPos = this.end;
+        //opt.curCount -= 1;
+        this.update();
+        if ( --opt.curCount <= 0 ) {
+          if ( this.options.display != null ) {
+            // Reset the overflow
+            this.ele.style.overflow = opt.overflow;
+
+            this.ele.style.display = opt.display;
+
+            if ( this.ele.display === "none" ) {
+              this.ele.style.display = "block";
+            }
+          }
+          FX.invokeCompelete( opt.complete, this.ele, opt );
+        }
+        this.stop();
+      } else {
+        var n = t - this.startTime,
+          pos;
+        if ( n > this.delay ) {
+          pos = this.easing( n - this.delay, 0, 1, this.duration );
+          this.percent = pos;
+          this.nowPos = this.from + ( ( this.end - this.from ) * pos );
+          this.update();
+        }
+      }
+    },
+    stop: function() {
+      var index = array.inArray( FX.timers, this );
+      index > -1 && FX.timers.splice( index, 1 );
+    },
+
+    update: function( nowPos ) {
+      nowPos = nowPos == undefined ? this.nowPos.toFixed( 2 ) : nowPos;
+      css.css( this.ele, this.name, nowPos + this.unit );
+    },
+
+    isInDelay: function() {
+      return new Date() - this.startTime < this.delay;
+    }
+  }, {
+    invokeCompelete: function( completes, context, opt ) {
+      for ( var i = completes.length - 1; i >= 0; i-- ) {
+        completes[ i ].call( context, opt );
+      }
+    },
+    fast: 200,
+    slow: 600,
+    normal: 400,
+    speeds: function( type ) {
+      switch ( type ) {
+        case "slow":
+          return FX.slow;
+        case "fast":
+          return FX.fast;
+        default:
+        case "normal":
+          return FX.normal;
+      }
+    },
+
+    hooks: {},
+
+    cur: function( ele, name ) {
+      //var ele = this.ele;
+
+      if ( ele[ name ] != null && ( !ele.style || ele.style[ name ] == null ) ) {
+        return ele[ name ];
+      }
+      var r;
+      r = parseFloat( css.css( ele, name ) );
+      r = r !== undefined && r > -10000 ? r : parseFloat( css.curCss( ele, name ) ) || 0;
+      return r !== "auto" ? r : 0;
+    },
+
+    getDelay: function( d ) {
+      if ( typed.isString( d ) ) {
+        d = FX.speeds( d );
+      } else if ( typed.isNul( d ) || !typed.isNumber( d ) ) {
+        d = 0;
+      }
+      return d;
+    },
+    getDuration: function( d ) {
+      if ( typed.isNul( d ) || !typed.isNumber( d ) ) {
+        d = FX.speeds( d );
+      }
+      return d;
+    },
+    getStartEnd: function( val, ele, name ) {
+      var parts = rfxnum.exec( val ),
+        start = this.cur( ele, name ),
+        end = val,
+        unit = "";
+
+      if ( parts ) {
+        var end = parseFloat( parts[ 2 ] );
+        unit = parts[ 3 ]; //|| "px"
+        //this.unit = unit;
+
+        if ( unit !== "" && unit !== "px" && unit !== "deg" ) {
+          start = this.specialUnit( start, end, unit, ele, name );
+        }
+
+        if ( parts[ 1 ] ) {
+          end = ( ( parts[ 1 ] === "-=" ? -1 : 1 ) * end ) + start;
+        }
+      }
+      return {
+        start: start,
+        end: end,
+        unit: unit
+      };
+    },
+
+    specialUnit: function( start, end, unit, ele, name ) {
+      ele.style[ name ] = ( end || 1 ) + unit; //?
+      start = ( ( end || 1 ) / FX.cur( ele, name ) ) * start;
+      ele.style[ name ] = start + unit;
+      return start;
+    },
+    stop: function() {},
+
+    timers: [],
+
+    tick: function() {}
+  } );
+
+  return FX;
+} );
+
+/*=======================================================*/
+
+/*===================module/Thread===========================*/
+aQuery.define( "module/Thread", [ "main/CustomEvent", "base/extend", "main/object" ], function( $, CustomEvent, utilExtend, object ) {
+  "use strict";
+  /// <summary>创造一个新进程
+  /// <para>num obj.delay:延迟多少毫秒</para>
+  /// <para>num obj.duration:持续多少毫米</para>
+  /// <para>num obj.sleep:睡眠多少豪秒</para>
+  /// <para>num obj.interval 如果interval存在 则fps无效 isAnimFram也无效
+  /// <para>num obj.fps:每秒多少帧</para>
+  /// <para>fun obj.run:要执行的方法</para>
+  /// <para>bol obj.isAnimFram:是否使用新动画函数，使用后将无法初始化fps</para>
+  /// <para>bol obj.context:作用域</para>
+  /// <para>可以调用addHandler方法添加事件</para>
+  /// <para>事件类型:start、stop、delay、sleepStar,sleepStop</para>
+  /// </summary>
+  /// <param name="obj" type="Object">属性</param>
+  /// <param name="paras" type="paras[]">作用域所用参数</param>
+  /// <returns type="Thread" />
+
+  var requestAnimFrame = window.requestAnimationFrame ||
+    window.webkitRequestAnimationFrame ||
+    window.mozRequestAnimationFrame ||
+    window.oRequestAnimationFrame ||
+    window.msRequestAnimationFrame ||
+    function( complete ) {
+      return setTimeout( complete, 13 ); //其实是1000/60
+    },
+    cancelRequestAnimFrame = window.cancelAnimationFrame ||
+    window.webkitCancelRequestAnimationFrame ||
+    window.mozCancelRequestAnimationFrame ||
+    window.oCancelRequestAnimationFrame ||
+    window.msCancelRequestAnimationFrame ||
+    clearTimeout;
+
+  var Thread = CustomEvent.extend( "Thread", {
+    init: function( obj, paras ) {
+      /// <summary>初始化参数 初始化参数会停止进程</summary>
+      /// <param name="obj" type="Object">进程参数</param>
+      /// <param name="paras" type="paras:[any]">计算参数</param>
+      /// <returns type="self" />
+      //this.stop();
+      this._super();
+      utilExtend.extend( this, Thread._defaultSetting, obj );
+      this.context = obj.context || this;
+      this.id = this.id || $.now();
+      this.args = $.util.argToArray( arguments, 1 );
+
+      return this.setFps()
+        .setDuration( this.duration );
+    },
+    create: function() {
+      return this;
+    },
+    render: function() {
+      return this;
+    },
+
+    start: function() {
+      /// <summary>启动</summary>
+      /// <returns type="self" />
+      if ( this.runFlag == false ) {
+        Thread.count += 1;
+        this.runFlag = true;
+        var self = this;
+        if ( this.delay > 0 ) {
+          self.status = "delay";
+          self.trigger( CustomEvent.createEvent( "delay", self ) );
+        }
+        setTimeout( function() {
+          self.status = "start";
+          self.trigger( CustomEvent.createEvent( "start", self ) );
+          //self.pauseTime += self.delay;
+
+          self.begin = $.now();
+          self._interval.call( self );
+        }, this.delay );
+      }
+      return this;
+    },
+
+    _interval: function() {
+      /// <summary>私有</summary>
+      var self = this,
+        every = function() {
+          if ( self.runFlag === false || ( self.tick >= self.duration && !self.forever ) ) {
+            every = null;
+            return self.stop();
+          }
+          if ( self.sleepFlag ) {
+            self.sleep();
+            return;
+          }
+          self.status = "run";
+
+          self.tick = $.now() - self.begin - self.pauseTime;
+
+          self.forever ? self._run.call( self, self.tick, self.fps ) : self._run.call( self, self.tick, self.duration );
+          var power = self.power;
+          self.timerId = power( every, self.fps );
+        };
+
+      every();
+    },
+
+    _run: function( step, duration ) {
+      /// <summary>私有</summary>
+      //if (this.sleepTime > 0) return;
+      //this.status = "run";
+      this._executor( step, duration );
+    },
+
+    resume: function() {
+      /// <summary>唤醒进程</summary>
+      /// <param name="time" type="Number">毫秒</param>
+      /// <returns type="Thread" />
+      if ( this.isSleep() ) {
+        var n = $.now();
+        this.pauseTime += n - ( this.sleepBeginTime || 0 );
+        this.sleepStopTime = n;
+        this.status = "run";
+        this.sleepFlag = false;
+        this.trigger( CustomEvent.createEvent( "resume", self ) );
+        this._interval();
+      }
+      return this;
+    },
+
+    stop: function() {
+      /// <summary>停止进程</summary>
+      /// <returns type="self" />
+      if ( this.runFlag == true ) {
+        this.tick = this.sleepTime = this.pauseTime = 0;
+        this.sleepBeginTime = null;
+        this.sleepId = null;
+        this.begin = null;
+        this.status = "stop";
+        Thread.count -= 1;
+        this.runFlag = false;
+        var clear = this.clear;
+        clear( this.timerId );
+        this.trigger( CustomEvent.createEvent( "stop", self ) );
+      }
+      return this;
+    },
+
+    _executor: function( a, b ) {
+      /// <summary>内部</summary>
+      this.run.apply( this.context, [ a, b ].concat( this.args ) ) === false && this.stop();
+    },
+
+    isRun: function() {
+      /// <summary>是否在运行</summary>
+      /// <returns type="Boolean" />
+      return this.runFlag;
+    },
+    isSleep: function() {
+      /// <summary>是否在睡眠</summary>
+      /// <returns type="Boolean" />
+      return this.status == "sleep"; //(this.sleepFlag && this.sleepTime > 0);
+    },
+
+    getDely: function() {
+      /// <summary>获得延迟启动时间</summary>
+      /// <returns type="Number" />
+      return this.dely;
+    },
+    setDely: function( delay ) {
+      /// <summary>设置延迟启动时间</summary>
+      /// <param name="time" type="Number">毫秒</param>
+      /// <returns type="self" />
+      this.delay = delay || this.delay || 0;
+      return this;
+    },
+
+    setDuration: function( duration ) {
+      /// <summary>设置持续时间</summary>
+      /// <param name="time" type="Number">毫秒</param>
+      /// <returns type="self" />
+      var status = this.getStatus();
+      this.stop();
+      if ( duration == undefined || duration == NaN || ( typeof duration == "number" && duration > 0 ) ) {
+        //this.duration = o.duration;
+        this.forever = false;
+      } else {
+        this.duration = NaN;
+        this.forever = true;
+      }
+      status == "run" && this.start();
+      return this;
+    },
+    getDuration: function() {
+      /// <summary>获得持续时间</summary>
+      /// <para>NaN表示无限</para>
+      /// <returns type="Number" />
+      return this.duration;
+    },
+    setFps: function() {
+      /// <summary>设置帧值</summary>
+      /// <returns type="Number" />
+      var status = this.getStatus();
+      this.stop();
+
+      if ( this.interval == null && this.isAnimFrame == true ) {
+        this.power = requestAnimFrame;
+        this.clear = cancelRequestAnimFrame;
+        this.fps = Thread.fps;
+      } else {
+        this.power = setTimeout;
+        this.clear = clearTimeout;
+        this.fps = this.interval || ( 1000 / this.fps ) || Thread.fps;
+      }
+
+      this.fps = Math.round( this.fps );
+
+      status == "run" && this.start();
+      return this;
+    },
+    getFps: function() {
+      /// <summary>获得帧值</summary>
+      /// <returns type="Number" />
+      return this.fps;
+    },
+    getPercent: function() {
+      /// <summary>获得百分比进度</summary>
+      /// <para>返回值是NaN时说明duration是0并且是永远运行的</para>
+      /// <returns type="Number" />
+      var percent = parseInt( this.tick / this.duration * 100 ) / 100;
+      return percent != NaN ? Math.min( 1, percent ) : percent;
+    },
+
+    getStatus: function() {
+      /// <summary>获得运行状态</summary>
+      /// <para>"delay"</para>
+      /// <para>"start"</para>
+      /// <para>"sleep"</para>
+      /// <para>"stop"</para>
+      /// <para>"run"</para>
+      /// <returns type="String" />
+      return this.status;
+    },
+    getTick: function() {
+      /// <summary>获得时值</summary>
+      /// <returns type="Number" />
+      return this.tick;
+    },
+
+    getPauseTime: function() {
+      /// <summary>获得暂停的时间值</summary>
+      /// <returns type="Number" />
+      return this.pauseTime;
+    },
+    setSleepTime: function( sleepTime ) {
+      /// <summary>设置睡眠时间</summary>
+      /// <param name="sleepTime" type="Number">毫秒</param>
+      /// <returns type="self" />
+      if ( sleepTime ) {
+        this.sleepTime = sleepTime;
+        this.sleepFlag = true;
+      }
+      return this;
+    },
+    getSleepTime: function( isCount ) {
+      /// <summary>获得当前睡眠时间值</summary>
+      /// <returns type="Number" />
+      return this.sleepTime;
+    },
+    sleep: function( sleeTime ) {
+      /// <summary>设置睡眠时间 只有在非睡眠时间有用</summary>
+      /// <param name="sleepTime" type="Number">毫秒</param>
+      /// <param name="time" type="Number">毫秒</param>
+      /// <returns type="self" />
+      var status = this.getStatus();
+      if ( sleeTime ) {
+        return this.setSleepTime( sleeTime );
+      }
+      if ( this.sleepTime == 0 ) {
+        return this;
+      }
+      this.status = "sleep";
+      this.trigger( CustomEvent.createEvent( "sleepBegin", self ) );
+      var self = this;
+      clearTimeout( this.sleepId );
+      this.sleepBeginTime = $.now();
+      self.sleepId = setTimeout( function() {
+        self.sleepId && self.resume();
+      }, self.sleepTime );
+
+      return this;
+    }
+  }, {
+    cancelRequestAnimFrame: cancelRequestAnimFrame,
+    count: 0,
+
+    fps: 13,
+
+    requestAnimFrame: requestAnimFrame,
+
+    _defaultSetting: {
+      runFlag: false,
+      forever: false,
+      sleepFlag: false,
+      power: setTimeout,
+      clear: clearTimeout,
+      status: "stop",
+      args: [],
+      tick: 0,
+      sleepTime: 0,
+      pauseTime: 0,
+      sleepId: null,
+      begin: null,
+      timerId: null,
+      run: function() {},
+      interval: null,
+      isAnimFrame: true,
+      duration: NaN,
+      id: ""
+    }
+  } );
+
+  object.createPropertyGetterSetter( Thread, {
+    args: "-pu -r -w",
+    timeId: "-pa -r",
+    sleepId: "-pa -r",
+    interval: "-pu -r",
+    isAnimFrame: "-pu -r",
+    id: "-pu -r"
+  } );
+
+  return Thread;
+} );
+
+/*=======================================================*/
+
+/*===================animation/tween===========================*/
+aQuery.define( "animation/tween", [ "base/typed" ], function( $, typed, undefined ) {
+  "use strict";
+  var math = Math,
+    // pi = math.PI,
+    pow = math.pow,
+    // sin = math.sin,
+    sqrt = math.sqrt,
+    abs = math.abs,
+    cos = math.cos,
+    tween = {
+      getFun: function( name ) {
+        var fun;
+        if ( typed.isFunction( name ) ) {
+          fun = name;
+        } else if ( typed.isString( name ) ) {
+          name = name.split( "." );
+          fun = this;
+          $.each( name, function( str ) {
+            if ( fun ) {
+              fun = fun[ str ];
+            } else {
+              fun = null;
+              return false;
+            }
+          }, this );
+        }
+        return fun || this.linear;
+      },
+      linear: function( t, b, c, d ) {
+        return t / d;
+      },
+      swing: function( t, b, c, d ) {
+        return 0.5 - cos( t / d * math.PI ) / 2;
+      },
+      ease: function( t, b, c, d ) {
+        t /= d;
+        var q = 0.07813 - t / 2,
+          Q = sqrt( 0.0066 + q * q ),
+          x = Q - q,
+          X = pow( abs( x ), 1 / 3 ) * ( x < 0 ? -1 : 1 ),
+          y = -Q - q,
+          Y = pow( abs( y ), 1 / 3 ) * ( y < 0 ? -1 : 1 );
+        t = X + Y + 0.25;
+        return pow( 1 - t, 2 ) * 3 * t * 0.1 + ( 1 - t ) * 3 * t * t + t * t * t;
+      },
+      easeIn: function( t, b, c, d ) {
+        return pow( t / d, 1.7 );
+      },
+      easeOut: function( t, b, c, d ) {
+        return pow( t / d, 0.48 );
+      },
+      easeInOut: function( t, b, c, d ) {
+        t /= d;
+        var q = 0.48 - t / 1.04,
+          Q = sqrt( 0.1734 + q * q ),
+          x = Q - q,
+          X = pow( abs( x ), 1 / 3 ) * ( x < 0 ? -1 : 1 ),
+          y = -Q - q,
+          Y = pow( abs( y ), 1 / 3 ) * ( y < 0 ? -1 : 1 );
+        t = X + Y + 0.5;
+        return ( 1 - t ) * 3 * t * t + t * t * t;
+      },
+      cubicBezier: function( t, b, c, d, x1, y1, x2, y2 ) { /*include Ext.js*/
+        x1 = $.between( 0, 1, x1 || 0 );
+        y1 = $.between( 0, 1, y1 || 0 );
+        x2 = $.between( 0, 1, x2 || 1 );
+        y2 = $.between( 0, 1, y2 || 10 );
+        var time = t / d;
+        var cx = 3 * x1,
+          bx = 3 * ( x2 - x1 ) - cx,
+          ax = 1 - cx - bx,
+          cy = 3 * y1,
+          by = 3 * ( y2 - y1 ) - cy,
+          ay = 1 - cy - by;
+
+        function sampleCurveX( t ) {
+          return ( ( ax * t + bx ) * t + cx ) * t;
+        }
+
+        function solve( x, epsilon ) {
+          var t = solveCurveX( x, epsilon );
+          return ( ( ay * t + by ) * t + cy ) * t;
+        }
+
+        function solveCurveX( x, epsilon ) {
+          var t0, t1, t2, x2, d2, i;
+          for ( t2 = x, i = 0; i < 8; i++ ) {
+            x2 = sampleCurveX( t2 ) - x;
+            if ( Math.abs( x2 ) < epsilon ) {
+              return t2;
+            }
+            d2 = ( 3 * ax * t2 + 2 * bx ) * t2 + cx;
+            if ( Math.abs( d2 ) < 1e-6 ) {
+              break;
+            }
+            t2 = t2 - x2 / d2;
+          }
+          t0 = 0;
+          t1 = 1;
+          t2 = x;
+          if ( t2 < t0 ) {
+            return t0;
+          }
+          if ( t2 > t1 ) {
+            return t1;
+          }
+          while ( t0 < t1 ) {
+            x2 = sampleCurveX( t2 );
+            if ( Math.abs( x2 - x ) < epsilon ) {
+              return t2;
+            }
+            if ( x > x2 ) {
+              t0 = t2;
+            } else {
+              t1 = t2;
+            }
+            t2 = ( t1 - t0 ) / 2 + t0;
+          }
+          return t2;
+        }
+
+        return solve( time, 1 / ( 200 * d ) );
+
+      }
+    };
+
+  $.tween = tween;
+
+  return tween;
+
+} );
+
+/*=======================================================*/
+
+/*===================animation/animate===========================*/
+aQuery.define( "animation/animate", [ "base/typed", "base/extend", "base/queue", "main/data", "animation/FX", "module/Thread", "animation/tween" ], function( $, typed, utilExtend, Queue, utilData, FX, Thread, tween, undefined ) {
+  "use strict";
+  FX.tick = function() {
+    if ( thread.getStatus() === "run" ) return;
+    thread.start();
+  };
+
+  FX.stop = function() {
+    //        clearInterval(timerId);
+    //        timerId = null
+    thread.stop();
+  };
+
+  var originComplete = function() {
+    $( this ).dequeue(); // this is ele
+  };
+
+  var timers = FX.timers,
+    thread = new Thread( {
+      isAnimFrame: true, //will be use AnimFrame
+
+      duration: 0, //will be go forever
+
+      run: function() {
+        for ( var i = 0, c; c = timers[ i++ ]; ) {
+          c.step( thread.pauseTime );
+        }
+
+        if ( !timers.length ) {
+          FX.stop();
+        }
+      }
+    } ),
+    animate = function( ele, property, option ) {
+      var opt = {},
+        p, isElement = typed.isElement( ele ),
+        hidden = isElement && $( ele ).isVisible(),
+        //self = ele,
+        count = 0,
+        defaultEasing = option.easing;
+
+      utilExtend.easyExtend( opt, option );
+
+      for ( p in property ) {
+        var name = $.util.camelCase( p );
+        if ( p !== name ) {
+          property[ name ] = property[ p ];
+          //把值复制给$.util.camelCase转化后的属性
+          delete property[ p ];
+          //删除已经无用的属性
+          p = name;
+        }
+        if ( property[ p ] === "hide" && hidden || property[ p ] === "show" && !hidden ) {
+          return opt.complete.call( ele );
+        }
+
+        if ( ( p === "height" || p === "width" ) && ele.style ) {
+          opt.display = ele.style.display;
+
+          opt.overflow = ele.style.overflow;
+
+          ele.style.display = "block"; //？
+        }
+
+        count++;
+      }
+
+      if ( opt.overflow != null ) {
+        ele.style.overflow = "hidden";
+      }
+
+      opt.curAnim = utilExtend.extend( {}, property );
+      opt.curCount = count;
+      opt.isStart = 1;
+
+      $.each( property, function( value, key ) {
+        opt.easing = opt.specialEasing && opt.specialEasing[ key ] ? $.getAnimationEasing( opt.specialEasing[ key ] ) : defaultEasing;
+        if ( typed.isFunction( FX.hooks[ key ] ) ) {
+          return FX.hooks[ key ]( ele, opt, value, key );
+        }
+        new FX( ele, opt, value, key );
+      } );
+
+      return true;
+    };
+  thread.stop = function() {
+    $.each( timers, function( item ) {
+      if ( item ) {
+        item.stop();
+        $( item.ele ).dequeue();
+      }
+    } );
+
+    Thread.prototype.stop.call( this );
+  };
+
+  $.extend( {
+    animate: function( ele, property, option ) {
+      /// <summary>给所有元素添加一个动画
+      /// <para>obj property:{ width: "50em", top: "+=500px" }</para>
+      /// <para>需要插件{transform3d: { translateX: "+=100px", translateY: "+=100px"}}</para>
+      /// <para>obj option</para>
+      /// <para>num/str option.duration:持续时间 也可输入"slow","fast","normal"</para>
+      /// <para>fun option.complete:结束时要执行的方法</para>
+      /// <para>str/fun option.easing:tween函数的路径:"quad.easeIn"或者直接的方法</para>
+      /// <para>默认只有linear。需要其他的函数，需要添加插件。或者添加方法到$.tween</para>
+      /// <para>bol option.queue:是否进入队列，默认是true。不进入队列将立即执行</para>
+      /// </summary>
+      /// <param name="ele" type="Element">dom元素</param>
+      /// <param name="property" type="Object">样式属性</param>
+      /// <param name="option" type="Object">参数</param>
+      /// <returns type="self" />
+      option = $._getAnimateOpt( option );
+
+      if ( typed.isEmptyObject( property ) ) {
+        return option.complete( ele );
+      } else {
+        if ( option.queue === false ) {
+          animate( ele, property, option );
+        } else {
+          $.queue( ele, "fx", function() {
+            animate( ele, property, option );
+            $.dequeue( ele, [ ele ] );
+            property = option = null;
+          } );
+          //                    var queue = $.queue(ele, "fx", function (ele, dequeue) {
+          //                        animate(ele, property, option);
+          //                        dequeue();
+          //                        property = option = null;
+          //                    });
+
+          //                    if (queue[0] !== "inprogress") {
+          //                        $.dequeue(ele, "fx");
+          //                    }
+        }
+      }
+      return this;
+    },
+    stopAnimation: function( ele, isDequeue ) {
+      /// <summary>停止当前元素当前动画</summary>
+      /// <returns type="self" />
+      for ( var timers = FX.timers, i = timers.length - 1; i >= 0; i-- ) {
+        if ( timers[ i ].ele === ele ) {
+          timers.splice( i, 1 );
+        }
+      }
+      isDequeue && $.dequeue( ele );
+      return this;
+    },
+
+    animationPower: thread,
+
+    clearQueue: function( ele, type ) {
+      return $.queue( ele, type || "fx", [] );
+    },
+
+    dequeue: function( ele, type ) {
+      //quote from jQuery-1.4.1
+      type = type || "fx";
+      var q = $.queue( ele, type );
+
+      return q.dequeue( ele, [ ele ] );
+
+    },
+
+    _originComplete: originComplete,
+
+    _getAnimateOpt: function( opt ) {
+      opt = opt || {};
+      var duration = FX.getDuration( opt.duration ),
+        delay = FX.getDelay( opt.delay ),
+        ret,
+        tCompelete;
+      if ( typed.isArray( opt.complete ) ) {
+        tCompelete = opt.complete;
+        if ( tCompelete[ 0 ] !== originComplete ) {
+          tCompelete.splice( 0, 0, originComplete );
+        }
+      } else if ( typed.isFunction( opt.complete ) ) {
+        tCompelete = [ opt.complete, originComplete ];
+      } else {
+        tCompelete = [ originComplete ];
+      }
+      ret = {
+        delay: delay,
+        duration: duration,
+        easing: $.getAnimationEasing( opt.easing, opt.para ),
+        specialEasing: opt.specialEasing,
+        complete: tCompelete,
+        queue: opt.queue === false ? false : true
+      };
+      return ret;
+    },
+    getAnimationEasing: function( easing, para ) {
+      var ret = tween.getFun( easing );
+      if ( para && para.length ) {
+        return function( t, b, c, d ) {
+          ret.apply( tween, [ t, b, c, d ].concat( para ) );
+        };
+      }
+      return ret;
+
+    },
+
+    queue: function( ele, type, fn ) {
+      //quote from jQuery-1.4.1
+      if ( !ele ) {
+        return;
+      }
+
+      type = ( type || "fx" ) + "queue";
+      var q = utilData.get( ele, type );
+
+      if ( !q ) {
+        q = new Queue()
+        utilData.set( ele, type, q );
+      }
+
+      return q.queue( fn, ele, [ ele ] );
+      //return q;
+    }
+
+    //, timers: timers
+  } );
+  $.fn.extend( {
+    animate: function( property, option ) {
+      /// <summary>给所有元素添加一个动画
+      /// <para>obj property:{ width: "50em", top: "+=500px" }</para>
+      /// <para>需要插件{transform3d: { translateX: "+=100px", translateY: "+=100px"}}</para>
+      /// <para>obj option</para>
+      /// <para>num/str option.duration:持续时间 也可输入"slow","fast","normal"</para>
+      /// <para>fun option.complete:结束时要执行的方法</para>
+      /// <para>str/fun option.easing:tween函数的路径:"quad.easeIn"或者直接的方法</para>
+      /// <para>默认只有linear。需要其他的函数，需要添加插件。或者添加方法到$.tween</para>
+      /// <para>bol option.queue:是否进入队列，默认是true。不进入队列将立即执行</para>
+      /// </summary>
+      /// <param name="property" type="Object">样式属性</param>
+      /// <param name="option" type="Object">参数</param>
+      /// <returns type="self" />
+      option = $._getAnimateOpt( option );
+
+      if ( typed.isEmptyObject( property ) ) {
+        return this.each( option.complete );
+      } else {
+        return this[ option.queue === false ? "each" : "queue" ]( function( ele ) {
+          animate( ele, property, option );
+        } );
+      }
+      //return this; //提供注释
+    },
+    stopAnimation: function( isDequeue ) {
+      /// <summary>停止当前元素当前动画</summary>
+      /// <param name="isDequeue" type="Boolean">是否继续之后的动画</param>
+      /// <returns type="self" />
+
+      return this.each( function( ele ) {
+        $.stopAnimation( ele, isDequeue );
+      } );
+    },
+
+    dequeue: function( type ) {
+      //quote from jQuery-1.4.1
+      return this.each( function( ele ) {
+        $.dequeue( ele, type );
+      } );
+    },
+
+    queue: function( type, data ) {
+      //quote from jQuery-1.4.1
+      if ( !typed.isString( type ) ) {
+        data = type;
+        type = "fx";
+      }
+
+      if ( data === undefined ) {
+        return $.queue( this[ 0 ], type );
+      }
+      return this.each( function( ele ) {
+        $.queue( ele, type, data );
+        // var queue = $.queue( ele, type, data );
+
+        //                if (type === "fx" && queue[0] !== "inprogress") {
+        //                    $.dequeue(ele, type);
+        //                }
+      } );
+    }
+  } );
+
+} );
+
+/*=======================================================*/
+
+/*===================animation/tween.extend===========================*/
+aQuery.define( "animation/tween.extend", [ "base/extend", "animation/tween" ], function( $, utilExtend, tween, undefined ) {
+  "use strict";
+  var math = Math;
+  utilExtend.easyExtend( tween, {
+    quad: {
+      easeIn: function( t, b, c, d ) {
+        return c * ( t /= d ) * t + b;
+      },
+      easeOut: function( t, b, c, d ) {
+        return -c * ( t /= d ) * ( t - 2 ) + b;
+      },
+      easeInOut: function( t, b, c, d ) {
+        if ( ( t /= d / 2 ) < 1 ) return c / 2 * t * t + b;
+        return -c / 2 * ( ( --t ) * ( t - 2 ) - 1 ) + b;
+      }
+    },
+    cubic: {
+      easeIn: function( t, b, c, d ) {
+        return c * ( t /= d ) * t * t + b;
+      },
+      easeOut: function( t, b, c, d ) {
+        return c * ( ( t = t / d - 1 ) * t * t + 1 ) + b;
+      },
+      easeInOut: function( t, b, c, d ) {
+        if ( ( t /= d / 2 ) < 1 ) return c / 2 * t * t * t + b;
+        return c / 2 * ( ( t -= 2 ) * t * t + 2 ) + b;
+      }
+    },
+    quart: {
+      easeIn: function( t, b, c, d ) {
+        return c * ( t /= d ) * t * t * t + b;
+      },
+      easeOut: function( t, b, c, d ) {
+        return -c * ( ( t = t / d - 1 ) * t * t * t - 1 ) + b;
+      },
+      easeInOut: function( t, b, c, d ) {
+        if ( ( t /= d / 2 ) < 1 ) return c / 2 * t * t * t * t + b;
+        return -c / 2 * ( ( t -= 2 ) * t * t * t - 2 ) + b;
+      }
+    },
+    quint: {
+      easeIn: function( t, b, c, d ) {
+        return c * ( t /= d ) * t * t * t * t + b;
+      },
+      easeOut: function( t, b, c, d ) {
+        return c * ( ( t = t / d - 1 ) * t * t * t * t + 1 ) + b;
+      },
+      easeInOut: function( t, b, c, d ) {
+        if ( ( t /= d / 2 ) < 1 ) return c / 2 * t * t * t * t * t + b;
+        return c / 2 * ( ( t -= 2 ) * t * t * t * t + 2 ) + b;
+      }
+    },
+    sine: {
+      easeIn: function( t, b, c, d ) {
+        return -c * math.cos( t / d * ( math.PI / 2 ) ) + c + b;
+      },
+      easeOut: function( t, b, c, d ) {
+        return c * math.sin( t / d * ( math.PI / 2 ) ) + b;
+      },
+      easeInOut: function( t, b, c, d ) {
+        return -c / 2 * ( math.cos( math.PI * t / d ) - 1 ) + b;
+      }
+    },
+    expo: {
+      easeIn: function( t, b, c, d ) {
+        return ( t == 0 ) ? b : c * math.pow( 2, 10 * ( t / d - 1 ) ) + b;
+      },
+      easeOut: function( t, b, c, d ) {
+        return ( t == d ) ? b + c : c * ( -math.pow( 2, -10 * t / d ) + 1 ) + b;
+      },
+      easeInOut: function( t, b, c, d ) {
+        if ( t == 0 ) return b;
+        if ( t == d ) return b + c;
+        if ( ( t /= d / 2 ) < 1 ) return c / 2 * math.pow( 2, 10 * ( t - 1 ) ) + b;
+        return c / 2 * ( -math.pow( 2, -10 * --t ) + 2 ) + b;
+      }
+    },
+    circ: {
+      easeIn: function( t, b, c, d ) {
+        return -c * ( math.sqrt( 1 - ( t /= d ) * t ) - 1 ) + b;
+      },
+      easeOut: function( t, b, c, d ) {
+        return c * math.sqrt( 1 - ( t = t / d - 1 ) * t ) + b;
+      },
+      easeInOut: function( t, b, c, d ) {
+        if ( ( t /= d / 2 ) < 1 ) return -c / 2 * ( math.sqrt( 1 - t * t ) - 1 ) + b;
+        return c / 2 * ( math.sqrt( 1 - ( t -= 2 ) * t ) + 1 ) + b;
+      }
+    },
+    elastic: {
+      easeIn: function( t, b, c, d, a, p ) {
+        if ( t == 0 ) return b;
+        if ( ( t /= d ) == 1 ) return b + c;
+        if ( !p ) p = d * .3;
+        if ( !a || a < math.abs( c ) ) {
+          a = c;
+          var s = p / 4;
+        } else {
+          var s = p / ( 2 * math.PI ) * math.asin( c / a );
+        }
+        return -( a * math.pow( 2, 10 * ( t -= 1 ) ) * math.sin( ( t * d - s ) * ( 2 * math.PI ) / p ) ) + b;
+      },
+      easeOut: function( t, b, c, d, a, p ) {
+        if ( t == 0 ) return b;
+        if ( ( t /= d ) == 1 ) return b + c;
+        if ( !p ) p = d * .3;
+        if ( !a || a < math.abs( c ) ) {
+          a = c;
+          var s = p / 4;
+        } else {
+          var s = p / ( 2 * math.PI ) * math.asin( c / a );
+        }
+        return ( a * math.pow( 2, -10 * t ) * math.sin( ( t * d - s ) * ( 2 * math.PI ) / p ) + c + b );
+      },
+      easeInOut: function( t, b, c, d, a, p ) {
+        if ( t == 0 ) return b;
+        if ( ( t /= d / 2 ) == 2 ) return b + c;
+        if ( !p ) p = d * ( .3 * 1.5 );
+        if ( !a || a < math.abs( c ) ) {
+          a = c;
+          var s = p / 4;
+        } else {
+          var s = p / ( 2 * math.PI ) * math.asin( c / a );
+        }
+        if ( t < 1 ) return -.5 * ( a * math.pow( 2, 10 * ( t -= 1 ) ) * math.sin( ( t * d - s ) * ( 2 * math.PI ) / p ) ) + b;
+        return a * math.pow( 2, -10 * ( t -= 1 ) ) * math.sin( ( t * d - s ) * ( 2 * math.PI ) / p ) * .5 + c + b;
+      }
+    },
+    back: {
+      easeIn: function( t, b, c, d, s ) {
+        if ( s == undefined ) s = 1.70158;
+        return c * ( t /= d ) * t * ( ( s + 1 ) * t - s ) + b;
+      },
+      easeOut: function( t, b, c, d, s ) {
+        if ( s == undefined ) s = 1.70158;
+        return c * ( ( t = t / d - 1 ) * t * ( ( s + 1 ) * t + s ) + 1 ) + b;
+      },
+      easeInOut: function( t, b, c, d, s ) {
+        if ( s == undefined ) s = 1.70158;
+        if ( ( t /= d / 2 ) < 1 ) return c / 2 * ( t * t * ( ( ( s *= ( 1.525 ) ) + 1 ) * t - s ) ) + b;
+        return c / 2 * ( ( t -= 2 ) * t * ( ( ( s *= ( 1.525 ) ) + 1 ) * t + s ) + 2 ) + b;
+      }
+    },
+    bounce: {
+      easeIn: function( t, b, c, d ) {
+        return c - tween.Bounce.easeOut( d - t, 0, c, d ) + b;
+      },
+      easeOut: function( t, b, c, d ) {
+        if ( ( t /= d ) < ( 1 / 2.75 ) ) {
+          return c * ( 7.5625 * t * t ) + b;
+        } else if ( t < ( 2 / 2.75 ) ) {
+          return c * ( 7.5625 * ( t -= ( 1.5 / 2.75 ) ) * t + .75 ) + b;
+        } else if ( t < ( 2.5 / 2.75 ) ) {
+          return c * ( 7.5625 * ( t -= ( 2.25 / 2.75 ) ) * t + .9375 ) + b;
+        } else {
+          return c * ( 7.5625 * ( t -= ( 2.625 / 2.75 ) ) * t + .984375 ) + b;
+        }
+      },
+      easeInOut: function( t, b, c, d ) {
+        if ( t < d / 2 ) return tween.Bounce.easeIn( t * 2, 0, c, d ) * .5 + b;
+        else return tween.Bounce.easeOut( t * 2 - d, 0, c, d ) * .5 + c * .5 + b;
+      }
+    }
+  } );
+
+  return tween;
+
+} );
+
+/*=======================================================*/
+
 /*===================html5/animate.transform===========================*/
 aQuery.define( "html5/animate.transform", [ "base/typed", "base/extend", "base/support", "main/object", "animation/FX", "html5/css3", "animation/animate" ], function( $, typed, utilExtend, support, object, FX, css3, animate, undefined ) {
   "use strict";
@@ -15571,1093 +15890,6 @@ aQuery.define( "html5/css3.transition.animate", [
 
 /*=======================================================*/
 
-/*===================animation/effect===========================*/
-aQuery.define( "animation/effect", [ "base/typed", "main/data", "main/css", "animation/animate" ], function( $, typed, utilData, css, animate, undefined ) {
-  "use strict";
-  var slideDownComplete = function() {
-      utilData.set( this, "slideOriginHeight", null );
-    },
-    slideUpComplete = function( opt ) {
-      css.hide( this, opt.visible );
-      css.css( this, "height", utilData.get( this, "slideOriginHeight" ) );
-      utilData.set( this, "slideOriginHeight", null );
-    },
-    fadeInComplete = function() {
-      utilData.set( this, "slideOriginOpacity", null );
-    },
-    fadeOutComplete = function( opt ) {
-      css.hide( this, opt.visible );
-      css.setOpacity( this, utilData.get( this, "slideOriginOpacity" ) );
-      utilData.set( this, "slideOriginOpacity", null );
-    };
-
-  var effect = {
-    fadeIn: function( ele, option ) {
-      /// <summary>淡入</summary>
-      /// <param name="ele" type="Element">dom元素</param>
-      /// <param name="option" type="Object">动画选项</param>
-      /// <returns type="self" />
-      if ( css.isVisible( ele ) ) {
-        return this;
-      }
-
-      var o, opt = $._getAnimateOpt( option );
-      o = utilData.get( ele, "slideOriginOpacity" );
-      o = o != null ? o : ( css.css( ele, "opacity" ) || 1 );
-
-      utilData.set( ele, "slideOriginOpacity", o );
-      opt.complete = fadeInComplete;
-      css.setOpacity( ele, 0 );
-      css.show( ele );
-      $.animate( ele, {
-        opacity: o
-      }, opt );
-      return this;
-    },
-    fadeOut: function( ele, option ) {
-      /// <summary>淡出</summary>
-      /// <param name="ele" type="Element">dom元素</param>
-      /// <param name="option" type="Object">动画选项</param>
-      /// <returns type="self" />
-      if ( !css.isVisible( ele ) ) {
-        return this;
-      }
-      option = option || {
-        visible: 0
-      };
-
-      var o, opt = $._getAnimateOpt( option );
-      o = utilData.get( ele, "slideOriginOpacity" );
-      o = o != null ? o : css.css( ele, "opacity" );
-
-      utilData.set( ele, "slideOriginOpacity", o );
-      opt.complete = fadeOutComplete;
-      css.show( ele )
-      $.animate( ele, {
-        opacity: 0
-      }, opt );
-      return this;
-    },
-
-    hide: function( ele, type, option ) {
-      /// <summary>隐藏元素
-      /// <para>type:slide fade</para>
-      /// </summary>
-      /// <param name="ele" type="Element">element元素</param>
-      /// <param name="type" type="String/undefined">动画类型</param>
-      /// <param name="option" type="Object">动画选项</param>
-      /// <returns type="self" />
-      ///  name="visible" type="Boolean/undefined">true:隐藏后任然占据文档流中
-      if ( typed.isString( type ) && effect[ type ] ) {
-        effect[ type ]( ele, option );
-      } else {
-        css.hide( ele );
-      }
-      return this;
-    },
-
-    show: function( ele, type, option ) {
-      /// <summary>显示元素
-      /// <para>type:slide fade</para>
-      /// </summary>
-      /// <param name="ele" type="Element">element元素</param>
-      /// <param name="type" type="String/undefined">动画类型</param>
-      /// <param name="option" type="Object">动画选项</param>
-      /// <returns type="self" />
-      if ( typed.isString( type ) && effect[ type ] ) {
-        effect[ type ]( ele, option );
-      } else {
-        css.show( ele );
-      }
-      return this;
-    },
-    slideDown: function( ele, option ) {
-      /// <summary>滑动淡入</summary>
-      /// <param name="ele" type="Element">dom元素</param>
-      /// <param name="option" type="Object">动画选项</param>
-      /// <returns type="self" />
-      if ( css.isVisible( ele ) ) {
-        return this;
-      }
-
-      var h = utilData.get( ele, "slideOriginHeight" ) || css.css( ele, "height" ),
-        opt = $._getAnimateOpt( option );
-      utilData.set( ele, "slideOriginHeight", h );
-      css.css( ele, "height", 0 );
-      opt.complete.push( slideDownComplete );
-      css.css( ele, "height", 0 );
-      css.show( ele )
-      $.animate( ele, {
-        height: h
-      }, opt );
-      return this;
-    },
-    slideUp: function( ele, option ) {
-      /// <summary>滑动淡出</summary>
-      /// <param name="ele" type="Element">dom元素</param>
-      /// <param name="option" type="Object">动画选项</param>
-      /// <returns type="self" />
-      if ( !css.isVisible( ele ) || utilData.get( ele, "_sliedeDown" ) ) {
-        return this;
-      }
-
-      var h = utilData.get( ele, "slideOriginHeight" ) || css.css( ele, "height" ),
-        opt = $._getAnimateOpt( option );
-      css.css( ele, "height", h );
-      utilData.set( ele, "slideOriginHeight", h );
-      opt.complete.push( slideUpComplete );
-      css.show( ele );
-      $.animate( ele, {
-        height: "0px"
-      }, opt );
-      return this;
-    }
-  };
-
-  $.fn.extend( {
-    fadeIn: function( option ) {
-      /// <summary>淡入</summary>
-      /// <param name="option" type="Object">动画选项</param>
-      /// <returns type="self" />
-      return this.each( function( ele ) {
-        effect.fadeIn( ele, option );
-      } );
-    },
-    fadeOut: function( option ) {
-      /// <summary>淡出</summary>
-      /// <param name="option" type="Object">动画选项</param>
-      /// <returns type="self" />
-      return this.each( function( ele ) {
-        effect.fadeOut( ele, option );
-      } );
-    },
-
-    hide: function( type, option ) {
-      /// <summary>隐藏元素
-      /// <para>type:slide fade</para>
-      /// </summary>
-      /// <param name="type" type="String/undefined">动画类型</param>
-      /// <param name="option" type="Object">动画选项</param>
-      /// <returns type="self" />
-      return this.each( function( ele ) {
-        effect.hide( ele, type, option );
-      } );
-    },
-
-    show: function( type, option ) {
-      /// <summary>显示元素
-      /// <para>type:slide fade</para>
-      /// </summary>
-      /// <param name="type" type="String/undefined">动画类型</param>
-      /// <param name="option" type="Object">动画选项</param>
-      /// <returns type="self" />
-      return this.each( function( ele ) {
-        effect.show( ele, type, option );
-      } );
-    },
-    slideDown: function( option ) {
-      /// <summary>滑动淡入</summary>
-      /// <param name="option" type="Object">动画选项</param>
-      /// <returns type="self" />
-      return this.each( function( ele ) {
-        effect.slideDown( ele, option );
-      } );
-    },
-    slideUp: function( option ) {
-      /// <summary>滑动淡出</summary>
-      /// <param name="option" type="Object">动画选项</param>
-      /// <returns type="self" />
-      return this.each( function( ele ) {
-        effect.slideUp( ele, option );
-      } );
-    }
-  } );
-
-  return effect;
-} );
-
-/*=======================================================*/
-
-/*===================ui/accordion===========================*/
-﻿aQuery.define( "ui/accordion", [
-  "base/typed",
-  "base/extend",
-  "main/object",
-  "module/Widget",
-  "main/class",
-  "main/event",
-  "main/CustomEvent",
-  "main/css",
-  "main/position",
-  "main/dom",
-  "animation/animate",
-  "html5/css3.transition.animate",
-  "animation/effect"
- ], function( $, typed, utilExtend, object, Widget, cls, event, CustomEvent, css, position, dom ) {
-  "use strict";
-  Widget.fetchCSS( "ui/css/accordion" );
-
-  var Key = CustomEvent.extend( "Key", {
-    init: function( key, parent ) {
-      this._super();
-      this.parent = parent;
-      this.originKey = $( key );
-      this.customHandler = this.originKey.attr( "widget-handler" );
-      this.html = this.originKey.html();
-      this.title = this.originKey.attr( "widget-title" ) || this.html;
-      this.widgetId = this.originKey.attr( "widget-id" ) || this.title;
-      this.originKey.html( "" );
-
-      return this.create().initHandler().addHandler();
-    },
-    create: function() {
-      this.$a = $( $.createEle( "a" ) )
-        .addClass( "unselect" )
-        .css( {
-          position: "relative",
-          display: "block",
-          height: "100%",
-          width: "100%"
-        } )
-        .html( this.html )
-        .addClass( "a" );
-
-      this.container = this.$key = this.originKey.css( {
-        position: "relative",
-        display: "block",
-        width: "100%"
-      } )
-        .addClass( "key" )
-        .attr( {
-          "title": this.title
-        } )
-        .append( this.$a )
-        .appendTo( this.parent.container );
-
-      return this;
-
-    },
-    event: function() {
-
-    },
-    initHandler: function() {
-      var self = this;
-      this.event = function( e ) {
-        //                self.setSelectStyle();
-        self.selectKey( e );
-      }
-      return this;
-    },
-    addHandler: function() {
-      this.$key.click( this.event );
-      return this;
-    },
-    removeHandler: function() {
-      this.$key.off( "click", this.event );
-      return this;
-    },
-    setUnselectStyle: function() {
-      this.$a.addClass( "unselect" ).removeClass( "select" );
-      return this;
-    },
-    setSelectStyle: function() {
-      this.$a.addClass( "select" ).removeClass( "unselect" );
-      return this;
-    },
-    selectKey: function( e ) {
-      this.trigger( "key.select", this, this, e );
-      this.setSelectStyle();
-    },
-    routing: function( widgetId ) {
-      return this.widgetId == widgetId;
-    }
-  } );
-
-  var KeyCollection = object.Collection( "KeyCollection", {
-    init: function( keys, parent ) {
-      this._super();
-      this.parent = parent;
-      this.container = parent.container;
-      var i = 0,
-        len = keys.length,
-        key,
-        item;
-
-      for ( ; i < len; i++ ) { //映射表 找到shell 通过name
-        item = keys[ i ];
-        key = new Key( item, this );
-
-        this.add( key );
-      }
-      this.initHandler().addHandler();
-      return this;
-    },
-    event: function() {
-
-    },
-    initHandler: function() {
-      var self = this;
-      this.event = function( key, e ) {
-        //self.setUnselectStyle();
-        //key.setSelectStyle();
-        self.trigger( "key.select", this, key, e );
-      }
-
-      return this;
-    },
-    addHandler: function() {
-      this.onChild( "key.select", this.event );
-      return this;
-    },
-    removeHandler: function() {
-      this.offChild( "key.select", this.event );
-      return this;
-    },
-    setUnselectStyle: function() {
-      return this.each( function( item ) {
-        item.setUnselectStyle();
-      } );
-    },
-    setSelectStyle: function() {
-      return this.each( function( item ) {
-        item.setSelectStyle();
-      } );
-    },
-
-    onChild: function( type, fn ) {
-      var list = this.models,
-        i;
-      for ( i in list ) {
-        list[ i ].on( type, fn );
-      }
-      return this;
-    },
-    offChild: function( type, fn ) {
-      var list = this.models,
-        i;
-      for ( i in list ) {
-        list[ i ].off( type, fn );
-      }
-      return this;
-    }
-  }, CustomEvent );
-
-  var Shell = CustomEvent.extend( "Shell", {
-    init: function( shell, parent ) {
-      this._super();
-      this.parent = parent;
-      this.originShell = $( shell );
-      this.customHandler = this.originShell.attr( "widget-handler" );
-      this.html = this.originShell.attr( "widget-html" );
-      this.title = this.originShell.attr( "widget-title" ) || this.html;
-      this.widgetId = this.originShell.attr( "widget-id" ) || this.title;
-
-      this.originShell.removeAttr( "title" );
-
-      this.onfocus = false;
-
-      return this.create().initHandler().addHandler();
-
-    },
-    create: function() {
-      this.$arrow = $( $.createEle( "div" ) ).css( {
-        "float": "left"
-      } ).addClass( "arrowRight" );
-
-      this.$text = $( $.createEle( "div" ) ).css( {
-        "float": "left"
-      } ).addClass( "text" ).html( this.html );
-
-      this.$title = $( $.createEle( "a" ) )
-        .css( {
-          "clear": "left",
-          position: "relative",
-          display: "block",
-          "text-decoration": "none"
-        } )
-        .addClass( "title" )
-        .addClass( "title_unselect" )
-        .append( this.$arrow )
-        .append( this.$text );
-
-      this.container = this.$board = this.originShell.css( {
-        position: "relative",
-        width: "100%",
-        display: "block"
-      } )
-        .addClass( "board" )
-        .hide();
-
-      this.$shell = $( $.createEle( "div" ) )
-        .css( {
-          position: "relative",
-          width: "100%"
-        } )
-        .addClass( "shell" )
-        .attr( {
-          "title": this.title
-        } )
-        .append( this.$title )
-        .append( this.$board )
-        .appendTo( this.parent.container );
-
-      this.$text.width( this.$board.width() - this.$arrow.width() );
-
-      this.keyCollection = new KeyCollection( this.$board.children(), this );
-      return this;
-    },
-    event: {
-      click: function() {},
-      keyselect: function() {}
-    },
-    initHandler: function() {
-      var self = this;
-      this.event.click = function( e ) {
-        self.toggle( e );
-      }
-      this.event.keyselect = function( key, e ) {
-        self.trigger( "key.select", this, "key.select", key, e );
-        self.open( key, e );
-      }
-      return this;
-    },
-    addHandler: function() {
-      this.$title.click( this.event.click );
-      this.keyCollection.on( "key.select", this.event.keyselect );
-      return this;
-    },
-    removeHandler: function( argument ) {
-      this.$title.off( "click", this.event.click );
-      this.keyCollection.off( "key.select", this.event.keyselect );
-      return this;
-    },
-    open: function( key, e ) {
-      if ( this.onfocus == false ) {
-        this.onfocus = true;
-        this.setOpenStyle();
-        this.$board.slideDown( {
-          duration: 400,
-          easing: "cubic.easeInOut"
-        } );
-      }
-      return this.trigger( "shell.open", this, "shell.open", this );
-
-    },
-    close: function() {
-      if ( this.onfocus == true ) {
-        this.onfocus = false;
-        this.setCloseStyle();
-        this.$board.slideUp( {
-          duration: 400,
-          easing: "cubic.easeInOut"
-        } );
-      }
-      return this.trigger( "shell.close", this, "shell.close", this );
-    },
-    toggle: function( e ) {
-      this.trigger( "shell.select", this, "shell.select", this, e );
-      this.onfocus ? this.close() : this.open();
-      return this;
-    },
-    setOpenStyle: function() {
-      this.$title.addClass( "title_select" ).removeClass( "title_unselect" );
-      this.$arrow.addClass( "arrowBottom" ).removeClass( "arrowRight" );
-      return this;
-    },
-    setCloseStyle: function() {
-      this.$title.addClass( "title_unselect" ).removeClass( "title_select" );
-      this.$arrow.addClass( "arrowRight" ).removeClass( "arrowBottom" );
-      return this;
-    },
-    render: function() {
-      return this.toggle();
-    },
-    routing: function( widgetId ) {
-      return this.widgetId == widgetId;
-    }
-  } );
-
-  var ShellCollection = object.Collection( "ShellCollection", {
-    init: function( shells, parent ) {
-      //this.parent = parent;
-      //this.container = parent.container;
-      this._super();
-      this.parent = parent;
-      this.container = parent.container;
-      var i = 0,
-        len = shells.length,
-        shell,
-        item;
-
-      for ( ; i < len; i++ ) { //映射表 找到shell 通过name
-        item = shells[ i ];
-        shell = new Shell( item, this );
-        //parent.append(shell);
-
-        //result.push(shell);
-        this.add( shell );
-      }
-      this.initHandler().addHandler();
-      return this;
-    },
-
-    event: function() {
-
-    },
-
-    initHandler: function() {
-      var self = this;
-      this.event = function( type, target, e ) {
-        if ( type == "shell.select" ) {
-          self.closeOther( target );
-        }
-        if ( type == "key.select" ) {
-          self.each( function( shell ) {
-            shell.keyCollection.setUnselectStyle();
-          } );
-        }
-        self.trigger( type, this, type, target, e );
-      }
-      return this;
-    },
-    addHandler: function() {
-      this.onChild( "key.select", this.event )
-        .onChild( "shell.open", this.event )
-        .onChild( "shell.close", this.event )
-        .onChild( "shell.select", this.event );
-      return this;
-    },
-    removeHandler: function() {
-      this.offChild( "key.select", this.event )
-        .offChild( "shell.open", this.event )
-        .offChild( "shell.close", this.event )
-        .offChild( "shell.select", this.event );
-      return this;
-    },
-    closeOther: function( except ) {
-      this.parent.option.oneSelect && this.each( function( shell ) {
-        except != shell && shell.onfocus && shell.close();
-      }, this );
-      return this;
-    },
-
-    onChild: function( type, fn ) {
-      var list = this.models,
-        i;
-      for ( i in list ) {
-        list[ i ].on( type, fn );
-      }
-      return this;
-    },
-    offChild: function( type, fn ) {
-      var list = this.models,
-        i;
-      for ( i in list ) {
-        list[ i ].off( type, fn );
-      }
-      return this;
-    },
-    getShell: function( shell ) {
-      var ret = null,
-        item, i, list = this.models;
-      if ( typed.isString( shell ) ) {
-        for ( i in list ) {
-          item = list[ i ];
-          if ( item.widgetId == shell ) {
-            ret = item;
-            break
-          }
-        }
-      } else if ( typed.isElement( shell ) ) {
-        for ( i in list ) {
-          item = list[ i ];
-          if ( item.originShell == shell ) {
-            ret = item;
-            break
-          }
-        }
-      } else if ( shell instanceof Shell ) {
-        ret = Shell;
-      }
-      return ret;
-    },
-    selectShell: function( shell ) {
-      var ret = this.getShell( shell );
-      if ( ret != null ) {
-        ret.toggle();
-      }
-      return this
-    }
-  }, CustomEvent );
-
-  var Accordion = CustomEvent.extend( "Accordion", {
-    init: function( target, option ) { //, keyId, isDittoShellSelect
-      this._super();
-      this.target = $( target );
-      this.width = this.target.width();
-      //this.height = this.target.height();
-      //this.id = "Accordion" + "." + (id || $.now());
-      this.container = null;
-      this.shellCollection = null;
-      this._selectShell = null;
-      this.option = utilExtend.extend( {}, this.defaultSetting, option );
-      this.create()._initHandler().enable();
-
-      return this;
-    },
-    create: function() {
-      this.container = $( $.createEle( "div" ) )
-        .css( "position", "relative" )
-        .addClass( "aquery-accordion" );
-      var shells = this.target.children();
-      this.container.append( shells ).appendTo( this.target );
-
-      this.container.outerWidth( this.width );
-
-      this.shellCollection = new ShellCollection( shells, this );
-      return this;
-    },
-    _initHandler: function() {
-      var self = this;
-      //控制其他的
-      //配置
-      this.event = function( type, target, e ) {
-        self.trigger( type, this, type, target, e );
-      }
-
-      return this;
-    },
-    enable: function() {
-      this.shellCollection.on( "key.select", this.event )
-        .on( "shell.open", this.event )
-        .on( "shell.close", this.event )
-        .on( "shell.select", this.event );
-      return this;
-    },
-    disable: function() {
-      this.shellCollection.off( "key.select", this.event )
-        .off( "shell.open", this.event )
-        .off( "shell.close", this.event )
-        .off( "shell.select", this.event );
-      return this;
-    },
-    render: function() {
-
-    },
-    defaultSetting: {
-      oneSelect: 0
-    },
-    selectShell: function( shell ) {
-      this.shellCollection.selectShell( shell );
-      return this;
-    }
-  } );
-
-  var accordion = Widget.extend( "ui.accordion", {
-    container: null,
-    customEventName: [ "key.select", "shell.open", "shell.close", "shell.select" ],
-    event: function() {
-
-    },
-    enable: function() {
-      this.disable();
-      this.accordion.enable()
-        .on( "key.select", this.event )
-        .on( "shell.select", this.event )
-        .on( "shell.open", this.event )
-        .on( "shell.close", this.event );
-      this.options.disabled = false;
-    },
-    disable: function() {
-      this.accordion.disable()
-        .on( "key.select", this.event )
-        .on( "shell.select", this.event )
-        .on( "shell.open", this.event )
-        .on( "shell.close", this.event );
-      this.options.disabled = true;
-    },
-    init: function( opt, target ) {
-      this._super( opt, target );
-      target.attr( "amdquery-ui", "accordion" );
-      this.accordion = new Accordion( target[ 0 ], this.options );
-      this.options = this.accordion.option;
-      this._initHandler();
-      this.able();
-      return this;
-    },
-    options: {
-      disable: 0,
-      oneSelect: 0
-    },
-    setter: {
-      disable: 0,
-      oneSelect: 0
-    },
-    publics: {
-      selectShell: Widget.AllowPublic
-    },
-    _initHandler: function() {
-      var self = this;
-      this.event = function( type, target, e ) {
-        self.target.trigger( self.widgetEventPrefix + "." + type, self.target[ 0 ], target, e );
-        var handler;
-        switch ( type ) {
-          case "key.select":
-            ( handler = target.customHandler ) && self.target.trigger( self.getEventName( "key." + handler ), this, target, e );
-            break;
-          case "shell.select":
-            ( handler = target.customHandler ) && self.target.trigger( self.getEventName( "shell." + handler ), this, target, e );
-            break;
-        }
-      }
-    },
-    selectShell: function( shell ) {
-      this.accordion.selectShell( shell );
-    },
-    target: null,
-    toString: function() {
-      return "ui.accordion";
-    },
-    widgetEventPrefix: "accordion"
-  } );
-
-  //提供注释
-  $.fn.uiAccordion = function( a, b, c, args ) {
-    /// <summary>可以参考charcode列表绑定快捷键
-    /// <para>arr obj.keylist:快捷键列表</para>
-    /// <para>{ type: "keyup", keyCode: "Enter" </para>
-    /// <para>    , fun: function (e) { </para>
-    /// <para>        todo(this, e); </para>
-    /// <para>    }, combinationKey: ["alt","ctrls"] </para>
-    /// <para>} </para>
-    /// </summary>
-    /// <param name="a" type="Object/String">初始化obj或属性名:option或方法名</param>
-    /// <param name="b" type="String/null">属性option子属性名</param>
-    /// <param name="c" type="any">属性option子属性名的值</param>
-    /// <param name="args" type="any">在调用方法的时候，后面是方法的参数</param>
-    /// <returns type="$" />
-    return accordion.apply( this, arguments );
-  }
-
-  return Accordion;
-} );
-
-/*=======================================================*/
-
-/*===================ui/button===========================*/
-aQuery.define( "ui/button", [
-    "base/client",
-    "module/Widget",
-    "main/query",
-    "main/class",
-    "main/event",
-    "main/css",
-    "main/position",
-    "main/dom",
-    "main/attr",
-    "html5/css3"
-  ],
-
-  function( $, client, Widget, query, cls, event, css, position, dom, attr, css3 ) {
-    "use strict";
-
-    Widget.fetchCSS( "ui/css/button" );
-
-    var button = Widget.extend( "ui.button", {
-      container: null,
-      _initHandler: function() {
-        var self = this;
-        this.buttonEvent = function( e ) {
-          switch ( e.type ) {
-            case "click":
-              var para = {
-                type: self.getEventName( "click" ),
-                container: self.container,
-                target: self.target[ 0 ],
-                event: e
-              };
-
-              self.target.trigger( para.type, self.target[ 0 ], para );
-              break;
-          }
-        };
-        return this;
-      },
-      enable: function() {
-        this.disable();
-        this.target.on( "click", this.buttonEvent );
-        this.options.disabled = false;
-        return this;
-      },
-      disable: function() {
-        this.target.off( "click", this.buttonEvent );
-        this.options.disabled = true;
-        return this;
-      },
-      render: function() {
-        var opt = this.options,
-          ie = client.browser.ie < 9;
-        if ( ie ) {
-          this.$text.remove();
-        }
-        this.$text.html( opt.text );
-        if ( ie ) {
-          this.$text.appendTo( this.container );
-        }
-        this.container.attr( "title", opt.title );
-        return this;
-      },
-      init: function( opt, target ) {
-        this._super( opt, target );
-
-        target.addClass( this.options.defualtCssName );
-
-        this.container = $( $.createEle( "a" ) ).css( {
-          "display": "inline-block",
-          "text-decoration": "none",
-          "width": "100%",
-          "height": "100%",
-          "position": "relative"
-        } ).addClass( "back" );
-
-        this.$img = $( $.createEle( "div" ) ).css( {
-          "display": "block",
-          "text-decoration": "none",
-          "position": "absolute",
-          "width": "100%",
-          "height": "100%"
-        } ).addClass( "img" ).addClass( this.options.icon );
-
-        this.$text = $( $.createEle( "a" ) ).css( {
-          "display": "block",
-          "text-decoration": "none",
-          "position": "absolute",
-          "float": "left",
-          "width": "100%",
-          "height": "100%"
-        } ).addClass( "text" );
-
-        this.container.append( this.$img ).append( this.$text );
-
-        target.append( this.container );
-
-        target.css( {
-          "float": "left",
-          "cursor": "pointer"
-        } );
-
-        this.$text.css3( "user-select", "none" );
-
-        this._initHandler().enable().render();
-
-        return this;
-      },
-      customEventName: [ "click" ],
-      options: {
-        defualtCssName: "aquery-button",
-        text: "clickme",
-        title: "",
-        icon: "icon"
-      },
-      getter: {
-        defualtCssName: 1,
-        text: 1,
-        title: 1,
-        icon: 0
-      },
-      setter: {
-        defualtCssName: 0,
-        text: 1,
-        title: 1,
-        icon: 0
-      },
-      publics: {
-
-      },
-      target: null,
-      toString: function() {
-        return "ui.button";
-      },
-      widgetEventPrefix: "button"
-    } );
-
-    return button;
-  } );
-
-/*=======================================================*/
-
-/*===================animation/tween.extend===========================*/
-aQuery.define( "animation/tween.extend", [ "base/extend", "animation/tween" ], function( $, utilExtend, tween, undefined ) {
-  "use strict";
-  var math = Math;
-  utilExtend.easyExtend( tween, {
-    quad: {
-      easeIn: function( t, b, c, d ) {
-        return c * ( t /= d ) * t + b;
-      },
-      easeOut: function( t, b, c, d ) {
-        return -c * ( t /= d ) * ( t - 2 ) + b;
-      },
-      easeInOut: function( t, b, c, d ) {
-        if ( ( t /= d / 2 ) < 1 ) return c / 2 * t * t + b;
-        return -c / 2 * ( ( --t ) * ( t - 2 ) - 1 ) + b;
-      }
-    },
-    cubic: {
-      easeIn: function( t, b, c, d ) {
-        return c * ( t /= d ) * t * t + b;
-      },
-      easeOut: function( t, b, c, d ) {
-        return c * ( ( t = t / d - 1 ) * t * t + 1 ) + b;
-      },
-      easeInOut: function( t, b, c, d ) {
-        if ( ( t /= d / 2 ) < 1 ) return c / 2 * t * t * t + b;
-        return c / 2 * ( ( t -= 2 ) * t * t + 2 ) + b;
-      }
-    },
-    quart: {
-      easeIn: function( t, b, c, d ) {
-        return c * ( t /= d ) * t * t * t + b;
-      },
-      easeOut: function( t, b, c, d ) {
-        return -c * ( ( t = t / d - 1 ) * t * t * t - 1 ) + b;
-      },
-      easeInOut: function( t, b, c, d ) {
-        if ( ( t /= d / 2 ) < 1 ) return c / 2 * t * t * t * t + b;
-        return -c / 2 * ( ( t -= 2 ) * t * t * t - 2 ) + b;
-      }
-    },
-    quint: {
-      easeIn: function( t, b, c, d ) {
-        return c * ( t /= d ) * t * t * t * t + b;
-      },
-      easeOut: function( t, b, c, d ) {
-        return c * ( ( t = t / d - 1 ) * t * t * t * t + 1 ) + b;
-      },
-      easeInOut: function( t, b, c, d ) {
-        if ( ( t /= d / 2 ) < 1 ) return c / 2 * t * t * t * t * t + b;
-        return c / 2 * ( ( t -= 2 ) * t * t * t * t + 2 ) + b;
-      }
-    },
-    sine: {
-      easeIn: function( t, b, c, d ) {
-        return -c * math.cos( t / d * ( math.PI / 2 ) ) + c + b;
-      },
-      easeOut: function( t, b, c, d ) {
-        return c * math.sin( t / d * ( math.PI / 2 ) ) + b;
-      },
-      easeInOut: function( t, b, c, d ) {
-        return -c / 2 * ( math.cos( math.PI * t / d ) - 1 ) + b;
-      }
-    },
-    expo: {
-      easeIn: function( t, b, c, d ) {
-        return ( t == 0 ) ? b : c * math.pow( 2, 10 * ( t / d - 1 ) ) + b;
-      },
-      easeOut: function( t, b, c, d ) {
-        return ( t == d ) ? b + c : c * ( -math.pow( 2, -10 * t / d ) + 1 ) + b;
-      },
-      easeInOut: function( t, b, c, d ) {
-        if ( t == 0 ) return b;
-        if ( t == d ) return b + c;
-        if ( ( t /= d / 2 ) < 1 ) return c / 2 * math.pow( 2, 10 * ( t - 1 ) ) + b;
-        return c / 2 * ( -math.pow( 2, -10 * --t ) + 2 ) + b;
-      }
-    },
-    circ: {
-      easeIn: function( t, b, c, d ) {
-        return -c * ( math.sqrt( 1 - ( t /= d ) * t ) - 1 ) + b;
-      },
-      easeOut: function( t, b, c, d ) {
-        return c * math.sqrt( 1 - ( t = t / d - 1 ) * t ) + b;
-      },
-      easeInOut: function( t, b, c, d ) {
-        if ( ( t /= d / 2 ) < 1 ) return -c / 2 * ( math.sqrt( 1 - t * t ) - 1 ) + b;
-        return c / 2 * ( math.sqrt( 1 - ( t -= 2 ) * t ) + 1 ) + b;
-      }
-    },
-    elastic: {
-      easeIn: function( t, b, c, d, a, p ) {
-        if ( t == 0 ) return b;
-        if ( ( t /= d ) == 1 ) return b + c;
-        if ( !p ) p = d * .3;
-        if ( !a || a < math.abs( c ) ) {
-          a = c;
-          var s = p / 4;
-        } else {
-          var s = p / ( 2 * math.PI ) * math.asin( c / a );
-        }
-        return -( a * math.pow( 2, 10 * ( t -= 1 ) ) * math.sin( ( t * d - s ) * ( 2 * math.PI ) / p ) ) + b;
-      },
-      easeOut: function( t, b, c, d, a, p ) {
-        if ( t == 0 ) return b;
-        if ( ( t /= d ) == 1 ) return b + c;
-        if ( !p ) p = d * .3;
-        if ( !a || a < math.abs( c ) ) {
-          a = c;
-          var s = p / 4;
-        } else {
-          var s = p / ( 2 * math.PI ) * math.asin( c / a );
-        }
-        return ( a * math.pow( 2, -10 * t ) * math.sin( ( t * d - s ) * ( 2 * math.PI ) / p ) + c + b );
-      },
-      easeInOut: function( t, b, c, d, a, p ) {
-        if ( t == 0 ) return b;
-        if ( ( t /= d / 2 ) == 2 ) return b + c;
-        if ( !p ) p = d * ( .3 * 1.5 );
-        if ( !a || a < math.abs( c ) ) {
-          a = c;
-          var s = p / 4;
-        } else {
-          var s = p / ( 2 * math.PI ) * math.asin( c / a );
-        }
-        if ( t < 1 ) return -.5 * ( a * math.pow( 2, 10 * ( t -= 1 ) ) * math.sin( ( t * d - s ) * ( 2 * math.PI ) / p ) ) + b;
-        return a * math.pow( 2, -10 * ( t -= 1 ) ) * math.sin( ( t * d - s ) * ( 2 * math.PI ) / p ) * .5 + c + b;
-      }
-    },
-    back: {
-      easeIn: function( t, b, c, d, s ) {
-        if ( s == undefined ) s = 1.70158;
-        return c * ( t /= d ) * t * ( ( s + 1 ) * t - s ) + b;
-      },
-      easeOut: function( t, b, c, d, s ) {
-        if ( s == undefined ) s = 1.70158;
-        return c * ( ( t = t / d - 1 ) * t * ( ( s + 1 ) * t + s ) + 1 ) + b;
-      },
-      easeInOut: function( t, b, c, d, s ) {
-        if ( s == undefined ) s = 1.70158;
-        if ( ( t /= d / 2 ) < 1 ) return c / 2 * ( t * t * ( ( ( s *= ( 1.525 ) ) + 1 ) * t - s ) ) + b;
-        return c / 2 * ( ( t -= 2 ) * t * ( ( ( s *= ( 1.525 ) ) + 1 ) * t + s ) + 2 ) + b;
-      }
-    },
-    bounce: {
-      easeIn: function( t, b, c, d ) {
-        return c - tween.Bounce.easeOut( d - t, 0, c, d ) + b;
-      },
-      easeOut: function( t, b, c, d ) {
-        if ( ( t /= d ) < ( 1 / 2.75 ) ) {
-          return c * ( 7.5625 * t * t ) + b;
-        } else if ( t < ( 2 / 2.75 ) ) {
-          return c * ( 7.5625 * ( t -= ( 1.5 / 2.75 ) ) * t + .75 ) + b;
-        } else if ( t < ( 2.5 / 2.75 ) ) {
-          return c * ( 7.5625 * ( t -= ( 2.25 / 2.75 ) ) * t + .9375 ) + b;
-        } else {
-          return c * ( 7.5625 * ( t -= ( 2.625 / 2.75 ) ) * t + .984375 ) + b;
-        }
-      },
-      easeInOut: function( t, b, c, d ) {
-        if ( t < d / 2 ) return tween.Bounce.easeIn( t * 2, 0, c, d ) * .5 + b;
-        else return tween.Bounce.easeOut( t * 2 - d, 0, c, d ) * .5 + c * .5 + b;
-      }
-    }
-  } );
-
-  return tween;
-
-} );
-
-/*=======================================================*/
-
 /*===================html5/css3.position===========================*/
 aQuery.define( "html5/css3.position", [ "base/support", "main/position", "html5/css3" ], function( $, support, position, css3 ) {
   "use strict";
@@ -16981,7 +16213,7 @@ aQuery.define( "html5/css3.position", [ "base/support", "main/position", "html5/
               originX: null,
               originY: null,
               event: e,
-              target: this
+              target: target[ 0 ]
             };
           }
           switch ( e.type ) {
@@ -17140,6 +16372,7 @@ aQuery.define( "ui/flex", [
     "module/Widget",
     "main/query",
     "main/class",
+    "main/CustomEvent",
     "main/event",
     "main/css",
     "main/position",
@@ -17147,7 +16380,7 @@ aQuery.define( "ui/flex", [
     "main/attr",
     "html5/css3"
   ],
-  function( $, client, typed, support, Widget, query, cls, event, css, position, dom, attr, css3 ) {
+  function( $, client, typed, support, Widget, query, cls, CustomEvent, event, css, position, dom, attr, css3 ) {
     "use strict";
 
     function debounce( fun, wait, immediate ) {
@@ -17235,12 +16468,10 @@ aQuery.define( "ui/flex", [
 
           var eventName = this.getEventName( "resize" );
 
-          this.target.trigger( eventName, this.target[ 0 ], {
-            type: eventName,
-            target: this.target[ 0 ],
+          this.target.trigger( CustomEvent.createEvent( eventName, this.target[ 0 ], {
             width: this.target.width(),
             height: this.target.height()
-          } );
+          } ) );
 
           return this;
         },
@@ -17362,12 +16593,10 @@ aQuery.define( "ui/flex", [
           this.toDirection( this.options.flexDirection );
 
           var eventName = this.getEventName( "resize" );
-          this.target.trigger( eventName, this.target[ 0 ], {
-            type: eventName,
-            target: this.target[ 0 ],
+          this.target.trigger( CustomEvent.createEvent(eventName, this.target[ 0 ], {
             width: this.width,
             height: this.height
-          } );
+          } ) );
 
           //来自父元素的
           if ( this._lock === false ) {
@@ -17929,11 +17158,10 @@ aQuery.define( "module/Keyboard", [ "base/config", "base/typed", "base/extend", 
         //item.todo.call(this, e);i
         var type = Keyboard.getHandlerName( item );
         config.amdquery.debug && $.logger( "keyboard.routing", "handlerName", type );
-        this.trigger( type, target, {
-          type: type,
+        this.trigger( CustomEvent.createEvent( type, target, {
           event: e,
           keyItem: item
-        } );
+        } ) );
         event.document.preventDefault( e );
         event.document.stopPropagation( e );
       }
@@ -18138,12 +17366,220 @@ aQuery.define( "module/Keyboard", [ "base/config", "base/typed", "base/extend", 
 
 /*=======================================================*/
 
+/*===================animation/effect===========================*/
+aQuery.define( "animation/effect", [ "base/typed", "main/data", "main/css", "animation/animate" ], function( $, typed, utilData, css, animate, undefined ) {
+  "use strict";
+  var slideDownComplete = function() {
+      utilData.set( this, "slideOriginHeight", null );
+    },
+    slideUpComplete = function( opt ) {
+      css.hide( this, opt.visible );
+      css.css( this, "height", utilData.get( this, "slideOriginHeight" ) );
+      utilData.set( this, "slideOriginHeight", null );
+    },
+    fadeInComplete = function() {
+      utilData.set( this, "slideOriginOpacity", null );
+    },
+    fadeOutComplete = function( opt ) {
+      css.hide( this, opt.visible );
+      css.setOpacity( this, utilData.get( this, "slideOriginOpacity" ) );
+      utilData.set( this, "slideOriginOpacity", null );
+    };
+
+  var effect = {
+    fadeIn: function( ele, option ) {
+      /// <summary>淡入</summary>
+      /// <param name="ele" type="Element">dom元素</param>
+      /// <param name="option" type="Object">动画选项</param>
+      /// <returns type="self" />
+      if ( css.isVisible( ele ) ) {
+        return this;
+      }
+
+      var o, opt = $._getAnimateOpt( option );
+      o = utilData.get( ele, "slideOriginOpacity" );
+      o = o != null ? o : ( css.css( ele, "opacity" ) || 1 );
+
+      utilData.set( ele, "slideOriginOpacity", o );
+      opt.complete = fadeInComplete;
+      css.setOpacity( ele, 0 );
+      css.show( ele );
+      $.animate( ele, {
+        opacity: o
+      }, opt );
+      return this;
+    },
+    fadeOut: function( ele, option ) {
+      /// <summary>淡出</summary>
+      /// <param name="ele" type="Element">dom元素</param>
+      /// <param name="option" type="Object">动画选项</param>
+      /// <returns type="self" />
+      if ( !css.isVisible( ele ) ) {
+        return this;
+      }
+      option = option || {
+        visible: 0
+      };
+
+      var o, opt = $._getAnimateOpt( option );
+      o = utilData.get( ele, "slideOriginOpacity" );
+      o = o != null ? o : css.css( ele, "opacity" );
+
+      utilData.set( ele, "slideOriginOpacity", o );
+      opt.complete = fadeOutComplete;
+      css.show( ele )
+      $.animate( ele, {
+        opacity: 0
+      }, opt );
+      return this;
+    },
+
+    hide: function( ele, type, option ) {
+      /// <summary>隐藏元素
+      /// <para>type:slide fade</para>
+      /// </summary>
+      /// <param name="ele" type="Element">element元素</param>
+      /// <param name="type" type="String/undefined">动画类型</param>
+      /// <param name="option" type="Object">动画选项</param>
+      /// <returns type="self" />
+      ///  name="visible" type="Boolean/undefined">true:隐藏后任然占据文档流中
+      if ( typed.isString( type ) && effect[ type ] ) {
+        effect[ type ]( ele, option );
+      } else {
+        css.hide( ele );
+      }
+      return this;
+    },
+
+    show: function( ele, type, option ) {
+      /// <summary>显示元素
+      /// <para>type:slide fade</para>
+      /// </summary>
+      /// <param name="ele" type="Element">element元素</param>
+      /// <param name="type" type="String/undefined">动画类型</param>
+      /// <param name="option" type="Object">动画选项</param>
+      /// <returns type="self" />
+      if ( typed.isString( type ) && effect[ type ] ) {
+        effect[ type ]( ele, option );
+      } else {
+        css.show( ele );
+      }
+      return this;
+    },
+    slideDown: function( ele, option ) {
+      /// <summary>滑动淡入</summary>
+      /// <param name="ele" type="Element">dom元素</param>
+      /// <param name="option" type="Object">动画选项</param>
+      /// <returns type="self" />
+      if ( css.isVisible( ele ) ) {
+        return this;
+      }
+
+      var h = utilData.get( ele, "slideOriginHeight" ) || css.css( ele, "height" ),
+        opt = $._getAnimateOpt( option );
+      utilData.set( ele, "slideOriginHeight", h );
+      css.css( ele, "height", 0 );
+      opt.complete.push( slideDownComplete );
+      css.css( ele, "height", 0 );
+      css.show( ele )
+      $.animate( ele, {
+        height: h
+      }, opt );
+      return this;
+    },
+    slideUp: function( ele, option ) {
+      /// <summary>滑动淡出</summary>
+      /// <param name="ele" type="Element">dom元素</param>
+      /// <param name="option" type="Object">动画选项</param>
+      /// <returns type="self" />
+      if ( !css.isVisible( ele ) || utilData.get( ele, "_sliedeDown" ) ) {
+        return this;
+      }
+
+      var h = utilData.get( ele, "slideOriginHeight" ) || css.css( ele, "height" ),
+        opt = $._getAnimateOpt( option );
+      css.css( ele, "height", h );
+      utilData.set( ele, "slideOriginHeight", h );
+      opt.complete.push( slideUpComplete );
+      css.show( ele );
+      $.animate( ele, {
+        height: "0px"
+      }, opt );
+      return this;
+    }
+  };
+
+  $.fn.extend( {
+    fadeIn: function( option ) {
+      /// <summary>淡入</summary>
+      /// <param name="option" type="Object">动画选项</param>
+      /// <returns type="self" />
+      return this.each( function( ele ) {
+        effect.fadeIn( ele, option );
+      } );
+    },
+    fadeOut: function( option ) {
+      /// <summary>淡出</summary>
+      /// <param name="option" type="Object">动画选项</param>
+      /// <returns type="self" />
+      return this.each( function( ele ) {
+        effect.fadeOut( ele, option );
+      } );
+    },
+
+    hide: function( type, option ) {
+      /// <summary>隐藏元素
+      /// <para>type:slide fade</para>
+      /// </summary>
+      /// <param name="type" type="String/undefined">动画类型</param>
+      /// <param name="option" type="Object">动画选项</param>
+      /// <returns type="self" />
+      return this.each( function( ele ) {
+        effect.hide( ele, type, option );
+      } );
+    },
+
+    show: function( type, option ) {
+      /// <summary>显示元素
+      /// <para>type:slide fade</para>
+      /// </summary>
+      /// <param name="type" type="String/undefined">动画类型</param>
+      /// <param name="option" type="Object">动画选项</param>
+      /// <returns type="self" />
+      return this.each( function( ele ) {
+        effect.show( ele, type, option );
+      } );
+    },
+    slideDown: function( option ) {
+      /// <summary>滑动淡入</summary>
+      /// <param name="option" type="Object">动画选项</param>
+      /// <returns type="self" />
+      return this.each( function( ele ) {
+        effect.slideDown( ele, option );
+      } );
+    },
+    slideUp: function( option ) {
+      /// <summary>滑动淡出</summary>
+      /// <param name="option" type="Object">动画选项</param>
+      /// <returns type="self" />
+      return this.each( function( ele ) {
+        effect.slideUp( ele, option );
+      } );
+    }
+  } );
+
+  return effect;
+} );
+
+/*=======================================================*/
+
 /*===================ui/navitem===========================*/
 aQuery.define( "ui/navitem", [
     "base/typed",
     "base/client",
     "module/Widget",
     "main/class",
+    "main/CustomEvent",
     "main/event",
     "main/css",
     "main/position",
@@ -18154,7 +17590,7 @@ aQuery.define( "ui/navitem", [
     "animation/tween.extend",
     "animation/effect"
   ],
-  function( $, typed, client, Widget, cls, event, css, position, dom, attr, src, animate ) {
+  function( $, typed, client, Widget, cls, CustomEvent, event, css, position, dom, attr, src, animate ) {
     "use strict";
 
     var complete = function() {
@@ -18253,14 +17689,10 @@ aQuery.define( "ui/navitem", [
             complete: complete
           } );
 
-          var para = {
-            type: this.getEventName( "open" ),
+          this.target.trigger( CustomEvent.createEvent( this.getEventName( "open" ), this.target[ 0 ], {
             container: this.container,
-            target: this.target[ 0 ],
             html: opt.html
-          };
-
-          this.target.trigger( para.type, this.target[ 0 ], para );
+          } ) );
         }
 
         this.render();
@@ -18277,14 +17709,11 @@ aQuery.define( "ui/navitem", [
             easing: "cubic.easeInOut"
           } );
 
-          var para = {
-            type: this.getEventName( "close" ),
+          this.target.trigger( CustomEvent.createEvent( this.getEventName( "close" ), this.target[ 0 ], {
             container: this.container,
-            target: this.target[ 0 ],
             html: opt.html
-          };
+          } ) );
 
-          this.target.trigger( para.type, this.target[ 0 ], para );
         }
 
         this.render();
@@ -18296,28 +17725,20 @@ aQuery.define( "ui/navitem", [
         opt.selected = true;
         this.open();
 
-        var para = {
-          type: this.getEventName( "select" ),
+        return this.target.trigger( CustomEvent.createEvent( this.getEventName( "select" ), this.target[ 0 ], {
           container: this.container,
-          target: this.target[ 0 ],
           html: opt.html
-        };
-
-        return this.target.trigger( para.type, this.target[ 0 ], para );
+        } ) );;
       },
       cancel: function() {
         var opt = this.options;
         opt.selected = false;
         this.render();
 
-        var para = {
-          type: this.getEventName( "cancel" ),
+        return this.target.trigger( CustomEvent.createEvent( this.getEventName( "cancel" ), this.target[ 0 ], {
           container: this.container,
-          target: this.target[ 0 ],
           html: opt.html
-        };
-
-        return this.target.trigger( para.type, this.target[ 0 ], para );
+        } ) );
       },
       hasChild: function() {
         return !!this.target.find( "li[amdquery-widget*='ui.navitem']" ).length;
@@ -18678,6 +18099,7 @@ aQuery.define( "ui/navmenu", [
     "module/Widget",
     "main/query",
     "main/class",
+    "main/CustomEvent",
     "main/event",
     "main/css",
     "main/position",
@@ -18685,7 +18107,7 @@ aQuery.define( "ui/navmenu", [
     "main/attr",
     "ecma5/array"
   ],
-  function( $, typed, utilExtend, NavItem, Widget, query, cls, event, css, position, dom, attr, uitlArray ) {
+  function( $, typed, utilExtend, NavItem, Widget, query, cls, CustomEvent, event, css, position, dom, attr, uitlArray ) {
     "use strict";
 
     Widget.fetchCSS( "ui/css/navmenu" );
@@ -18705,11 +18127,11 @@ aQuery.define( "ui/navmenu", [
           switch ( e.type ) {
             case "navitem.open":
               type = para.type = self.getEventName( "open" );
-              self.target.trigger( type, target[ 0 ], para );
+              self.target.trigger( type, target, para );
               break;
             case "navitem.close":
               type = para.type = self.getEventName( "close" );
-              self.target.trigger( type, target[ 0 ], para );
+              self.target.trigger( type, target, para );
               break;
             case "navitem.select":
               self.selectNavItem( e.target );
@@ -18817,13 +18239,9 @@ aQuery.define( "ui/navmenu", [
               isTrigger = true;
             }
             if ( isTrigger ) {
-              var para = {
-                  navitem: target
-                },
-                type;
-
-              type = para.type = this.getEventName( "select" );
-              this.target.trigger( type, this.target[ 0 ], para );
+              this.target.trigger( CustomEvent.createEvent( this.getEventName( "select" ), this.target[ 0 ], {
+                navitem: target
+              } ) );
             }
           }
         }
@@ -19206,7 +18624,7 @@ aQuery.define( 'module/math', [ "base/extend" ], function( $, utilExtend, undefi
             offsetY: y,
             event: e,
             speed: 0,
-            target: this,
+            target: target[ 0 ],
             startX: self.startX,
             startY: self.startY,
             path: self.path,
@@ -19223,7 +18641,7 @@ aQuery.define( 'module/math', [ "base/extend" ], function( $, utilExtend, undefi
             offsetX: x,
             offsetY: y,
             event: e,
-            target: this,
+            target: target[ 0 ],
             startX: self.startX,
             startY: self.startY
           };
@@ -19332,6 +18750,7 @@ aQuery.define( "ui/scrollableview", [
   "base/typed",
   "main/query",
   "main/css",
+  "main/CustomEvent",
   "main/event",
   "main/position",
   "main/dom",
@@ -19353,6 +18772,7 @@ aQuery.define( "ui/scrollableview", [
   typed,
   query,
   css,
+  CustomEvent,
   event,
   position,
   dom,
@@ -19545,17 +18965,17 @@ aQuery.define( "ui/scrollableview", [
 
             if ( left > distance ) {
               e.type = self.getEventName( "pullleft" );
-              target.trigger( e.type, this, e );
+              target.trigger( e.type, self.target[0], e );
             } else if ( left < -self.overflowWidth - distance ) {
               e.type = self.getEventName( "pullright" );
-              target.trigger( e.type, this, e );
+              target.trigger( e.type, self.target[0], e );
             }
             if ( top > distance ) {
               e.type = self.getEventName( "pulldown" );
-              target.trigger( e.type, this, e );
+              target.trigger( e.type, self.target[0], e );
             } else if ( top < -self.overflowHeight - distance ) {
               e.type = self.getEventName( "pullup" );
-              target.trigger( e.type, this, e );
+              target.trigger( e.type, self.target[0], e );
             }
 
             break;
@@ -19612,7 +19032,7 @@ aQuery.define( "ui/scrollableview", [
             elementId = elementId.length ? elementId : self.getAnimationToElementByName( href );
             var type = self.getEventName( "aclick" );
 
-            self.target.trigger( type, self, {
+            self.target.trigger( type, self.target[0], {
               type: type,
               toElement: elementId[ 0 ]
             } );
@@ -19666,7 +19086,7 @@ aQuery.define( "ui/scrollableview", [
     _fireMoved: function() {
       var type = "scrollableview.moved",
         pos = this.getContainerPosition();
-      this.target.trigger( type, this.container[ 0 ], {
+      this.target.trigger( type, this.target[0], {
         type: type,
         x: pos.x,
         y: pos.y
@@ -19686,12 +19106,10 @@ aQuery.define( "ui/scrollableview", [
           self = this,
           callback = function( overflow ) {
             animationCallback && animationCallback.apply( this, arguments );
-            var type = self.getEventName( "animateToElement" );
-            self.target.trigger( type, self.target[ 0 ], {
-              type: type,
+            self.target.trigger( CustomEvent.createEvent( self.getEventName( "animateToElement" ), self.target[ 0 ], {
               toElement: typed.is$( ele ) ? ele[ 0 ] : ele,
               overflow: overflow
-            } );
+            } ) );
           };
         if ( this._isAllowedDirection( V ) ) {
           this.animateY( Math.max( -top + this.viewportHeight > 0 ? 0 : -top, -this.scrollHeight + this.viewportHeight ), FX.normal, callback );
@@ -20051,9 +19469,7 @@ aQuery.define( "ui/scrollableview", [
     },
 
     _triggerAnimate: function( scene, direction, duration, distance ) {
-      var type = this.getEventName( "animationEnd" );
-      this.target.trigger( type, this.container[ 0 ], {
-        type: type,
+      this.target.trigger( this.getEventName( "animationEnd" ), this.target[0], {
         scene: scene,
         direction: direction,
         duration: duration,
@@ -20164,6 +19580,7 @@ aQuery.define( "ui/scrollableview", [
 aQuery.define( "ui/swapindicator", [
   "base/support",
   "main/query",
+  "main/CustomEvent",
   "main/event",
   "main/css",
   "main/position",
@@ -20171,7 +19588,7 @@ aQuery.define( "ui/swapindicator", [
   "main/class",
   "html5/css3",
   "module/Widget"
-   ], function( $, support, query, event, css2, position, dom, cls, css3, Widget ) {
+   ], function( $, support, query, CustomEvent, event, css2, position, dom, cls, css3, Widget ) {
   "use strict";
   Widget.fetchCSS( "ui/css/swapindicator" );
   var HORIZONTAL = "H",
@@ -20316,13 +19733,11 @@ aQuery.define( "ui/swapindicator", [
             eventFuns.stopPropagation( e );
             break;
           case "click":
-            var type = self.getEventName( "change" ),
-              index = $( this ).index();
+            var index = $( this ).index();
             self.render( index );
-            target.trigger( type, self, {
-              type: type,
+            target.trigger( CustomEvent.createEvent( self.getEventName( "change" ), self.target[0], {
               index: index
-            } );
+            } ) );
             break;
         }
       };
@@ -20380,6 +19795,8 @@ aQuery.define( "ui/swapview", [
   "main/position",
   "main/dom",
   "main/class",
+  "main/CustomEvent",
+  "main/event",
   "html5/css3",
   "html5/css3.position",
   "html5/animate.transform",
@@ -20399,7 +19816,9 @@ aQuery.define( "ui/swapview", [
   css,
   position,
   dom,
-  css2,
+  cls,
+  CustomEvent,
+  event,
   css3,
   css3Position,
   animateTransform,
@@ -20511,7 +19930,6 @@ aQuery.define( "ui/swapview", [
         this.boardWidth = width * this.$views.length;
         this.boardHeight = height;
 
-
       } else {
         this.boardWidth = width;
         this.boardHeight = height * this.$views.length;
@@ -20558,22 +19976,16 @@ aQuery.define( "ui/swapview", [
       }
 
       var animationEvent = {
-        type: this.getEventName( "beforeAnimation" ),
-        target: this.container[ 0 ],
         view: this.$views[ index ],
         index: index,
         originIndex: index
       };
-      this.target.trigger( animationEvent.type, this.target[ 0 ], animationEvent );
 
+      this.target.trigger( CustomEvent.createEvent( this.getEventName( "beforeAnimation" ), this.target[ 0 ], animationEvent ) );
 
       if ( originIndex !== index ) {
-        deactivateView.trigger( "beforeDeactivate", deactivateView[ index ], {
-          type: "beforeDeactivate"
-        } );
-        activateView.trigger( "beforeActivate", activateView[ index ], {
-          type: "beforeActivate"
-        } );
+        deactivateView.trigger( CustomEvent.createEvent( this.getEventName( "beforeDeactivate" ), deactivateView[ index ] ) );
+        activateView.trigger( CustomEvent.createEvent( this.getEventName( "beforeActivate" ), activateView[ index ] ) );
       }
 
       this.container.stopAnimation().animate( animationOpt, {
@@ -20582,18 +19994,12 @@ aQuery.define( "ui/swapview", [
         queue: false,
         complete: function() {
           if ( self.$indicator ) self.$indicator.uiSwapindicator( "option", "index", index );
-          animationEvent.type = "afterAnimation";
-          self.target.trigger( animationEvent.type, animationEvent.target, animationEvent );
+          self.target.trigger( CustomEvent.createEvent( self.getEventName( "afterAnimation" ), self.target[ 0 ], animationEvent ) );
           if ( originIndex !== index ) {
-            deactivateView.trigger( "deactivated", deactivateView[ 0 ], {
-              type: "deactivated"
-            } );
-            activateView.trigger( "activated", activateView[ 0 ], {
-              type: "activated"
-            } );
+            deactivateView.trigger( CustomEvent.createEvent( self.getEventName( "deactivated" ), deactivateView[ 0 ] ) );
+            activateView.trigger( CustomEvent.createEvent( self.getEventName( "activated" ), activateView[ 0 ] ) );
             if ( originIndex !== index ) {
-              animationEvent.type = self.getEventName( "change" );
-              self.target.trigger( animationEvent.type, self.target[ 0 ], animationEvent );
+              self.target.trigger( CustomEvent.createEvent( self.getEventName( "change" ), self.target[ 0 ], animationEvent ) );
             }
           }
           if ( typed.isFunction( animationCallback ) ) animationCallback.call( self.target );
@@ -20855,13 +20261,14 @@ aQuery.define( "ui/tabbar", [
     "ui/tabbutton",
     "main/query",
     "main/class",
+    "main/CustomEvent",
     "main/event",
     "main/css",
     "main/position",
     "main/dom",
     "main/attr"
   ],
-  function( $, typed, Widget, tabbutton, query, cls, event, css, position, dom, attr ) {
+  function( $, typed, Widget, tabbutton, query, cls, CustomEvent, event, css, position, dom, attr ) {
     "use strict";
 
     Widget.fetchCSS( "ui/css/tabbar" );
@@ -20874,16 +20281,13 @@ aQuery.define( "ui/tabbar", [
         this.tabbarEvent = function( e ) {
           var $button = $( this );
           self.select( $button );
-          var para = {
-            type: self.getEventName( "click" ),
+
+          self.target.trigger( CustomEvent.createEvent( self.getEventName( "click" ), self.target[ 0 ], {
             container: self.container,
-            target: self.target[ 0 ],
             tabButton: this,
             index: $button.index(),
             event: e
-          };
-
-          self.target.trigger( para.type, self.target[ 0 ], para );
+          } ) );
         };
         return this;
       },
@@ -20978,6 +20382,7 @@ aQuery.define( "ui/tabview", [
     "base/typed",
     "main/query",
     "main/class",
+    "main/CustomEvent",
     "main/event",
     "main/css",
     "main/position",
@@ -20987,7 +20392,7 @@ aQuery.define( "ui/tabview", [
     "ui/tabbar",
     "ui/tabbutton"
   ],
-  function( $, typed, query, cls, event, css, position, dom, attr, Widget, tabbar, tabbutton ) {
+  function( $, typed, query, cls, CustomEvent, event, css, position, dom, attr, Widget, tabbar, tabbutton ) {
     "use strict";
 
     // Widget.fetchCSS( "ui/css/tabview" );
@@ -21045,20 +20450,13 @@ aQuery.define( "ui/tabview", [
           var activateView = this.$view.eq( index ),
             deactivateView = this.$view.eq( originIndex );
 
-          deactivateView.trigger( "deactivated", deactivateView[ 0 ], {
-            type: "deactivated"
-          } );
+          deactivateView.trigger( CustomEvent.createEvent( "deactivated", deactivateView[ 0 ] ) );
 
-          activateView.trigger( "activated", activateView[ 0 ], {
-            type: "activated"
-          } );
+          activateView.trigger( CustomEvent.createEvent( "activated", activateView[ 0 ] ) );
 
-          var eventName = this.getEventName( "select" );
-
-          this.target.trigger( eventName, this.target[ 0 ], {
-            type: eventName,
+          this.target.trigger( CustomEvent.createEvent( this.getEventName( "select" ), this.target[ 0 ], {
             index: index
-          } );
+          } ) );
         }
       },
       init: function( opt, target ) {
@@ -22036,10 +21434,9 @@ define( "module/history", [ "base/constant", "base/client", "base/support", "bas
      */
     handleReady: function( token ) {
       this.ready = true;
-      this.trigger( 'ready', this, {
-        type: 'ready',
+      this.trigger( CustomEvent.createEvent( 'ready', this, {
         token: token
-      } );
+      } ) );
     },
     /**
      * @private
@@ -22052,26 +21449,22 @@ define( "module/history", [ "base/constant", "base/client", "base/support", "bas
       for ( key in newObject ) {
         if ( oldObject[ key ] === undefined || oldObject[ key ] !== newObject[ key ] ) {
           evenName = key + '.' + type;
-          this.trigger( evenName, this, {
-            type: evenName,
+          this.trigger( CustomEvent.createEvent( evenName, this, {
             token: newObject[ key ]
-          } );
+          } ) );
         }
       }
       for ( key in oldObject ) {
         if ( newObject[ key ] === undefined ) {
           evenName = key + '.' + type;
-          this.trigger( evenName, this, {
-            type: evenName,
+          this.trigger( CustomEvent.createEvent( evenName, this, {
             token: ''
-          } );
+          } ) );
         }
       }
-
-      this.trigger( type, this, {
-        type: type,
+      this.trigger( CustomEvent.createEvent( type, this, {
         token: newToken
-      } );
+      } ) );
     },
     /**
      * @private
