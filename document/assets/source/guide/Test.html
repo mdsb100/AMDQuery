@@ -62,71 +62,71 @@ $.require([
       };
       var fn1 = function(){};
 
-      expect(customEvent.isEmpty(), "customEvent is empty").equal(true);
+      expect(customEvent.isEmpty(), "customEvent is empty").to.equal(true);
 
       expect(function(){
         customEvent.on("a.b a.c a b", fn);
-      }, "customEvent on").not.Throw();
+      }, "customEvent on").to.not.Throw();
 
-      expect(customEvent.hasHandler("a.b", fn), "customEvent hasHandler 'a.b',").be.greater.than(-1);
+      expect(customEvent.hasHandler("a.b", fn), "customEvent hasHandler 'a.b',").to.be.greater.than(-1);
 
-      expect(customEvent.hasHandler("a.c", fn), "customEvent hasHandler 'a.c',").be.greater.than(-1);
+      expect(customEvent.hasHandler("a.c", fn), "customEvent hasHandler 'a.c',").to.be.greater.than(-1);
 
-      expect(customEvent.hasHandler("a", fn), "customEvent hasHandler 'a',").be.greater.than(-1);
+      expect(customEvent.hasHandler("a", fn), "customEvent hasHandler 'a',").to.be.greater.than(-1);
 
-      expect(customEvent.hasHandler("b", fn), "customEvent hasHandler 'b',").be.greater.than(-1);
+      expect(customEvent.hasHandler("b", fn), "customEvent hasHandler 'b',").to.be.greater.than(-1);
 
       expect(function(){
         customEvent.on("b", fn1);
-      }, "customEvent on").not.Throw();
+      }, "customEvent on").to.not.Throw();
 
-      expect(customEvent.getHandlers("b"), "customEvent getHandlers 'b',").be.instance.of(Array);
+      expect(customEvent.getHandlers("b"), "customEvent getHandlers 'b',").to.be.instance.of(Array);
 
-      expect(customEvent.getHandlers(), "customEvent getHandlers 'b',").equal(customEvent.clone().getHandlers());
+      expect(customEvent.getHandlers(), "customEvent getHandlers 'b',").to.equal(customEvent.clone().getHandlers());
 
-      expect(customEvent.getHandlers("b"), "customEvent getHandlers 'b',").have.index(1).with.equal(fn1);
+      expect(customEvent.getHandlers("b"), "customEvent getHandlers 'b',").to.have.index(1).with.to.equal(fn1);
 
-      expect(customEvent.isEmpty(), "customEvent is empty").equal(false);
+      expect(customEvent.isEmpty(), "customEvent is empty").to.equal(false);
 
       expect(function(){
         customEvent.off("a.b a", fn);
-      }, "customEvent off 'a.b a'").not.Throw();
+      }, "customEvent off 'a.b a'").to.not.Throw();
 
-      expect(customEvent.hasHandler("a.b", fn), "customEvent hasHandler 'a.b',").equal(-1);
+      expect(customEvent.hasHandler("a.b", fn), "customEvent hasHandler 'a.b',").to.equal(-1);
 
-      expect(customEvent.hasHandler("a", fn), "customEvent hasHandler 'a',").equal(-1);
+      expect(customEvent.hasHandler("a", fn), "customEvent hasHandler 'a',").to.equal(-1);
 
       expect(function(){
         customEvent.trigger("a.c", customEvent, "myresult");
-      }, "customEvent trigger 'a.c' by parameter 'myresult'.").not.Throw();
+      }, "customEvent trigger 'a.c' by parameter 'myresult'.").to.not.Throw();
 
-      expect(testTriggerResult, "testTriggerResult").equal("myresult");
+      expect(testTriggerResult, "testTriggerResult").to.equal("myresult");
 
       expect(function(){
         customEvent.trigger("b", customEvent, "abc");
-      }, "customEvent trigger 'b' by parameter 'abc'.").not.Throw();
+      }, "customEvent trigger 'b' by parameter 'abc'.").to.not.Throw();
 
-      expect(testTriggerContext, "testTriggerContext").equal(customEvent);
+      expect(testTriggerContext, "testTriggerContext").to.equal(customEvent);
 
       expect(function(){
         customEvent.clearHandlers();
-      }, "customEvent clearHandlers ").not.Throw();
+      }, "customEvent clearHandlers ").to.not.Throw();
 
-      expect(customEvent.isEmpty(), "customEvent is empty").equal(true);
+      expect(customEvent.isEmpty(), "customEvent is empty").to.equal(true);
 
       expect(function(){
         customEvent.once("once", fn)
-      }, "customEvent once").not.Throw();
+      }, "customEvent once").to.not.Throw();
 
-      expect(customEvent.hasHandler("once", fn), "customEvent hasHandler 'once',").be.greater.than(-1);
+      expect(customEvent.hasHandler("once", fn), "customEvent hasHandler 'once',").to.be.greater.than(-1);
 
       expect(function(){
         customEvent.trigger("once", customEvent, "onceResult");
-      }, "customEvent once").not.Throw();
+      }, "customEvent once").to.not.Throw();
 
-      expect(testTriggerResult, "testTriggerResult").equal("onceResult");
+      expect(testTriggerResult, "testTriggerResult").to.equal("onceResult");
 
-      expect(customEvent.isEmpty(), "customEvent is empty").equal(true);
+      expect(customEvent.isEmpty(), "customEvent is empty").to.equal(true);
 
     }).start();
 
