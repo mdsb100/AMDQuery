@@ -2424,7 +2424,8 @@
        * @param [fail] {Function}
        * @param [progress] {Function}
        * @returns {module:base/Promise}
-       * @example new Promise().and(todo).and(todo);
+       * @example
+       * new Promise().and(todo).and(todo);
        */
       and: function( todo, fail, progress ) {
         var promise = Promise.constructorOf( todo ) ? todo : Promise( todo, fail, progress ),
@@ -2453,7 +2454,8 @@
        * Add multi task.
        * @param {...Function|module:base/Promise}
        * @returns {module:base/Promise}
-       * @example new Promise().multAnd(todo, promise);
+       * @example
+       * new Promise().multAnd(todo, promise);
        */
       multiAnd: function() {
         for ( var i = 0, len = arguments.length; i < len; i++ ) {
@@ -2518,7 +2520,7 @@
     /**
      * Group a list of Promise.
      * @param {...module:base/Promise|Array<module:base/Promise>}
-     * @returns {Boolean}
+     * @returns {module:base/Promise}
      */
     Promise.group = function( args ) {
       var array = args instanceof Array ? args : arguments,
