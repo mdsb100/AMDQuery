@@ -2137,7 +2137,7 @@
       /**
        * @private
        */
-      _createPromiseWithoutPrev: function( todo, fail, progress ) {
+      _withoutPrev: function( todo, fail, progress ) {
         if ( Promise.constructorOf( todo ) ) {
           if ( todo.prev ) {
             fail = todo.fail;
@@ -2161,7 +2161,7 @@
           return this.next;
         }
 
-        var promise = this._createPromiseWithoutPrev( nextToDo, nextFail, nextProgress );
+        var promise = this._withoutPrev( nextToDo, nextFail, nextProgress );
 
         if ( this.context !== this ) {
           promise.withContext( this.context );
@@ -2239,7 +2239,7 @@
         return this;
       },
 
-      _clearProperty: function() {
+      _clearProp: function() {
         this.result = null;
         this.ands = [];
         this.todo = todoFn;
@@ -2273,7 +2273,7 @@
           this.next.destroy();
         }
 
-        this._clearProperty();
+        this._clearProp();
       },
       /**
        * @param {*=} - result.
