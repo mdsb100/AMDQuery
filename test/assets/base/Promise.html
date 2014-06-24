@@ -87,7 +87,7 @@
 
       }).describe("Test done, reject", function(preResult, expect, logger){
         expect(preResult.info).to.equal("next describe");
-        expect(preResult.promise).to.have.property("ands").with.to.have.length(0);
+        expect(preResult.promise).to.have.property("whens").with.to.have.length(0);
       }).describe("Test reject", function(preResult, expect, logger){
         var resolvePromise = new Promise();
 
@@ -174,7 +174,7 @@
         }).done(function(result){
           expect(sum).to.equal(10);
           expect(result).to.equal("goto done");
-          return "next and";
+          return "next when";
         });
 
 
@@ -184,19 +184,19 @@
 
         return promise;
 
-      }).describe("Test and", function(preResult, expect, logger){
-        expect(preResult).to.equal("next and");
+      }).describe("Test when", function(preResult, expect, logger){
+        expect(preResult).to.equal("next when");
 
         var resolvePromise = new Promise(function(result){
           expect(result).to.be.array();
           expect(result).to.have.length(7);
           expect(result[0]).to.equal(0);
-          expect(result[1]).to.equal("and sync with promise");
+          expect(result[1]).to.equal("when sync with promise");
           expect(result[2]).to.equal(100);
           expect(result[3]).to.equal(200);
           expect(result[4]).to.equal("middle");
           expect(result[5]).to.equal(300);
-          expect(result[6]).to.equal("and sync");
+          expect(result[6]).to.equal("when sync");
           return "next gogogo";
         });
 
@@ -204,18 +204,18 @@
           expect(result).to.equal(0);
           return result;
         })
-        .and(function(result){
-          return Promise().resolve("and sync with promise");
+        .when(function(result){
+          return Promise().resolve("when sync with promise");
         })
-        .and(delay(100, expect))
-        .and(delay(200, expect))
-        .and(function(result){
+        .when(delay(100, expect))
+        .when(delay(200, expect))
+        .when(function(result){
           return "middle";
         })
-        .and(delay(300, expect))
-        .and(function(result){
+        .when(delay(300, expect))
+        .when(function(result){
           expect(result).to.equal(0);
-          return "and sync";
+          return "when sync";
         })
         .then(function(result){
           expect(result).to.be.array();
@@ -226,17 +226,17 @@
 
         return resolvePromise;
 
-      }).describe("Test and, and a Promise, result is sucess", function(preResult, expect, logger){
+      }).describe("Test when, when a Promise, result is sucess", function(preResult, expect, logger){
         expect(preResult).to.equal("next gogogo");
 
         var resolvePromise = new Promise(function(result){
           expect(result).to.be.array();
           expect(result).to.have.length(4);
           expect(result[0]).to.equal(0);
-          expect(result[1]).to.equal("and sync with promise");
+          expect(result[1]).to.equal("when sync with promise");
           expect(result[2]).to.equal(100);
           expect(result[3]).to.equal('sucess');
-          return "next ands";
+          return "next whens";
         });
 
         var promiseSucess1 = Promise().then(function(result){
@@ -260,7 +260,7 @@
           expect(result).to.equal(0);
           return result;
         })
-        .and(promiseSucess2)
+        .when(promiseSucess2)
         .then(function(result){
           expect(result).to.be.array();
           expect(result).to.have.length(2);
@@ -272,11 +272,11 @@
           expect(result).to.equal(0);
           return result;
         })
-        .and(function(result){
-          return Promise().resolve("and sync with promise");
+        .when(function(result){
+          return Promise().resolve("when sync with promise");
         })
-        .and(delay(100, expect))
-        .and(promiseSucess1.end())
+        .when(delay(100, expect))
+        .when(promiseSucess1.end())
         .then(function(result){
           expect(result).to.be.array();
           expect(result).to.have.length(4);
@@ -286,8 +286,8 @@
 
         return resolvePromise;
 
-      }).describe("Test multiAnd", function(preResult, expect, logger){
-        expect(preResult).to.equal("next ands");
+      }).describe("Test multiWhen", function(preResult, expect, logger){
+        expect(preResult).to.equal("next whens");
 
         var promiseSucess = Promise().then(function(result){
           var promise = new Promise();
@@ -301,12 +301,12 @@
           expect(result).to.be.array();
           expect(result).to.have.length(8);
           expect(result[0]).to.equal(0);
-          expect(result[1]).to.equal("and sync with promise");
+          expect(result[1]).to.equal("when sync with promise");
           expect(result[2]).to.equal(100);
           expect(result[3]).to.equal(200);
           expect(result[4]).to.equal("middle");
           expect(result[5]).to.equal(300);
-          expect(result[6]).to.equal("and sync");
+          expect(result[6]).to.equal("when sync");
           expect(result[7]).to.equal("sucess");
           return "next gogogo";
         });
@@ -314,9 +314,9 @@
         Promise(function(result){
           expect(result).to.equal(0);
           return result;
-        }).multiAnd(
+        }).multiWhen(
           function(result){
-            return Promise().resolve("and sync with promise");
+            return Promise().resolve("when sync with promise");
           },
           delay(100, expect),
           delay(200, expect),
@@ -326,7 +326,7 @@
           delay(300, expect),
           function(result){
             expect(result).to.equal(0);
-            return "and sync";
+            return "when sync";
           },
           promiseSucess.end()
         )
@@ -377,17 +377,17 @@
 
         return resolvePromise;
 
-      }).describe("Test and, and a Promise, result is fail", function(preResult, expect, logger){
+      }).describe("Test when, when a Promise, result is fail", function(preResult, expect, logger){
         expect(preResult).to.equal("next gogogo");
 
         var resolvePromise = new Promise(function(result){
           expect(result).to.be.array();
           expect(result).to.have.length(4);
           expect(result[0]).to.equal(0);
-          expect(result[1]).to.equal("and sync with promise");
+          expect(result[1]).to.equal("when sync with promise");
           expect(result[2]).to.equal(100);
           expect(result[3]).to.equal('fail');
-          return Promise().resolve("next and fail");
+          return Promise().resolve("next when fail");
         });
 
         var promiseFail = Promise().then(function(result){
@@ -410,11 +410,11 @@
           expect(result).to.equal(0);
           return result;
         })
-        .and(function(result){
-          return Promise().resolve("and sync with promise");
+        .when(function(result){
+          return Promise().resolve("when sync with promise");
         })
-        .and(delay(100, expect))
-        .and(promiseFail.end())
+        .when(delay(100, expect))
+        .when(promiseFail.end())
         .then(function(){}, function(result){
           expect(result).to.be.array();
           expect(result).to.have.length(4);
@@ -426,8 +426,8 @@
 
         return resolvePromise;
 
-      }).describe("Test and fail", function(preResult, expect, logger){
-        expect(preResult).to.equal("next and fail");
+      }).describe("Test when fail", function(preResult, expect, logger){
+        expect(preResult).to.equal("next when fail");
 
         var resolvePromise = new Promise();
 
@@ -439,13 +439,13 @@
           expect(result).to.equal(0);
           return result;
         })
-        .and(function(result){
+        .when(function(result){
           expect(result).to.equal(0);
-          return Promise().reject("and sync fail");
+          return Promise().reject("when sync fail");
         })
-        .and(delay(100, expect))
-        .and(delay(200, expect))
-        .and(delayFail(300, expect), function(){
+        .when(delay(100, expect))
+        .when(delay(200, expect))
+        .when(delayFail(300, expect), function(){
           return "delayFail";
         }).then(function(){
           logger("Fail, so this should not be call");
@@ -454,7 +454,7 @@
           expect(result).to.be.array();
           expect(result).to.have.length(5);
           expect(result[0]).to.equal(0);
-          expect(result[1]).to.equal("and sync fail");
+          expect(result[1]).to.equal("when sync fail");
           expect(result[2]).to.equal(100);
           expect(result[3]).to.equal(200);
           expect(result[4]).to.equal("delayFail");
@@ -472,7 +472,7 @@
 
         return resolvePromise;
 
-      }).describe("Test and fail", function(preResult, expect, logger){
+      }).describe("Test when fail", function(preResult, expect, logger){
         var resolvePromise = new Promise();
 
         Promise(function(result){
@@ -483,13 +483,13 @@
           expect(result).to.equal(0);
           return Promise().resolve("fail but resolve");
         })
-        .and(function(result){
+        .when(function(result){
           expect(result).to.equal(0);
           return Promise().reject("and sync fail");
         })
-        .and(delay(100, expect))
-        .and(delay(200, expect))
-        .and(delayFail(300, expect), function(){
+        .when(delay(100, expect))
+        .when(delay(200, expect))
+        .when(delayFail(300, expect), function(){
           return "delayFail";
         }).then(function(result){
           logger("Fail, so this should not be call");
@@ -520,16 +520,16 @@
           expect(result).to.equal(0);
           return result;
         })
-        .and(function(result){
+        .when(function(result){
           expect(result).to.equal(0);
           return Promise().reject("and sync fail, go fail");
         }, function(result){
           expect(result).to.equal("and sync fail, go fail");
           return "sync fail, in fail";
         })
-        .and(delay(100, expect))
-        .and(delay(200, expect))
-        .and(delayFail(300, expect), function(result){
+        .when(delay(100, expect))
+        .when(delay(200, expect))
+        .when(delayFail(300, expect), function(result){
           expect(result).to.equal(300);
           return "delayFail";
         })
