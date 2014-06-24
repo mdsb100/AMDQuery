@@ -2423,8 +2423,7 @@
        * @param [fail] {Function}
        * @param [progress] {Function}
        * @returns {module:base/Promise}
-       * @example
-       * new Promise().when(todo).when(todo);
+       * @example Promise().when(todo).when(todo);
        */
       when: function( todo, fail, progress ) {
         var promise = Promise.constructorOf( todo ) ? todo : Promise( todo, fail, progress ),
@@ -2454,7 +2453,7 @@
        * @param {...Function|module:base/Promise}
        * @returns {module:base/Promise}
        * @example
-       * new Promise().multiWhen(todo, promise);
+       * Promise().multiWhen(todo, promise);
        */
       multiWhen: function() {
         for ( var i = 0, len = arguments.length; i < len; i++ ) {

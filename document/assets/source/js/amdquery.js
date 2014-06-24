@@ -2030,15 +2030,15 @@
         var
           allDone = this.state === DONE,
           next = this.next,
-          andsState;
+          whensState;
 
         if ( allDone || enforce ) {
-          andsState = this._checkAndsState( result );
-          allDone = andsState.size === andsState[ DONE ] + andsState[ FAIL ];
+          whensState = this._checkAndsState( result );
+          allDone = whensState.size === whensState[ DONE ] + whensState[ FAIL ];
         }
 
         if ( allDone ) {
-          result = andsState.result;
+          result = whensState.result;
           if ( next ) {
             next.resolve( result );
           } else {
@@ -2053,25 +2053,25 @@
       _checkAndsState: function( result ) {
         var
           i = 0,
-          len = this.ands.length,
-          andsState = {
+          len = this.whens.length,
+          whensState = {
             size: len,
             result: len ? [ result ] : result
           },
           promise;
 
-        andsState[ TODO ] = 0;
-        andsState[ PROGRESS ] = 0;
-        andsState[ FAIL ] = 0;
-        andsState[ DONE ] = 0;
+        whensState[ TODO ] = 0;
+        whensState[ PROGRESS ] = 0;
+        whensState[ FAIL ] = 0;
+        whensState[ DONE ] = 0;
 
         for ( ; i < len; i++ ) {
-          promise = this.ands[ i ];
-          andsState[ promise.state ]++;
-          andsState.result.push( promise.result );
+          promise = this.whens[ i ];
+          whensState[ promise.state ]++;
+          whensState.result.push( promise.result );
         }
 
-        return andsState;
+        return whensState;
       },
       /**
        * Do next reject.
@@ -2079,11 +2079,11 @@
        */
       _nextReject: function( result, Finally ) {
         var next = this.next,
-          andsState = this._checkAndsState( result ),
-          allDone = andsState.size === andsState[ DONE ] + andsState[ FAIL ];
+          whensState = this._checkAndsState( result ),
+          allDone = whensState.size === whensState[ DONE ] + whensState[ FAIL ];
 
         if ( allDone ) {
-          result = andsState.result;
+          result = whensState.result;
           if ( next && !Finally ) {
             this.next.reject( result );
           } else {
@@ -2098,7 +2098,7 @@
        * @private
        */
       _push: function( nextPromise ) {
-        this.ands.push( nextPromise );
+        this.whens.push( nextPromise );
         return this;
       },
       /**
@@ -2194,7 +2194,7 @@
         this.__promiseFlag = true;
         this.state = TODO;
         this.result = null;
-        this.ands = [];
+        this.whens = [];
         this.todo = todo || todoFn;
         this.fail = fail || todoFn;
         this.progress = progress || todoFn;
@@ -2242,7 +2242,7 @@
 
       _clearProp: function() {
         this.result = null;
-        this.ands = [];
+        this.whens = [];
         this.todo = todoFn;
         this.fail = todoFn;
         this.progress = todoFn;
@@ -2257,13 +2257,13 @@
        * @returns {void}
        */
       destroy: function() {
-        var ands = this.ands,
-          i, len = ands.length,
+        var whens = this.whens,
+          i, len = whens.length,
           promise;
         for ( i = len - 1; i >= 0; i-- ) {
-          promise = ands[ i ];
+          promise = whens[ i ];
           promise.destroy();
-          promise = ands.pop();
+          promise = whens.pop();
         }
 
         if ( this.parent ) {
@@ -2302,7 +2302,7 @@
             case DONE:
               this.result = promise.result;
               this._nextResolve( this.result );
-              return this._resolveAnds( obj );
+              return this._resolveWhens( obj );
             case Promise:
               this.result = promise.result;
               return this.reject( this.result );
@@ -2338,24 +2338,24 @@
         } else {
           this._nextResolve( this.result );
         }
-        return this._resolveAnds( obj );
+        return this._resolveWhens( obj );
       },
       /**
        * @private
        */
-      _resolveAnds: function( result ) {
-        for ( var i = 0, len = this.ands.length, and; i < len; i++ ) {
-          and = this.ands[ i ];
-          and.prev || and.state !== PROGRESS && and.resolve( result );
+      _resolveWhens: function( result ) {
+        for ( var i = 0, len = this.whens.length, when; i < len; i++ ) {
+          when = this.whens[ i ];
+          when.prev || when.state !== PROGRESS && when.resolve( result );
         }
         return this;
       },
       /**
        * @private
        */
-      _reprocessAnds: function( result ) {
-        for ( var i = 0, len = this.ands.length; i < len; i++ ) {
-          this.ands[ i ].reprocess( result );
+      _reprocessWhens: function( result ) {
+        for ( var i = 0, len = this.whens.length; i < len; i++ ) {
+          this.whens[ i ].reprocess( result );
         }
         return this;
       },
@@ -2388,7 +2388,7 @@
         } else {
           this._nextReject( this.result, true );
         }
-        return this._resolveAnds( result );
+        return this._resolveWhens( result );
       },
       /**
        * If result is a Promise then resolve or reject.
@@ -2416,7 +2416,7 @@
               break;
           }
         }
-        return this._reprocessAnds( obj );
+        return this._reprocessWhens( obj );
       },
       /**
        * The new promise is siblings
@@ -2424,10 +2424,9 @@
        * @param [fail] {Function}
        * @param [progress] {Function}
        * @returns {module:base/Promise}
-       * @example
-       * new Promise().and(todo).and(todo);
+       * @example Promise().when(todo).when(todo);
        */
-      and: function( todo, fail, progress ) {
+      when: function( todo, fail, progress ) {
         var promise = Promise.constructorOf( todo ) ? todo : Promise( todo, fail, progress ),
           self = this,
           fn = function( result ) {
@@ -2455,11 +2454,11 @@
        * @param {...Function|module:base/Promise}
        * @returns {module:base/Promise}
        * @example
-       * new Promise().multAnd(todo, promise);
+       * Promise().multiWhen(todo, promise);
        */
-      multiAnd: function() {
+      multiWhen: function() {
         for ( var i = 0, len = arguments.length; i < len; i++ ) {
-          this.and( arguments[ i ] );
+          this.when( arguments[ i ] );
         }
         return this;
       },
@@ -2467,9 +2466,9 @@
        * @private
        */
       _doNext: function( result ) {
-        var andsState = this._checkAndsState( result );
-        if ( this.isComplete() && andsState.size === andsState[ DONE ] + andsState[ FAIL ] ) {
-          if ( andsState[ FAIL ] || this.state === FAIL ) {
+        var whensState = this._checkAndsState( result );
+        if ( this.isComplete() && whensState.size === whensState[ DONE ] + whensState[ FAIL ] ) {
+          if ( whensState[ FAIL ] || this.state === FAIL ) {
             this._nextReject( this.result );
           } else {
             this._nextResolve( this.result, true );
@@ -2528,7 +2527,7 @@
         i = 1,
         len = array.length;
       for ( ; i < len; i++ ) {
-        promise.and( array[ i ] );
+        promise.when( array[ i ] );
       }
       return promise;
     }
@@ -2560,7 +2559,7 @@
      */
     var ready = function( fn ) {
         setTimeout( function() {
-          readyPromise.and( fn );
+          readyPromise.when( fn );
         }, 0 );
       },
       readyPromise;
