@@ -2454,7 +2454,7 @@
        * @param {...Function|module:base/Promise}
        * @returns {module:base/Promise}
        * @example
-       * new Promise().multAnd(todo, promise);
+       * new Promise().multiAnd(todo, promise);
        */
       multiAnd: function() {
         for ( var i = 0, len = arguments.length; i < len; i++ ) {
