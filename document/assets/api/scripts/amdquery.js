@@ -2033,7 +2033,7 @@
           whensState;
 
         if ( allDone || enforce ) {
-          whensState = this._checkAndsState( result );
+          whensState = this._checkWhensState( result );
           allDone = whensState.size === whensState[ DONE ] + whensState[ FAIL ];
         }
 
@@ -2050,7 +2050,7 @@
       /**
        * @private
        */
-      _checkAndsState: function( result ) {
+      _checkWhensState: function( result ) {
         var
           i = 0,
           len = this.whens.length,
@@ -2079,7 +2079,7 @@
        */
       _nextReject: function( result, Finally ) {
         var next = this.next,
-          whensState = this._checkAndsState( result ),
+          whensState = this._checkWhensState( result ),
           allDone = whensState.size === whensState[ DONE ] + whensState[ FAIL ];
 
         if ( allDone ) {
@@ -2466,7 +2466,7 @@
        * @private
        */
       _doNext: function( result ) {
-        var whensState = this._checkAndsState( result );
+        var whensState = this._checkWhensState( result );
         if ( this.isComplete() && whensState.size === whensState[ DONE ] + whensState[ FAIL ] ) {
           if ( whensState[ FAIL ] || this.state === FAIL ) {
             this._nextReject( this.result );
