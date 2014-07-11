@@ -261,7 +261,7 @@ aQuery.define( "@app/app", [ "base/Promise", "main/event", "app/Application", "@
 ```
 
 #### 具体细节请参考文档
-> [QuickStart](http://mdsb100.github.io/homepage/amdquery/document/document/app.html#docNavmenuKey=application_QuickStart&scrollTo=First)
+[QuickStart](http://mdsb100.github.io/homepage/amdquery/document/document/app.html#docNavmenuKey=application_QuickStart&scrollTo=First)
 
 ### build工具及CLI
 cd 到 build/
