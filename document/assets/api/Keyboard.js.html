@@ -1,13 +1,44 @@
-aQuery.define( "module/Keyboard", [ "base/config", "base/typed", "base/extend", "base/array", "main/event", "main/CustomEvent", "main/object", "hash/charcode" ], function( $, config, typed, utilExtend, array, event, CustomEvent, object, charcode ) {
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: module/Keyboard.js</title>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="../../../global/styles/reset.css" />
+    <link type="text/css" rel="stylesheet" href="../../../global/styles/prettify-tomorrow.css" />
+    <link type="text/css" rel="stylesheet" href="../../../amdquery/ui/css/widget-ui.css" />
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+    <script src="../../../global/js/prettify.js" type="text/javascript"></script>
+    <script src="../../../global/js/lang-css.js"></script>
+    <script src="scripts/amdquery.js" amdquery="debug:false;" amd="detectCR=1" module="transitionToAnimation:1" ui="initWidget:1;isTransform3d:0;autoFetchCss:0"> </script>
+    <script src="scripts/main.js"> </script>
+</head>
+
+<body style="width: 100%; height: 100%;" onload="prettyPrint()">
+
+<div id="main" style="width: 100%; height: 100%;" amdquery-widget="ui.scrollableview" ui-scrollableview="orientation:V;enableKeyboard:true;focus:true">
+
+    <h1 id="page-title" name="page-title" class="page-title">Source: module/Keyboard.js</h1>
+
+    
+
+
+    
+    <section>
+        <a float="false" id="Back" class="Back">Back</a>
+        <article>
+            <pre class="prettyprint source">aQuery.define( "module/Keyboard", [ "base/config", "base/typed", "base/extend", "base/array", "main/event", "main/CustomEvent", "main/object", "hash/charcode" ], function( $, config, typed, utilExtend, array, event, CustomEvent, object, charcode ) {
   "use strict";
   /**
    * @global
    * @typedef {Object} KeyboardOptions
    * @link module:hash/charcode
    * @property KeyboardOptions {Object}
-   * @property KeyboardOptions.keyCode {Number|String|Array<String>|Array<Number>} - "Up", 38, ["Up", "Down"], [38, 39]
+   * @property KeyboardOptions.keyCode {Number|String|Array&lt;String>|Array&lt;Number>} - "Up", 38, ["Up", "Down"], [38, 39]
    * @property KeyboardOptions.keyType {String} - "keydown", "keyup", "keypress"
-   * @property KeyboardOptions.combinationKey {Array<String>} - "cmd", "ctrl", "alt", "shift"
+   * @property KeyboardOptions.combinationKey {Array&lt;String>} - "cmd", "ctrl", "alt", "shift"
    * @property KeyboardOptions.todo {Function}
    */
 
@@ -31,7 +62,7 @@ aQuery.define( "module/Keyboard", [ "base/config", "base/typed", "base/extend", 
     /**
      * @constructs module:module/Keyboard
      * @param {Element}
-     * @param {Array<KeyboardOptions>|KeyboardOptions} [keyList=]
+     * @param {Array&lt;KeyboardOptions>|KeyboardOptions} [keyList=]
      */
     init: function( container, keyList ) {
       this._super();
@@ -87,7 +118,7 @@ aQuery.define( "module/Keyboard", [ "base/config", "base/typed", "base/extend", 
       var keyCode = obj.keyCode,
         ret;
       if ( typed.isArray( keyCode ) ) {
-        for ( var i = 0, len = keyCode.length, nObj; i < len; i++ ) {
+        for ( var i = 0, len = keyCode.length, nObj; i &lt; len; i++ ) {
           nObj = {};
           utilExtend.easyExtend( nObj, obj );
           nObj.keyCode = keyCode[ i ];
@@ -104,7 +135,7 @@ aQuery.define( "module/Keyboard", [ "base/config", "base/typed", "base/extend", 
     },
     /**
      * Add a list of key.
-     * @param {Array<KeyboardOptions>|KeyboardOptions}
+     * @param {Array&lt;KeyboardOptions>|KeyboardOptions}
      * @returns {this}
      */
     addKeys: function( keyList ) {
@@ -116,7 +147,7 @@ aQuery.define( "module/Keyboard", [ "base/config", "base/typed", "base/extend", 
       if ( !typed.isArray( keyList ) ) {
         keyList = [ keyList ];
       }
-      for ( len = keyList.length; i < len; i++ ) {
+      for ( len = keyList.length; i &lt; len; i++ ) {
         this.addKey( keyList[ i ] );
       }
       return this;
@@ -143,7 +174,7 @@ aQuery.define( "module/Keyboard", [ "base/config", "base/typed", "base/extend", 
     removeKey: function( obj ) {
       var item, ret, keyCode = obj.keyCode;
       if ( typed.isArray( keyCode ) ) {
-        for ( var i = 0, len = keyCode.length, nObj; i < len; i++ ) {
+        for ( var i = 0, len = keyCode.length, nObj; i &lt; len; i++ ) {
           utilExtend.easyExtend( {}, obj );
           nObj = obj;
           nObj.keyCode = keyCode[ i ];
@@ -176,7 +207,7 @@ aQuery.define( "module/Keyboard", [ "base/config", "base/typed", "base/extend", 
      * @returns {KeyboardOptions|null}
      */
     iterationKeyList: function( e ) {
-      for ( var i = 0, keyList = this.keyList, len = keyList.length, item, code, result = 0; i < len; i++ ) {
+      for ( var i = 0, keyList = this.keyList, len = keyList.length, item, code, result = 0; i &lt; len; i++ ) {
         code = e.keyCode || e.which;
 
         item = keyList[ i ];
@@ -265,7 +296,7 @@ aQuery.define( "module/Keyboard", [ "base/config", "base/typed", "base/extend", 
     /**
      * Whether e.combinationKey equals combinationKey.
      * @param {KeyEvent}
-     * @param {Array<String>} - [ "ctrl", "alt", "shift" ]
+     * @param {Array&lt;String>} - [ "ctrl", "alt", "shift" ]
      * @return {Boolean}
      */
     checkCombinationKey: function( e, combinationKey ) {
@@ -276,8 +307,8 @@ aQuery.define( "module/Keyboard", [ "base/config", "base/typed", "base/extend", 
         count1 = 0;
       if ( e.combinationKey ) {
         if ( e.combinationKey.length == len ) {
-          for ( ; i < len; i++ ) {
-            for ( ; j < len; j++ ) {
+          for ( ; i &lt; len; i++ ) {
+            for ( ; j &lt; len; j++ ) {
               e.combinationKey[ i ] != combinationKey[ j ] && count1++;
             }
           }
@@ -288,7 +319,7 @@ aQuery.define( "module/Keyboard", [ "base/config", "base/typed", "base/extend", 
           return 0;
         }
       } else {
-        for ( var count2 = combinationKey ? combinationKey.length : 0; i < len; i++ ) {
+        for ( var count2 = combinationKey ? combinationKey.length : 0; i &lt; len; i++ ) {
           if ( combinationKey[ i ] === "cmd" ) {
             if ( Keyboard.commandStatus == true ) {
               count1++;
@@ -324,14 +355,14 @@ aQuery.define( "module/Keyboard", [ "base/config", "base/typed", "base/extend", 
     /**
      * Get an instance.
      * @param {Element}
-     * @param {Array<KeyboardOptions>|KeyboardOptions} [keyList=]
+     * @param {Array&lt;KeyboardOptions>|KeyboardOptions} [keyList=]
      * @return {module:module/Keyboard}
      */
     getInstance: function( container, keyList ) {
       var keyboard, i = 0,
         cache = Keyboard.cache,
         len = cache.length;
-      for ( ; i < len; i++ ) {
+      for ( ; i &lt; len; i++ ) {
         if ( cache[ i ].container == container ) {
           keyboard = cache[ i ];
         }
@@ -362,4 +393,28 @@ aQuery.define( "module/Keyboard", [ "base/config", "base/typed", "base/extend", 
   } );
 
   return Keyboard;
-} );
+} );</pre>
+        </article>
+        <script type="text/javascript">
+          var Back = document.getElementById("Back");
+          if (Back){
+            Back.onclick = function(){
+              if (window.history && window.history.length) {
+                window.history.back();
+              }
+            }
+          }
+        </script>
+    </section>
+
+
+
+
+
+    <a float="false" href="#page-title" class="Top">Top</a>
+</div>
+
+<br clear="both">
+
+</body>
+</html>

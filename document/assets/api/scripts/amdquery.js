@@ -17036,8 +17036,39 @@ define( "hash/charcode", [ "base/client" ], function( client ) {
 /*===================module/Keyboard===========================*/
 aQuery.define( "module/Keyboard", [ "base/config", "base/typed", "base/extend", "base/array", "main/event", "main/CustomEvent", "main/object", "hash/charcode" ], function( $, config, typed, utilExtend, array, event, CustomEvent, object, charcode ) {
   "use strict";
-  var Keyboard = CustomEvent.extend( "Keyboard", {
-    constructor: Keyboard,
+  /**
+   * @global
+   * @typedef {Object} KeyboardOptions
+   * @link module:hash/charcode
+   * @property KeyboardOptions {Object}
+   * @property KeyboardOptions.keyCode {Number|String|Array<String>|Array<Number>} - "Up", 38, ["Up", "Down"], [38, 39]
+   * @property KeyboardOptions.keyType {String} - "keydown", "keyup", "keypress"
+   * @property KeyboardOptions.combinationKey {Array<String>} - "cmd", "ctrl", "alt", "shift"
+   * @property KeyboardOptions.todo {Function}
+   */
+
+  /**
+   * Handle Keyboard.
+   * @constructor
+   * @requires base/config
+   * @requires base/typed
+   * @requires base/extend
+   * @requires base/array
+   * @requires main/event
+   * @requires main/CustomEvent
+   * @requires main/object
+   * @requires hash/charcode
+   * @requires module:main/object
+   * @augments module:main/object
+   * @exports module/Keyboard
+   * @mixes ObjectClassStaticMethods
+   */
+  var Keyboard = CustomEvent.extend( "Keyboard", /** @lends module:module/Keyboard.prototype */ {
+    /**
+     * @constructs module:module/Keyboard
+     * @param {Element}
+     * @param {Array<KeyboardOptions>|KeyboardOptions} [keyList=]
+     */
     init: function( container, keyList ) {
       this._super();
       this.keyList = [];
@@ -17048,6 +17079,9 @@ aQuery.define( "module/Keyboard", [ "base/config", "base/typed", "base/extend", 
       }
       this._initHandler().enable().addKeys( keyList );
     },
+    /**
+     * @private
+     */
     _initHandler: function() {
       var self = this;
       this.event = function( e ) {
@@ -17055,20 +17089,36 @@ aQuery.define( "module/Keyboard", [ "base/config", "base/typed", "base/extend", 
       };
       return this;
     },
+    /**
+     * Enable keyboard.
+     * @returns {this}
+     */
     enable: function() {
       event.on( this.container, "keydown keypress keyup", this.event );
       return this;
     },
+    /**
+     * Disable keyboard.
+     * @returns {this}
+     */
     disable: function() {
       event.off( this.container, "keydown keypress keyup", this.event );
       return this;
     },
+    /**
+     * @private
+     */
     _push: function( ret ) {
-      if ( !( this.iterationKeyList( ret ) ) ) { //检查重复
+      if ( !( this.iterationKeyList( ret ) ) ) {
         this.keyList.push( ret );
       }
       return this;
     },
+    /**
+     * Add key.
+     * @param {KeyboardOptions}
+     * @returns {this}
+     */
     addKey: function( obj ) {
       var keyCode = obj.keyCode,
         ret;
@@ -17088,6 +17138,11 @@ aQuery.define( "module/Keyboard", [ "base/config", "base/typed", "base/extend", 
       ret.todo && this.on( Keyboard.getHandlerName( ret ), ret.todo );
       return this;
     },
+    /**
+     * Add a list of key.
+     * @param {Array<KeyboardOptions>|KeyboardOptions}
+     * @returns {this}
+     */
     addKeys: function( keyList ) {
       if ( !keyList ) {
         return this;
@@ -17102,6 +17157,12 @@ aQuery.define( "module/Keyboard", [ "base/config", "base/typed", "base/extend", 
       }
       return this;
     },
+    /**
+     * Change key.
+     * @param {KeyboardOptions}
+     * @param {KeyboardOptions}
+     * @returns {this}
+     */
     changeKey: function( origin, evolution ) {
       origin = Keyboard.createOpt( origin );
       var item;
@@ -17110,6 +17171,11 @@ aQuery.define( "module/Keyboard", [ "base/config", "base/typed", "base/extend", 
       }
       return this;
     },
+    /**
+     * Remove key.
+     * @param {KeyboardOptions}
+     * @returns {this}
+     */
     removeKey: function( obj ) {
       var item, ret, keyCode = obj.keyCode;
       if ( typed.isArray( keyCode ) ) {
@@ -17130,10 +17196,21 @@ aQuery.define( "module/Keyboard", [ "base/config", "base/typed", "base/extend", 
       }
       return this;
     },
+    /**
+     * Remove event listener.
+     * @param {KeyboardOptions}
+     * @returns {this}
+     */
     removeTodo: function( obj ) {
       var opt = Keyboard.createOpt( obj );
       this.off( Keyboard.getHandlerName( opt ), obj.todo );
+      return this;
     },
+    /**
+     * Iterate key list and search out matching key.
+     * @param {KeyEvent}
+     * @returns {KeyboardOptions|null}
+     */
     iterationKeyList: function( e ) {
       for ( var i = 0, keyList = this.keyList, len = keyList.length, item, code, result = 0; i < len; i++ ) {
         code = e.keyCode || e.which;
@@ -17150,8 +17227,11 @@ aQuery.define( "module/Keyboard", [ "base/config", "base/typed", "base/extend", 
           return item;
         }
       }
-      return false;
+      return null;
     },
+    /**
+     * @private
+     */
     routing: function( target, e ) {
       e = event.document.getEvent( e );
       var item;
@@ -17167,9 +17247,12 @@ aQuery.define( "module/Keyboard", [ "base/config", "base/typed", "base/extend", 
         event.document.stopPropagation( e );
       }
     }
-  }, {
-    codeToStringReflect: charcode.codeToStringReflect,
-    stringToCodeReflect: charcode.stringToCodeReflect,
+  }, /** @lends module:module/Keyboard */ {
+    /**
+     * Create option of keyboard.
+     * @param {Object}
+     * @return {KeyboardOptions}
+     */
     createOpt: function( obj ) {
       var keyCode = obj.keyCode;
       //若有组合键 会把type强制转换
@@ -17185,18 +17268,42 @@ aQuery.define( "module/Keyboard", [ "base/config", "base/typed", "base/extend", 
 
       return obj;
     },
+    /**
+     * @param {Number}
+     * @return {String}
+     */
     codeToChar: function( code ) {
       return typed.isNumber( code ) ? String.fromCharCode( code ) : code;
     },
+    /**
+     * 38 ==> "Up".
+     * @param {Number}
+     * @return {String}
+     */
     codeToString: function( code ) {
-      return Keyboard.codeToStringReflect[ code ] || Keyboard.codeToChar( code );
+      return charcode.codeToStringReflect[ code ] || Keyboard.codeToChar( code );
     },
+    /**
+     * @param {String}
+     * @return {Number}
+     */
     charToCode: function( c ) {
       return typed.isString( c ) ? c.charCodeAt( 0 ) : c;
     },
+    /**
+     * "Up" ==> 38.
+     * @param {String}
+     * @return {Number}
+     */
     stringToCode: function( s ) {
-      return Keyboard.stringToCodeReflect[ s ] || Keyboard.charToCode( s );
+      return charcode.stringToCodeReflect[ s ] || Keyboard.charToCode( s );
     },
+    /**
+     * Whether e.combinationKey equals combinationKey.
+     * @param {KeyEvent}
+     * @param {Array<String>} - [ "ctrl", "alt", "shift" ]
+     * @return {Boolean}
+     */
     checkCombinationKey: function( e, combinationKey ) {
       var i = 0,
         j = 0,
@@ -17239,6 +17346,10 @@ aQuery.define( "module/Keyboard", [ "base/config", "base/typed", "base/extend", 
       }
       return 1;
     },
+    /**
+     * @param {KeyboardOptions}
+     * @return {String}
+     */
     getHandlerName: function( obj ) {
       obj = Keyboard.createOpt( obj );
       var combinationKey = obj.combinationKey ? obj.combinationKey.join( "+" ) + "+" : "";
@@ -17246,6 +17357,12 @@ aQuery.define( "module/Keyboard", [ "base/config", "base/typed", "base/extend", 
     },
     tableindex: 9000,
     cache: [],
+    /**
+     * Get an instance.
+     * @param {Element}
+     * @param {Array<KeyboardOptions>|KeyboardOptions} [keyList=]
+     * @return {module:module/Keyboard}
+     */
     getInstance: function( container, keyList ) {
       var keyboard, i = 0,
         cache = Keyboard.cache,
