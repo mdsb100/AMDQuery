@@ -1,9 +1,8 @@
-﻿aQuery.define( "module/threed", [ "main/event", "module/math" ], function( $, event, math ) {
+﻿aQuery.define( "module/threed", [ "main/event", "module/martrix" ], function( $, event, martrix ) {
   "use strict";
 
   var
     M = Math,
-    martrix = math.martrix,
     threed = {
       rotate: function( m, o ) {
         o.x && ( m = this.rotateX( m, o.x ) );

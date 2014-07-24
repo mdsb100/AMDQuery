@@ -73,6 +73,8 @@
               <li amdquery-widget="ui.navitem" ui-navitem="html:history;img:file" link="history.html"></li>
               <li amdquery-widget="ui.navitem" ui-navitem="html:Keyboard;img:file" link="Keyboard.html"></li>
               <li amdquery-widget="ui.navitem" ui-navitem="html:location;img:file" link="location.html"></li>
+              <li amdquery-widget="ui.navitem" ui-navitem="html:martrix;img:file" link="martrix.html"></li>
+              <li amdquery-widget="ui.navitem" ui-navitem="html:math;img:file" link="math.html"></li>
               <li amdquery-widget="ui.navitem" ui-navitem="html:Test;img:file" link="Test.html"></li>
             </ul>
           </li>
