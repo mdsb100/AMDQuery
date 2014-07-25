@@ -14428,21 +14428,21 @@ aQuery.define( "animation/FX", [ "base/typed", "base/array", "main/css", "main/o
 /*===================module/Thread===========================*/
 aQuery.define( "module/Thread", [ "main/CustomEvent", "base/extend", "main/object" ], function( $, CustomEvent, utilExtend, object ) {
   "use strict";
-  /// <summary>创造一个新进程
-  /// <para>num obj.delay:延迟多少毫秒</para>
-  /// <para>num obj.duration:持续多少毫米</para>
-  /// <para>num obj.sleep:睡眠多少豪秒</para>
-  /// <para>num obj.interval 如果interval存在 则fps无效 isAnimFram也无效
-  /// <para>num obj.fps:每秒多少帧</para>
-  /// <para>fun obj.run:要执行的方法</para>
-  /// <para>bol obj.isAnimFram:是否使用新动画函数，使用后将无法初始化fps</para>
-  /// <para>bol obj.context:作用域</para>
-  /// <para>可以调用addHandler方法添加事件</para>
-  /// <para>事件类型:start、stop、delay、sleepStar,sleepStop</para>
-  /// </summary>
-  /// <param name="obj" type="Object">属性</param>
-  /// <param name="paras" type="paras[]">作用域所用参数</param>
-  /// <returns type="Thread" />
+  this.describe( "Mock Thread" );
+
+  /**
+   * @global
+   * @typedef {Object} ThreadOptions
+   * @link module:module/Thread
+   * @property ThreadOptions {Object}
+   * @property ThreadOptions.delay {Number}
+   * @property ThreadOptions.duration {Number} - How long does the Thread work.
+   * @property ThreadOptions.interval {Number}
+   * @property ThreadOptions.fps {Number} - If the interval is not null, then fps does not worke.
+   * @property ThreadOptions.run {Function}
+   * @property ThreadOptions.isAnimFram {Boolean} - If true then fps is 1000/60, approximate 13.
+   * @property ThreadOptions.context {Object}
+   */
 
   var requestAnimFrame = window.requestAnimationFrame ||
     window.webkitRequestAnimationFrame ||
@@ -14458,55 +14458,62 @@ aQuery.define( "module/Thread", [ "main/CustomEvent", "base/extend", "main/objec
     window.oCancelRequestAnimationFrame ||
     window.msCancelRequestAnimationFrame ||
     clearTimeout;
-
-  var Thread = CustomEvent.extend( "Thread", {
-    init: function( obj, paras ) {
-      /// <summary>初始化参数 初始化参数会停止进程</summary>
-      /// <param name="obj" type="Object">进程参数</param>
-      /// <param name="paras" type="paras:[any]">计算参数</param>
-      /// <returns type="self" />
-      //this.stop();
+  /**
+   * A mock thread.
+   * @constructor
+   * @requires module:main/CustomEvent
+   * @requires module:base/extend
+   * @requires module:main/object
+   * @exports module/Thread
+   * @mixes ObjectClassStaticMethods
+   */
+  var Thread = CustomEvent.extend( "Thread", /** @lends module:module/Thread.prototype */ {
+    /**
+     * @constructs module:module/Thread
+     * @param {ThreadOptions}
+     */
+    init: function( obj ) {
       this._super();
       utilExtend.extend( this, Thread._defaultSetting, obj );
       this.context = obj.context || this;
       this.id = this.id || $.now();
       this.args = $.util.argToArray( arguments, 1 );
 
-      return this.setFps()
+      return this.setFps( this.fps )
         .setDuration( this.duration );
     },
-    create: function() {
-      return this;
-    },
-    render: function() {
-      return this;
-    },
-
+    /**
+     * Start the Thread.
+     * @returns {this}
+     */
     start: function() {
-      /// <summary>启动</summary>
-      /// <returns type="self" />
       if ( this.runFlag == false ) {
         Thread.count += 1;
         this.runFlag = true;
         var self = this;
         if ( this.delay > 0 ) {
           self.status = "delay";
+          /**
+           * @event module:module/Thread#delay
+           */
           self.trigger( CustomEvent.createEvent( "delay", self ) );
         }
         setTimeout( function() {
           self.status = "start";
+          /**
+           * @event module:module/Thread#start
+           */
           self.trigger( CustomEvent.createEvent( "start", self ) );
-          //self.pauseTime += self.delay;
-
           self.begin = $.now();
           self._interval.call( self );
         }, this.delay );
       }
       return this;
     },
-
+    /**
+     * @private
+     */
     _interval: function() {
-      /// <summary>私有</summary>
       var self = this,
         every = function() {
           if ( self.runFlag === false || ( self.tick >= self.duration && !self.forever ) ) {
@@ -14528,18 +14535,17 @@ aQuery.define( "module/Thread", [ "main/CustomEvent", "base/extend", "main/objec
 
       every();
     },
-
+    /**
+     * @private
+     */
     _run: function( step, duration ) {
-      /// <summary>私有</summary>
-      //if (this.sleepTime > 0) return;
-      //this.status = "run";
       this._executor( step, duration );
     },
-
+    /**
+     * Resume the Thread.
+     * @returns {this}
+     */
     resume: function() {
-      /// <summary>唤醒进程</summary>
-      /// <param name="time" type="Number">毫秒</param>
-      /// <returns type="Thread" />
       if ( this.isSleep() ) {
         var n = $.now();
         this.pauseTime += n - ( this.sleepBeginTime || 0 );
@@ -14551,10 +14557,11 @@ aQuery.define( "module/Thread", [ "main/CustomEvent", "base/extend", "main/objec
       }
       return this;
     },
-
+    /**
+     * Stop the Thread.
+     * @returns {this}
+     */
     stop: function() {
-      /// <summary>停止进程</summary>
-      /// <returns type="self" />
       if ( this.runFlag == true ) {
         this.tick = this.sleepTime = this.pauseTime = 0;
         this.sleepBeginTime = null;
@@ -14565,44 +14572,55 @@ aQuery.define( "module/Thread", [ "main/CustomEvent", "base/extend", "main/objec
         this.runFlag = false;
         var clear = this.clear;
         clear( this.timerId );
+        /**
+         * @event module:module/Thread#stop
+         */
         this.trigger( CustomEvent.createEvent( "stop", self ) );
       }
       return this;
     },
-
+    /**
+     * @private
+     */
     _executor: function( a, b ) {
-      /// <summary>内部</summary>
       this.run.apply( this.context, [ a, b ].concat( this.args ) ) === false && this.stop();
     },
-
+    /**
+     * Whether does the Thread run.
+     * @returns {Boolean}
+     */
     isRun: function() {
-      /// <summary>是否在运行</summary>
-      /// <returns type="Boolean" />
       return this.runFlag;
     },
+    /**
+     * Whether does the Thread sleep.
+     * @returns {Boolean}
+     */
     isSleep: function() {
-      /// <summary>是否在睡眠</summary>
-      /// <returns type="Boolean" />
-      return this.status == "sleep"; //(this.sleepFlag && this.sleepTime > 0);
+      return this.status == "sleep";
     },
-
+    /**
+     * Get dely property.
+     * @returns {Number}
+     */
     getDely: function() {
-      /// <summary>获得延迟启动时间</summary>
-      /// <returns type="Number" />
       return this.dely;
     },
+    /**
+     * Set dely time.
+     * @param {Number}
+     * @returns {this}
+     */
     setDely: function( delay ) {
-      /// <summary>设置延迟启动时间</summary>
-      /// <param name="time" type="Number">毫秒</param>
-      /// <returns type="self" />
       this.delay = delay || this.delay || 0;
       return this;
     },
-
+    /**
+     * Set duration time.
+     * @param {Number} - NaN means infinte.
+     * @returns {this}
+     */
     setDuration: function( duration ) {
-      /// <summary>设置持续时间</summary>
-      /// <param name="time" type="Number">毫秒</param>
-      /// <returns type="self" />
       var status = this.getStatus();
       this.stop();
       if ( duration == undefined || duration == NaN || ( typeof duration == "number" && duration > 0 ) ) {
@@ -14615,26 +14633,30 @@ aQuery.define( "module/Thread", [ "main/CustomEvent", "base/extend", "main/objec
       status == "run" && this.start();
       return this;
     },
+    /**
+     * Get duration time.
+     * @returns {Number}
+     */
     getDuration: function() {
-      /// <summary>获得持续时间</summary>
-      /// <para>NaN表示无限</para>
-      /// <returns type="Number" />
       return this.duration;
     },
-    setFps: function() {
-      /// <summary>设置帧值</summary>
-      /// <returns type="Number" />
+    /**
+     * Set fps.
+     * @param {Number}
+     * @returns {this}
+     */
+    setFps: function( fps ) {
       var status = this.getStatus();
       this.stop();
 
       if ( this.interval == null && this.isAnimFrame == true ) {
         this.power = requestAnimFrame;
         this.clear = cancelRequestAnimFrame;
-        this.fps = Thread.fps;
+        this.fps = fps || Thread.fps;
       } else {
         this.power = setTimeout;
         this.clear = clearTimeout;
-        this.fps = this.interval || ( 1000 / this.fps ) || Thread.fps;
+        this.fps = this.interval || ( 1000 / ( fps || Thread.fps ) );
       }
 
       this.fps = Math.round( this.fps );
@@ -14642,60 +14664,67 @@ aQuery.define( "module/Thread", [ "main/CustomEvent", "base/extend", "main/objec
       status == "run" && this.start();
       return this;
     },
+    /**
+     * Get fps.
+     * @returns {Number}
+     */
     getFps: function() {
-      /// <summary>获得帧值</summary>
-      /// <returns type="Number" />
       return this.fps;
     },
+    /**
+     * Get percent of process.
+     * @returns {Number} - If return NaN that means the duration is infinte.
+     */
     getPercent: function() {
-      /// <summary>获得百分比进度</summary>
-      /// <para>返回值是NaN时说明duration是0并且是永远运行的</para>
-      /// <returns type="Number" />
       var percent = parseInt( this.tick / this.duration * 100 ) / 100;
       return percent != NaN ? Math.min( 1, percent ) : percent;
     },
-
+    /**
+     * Get status.
+     * @returns {String} - "delay",  "start", "sleep", "stop", "run"
+     */
     getStatus: function() {
-      /// <summary>获得运行状态</summary>
-      /// <para>"delay"</para>
-      /// <para>"start"</para>
-      /// <para>"sleep"</para>
-      /// <para>"stop"</para>
-      /// <para>"run"</para>
-      /// <returns type="String" />
       return this.status;
     },
+    /**
+     * Get tick.
+     * @returns {Number}
+     */
     getTick: function() {
-      /// <summary>获得时值</summary>
-      /// <returns type="Number" />
       return this.tick;
     },
-
+    /**
+     * Get pause time.
+     * @returns {Number}
+     */
     getPauseTime: function() {
-      /// <summary>获得暂停的时间值</summary>
-      /// <returns type="Number" />
       return this.pauseTime;
     },
+    /**
+     * Set sleep time.
+     * @param {Number}
+     * @returns {this}
+     */
     setSleepTime: function( sleepTime ) {
-      /// <summary>设置睡眠时间</summary>
-      /// <param name="sleepTime" type="Number">毫秒</param>
-      /// <returns type="self" />
       if ( sleepTime ) {
         this.sleepTime = sleepTime;
         this.sleepFlag = true;
       }
       return this;
     },
+    /**
+     * Get sleep time.
+     * @returns {Number}
+     */
     getSleepTime: function( isCount ) {
-      /// <summary>获得当前睡眠时间值</summary>
-      /// <returns type="Number" />
       return this.sleepTime;
     },
+    /**
+     * Sleep the Thread.
+     * @param {Number}
+     * @returns {this}
+     */
     sleep: function( sleeTime ) {
-      /// <summary>设置睡眠时间 只有在非睡眠时间有用</summary>
-      /// <param name="sleepTime" type="Number">毫秒</param>
-      /// <param name="time" type="Number">毫秒</param>
-      /// <returns type="self" />
       var status = this.getStatus();
       if ( sleeTime ) {
         return this.setSleepTime( sleeTime );
@@ -14704,7 +14733,10 @@ aQuery.define( "module/Thread", [ "main/CustomEvent", "base/extend", "main/objec
         return this;
       }
       this.status = "sleep";
-      this.trigger( CustomEvent.createEvent( "sleepBegin", self ) );
+      /**
+       * @event module:module/Thread#sleepStart
+       */
+      this.trigger( CustomEvent.createEvent( "sleepStart", self ) );
       var self = this;
       clearTimeout( this.sleepId );
       this.sleepBeginTime = $.now();
@@ -14714,14 +14746,26 @@ aQuery.define( "module/Thread", [ "main/CustomEvent", "base/extend", "main/objec
 
       return this;
     }
-  }, {
+  }, /** @lends module:module/Thread */ {
+    /**
+     * Cancel power of Thread.
+     */
     cancelRequestAnimFrame: cancelRequestAnimFrame,
+    /**
+     * Count of all Thread.
+     * @type {Number}
+     */
     count: 0,
-
-    fps: 13,
-
+    /**
+     * Count of all Thread. Default is 0.
+     * @type {Number}
+     */
+    fps: 60,
+    /**
+     * Power of Thread.
+     */
     requestAnimFrame: requestAnimFrame,
-
+    /** @private */
     _defaultSetting: {
       runFlag: false,
       forever: false,
@@ -18433,13 +18477,10 @@ aQuery.define( "ui/navmenu", [
 /*=======================================================*/
 
 /*===================module/math===========================*/
-aQuery.define( 'module/math', [ "base/extend" ], function( $, utilExtend, undefined ) {
+aQuery.define( "module/math", [], function( $ ) {
   "use strict";
   var M = Math,
     pi = M.PI,
-    martrix = function( a, b, c ) {
-      this.init( a, b, c )
-    },
     directionHash = {
       0: 3,
       1: 4,
@@ -18454,33 +18495,45 @@ aQuery.define( 'module/math', [ "base/extend" ], function( $, utilExtend, undefi
       10: 1,
       11: 2
     };
+  /**
+   * @pubilc
+   * @exports module/math
+   */
   var math = {
+    /**
+     * Get acceleration.
+     * @param {Number}
+     * @param {Number}
+     * @returns {Number}
+     */
     acceleration: function( distance, time ) {
       return ( distance + distance ) / ( time * time );
     },
-
+    /**
+     * Get angle by 2 point.
+     * @param {Number}
+     * @param {Number}
+     * @param {Number}
+     * @param {Number}
+     * @returns {Number}
+     */
     angle: function( x1, y1, x2, y2 ) {
-      /// <summary>计算两点的斜率</summary>
-      /// <param name="x1" type="Number">点1x坐标</param>
-      /// <param name="y1" type="Number">点1y坐标</param>
-      /// <param name="x2" type="Number">点2x坐标</param>
-      /// <param name="y2" type="Number">点2y坐标</param>
-      /// <returns type="Number" />
       return M.atan2( y2 - y1, x2 - x1 );
     },
-
+    /**
+     * @param {Number}
+     * @returns {Number}
+     */
     degreeToRadian: function( angle ) {
-      /// <summary>角度转为弧度</summary>
-      /// <param name="angle" type="Number">角度</param>
-      /// <returns type="Number" />
       return pi * angle / 180;
     },
-
+    /**
+     * Get angle by 2 point.
+     * @param {Number}
+     * @param {Number} [rang=15] - A range of angle.
+     * @returns {Number}
+     */
     direction: function( angle, range ) {
-      /// <summary>确定返回的向量朝向。从x轴瞬时针起。时钟</summary>
-      /// <param name="angle" type="Number">角度</param>
-      /// <param name="range" type="Number">范围：0-15</param>
-      /// <returns type="Number" />
       var result = 9;
       range = $.between( 0, 15, range || 15 );
       if ( 0 - range < angle && angle <= value + range ) {
@@ -18500,137 +18553,34 @@ aQuery.define( 'module/math', [ "base/extend" ], function( $, utilExtend, undefi
       }
       return result;
     },
+    /**
+     * Get distance by 2 point.
+     * @param {Number}
+     * @param {Number}
+     * @param {Number}
+     * @param {Number}
+     * @returns {Number}
+     */
     distance: function( x1, y1, x2, y2 ) {
-      /// <summary>计算两点之间距离</summary>
-      /// <param name="x1" type="Number">点1x坐标</param>
-      /// <param name="y1" type="Number">点1y坐标</param>
-      /// <param name="x2" type="Number">点2x坐标</param>
-      /// <param name="y2" type="Number">点2y坐标</param>
-      /// <returns type="Number" />
       return M.sqrt( M.pow( x1 - x2, 2 ) + M.pow( y1 - y2, 2 ) );
     },
 
-    martrix: martrix,
-
+    /**
+     * @param {Number}
+     * @returns {Number}
+     */
     radianToDegree: function( angle ) {
-      /// <summary>弧度转为角度</summary>
-      /// <param name="angle" type="Number">弧度</param>
-      /// <returns type="Number" />
       return angle * 180 / pi;
     },
+    /**
+     * @param {Number}
+     * @param {Number}
+     * @returns {Number}
+     */
     speed: function( distance, time ) {
-      /// <summary>计算两点之间距离。单位：像素/毫秒</summary>
-      /// <param name="distance" type="Number">距离</param>
-      /// <param name="time" type="Number">时间</param>
-      /// <returns type="Number" />
       return distance / time;
     }
 
-  };
-
-  utilExtend.easyExtend( martrix, {
-    addition: function( m1, m2 ) {
-      var
-        r1 = m1.length,
-        c1 = m1[ 0 ].length,
-        ret = martrix.init( m1.length, m1[ 0 ].length ),
-        s = arguments[ 2 ] ? -1 : 1,
-        x, y;
-      if ( typeof m2 == "number" ) {
-        for ( x = 0; x < r1; x++ ) {
-          for ( y = 0; y < c1; y++ ) {
-            ret[ x ][ y ] = m1[ x ][ y ] + m2 * s;
-          }
-        }
-      } else {
-        if ( r1 != m2.length || c1 != m2[ 0 ].length ) {
-          return;
-        }
-        for ( x = 0; x < r1; x++ ) {
-          for ( y = 0; y < c1; y++ ) {
-            ret[ x ][ y ] += m2[ x ][ y ] * s;
-          }
-        }
-      }
-      return ret;
-    },
-    init: function( a, b, c ) {
-      var ret = [];
-      if ( !a || !b ) {
-        ret = [
-          [ 1, 0, 0, 0 ],
-          [ 0, 1, 0, 0 ],
-          [ 0, 0, 1, 0 ],
-          [ 0, 0, 0, 1 ]
-        ];
-      } else {
-        if ( c && a * b != c.length ) {
-          return ret;
-        }
-        for ( var i = 0, j = 0, count = 0; i < a; i++ ) {
-          ret.push( [] );
-          for ( j = 0; j < b; j++ ) {
-            ret[ i ][ j ] = c ? c[ count++ ] : 0;
-          }
-        }
-      }
-      return ret;
-    },
-    multiply: function( m1, m2 ) {
-      var r1 = m1.length,
-        c1 = m1[ 0 ].length,
-        ret, x, y, z;
-      if ( typeof m2 == "number" ) {
-        ret = martrix.init( r1, c1 );
-        for ( x = 0; x < r1; x++ ) {
-          for ( y = 0; y < c1; y++ ) {
-            ret[ x ][ y ] = m1[ x ][ y ] * m2;
-          }
-        }
-      } else {
-        var r2 = m2.length,
-          c2 = m2[ 0 ].length,
-          sum = 0;
-        ret = math.martrix.init( r1, c2 );
-        if ( c1 != r2 ) {
-          return;
-        }
-        for ( x = 0; x < c2; x++ ) {
-          for ( y = 0; y < r1; y++ ) {
-            sum = 0;
-            for ( z = 0; z < c1; z++ ) {
-              sum += m1[ y ][ z ] * m2[ z ][ x ];
-            }
-            ret[ y ][ x ] = sum;
-          }
-        }
-      }
-      return ret;
-    },
-    subtraction: function( m1, m2 ) {
-      return math.martrix.addition( m1, m2, true );
-    }
-  } );
-
-  martrix.prototype = {
-    addition: function( m ) {
-      return new martrix( martrix.addition( this.martrix, m.martrix || m ) );
-    },
-    constructor: martrix,
-    init: function( a, b, c ) {
-      if ( a instanceof Array ) {
-        this.martrix = a;
-      } else {
-        this.martrix = martrix.init( a, b, c );
-      }
-      return this;
-    },
-    multiply: function( m ) {
-      return new martrix( martrix.multiply( this.martrix, m.martrix || m ) );
-    },
-    subtraction: function( m ) {
-      return new martrix( martrix.subtraction( this.martrix, m.martrix || m ) );
-    }
   };
 
   return math;
