@@ -5,12 +5,14 @@ aQuery.define( "@app/controllers/index", [
   "@app/views/index",
   "@app/controllers/docnav",
   "@app/controllers/apinav",
-  "@app/controllers/content"
+  "@app/controllers/content",
+  "@app/lib/map"
   ], function( $,
   parse,
   history,
   SuperController,
-  IndexView ) {
+  IndexView,
+  map ) {
   "use strict"; //启用严格模式
   var Controller = SuperController.extend( {
     init: function( contollerElement, models ) {

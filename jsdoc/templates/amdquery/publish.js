@@ -679,13 +679,22 @@ buildAMDQueryAPINav = function( members, templatePath ) {
 
   var buildPath = path.join( templatePath, "build" );
   var apinavPath = path.join( buildPath, "apinav.xml" );
+  var mapPath = path.join( buildPath, "map.js" );
 
   if ( !fs.existsSync( buildPath ) ) {
     fs.mkPath( buildPath );
   }
 
   console.log( "Save", apinavPath );
+
   fs.writeFileSync( apinavPath, json2html.transform( {}, root ), "utf8" );
+
+  var json = {};
+  data().each( function( doclet ) {
+    json[ doclet.longname ] = 1;
+  } );
+
+  fs.writeFileSync( mapPath, " aQuery.define('@app/lib/map', function(){ return '" + JSON.stringify( json ) + "' });", "utf8" );
 }
 
 function _multiCreateTree( members, itemList, tree, seen ) {

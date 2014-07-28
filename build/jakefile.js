@@ -74,6 +74,8 @@ task( "jsdoc", [ "buildjs" ], {
 	var $template = path.join( "..", "jsdoc", "templates", opt );
 	var $apinavXMLName = "apinav.xml";
 	var $apinavXMLPath = path.join( $template, "build", $apinavXMLName );
+  var $mapName = "map.js";
+  var $mapPath = path.join( $template, "build", $mapName );
 	var command = [ [ "jsdoc", $amdquery, path.join( $amdquery, "**", "*.js" ), "--template", $template, "--destination", $distPath ].join( " " ) ];
 	var callback = complete;
 	if ( FSE.exists( $template ) ) {
@@ -90,6 +92,8 @@ task( "jsdoc", [ "buildjs" ], {
 		callback = function() {
 			var toPath = path.join( "../document/xml", $apinavXMLName );
 			jake.cpR( $apinavXMLPath, toPath );
+      toPath = path.join( "../document/lib", $mapName );
+      jake.cpR( $mapPath, toPath );
 			complete();
 		}
 	}
