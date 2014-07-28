@@ -35,6 +35,8 @@ $.require( [ "main/event", "main/query", "main/attr", "module/location", "ui/scr
           target: a,
         } );
       }
+      event.document.preventDefault(e);
+      return false;
     }
   } );
 
