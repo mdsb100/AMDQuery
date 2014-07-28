@@ -209,7 +209,26 @@ aQuery.define( "module/Keyboard", [ "base/config", "base/typed", "base/extend", 
         } ) );
         event.document.preventDefault( e );
         event.document.stopPropagation( e );
+        return;
       }
+      /**
+       * @event module:module/Keyboard#keyboard.keydown
+       * @type {Object}
+       * @property {KeyboardEvent} event
+       */
+      /**
+       * @event module:module/Keyboard#keyboard.keypress
+       * @type {Object}
+       * @property {KeyboardEvent} event
+       */
+      /**
+       * @event module:module/Keyboard#keyboard.keyup
+       * @type {Object}
+       * @property {KeyboardEvent} event
+       */
+      this.trigger( CustomEvent.createEvent( e.type + ":*", target, {
+        event: e,
+      } ) );
     }
   }, /** @lends module:module/Keyboard */ {
     /**
