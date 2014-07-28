@@ -2,7 +2,7 @@ define( "hash/cubicBezier.tween", function() {
   this.describe( "CubicBezier parameter" );
   /**
    * @pubilc
-   * @module hash/cssColors
+   * @module hash/cubicBezier.tween
    * @property {Array<Number>} back.easeInOut  - [ 0.680, -0.550, 0.265, 1.550 ]
    * @property {Array<Number>} circ.easeInOut  - [ 0.785, 0.135, 0.150, 0.860 ]
    * @property {Array<Number>} expo.easeInOut  - [ 1.000, 0.000, 0.000, 1.000 ]
