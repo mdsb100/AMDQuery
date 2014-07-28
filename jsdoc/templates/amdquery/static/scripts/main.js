@@ -3,9 +3,6 @@ $.require( [ "main/event", "main/query", "main/attr", "module/location", "ui/scr
   $( ".prettyprinted" ).each( function( ele ) {
     var numbered = ele.innerHTML.split( "\n" );
     var counter = 0;
-    if ( numbered === 1 ) {
-      debugger
-    };
     for ( var i = 0, len = numbered.length, item, html = ""; i < len; i++ ) {
       item = numbered[ i ];
       html += i != len - 1 || len === 1 ? '<span class="linenumber" id="line' + ( i + 1 ) + '" >' + ( i + 1 ) + "</span>" + item + "\n" : "";
