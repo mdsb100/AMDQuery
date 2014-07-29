@@ -59,6 +59,7 @@
           <li amdquery-widget="ui.navitem" ui-navitem="html:Widget;img:class"></li>
           <li amdquery-widget="ui.navitem" ui-navitem="html:flex;img:class"></li>
           <li amdquery-widget="ui.navitem" ui-navitem="html:TabView;img:class"></li>
+          <li amdquery-widget="ui.navitem" ui-navitem="html:AutoComplete;img:class"></li>
           <!-- <li amdquery-widget="ui.navitem" ui-navitem="html:destroyWidget;img:class"></li> -->
         </ul>
       </li>
