@@ -1410,7 +1410,7 @@
           getDependenciesArray: this.getDependenciesArray
         };
 
-        if ( exports && exports.constructor != Array ) {
+        if ( exports && ( exports.constructor !== Array || typeof exports._AMD === "undefined" ) ) {
           exports = [ exports ];
         }
         this.module = exports;
