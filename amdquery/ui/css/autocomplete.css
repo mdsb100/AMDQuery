@@ -1,4 +1,17 @@
 .aquery-autoComplete-slideBar {
-  border: "1px solid black";
-  backgroundColor: "white";
+  border: 1px solid black;
+  background-color: white;
+  text-decoration: none;
+}
+
+.aquery-autoComplete-slideItem {
+  border: 1px solid black;
+  background-color: white;
+  text-decoration: none;
+  cursor: pointer;
+  text-overflow:ellipsis;
+}
+
+.aquery-autoComplete-selection-slideItem {
+  background-color: blue;
 }

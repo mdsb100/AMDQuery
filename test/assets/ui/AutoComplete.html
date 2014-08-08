@@ -8,13 +8,24 @@
   <script src="../../../amdquery/amdquery.js" type="text/javascript" amd="detectCR=1" module="transitionToAnimation:1" ui="initWidget:1"></script>
   <script type="text/javascript">
     $.require(["ui/autocomplete", "main/query"], function(autocomplete, query) {
+      var testMap = {
+        "name:jack": 1,
+        "name:Rose": 2,
+        "name:Mark": 3,
+        "age:35": 4,
+        "age": 5
+      };
+
+      $("#text").uiAutocomplete("option", "data", testMap).on("autocomplete.enter", function(e){
+        var key = e.key;
+      });
 
     });
   </script>
 </head>
 
 <body style="width: 100%; height: 100%;">
-  <input style="width:100px;height:22px;" id="text" amdquery-widget="ui.autocomplete" ui-autocomplete="" type="text" autocomplete="false" placeholder="Search" />
+  <input style="width:100px;height:22px;" id="text" amdquery-widget="ui.autocomplete" ui-autocomplete="maxHeight: 200" type="text" autocomplete="false" placeholder="Search" />
 </body>
 
 </html>
