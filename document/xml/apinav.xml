@@ -31,6 +31,7 @@
             <ul>
               <li amdquery-widget="ui.navitem" ui-navitem="html:charcode;img:file" link="charcode.html"></li>
               <li amdquery-widget="ui.navitem" ui-navitem="html:cssColors;img:file" link="cssColors.html"></li>
+              <li amdquery-widget="ui.navitem" ui-navitem="html:cubicBezierTween;img:file" link="cubicBezierTween.html"></li>
             </ul>
           </li>
           <li amdquery-widget="ui.navitem" ui-navitem="html:html5;img:module">
@@ -93,6 +94,9 @@
           <li amdquery-widget="ui.navitem" ui-navitem="html:&quot;jsonpStart&quot;;img:file" link="aQuery.html#event:&quot;jsonpStart&quot;&quot;>&quot;jsonpStart"></li>
           <li amdquery-widget="ui.navitem" ui-navitem="html:&quot;jsonpStop&quot;;img:file" link="aQuery.html#event:&quot;jsonpStop&quot;&quot;>&quot;jsonpStop"></li>
           <li amdquery-widget="ui.navitem" ui-navitem="html:&quot;test.report&quot;;img:file" link="aQuery.html#event:&quot;test.report&quot;&quot;>&quot;test.report"></li>
+          <li amdquery-widget="ui.navitem" ui-navitem="html:keydown;img:file" link="Keyboard_keyboard.html#event:keydown"></li>
+          <li amdquery-widget="ui.navitem" ui-navitem="html:keypress;img:file" link="Keyboard_keyboard.html#event:keypress"></li>
+          <li amdquery-widget="ui.navitem" ui-navitem="html:keyup;img:file" link="Keyboard_keyboard.html#event:keyup"></li>
           <li amdquery-widget="ui.navitem" ui-navitem="html:delay;img:file" link="Thread.html#event:delay"></li>
           <li amdquery-widget="ui.navitem" ui-navitem="html:sleepStart;img:file" link="Thread.html#event:sleepStart"></li>
           <li amdquery-widget="ui.navitem" ui-navitem="html:start;img:file" link="Thread.html#event:start"></li>

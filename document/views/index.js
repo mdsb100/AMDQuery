@@ -1,4 +1,4 @@
-aQuery.define( "@app/views/index", [ "app/View", "ui/flex", "ui/tabview", "ui/swapview" ], function( $, SuperView ) {
+aQuery.define( "@app/views/index", [ "app/View", "ui/flex", "ui/tabview", "ui/swapview", "ui/autocomplete" ], function( $, SuperView ) {
 	"use strict"; //启用严格模式
 	var xmlpath = "@app/xml/index";
 	SuperView.getStyle( "@app/styles/index" );

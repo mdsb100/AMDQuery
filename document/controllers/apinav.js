@@ -1,4 +1,12 @@
-aQuery.define( "@app/controllers/apinav", [ "main/attr", "module/history", "app/Controller", "@app/views/apinav" ], function( $, attr, history, SuperController, NavmenuView ) {
+aQuery.define( "@app/controllers/apinav", [
+  "main/attr",
+  "module/history",
+  "app/Controller",
+  "@app/views/apinav" ], function( $,
+    attr,
+    history,
+    SuperController,
+    NavmenuView ) {
   "use strict"; //启用严格模式
   var APINAVMENUKEY = "apiNavmenuKey";
 

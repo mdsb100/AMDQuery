@@ -16,7 +16,7 @@
   display: block;
   position: absolute;
   top:5px;
-  right: 10px;
+  left: 10px;
   z-index: 10;
   padding: 10px 50px 10px 10px;
   color: #fff;
@@ -26,6 +26,16 @@
   box-shadow: 0 0 10px rgba(0,0,0,.5);
   border-bottom-left-radius: 2px;
   border-bottom-right-radius: 2px;
+}
+
+#autocomplete{
+  display: block;
+  position: absolute;
+  top:15px;
+  right: 10px;
+  z-index: 10;
+  width:200px;
+  height:15px;
 }
 
 #title, #contact

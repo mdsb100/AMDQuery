@@ -3,10 +3,10 @@ aQuery.define( "@app/controllers/index", [
   "module/history",
   "app/Controller",
   "@app/views/index",
+  "@app/lib/map",
   "@app/controllers/docnav",
   "@app/controllers/apinav",
-  "@app/controllers/content",
-  "@app/lib/map"
+  "@app/controllers/content"
   ], function( $,
   parse,
   history,
@@ -43,12 +43,23 @@ aQuery.define( "@app/controllers/index", [
           self.apinav.selectDefaultNavmenu( history.getTokenByKey( self.apinav.APINAVMENUKEY ) );
         }
 
+        if ( e.index === 1 ) {
+          $autocomplete.show();
+        } else {
+          $autocomplete.uiAutocomplete( "clear" );
+          $autocomplete.hide();
+        }
+
         navMap[ e.index ].activate();
         navMap[ e.originIndex ].deactivate();
 
         history.addByKeyValue( "tab", e.index );
 
       } );
+
+      var $autocomplete = $( "#autocomplete" ).uiAutocomplete( "option", "data", map ).on( "autocomplete.complete", function( e ) {
+        history.addByKeyValue( "apiNavmenuKey", e.value );
+      } ).hide();
 
       var $tabview = $( "#tabview" );
       $tabview.on( "tabview.select", function( e ) {

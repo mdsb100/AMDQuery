@@ -1,9 +1,10 @@
 <div style="" amdquery-widget="ui.flex" ui-flex="flexDirection:column">
   <div id="header_wrap">
+    <a id="forkme_banner" target="_blank" href="https://github.com/mdsb100/AMDQuery">View on GitHub</a>
     <center id="title">
       <h1>Documentation</h1>
     </center>
-    <a id="forkme_banner" target="_blank" href="https://github.com/mdsb100/AMDQuery">View on GitHub</a>
+    <input id="autocomplete" amdquery-widget="ui.autocomplete" ui-autocomplete="maxHeight: 200" type="text" autocomplete="false" placeholder="Search" />
   </div>
   <div style="" amdquery-widget="ui.flex" ui-flex="flexDirection:row;flex:1">
     <div id="tabview" amdquery-widget="ui.flex;ui.tabview" ui-flex="flexDirection:column;fillParentWidth:false" style="width:200px;">
