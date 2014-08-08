@@ -597,6 +597,8 @@ exports.publish = function( taffyData, opts, tutorials ) {
   saveChildren( tutorials );
 };
 
+var mapjson = {};
+
 buildAMDQueryAPINav = function( members, templatePath ) {
   var json2html = require( "./json2html" );
   var
@@ -674,6 +676,7 @@ buildAMDQueryAPINav = function( members, templatePath ) {
   var globalElement = rootUL.children.pop();
 
   globalElement.link = getHrefValue( linkto( "global", "Global" ) );
+  mapjson[ "global" ] = globalElement.link;
 
   rootUL.children.push( globalElement );
 
@@ -689,12 +692,9 @@ buildAMDQueryAPINav = function( members, templatePath ) {
 
   fs.writeFileSync( apinavPath, json2html.transform( {}, root ), "utf8" );
 
-  var json = {};
-  data().each( function( doclet ) {
-    json[ doclet.longname ] = 1;
-  } );
+  console.log( "Save", mapPath );
 
-  fs.writeFileSync( mapPath, " aQuery.define('@app/lib/map', function(){ return '" + JSON.stringify( json ) + "' });", "utf8" );
+  fs.writeFileSync( mapPath, " aQuery.define('@app/lib/map', function(){ \nreturn " + JSON.stringify( mapjson ).replace( /\,/g, ",\n" ) + "; });", "utf8" );
 }
 
 function _multiCreateTree( members, itemList, tree, seen ) {
@@ -728,6 +728,7 @@ function createNav( obj, UL ) {
     UL.children.push( LI );
     if ( value.__noChildren ) {
       LI.link = getHrefValue( linkto( value.longname, value.name ) );
+      mapjson[ value.longname ] = LI.link;
       LI[ "ui-navitem" ] += ";img:file";
       continue;
     }
