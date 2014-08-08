@@ -1411,7 +1411,7 @@
           getDependenciesArray: this.getDependenciesArray
         };
 
-        if ( exports && exports.constructor != Array ) {
+        if ( exports && ( exports.constructor !== Array || typeof exports._AMD === "undefined" ) ) {
           exports = [ exports ];
         }
         this.module = exports;
@@ -14097,6 +14097,948 @@ aQuery.define( "html5/css3", [ "base/support", "base/extend", "base/typed", "bas
 
 /*=======================================================*/
 
+/*===================hash/charcode===========================*/
+define( "hash/charcode", [ "base/client" ], function( client ) {
+  /**
+   * @pubilc
+   * @requires module:base/client
+   * @module hash/charcode
+   * @property {Object}  codeToStringReflect     - Code to string.
+   * @property {String}  codeToStringReflect.108 - "Enter"
+   * @property {String}  codeToStringReflect.112 - "F1"
+   * @property {String}  codeToStringReflect.113 - "F2"
+   * @property {String}  codeToStringReflect.114 - "F3"
+   * @property {String}  codeToStringReflect.115 - "F4"
+   * @property {String}  codeToStringReflect.116 - "F5"
+   * @property {String}  codeToStringReflect.117 - "F6"
+   * @property {String}  codeToStringReflect.118 - "F7"
+   * @property {String}  codeToStringReflect.119 - "F8"
+   * @property {String}  codeToStringReflect.120 - "F9"
+   * @property {String}  codeToStringReflect.121 - "F10"
+   * @property {String}  codeToStringReflect.122 - "F11"
+   * @property {String}  codeToStringReflect.123 - "F12"
+   * @property {String}  codeToStringReflect.8   - "BackSpace"
+   * @property {String}  codeToStringReflect.9   - "Tab"
+   * @property {String}  codeToStringReflect.12  - "Clear"
+   * @property {String}  codeToStringReflect.13  - "enter"
+   * @property {String}  codeToStringReflect.19  - "Pause"
+   * @property {String}  codeToStringReflect.20  - "Caps Lock"
+   * @property {String}  codeToStringReflect.27  - "Escape"
+   * @property {String}  codeToStringReflect.32  - "space"
+   * @property {String}  codeToStringReflect.33  - "PageUp"
+   * @property {String}  codeToStringReflect.34  - "PageDown"
+   * @property {String}  codeToStringReflect.35  - "End"
+   * @property {String}  codeToStringReflect.36  - "Home"
+   * @property {String}  codeToStringReflect.37  - "Left"
+   * @property {String}  codeToStringReflect.38  - "Up"
+   * @property {String}  codeToStringReflect.39  - "Right"
+   * @property {String}  codeToStringReflect.40  - "Down"
+   * @property {String}  codeToStringReflect.41  - "Select"
+   * @property {String}  codeToStringReflect.42  - "Print"
+   * @property {String}  codeToStringReflect.43  - "Execute"
+   * @property {String}  codeToStringReflect.45  - "Insert"
+   * @property {String}  codeToStringReflect.46  - "Delete"
+   * @property {String}  codeToStringReflect.91  - "LeftCommand"
+   * @property {String}  codeToStringReflect.93  - "RightCommand"
+   * @property {String}  codeToStringReflect.224 - "Command"
+   *
+   * @property {Object}  stringToCodeReflect              - String to code.
+   * @property {Number}  stringToCodeReflect.Enter        - 108
+   * @property {Number}  stringToCodeReflect.F1           - 112
+   * @property {Number}  stringToCodeReflect.F2           - 113
+   * @property {Number}  stringToCodeReflect.F3           - 114
+   * @property {Number}  stringToCodeReflect.F4           - 115
+   * @property {Number}  stringToCodeReflect.F5           - 116
+   * @property {Number}  stringToCodeReflect.F6           - 117
+   * @property {Number}  stringToCodeReflect.F7           - 118
+   * @property {Number}  stringToCodeReflect.F8           - 119
+   * @property {Number}  stringToCodeReflect.F9           - 120
+   * @property {Number}  stringToCodeReflect.F10          - 121
+   * @property {Number}  stringToCodeReflect.F11          - 122
+   * @property {Number}  stringToCodeReflect.F12          - 123
+   * @property {Number}  stringToCodeReflect.BackSpace    - 8
+   * @property {Number}  stringToCodeReflect.Tab          - 9
+   * @property {Number}  stringToCodeReflect.Clear        - 12
+   * @property {Number}  stringToCodeReflect.enter        - 13
+   * @property {Number}  stringToCodeReflect.Pause        - 19
+   * @property {Number}  stringToCodeReflect.Caps Lock    - 20
+   * @property {Number}  stringToCodeReflect.Escape       - 27
+   * @property {Number}  stringToCodeReflect.space        - 32
+   * @property {Number}  stringToCodeReflect.PageUp       - 33
+   * @property {Number}  stringToCodeReflect.PageDown     - 34
+   * @property {Number}  stringToCodeReflect.End          - 35
+   * @property {Number}  stringToCodeReflect.Home         - 36
+   * @property {Number}  stringToCodeReflect.Left         - 37
+   * @property {Number}  stringToCodeReflect.Up           - 38
+   * @property {Number}  stringToCodeReflect.Right        - 39
+   * @property {Number}  stringToCodeReflect.Down         - 40
+   * @property {Number}  stringToCodeReflect.Select       - 41
+   * @property {Number}  stringToCodeReflect.Print        - 42
+   * @property {Number}  stringToCodeReflect.Execute      - 43
+   * @property {Number}  stringToCodeReflect.Insert       - 45
+   * @property {Number}  stringToCodeReflect.Delete       - 46
+   * @property {Number}  stringToCodeReflect.LeftCommand  - client.browser.firefox ? 224 : 91
+   * @property {Number}  stringToCodeReflect.RightCommand - client.browser.firefox ? 224 : 93
+   */
+  return {
+    codeToStringReflect: {
+      108: "Enter",
+      112: "F1",
+      113: "F2",
+      114: "F3",
+      115: "F4",
+      116: "F5",
+      117: "F6",
+      118: "F7",
+      119: "F8",
+      120: "F9",
+      121: "F10",
+      122: "F11",
+      123: "F12",
+      8: "BackSpace",
+      9: "Tab",
+      12: "Clear",
+      13: "enter",
+      19: "Pause",
+      20: "Caps Lock",
+      27: "Escape",
+      32: "space",
+      33: "PageUp",
+      34: "PageDown",
+      35: "End",
+      36: "Home",
+      37: "Left",
+      38: "Up",
+      39: "Right",
+      40: "Down",
+      41: "Select",
+      42: "Print",
+      43: "Execute",
+      45: "Insert",
+      46: "Delete",
+      91: "LeftCommand",
+      93: "RightCommand",
+      224: "Command"
+    },
+    stringToCodeReflect: {
+      "Enter": 108,
+      "F1": 112,
+      "F2": 113,
+      "F3": 114,
+      "F4": 115,
+      "F5": 116,
+      "F6": 117,
+      "F7": 118,
+      "F8": 119,
+      "F9": 120,
+      "F10": 121,
+      "F11": 122,
+      "F12": 123,
+      "BackSpace": 8,
+      "Tab": 9,
+      "Clear": 12,
+      "enter": 13,
+      "Pause": 19,
+      "Caps Lock": 20,
+      "Escape": 27,
+      "space": 32,
+      "PageUp": 33,
+      "PageDown": 34,
+      "End": 35,
+      "Home": 36,
+      "Left": 37,
+      "Up": 38,
+      "Right": 39,
+      "Down": 40,
+      "Select": 41,
+      "Print": 42,
+      "Execute": 43,
+      "Insert": 45,
+      "Delete": 46,
+      "LeftCommand": client.browser.firefox ? 224 : 91,
+      "RightCommand": client.browser.firefox ? 224 : 93
+    }
+  }
+
+} );
+
+/*=======================================================*/
+
+/*===================module/Keyboard===========================*/
+aQuery.define( "module/Keyboard", [ "base/config", "base/typed", "base/extend", "base/array", "main/event", "main/CustomEvent", "main/object", "hash/charcode" ], function( $, config, typed, utilExtend, array, event, CustomEvent, object, charcode ) {
+  "use strict";
+  /**
+   * @global
+   * @typedef {Object} KeyboardOptions
+   * @link module:hash/charcode
+   * @property KeyboardOptions {Object}
+   * @property KeyboardOptions.keyCode {Number|String|Array<String>|Array<Number>} - "Up", 38, ["Up", "Down"], [38, 39]
+   * @property KeyboardOptions.keyType {String} - "keydown", "keyup", "keypress"
+   * @property KeyboardOptions.combinationKey {Array<String>} - "cmd", "ctrl", "alt", "shift"
+   * @property KeyboardOptions.todo {Function}
+   */
+
+  /**
+   * Handle Keyboard.
+   * @constructor
+   * @requires base/config
+   * @requires base/typed
+   * @requires base/extend
+   * @requires base/array
+   * @requires main/event
+   * @requires main/CustomEvent
+   * @requires main/object
+   * @requires hash/charcode
+   * @requires module:main/object
+   * @augments module:main/object
+   * @exports module/Keyboard
+   * @mixes ObjectClassStaticMethods
+   */
+  var Keyboard = CustomEvent.extend( "Keyboard", /** @lends module:module/Keyboard.prototype */ {
+    /**
+     * @constructs module:module/Keyboard
+     * @param {Element}
+     * @param {Array<KeyboardOptions>|KeyboardOptions} [keyList=]
+     */
+    init: function( container, keyList ) {
+      this._super();
+      this.keyList = [];
+      this.container = container;
+      this.commandStatus = false;
+      if ( this.container.getAttribute( "tabindex" ) == undefined ) {
+        this.container.setAttribute( "tabindex", Keyboard.tableindex++ );
+      }
+      this._initHandler().enable().addKeys( keyList );
+    },
+    /**
+     * @private
+     */
+    _initHandler: function() {
+      var self = this;
+      this.event = function( e ) {
+        self.routing( this, e );
+      };
+      return this;
+    },
+    /**
+     * Enable keyboard.
+     * @returns {this}
+     */
+    enable: function() {
+      event.on( this.container, "keydown keypress keyup", this.event );
+      return this;
+    },
+    /**
+     * Disable keyboard.
+     * @returns {this}
+     */
+    disable: function() {
+      event.off( this.container, "keydown keypress keyup", this.event );
+      return this;
+    },
+    /**
+     * @private
+     */
+    _push: function( ret ) {
+      if ( !( this.iterationKeyList( ret ) ) ) {
+        this.keyList.push( ret );
+      }
+      return this;
+    },
+    /**
+     * Add key.
+     * @param {KeyboardOptions}
+     * @returns {this}
+     */
+    addKey: function( obj ) {
+      var keyCode = obj.keyCode,
+        ret;
+      if ( typed.isArray( keyCode ) ) {
+        for ( var i = 0, len = keyCode.length, nObj; i < len; i++ ) {
+          nObj = {};
+          utilExtend.easyExtend( nObj, obj );
+          nObj.keyCode = keyCode[ i ];
+          this.addKey( nObj );
+        }
+        return this;
+      } else {
+        ret = Keyboard.createOpt( obj );
+        this._push( ret );
+      }
+      config.amdquery.debug && $.logger( "keyboard.addKey", "handlerName:", Keyboard.getHandlerName( ret ) );
+      ret.todo && this.on( Keyboard.getHandlerName( ret ), ret.todo );
+      return this;
+    },
+    /**
+     * Add a list of key.
+     * @param {Array<KeyboardOptions>|KeyboardOptions}
+     * @returns {this}
+     */
+    addKeys: function( keyList ) {
+      if ( !keyList ) {
+        return this;
+      }
+      var i = 0,
+        len;
+      if ( !typed.isArray( keyList ) ) {
+        keyList = [ keyList ];
+      }
+      for ( len = keyList.length; i < len; i++ ) {
+        this.addKey( keyList[ i ] );
+      }
+      return this;
+    },
+    /**
+     * Change key.
+     * @param {KeyboardOptions}
+     * @param {KeyboardOptions}
+     * @returns {this}
+     */
+    changeKey: function( origin, evolution ) {
+      origin = Keyboard.createOpt( origin );
+      var item;
+      if ( item = this.iterationKeyList( origin ) ) {
+        utilExtend.extend( item, evolution );
+      }
+      return this;
+    },
+    /**
+     * Remove key.
+     * @param {KeyboardOptions}
+     * @returns {this}
+     */
+    removeKey: function( obj ) {
+      var item, ret, keyCode = obj.keyCode;
+      if ( typed.isArray( keyCode ) ) {
+        for ( var i = 0, len = keyCode.length, nObj; i < len; i++ ) {
+          utilExtend.easyExtend( {}, obj );
+          nObj = obj;
+          nObj.keyCode = keyCode[ i ];
+          this.removeKey( nObj );
+        }
+        return this;
+      } else {
+        ret = Keyboard.createOpt( obj );
+        if ( item = this.iterationKeyList( ret ) ) {
+          this.keyList.splice( array.inArray( this.keyList, item ), 1 );
+          config.amdquery.debug && $.logger( "keyboard.removeKey", "handlerName:", Keyboard.getHandlerName( item ) );
+          this.clearHandlers( Keyboard.getHandlerName( item ) );
+        }
+      }
+      return this;
+    },
+    /**
+     * Remove event listener.
+     * @param {KeyboardOptions}
+     * @returns {this}
+     */
+    removeTodo: function( obj ) {
+      var opt = Keyboard.createOpt( obj );
+      this.off( Keyboard.getHandlerName( opt ), obj.todo );
+      return this;
+    },
+    /**
+     * Iterate key list and search out matching key.
+     * @param {KeyEvent}
+     * @returns {KeyboardOptions|null}
+     */
+    iterationKeyList: function( e ) {
+      for ( var i = 0, keyList = this.keyList, len = keyList.length, item, code, result = 0; i < len; i++ ) {
+        code = e.keyCode || e.which;
+
+        item = keyList[ i ];
+
+        config.amdquery.debug && $.logger( "keyboard.iterationKeyList", "type:code", e.type + ":" + code );
+
+        if (
+          e.type == item.type &&
+          code == item.keyCode &&
+          Keyboard.checkCombinationKey( e, item.combinationKey )
+        ) {
+          return item;
+        }
+      }
+      return null;
+    },
+    /**
+     * @private
+     */
+    routing: function( target, e ) {
+      e = event.document.getEvent( e );
+      var item;
+      if ( item = this.iterationKeyList( e ) ) {
+        //item.todo.call(this, e);i
+        var type = Keyboard.getHandlerName( item );
+        config.amdquery.debug && $.logger( "keyboard.routing", "handlerName", type );
+        this.trigger( CustomEvent.createEvent( type, target, {
+          event: e,
+          keyItem: item
+        } ) );
+        event.document.preventDefault( e );
+        event.document.stopPropagation( e );
+        return;
+      }
+      /**
+       * @event module:module/Keyboard#keyboard.keydown
+       * @type {Object}
+       * @property {KeyboardEvent} event
+       */
+      /**
+       * @event module:module/Keyboard#keyboard.keypress
+       * @type {Object}
+       * @property {KeyboardEvent} event
+       */
+      /**
+       * @event module:module/Keyboard#keyboard.keyup
+       * @type {Object}
+       * @property {KeyboardEvent} event
+       */
+      this.trigger( CustomEvent.createEvent( e.type + ":*", target, {
+        event: e,
+      } ) );
+    }
+  }, /** @lends module:module/Keyboard */ {
+    /**
+     * Create option of keyboard.
+     * @param {Object}
+     * @return {KeyboardOptions}
+     */
+    createOpt: function( obj ) {
+      var keyCode = obj.keyCode;
+      //若有组合键 会把type强制转换
+      if ( obj.combinationKey && obj.combinationKey.length ) {
+        if ( typed.isString( keyCode ) ) {
+          keyCode = keyCode.length > 1 ? keyCode : keyCode.toUpperCase();
+        }
+        obj.type = array.inArray( obj.combinationKey, "cmd" ) > -1 ? "keydown" : "keyup";
+      }
+      if ( typed.isString( keyCode ) ) {
+        obj.keyCode = Keyboard.stringToCode( keyCode );
+      }
+
+      return obj;
+    },
+    /**
+     * @param {Number}
+     * @return {String}
+     */
+    codeToChar: function( code ) {
+      return typed.isNumber( code ) ? String.fromCharCode( code ) : code;
+    },
+    /**
+     * 38 ==> "Up".
+     * @param {Number}
+     * @return {String}
+     */
+    codeToString: function( code ) {
+      return charcode.codeToStringReflect[ code ] || Keyboard.codeToChar( code );
+    },
+    /**
+     * @param {String}
+     * @return {Number}
+     */
+    charToCode: function( c ) {
+      return typed.isString( c ) ? c.charCodeAt( 0 ) : c;
+    },
+    /**
+     * "Up" ==> 38.
+     * @param {String}
+     * @return {Number}
+     */
+    stringToCode: function( s ) {
+      return charcode.stringToCodeReflect[ s ] || Keyboard.charToCode( s );
+    },
+    /**
+     * Whether e.combinationKey equals combinationKey.
+     * @param {KeyEvent}
+     * @param {Array<String>} - [ "ctrl", "alt", "shift" ]
+     * @return {Boolean}
+     */
+    checkCombinationKey: function( e, combinationKey ) {
+      var i = 0,
+        j = 0,
+        defCon = [ "ctrl", "alt", "shift" ],
+        len = combinationKey ? combinationKey.length : 0,
+        count1 = 0;
+      if ( e.combinationKey ) {
+        if ( e.combinationKey.length == len ) {
+          for ( ; i < len; i++ ) {
+            for ( ; j < len; j++ ) {
+              e.combinationKey[ i ] != combinationKey[ j ] && count1++;
+            }
+          }
+          if ( len == count1 ) {
+            return 1;
+          }
+        } else {
+          return 0;
+        }
+      } else {
+        for ( var count2 = combinationKey ? combinationKey.length : 0; i < len; i++ ) {
+          if ( combinationKey[ i ] === "cmd" ) {
+            if ( Keyboard.commandStatus == true ) {
+              count1++;
+            } else {
+              return 0;
+            }
+            continue;
+          }
+
+          if ( e[ defCon[ i ] + "Key" ] == true ) count1++;
+
+          if ( e[ combinationKey[ i ] + "Key" ] == false ) {
+            return 0;
+          }
+        }
+        if ( count1 > count2 ) {
+          return 0;
+        }
+      }
+      return 1;
+    },
+    /**
+     * @param {KeyboardOptions}
+     * @return {String}
+     */
+    getHandlerName: function( obj ) {
+      obj = Keyboard.createOpt( obj );
+      var combinationKey = obj.combinationKey ? obj.combinationKey.join( "+" ) + "+" : "";
+      return obj.type + ":" + combinationKey + Keyboard.stringToCode( obj.keyCode );
+    },
+    tableindex: 9000,
+    cache: [],
+    /**
+     * Get an instance.
+     * @param {Element}
+     * @param {Array<KeyboardOptions>|KeyboardOptions} [keyList=]
+     * @return {module:module/Keyboard}
+     */
+    getInstance: function( container, keyList ) {
+      var keyboard, i = 0,
+        cache = Keyboard.cache,
+        len = cache.length;
+      for ( ; i < len; i++ ) {
+        if ( cache[ i ].container == container ) {
+          keyboard = cache[ i ];
+        }
+      }
+      if ( !keyboard ) {
+        keyboard = new Keyboard( container, keyList );
+        Keyboard.cache.push( keyboard );
+      }
+      return keyboard;
+    }
+  } );
+
+  event.on( document.documentElement, "keydown keypress keyup", function( e ) {
+    var code = e.keyCode || e.which;
+    if ( code === charcode.stringToCodeReflect[ "LeftCommand" ] ||
+      code === charcode.stringToCodeReflect[ "RightCommand" ] ||
+      code === charcode.stringToCodeReflect[ "Command" ] ) {
+      switch ( e.type ) {
+        case "keydown":
+        case "keypress":
+          Keyboard.commandStatus = true;
+          break;
+        case "keyup":
+          Keyboard.commandStatus = false;
+          break;
+      }
+    }
+  } );
+
+  return Keyboard;
+} );
+
+/*=======================================================*/
+
+/*===================html5/css3.position===========================*/
+aQuery.define( "html5/css3.position", [ "base/support", "main/position", "html5/css3" ], function( $, support, position, css3 ) {
+  "use strict";
+  this.describe( "Get positionX: left + translateX" );
+  var css3Position = {
+    getPositionX: function( ele ) {
+      var x = position.getOffsetL( ele );
+      if ( support.transform3d ) {
+        x += css3.getTransform3dByName( ele, "translateX", true );
+      }
+      return x;
+    },
+    setPositionX: function( ele, isTransform3d, x ) {
+      if ( isTransform3d && support.transform3d ) {
+        css3.setTranslate3d( ele, {
+          tx: x
+        } );
+      } else {
+        position.setOffsetL( ele, x );
+      }
+      return this;
+    },
+    getPositionY: function( ele ) {
+      var y = position.getOffsetT( ele );
+      if ( support.transform3d ) {
+        y += css3.getTransform3dByName( ele, "translateY", true );
+      }
+      return y;
+    },
+    setPositionY: function( ele, isTransform3d, y ) {
+      if ( isTransform3d && support.transform3d ) {
+        css3.setTranslate3d( ele, {
+          ty: y
+        } );
+      } else {
+        position.setOffsetT( ele, y );
+      }
+      return this;
+    },
+    getPositionXY: function( ele ) {
+      return {
+        x: this.getPositionX( ele ),
+        y: this.getPositionY( ele )
+      }
+    },
+    setPositionXY: function( ele, isTransform3d, pos ) {
+      if ( isTransform3d && support.transform3d ) {
+        var opt = {};
+        pos.x !== undefined && ( opt.tx = pos.x );
+        pos.y !== undefined && ( opt.ty = pos.y );
+        css3.setTranslate3d( ele, opt );
+      } else {
+        pos.x !== undefined && position.setOffsetL( ele, pos.x );
+        pos.y !== undefined && position.setOffsetT( ele, pos.y );
+      }
+      return this;
+    },
+    getLeftWithTranslate3d: function( ele ) {
+      var t = this.getPositionX( ele ) || 0,
+        cur = ele.offsetParent;
+      while ( cur != null ) {
+        t += this.getPositionX( cur );
+        cur = cur.offsetParent;
+      }
+      return t;
+    },
+    getTopWithTranslate3d: function( ele ) {
+      var t = this.getPositionY( ele ) || 0,
+        cur = ele.offsetParent;
+      while ( cur != null ) {
+        t += this.getPositionY( cur );
+        cur = cur.offsetParent;
+      }
+      return t;
+    }
+  };
+
+  $.extend( css3Position );
+
+  $.fn.extend( {
+    getPositionX: function( ) {
+      return css3Position.getPositionX( this[ 0 ] );
+    },
+    setPositionX: function( isTransform3d, x ) {
+      return this.each( function( ele ) {
+        css3Position.setPositionX( ele, isTransform3d, x );
+      } );
+    },
+    getPositionY: function( ) {
+      return css3Position.getPositionY( this[ 0 ] );
+    },
+    setPositionY: function( isTransform3d, y ) {
+      return this.each( function( ele ) {
+        css3Position.setPositionY( ele, isTransform3d, y );
+      } );
+    },
+    getPositionXY: function( ) {
+      return {
+        x: css3Position.getPositionX( this[ 0 ] ),
+        y: css3Position.getPositionY( this[ 0 ] )
+      }
+    },
+    setPositionXY: function( isTransform3d, pos ) {
+      return this.each( function( ele ) {
+        css3Position.setPositionXY( ele, isTransform3d, pos );
+      } );
+    },
+    getLeftWithTranslate3d: function( ) {
+      return css3Position.getLeftWithTranslate3d( this[ 0 ] );
+    },
+    getTopWithTranslate3d: function( ) {
+      return css3Position.getTopWithTranslate3d( this[ 0 ] )
+    }
+  } );
+
+} );
+
+/*=======================================================*/
+
+/*===================ui/autocomplete===========================*/
+aQuery.define( "ui/autocomplete", [
+    "base/client",
+    "base/typed",
+    "module/Widget",
+    "main/query",
+    "main/class",
+    "main/CustomEvent",
+    "main/event",
+    "main/css",
+    "main/position",
+    "main/dom",
+    "main/attr",
+    "main/parse",
+    "html5/css3",
+    "module/Keyboard",
+    "html5/css3.position"
+  ],
+  function( $, client, typed, Widget, query, cls, CustomEvent, event, css, position, dom, attr, parse, css3, Keyboard ) {
+    "use strict";
+
+    Widget.fetchCSS( "ui/css/autocomplete" );
+
+    var autoComplete = Widget.extend( "ui.autocomplete", {
+      container: null,
+      _initHandler: function() {
+        var self = this,
+          opt = this.options;
+        var EnterEventName = Keyboard.getHandlerName( {
+            type: "keyup",
+            keyCode: "Enter"
+          } ),
+          enterEventName = Keyboard.getHandlerName( {
+            type: "keyup",
+            keyCode: "enter"
+          } ),
+          EscapeEventName = Keyboard.getHandlerName( {
+            type: "keyup",
+            keyCode: "Escape"
+          } ),
+          UpEventName = Keyboard.getHandlerName( {
+            type: "keyup",
+            keyCode: "Up"
+          } ),
+          DownEventName = Keyboard.getHandlerName( {
+            type: "keyup",
+            keyCode: "Down"
+          } ),
+          LeftEventName = Keyboard.getHandlerName( {
+            type: "keyup",
+            keyCode: "Left"
+          } ),
+          RightEventName = Keyboard.getHandlerName( {
+            type: "keyup",
+            keyCode: "Right"
+          } );
+
+        this.autoCompleteEvent = function( e ) {
+          switch ( e.type ) {
+            case "click":
+              var li = event.document.getTarget( e ),
+                key = li.innerHTML,
+                value = opt.data[ key ];
+              self.clear();
+              self.selectSlideItem( li );
+              self.target.trigger( CustomEvent.createEvent( self.getEventName( "click" ), self.target[ 0 ], {
+                selectSlideItem: li,
+                key: key,
+                value: value
+              } ) ).trigger( CustomEvent.createEvent( self.getEventName( "complete" ), self.target[ 0 ], {
+                selectSlideItem: li,
+                key: key,
+                value: value
+              } ) );
+              break;
+            case "keyup:*":
+              self._setValue( self.target.val() );
+              if ( self.checkValue() ) {
+                self.$slideBar.show();
+                self.render();
+              } else {
+                self.clear();
+              }
+              break;
+            case EnterEventName:
+            case enterEventName:
+              var li = self.$slideBar.children()[ self.selectionItemIndex ];
+              if ( !li ) {
+                return;
+              }
+              var key = li.innerHTML,
+                value = opt.data[ key ];
+              self.clear();
+              self.selectSlideItem( li );
+              self.target.trigger( CustomEvent.createEvent( self.getEventName( "enter" ), self.target[ 0 ], {
+                selectSlideItem: li,
+                key: key,
+                value: value
+              } ) ).trigger( CustomEvent.createEvent( self.getEventName( "complete" ), self.target[ 0 ], {
+                selectSlideItem: li,
+                key: key,
+                value: value
+              } ) );
+              break;
+            case EscapeEventName:
+              self.clear();
+              self.target.trigger( CustomEvent.createEvent( self.getEventName( "cancel" ), self.target[ 0 ] ) );
+              break;
+            case UpEventName:
+              if ( self.selectionItemIndex > 0 ) {
+                self.selectionItemIndex -= 1;
+                var li = self.$slideBar.children()[ self.selectionItemIndex ],
+                  key = li.innerHTML,
+                  value = opt.data[ key ]
+                self.selectSlideItem( li );
+                self.target.trigger( CustomEvent.createEvent( self.getEventName( "select" ), self.target[ 0 ], {
+                  selectSlideItem: li,
+                  key: key,
+                  value: value
+                } ) );
+              }
+              break;
+            case DownEventName:
+              if ( self.selectionItemIndex < self.$slideBar.children().length ) {
+                self.selectionItemIndex += 1;
+                var li = self.$slideBar.children()[ self.selectionItemIndex ];
+                self.selectSlideItem( li );
+                self.target.trigger( CustomEvent.createEvent( self.getEventName( "select" ), self.target[ 0 ], {
+                  selectSlideItem: li,
+                  key: key,
+                  value: value
+                } ) );
+              }
+              break;
+          }
+        };
+        return this;
+      },
+      enable: function() {
+        this.disable();
+        this.keyboard.on( "keyup:*", this.autoCompleteEvent );
+        this.keyboard.addKey( {
+          type: "keyup",
+          keyCode: [ "enter", "Escape", "Up", "Down" ],
+          todo: this.autoCompleteEvent
+        } );
+        this.$slideBar.delegate( "li", "click", this.autoCompleteEvent );
+        this.options.disabled = false;
+        return this;
+      },
+      disable: function() {
+        this.keyboard.off( "keyup:*", this.autoCompleteEvent );
+        this.keyboard.removeKey( {
+          type: "keyup",
+          keyCode: [ "enter", "Escape", "Up", "Down" ],
+          todo: this.autoCompleteEvent
+        } );
+        this.$slideBar.off( "click", this.autoCompleteEvent );
+        this.options.disabled = true;
+        return this;
+      },
+      matchData: function( data ) {
+        var opt = this.options,
+          value = this.options.value,
+          ret = [];
+        if ( this.checkValue() ) {
+          var reg = RegExp( "(.*" + value + "+.*)", !!opt.ignoreCase ? "im" : "m" );
+          for ( var key in data ) {
+            if ( reg.test( key ) ) {
+              ret.push( RegExp.$1 );
+            }
+          }
+        }
+        return ret;
+      },
+      checkValue: function() {
+        var value = this.options.value;
+        return value && value.length >= this.options.letterNumber;
+      },
+      render: function() {
+        var opt = this.options,
+          list = this.matchData( this.options.data ),
+          i = 0,
+          len = list.length;
+        this.$slideBar.children().remove();
+        for ( ; i < len; i++ ) {
+          $( $.createEle( "li" ) ).insertText( list[ i ] ).addClass( "aquery-autoComplete-slideItem" ).appendTo( this.$slideBar );
+        };
+
+        return this;
+      },
+      init: function( opt, target ) {
+        this._super( opt, target );
+
+        this.selectionItemIndex = -1;
+
+        this.keyboard = new Keyboard( this.target[ 0 ] );
+
+        this.target.attr( "autocomplete", false );
+
+        this.$slideBar = $( $.createEle( "ul" ) ).width( this.target.outerWidth() ).height( this.options.maxHeight ).css( {
+          "position": "absolute",
+          "left": this.target.getPositionX(),
+          "top": this.target.getPositionY() + this.target.outerHeight(),
+          "overflow": "hidden",
+          "zIndex": 100000
+        } ).hide().addClass( "aquery-autoComplete-slideBar" ).appendTo( this.target.parent() );
+
+        this._initHandler().enable().render();
+
+        return this;
+      },
+      selectSlideItem: function( li ) {
+        if ( query.contains( this.$slideBar[ 0 ], li ) ) {
+          this.$slideBar.children().removeClass( "aquery-autoComplete-selection-slideItem" );
+          $( li ).addClass( "aquery-autoComplete-selection-slideItem" );
+          this._setValue( li.innerHTML );
+        }
+      },
+      clear: function() {
+        this.$slideBar.hide();
+        this.selectionItemIndex = -1;
+      },
+      destory: function() {
+        Widget.invoke( "destroy", this );
+      },
+      _setData: function( data ) {
+        if ( typed.isObject( data ) ) {
+          this.options.data = data;
+        }
+      },
+      _setMaxHeight: function( height ) {
+        this.options.maxHeight = height;
+        this.$slideBar && this.$slideBar.height( height );
+      },
+      _setValue: function( text ) {
+        this.target.val( text );
+        this.options.value = text;
+      },
+      customEventName: [ "select", "cancel", "enter", "click", "complete" ],
+      options: {
+        data: {},
+        maxHeight: 100,
+        letterNumber: 3,
+        value: "",
+        ignoreCase: true
+      },
+      getter: {
+        data: 0
+      },
+      setter: {
+
+      },
+      publics: {
+        clear: Widget.AllowPublic
+      },
+      target: null,
+      toString: function() {
+        return "ui.autocomplete";
+      },
+      widgetEventPrefix: "autocomplete"
+    } );
+
+    return autoComplete;
+  } );
+
+/*=======================================================*/
+
 /*===================ui/button===========================*/
 aQuery.define( "ui/button", [
     "base/client",
@@ -15529,12 +16471,12 @@ aQuery.define( "html5/animate.transform", [ "base/typed", "base/extend", "base/s
 
 /*=======================================================*/
 
-/*===================hash/cubicBezier.tween===========================*/
-define( "hash/cubicBezier.tween", function() {
+/*===================hash/cubicBezierTween===========================*/
+define( "hash/cubicBezierTween", function() {
   this.describe( "CubicBezier parameter" );
   /**
    * @pubilc
-   * @module hash/cssColors
+   * @module hash/cubicBezierTween
    * @property {Array<Number>} back.easeInOut  - [ 0.680, -0.550, 0.265, 1.550 ]
    * @property {Array<Number>} circ.easeInOut  - [ 0.785, 0.135, 0.150, 0.860 ]
    * @property {Array<Number>} expo.easeInOut  - [ 1.000, 0.000, 0.000, 1.000 ]
@@ -15606,7 +16548,7 @@ aQuery.define( "html5/css3.transition.animate", [
   "html5/css3",
   "animation/FX",
   "html5/animate.transform",
-  "hash/cubicBezier.tween" ], function( $,
+  "hash/cubicBezierTween" ], function( $,
   config,
   typed,
   support,
@@ -15930,125 +16872,6 @@ aQuery.define( "html5/css3.transition.animate", [
       }
     }
   }
-
-} );
-
-/*=======================================================*/
-
-/*===================html5/css3.position===========================*/
-aQuery.define( "html5/css3.position", [ "base/support", "main/position", "html5/css3" ], function( $, support, position, css3 ) {
-  "use strict";
-  this.describe( "Get positionX: left + translateX" );
-  var css3Position = {
-    getPositionX: function( ele ) {
-      var x = position.getOffsetL( ele );
-      if ( support.transform3d ) {
-        x += css3.getTransform3dByName( ele, "translateX", true );
-      }
-      return x;
-    },
-    setPositionX: function( ele, isTransform3d, x ) {
-      if ( isTransform3d && support.transform3d ) {
-        css3.setTranslate3d( ele, {
-          tx: x
-        } );
-      } else {
-        position.setOffsetL( ele, x );
-      }
-      return this;
-    },
-    getPositionY: function( ele ) {
-      var y = position.getOffsetT( ele );
-      if ( support.transform3d ) {
-        y += css3.getTransform3dByName( ele, "translateY", true );
-      }
-      return y;
-    },
-    setPositionY: function( ele, isTransform3d, y ) {
-      if ( isTransform3d && support.transform3d ) {
-        css3.setTranslate3d( ele, {
-          ty: y
-        } );
-      } else {
-        position.setOffsetT( ele, y );
-      }
-      return this;
-    },
-    getPositionXY: function( ele ) {
-      return {
-        x: this.getPositionX( ele ),
-        y: this.getPositionY( ele )
-      }
-    },
-    setPositionXY: function( ele, isTransform3d, pos ) {
-      if ( isTransform3d && support.transform3d ) {
-        var opt = {};
-        pos.x !== undefined && ( opt.tx = pos.x );
-        pos.y !== undefined && ( opt.ty = pos.y );
-        css3.setTranslate3d( ele, opt );
-      } else {
-        pos.x !== undefined && position.setOffsetL( ele, pos.x );
-        pos.y !== undefined && position.setOffsetT( ele, pos.y );
-      }
-      return this;
-    },
-    getLeftWithTranslate3d: function( ele ) {
-      var t = this.getPositionX( ele ) || 0,
-        cur = ele.offsetParent;
-      while ( cur != null ) {
-        t += this.getPositionX( cur );
-        cur = cur.offsetParent;
-      }
-      return t;
-    },
-    getTopWithTranslate3d: function( ele ) {
-      var t = this.getPositionY( ele ) || 0,
-        cur = ele.offsetParent;
-      while ( cur != null ) {
-        t += this.getPositionY( cur );
-        cur = cur.offsetParent;
-      }
-      return t;
-    }
-  };
-
-  $.extend( css3Position );
-
-  $.fn.extend( {
-    getPositionX: function( ) {
-      return css3Position.getPositionX( this[ 0 ] );
-    },
-    setPositionX: function( isTransform3d, x ) {
-      return this.each( function( ele ) {
-        css3Position.setPositionX( ele, isTransform3d, x );
-      } );
-    },
-    getPositionY: function( ) {
-      return css3Position.getPositionY( this[ 0 ] );
-    },
-    setPositionY: function( isTransform3d, y ) {
-      return this.each( function( ele ) {
-        css3Position.setPositionY( ele, isTransform3d, y );
-      } );
-    },
-    getPositionXY: function( ) {
-      return {
-        x: css3Position.getPositionX( this[ 0 ] ),
-        y: css3Position.getPositionY( this[ 0 ] )
-      }
-    },
-    setPositionXY: function( isTransform3d, pos ) {
-      return this.each( function( ele ) {
-        css3Position.setPositionXY( ele, isTransform3d, pos );
-      } );
-    },
-    getLeftWithTranslate3d: function( ) {
-      return css3Position.getLeftWithTranslate3d( this[ 0 ] );
-    },
-    getTopWithTranslate3d: function( ) {
-      return css3Position.getTopWithTranslate3d( this[ 0 ] )
-    }
-  } );
 
 } );
 
@@ -16907,542 +17730,6 @@ aQuery.define( "ui/flex", [
 
     return flex;
   } );
-
-/*=======================================================*/
-
-/*===================hash/charcode===========================*/
-define( "hash/charcode", [ "base/client" ], function( client ) {
-  /**
-   * @pubilc
-   * @requires module:base/client
-   * @module hash/charcode
-   * @property {Object}  codeToStringReflect     - Code to string.
-   * @property {String}  codeToStringReflect.108 - "Enter"
-   * @property {String}  codeToStringReflect.112 - "F1"
-   * @property {String}  codeToStringReflect.113 - "F2"
-   * @property {String}  codeToStringReflect.114 - "F3"
-   * @property {String}  codeToStringReflect.115 - "F4"
-   * @property {String}  codeToStringReflect.116 - "F5"
-   * @property {String}  codeToStringReflect.117 - "F6"
-   * @property {String}  codeToStringReflect.118 - "F7"
-   * @property {String}  codeToStringReflect.119 - "F8"
-   * @property {String}  codeToStringReflect.120 - "F9"
-   * @property {String}  codeToStringReflect.121 - "F10"
-   * @property {String}  codeToStringReflect.122 - "F11"
-   * @property {String}  codeToStringReflect.123 - "F12"
-   * @property {String}  codeToStringReflect.8   - "BackSpace"
-   * @property {String}  codeToStringReflect.9   - "Tab"
-   * @property {String}  codeToStringReflect.12  - "Clear"
-   * @property {String}  codeToStringReflect.13  - "enter"
-   * @property {String}  codeToStringReflect.19  - "Pause"
-   * @property {String}  codeToStringReflect.20  - "Caps Lock"
-   * @property {String}  codeToStringReflect.27  - "Escape"
-   * @property {String}  codeToStringReflect.32  - "space"
-   * @property {String}  codeToStringReflect.33  - "PageUp"
-   * @property {String}  codeToStringReflect.34  - "PageDown"
-   * @property {String}  codeToStringReflect.35  - "End"
-   * @property {String}  codeToStringReflect.36  - "Home"
-   * @property {String}  codeToStringReflect.37  - "Left"
-   * @property {String}  codeToStringReflect.38  - "Up"
-   * @property {String}  codeToStringReflect.39  - "Right"
-   * @property {String}  codeToStringReflect.40  - "Down"
-   * @property {String}  codeToStringReflect.41  - "Select"
-   * @property {String}  codeToStringReflect.42  - "Print"
-   * @property {String}  codeToStringReflect.43  - "Execute"
-   * @property {String}  codeToStringReflect.45  - "Insert"
-   * @property {String}  codeToStringReflect.46  - "Delete"
-   * @property {String}  codeToStringReflect.91  - "LeftCommand"
-   * @property {String}  codeToStringReflect.93  - "RightCommand"
-   * @property {String}  codeToStringReflect.224 - "Command"
-   *
-   * @property {Object}  stringToCodeReflect              - String to code.
-   * @property {Number}  stringToCodeReflect.Enter        - 108
-   * @property {Number}  stringToCodeReflect.F1           - 112
-   * @property {Number}  stringToCodeReflect.F2           - 113
-   * @property {Number}  stringToCodeReflect.F3           - 114
-   * @property {Number}  stringToCodeReflect.F4           - 115
-   * @property {Number}  stringToCodeReflect.F5           - 116
-   * @property {Number}  stringToCodeReflect.F6           - 117
-   * @property {Number}  stringToCodeReflect.F7           - 118
-   * @property {Number}  stringToCodeReflect.F8           - 119
-   * @property {Number}  stringToCodeReflect.F9           - 120
-   * @property {Number}  stringToCodeReflect.F10          - 121
-   * @property {Number}  stringToCodeReflect.F11          - 122
-   * @property {Number}  stringToCodeReflect.F12          - 123
-   * @property {Number}  stringToCodeReflect.BackSpace    - 8
-   * @property {Number}  stringToCodeReflect.Tab          - 9
-   * @property {Number}  stringToCodeReflect.Clear        - 12
-   * @property {Number}  stringToCodeReflect.enter        - 13
-   * @property {Number}  stringToCodeReflect.Pause        - 19
-   * @property {Number}  stringToCodeReflect.Caps Lock    - 20
-   * @property {Number}  stringToCodeReflect.Escape       - 27
-   * @property {Number}  stringToCodeReflect.space        - 32
-   * @property {Number}  stringToCodeReflect.PageUp       - 33
-   * @property {Number}  stringToCodeReflect.PageDown     - 34
-   * @property {Number}  stringToCodeReflect.End          - 35
-   * @property {Number}  stringToCodeReflect.Home         - 36
-   * @property {Number}  stringToCodeReflect.Left         - 37
-   * @property {Number}  stringToCodeReflect.Up           - 38
-   * @property {Number}  stringToCodeReflect.Right        - 39
-   * @property {Number}  stringToCodeReflect.Down         - 40
-   * @property {Number}  stringToCodeReflect.Select       - 41
-   * @property {Number}  stringToCodeReflect.Print        - 42
-   * @property {Number}  stringToCodeReflect.Execute      - 43
-   * @property {Number}  stringToCodeReflect.Insert       - 45
-   * @property {Number}  stringToCodeReflect.Delete       - 46
-   * @property {Number}  stringToCodeReflect.LeftCommand  - client.browser.firefox ? 224 : 91
-   * @property {Number}  stringToCodeReflect.RightCommand - client.browser.firefox ? 224 : 93
-   */
-  return {
-    codeToStringReflect: {
-      108: "Enter",
-      112: "F1",
-      113: "F2",
-      114: "F3",
-      115: "F4",
-      116: "F5",
-      117: "F6",
-      118: "F7",
-      119: "F8",
-      120: "F9",
-      121: "F10",
-      122: "F11",
-      123: "F12",
-      8: "BackSpace",
-      9: "Tab",
-      12: "Clear",
-      13: "enter",
-      19: "Pause",
-      20: "Caps Lock",
-      27: "Escape",
-      32: "space",
-      33: "PageUp",
-      34: "PageDown",
-      35: "End",
-      36: "Home",
-      37: "Left",
-      38: "Up",
-      39: "Right",
-      40: "Down",
-      41: "Select",
-      42: "Print",
-      43: "Execute",
-      45: "Insert",
-      46: "Delete",
-      91: "LeftCommand",
-      93: "RightCommand",
-      224: "Command"
-    },
-    stringToCodeReflect: {
-      "Enter": 108,
-      "F1": 112,
-      "F2": 113,
-      "F3": 114,
-      "F4": 115,
-      "F5": 116,
-      "F6": 117,
-      "F7": 118,
-      "F8": 119,
-      "F9": 120,
-      "F10": 121,
-      "F11": 122,
-      "F12": 123,
-      "BackSpace": 8,
-      "Tab": 9,
-      "Clear": 12,
-      "enter": 13,
-      "Pause": 19,
-      "Caps Lock": 20,
-      "Escape": 27,
-      "space": 32,
-      "PageUp": 33,
-      "PageDown": 34,
-      "End": 35,
-      "Home": 36,
-      "Left": 37,
-      "Up": 38,
-      "Right": 39,
-      "Down": 40,
-      "Select": 41,
-      "Print": 42,
-      "Execute": 43,
-      "Insert": 45,
-      "Delete": 46,
-      "LeftCommand": client.browser.firefox ? 224 : 91,
-      "RightCommand": client.browser.firefox ? 224 : 93
-    }
-  }
-
-} );
-
-/*=======================================================*/
-
-/*===================module/Keyboard===========================*/
-aQuery.define( "module/Keyboard", [ "base/config", "base/typed", "base/extend", "base/array", "main/event", "main/CustomEvent", "main/object", "hash/charcode" ], function( $, config, typed, utilExtend, array, event, CustomEvent, object, charcode ) {
-  "use strict";
-  /**
-   * @global
-   * @typedef {Object} KeyboardOptions
-   * @link module:hash/charcode
-   * @property KeyboardOptions {Object}
-   * @property KeyboardOptions.keyCode {Number|String|Array<String>|Array<Number>} - "Up", 38, ["Up", "Down"], [38, 39]
-   * @property KeyboardOptions.keyType {String} - "keydown", "keyup", "keypress"
-   * @property KeyboardOptions.combinationKey {Array<String>} - "cmd", "ctrl", "alt", "shift"
-   * @property KeyboardOptions.todo {Function}
-   */
-
-  /**
-   * Handle Keyboard.
-   * @constructor
-   * @requires base/config
-   * @requires base/typed
-   * @requires base/extend
-   * @requires base/array
-   * @requires main/event
-   * @requires main/CustomEvent
-   * @requires main/object
-   * @requires hash/charcode
-   * @requires module:main/object
-   * @augments module:main/object
-   * @exports module/Keyboard
-   * @mixes ObjectClassStaticMethods
-   */
-  var Keyboard = CustomEvent.extend( "Keyboard", /** @lends module:module/Keyboard.prototype */ {
-    /**
-     * @constructs module:module/Keyboard
-     * @param {Element}
-     * @param {Array<KeyboardOptions>|KeyboardOptions} [keyList=]
-     */
-    init: function( container, keyList ) {
-      this._super();
-      this.keyList = [];
-      this.container = container;
-      this.commandStatus = false;
-      if ( this.container.getAttribute( "tabindex" ) == undefined ) {
-        this.container.setAttribute( "tabindex", Keyboard.tableindex++ );
-      }
-      this._initHandler().enable().addKeys( keyList );
-    },
-    /**
-     * @private
-     */
-    _initHandler: function() {
-      var self = this;
-      this.event = function( e ) {
-        self.routing( this, e );
-      };
-      return this;
-    },
-    /**
-     * Enable keyboard.
-     * @returns {this}
-     */
-    enable: function() {
-      event.on( this.container, "keydown keypress keyup", this.event );
-      return this;
-    },
-    /**
-     * Disable keyboard.
-     * @returns {this}
-     */
-    disable: function() {
-      event.off( this.container, "keydown keypress keyup", this.event );
-      return this;
-    },
-    /**
-     * @private
-     */
-    _push: function( ret ) {
-      if ( !( this.iterationKeyList( ret ) ) ) {
-        this.keyList.push( ret );
-      }
-      return this;
-    },
-    /**
-     * Add key.
-     * @param {KeyboardOptions}
-     * @returns {this}
-     */
-    addKey: function( obj ) {
-      var keyCode = obj.keyCode,
-        ret;
-      if ( typed.isArray( keyCode ) ) {
-        for ( var i = 0, len = keyCode.length, nObj; i < len; i++ ) {
-          nObj = {};
-          utilExtend.easyExtend( nObj, obj );
-          nObj.keyCode = keyCode[ i ];
-          this.addKey( nObj );
-        }
-        return this;
-      } else {
-        ret = Keyboard.createOpt( obj );
-        this._push( ret );
-      }
-      config.amdquery.debug && $.logger( "keyboard.addKey", "handlerName:", Keyboard.getHandlerName( ret ) );
-      ret.todo && this.on( Keyboard.getHandlerName( ret ), ret.todo );
-      return this;
-    },
-    /**
-     * Add a list of key.
-     * @param {Array<KeyboardOptions>|KeyboardOptions}
-     * @returns {this}
-     */
-    addKeys: function( keyList ) {
-      if ( !keyList ) {
-        return this;
-      }
-      var i = 0,
-        len;
-      if ( !typed.isArray( keyList ) ) {
-        keyList = [ keyList ];
-      }
-      for ( len = keyList.length; i < len; i++ ) {
-        this.addKey( keyList[ i ] );
-      }
-      return this;
-    },
-    /**
-     * Change key.
-     * @param {KeyboardOptions}
-     * @param {KeyboardOptions}
-     * @returns {this}
-     */
-    changeKey: function( origin, evolution ) {
-      origin = Keyboard.createOpt( origin );
-      var item;
-      if ( item = this.iterationKeyList( origin ) ) {
-        utilExtend.extend( item, evolution );
-      }
-      return this;
-    },
-    /**
-     * Remove key.
-     * @param {KeyboardOptions}
-     * @returns {this}
-     */
-    removeKey: function( obj ) {
-      var item, ret, keyCode = obj.keyCode;
-      if ( typed.isArray( keyCode ) ) {
-        for ( var i = 0, len = keyCode.length, nObj; i < len; i++ ) {
-          utilExtend.easyExtend( {}, obj );
-          nObj = obj;
-          nObj.keyCode = keyCode[ i ];
-          this.removeKey( nObj );
-        }
-        return this;
-      } else {
-        ret = Keyboard.createOpt( obj );
-        if ( item = this.iterationKeyList( ret ) ) {
-          this.keyList.splice( array.inArray( this.keyList, item ), 1 );
-          config.amdquery.debug && $.logger( "keyboard.removeKey", "handlerName:", Keyboard.getHandlerName( item ) );
-          this.clearHandlers( Keyboard.getHandlerName( item ) );
-        }
-      }
-      return this;
-    },
-    /**
-     * Remove event listener.
-     * @param {KeyboardOptions}
-     * @returns {this}
-     */
-    removeTodo: function( obj ) {
-      var opt = Keyboard.createOpt( obj );
-      this.off( Keyboard.getHandlerName( opt ), obj.todo );
-      return this;
-    },
-    /**
-     * Iterate key list and search out matching key.
-     * @param {KeyEvent}
-     * @returns {KeyboardOptions|null}
-     */
-    iterationKeyList: function( e ) {
-      for ( var i = 0, keyList = this.keyList, len = keyList.length, item, code, result = 0; i < len; i++ ) {
-        code = e.keyCode || e.which;
-
-        item = keyList[ i ];
-
-        config.amdquery.debug && $.logger( "keyboard.iterationKeyList", "type:code", e.type + ":" + code );
-
-        if (
-          e.type == item.type &&
-          code == item.keyCode &&
-          Keyboard.checkCombinationKey( e, item.combinationKey )
-        ) {
-          return item;
-        }
-      }
-      return null;
-    },
-    /**
-     * @private
-     */
-    routing: function( target, e ) {
-      e = event.document.getEvent( e );
-      var item;
-      if ( item = this.iterationKeyList( e ) ) {
-        //item.todo.call(this, e);i
-        var type = Keyboard.getHandlerName( item );
-        config.amdquery.debug && $.logger( "keyboard.routing", "handlerName", type );
-        this.trigger( CustomEvent.createEvent( type, target, {
-          event: e,
-          keyItem: item
-        } ) );
-        event.document.preventDefault( e );
-        event.document.stopPropagation( e );
-      }
-    }
-  }, /** @lends module:module/Keyboard */ {
-    /**
-     * Create option of keyboard.
-     * @param {Object}
-     * @return {KeyboardOptions}
-     */
-    createOpt: function( obj ) {
-      var keyCode = obj.keyCode;
-      //若有组合键 会把type强制转换
-      if ( obj.combinationKey && obj.combinationKey.length ) {
-        if ( typed.isString( keyCode ) ) {
-          keyCode = keyCode.length > 1 ? keyCode : keyCode.toUpperCase();
-        }
-        obj.type = array.inArray( obj.combinationKey, "cmd" ) > -1 ? "keydown" : "keyup";
-      }
-      if ( typed.isString( keyCode ) ) {
-        obj.keyCode = Keyboard.stringToCode( keyCode );
-      }
-
-      return obj;
-    },
-    /**
-     * @param {Number}
-     * @return {String}
-     */
-    codeToChar: function( code ) {
-      return typed.isNumber( code ) ? String.fromCharCode( code ) : code;
-    },
-    /**
-     * 38 ==> "Up".
-     * @param {Number}
-     * @return {String}
-     */
-    codeToString: function( code ) {
-      return charcode.codeToStringReflect[ code ] || Keyboard.codeToChar( code );
-    },
-    /**
-     * @param {String}
-     * @return {Number}
-     */
-    charToCode: function( c ) {
-      return typed.isString( c ) ? c.charCodeAt( 0 ) : c;
-    },
-    /**
-     * "Up" ==> 38.
-     * @param {String}
-     * @return {Number}
-     */
-    stringToCode: function( s ) {
-      return charcode.stringToCodeReflect[ s ] || Keyboard.charToCode( s );
-    },
-    /**
-     * Whether e.combinationKey equals combinationKey.
-     * @param {KeyEvent}
-     * @param {Array<String>} - [ "ctrl", "alt", "shift" ]
-     * @return {Boolean}
-     */
-    checkCombinationKey: function( e, combinationKey ) {
-      var i = 0,
-        j = 0,
-        defCon = [ "ctrl", "alt", "shift" ],
-        len = combinationKey ? combinationKey.length : 0,
-        count1 = 0;
-      if ( e.combinationKey ) {
-        if ( e.combinationKey.length == len ) {
-          for ( ; i < len; i++ ) {
-            for ( ; j < len; j++ ) {
-              e.combinationKey[ i ] != combinationKey[ j ] && count1++;
-            }
-          }
-          if ( len == count1 ) {
-            return 1;
-          }
-        } else {
-          return 0;
-        }
-      } else {
-        for ( var count2 = combinationKey ? combinationKey.length : 0; i < len; i++ ) {
-          if ( combinationKey[ i ] === "cmd" ) {
-            if ( Keyboard.commandStatus == true ) {
-              count1++;
-            } else {
-              return 0;
-            }
-            continue;
-          }
-
-          if ( e[ defCon[ i ] + "Key" ] == true ) count1++;
-
-          if ( e[ combinationKey[ i ] + "Key" ] == false ) {
-            return 0;
-          }
-        }
-        if ( count1 > count2 ) {
-          return 0;
-        }
-      }
-      return 1;
-    },
-    /**
-     * @param {KeyboardOptions}
-     * @return {String}
-     */
-    getHandlerName: function( obj ) {
-      obj = Keyboard.createOpt( obj );
-      var combinationKey = obj.combinationKey ? obj.combinationKey.join( "+" ) + "+" : "";
-      return obj.type + ":" + combinationKey + Keyboard.stringToCode( obj.keyCode );
-    },
-    tableindex: 9000,
-    cache: [],
-    /**
-     * Get an instance.
-     * @param {Element}
-     * @param {Array<KeyboardOptions>|KeyboardOptions} [keyList=]
-     * @return {module:module/Keyboard}
-     */
-    getInstance: function( container, keyList ) {
-      var keyboard, i = 0,
-        cache = Keyboard.cache,
-        len = cache.length;
-      for ( ; i < len; i++ ) {
-        if ( cache[ i ].container == container ) {
-          keyboard = cache[ i ];
-        }
-      }
-      if ( !keyboard ) {
-        keyboard = new Keyboard( container, keyList );
-        Keyboard.cache.push( keyboard );
-      }
-      return keyboard;
-    }
-  } );
-
-  event.on( document.documentElement, "keydown keypress keyup", function( e ) {
-    var code = e.keyCode || e.which;
-    if ( code === charcode.stringToCodeReflect[ "LeftCommand" ] ||
-      code === charcode.stringToCodeReflect[ "RightCommand" ] ||
-      code === charcode.stringToCodeReflect[ "Command" ] ) {
-      switch ( e.type ) {
-        case "keydown":
-        case "keypress":
-          Keyboard.commandStatus = true;
-          break;
-        case "keyup":
-          Keyboard.commandStatus = false;
-          break;
-      }
-    }
-  } );
-
-  return Keyboard;
-} );
 
 /*=======================================================*/
 
