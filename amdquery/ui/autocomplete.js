@@ -102,6 +102,7 @@ aQuery.define( "ui/autocomplete", [
               } ) );
               break;
             case EscapeEventName:
+              self._setValue( "" );
               self.clear();
               self.target.trigger( CustomEvent.createEvent( self.getEventName( "cancel" ), self.target[ 0 ] ) );
               break;

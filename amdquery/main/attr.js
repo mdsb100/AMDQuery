@@ -201,7 +201,7 @@ aQuery.define( "main/attr", [ "base/typed", "base/extend", "base/support" ], fun
      * @returns {this|String}
      */
     val: function( value ) {
-      return value ? this.each( function( ele ) {
+      return typed.isString( value ) ? this.each( function( ele ) {
         attrUtil.setVal( ele, value );
       } ) : attrUtil.getVal( this[ 0 ] );
     }

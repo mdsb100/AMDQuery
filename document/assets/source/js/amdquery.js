@@ -9155,7 +9155,7 @@ aQuery.define( "main/attr", [ "base/typed", "base/extend", "base/support" ], fun
      * @returns {this|String}
      */
     val: function( value ) {
-      return value ? this.each( function( ele ) {
+      return typed.isString( value ) ? this.each( function( ele ) {
         attrUtil.setVal( ele, value );
       } ) : attrUtil.getVal( this[ 0 ] );
     }
@@ -14876,6 +14876,7 @@ aQuery.define( "ui/autocomplete", [
               } ) );
               break;
             case EscapeEventName:
+              self._setValue( "" );
               self.clear();
               self.target.trigger( CustomEvent.createEvent( self.getEventName( "cancel" ), self.target[ 0 ] ) );
               break;
