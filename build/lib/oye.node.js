@@ -10,7 +10,6 @@
 
 */
 
-
 /*
   根据需求做了相应修改
 */
@@ -153,7 +152,7 @@ var _basePath = __filename.replace( /[^\\\/]*[\\\/]+[^\\\/]*$/i, '' ), //oye文�
 
     if ( !url ) {
 
-      fnError( );
+      fnError();
 
       return;
 
@@ -184,15 +183,15 @@ var _basePath = __filename.replace( /[^\\\/]*[\\\/]+[^\\\/]*$/i, '' ), //oye文�
       rname = /(define|require)\s*\(\s*(['"]([^,\[\)]*)['"],?)?/i,
       rdepends = /\s*(\[[^\]]*\])/i;
 
-    content = content.replace(notation, function(word) { // 去除注释后的文本
-      return /^\/{2,}/.test(word) || /^\/\*/.test(word) ? "" : word;
+    content = content.replace( notation, function( word ) { // 去除注释后的文本
+      return /^\/{2,}/.test( word ) || /^\/\*/.test( word ) ? "" : word;
     } );
 
     var ret = content.match( match );
-    var moduleAndDepends = [ ];
+    var moduleAndDepends = [];
 
     if ( ret ) {
-      for ( var i = 0, sModule, depends, name, isAnonymous; i < ret.length; i++ ) {
+      for ( var i = 0, sModule, depends, name, isAnonymous, anonymousName = false; i < ret.length; i++ ) {
         sModule = "";
         depends = "";
         name = "";
@@ -205,7 +204,6 @@ var _basePath = __filename.replace( /[^\\\/]*[\\\/]+[^\\\/]*$/i, '' ), //oye文�
           sModule = String( sModule );
         }
 
-
         // console.log(rdepends.test(ret[i]))
         // console.log("array", RegExp.$1)
         if ( rdepends.test( ret[ i ] ) && RegExp.$1 ) {
@@ -214,12 +212,20 @@ var _basePath = __filename.replace( /[^\\\/]*[\\\/]+[^\\\/]*$/i, '' ), //oye文�
 
         isAnonymous = ret[ i ].match( /\,/g );
 
+        if ( !anonymousName && sModule ) {
+          anonymousName = true;
+        }
+
         if ( name === "require" && depends === "" && sModule === "" ) {
           continue;
         }
 
         if ( depends === "" && sModule === "" && isAnonymous && isAnonymous.length > 0 ) {
           //不是匿名的，是自己定义的
+          continue;
+        }
+
+        if ( name === "define" && sModule === "" && anonymousName ) {
           continue;
         }
 
@@ -232,7 +238,6 @@ var _basePath = __filename.replace( /[^\\\/]*[\\\/]+[^\\\/]*$/i, '' ), //oye文�
       }
     } else {
       //可能为空的情况 也需要 define一下
-
 
       if ( r.test( content ) && RegExp.$2 ) {
         moduleAndDepends.push( {
@@ -251,7 +256,7 @@ var _basePath = __filename.replace( /[^\\\/]*[\\\/]+[^\\\/]*$/i, '' ), //oye文�
       if ( err ) {
         throw err;
       }
-      var content = data.toString( );
+      var content = data.toString();
       //Match define ( 'moduleID', ['a', 'b']
       var moduleAndDepends = matchDefine( content );
       var fakeModule = "",
@@ -288,19 +293,19 @@ var _basePath = __filename.replace( /[^\\\/]*[\\\/]+[^\\\/]*$/i, '' ), //oye文�
 
   //请求队列，如果当前有一个模块正在被请求，则后来的请求全部进入队列
 
-  _requireQueue = [ ],
+  _requireQueue = [],
 
   //执行请求队列
 
-  _queueRequire = function( ) {
+  _queueRequire = function() {
 
     if ( _requireQueue.length ) {
 
-      var module = _requireQueue.shift( );
+      var module = _requireQueue.shift();
 
       if ( !module ) {
 
-        _queueRequire( );
+        _queueRequire();
 
         return;
 
@@ -433,9 +438,9 @@ var _basePath = __filename.replace( /[^\\\/]*[\\\/]+[^\\\/]*$/i, '' ), //oye文�
 
         if ( md && md._amdGetReady ) {
 
-          md._amdGetReady( );
+          md._amdGetReady();
 
-          hdModule.shift( );
+          hdModule.shift();
 
           i--;
 
@@ -471,13 +476,13 @@ var _basePath = __filename.replace( /[^\\\/]*[\\\/]+[^\\\/]*$/i, '' ), //oye文�
 
     aDependencies = aDependencies.slice( 0 );
 
-    var fnInnerLoop = function( ) {
+    var fnInnerLoop = function() {
 
       if ( !aDependencies.length ) {
         return;
       }
 
-      var sDP = aDependencies.shift( ),
+      var sDP = aDependencies.shift(),
         mDP = _modules[ sDP ];
 
       if ( !mDP ) {
@@ -492,11 +497,11 @@ var _basePath = __filename.replace( /[^\\\/]*[\\\/]+[^\\\/]*$/i, '' ), //oye文�
 
       }
 
-      fnInnerLoop( );
+      fnInnerLoop();
 
     };
 
-    fnInnerLoop( );
+    fnInnerLoop();
 
   },
 
@@ -526,7 +531,7 @@ var _basePath = __filename.replace( /[^\\\/]*[\\\/]+[^\\\/]*$/i, '' ), //oye文�
       return;
     }
 
-    var i, l, sDP, aDP = [ ],
+    var i, l, sDP, aDP = [],
       mDP, fnErr = error,
       sMD, modules = _modules;
 
@@ -540,7 +545,7 @@ var _basePath = __filename.replace( /[^\\\/]*[\\\/]+[^\\\/]*$/i, '' ), //oye文�
 
       //无依赖模块，直接转正
 
-      this._amdGetReady( );
+      this._amdGetReady();
 
     } else {
 
@@ -603,7 +608,7 @@ var _basePath = __filename.replace( /[^\\\/]*[\\\/]+[^\\\/]*$/i, '' ), //oye文�
 
           //依赖貌似都准备好，尝试转正
 
-          this._amdGetReady( );
+          this._amdGetReady();
 
         } else {
 
@@ -625,12 +630,12 @@ var _basePath = __filename.replace( /[^\\\/]*[\\\/]+[^\\\/]*$/i, '' ), //oye文�
 
 //模块转正程序(模块已准备好)
 
-_ClassModule.prototype._amdGetReady = function( ) {
+_ClassModule.prototype._amdGetReady = function() {
 
   var id = this._amdID,
     F, i, ad = this._amdDependencies,
     l = ad.length,
-    md, aDM = [ ],
+    md, aDM = [],
     aFnReady, modules = _modules;
 
   //检测当前模块是否可以转正
@@ -671,7 +676,7 @@ _ClassModule.prototype._amdGetReady = function( ) {
 
   F.getDependenciesList = this.getDependenciesList;
 
-  aFnReady = this._amdReadyQueue[ id ] || [ ];
+  aFnReady = this._amdReadyQueue[ id ] || [];
 
   //重置模块定义体，开启依赖此模块的其他模块的转正机会
 
@@ -682,7 +687,7 @@ _ClassModule.prototype._amdGetReady = function( ) {
   //触发ready代码
 
   while ( aFnReady.length ) {
-    F.todo( aFnReady.shift( ) );
+    F.todo( aFnReady.shift() );
   }
 
   return true;
@@ -718,9 +723,9 @@ _getDependenciesList = function( module, ret ) {
 
 }
 
-_ClassModule.prototype.getDependenciesList = function( ) {
+_ClassModule.prototype.getDependenciesList = function() {
   var sMD = this._amdID,
-    DM, ret = [ ],
+    DM, ret = [],
     fnGetPath = _fnGetPath,
     modules = _modules,
     module = _modules[ sMD ],
@@ -736,17 +741,16 @@ _ClassModule.prototype.getDependenciesList = function( ) {
     content: module ? module._content || "" : ""
   } );
 
-
   return ret;
 
 }
 
 //取当前模块所有依赖模块
-_ClassModule.prototype.getDependenciesMap = function( ) {
+_ClassModule.prototype.getDependenciesMap = function() {
 
   var sMD = this._amdID,
     MD = _dependenciesMap[ sMD ],
-    DM, ret = [ ],
+    DM, ret = [],
     fnGetPath = _fnGetPath,
     modules = _modules,
     module = _modules[ sMD ],
@@ -785,8 +789,8 @@ _ClassModule.prototype.todo = function( fnX ) {
 
   if ( this._amdReady ) {
     var self = this;
-    setTimeout( function( ) {
-      fnX.apply( self, [ ].concat( self ) ); //执行模块准备好时调用的代码
+    setTimeout( function() {
+      fnX.apply( self, [].concat( self ) ); //执行模块准备好时调用的代码
     }, 0 );
   } else {
 
@@ -798,7 +802,7 @@ _ClassModule.prototype.todo = function( fnX ) {
     } //之前定义的模块实例无法同步，只能去找已准备好的模块
 
     if ( !this._amdReadyQueue[ sMD ] ) {
-      this._amdReadyQueue[ sMD ] = [ ];
+      this._amdReadyQueue[ sMD ] = [];
     }
 
     this._amdReadyQueue[ sMD ].push( fnX ); //压入准备执行队列
@@ -827,110 +831,110 @@ _ClassModule.prototype.todo = function( fnX ) {
 
 var require = function( sModule, fnSuccess, fnFailure ) {
 
-  var fnGetPath = _fnGetPath,
-    sURL, fnLoadJS = _fnLoadJS,
-    fnErr = error;
+    var fnGetPath = _fnGetPath,
+      sURL, fnLoadJS = _fnLoadJS,
+      fnErr = error;
 
-  if ( !sModule ) {
-    return;
-  }
-
-  //如果请求一组模块则转换为对一个临时模块的定义与请求处理
-
-  if ( sModule.constructor === Array ) {
-
-    var aModule = sModule;
-
-    sModule = 'template' + ( +new Date( ) );
-
-    define( sModule, aModule, function( ) {
-      return [ ].slice.call( arguments );
-    } );
-
-  }
-
-  sModule = _variable( sModule );
-
-  var ret = _modules[ sModule ] || new _ClassModule( sModule, [ sModule ], function( ) {
-    return new String( sModule );
-  } );
-
-  if ( fnSuccess && typeof fnSuccess !== 'function' ) {
-
-    fnErr( {
-      fn: 'require',
-      msg: 'fnSuccess should be a Function'
-    } );
-
-  }
-
-  if ( !fnFailure || fnFailure && typeof fnFailure !== 'function' ) {
-
-    fnFailure = function( ) {
-
-      fnErr( {
-        fn: 'require',
-        msg: 'Could not load module: ' + sModule + ', Cannot fetch the file'
-      } );
-
-    };
-
-  }
-
-  var bNamedModule = define.amd.namedModules[ sModule ];
-
-  //如果当前模块为require发出，且之前没有定义过
-
-  if ( ret._amdDependencies.constructor === Array && ret._amdDependencies.join( '' ) === sModule ) {
-
-    if ( _amdAnonymousID && !bNamedModule ) {
-
-      //如果有某个模块正在处理中，且当前请求的模块不是已知的具名模块，则将当前请求丢到请求队列
-
-      _requireQueue.push( [ sModule, fnSuccess, fnFailure ] );
-
-      return ret;
-
+    if ( !sModule ) {
+      return;
     }
 
-    sURL = fnGetPath( sModule );
+    //如果请求一组模块则转换为对一个临时模块的定义与请求处理
 
-    if ( !sURL ) {
+    if ( sModule.constructor === Array ) {
 
-      fnErr( {
-        fn: 'require',
-        msg: 'Could not load module: ' + sModule + ', Cannot match its URL'
+      var aModule = sModule;
+
+      sModule = 'template' + ( +new Date() );
+
+      define( sModule, aModule, function() {
+        return [].slice.call( arguments );
       } );
 
     }
 
-    //如果当前模块不是已知的具名模块，则设定它为正在处理中的模块，直到它的定义体出现
+    sModule = _variable( sModule );
 
-    if ( !bNamedModule ) {
-      _amdAnonymousID = sModule;
+    var ret = _modules[ sModule ] || new _ClassModule( sModule, [ sModule ], function() {
+      return new String( sModule );
+    } );
+
+    if ( fnSuccess && typeof fnSuccess !== 'function' ) {
+
+      fnErr( {
+        fn: 'require',
+        msg: 'fnSuccess should be a Function'
+      } );
+
     }
 
-    //如果define和require都在同一页面，则避免发出JS的请求
+    if ( !fnFailure || fnFailure && typeof fnFailure !== 'function' ) {
 
-    setTimeout( function( ) {
-      //加载此模块文件
-      fnLoadJS( sURL, sModule, fnFailure );
-    }, 0 );
+      fnFailure = function() {
 
-  } else if ( !ret[ '_amdReady' ] ) { //此模块之前已经定义过，但是其依赖未准备好
+        fnErr( {
+          fn: 'require',
+          msg: 'Could not load module: ' + sModule + ', Cannot fetch the file'
+        } );
 
-    _loadDependencies( ret[ '_amdDependencies' ], 'require' );
+      };
 
-  }
-  //如果模块准备好，则执行它的成功回调
+    }
 
-  if ( fnSuccess ) {
-    ret.todo( fnSuccess );
-  }
+    var bNamedModule = define.amd.namedModules[ sModule ];
 
-  return ret;
+    //如果当前模块为require发出，且之前没有定义过
 
-},
+    if ( ret._amdDependencies.constructor === Array && ret._amdDependencies.join( '' ) === sModule ) {
+
+      if ( _amdAnonymousID && !bNamedModule ) {
+
+        //如果有某个模块正在处理中，且当前请求的模块不是已知的具名模块，则将当前请求丢到请求队列
+
+        _requireQueue.push( [ sModule, fnSuccess, fnFailure ] );
+
+        return ret;
+
+      }
+
+      sURL = fnGetPath( sModule );
+
+      if ( !sURL ) {
+
+        fnErr( {
+          fn: 'require',
+          msg: 'Could not load module: ' + sModule + ', Cannot match its URL'
+        } );
+
+      }
+
+      //如果当前模块不是已知的具名模块，则设定它为正在处理中的模块，直到它的定义体出现
+
+      if ( !bNamedModule ) {
+        _amdAnonymousID = sModule;
+      }
+
+      //如果define和require都在同一页面，则避免发出JS的请求
+
+      setTimeout( function() {
+        //加载此模块文件
+        fnLoadJS( sURL, sModule, fnFailure );
+      }, 0 );
+
+    } else if ( !ret[ '_amdReady' ] ) { //此模块之前已经定义过，但是其依赖未准备好
+
+      _loadDependencies( ret[ '_amdDependencies' ], 'require' );
+
+    }
+    //如果模块准备好，则执行它的成功回调
+
+    if ( fnSuccess ) {
+      ret.todo( fnSuccess );
+    }
+
+    return ret;
+
+  },
 
   /**
 
@@ -952,7 +956,7 @@ var require = function( sModule, fnSuccess, fnFailure ) {
 
   define = function( id, dependencies, factory ) {
 
-    var args = [ ].slice.call( arguments, 0 ),
+    var args = [].slice.call( arguments, 0 ),
       fnErr = error,
       bDeep, ret, fnBody = function( mDefine ) {
 
@@ -968,22 +972,22 @@ var require = function( sModule, fnSuccess, fnFailure ) {
             return mDefine;
 
           case 'string':
-            return function( ) {
+            return function() {
               return new String( mDefine );
             };
 
           case 'number':
-            return function( ) {
+            return function() {
               return new Number( mDefine );
             };
 
           case 'boolean':
-            return function( ) {
+            return function() {
               return new Boolean( mDefine );
             };
 
           default:
-            return function( ) {
+            return function() {
               return mDefine;
             };
 
@@ -1008,7 +1012,7 @@ var require = function( sModule, fnSuccess, fnFailure ) {
 
         id = _amdAnonymousID;
 
-        dependencies = [ ];
+        dependencies = [];
 
         factory = fnBody( args[ 0 ] );
 
@@ -1022,7 +1026,7 @@ var require = function( sModule, fnSuccess, fnFailure ) {
 
           id = ( typeof args[ 0 ] === 'string' ) ? args[ 0 ] : _amdAnonymousID;
 
-          dependencies = ( args[ 0 ].constructor === Array ) ? args[ 0 ] : [ ];
+          dependencies = ( args[ 0 ].constructor === Array ) ? args[ 0 ] : [];
 
           factory = fnBody( args[ 1 ] );
 
@@ -1076,7 +1080,7 @@ var require = function( sModule, fnSuccess, fnFailure ) {
 
     //执行请求队列
 
-    _queueRequire( );
+    _queueRequire();
 
     return _modules[ id ];
 
@@ -1204,17 +1208,16 @@ require.variablePrefix = function( Prefix ) {
   _variablePrefix = Prefix;
 }
 
-
 exports.setPath = function( opt ) {
   _basePath = opt.oyeModulePath;
   _rootPath = opt.projectRootPath;
 };
 
-exports.getBasePath = function(){
+exports.getBasePath = function() {
   return _basePath;
 }
 
-exports.getRootPath = function(){
+exports.getRootPath = function() {
   return _rootPath;
 }
 
